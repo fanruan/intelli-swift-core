@@ -13,8 +13,6 @@ fbi_engine_finereport/bin
 fbi_engine_generate/bin
 fbi_engine_support/bin
 /fbi_starter
-fbi_starter/bin
-fbi_starter/logs
 /fbi_test
 /fbi_web
 fbi_web/*.settings
