@@ -23,5 +23,4 @@ fbi_web_base/bin
 fbi_web_conf/bin
 fbi_web_dezi/bin
 fbi_web_report/bin
-fineexcel/bin
 logs/jetty/*.log
