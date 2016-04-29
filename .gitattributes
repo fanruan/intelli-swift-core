@@ -4789,7 +4789,6 @@ fbi_web_report/src/com/fr/bi/web/report/services/BITemplateFolderDeleteAction.ja
 fbi_web_report/src/com/fr/bi/web/report/services/BITemplateFolderRenameAction.java -text
 fbi_web_report/src/com/fr/bi/web/report/services/FSMainBIReportAction.java -text
 fbi_web_report/src/com/fr/bi/web/report/utils/BIFSReportUtils.java -text
-logs/jetty/jetty_2015-01-08.log -text
 test/WidgetRecord/78 -text
 test/WidgetRecord/78_1420687676305 -text
 test/WidgetRecord/78_1420687761163 -text
