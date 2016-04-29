@@ -1,0 +1,22 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-detail-select-data-preview-pane .field-container {
+  border: 1px solid #eaeaea;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-detail-select-data-preview-pane .field-container .field-date-container {
+  border-top: 1px solid #eaeaea;
+}
+.bi-detail-select-data-preview-pane .table-data-container {
+  border: 1px solid #eaeaea;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-detail-select-data-preview-section-south .preview-comment {
+  font-size: 14px;
+  color: #808080;
+}

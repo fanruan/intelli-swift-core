@@ -1,0 +1,63 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****添加计算宽度的--运算符直接需要space****/
+.fs-segment {
+  text-align: center;
+  font-size: 12px;
+  position: absolute;
+  cursor: pointer;
+}
+.fs-segment-item {
+  position: absolute;
+  color: #808080;
+  background-color: #ffffff;
+  border-top: 1px solid #d4dadd;
+  border-bottom: 1px solid #d4dadd;
+  top: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.fs-segment-item:hover {
+  background-color: #1a1a1a;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+.fs-segment-first {
+  -webkit-border-radius: 6px 0 0 6px;
+  -moz-border-radius: 6px 0 0 6px;
+  border-radius: 6px 0 0 6px;
+  border-left: 1px solid #d4dadd;
+}
+.fs-segment-last {
+  -webkit-border-radius: 0 6px 6px 0;
+  -moz-border-radius: 0 6px 6px 0;
+  border-radius: 0 6px 6px 0;
+  border-right: 1px solid #d4dadd;
+}
+.fs-segment-last:hover {
+  border-color: #1a1a1a;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+.fs-segment-item.active {
+  color: #ffffff;
+  background-color: #009de3;
+  border-color: #009de3;
+}
+.fs-segment-item.active:hover {
+  background-color: #009de3;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.fs-segment-split {
+  border-right: 1px solid #d4dadd;
+}
+.fs-segment-split:hover {
+  border-color: #1a1a1a;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+.fs-segment-split.active {
+  border-color: #009de3;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>FR.BIDezi</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=widget.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=dezi.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/dezi/fe_dezi.css"/>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.chart.js"></script>
+    <script type="text/javascript" src="${Baidu}"></script>
+    <script type="text/javascript" src="${Google}"></script>
+
+    <!--不能能使用两个合成文件，ie8下不会按顺序调用-->
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=widget.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=dezi.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=conf.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/dezi/dezi_fe.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            /**
+             **TODO: 不用担心加参数就可以编辑的问题， 可以在服务端判断是否有编辑权限
+             */
+            FR.BIDezi._init_fe({
+                popConfig:${popConfig},
+                sessionID:${sessionID},
+                edit:'${edit}',
+                description:'${description}',
+                createby:'${createby}',
+                reportname:'${reportname}',
+                isShared: '${isShared}',
+                reg: ${reg}
+            });
+        });
+    </script>
+</head>
+<body>
+
+<div id="fbi_prompt_new"></div>
+</body>
+</html>

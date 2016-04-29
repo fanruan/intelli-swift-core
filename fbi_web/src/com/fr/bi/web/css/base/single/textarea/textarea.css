@@ -1,0 +1,20 @@
+/****��Ӽ����ȵ�--�����ֱ����Ҫspace****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-textarea {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+}
+.bi-textarea.bi-textarea-focus {
+  border: none;
+  background: #ffffff;
+}
+.bi-textarea.bi-textarea-error {
+  color: #e85050;
+}

@@ -1,0 +1,29 @@
+@import "../../../bibase";
+@import "../../../animate";
+
+.bi-history-tab-button {
+  font-size: @font-size-13;
+
+  &.active, &:active{
+    background: @background-color-active;
+    color: @font-color-highlight;
+
+    & .select_tag {
+      background: @background-color-highlight;
+    }
+
+  }
+
+}
+
+
+.bi-history-tab-button-temp {
+  overflow: hidden;
+  background: @background-color-active;
+  color: @font-color-highlight;
+  & .select_tag {
+    background: @background-color-highlight;
+  }
+}
+
+.bi-animate(bi-history-tab-button-temp, color-flash-orage-normal, '{height:0px}', '{height:25px}',  0.3s);

@@ -1,0 +1,46 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-toolbar {
+  border-bottom: 1px solid #d3d9dc;
+  background: #f3f3f3;
+  color: #7f7f7f;
+}
+.bi-toolbar .layout-combo {
+  border: 1px solid transparent;
+}
+.bi-toolbar .layout-combo:hover {
+  border-radius: 2px;
+  border: 1px solid #d3d9dc;
+  background: #ffffff;
+}
+.bi-drag-area {
+  background: #f3f3f3;
+}
+.bi-toolbar-button {
+  -webkit-border-radius: 4px 4px 4px 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  border-radius: 4px 4px 4px 4px;
+}
+.bi-toolbar-button:hover {
+  background-color: #f1f4fb;
+  -webkit-box-shadow: 0px 0px 1px #cccccc;
+  -moz-box-shadow: 0px 0px 1px #cccccc;
+  box-shadow: 0px 0px 1px #cccccc;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.bi-toolbar-button:active {
+  background-color: #ffffff;
+  -webkit-box-shadow: 0px 0px 1px #cccccc;
+  -moz-box-shadow: 0px 0px 1px #cccccc;
+  box-shadow: 0px 0px 1px #cccccc;
+  opacity: 0.6;
+  filter: alpha(opacity=60);
+}
+/***************************************DashBoard**************************************************/
+.bi-widget-dashboard,
+.bi-dashboard {
+  background: #f3f3f3;
+}
+/***************************************Tab**************************************************/

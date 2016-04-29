@@ -1,0 +1,22 @@
+@import "../../../bibase";
+
+.bi-input{
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  .size(100%,100%);
+  font-size: @font-size-14;
+
+  &.bi-input-focus{
+    border: none;
+    background:white !important;
+    //color: @color-bi-text-black !important;
+  }
+
+  &.bi-input-error{
+    border: none;
+    color:@color-bi-text-warning !important;
+  }
+}

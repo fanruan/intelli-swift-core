@@ -1,0 +1,1 @@
+package com.fr.bi.stable.report.result;/** * Created by Hiram on 2015/1/31. */public interface ISortInfoList {    boolean shouldSort(int deep);    void setPrioritySortInfo(ISortInfo defaultSortInfo);    String getTargetName(int deep);    int getSortType(int deep);    void setSortInfoArray(ISortInfo[] sortInfoArray);}

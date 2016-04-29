@@ -1,0 +1,22 @@
+@import "../../../../bibase";
+
+
+.bi-analysis-etl-operator-group-pane {
+  border-bottom: 1px solid @border-color-line;
+
+
+  & .select-field {
+    border-right: 1px solid @border-color-line;
+  }
+
+    & .bi-region-nav{
+      background: @color-dimension-background;
+      border-bottom: 1px solid @color-dimension-region-border;
+    }
+  & .target-region {
+    & .bi-region-nav {
+      background: @color-target-background;
+      border-bottom: 1px solid @color-target-region-border;
+    }
+  }
+}

@@ -1,0 +1,59 @@
+/**
+ * Cube日志错误信息Node
+ *
+ * Created by GUY on 2016/3/31.
+ * @class BI.CubeLogNode
+ * @extends BI.Widget
+ */
+BI.CubeLogNode = BI.inherit(BI.Widget, {
+
+    _defaultConfig: function () {
+        return BI.extend(BI.CubeLogNode.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-cube-log-wrong-info-node",
+            text: "",
+            second: 0,
+            id: "",
+            pId: "",
+            open: false
+        });
+    },
+
+    _init: function () {
+        BI.CubeLogNode.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
+        this.node = BI.createWidget({
+            type: "bi.triangle_group_node",
+            height: 40,
+            element: this.element,
+            id: o.id,
+            pId: o.pId,
+            open: o.open,
+            text: o.text + ": " + ((o.second >= 1000 ? Math.floor(o.second / 1000) : o.second) + (o.second >= 1000 ? "秒" : "毫秒")),
+            value: o.value
+        });
+        this.node.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+        });
+    },
+
+    populate: function () {
+
+    },
+
+    isSelected: function () {
+        return this.node.isSelected();
+    },
+
+    setSelected: function (b) {
+        return this.node.setSelected(b);
+    },
+
+    isOpened: function () {
+        return this.node.isOpened();
+    },
+
+    setOpened: function (v) {
+        this.node.setOpened(v);
+    }
+});
+$.shortcut('bi.cube_log_node', BI.CubeLogNode);

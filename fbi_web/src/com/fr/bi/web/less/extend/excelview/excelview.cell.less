@@ -1,0 +1,15 @@
+@import "../../bibase";
+
+.bi-excel-view-cell{
+  &:active,&.active{
+    background: @color-bi-background-highlight;
+    color: @color-bi-text;
+  }
+  & .excel-view-cell-triangle{
+    border-top: 8px solid @color-bi-background-highlight;
+    border-left: 8px solid transparent;
+  }
+  & .selected-border{
+    border: 2px solid @color-bi-background-highlight;
+  }
+}

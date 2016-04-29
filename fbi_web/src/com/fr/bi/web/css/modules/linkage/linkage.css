@@ -1,0 +1,38 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-linkage .linkage-tool-bar {
+  z-index: 100000000;
+  background: #ffffff;
+}
+.bi-linkage .linkage-tool-bar .linkage-toolbar-title {
+  font-size: 14px;
+  background-color: #f4f4f4;
+  color: #808080;
+}
+.bi-linkage .linkage-tool-bar .single-target-container {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-linkage .linkage-tool-bar .single-target-container .widget-type-icon {
+  font-size: 20px;
+}
+.bi-linkage .linkage-tool-bar .single-target-container .linkage-toolbar-target {
+  background: #f4f4f4;
+  cursor: move;
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-linkage .linkage-tool-bar .single-target-container .linkage-toolbar-target .linkage-toolbar-target-name {
+  color: #1a1a1a;
+}
+.bi-linkage .linkage-tool-bar .single-target-container .linkage-toolbar-target .linkage-toolbar-target-linkto {
+  color: #808080;
+}
+.bi-linkage .linkage-widget {
+  background: #d8f3fe;
+}
+.bi-linkage .linkage-widget .linkage-widget-title {
+  font-size: 16px;
+}

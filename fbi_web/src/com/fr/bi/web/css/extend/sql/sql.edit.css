@@ -1,0 +1,45 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-edit-sql {
+  background: #f4f4f4;
+}
+.bi-edit-sql .edit-sql-pane {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-edit-sql .edit-sql-pane .server-set-north {
+  border-bottom: 1px solid #d4dadd;
+  color: #808080;
+  font-size: 14px;
+}
+.bi-edit-sql .edit-sql-pane .server-data-from-label {
+  color: #808080;
+  font-size: 14px;
+}
+.bi-edit-sql .edit-sql-pane .sql-editor-label {
+  border-top: 1px solid #d4dadd;
+  border-left: 1px solid #d4dadd;
+  border-right: 1px solid #d4dadd;
+  background: #f4f4f4;
+}
+.bi-edit-sql .edit-sql-pane .sql-editor {
+  border: 1px solid #d4dadd;
+}
+.bi-edit-sql .sql-result-preview {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-edit-sql .sql-result-preview .preview-north {
+  color: #808080;
+  font-size: 14px;
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-edit-sql .sql-result-preview .preview-fail .preview-fail-comment {
+  font-size: 14px;
+  color: #808080;
+}

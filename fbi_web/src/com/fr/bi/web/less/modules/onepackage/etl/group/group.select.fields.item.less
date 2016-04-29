@@ -1,0 +1,19 @@
+@import "../../../../bibase";
+
+.bi-group-select-fields-item {
+  font-size: @font-size-12;
+  color: @font-color-gray;
+  & .group-select-fields-item-button {
+    &:hover, &.hover {
+      background-color: @background-color-active;
+    }
+    &:active, &.active {
+      background-color: @background-color-active;
+    }
+    &.disabled {
+      &, &:hover, &:active {
+        background-color: @color-bi-background-default;
+      }
+    }
+  }
+}

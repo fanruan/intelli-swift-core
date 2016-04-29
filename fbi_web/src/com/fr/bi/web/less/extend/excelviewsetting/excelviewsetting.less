@@ -1,0 +1,26 @@
+@import "../../bibase";
+
+.bi-excel-view-setting {
+  background-color: @color-bi-background-gray;
+  & .excel-view-setting-tree-pane {
+    background-color: @color-bi-background-default;
+    border: 1px solid @color-bi-border-line;
+    & .excel-view-setting-tree-title {
+      font-size: 16px;
+      color: @color-bi-text-highlight;
+      border-bottom: 1px solid @color-bi-border-line;
+    }
+  }
+  & .excel-view-setting-excel-pane{
+    background-color: @color-bi-background-default;
+    border: 1px solid @color-bi-border-line;
+
+    & .excel-view-setting-excel-toolbar{
+      border-bottom: 1px solid @color-bi-border-line;
+      & .excel-view-setting-excel-toolbar-title{
+        font-size: 16px;
+        color: @color-bi-text-gray;
+      }
+    }
+  }
+}

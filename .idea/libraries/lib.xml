@@ -1,0 +1,33 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../lib" />
+      <root url="file://$PROJECT_DIR$/../lib/authsdk" />
+      <root url="file://$PROJECT_DIR$/../lib/cluster" />
+      <root url="file://$PROJECT_DIR$/../lib/dbdriver" />
+      <root url="file://$PROJECT_DIR$/../lib/excel" />
+      <root url="file://$PROJECT_DIR$/../lib/junit" />
+      <root url="file://$PROJECT_DIR$/../lib/report" />
+      <root url="file://$PROJECT_DIR$/../lib/rubbish" />
+      <root url="file://$PROJECT_DIR$/../lib/sap" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../lib" />
+      <root url="file://$PROJECT_DIR$/../lib/authsdk" />
+      <root url="file://$PROJECT_DIR$/../lib/cluster" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../lib" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/authsdk" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/cluster" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/dbdriver" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/excel" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/junit" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/report" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/rubbish" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/sap" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib" recursive="false" type="SOURCES" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/authsdk" recursive="false" type="SOURCES" />
+    <jarDirectory url="file://$PROJECT_DIR$/../lib/cluster" recursive="false" type="SOURCES" />
+  </library>
+</component>

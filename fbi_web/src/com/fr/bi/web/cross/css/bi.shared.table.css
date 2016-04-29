@@ -1,0 +1,149 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****添加计算宽度的--运算符直接需要space****/
+.fs-bi-queryBox {
+  border-radius: 2px;
+  position: relative;
+  float: right;
+  color: #383838;
+  background-color: #e1ecf5;
+  padding: 0 8px;
+  font-size: 16px;
+  margin: 5px 0;
+}
+.fs-bi-queryBox input {
+  height: 25px;
+  border: 0;
+  margin-right: 3px;
+  vertical-align: middle;
+  background: 0;
+}
+.fs-bi-search-icon:before {
+  content: '\e619';
+}
+.fs-bi-mine-table {
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  position: absolute;
+  border: 1px solid #d4dadd;
+  border-radius: 2px;
+}
+.fs-bi-mine-table-title {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 16px;
+  overflow: visible;
+  height: 40px;
+  width: 100%;
+  display: inline-block;
+  background-color: #0477aa;
+  border-radius: 1px 1px 0 0;
+}
+.fs-bi-mine-table-col-second-name {
+  width: 297px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  position: absolute;
+}
+.fs-bi-mine-table-col-second-time {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-left: 297px;
+}
+.fs-bi-mine-table-body {
+  overflow-y: auto;
+}
+.fs-bi-mine-table-list-parent {
+  width: 100%;
+  height: 39px;
+  border-top: 1px solid #eaeaea;
+  display: inline-block;
+}
+.fs-bi-mine-table-list-parent:hover {
+  background: #f4f4f4;
+}
+.fs-bi-mine-table-list {
+  cursor: pointer;
+  font-size: 14px;
+  color: #1a1a1a;
+  width: 1066px;
+  position: relative;
+}
+.fs-bi-mine-table-col-first {
+  width: 123px;
+  position: absolute;
+  height: 39px;
+  line-height: 39px;
+}
+.fs-bi-file:before {
+  color: #808080;
+  content: '\e60e';
+  font-size: 16px;
+  margin-left: 25px;
+}
+.fs-bi-file:hover:before {
+  color: #009de3;
+  border: 1px solid #d4dadd;
+  margin-left: 24px;
+  border-radius: 2px;
+  margin-right: -1px;
+}
+.fs-bi-share:before {
+  color: #808080;
+  content: '\e60b';
+  font-size: 16px;
+  margin-left: 25px;
+}
+.fs-bi-share:hover:before {
+  color: #58cc7d;
+  border: 1px solid #d4dadd;
+  margin-left: 24px;
+  border-radius: 2px;
+}
+.fs-bi-mine-table-col-second {
+  height: 39px;
+  line-height: 39px;
+  white-space: nowrap;
+  margin-left: 122px;
+}
+.fs-bi-mine-file-name {
+  float: left;
+}
+.fs-bi-mine-file-time {
+  color: #808080;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+  float: left;
+}
+.fs-bi-del:before {
+  color: #808080;
+  content: '\e60d';
+  font-size: 16px;
+  border: 1px solid #f4f4f4;
+  margin-left: 15px;
+}
+.fs-bi-del:hover:before {
+  color: #e85050;
+  border: 1px solid #d4dadd;
+  border-radius: 2px;
+}
+.fs-bi-edit:before {
+  content: '\e60c';
+  color: #808080;
+  font-size: 16px;
+  border: 1px solid #f4f4f4;
+}
+.fs-bi-edit:hover:before {
+  color: #009de3;
+  border: 1px solid #d4dadd;
+  border-radius: 2px;
+}
+.fs-bi-block-edit-and-share {
+  float: left;
+  width: 115px;
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

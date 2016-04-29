@@ -1,0 +1,99 @@
+@import "../../../../../bibase";
+
+.bi-etl-union{
+  background: @color-bi-background-gray;
+  & .union-north{
+    & .union-north-label{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      font-weight: bold;
+    }
+  }
+  & .union-table-name{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .table-name-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+    & .union-table-name-editor{
+      .border-radius(2px);
+      color: @color-bi-text-gray;
+      border: 1px solid @color-bi-border-normal;
+    }
+  }
+  & .union-type-group{
+    .border-radius(2px);
+    background: @color-bi-background-default;
+    & .union-type-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+    & .bi-union-type-button:hover,.active{
+      background: @color-bi-background-gray;
+    }
+  }
+  & .union-merge-field{
+    .border-radius(2px);
+    background: @color-bi-background-default;
+    & .add-merge-field{
+      & .merge-field-text{
+        color: @color-bi-text-gray;
+        font-size: @font-size-14;
+      }
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+    & table{
+      border-left: 1px solid @color-bi-border-normal;
+      & td{
+        border-bottom: 1px solid @color-bi-border-normal;
+      }
+    }
+  }
+  & .union-preview-result{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .merge-result-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+    & .union-result-tip{
+      color: @color-bi-text-gray;
+      font-size: @font-size-16;
+    }
+    & .original-table-name{
+      color: @color-bi-text-black;
+      font-size: @font-size-14;
+    }
+    & .bi-preview-table{
+      border-top: 1px solid @color-bi-border-line;
+      & > div > table{
+        & > thead > tr.odd{
+          background: none;
+        }
+        & > tbody {
+          & .result-table{
+            background: @color-table-result-background;
+          }
+          & .table-color0{
+            background: @color-table-background1;
+          }
+          & .table-color1{
+            background: @color-table-background2;
+          }
+          & .table-color2{
+            background: @color-table-background3;
+          }
+          & .table-color3{
+            background: @color-table-background4;
+          }
+          & .table-color4{
+            background: @color-table-background5;
+          }
+        }
+      }
+    }
+  }
+}

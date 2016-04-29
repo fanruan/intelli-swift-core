@@ -1,0 +1,21 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/**********BIConf.AllBusinessPackagesPane**********/
+.bi-all-business-packages .package-list .package-list-group .group-title {
+  color: #1a1a1a;
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-all-business-packages .package-list .package-list-group .group-title .title-text {
+  border: 1px solid #ffffff;
+  min-width: 100px;
+  max-width: 500px;
+}
+.bi-all-business-packages .package-list .package-list-group .group-title .title-text:hover,
+.bi-all-business-packages .package-list .package-list-group .group-title .title-text.hover {
+  border-color: #009de3;
+}
+.bi-all-business-packages .package-list .package-list-group .group-title:hover,
+.bi-all-business-packages .package-list .package-list-group .group-title.hover {
+  background-color: #f4f4f4;
+}

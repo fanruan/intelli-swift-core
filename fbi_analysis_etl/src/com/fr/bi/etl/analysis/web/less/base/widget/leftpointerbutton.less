@@ -1,0 +1,18 @@
+@import "../../bibase";
+
+.bi-left-pointer-button {
+  position: relative;
+  color:@color-bi-text;
+
+  & .bi-pointer-button-background {
+    background: @color-bi-text-highlight;
+  }
+
+  & .bi-pointer-button-mask {
+    & .x-pointer-left {
+      .opacity(0.2);
+      border-right-color: @color-bi-background-black;
+    }
+  }
+
+}

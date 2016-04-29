@@ -1,0 +1,27 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-merge-result-header > div > div > table > tbody > tr > td {
+  border-top: 1px solid #d4dadd !important;
+  border-bottom: 1px solid #d4dadd;
+  border-right: 1px solid #d4dadd;
+  min-width: 120px;
+}
+.bi-merge-result-header .result-table {
+  background: #d9f2fc;
+}
+.bi-merge-result-header .table-color0 {
+  background: #fef6df;
+}
+.bi-merge-result-header .table-color1 {
+  background: #daf3dc;
+}
+.bi-merge-result-header .table-color2 {
+  background: #d6f7f0;
+}
+.bi-merge-result-header .table-color3 {
+  background: #e8e6fe;
+}
+.bi-merge-result-header .table-color4 {
+  background: #fee9e9;
+}

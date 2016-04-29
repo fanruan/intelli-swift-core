@@ -1,0 +1,63 @@
+/**
+ * 多选输入框
+ * Created by guy on 15/11/3.
+ * @class BI.MultiSelectEditor
+ * @extends Widget
+ */
+BI.MultiSelectEditor = BI.inherit(BI.Widget, {
+
+    _const: {
+        checkSelected: BI.i18nText('BI-Check_Selected')
+    },
+
+    _defaultConfig: function () {
+        return BI.extend(BI.MultiSelectEditor.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: 'bi-multi-select-editor'
+        });
+    },
+
+    _init: function () {
+        BI.MultiSelectEditor.superclass._init.apply(this, arguments);
+        var self = this;
+        this.editor = BI.createWidget({
+            type: 'bi.state_editor',
+            element: this.element,
+            watermark: BI.i18nText('BI-Search'),
+            allowBlank: true
+        });
+
+        this.editor.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+        });
+
+        this.editor.on(BI.StateEditor.EVENT_PAUSE, function(){
+            self.fireEvent(BI.MultiSelectEditor.EVENT_PAUSE);
+        })
+        this.editor.on(BI.StateEditor.EVENT_CLICK_LABEL, function () {
+
+        });
+    },
+
+    setState: function (state) {
+        this.editor.setState(state);
+    },
+
+    setValue: function (v) {
+        this.editor.setValue(v);
+    },
+
+    getValue: function () {
+        var v = this.editor.getState();
+        if (BI.isArray(v) && v.length > 0) {
+            return v[v.length - 1];
+        } else {
+            return "";
+        }
+    },
+
+    populate: function (items) {
+
+    }
+});
+BI.MultiSelectEditor.EVENT_PAUSE = "MultiSelectEditor.EVENT_PAUSE";
+$.shortcut('bi.multi_select_editor', BI.MultiSelectEditor);

@@ -1,0 +1,35 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-update-cube-pane .cube-path-label {
+  color: #1a1a1a;
+  font-weight: bold;
+}
+.bi-update-cube-pane .notify-path {
+  color: #808080;
+}
+.bi-update-cube-pane .notify-immediate {
+  color: #e85050;
+}
+.bi-update-cube-pane .bi-cube-update-time-setting {
+  border: 1px solid #d4dadd;
+}
+.bi-update-cube-pane .bi-cube-update-time-setting .setting-north {
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-update-cube-pane .bi-cube-update-time-setting .setting-body {
+  min-height: 20px;
+}
+.bi-update-cube-pane .bi-cube-log-accordion {
+  border: 1px solid #d4dadd;
+}
+.bi-update-cube-pane .bi-cube-log-accordion.no-up-border {
+  border-top: none;
+}
+.bi-update-cube-pane .bi-cube-log-accordion .accordion-head {
+  background-color: #d4dadd;
+}
+.bi-update-cube-pane .bi-cube-log-accordion .accordion-child-head {
+  background-color: #ffffff;
+}

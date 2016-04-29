@@ -1,0 +1,97 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****添加计算宽度的--运算符直接需要space****/
+.bi-input-wrap {
+  width: auto;
+  position: absolute;
+}
+.fs-combo-input {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px 0 0 2px;
+  -moz-border-radius: 2px 0 0 2px;
+  border-radius: 2px 0 0 2px;
+  padding: 1px 3px!important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+.fs-combo-trigger-common {
+  position: absolute;
+  color: #178cdf;
+  background-color: #ffffff;
+  border: solid 1px #d4dadd;
+  -webkit-border-radius: 0 2px 2px 0;
+  -moz-border-radius: 0 2px 2px 0;
+  border-radius: 0 2px 2px 0;
+  margin-left: -1px;
+  vertical-align: middle;
+  cursor: pointer!important;
+  text-align: center;
+  font-size: 16px;
+  display: inline-block;
+}
+.fs-combo-trigger-absolute {
+  right: 0;
+  position: absolute;
+  color: #178cdf;
+  background-color: #ffffff;
+  border: solid 1px #d4dadd;
+  -webkit-border-radius: 0 2px 2px 0;
+  -moz-border-radius: 0 2px 2px 0;
+  border-radius: 0 2px 2px 0;
+  margin-left: -1px;
+  vertical-align: middle;
+  cursor: pointer!important;
+  text-align: center;
+  font-size: 16px;
+  display: inline-block;
+}
+.fs-combo-trigger {
+  right: 1px;
+  position: absolute;
+  color: #178cdf;
+  background-color: #ffffff;
+  border: solid 1px #d4dadd;
+  -webkit-border-radius: 0 2px 2px 0;
+  -moz-border-radius: 0 2px 2px 0;
+  border-radius: 0 2px 2px 0;
+  margin-left: -1px;
+  vertical-align: middle;
+  cursor: pointer!important;
+  text-align: center;
+  font-size: 16px;
+  display: inline-block;
+}
+i.fs-trigger:before {
+  content: "\e600";
+  font-size: 16px;
+}
+.fs-bi-combo-list {
+  position: absolute;
+  border: solid 1px #d4dadd;
+  -webkit-border-radius: 2px 2px 2px 2px;
+  -moz-border-radius: 2px 2px 2px 2px;
+  border-radius: 2px 2px 2px 2px;
+  z-index: 10000;
+}
+.fs-bi-combo-list-scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.fs-bi-combo-list-item {
+  line-height: 25px;
+  height: 25px;
+  font-size: 12px;
+  padding: 0px 3px!important;
+  background-color: #ffffff;
+  overflow: hidden;
+  color: #1a1a1a;
+}
+.fs-bi-combo-list-item:hover {
+  background-color: #f4f4f4;
+  color: #009ee4;
+}

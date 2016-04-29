@@ -1,0 +1,41 @@
+@import "../../bibase";
+.bi-edit-sql{
+  background: @color-bi-background-gray;
+  & .edit-sql-pane{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .server-set-north{
+      border-bottom: 1px solid @color-bi-border-normal;
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+    & .server-data-from-label{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+    & .sql-editor-label{
+      border-top: 1px solid @color-bi-border-normal;
+      border-left: 1px solid @color-bi-border-normal;
+      border-right: 1px solid @color-bi-border-normal;
+      background: @color-bi-background-gray;
+    }
+    & .sql-editor{
+      border: 1px solid @color-bi-border-normal;
+    }
+  }
+  & .sql-result-preview{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .preview-north{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+    & .preview-fail{
+      & .preview-fail-comment{
+        font-size: @font-size-14;
+        color: @color-bi-text-gray;
+      }
+    }
+  }
+}

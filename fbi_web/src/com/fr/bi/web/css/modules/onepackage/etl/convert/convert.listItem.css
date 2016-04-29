@@ -1,0 +1,19 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-convert-multi-select-item {
+  background: #d8f2fd;
+  border: 1px #ffffff solid;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-convert-multi-select-item:hover {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px dashed #009de3;
+}
+.bi-convert-multi-select-item .sign-initial-editor {
+  border: none;
+}

@@ -1,0 +1,13 @@
+/****��Ӽ����ȵ�--�����ֱ����Ҫspace****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-cube-update-time-setting {
+  border: 1px solid #d4dadd;
+}
+.bi-cube-update-time-setting .setting-north {
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-cube-update-time-setting .setting-body {
+  min-height: 20px;
+}

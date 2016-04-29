@@ -1,0 +1,20 @@
+@import "../../bibase";
+
+.bi-chart-type-group{
+  background: @color-bi-background-normal;
+  border: 1px solid @color-bi-border-line;
+  font-size: 22px;
+  & .bi-table-type-combo{
+    &:hover, &.active {
+      background: @color-bi-background-dark;
+    }
+    & .table-type{
+      font-size: 12px;
+    }
+  }
+  & .detail-chart-type {
+    &:hover, &.active {
+      background: @color-bi-background-dark;
+    }
+  }
+}

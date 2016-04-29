@@ -1,0 +1,62 @@
+@import "../../../bibase";
+
+/***************************************FR.DbTabPane**************************************************/
+.bi-dashboard-tab {
+  background: rgb(244, 244, 244);
+  border: 1px solid #cccccc;
+  color: #707690;
+
+  .bi-dashboard-tab-item {
+    border-right: 1px solid #cccccc;
+    font-size: 14px;
+
+    &:hover,&.hover {
+      background-color: #fafafa;
+    }
+    &:active,&.active {
+      background-color: #ffffff;
+    }
+  }
+}
+/*******************widgets****************/
+
+.bi-dashboard-widget{
+  background: @color-bi-background-default;
+  & .dashboard-title {
+    & .dashboard-title-text {
+      cursor: url('@{dragCursor}'), -moz-zoom-out;
+      font-size: @font-size-16;
+    }
+    & .dashboard-title-filter{
+      font-size: @font-size-16;
+      &:hover, &:active{
+        background-color: @color-bi-background-normal;
+      }
+    }
+    & .dashboard-title-detail{
+      font-size: @font-size-16;
+      &:hover, &:active{
+        background-color: @color-bi-background-normal;
+      }
+    }
+    & .operator-region{
+      z-index: @zIndex-layer;
+    }
+  }
+  & .dashboard-title:active, & .dashboard-title.active {
+    cursor: url('@{dragCursor}'), -moz-zoom-out;
+  }
+  & .bi-dashboard-block {
+
+  }
+
+  & .ui-resizable-s{
+    bottom: 0;
+  }
+  & .ui-resizable-s:hover{
+    border-bottom: 1px solid @color-bi-border-resize;
+  }
+  & .ui-resizable-e:hover{
+    border-right: 1px solid @color-bi-border-resize;
+  }
+}

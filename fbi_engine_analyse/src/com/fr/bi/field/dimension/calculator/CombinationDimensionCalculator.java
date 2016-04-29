@@ -1,0 +1,1 @@
+package com.fr.bi.field.dimension.calculator;/** * Created by Hiram on 2015/7/8. */public class CombinationDimensionCalculator extends AbstractDimensionCalculator {    /**     * 没有值时是否过滤掉不显示     *     * @return 是否自身     */    @Override	public boolean hasSelfGroup() {        return true;    }}

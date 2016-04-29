@@ -1,0 +1,23 @@
+@import "../../../../bibase";
+.bi-update-preview-pane{
+  & .tab-button{
+    font-size: @font-size-14;
+    background: @color-bi-background-gray;
+    border: 1px solid @color-bi-border-normal;
+    .border-radius(2px);
+    &.active{
+      background: @color-bi-background-default;
+      color: @color-bi-text-highlight;
+      border-bottom: 1px solid @color-bi-border-default;
+    }
+  }
+  & .preview-content{
+    border: 1px solid @color-bi-border-normal;
+    & .sql-statement{
+      font-size: @font-size-14;
+    }
+    & .warning-comment{
+      color: @color-bi-text-warning;
+    }
+  }
+}

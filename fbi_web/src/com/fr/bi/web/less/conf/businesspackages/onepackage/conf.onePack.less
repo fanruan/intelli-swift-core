@@ -1,0 +1,50 @@
+@import "../../../bibase";
+
+@baseImage: "";
+.bi-business-package-pane {
+  background: @color-bi-background-gray;
+  & .one-package-north {
+    & .business-package-name{
+      border: 1px solid @color-bi-border-normal;
+      background: @color-bi-background-default;
+      .border-radius(2px);
+    }
+    & .package-name-label{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+    & .package-search-editor{
+      background: @color-bi-background-default;
+    }
+    & .tables-view-group{
+      font-size: @font-size-16;
+      & .tables-view{
+        &.active{
+          background: @color-bi-background-highlight;
+        }
+      }
+    }
+    & .add-new-table-combo{
+      color: @color-bi-text;
+      font-size: @font-size-14;
+      background: @color-bi-background-highlight;
+      .border-radius(2px);
+      & .add-new-table-item{
+        color: @color-bi-background-black;
+        &:hover{
+          background: @color-bi-background-gray;
+        }
+      }
+    }
+  }
+
+  & .one-package-center{
+    background: @color-bi-background-default;
+    border: 1px solid @color-bi-split-light;
+    .border-radius(2px);
+    & .empty-tip{
+      color: @color-bi-split-dark;
+      font-size: 20px;
+    }
+  }
+}

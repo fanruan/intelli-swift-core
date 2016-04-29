@@ -1,0 +1,1 @@
+package com.fr.bi.cal.analyze.cal.Executor;/** * Created by Hiram on 2015/1/21. */public class ExecutorPartner<T> {    protected Executor lazyExecutor;    protected void waitExecutor(long count) {        lazyExecutor.executeToRow(count);    }}

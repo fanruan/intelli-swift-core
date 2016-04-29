@@ -1,0 +1,16 @@
+div.fs-mobile-user-auth-move-right {
+  background: url('${servletURL}?op=resource&resource=/com/fr/fs/web/images/button/button_right_1.png') no-repeat center;
+  position: relative;
+  cursor: pointer;
+}
+div.fs-mobile-user-auth-move-right-click {
+  background: url('${servletURL}?op=resource&resource=/com/fr/fs/web/images/button/button_right_1_click.png') no-repeat center;
+}
+div.fs-mobile-user-auth-move-left {
+  background: url('${servletURL}?op=resource&resource=/com/fr/fs/web/images/button/button_left_1.png') no-repeat center;
+  position: relative;
+  cursor: pointer;
+}
+div.fs-mobile-user-auth-move-left-click {
+  background: url('${servletURL}?op=resource&resource=/com/fr/fs/web/images/button/button_left_1_click.png') no-repeat center;
+}

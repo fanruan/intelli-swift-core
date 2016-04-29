@@ -1,0 +1,42 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-etl-add-group-field-view {
+  background: #ffffff;
+}
+.bi-etl-add-group-field-view .bi-etl-add-group-field-merge {
+  background-color: #ffffff;
+}
+.bi-etl-add-group-field-view .bi-etl-add-group-field-border {
+  background-color: #f4f4f4;
+}
+.bi-etl-add-group-field-view .bi-add-group-field-north-label {
+  font-size: 16px;
+  color: #808080;
+}
+.bi-etl-add-group-field-view .bi-etl-add-group-field-label {
+  font-size: 14px;
+  color: #808080;
+}
+.bi-etl-add-group-field-view .bi-etl-add-group-field-table-name-label {
+  border: 1px solid #d4dadd;
+}
+.bi-etl-add-group-field-view .bi-etl-label-border-bottom {
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-etl-add-group-field-view .bi-elt-add-group-field-label-and-add-button {
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-etl-add-group-field-view .bi-conf-etl-south {
+  background: #f4f4f4;
+  border-top: 1px solid #d4dadd;
+}
+.bi-etl-add-group-field-view .bi-etl-formula-list-button-formula-label {
+  color: #808080;
+}
+.bi-etl-add-group-field-view .left-label {
+  max-width: 120px;
+}
+.bi-etl-add-group-field-view .right-label {
+  max-width: 270px;
+}

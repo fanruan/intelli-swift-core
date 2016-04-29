@@ -1,0 +1,18 @@
+@import "../../../bibase";
+.bi-database-table{
+  .border-radius(2px);
+  border: 1px solid @color-bi-border-normal;
+  background: @color-bi-background-default;
+  &.bi-table-ha-button{
+    &.active{
+      background: @color-bi-background-highlight !important;
+      color: @color-bi-text;
+    }
+  }
+  & .table-name-text{
+    max-width: 300px;
+  }
+  & .table-font{
+    font-size: @font-size-16;
+  }
+}

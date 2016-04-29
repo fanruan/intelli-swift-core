@@ -1,0 +1,31 @@
+@import "../../../bibase";
+.bi-group-table-setting{
+  & .single-line-settings{
+    border-top: 1px solid @color-bi-border-line;
+    & .table-form-font{
+      font-size: 20px;
+    }
+    & .table-style-font{
+      border: 1px solid @color-bi-border-default;
+      .border-radius(2px);
+      &:hover{
+        background: @color-bi-background-gray;
+      }
+      &.active{
+        border: 1px solid @color-bi-border-highlight;
+      }
+    }
+    & .line-title{
+      font-size: @font-size-14;
+      color: @color-bi-text-gray;
+    }
+    & .attr-names{
+      font-size: @font-size-14;
+      color: @color-bi-text-black;
+    }
+    & .max-row-input{
+      border: 1px solid @color-bi-border-normal;
+      .border-radius(2px);
+    }
+  }
+}

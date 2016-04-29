@@ -1,0 +1,105 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-etl-union {
+  background: #f4f4f4;
+}
+.bi-etl-union .union-north .union-north-label {
+  color: #808080;
+  font-size: 14px;
+  font-weight: bold;
+}
+.bi-etl-union .union-table-name {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-etl-union .union-table-name .table-name-text {
+  color: #808080;
+  font-size: 14px;
+}
+.bi-etl-union .union-table-name .union-table-name-editor {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  color: #808080;
+  border: 1px solid #d4dadd;
+}
+.bi-etl-union .union-type-group {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  background: #ffffff;
+}
+.bi-etl-union .union-type-group .union-type-text {
+  color: #808080;
+  font-size: 14px;
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-etl-union .union-type-group .bi-union-type-button:hover,
+.bi-etl-union .union-type-group .active {
+  background: #f4f4f4;
+}
+.bi-etl-union .union-merge-field {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  background: #ffffff;
+}
+.bi-etl-union .union-merge-field .add-merge-field {
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-etl-union .union-merge-field .add-merge-field .merge-field-text {
+  color: #808080;
+  font-size: 14px;
+}
+.bi-etl-union .union-merge-field table {
+  border-left: 1px solid #d4dadd;
+}
+.bi-etl-union .union-merge-field table td {
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-etl-union .union-preview-result {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-etl-union .union-preview-result .merge-result-text {
+  color: #808080;
+  font-size: 14px;
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-etl-union .union-preview-result .union-result-tip {
+  color: #808080;
+  font-size: 16px;
+}
+.bi-etl-union .union-preview-result .original-table-name {
+  color: #1a1a1a;
+  font-size: 14px;
+}
+.bi-etl-union .union-preview-result .bi-preview-table {
+  border-top: 1px solid #eaeaea;
+}
+.bi-etl-union .union-preview-result .bi-preview-table > div > table > thead > tr.odd {
+  background: none;
+}
+.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .result-table {
+  background: #d9f2fc;
+}
+.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color0 {
+  background: #fef6df;
+}
+.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color1 {
+  background: #daf3dc;
+}
+.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color2 {
+  background: #d6f7f0;
+}
+.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color3 {
+  background: #e8e6fe;
+}
+.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color4 {
+  background: #fee9e9;
+}

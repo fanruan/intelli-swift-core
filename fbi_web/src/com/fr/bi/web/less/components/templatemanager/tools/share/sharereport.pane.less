@@ -1,0 +1,16 @@
+@import "../../../../bibase";
+.bi-share-report{
+  color: @color-bi-text-black;
+  & .all-users-list{
+    .border-radius(2px);
+    border: 1px solid @color-bi-border-normal;
+  }
+  & .selected-users-list{
+    .border-radius(2px);
+    border: 1px solid @color-bi-border-normal;
+    & .empty-tip{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+  }
+}

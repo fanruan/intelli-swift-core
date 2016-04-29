@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>FR.BI</title>
+	<link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=widget.css"/>
+
+	<link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/bi_shared.css"/>
+	
+	<script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+	<script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/fs/web/js/fsbase.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/bi_constant.js"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=widget.js"></script>
+	<script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/bi_shared.js"></script>
+	
+	<script type="text/javascript">
+		$(function() {
+			FR.BI_SHARED._init("${bilist}");
+		}); 
+	</script>
+</head>
+<body>
+</body>
+</html>

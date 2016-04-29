@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="/lib/report/fr-core-8.0.jar"/>
+	<classpathentry kind="src" path="/fbi_base"/>
+	<classpathentry kind="src" path="/fbi_conf"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="src" path="/fservice"/>
+	<classpathentry kind="src" path="/fbi_engine_base"/>
+	<classpathentry kind="src" path="/fbi_engine_generate"/>
+	<classpathentry kind="src" path="/fbi_engine_analyse"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

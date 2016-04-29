@@ -1,0 +1,37 @@
+@import "../../bibase";
+/**********BIConf.AllBusinessPackagesPane**********/
+@baseImage: "";
+.bi-all-business-packages {
+  & .package-list {
+    & .package-list-group{
+      & .group-title{
+        color: @color-bi-text-black;
+        border-bottom: 1px solid @color-bi-split-dark;
+        & .title-text{
+          border: 1px solid @color-bi-text;
+          min-width: 100px;
+          max-width: 500px;
+          &:hover, &.hover{
+            border-color: @color-bi-text-highlight;
+          }
+        }
+        &:hover, &.hover{
+          background-color: @color-bi-background-gray;
+        }
+      }
+    }
+    //& .package-icon {
+    //  .imagePath(@baseImage, 0px, 0px);
+    //  &:hover, &.hover{
+    //    .imagePath(@baseImage, 0px, -130px);
+    //  }
+    //}
+
+    //& .package-add-icon {
+    //  .imagePath(@baseImage, -130px, 0px);
+    //  &:hover, &.hover{
+    //    .imagePath(@baseImage, -130px, -130px);
+    //  }
+    //}
+  }
+}

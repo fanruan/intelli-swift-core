@@ -1,0 +1,22 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-share-report {
+  color: #1a1a1a;
+}
+.bi-share-report .all-users-list {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #d4dadd;
+}
+.bi-share-report .selected-users-list {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #d4dadd;
+}
+.bi-share-report .selected-users-list .empty-tip {
+  color: #808080;
+  font-size: 14px;
+}

@@ -1,0 +1,1 @@
+package com.fr.bi.stable.constant;/** * Created by Hiram on 2015/4/14. */public enum Status {    SUCESS,    WRONG,    START,    END,    WAITING,    READY,    RUNNING,    UNLOAD,    LOADING,    REPLACING,    LOADED,    OUTOFBOUNDS,    NULL}

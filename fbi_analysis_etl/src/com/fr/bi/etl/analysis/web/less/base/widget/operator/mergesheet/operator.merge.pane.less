@@ -1,0 +1,34 @@
+@import "../../../../bibase";
+.bi-analysis-etl-operator-merge-sheet-pane {
+  border-bottom:1px solid @border-color-line;
+
+  & .bi-adaptive-layout > table {
+    border:1px solid @border-color-line;
+  }
+
+  & .left {
+    border-right:1px solid @border-color-line;
+
+    & .bi-label {
+      font-size:@font-size-14;
+    }
+  }
+
+  & .title {
+    font-size: @font-size-14;
+    color:@font-color-light-gray;
+    border-bottom:1px solid @border-color-line;
+  }
+
+  & .right {
+     & .header {
+       font-size: @font-size-13;
+       color:@font-color-light-gray;
+     }
+
+    & .cell {
+      font-size: @font-size-14;
+    }
+  }
+
+}

@@ -1,0 +1,25 @@
+//less根节点统一命名为bi-，  分隔符统一使用-， less文件只能定义font-size,color,border,background,box-shadow等可视化属性
+@import "../../../../less/bibase";
+
+body {
+
+}
+
+.bi-design {
+  & .left {
+    & .left-title {
+      font-size: 18px;
+      color: #ffffff;
+      background: #0088cc;
+    }
+    border-right: 1px solid #cccccc;
+  }
+  & .top {
+    color: #999999;
+    border-bottom: 1px solid #cccccc;
+  }
+  & .bottom {
+    color: #999999;
+    border-top: 1px solid #cccccc;
+  }
+}

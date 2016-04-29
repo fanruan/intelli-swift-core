@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_fs"/>
+	<classpathentry kind="src" path="/fbi_web"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_conf"/>
+	<classpathentry kind="src" path="/fbi_engine_base"/>
+	<classpathentry kind="src" path="/fbi_engine_analyse"/>
+	<classpathentry kind="lib" path="/lib/taobao-sdk-java-auto_1411101424539-20140924.jar"/>
+	<classpathentry kind="lib" path="/lib/httpcore-4.3.jar"/>
+	<classpathentry kind="lib" path="/lib/httpclient-4.3.1.jar"/>
+	<classpathentry kind="src" path="/fbi"/>
+	<classpathentry kind="src" path="/fbi_engine_generate"/>
+	<classpathentry kind="lib" path="/lib/jcifs-1.3.18.jar"/>
+	<classpathentry kind="src" path="/fbi_web_dezi"/>
+	<classpathentry kind="lib" path="/lib/poi2007_fat.jar"/>
+	<classpathentry kind="lib" path="/lib/fr-core-8.0.jar"/>
+	<classpathentry kind="lib" path="/lib/fr-platform-8.0.jar"/>
+	<classpathentry kind="lib" path="/lib/servlet-api.jar" sourcepath="/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/lib/fr-third-8.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

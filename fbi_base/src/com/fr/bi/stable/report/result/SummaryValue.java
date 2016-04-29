@@ -1,0 +1,1 @@
+package com.fr.bi.stable.report.result;import java.util.Map;/** * Created by Hiram on 2015/1/12. */public interface SummaryValue {    public Object getData();    public void setSummaryValue(Object key, Object value);    public Number getSummaryValue(Object key);    Map getSummaryValueMap();    void setSummaryValueMap(Map summaryValue);}

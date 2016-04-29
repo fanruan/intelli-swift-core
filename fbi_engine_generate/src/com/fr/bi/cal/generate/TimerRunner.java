@@ -1,0 +1,75 @@
+package com.fr.bi.cal.generate;
+
+import com.fr.bi.conf.manager.singletable.data.BICubeTimeTaskCreator;
+import com.fr.bi.conf.manager.singletable.data.SingleTableUpdateAction;
+import com.fr.bi.conf.manager.timer.data.UpdateFrequency;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.base.BIUser;
+import com.fr.bi.stable.utils.time.BIDateUtils;
+
+import java.util.*;
+
+/**
+ * Created by GUY on 2015/3/31.
+ */
+public class TimerRunner {
+
+    protected List<Timer> timerList = new ArrayList<Timer>();
+    protected BIUser biUser;
+    public TimerRunner(long userId) {
+        biUser = new BIUser(userId);
+        init();
+    }
+
+    public void init() {
+        if (timerList != null) {
+            for (int i = 0; i < timerList.size(); i++) {
+                timerList.get(i).cancel();
+            }
+            timerList.clear();
+        }
+        timerList = new ArrayList<Timer>();
+        Iterator<UpdateFrequency> iter = BIConfigureManagerCenter.getPackageManager().getUpdateManager(biUser.getUserId()).getUpdateListIterator();
+        while (iter.hasNext()) {
+            Timer timer = new Timer();
+            UpdateFrequency uf = iter.next();
+            int hour = uf.getUpdateHour();
+            int frequency = uf.getFrequency();
+            Date startDate = BIDateUtils.createStartDate(hour, frequency);
+            long scheduleTime = 1;
+            timer.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    BIConfigureManagerCenter.getCubeManager().addTask(new AllTask(biUser.getUserId()), biUser.getUserId());
+                }
+
+            }, startDate, scheduleTime);
+            timerList.add(timer);
+        }
+        Iterator<SingleTableUpdateAction> iter1 = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(biUser.getUserId()).getSingleTableUpdateActionIter();
+        while (iter1.hasNext()) {
+            final SingleTableUpdateAction action = iter1.next();
+            action.scheduleStart(new BICubeTimeTaskCreator() {
+                @Override
+                public TimerTask createNewObject() {
+                    return new TimerTask() {
+                        @Override
+                        public void run() {
+                            BIConfigureManagerCenter.getCubeManager().addTask(new SingleTableTask(action.getTableKey(), biUser.getUserId()), biUser.getUserId());
+                        }
+                    };
+                }
+            });
+        }
+    }
+
+    public void envChanged() {
+        if (timerList != null) {
+            for (int i = 0; i < timerList.size(); i++) {
+                timerList.get(i).cancel();
+            }
+            timerList.clear();
+        }
+    }
+}

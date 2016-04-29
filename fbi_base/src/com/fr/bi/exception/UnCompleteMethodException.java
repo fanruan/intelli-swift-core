@@ -1,0 +1,1 @@
+package com.fr.bi.exception;/** * Created by Hiram on 2015/7/8. */public class UnCompleteMethodException extends RuntimeException {    public UnCompleteMethodException(String msg) {        super(msg);    }    public UnCompleteMethodException() {    }}

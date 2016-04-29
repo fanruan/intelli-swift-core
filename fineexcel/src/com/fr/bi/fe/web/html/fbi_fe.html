@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>${company}</title>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="user-scalable=no, width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=${charset}">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta name="keywords" content="FineReport,Web Reporting Tool">
+    <link rel="shortcut icon" href="${servletURL}?op=resource&resource=/com/fr/bi/web/images/fs/favicon.png">
+    <link rel="Bookmark" href="${servletURL}?op=resource&resource=/com/fr/bi/web/images/fs/favicon.png">
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=embi&resource=widget.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=embi&resource=conf.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/fbi.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/bi_mine.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/fbi_fe.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/feedback.css"/>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/fs/OkCharts.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/third/jquery.ui.effect.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=embi&resource=widget.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=embi&resource=conf.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/fs/fbi_base.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/fs/feedback.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/fs/fbi_fe.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            FS._init({
+                'company':'${company}',
+                'dark':'${dark}',
+                'backgroundColor' : '${backgroundColor}',
+                'logoImageID' : '${logoImageID}',
+                'backgroundImageID' : '${backgroundImageID}',
+                'hasRegistePrivilege' : '${hasRegistePrivilege}',
+                'isTableDataUser' : '${isTableDataUser}',
+                'isRegiste' : '${isRegiste}',
+                'style' : '${style}',
+                'isGradeAuthority' : '${isGradeAuthority}',
+                'isEditReportAuthority' : '${isEditReportAuthority}',
+                'isLicExist' : '${isLicExist}',
+                'ismobilebinddev' : '${ismobilebinddev}',
+                'modules' : '${modules}',
+                'isFirstTime' : '${isFirstTime}',
+                'bind' : '${bind}'
+            });
+//            FS.init_feedback();
+        });
+    </script>
+</head>
+<body style="overflow:hidden;">
+<div id="fbi_bar">
+    <ul id="fbi_title">
+        <li id="fbi_title_logo"></li>
+        <li id="fbi_title_label"></li>
+    </ul>
+    <ul id="fbi_toolbar">
+    </ul>
+</div>
+
+<div id="fbi_main_fe" style="background-color:#FFFFFF;">
+
+    <div style="width: 50%;height: 90%; float: left" id="fe_all_data"></div>
+    <div style="width: 50%; height: 90%; float: left" id="fe_all_report"></div>
+</div>
+
+<div id="fbi_template">
+    <div id="fbi_tab">
+        <!-- <span id="fbi_copyright">&#xA9;2014 FineReport Inc. All rights reserved.</span>
+        <span id="fbi_update">FineExcel有新版本发布哦，赶快去官网<a href="http://www.fineexcel.com" target="_blank">www.fineexcel.com</a>下载吧~</span>
+        -->
+        <div id="fbi_tab_home">
+        </div>
+        <ul id="fbi_tab_line">
+        </ul>
+        <div id="fbi_tab_overflow">
+        </div>
+    </div>
+
+    <div id="fbi_cards">
+    </div>
+</div>
+
+<div id="fbi_layer">
+</div>
+
+<div id="fbi_toast">
+</div>
+
+<!--<div id="top_help">-->
+    <!--<div id="help_doc" class="help_top">-->
+        <!--<div style="float: left; margin-top:1px;margin-left: 3px;">-->
+            <!--<img src="${servletURL}?op=resource&resource=/com/fr/bi/web/images/fs/bangzhu.png" alt="帮助" />-->
+        <!--</div>-->
+        <!--<div style="float: left; margin-top:0px;margin-left: 3px;">-->
+            <!--<a title="查看在线帮助文档" class="text-primary" style="color: black; text-decoration: blink" href="http://help.fineexcel.com" target="_blank">帮助 |</a>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div id="feedback" class="help_top">-->
+        <!--<div style="float: left; margin-top:1px;margin-left: 3px;">-->
+            <!--<img src="${servletURL}?op=resource&resource=/com/fr/bi/web/images/fs/fankui.png" alt="反馈" />-->
+        <!--</div>-->
+        <!--<div style="float: left; margin-top:0px;margin-left: 3px;">-->
+            <!--<a title="反馈给我们" style="color: black; text-decoration: blink;">反馈 |</a>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div id="help_online" class="help_top">-->
+        <!--<div style="float: left; margin-top:1px;margin-left: 3px;">-->
+            <!--<img src="${servletURL}?op=resource&resource=/com/fr/bi/web/images/fs/contact.png" alt="反馈" />-->
+        <!--</div>-->
+        <!--<div style="float: left; margin-top:0px;margin-left: 3px;">-->
+            <!--<a title="点击这里给我发消息" href="http://wpa.qq.com/msgrd?v=3&amp;uin=468793995&amp;site=qq&amp;menu=yes" style="color: black; text-decoration: blink" target="_blank">客服</a>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<div id="fbi_feedback">
+</div>
+
+<div id="fbi_feedback_content">
+</div>
+</body>
+</html>

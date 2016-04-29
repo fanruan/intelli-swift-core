@@ -1,0 +1,18 @@
+@import "../../bibase";
+
+.bi-page-table {
+  & .page-table-pager {
+    background-color: @color-bi-background-light;
+  }
+  & .page-table-loading-text {
+    background-color: @color-bi-background-light;
+    color: @color-bi-text-gray;
+  }
+  & .page-table-current-column {
+    cursor: default;
+    .opacity(0.8);
+    color: @color-bi-text;
+    background-color: @color-bi-background-highlight;
+    border-radius: 2px;
+  }
+}

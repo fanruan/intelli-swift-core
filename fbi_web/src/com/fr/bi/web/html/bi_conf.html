@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=base.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=modules.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=conf.css"/>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=formula.js&version=${__version__}&__pre__=true"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&cmd=refresh"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=conf.js"></script>
+
+    <!--[if lte IE 8]>
+
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web_code/css/ie/ie.widget.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web_code/css/ie/ie.conf.css"/>
+    <![endif]-->
+
+    <script type="text/javascript">
+        $(function() {
+            BIConf._init({
+            	supportExcelVersion:${supportExcelVersion},
+                supportSheets:${supportSheets}
+            });
+        });
+    </script>
+</head>
+<body>
+<canvas id="bus_relation" style="display: none"></canvas>
+<canvas id="bus_relation_hover" style="display: none"></canvas>
+</body>
+</html>

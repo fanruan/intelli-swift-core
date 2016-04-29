@@ -1,0 +1,15 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-excel-view-cell:active,
+.bi-excel-view-cell.active {
+  background: #009de3;
+  color: #ffffff;
+}
+.bi-excel-view-cell .excel-view-cell-triangle {
+  border-top: 8px solid #009de3;
+  border-left: 8px solid transparent;
+}
+.bi-excel-view-cell .selected-border {
+  border: 2px solid #009de3;
+}

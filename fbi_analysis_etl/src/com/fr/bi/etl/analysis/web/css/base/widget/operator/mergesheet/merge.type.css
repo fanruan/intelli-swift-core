@@ -1,0 +1,15 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-analysis-etl-merge-type .title {
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-analysis-etl-merge-type svg path {
+  stroke: #eaeaea;
+}
+.bi-analysis-etl-merge-type .bi-join-type-button:hover,
+.bi-analysis-etl-merge-type .active {
+  background: #f4f4f4;
+}

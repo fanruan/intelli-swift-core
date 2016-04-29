@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lib"/>
+	<classpathentry kind="lib" path="/lib/report/fr-third-8.0.jar" sourcepath="C:/Program Files/Java/jdk1.8.0_45/src.zip"/>
+	<classpathentry kind="lib" path="/lib/excel/poi2007_fat.jar"/>
+	<classpathentry kind="lib" path="/lib/report/fr-chart-8.0.jar"/>
+	<classpathentry kind="lib" path="/lib/cluster/zookeeper-3.4.6.jar"/>
+	<classpathentry kind="lib" path="/lib/report/fr-core-8.0.jar"/>
+	<classpathentry kind="lib" path="/lib/report/fr-report-8.0.jar"/>
+	<classpathentry kind="src" path="/fservice"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

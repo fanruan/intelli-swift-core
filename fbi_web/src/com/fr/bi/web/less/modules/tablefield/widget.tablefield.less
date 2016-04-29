@@ -1,0 +1,30 @@
+@import "../../bibase";
+.bi-table-field-info{
+  & > div > div > table{
+    border-left: 1px solid @color-bi-border-normal;
+    border-top: 1px solid @color-bi-border-normal;
+    & > thead > tr > td {
+      background: @color-bi-background-gray;
+    }
+    & > tbody > tr > td{
+      &:nth-child(4){
+        &:hover{
+          background: @color-bi-background-dark;
+        }
+      }
+      &:nth-child(1){
+        background: @color-bi-background-gray;
+      }
+      &:nth-child(2){
+        background: @color-bi-background-gray;
+      }
+    }
+    & td{
+      border-right: 1px solid @color-bi-border-normal;
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+  }
+  & .field-type{
+    font-size: 18px;
+  }
+}

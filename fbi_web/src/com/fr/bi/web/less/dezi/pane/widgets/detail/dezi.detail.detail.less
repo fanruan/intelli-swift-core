@@ -1,0 +1,38 @@
+@import "../../../../bibase";
+.bi-detail-detail-view{
+  background: @color-bi-background-default;
+  & .widget-attr-north {
+    background: @color-bi-background-normal;
+    .bi-widget-attr-name-input{
+      font-size: 16px;
+    }
+  }
+
+  & .widget-attr-west{
+    background: @color-bi-background-normal;
+    & .widget-select-data-pane{
+      background: @color-bi-background-default;
+      .border-radius(2px);
+    }
+  }
+
+  & .widget-attr-center{
+    background: @color-bi-background-normal;
+    & .widget-show-data-pane{
+      & .bi-widget-attr-tab{
+        background: @color-bi-background-default;
+        .border-radius(2px);
+      }
+      & .bi-view-setter-card-block {
+        & > div{
+          min-width: 182px;
+          max-width: 282px;
+        }
+      }
+    }
+    & .widget-attr-chart{
+      background: @color-bi-background-default;
+      .border-radius(2px);
+    }
+  }
+}

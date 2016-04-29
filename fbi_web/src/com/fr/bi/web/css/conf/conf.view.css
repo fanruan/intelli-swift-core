@@ -1,0 +1,23 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-conf-view {
+  background: #f4f4f4;
+}
+.bi-conf-view .conf-left-nav-pane {
+  background: #ffffff;
+  border-radius: 2px;
+}
+.bi-conf-view .conf-left-nav-pane .left-nav-title {
+  font-size: 16px;
+}
+.bi-conf-view .conf-right-display-pane {
+  background: #ffffff;
+  border-radius: 2px;
+}
+.bi-conf-view .conf-right-display-pane .right-display-title {
+  font-size: 16px;
+}
+.bi-conf-view .conf-right-display-pane .right-display-pane {
+  border-top: 1px solid #eaeaea;
+}

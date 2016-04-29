@@ -1,0 +1,46 @@
+@import "../../../../bibase";
+
+.bi-conf-etl{
+  background: @color-bi-background-gray;
+  & .empty-tip{
+    color: @color-bi-text-tips;
+    font-size: @font-size-16;
+  }
+  & .etl-data-set-pane{
+    .border-radius(2px);
+    background: @color-bi-background-default;
+    & .data-set-pane-north{
+      border-bottom: 1px solid @color-bi-border-normal;
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+    & .data-set-main{
+      & .refresh-button{
+        font-size: @font-size-16;
+      }
+      & .table-name-label{
+        color: @color-bi-text-gray;
+        font-size: @font-size-14;
+      }
+      & .table-name-editor{
+        border: 1px solid @color-bi-border-normal;
+        .border-radius(2px);
+      }
+    }
+  }
+  & .etl-etl-set-pane{
+    .border-radius(2px);
+    background: @color-bi-background-default;
+    & .etl-set-pane-north{
+      border-bottom: 1px solid @color-bi-border-normal;
+      & .north-label{
+        color: @color-bi-text-gray;
+        font-size: @font-size-14;
+      }
+    }
+  }
+  & .etl-remove-table{
+    font-size: @font-size-14;
+    color: @color-bi-text-highlight;
+  }
+}

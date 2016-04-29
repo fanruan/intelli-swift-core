@@ -1,0 +1,219 @@
+
+.bi-animate(@class, @key, @from, @to,  @time:0.5s, @func:ease) {
+  .@{class}{
+    -webkit-animation: @key @time @func;
+    -moz-animation: @key @time @func;
+    -o-animation: @key @time @func;
+    animation: @key @time @func;
+  }
+
+  .keyframe(@class, @from, @to, @key)
+}
+
+
+
+.keyframe(@class @from, @to, @key){
+
+    @name-webkit:~'@-webkit-keyframes @{key}';
+    @name-moz:~'@-moz-keyframes @{key}';
+    @name-o:~'@-o-keyframes @{key}';
+    @name:~'@keyframes @{key}';
+    @value:~'from  @{from} to @{to}  /**to{1';
+
+    @{name} {
+      @{value}:~'1;}**/';
+    }
+
+    @{name-webkit} {
+        @{value}:~'1;}**/'
+    }
+
+    @{name-moz} {
+        @{value}:~'1;}**/'
+    }
+
+    @{name-o} {
+        @{value}:~'1;}**/'
+    }
+}
+
+.transition-hover-css3(@class, @value, @time:0.5s, @func:ease) {
+  .transition-css3(@class, @time, @func);
+
+  .@{class}:hover, .@{class}.hover{
+    transform:@value;
+    -webkit-transform:@value;
+    -moz-transform:@value;
+    -o-transform:@value;
+  }
+}
+
+
+.transition-hover(@class, @key, @value, @time:0.5s, @func:ease) {
+  .transition(@class, @key, @time, @func);
+  .@{class}:hover, .@{class}.hover{
+      @{key}:@value
+  }
+}
+
+.transition-css3(@class, @time:0.5s, @func:ease) {
+  .@{class}{
+    transition: transform @time @func;
+    -webkit-transition: -webkit-transform @time @func;
+    -moz-transition: -moz-transform @time @func;
+    -o-transition: -o-transform @time @func;
+  }
+}
+
+
+.transition(@class, @key, @time:0.5s, @func:ease) {
+  .@{class}{
+    transition: @key @time @func;
+    -webkit-transition: @key @time @func;
+    -moz-transition: @key @time @func;
+    -o-transition: @key @time @func;
+  }
+}
+
+.bi-animate-shake-hover (@class, @time:0.7s, @func:ease) {
+  .@{class}:hover, .@{class}.hover {
+    -webkit-animation: shake @time @func;
+    -moz-animation: shake @time @func;
+    -o-animation: shake @time @func;
+    animation: shake @time @func;
+  }
+
+  @-webkit-keyframes shake {
+
+    0%, 100% {-webkit-transform: rotate(0deg);}
+    10%, 30%, 50%, 70%, 90% {-webkit-transform: rotate(-10deg);}
+    20%, 40%, 60%, 80% {-webkit-transform: rotate(10deg);}
+  }
+  @-moz-keyframes shake {
+    0%, 100% {-moz-transform: rotate(0deg);}
+    10%, 30%, 50%, 70%, 90% {-moz-transform: rotate(-10deg);}
+    20%, 40%, 60%, 80% {-moz-transform: rotate(10deg);}
+  }
+
+  @-o-keyframes shake {
+    0%, 100% {-o-transform: rotate(0deg);}
+    10%, 30%, 50%, 70%, 90% {-o-transform: rotate(-10deg);}
+    20%, 40%, 60%, 80% {-o-transform: rotate(10deg);}
+  }
+
+
+  @keyframes shake {
+    0%, 100% {transform: rotate(0deg);}
+    10%, 30%, 50%, 70%, 90% {transform: rotate(-10deg);}
+    20%, 40%, 60%, 80% {transform: rotate(10deg);}
+  }
+
+}
+
+.bi-animate-shake3-hover (@class, @time:1s, @func:ease) {
+  .transition-hover-css3(@class, scale(1.2));
+  .@{class}:hover, .@{class}.hover {
+    -webkit-animation: shake3 @time @func;
+    -moz-animation: shake3 @time @func;
+    -o-animation: shake3 @time @func;
+    animation: shake3 @time @func;
+  }
+
+  @-webkit-keyframes shake3 {
+
+    0% {-webkit-transform: rotate(0deg) scale(1);}
+    10% {-webkit-transform: rotate(-10deg) scale(1.02);}
+    20% {-webkit-transform: rotate(0deg) scale(1.04);}
+    30% {-webkit-transform: rotate(-10deg) scale(1.06);}
+    40% {-webkit-transform: rotate(0deg) scale(1.08);}
+    50% {-webkit-transform: rotate(-10deg) scale(1.10);}
+    60% {-webkit-transform: rotate(0deg) scale(1.12);}
+    70%{-webkit-transform: rotate(-10deg) scale(1.14);}
+    80% {-webkit-transform: rotate(0deg) scale(1.16);}
+    90% {-webkit-transform: rotate(-10deg) scale(1.18);}
+    100% {-webkit-transform: rotate(0deg) scale(1.2);}
+  }
+  @-moz-keyframes shake3 {
+    0% {-moz-transform: rotate(0deg) scale(1);}
+    10% {-moz-transform: rotate(-10deg) scale(1.02);}
+    20% {-moz-transform: rotate(0deg) scale(1.04);}
+    30% {-moz-transform: rotate(-10deg) scale(1.06);}
+    40% {-moz-transform: rotate(0deg) scale(1.08);}
+    50% {-moz-transform: rotate(-10deg) scale(1.10);}
+    60% {-moz-transform: rotate(0deg) scale(1.12);}
+    70%{-moz-transform: rotate(-10deg) scale(1.14);}
+    80% {-moz-transform: rotate(0deg) scale(1.16);}
+    90% {-moz-transform: rotate(-10deg) scale(1.18);}
+    100% {-moz-transform: rotate(0deg) scale(1.2);}
+  }
+
+  @-o-keyframes shake3 {
+    0% {-o-transform: rotate(0deg) scale(1);}
+    10% {-o-transform: rotate(-10deg) scale(1.02);}
+    20% {-o-transform: rotate(0deg) scale(1.04);}
+    30% {-o-transform: rotate(-10deg) scale(1.06);}
+    40% {-o-transform: rotate(0deg) scale(1.08);}
+    50% {-o-transform: rotate(-10deg) scale(1.10);}
+    60% {-o-transform: rotate(0deg) scale(1.12);}
+    70%{-o-transform: rotate(-10deg) scale(1.14);}
+    80% {-o-transform: rotate(0deg) scale(1.16);}
+    90% {-o-transform: rotate(-10deg) scale(1.18);}
+    100% {-o-transform: rotate(0deg) scale(1.2);}
+  }
+
+
+  @keyframes shake3 {
+    0% {transform: rotate(0deg) scale(1);}
+    10% {transform: rotate(-10deg) scale(1.02);}
+    20% {transform: rotate(0deg) scale(1.04);}
+    30% {transform: rotate(-10deg) scale(1.06);}
+    40% {transform: rotate(0deg) scale(1.08);}
+    50% {transform: rotate(-10deg) scale(1.10);}
+    60% {transform: rotate(0deg) scale(1.12);}
+    70%{transform: rotate(-10deg) scale(1.14);}
+    80% {transform: rotate(0deg) scale(1.16);}
+    90% {transform: rotate(-10deg) scale(1.18);}
+    100% {transform: rotate(0deg) scale(1.2);}
+  }
+
+}
+
+
+.bi-animate-shake2-hover (@class, @time:0.7s, @func:ease) {
+  .@{class}:hover, .@{class}.hover {
+    -webkit-animation: shake2 @time @func;
+    -moz-animation: shake2 @time @func;
+    -o-animation: shake2 @time @func;
+    animation: shake2 @time @func;
+  }
+
+  @-webkit-keyframes shake2 {
+
+    0%, 100% {-webkit-transform: translateX(0px);}
+    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateX(-10px);}
+    20%, 40%, 60%, 80% {-webkit-transform: translateX(10px);}
+  }
+  @-moz-keyframes shake2 {
+    0%, 100% {-moz-transform: translateX(0px);}
+    10%, 30%, 50%, 70%, 90% {-moz-transform: translateX(-10px);}
+    20%, 40%, 60%, 80% {-moz-transform: translateX(10px);}
+  }
+
+  @-o-keyframes shake2 {
+    0%, 100% {-o-transform: translateX(0px);}
+    10%, 30%, 50%, 70%, 90% {-o-transform: translateX(-10px);}
+    20%, 40%, 60%, 80% {-o-transform: translateX(10px);}
+  }
+
+
+  @keyframes shake2 {
+    0%, 100% {transform: translateX(0px);}
+    10%, 30%, 50%, 70%, 90% {transform: translateX(-10px);}
+    20%, 40%, 60%, 80% {transform: translateX(10px);}
+  }
+
+}
+
+
+
+

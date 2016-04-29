@@ -1,0 +1,17 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-excel-field-set-table > div > div > table {
+  border-bottom: 1px solid #eaeaea;
+  border-right: 1px solid #eaeaea;
+}
+.bi-excel-field-set-table > div > div > table .table-header {
+  font-size: 14px;
+}
+.bi-excel-field-set-table > div > div > table .normal-field {
+  font-size: 14px;
+}
+.bi-excel-field-set-table > div > div > table .new-field {
+  font-size: 14px;
+  color: #009de3;
+}

@@ -1,0 +1,21 @@
+@import "../../bibase";
+.bi-data-link-tab {
+  & .data-link-groups {
+    .border-radius(2px);
+    background: @color-bi-background-default;
+    & .nav-title {
+      border-bottom: 1px solid @color-bi-border-normal;
+      font-size: @font-size-14;
+      color: @color-bi-text-gray;
+    }
+    & .nav-button {
+      .border-radius(2px);
+      font-size: @font-size-14;
+      color: @color-bi-text-black;
+      &:hover, &.active {
+        color: @color-bi-text;
+        background: @color-bi-background-highlight;
+      }
+    }
+  }
+}

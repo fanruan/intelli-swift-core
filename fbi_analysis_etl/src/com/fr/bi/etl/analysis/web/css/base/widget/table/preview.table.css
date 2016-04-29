@@ -1,0 +1,40 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-analysis-etl-preview-table {
+  background: #ffffff;
+  overflow: hidden;
+}
+.bi-analysis-etl-preview-table .bi_preview_table_drag_clone {
+  background: #d8f2fd;
+  top: 0px;
+  opacity: 0.5;
+}
+.bi-analysis-etl-preview-table .drop-helper svg path {
+  stroke: #009de3;
+}
+.bi-analysis-etl-preview-table .rect-border svg path {
+  stroke: #009de3;
+}
+.bi-analysis-etl-preview-table .rect-border-dragging svg path {
+  stroke: #c4c6c6;
+}
+.bi-analysis-etl-preview-table .rect-border-dragging .drop-helper svg path {
+  stroke: #009de3;
+}
+.bi-analysis-etl-preview-table .drop-helper {
+  transition: left 0.5s ease;
+  -webkit-transition: left 0.5s ease;
+  -moz-transition: left 0.5s ease;
+  -o-transition: left 0.5s ease;
+}
+.bi-analysis-etl-preview-table .bi-analysis-etl-preview-table-null-label {
+  color: #808080;
+  font-size: 16px;
+  zoom: 2;
+}
+.bi-analysis-etl-preview-table .bi-table .bi-adaptive-layout > table {
+  border: 1px solid #eaeaea;
+}

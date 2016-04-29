@@ -1,0 +1,37 @@
+@import "../../bibase";
+
+.bi-linkage {
+  & .linkage-tool-bar{
+    z-index: @zIndex-masker;
+    background: @color-bi-background-default;
+    & .linkage-toolbar-title {
+      font-size: @font-size-14;
+      background-color: @color-bi-background-gray;
+      color: @color-bi-text-gray;
+    }
+    & .single-target-container{
+      border: 1px solid @color-bi-border-normal;
+      .border-radius(2px);
+      & .widget-type-icon{
+        font-size: 20px;
+      }
+      & .linkage-toolbar-target {
+        background: @color-bi-background-gray;
+        cursor: move;
+        border-bottom: 1px solid @color-bi-border-normal;
+        & .linkage-toolbar-target-name {
+          color: @color-bi-text-black;
+        }
+        & .linkage-toolbar-target-linkto {
+          color: @color-bi-text-gray;
+        }
+      }
+    }
+  }
+  & .linkage-widget{
+    background: @color-bi-background-virtual-blue;
+    & .linkage-widget-title{
+      font-size: @font-size-16;
+    }
+  }
+}

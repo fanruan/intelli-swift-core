@@ -1,0 +1,29 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.icon-add .b-font:before {
+  content: "\e649";
+  color: #ffffff;
+}
+.icon-add.native .b-font:before,
+.icon-add.disabled .b-font:before {
+  content: "\e649";
+  color: #ffffff;
+}
+.icon-analysis-table .b-font:before {
+  content: "\e65b";
+  color: #808080;
+}
+.icon-analysis-table.native .b-font:before,
+.icon-analysis-table.disabled .b-font:before {
+  content: "\e65b";
+  color: #808080;
+}
+.icon-analysis-table-set .b-font:before {
+  content: "\e678";
+  color: #808080;
+}
+.icon-analysis-table-set.native .b-font:before,
+.icon-analysis-table-set.disabled .b-font:before {
+  content: "\e678";
+  color: #808080;
+}

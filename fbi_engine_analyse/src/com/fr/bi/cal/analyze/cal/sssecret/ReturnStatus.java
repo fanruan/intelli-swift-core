@@ -1,0 +1,1 @@
+package com.fr.bi.cal.analyze.cal.sssecret;/** * Created by Hiram on 2015/4/14. */public enum ReturnStatus {    GroupEnd,    Success,    GroupOutOfBounds,    NULL}

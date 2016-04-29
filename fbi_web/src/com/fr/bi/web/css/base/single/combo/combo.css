@@ -1,0 +1,27 @@
+/****��Ӽ����ȵ�--�����ֱ����Ҫspace****/
+@font-face {
+  font-family: 'bi';
+  src: url('${servletURL}?op=resource&resource=/com/fr/bi/web/resources/fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('${servletURL}?op=resource&resource=/com/fr/bi/web/resources/fonts/iconfont.woff') format('woff'), /* chrome��firefox */ url('${servletURL}?op=resource&resource=/com/fr/bi/web/resources/fonts/iconfont.ttf') format('truetype'), /* chrome��firefox��opera��Safari, Android, iOS 4.2+*/ url('${servletURL}?op=resource&resource=/com/fr/bi/web/resources/fonts/iconfont.svg#svgFontName') format('svg');
+  
+  /*  iOS 4.1- */
+}
+.b-font {
+  font-family: "bi";
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+.bi-combo-text {
+  height: 16px;
+  border: 1px solid #d4dadd;
+  background: #ffffff;
+  color: #1a1a1a;
+}
+.bi-combo-text:hover,
+.bi-combo-text:active {
+  border-color: #eaeaea;
+}
+.bi-combo-text.disabled {
+  border-color: #808080;
+}

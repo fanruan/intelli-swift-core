@@ -1,0 +1,34 @@
+@import "../../../../bibase";
+@import "../../../../animate";
+.bi-analysis-etl-operator-add-column-single-pane {
+  border:1px solid @border-color-line;
+  & .label-name {
+    font-size: @font-size-14;
+    color:@font-color-light-gray;
+  }
+  & .addcolumn-group-value-center{
+    border-top: 1px solid @border-color-line;
+  }
+  & .group-list {
+    border : 1px solid @border-color-normal;
+    .border-radius(2px);
+    & .first-label {
+      border-bottom : 1px solid @border-color-normal;
+    }
+    & .list-item-text {
+      color : @font-color-normal;
+    }
+  }
+  & .group-detail{
+    & .detail-view {
+      background: @background-color-active;
+      border : 1px solid @border-color-normal;
+      .border-radius(2px);
+      color : @font-color-dark;
+    }
+    & .detail-label{
+      font-size: @font-size-12;
+      color : @font-color-normal;
+    }
+  }
+}

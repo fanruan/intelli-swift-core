@@ -1,0 +1,506 @@
+//less根节点统一命名为bi-，  分隔符统一使用-， less文件只能定义font-size,color,border,background,box-shadow等可视化属性
+@import "../../../../less/bibase";
+
+body {
+
+}
+
+.mvc-button {
+  &:hover, &.hover {
+    .opacity(0.5);
+  }
+  &.active, &:active {
+    .opacity(0.5)
+  }
+}
+
+.mvc-color-red {
+  color: #ea4738;
+}
+
+.mvc-color-blue {
+  color: #0088cc;
+}
+
+.mvc-font-big {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.mvc-font-bold {
+  font-weight: bold;
+}
+
+.mvc-border {
+  border: 1px solid @border-color-normal;
+}
+
+.bi-mvc {
+  & .left {
+    & .left-title {
+      font-size: 18px;
+      color: #ffffff;
+      background: #0088cc;
+    }
+    & .left-classify {
+      color: #999999;
+      background: #E6E6FA;
+    }
+    & .left-nav {
+      & .left-nav-button {
+        color: #0088cc;
+        border: 1px solid #cccccc;
+        &:active, &.active {
+          background: #333333;
+          color: #ffffff;
+        }
+      }
+    }
+    border-right: 1px solid #cccccc;
+  }
+  & .right {
+    & > div > .first-col {
+      border-right: 1px solid #cccccc;
+    }
+    & .right-title {
+      font-size: 18px;
+      color: #ffffff;
+      background: #0088cc;
+    }
+    & .right-classify {
+      color: #999999;
+      background: #E6E6FA;
+    }
+    & .right-nav {
+      & .right-nav-button {
+        color: #0088cc;
+        border: 1px solid #cccccc;
+        &:active, &.active {
+          background: #333333;
+          color: #ffffff;
+        }
+      }
+    }
+    border-left: 1px solid #cccccc;
+  }
+  & .top {
+    color: #999999;
+    border-bottom: 1px solid #cccccc;
+  }
+  & .bottom {
+    color: #999999;
+    border-top: 1px solid #cccccc;
+  }
+}
+
+.bi-default {
+  & .nav-button {
+    font-size: 18px;
+    color: #ffffff;
+  }
+  & .button1 {
+    color: #ffffff;
+    background: #ff69b4;
+  }
+  & .button2 {
+    color: #ffffff;
+    background: #6495ED;
+  }
+  & .button3 {
+    color: #ffffff;
+    background: #008B8B;
+  }
+  & .button4 {
+    color: #ffffff;
+    background: #B8860B;
+  }
+  & .button5 {
+    color: #ffffff;
+    background: #0088cc;
+  }
+
+}
+
+.mvc-layer {
+  font-size: 18px;
+  background: #ffffff;
+  .opacity(0.9);
+}
+
+.bi-basic {
+  & .title {
+    font-size: 14px;
+    color: #999999;
+  }
+}
+
+.bi-set-get {
+  & .left-title, & .right-title {
+    background: #0088cc;
+    color: #ffffff;
+  }
+  & .left-nav {
+    border-bottom: 1px solid #cccccc;
+    &.active, &:active {
+      color: #ffffff;
+      background-color: #d9534f;
+    }
+  }
+}
+
+.bi-local {
+  & .top-button {
+    background-color: #448eea;
+    color: #ffffff
+  }
+  & .bottom-label {
+    background-color: #EA4738;
+    color: #ffffff;
+  }
+  & .delete-button {
+    background-color: #008B8B;
+    color: #ffffff;
+  }
+  & .vessel-border {
+    border-left: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+  }
+}
+
+.bi-event {
+  & .title {
+    background: #0088cc;
+    color: #ffffff;
+  }
+  & .front {
+    background: #ADD8E6;
+  }
+  & .nav {
+    border: 1px solid #cccccc;
+  }
+}
+
+.bi-skip-to {
+  color: #ffffff;
+
+  & .red-pane {
+    background-color: #0088cc;
+  }
+  & .blue-pane {
+    background-color: #6495ED;
+  }
+  & .green-pane {
+    background-color: #008B8B;
+  }
+  & .yellow-pane {
+    background-color: #B8860B;
+  }
+}
+
+.bi-change {
+  & .outer-text {
+    background-color: #0088cc;
+    color: #ffffff;
+  }
+  & .inner {
+    border-left: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+  }
+
+  & .type-first {
+    background-color: #008B8B;
+  }
+
+  & .type-second {
+    background-color: #6495ED;
+  }
+
+  & .type-third {
+    background-color: #0088cc;
+  }
+}
+
+.bi-layer {
+  & .layer-background {
+    background: #B8860B;
+  }
+  & .layer-button {
+    color: #ffffff;
+    background: #0088cc;
+    border: 1px solid #cccccc;
+  }
+}
+
+.bi-float-box {
+  background: @color-bi-background-default;
+  & .float-box-button {
+    color: #ffffff;
+    background: #0088cc;
+    border: 1px solid #cccccc;
+  }
+}
+
+.bi-tmp {
+  & .tmp-button {
+    color: #ffffff;
+    background: #0088cc;
+  }
+}
+
+.bi-static {
+  & .green-button {
+    color: #ffffff;
+    background-color: #008B8B;
+  }
+
+  & .blue-button {
+    color: #ffffff;
+    background-color: #0088cc;
+  }
+}
+
+.bi-mvc-layout {
+  & .layout-bg-white {
+    background-color: #ffffff;
+  }
+
+  & .layout-bg-gray {
+    background-color: #eeeeee;
+  }
+
+  & .layout-bg1 {
+    color: #ffffff;
+    background-color: #0088cc;
+  }
+
+  & .layout-bg2 {
+    color: #ffffff;
+    background-color: #008B8B;
+  }
+
+  & .layout-bg3 {
+    color: #ffffff;
+    background-color: #6495ED;
+  }
+
+  & .layout-bg4 {
+    color: #ffffff;
+    background-color: #ff69b4;
+  }
+
+  & .layout-bg5 {
+    color: #ffffff;
+    background-color: #B8860B;
+  }
+
+  & .layout-bg6 {
+    color: #ffffff;
+    background-color: #d9534f;
+  }
+
+  & .layout-bg7 {
+    color: #ffffff;
+    background-color: #ea4738;
+  }
+
+  & .layout-bg8 {
+    color: #ffffff;
+    background-color: #6495ed;
+  }
+}
+
+.bi-splice-duplicate {
+  & .superiors-label {
+    color: white;
+    background-color: #008B8B;
+  }
+  & .sd-child {
+    border: 1px solid #cccccc;
+    & .right-button-add {
+      color: white;
+      background-color: #0088cc;
+    }
+    & .right-button-del {
+      color: white;
+      background-color: #d9534f;
+    }
+  }
+}
+
+.bi-vertical {
+  & .border {
+    border: 1px solid #cccccc;
+  }
+}
+
+.bi-float-center {
+  & .center-element {
+    min-width: 300px;
+    max-width: 400px;
+  }
+}
+
+.bi-lattice {
+  & .lattice-item {
+    min-width: 200px;
+    max-width: 300px;
+  }
+}
+
+.bi-font {
+  -webkit-user-select: initial !important;
+  -moz-user-select: initial !important;
+  -ms-user-select: initial !important;
+  user-select: initial !important;
+  background: #ffffff;
+  & .font-description {
+    font-size: 14px;
+  }
+  & .b-font {
+    font-size: 30px;
+  }
+}
+
+.bi-i18n {
+  -webkit-user-select: initial !important;
+  -moz-user-select: initial !important;
+  -ms-user-select: initial !important;
+  user-select: initial !important;
+  background: #ffffff;
+  & .title {
+    font-size: 30px;
+    color: #008B8B;
+  }
+  & .key {
+    color: #0088cc;
+  }
+  & .value {
+    color: #008B8B;
+  }
+}
+
+.bi-mvc-combo {
+  & .button-combo {
+    border: 1px solid #d4dadd;
+    border-radius: 2px;
+  }
+}
+
+.bi-mvc-data-structure {
+  font-size: 14px;
+  & .title {
+    font-size: 30px;
+    color: #008B8B;
+  }
+  & .structure-1 {
+    color: #008B8B;
+  }
+  & .structure-2 {
+    color: #B8860B;
+  }
+  & .structure-3 {
+    color: #0088cc;
+  }
+  & .structure-4 {
+    color: #d9534f;
+  }
+  & .structure-5 {
+    color: #ff69b4;
+  }
+  & .structure-6 {
+    color: #6495ed;
+  }
+  & .structure-7 {
+    color: #002B8B;
+  }
+  & .structure-8 {
+    color: #2cc28B;
+  }
+  & .sObjectK {
+    color: #0088cc;
+  }
+  & .sObjectV {
+    color: #008B8B;
+  }
+  & .sColon {
+    color: #d9534f;
+  }
+  & .sArrayV {
+    color: #6495ed;
+  }
+}
+
+.bi-mvc-singletree-trigger {
+  border: 1px solid @color-bi-border-normal;
+  .border-radius(2px);
+}
+
+.bi-mvc-adapt-editor {
+  .adapt-editor-mvc {
+    max-width: 300px;
+    min-width: 200px;
+  }
+}
+
+.bi-mvc-sign-style-editor {
+  & .sign-style-editor-border {
+    border: 1px solid @color-bi-border-normal;
+  }
+  & .sign-style-editor-mvc {
+    color: @font-color-gray;
+  }
+}
+
+.mvc-package-data {
+  font-size: 14px;
+  & .title-label {
+    font-size: 22px;
+    color: #008B8B;
+  }
+  & .description-label {
+    color: #6495ed;
+  }
+  & .json-property {
+    color: #1A5988;
+  }
+  & .json-semi-colon {
+    color: #14171A;
+  }
+  & .json-value {
+    color: #222222;
+  }
+}
+
+.mvc-etl-data {
+  font-size: 14px;
+  & .title-label {
+    font-size: 22px;
+    color: #008B8B;
+  }
+  & .description-label {
+    color: #6495ed;
+  }
+  & .json-property {
+    color: #1A5988;
+  }
+  & .json-semi-colon {
+    color: #14171A;
+  }
+  & .json-value {
+    color: #222222;
+  }
+}
+
+.mvc-etl-circle-view {
+  & .mvc-circle-self {
+    border: 1px solid @color-bi-border-normal;
+  }
+}
+.bi-mvc-branch-relation{
+  .branch-relation-item{
+    .opacity(0.5);
+    background-color: @color-bi-background-virtual-blue;
+  }
+}

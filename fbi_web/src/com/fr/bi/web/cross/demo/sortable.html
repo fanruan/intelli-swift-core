@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5, IE=EmulateIE7, chrome=1">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>${layoutType}</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.fs.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=toolbar.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.fs.js&inter=${__locale__}"></script>
+    <style type="text/css">
+        .test {
+            width: 100px;
+            height: 100px;
+            background: #ff0000;
+            float: left;
+        }
+        .div{
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            width: 100px;
+            height: 300px;
+            border: 1px solid #999999;
+        }
+        li{
+            height: 20px;
+            background: #eeeeee;
+            border: 1px solid #cccccc;
+        }
+        li.placeholder {
+            position: relative;
+            background: red;
+            width: 100px;
+            height: 20px;
+            /** More li styles **/
+        }
+        li.placeholder:before {
+            position: absolute;
+            /** Define arrowhead **/
+        }
+        .dragged {
+            position: absolute;
+            opacity: 0.5;
+            z-index: 2000;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var adjustment;
+            $(".div").sortable({
+                group: "div",
+                //pullPlaceholder: false,
+                // animation on drop
+                onDrop: function  ($item, container, _super) {
+                    var $clonedItem = $('<li/>').css({height: 0});
+                    $item.before($clonedItem);
+                    $clonedItem.animate({'height': $item.height()});
+
+                    $item.animate($clonedItem.position(), function  () {
+                        $clonedItem.detach();
+                        _super($item, container);
+                    });
+                },
+
+                // set $item relative to cursor position
+                onDragStart: function ($item, container, _super) {
+                    var offset = $item.offset(),
+                            pointer = container.rootGroup.pointer;
+
+                    adjustment = {
+                        left: pointer.left - offset.left,
+                        top: pointer.top - offset.top
+                    };
+
+                    _super($item, container);
+                },
+                onDrag: function ($item, position) {
+                    $item.css({
+                        left: position.left - adjustment.left,
+                        top: position.top - adjustment.top
+                    });
+                }
+            })
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="div">
+    <li class="bi-widget-item" ></li>
+    <li class="bi-widget-item" ></li>
+    <li class="bi-widget-item" ></li>
+    <li class="bi-widget-item" ></li>
+    <li class="bi-widget-item" ></li>
+    <li class="bi-widget-item" ></li>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-update-single-table-setting .update-type .comment-label {
+  font-size: 14px;
+  color: #808080;
+}
+.bi-update-single-table-setting .part-update-setting .part-update-type-button {
+  font-size: 14px;
+  background: #f4f4f4;
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-update-single-table-setting .part-update-setting .part-update-type-button.active {
+  background: #ffffff;
+  color: #009de3;
+  border-bottom: 1px solid #ffffff;
+}
+.bi-update-single-table-setting .part-update-setting .param-preview-tools {
+  border: 1px solid #d4dadd;
+}
+.bi-update-single-table-setting .part-update-setting .param-preview-tools .param-comment {
+  color: #808080;
+}
+.bi-update-single-table-setting .part-update-setting .param-preview-tools .param-button {
+  background: #eefbff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-update-single-table-setting .part-update-setting .sql-container {
+  border: 1px solid #d4dadd;
+}
+.bi-update-single-table-setting .part-update-setting .sql-container .param {
+  font-size: 14px;
+  color: #ffffff;
+  background: #009de3;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-update-single-table-setting .time-setting {
+  border: 1px solid #a3d6e8;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-update-single-table-setting .time-setting .add-time-toolbar {
+  background: #eefbff;
+  border-bottom: 1px solid #a3d6e8;
+}
+.bi-update-single-table-setting .time-setting .add-time-toolbar .add-time-comment {
+  font-size: 14px;
+  color: #808080;
+}
+.bi-update-single-table-setting .time-setting .global-update-toolbar .global-comment {
+  font-size: 14px;
+  color: #808080;
+}

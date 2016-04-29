@@ -1,0 +1,96 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.icon-add .b-font:before {
+  content: "\e649";
+  color: #ffffff;
+}
+.icon-add.native .b-font:before,
+.icon-add.disabled .b-font:before {
+  content: "\e649";
+  color: #ffffff;
+}
+.icon-analysis-table .b-font:before {
+  content: "\e65b";
+  color: #808080;
+}
+.icon-analysis-table.native .b-font:before,
+.icon-analysis-table.disabled .b-font:before {
+  content: "\e65b";
+  color: #808080;
+}
+.icon-analysis-table-set .b-font:before {
+  content: "\e678";
+  color: #808080;
+}
+.icon-analysis-table-set.native .b-font:before,
+.icon-analysis-table-set.disabled .b-font:before {
+  content: "\e678";
+  color: #808080;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button {
+  border: 1px solid #eaeaea;
+  border-top: none;
+  font-size: 14px;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button:first-child {
+  border-top: 1px solid #eaeaea;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button .label {
+  transition: color 0.5s ease;
+  -webkit-transition: color 0.5s ease;
+  -moz-transition: color 0.5s ease;
+  -o-transition: color 0.5s ease;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button:hover .mark .b-font:before,
+.bi-analysis-etl-operator-merge-choose-sheet-button.hover .mark .b-font:before {
+  content: check-mark-font;
+  color: #f4f4f4;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button:hover .mark.native .b-font:before,
+.bi-analysis-etl-operator-merge-choose-sheet-button.hover .mark.native .b-font:before,
+.bi-analysis-etl-operator-merge-choose-sheet-button:hover .mark.disabled .b-font:before,
+.bi-analysis-etl-operator-merge-choose-sheet-button.hover .mark.disabled .b-font:before {
+  content: check-mark-font;
+  color: #f4f4f4;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button .mark .b-font:before {
+  content: "\e611";
+  color: #ffffff;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button .mark.native .b-font:before,
+.bi-analysis-etl-operator-merge-choose-sheet-button .mark.disabled .b-font:before {
+  content: "\e611";
+  color: #ffffff;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button .mark {
+  transition: transform 0.5s ease;
+  -webkit-transition: -webkit-transform 0.5s ease;
+  -moz-transition: -moz-transform 0.5s ease;
+  -o-transition: -o-transform 0.5s ease;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button .mark:hover,
+.bi-analysis-etl-operator-merge-choose-sheet-button .mark.hover {
+  transform: scale(1.2);
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -o-transform: scale(1.2);
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button:active,
+.bi-analysis-etl-operator-merge-choose-sheet-button.active {
+  color: #009de3;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button:active .mark .b-font:before,
+.bi-analysis-etl-operator-merge-choose-sheet-button.active .mark .b-font:before {
+  content: "\e611";
+  color: #009de3;
+}
+.bi-analysis-etl-operator-merge-choose-sheet-button:active .mark.native .b-font:before,
+.bi-analysis-etl-operator-merge-choose-sheet-button.active .mark.native .b-font:before,
+.bi-analysis-etl-operator-merge-choose-sheet-button:active .mark.disabled .b-font:before,
+.bi-analysis-etl-operator-merge-choose-sheet-button.active .mark.disabled .b-font:before {
+  content: "\e611";
+  color: #009de3;
+}

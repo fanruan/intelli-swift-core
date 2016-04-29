@@ -1,0 +1,20 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.item-custom-group {
+  border-radius: 2px;
+}
+.item-custom-group:hover,
+.item-custom-group.hover {
+  background-color: #f4f4f4;
+}
+.item-custom-group.active,
+.item-custom-group:active {
+  color: #009de3;
+  background-color: #f4f4f4;
+}
+.item-custom-group.disabled,
+.item-custom-group.disabled:hover,
+.item-custom-group.disabled:active {
+  background-color: #ffffff;
+}

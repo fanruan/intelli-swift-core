@@ -1,0 +1,12 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-custom-scroll-table .scroll-table,
+.bi-custom-scroll-table .scroll-top-left,
+.bi-custom-scroll-table .scroll-top-right,
+.bi-custom-scroll-table .scroll-bottom-left,
+.bi-custom-scroll-table .scroll-bottom-right {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  overflow: hidden !important;
+}

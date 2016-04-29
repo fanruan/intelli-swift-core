@@ -1,0 +1,189 @@
+@import 'bi-extra-core.less';
+@resource-url : '${servletURL}?op=resource&resource=';
+@fs-bi-mine-table-col-first-width:123px;
+@fs-bi-mine-table-col-second-name-width:297px;
+@fs-bi-mine-table-col-height:39px;
+
+.fs-bi-queryBox {
+  border-radius: 2px;
+  position: relative;
+  float: right;
+  color: @color-fs-bi-queryBox-icon;
+  background-color: @color-fs-bi-queryBox-background;
+  padding: 0 8px;
+  font-size: 16px;
+  margin: 5px 0;
+  input {
+    height: 25px;
+    border: 0;
+    margin-right: 3px;
+    vertical-align: middle;
+    background: 0;
+  }
+}
+
+.fs-bi-search-icon{
+  &:before{
+    content: '\e619';
+  }
+}
+
+.fs-bi-mine-table {
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  position: absolute;
+  border: 1px solid @color-fs-bi-mine-table-border;
+  border-radius: 2px;
+}
+
+.fs-bi-mine-table-title {
+  color: @color-fs-bi-mine-table-title-font;
+  font-weight: bold;
+  font-size: 16px;
+  overflow: visible;
+  height: 40px;
+  width: 100%;
+  display: inline-block;
+  background-color: @color-fs-bi-mine-table-title-background;
+  border-radius: 1px 1px 0 0;
+}
+
+.fs-bi-mine-table-col-second-name{
+  width: @fs-bi-mine-table-col-second-name-width;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  position: absolute;
+}
+
+.fs-bi-mine-table-col-second-time{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-left: @fs-bi-mine-table-col-second-name-width;
+}
+
+.fs-bi-mine-table-body{
+  overflow-y:auto;
+}
+
+.fs-bi-mine-table-list-parent {
+  &:hover {
+    background: @color-fs-bi-mine-table-list-hover;
+  }
+  width: 100%;
+  height: 39px;
+  border-top: 1px solid @color-fs-bi-mine-table-list-parent-border-top;
+  display: inline-block;
+}
+
+.fs-bi-mine-table-list {
+  cursor: pointer;
+  font-size: 14px;
+  color: @color-fs-bi-mine-table-list-template-font;
+  width: 1066px;
+  position: relative;
+}
+
+.fs-bi-mine-table-col-first {
+  width: @fs-bi-mine-table-col-first-width;
+  position: absolute;
+  height: @fs-bi-mine-table-col-height;
+  line-height: @fs-bi-mine-table-col-height;
+}
+
+
+.fs-bi-file {
+  &:before {
+    color: @color-fs-bi-mine-table-icon-normal;
+    content: '\e60e';
+    font-size: 16px;
+    margin-left: 25px;
+  }
+  &:hover {
+    &:before {
+      color: @color-fs-bi-mine-table-icon-file-selected;
+      border:1px solid @color-fs-bi-mine-table-icon-border;
+      margin-left: 24px;//自身自带一个像素的边框，所以这里其实相隔25个像素
+      border-radius: 2px;
+      margin-right: -1px;
+    }
+  }
+}
+
+.fs-bi-share {
+  &:before {
+    color: @color-fs-bi-mine-table-icon-normal;
+    content: '\e60b';
+    font-size: 16px;
+    margin-left: 25px;
+  }
+  &:hover {
+    &:before {
+      color: @color-fs-bi-mine-table-icon-share-selected;
+      border:1px solid @color-fs-bi-mine-table-icon-border;
+      margin-left: 24px;//自身自带一个像素的边框，所以这里其实相隔15个像素,hover时左侧icon不存在border
+      border-radius: 2px;
+    }
+  }
+}
+
+.fs-bi-mine-table-col-second {
+  height: @fs-bi-mine-table-col-height;
+  line-height: @fs-bi-mine-table-col-height;
+  white-space: nowrap;
+  margin-left: @fs-bi-mine-table-col-first-width - 1;
+}
+
+.fs-bi-mine-file-name {
+  float: left;
+}
+
+.fs-bi-mine-file-time {
+  //font-family: Century Gothic;
+  color: @color-fs-bi-mine-table-list-template-time-font;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+  float: left;
+}
+
+.fs-bi-del {
+  &:before {
+    color: @color-fs-bi-mine-table-icon-normal;
+    content: '\e60d';
+    font-size: 16px;
+    border: 1px solid @color-fs-bi-mine-table-list-hover;
+    margin-left: 15px;//左侧icon和自身自带一个像素的边框，所以这里其实相隔15个像素
+  }
+  &:hover {
+    &:before {
+      color: @color-fs-bi-mine-table-icon-delete-selected;
+      border:1px solid @color-fs-bi-mine-table-icon-border;
+      border-radius: 2px;
+    }
+  }
+}
+
+.fs-bi-edit {
+  &:before{
+    content: '\e60c';
+    color: @color-fs-bi-mine-table-icon-normal;
+    font-size: 16px;
+    border: 1px solid @color-fs-bi-mine-table-list-hover;;
+  }
+  &:hover {
+    &:before {
+      color : @color-fs-bi-mine-table-icon-edit-selected;
+      border :1px solid @color-fs-bi-mine-table-icon-border;
+      border-radius: 2px;
+    }
+  }
+}
+
+.fs-bi-block-edit-and-share{
+  float: left;
+  width:115px;
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

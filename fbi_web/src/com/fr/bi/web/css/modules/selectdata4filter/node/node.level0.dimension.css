@@ -1,0 +1,9 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-dimension-select-data-level0-node .dimension-series-label {
+  color: #58cc7d;
+}
+.bi-dimension-select-data-level0-node .dimension-classify-label {
+  color: #009de3;
+}

@@ -1,0 +1,21 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.detail-table-path-setting-tab {
+  border: 1px solid #d4dadd;
+}
+.detail-table-path-setting-tab .tab-label-gray {
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #d4dadd;
+  color: #808080;
+}
+.detail-table-path-setting-tab .detail-table-path-setting-switch {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.detail-table-path-setting-tab .save-button {
+  color: #009de3;
+  font-size: 14px;
+}

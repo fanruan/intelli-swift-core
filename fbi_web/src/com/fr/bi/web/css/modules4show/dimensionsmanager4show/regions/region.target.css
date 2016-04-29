@@ -1,0 +1,19 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-target-region {
+  border: 1px solid #9fd3ae;
+}
+.bi-target-region .region-north {
+  background: #e1f4e7;
+  border-bottom: 1px solid #9fd3ae;
+}
+.bi-target-region .region-north .region-north-title {
+  font-size: 14px;
+}
+.bi-target-region .target-container {
+  background: #e1f4e7;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}

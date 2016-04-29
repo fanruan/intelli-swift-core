@@ -1,0 +1,51 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-business-package-pane {
+  background: #f4f4f4;
+}
+.bi-business-package-pane .one-package-north .business-package-name {
+  border: 1px solid #d4dadd;
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-business-package-pane .one-package-north .package-name-label {
+  color: #808080;
+  font-size: 14px;
+}
+.bi-business-package-pane .one-package-north .package-search-editor {
+  background: #ffffff;
+}
+.bi-business-package-pane .one-package-north .tables-view-group {
+  font-size: 16px;
+}
+.bi-business-package-pane .one-package-north .tables-view-group .tables-view.active {
+  background: #009de3;
+}
+.bi-business-package-pane .one-package-north .add-new-table-combo {
+  color: #ffffff;
+  font-size: 14px;
+  background: #009de3;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-business-package-pane .one-package-north .add-new-table-combo .add-new-table-item {
+  color: #1a1a1a;
+}
+.bi-business-package-pane .one-package-north .add-new-table-combo .add-new-table-item:hover {
+  background: #f4f4f4;
+}
+.bi-business-package-pane .one-package-center {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-business-package-pane .one-package-center .empty-tip {
+  color: #d4dadd;
+  font-size: 20px;
+}

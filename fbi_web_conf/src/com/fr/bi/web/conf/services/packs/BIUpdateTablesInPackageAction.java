@@ -1,0 +1,194 @@
+package com.fr.bi.web.conf.services.packs;
+
+import com.fr.base.FRContext;
+import com.fr.bi.base.BIUser;
+import com.fr.bi.conf.base.datasource.BIDataSourceManager;
+import com.fr.bi.conf.base.datasource.BIXMLDataSource;
+import com.fr.bi.conf.base.pack.data.*;
+import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
+import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
+import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
+import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
+import com.fr.bi.conf.data.source.TableSourceFactory;
+import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
+import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.relation.BISimpleRelation;
+import com.fr.bi.stable.relation.BITableRelation;
+import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.ComparatorUtils;
+import com.fr.json.JSONArray;
+import com.fr.json.JSONObject;
+import com.fr.web.utils.WebUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
+
+    @Override
+    public String getCMD() {
+        return "update_tables_in_package";
+    }
+
+    @Override
+    protected void actionCMDPrivilegePassed(HttpServletRequest req,
+                                            HttpServletResponse res) throws Exception {
+        updatePackageTables(req);
+    }
+
+    private void writeResource(long userId) {
+        try {
+            BIConfigureManagerCenter.getPackageManager().persistData(userId);
+            BIConfigureManagerCenter.getTableRelationManager().persistData(userId);
+            BIConfigureManagerCenter.getExcelViewManager().persistData(userId);
+            BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
+            FRContext.getCurrentEnv().writeResource(BIConfigureManagerCenter.getAliasManager().getTransManager(userId));
+            FRContext.getCurrentEnv().writeResource((BIXMLDataSource) ((BIDataSourceManager) (BIConfigureManagerCenter.getDataSourceManager())).getInstance(new BIUser(userId)));
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+    }
+
+    /**
+     * update
+     *
+     * @param req
+     * @throws Exception
+     */
+    public void updatePackageTables(HttpServletRequest req) throws Exception {
+        String packageName = WebUtils.getHTTPRequestParameter(req, "name");
+        String groupName = WebUtils.getHTTPRequestParameter(req, "groupName");
+        String packageId = WebUtils.getHTTPRequestParameter(req, "id");
+        String tableIds = WebUtils.getHTTPRequestParameter(req, "tables");
+        String tableString = WebUtils.getHTTPRequestParameter(req, "table_data");
+        String relations = WebUtils.getHTTPRequestParameter(req, "relations");
+        String translations = WebUtils.getHTTPRequestParameter(req, "translations");
+        String usedFields = WebUtils.getHTTPRequestParameter(req, "used_fields");
+        String excelViews = WebUtils.getHTTPRequestParameter(req, "excel_views");
+        String updateSettings = WebUtils.getHTTPRequestParameter(req, "update_settings");
+        long userId = ServiceUtils.getCurrentUserID(req);
+        JSONArray tableIdsJO = new JSONArray(tableIds);
+        JSONObject tableDataJO = new JSONObject(tableString);
+        JSONObject relationsJO = relations != null ? new JSONObject(relations) : new JSONObject();
+        JSONObject translationsJO = translations != null ? new JSONObject(translations) : new JSONObject();
+        JSONObject usedFieldsJO = usedFields != null ? new JSONObject(usedFields) : new JSONObject();
+        JSONObject excelViewJO = excelViews != null ? new JSONObject(excelViews) : new JSONObject();
+        JSONObject updateSettingJO = updateSettings != null ? new JSONObject(updateSettings) : new JSONObject();
+
+        BIBusinessPackage pack = (BIBusinessPackage) EditPackageConfiguration(packageName, groupName, packageId, userId);
+        pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO));
+
+        for (int i = 0; i < tableIdsJO.length(); i++) {
+            String tableId = tableIdsJO.optJSONObject(i).optString("id");
+            JSONObject tableJson = tableDataJO.optJSONObject(tableId);
+            if (tableJson != null) {
+                BIConfigureManagerCenter.getDataSourceManager().addCore2SourceRelation(new BITableID(tableId), TableSourceFactory.createTableSource(tableJson, userId), new BIUser(userId));
+            } else {
+                BILogger.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
+            }
+        }
+        saveTranslations(translationsJO, userId);
+        saveRelations(relationsJO, userId);
+        saveExcelView(excelViewJO, userId);
+        saveUpdateSetting(updateSettingJO, userId);
+        writeResource(userId);
+    }
+
+    private BIBusinessPackageGetterService EditPackageConfiguration(String packageName, String groupName, String packageId, long userId) throws BIPackageDuplicateException, BIPackageAbsentException, BIGroupDuplicateException, BIGroupAbsentException {
+        BIPackageID packageID = new BIPackageID(packageId);
+        BISystemPackageConfigurationProvider packageConfigProvider = BIConfigureManagerCenter.getPackageManager();
+        BIBusinessPackageGetterService pack;
+        if (!packageConfigProvider.containPackageID(userId, packageID)) {
+            BIBusinessPackage biBasicBusinessPackage = new BIBasicBusinessPackage(new BIPackageID(packageId), new BIPackageName(packageName), new BIUser(userId), System.currentTimeMillis());
+            packageConfigProvider.addPackage(userId, biBasicBusinessPackage);
+            pack = packageConfigProvider.getPackage(userId, packageID);
+        } else {
+            pack = packageConfigProvider.getPackage(userId, packageID);
+            if (!ComparatorUtils.equals(packageName, pack.getName().getValue())) {
+                BIConfigureManagerCenter.getPackageManager().renamePackage(userId, packageID, new BIPackageName(packageName));
+            }
+        }
+        if (!"".equals(groupName)) {
+            BIGroupTagName groupTagName = new BIGroupTagName(groupName);
+            if (!packageConfigProvider.containGroup(userId, groupTagName)) {
+                packageConfigProvider.createEmptyGroup(userId, groupTagName);
+            }
+            if (!packageConfigProvider.isPackageTaggedSpecificGroup(userId, packageID, groupTagName)) {
+                packageConfigProvider.stickGroupTagOnPackage(userId, packageID, groupTagName);
+            }
+
+        }
+        return pack;
+    }
+
+    private void saveTranslations(JSONObject translations, long userId) throws Exception {
+        Iterator<String> tranIds = translations.keys();
+        BIConfigureManagerCenter.getAliasManager().getTransManager(userId).clear();
+        while (tranIds.hasNext()) {
+            String tranId = tranIds.next();
+            String tranName = translations.optString(tranId);
+            BIConfigureManagerCenter.getAliasManager().getTransManager(userId).setTransName(tranId, tranName);
+        }
+    }
+
+    private void saveRelations(JSONObject relationsJO, long userId) throws Exception {
+        BIConfigureManagerCenter.getTableRelationManager().clear(userId);
+        Set<BITableRelation> relationsSet = new HashSet<BITableRelation>();
+        JSONArray relationConn = relationsJO.getJSONArray("connectionSet");
+        for (int k = 0; k < relationConn.length(); k++) {
+            JSONObject r = relationConn.getJSONObject(k);
+            JSONObject pKeyJO = r.getJSONObject("primaryKey");
+            JSONObject fKeyJO = r.getJSONObject("foreignKey");
+            BISimpleRelation simpleRelation = new BISimpleRelation(pKeyJO.getString("field_id"), fKeyJO.getString("field_id"));
+            BITableRelation tableRelation = simpleRelation.getTableRelation();
+            relationsSet.add(tableRelation);
+        }
+        BIConfigureManagerCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);
+    }
+
+    private void saveExcelView(JSONObject excelViewJO, long userId) throws Exception {
+        Iterator<String> viewTableIds = excelViewJO.keys();
+        BIConfigureManagerCenter.getExcelViewManager().clear(userId);
+        while (viewTableIds.hasNext()) {
+            String viewId = viewTableIds.next();
+            ExcelViewSource source = new ExcelViewSource();
+            source.parseJSON(excelViewJO.getJSONObject(viewId));
+            BIConfigureManagerCenter.getExcelViewManager().saveExcelView(viewId, source, userId);
+        }
+    }
+
+    public void saveUpdateSetting(JSONObject updateSettingJO, long userId) throws Exception {
+        Iterator<String> sourceTableIds = updateSettingJO.keys();
+        BIConfigureManagerCenter.getUpdateFrequencyManager().clear(userId);
+        while (sourceTableIds.hasNext()) {
+            String sourceTableId = sourceTableIds.next();
+            UpdateSettingSource source = new UpdateSettingSource();
+            source.parseJSON(updateSettingJO.getJSONObject(sourceTableId));
+            BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(sourceTableId, source, userId);
+        }
+    }
+
+    private JSONObject createTablesJsonObject(JSONArray tableIdsJA, JSONObject usedFieldsJO) throws Exception {
+        JSONObject jo = new JSONObject();
+        JSONArray ja = new JSONArray();
+        if (tableIdsJA != null) {
+            for (int i = 0; i < tableIdsJA.length(); i++) {
+                String tId = tableIdsJA.optJSONObject(i).optString("id");
+                JSONObject idJo = new JSONObject();
+                idJo.put("id", tId);
+                JSONArray usedFields = usedFieldsJO.optJSONArray(tId);
+                idJo.put("used_fields", usedFields);
+                ja.put(idJo);
+            }
+        }
+        return jo.put("data", ja);
+    }
+}

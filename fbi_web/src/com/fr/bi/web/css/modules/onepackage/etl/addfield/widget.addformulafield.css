@@ -1,0 +1,39 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-add-formula-field {
+  background: #ffffff;
+}
+.bi-add-formula-field .bi-etl-add-field-merge {
+  background-color: #ffffff;
+}
+.bi-add-formula-field .bi-etl-add-field-border {
+  background-color: #f4f4f4;
+}
+.bi-add-formula-field .north-left-label {
+  font-size: 16px;
+  color: #808080;
+}
+.bi-add-formula-field .bi-etl-add-field-label {
+  font-size: 14px;
+  color: #808080;
+}
+.bi-add-formula-field .bi-etl-add-formula-field-table-name-label {
+  border: 1px solid #d4dadd;
+}
+.bi-add-formula-field .bi-elt-add-field-label-and-add-button {
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-add-formula-field .bi-conf-etl-south {
+  background: #f4f4f4;
+  border-top: 1px solid #d4dadd;
+}
+.bi-add-formula-field .left-label {
+  max-width: 120px;
+}
+.bi-add-formula-field .right-label {
+  max-width: 270px;
+}
+.bi-etl-add-formula-field-label {
+  border-bottom: 1px solid #d4dadd;
+}

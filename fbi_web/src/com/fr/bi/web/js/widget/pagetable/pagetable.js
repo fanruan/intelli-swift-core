@@ -1,0 +1,350 @@
+/**
+ * 分页表格
+ *
+ * Created by GUY on 2016/2/15.
+ * @class BI.PageTable
+ * @extends BI.Widget
+ */
+BI.PageTable = BI.inherit(BI.Widget, {
+
+    _const: {
+        scrollWidth: 18
+    },
+
+    _defaultConfig: function () {
+        return BI.extend(BI.PageTable.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-page-table",
+            el: {
+                type: "bi.custom_scroll_table"
+            },
+
+            hasHNext: BI.emptyFn,
+            //横向最大页
+            lastHPage: function () {
+                return 1;
+            },
+            pager: {
+                pages: false,
+                curr: 1,
+                hasNext: function (v) {
+                    return v < 3;
+                },
+                hasPrev: function (v) {
+                    return v > 1
+                },
+                firstPage: 1,
+                lastPage: function () {
+                    return 3;
+                }
+            },
+
+            itemsCreator: BI.emptyFn,
+
+            isNeedFreeze: false,//是否需要冻结单元格
+            freezeCols: [], //冻结的列号,从0开始,isNeedFreeze为true时生效
+
+            isNeedMerge: false,//是否需要合并单元格
+            mergeCols: [], //合并的单元格列号
+            mergeRule: function (row1, row2) { //合并规则, 默认相等时合并
+                return BI.isEqual(row1, row2);
+            },
+
+            columnSize: [],
+            headerRowSize: 37,
+            footerRowSize: 37,
+            rowSize: 30,
+
+            regionColumnSize: false,
+
+            header: [],
+            footer: false,
+            items: [], //二维数组
+
+            //交叉表头
+            crossHeader: [],
+            crossItems: []
+        });
+    },
+
+    _init: function () {
+        BI.PageTable.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
+        //记录滚动条滚动到的点
+        this.dots = new BI.Queue(10);
+        //事件锁
+        this.lock = BI.debounce(function () {
+            self.dots.clear();
+        }, 300);
+        this.hpage = 1;
+
+        this.table = BI.createWidget(o.el, {
+            type: "bi.custom_scroll_table",
+            element: this.element,
+
+            pageSpace: 95,
+
+            isNeedResize: true,
+            isResizeAdapt: false,
+
+            isNeedFreeze: o.isNeedFreeze,
+            freezeCols: o.freezeCols,
+
+            isNeedMerge: o.isNeedMerge,
+            mergeCols: o.mergeCols,
+            mergeRule: o.mergeRule,
+
+            columnSize: o.columnSize,
+            headerRowSize: o.headerRowSize,
+            footerRowSize: o.footerRowSize,
+            rowSize: o.rowSize,
+
+            regionColumnSize: o.regionColumnSize,
+
+            header: o.header,
+            footer: o.footer,
+            items: o.items,
+            //交叉表头
+            crossHeader: o.crossHeader,
+            crossItems: o.crossItems
+        });
+
+        this.table.on(BI.CustomScrollTable.EVENT_SCROLL_TO_LEFT, function () {
+            var dots = self.dots.toArray();
+            BI.delay(function () {
+                if (self.element.is(":visible")) {
+                    if (dots.length > 1
+                        && dots[0] - dots[1] >= 0 && dots[0] - dots[1] < 100
+                        && dots[1] - dots[2] >= 0 && dots[1] - dots[2] < 100
+                        && dots[2] - dots[3] >= 0 && dots[2] - dots[3] < 100
+                        && dots[3] - dots[4] >= 0 && dots[3] - dots[4] < 100
+                        && dots[4] - dots[5] >= 0 && dots[4] - dots[5] < 100
+                        && dots[5] - dots[6] >= 0 && dots[5] - dots[6] < 100
+                        && dots[6] - dots[7] >= 0 && dots[6] - dots[7] < 100
+                        && dots[7] - dots[8] >= 0 && dots[7] - dots[8] < 100
+                        && dots[8] - dots[9] >= 0 && dots[8] - dots[9] < 100
+                    ) {
+                        if (self.hpage <= 1) {
+                            self.hpage = 1;
+                            return;
+                        }
+                        self.hpage--;
+                        self._loading();
+                        o.itemsCreator({
+                            hpage: self.hpage
+                        }, function (items, header, crossItems, crossHeader) {
+                            self.populate.apply(self, arguments);
+                            self._loaded();
+                        });
+                    }
+                }
+            }, 10);
+        });
+        this.table.on(BI.CustomScrollTable.EVENT_SCROLL_TO_RIGHT, function () {
+            var dots = self.dots.toArray();
+            //当页面隐藏的时候同时会触发这个事件，要把这种情况去掉
+            BI.delay(function () {
+                if (self.element.is(":visible")) {
+                    if (dots.length > 1
+                        && dots[1] - dots[0] >= 0 && dots[1] - dots[0] < 100
+                        && dots[2] - dots[1] >= 0 && dots[2] - dots[1] < 100
+                        && dots[3] - dots[2] >= 0 && dots[3] - dots[2] < 100
+                        && dots[4] - dots[3] >= 0 && dots[4] - dots[3] < 100
+                        && dots[5] - dots[4] >= 0 && dots[5] - dots[4] < 100
+                        && dots[6] - dots[5] >= 0 && dots[6] - dots[5] < 100
+                        && dots[7] - dots[6] >= 0 && dots[7] - dots[6] < 100
+                        && dots[8] - dots[7] >= 0 && dots[8] - dots[7] < 100
+                        && dots[9] - dots[8] >= 0 && dots[9] - dots[8] < 100
+                    ) {
+                        var hasNext = false;
+                        if (o.hasHNext(self.hpage)) {
+                            hasNext = true;
+                        } else if (self.hpage < o.lastHPage()) {
+                            hasNext = true;
+                        }
+                        if (hasNext === true) {
+                            self.hpage++;
+                            self._loading();
+                            o.itemsCreator({
+                                hpage: self.hpage
+                            }, function (items, header, crossItems, crossHeader) {
+                                self.populate.apply(self, arguments);
+                                self._loaded();
+                            });
+                        }
+                    }
+                }
+            });
+        });
+
+        this.table.on(BI.CustomScrollTable.EVENT_RIGHT_SCROLL, function () {
+            var dot = self.table.getRightHorizontalScroll();
+            self.dots.push(dot);
+            self.lock();
+            if (dot < 50 && dot >= 0) {
+                //显示页码
+                self._showCurrentColumn();
+            } else {
+                self._hideCurrentColumn();
+            }
+        });
+
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
+
+        });
+        this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
+
+        });
+
+        this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
+
+        });
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+            self._hideCurrentColumn();
+        });
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+            self.fireEvent(BI.PageTable.EVENT_COLUMN_RESIZE);
+        });
+        this.pager = BI.createWidget(o.pager, {
+            type: "bi.number_pager",
+            width: 95,
+            height: this._const.scrollWidth,
+            cls: "page-table-pager"
+        });
+        this.pager.on(BI.NumberPager.EVENT_CHANGE, function () {
+            self._loading();
+            o.itemsCreator({
+                vpage: this.getCurrentPage()
+            }, function (items, header, crossItems, crossHeader) {
+                self.populate.apply(self, arguments);
+                self._loaded();
+            });
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.pager,
+                right: 0,
+                bottom: 0
+            }]
+        })
+    },
+
+    _loading: function () {
+        if (!this.loading) {
+            this.loading = BI.Maskers.make(this.getName(), this);
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.loading,
+                items: [{
+                    el: {
+                        type: "bi.label",
+                        cls: "page-table-loading-text",
+                        text: BI.i18nText("BI-Loading"),
+                        whiteSpace: "normal",
+                        width: this._const.scrollWidth
+                    },
+                    right: 0,
+                    top: 0,
+                    bottom: this._const.scrollWidth
+                }]
+            })
+        }
+        BI.Maskers.show(this.getName());
+    },
+
+    _loaded: function () {
+        BI.Maskers.hide(this.getName());
+        this._hideCurrentColumn();
+    },
+
+    _showCurrentColumn: function () {
+        var self = this, o = this.options;
+        this._hideCurrentColumn();
+        this._currentColumn = BI.createWidget({
+            type: "bi.text_button",
+            cls: "page-table-current-column",
+            text: BI.i18nText("BI-Di_A_Col", ((this.hpage - 1) * 20 + 1)),
+            hgap: 15,
+            height: 20,
+            handler: function () {
+                self._hideCurrentColumn();
+            }
+        });
+        if (BI.isNotNull(o.isNeedFreeze)) {
+            var regionSize = this.table.getRegionColumnSize();
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: this._currentColumn,
+                    left: regionSize[0] + 2,
+                    bottom: this._const.scrollWidth + 2
+                }]
+            })
+        } else {
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: this._currentColumn,
+                    left: 2,
+                    bottom: this._const.scrollWidth + 2
+                }]
+            })
+        }
+    },
+
+    _hideCurrentColumn: function () {
+        this._currentColumn && this._currentColumn.destroy();
+    },
+
+    setHPage: function (v) {
+        this.hpage = v;
+    },
+
+    setVPage: function (v) {
+        this.pager.setValue(v);
+    },
+
+    getHPage: function () {
+        return this.hpage;
+    },
+
+    getVPage: function () {
+        return this.pager.getCurrentPage();
+    },
+
+    resize: function () {
+        this.table.resize();
+    },
+
+    setColumnSize: function (size) {
+        this.table.setColumnSize(size);
+    },
+
+    getColumnSize: function () {
+        return this.table.getColumnSize();
+    },
+
+    attr: function () {
+        BI.PageTable.superclass.attr.apply(this, arguments);
+        this._hideCurrentColumn();
+        this.table.attr.apply(this.table, arguments);
+    },
+
+    populate: function (items) {
+        this.table.populate.apply(this.table, arguments);
+        this._hideCurrentColumn();
+        this.pager.populate();
+    },
+
+    destroy: function () {
+        this.table.destroy();
+        BI.PageTable.superclass.destroy.apply(this, arguments);
+    }
+});
+BI.PageTable.EVENT_CHANGE = "PageTable.EVENT_CHANGE";
+BI.PageTable.EVENT_COLUMN_RESIZE = "EVENT_COLUMN_RESIZE";
+$.shortcut('bi.page_table', BI.PageTable);

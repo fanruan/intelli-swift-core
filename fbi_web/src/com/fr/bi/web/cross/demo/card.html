@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5, IE=EmulateIE7, chrome=1">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>${layoutType}</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.fs.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=toolbar.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=core.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=widget.js&inter=${__locale__}"></script>
+    <style type="text/css">
+        .mark1 {
+            background-color: green;
+            border: 1px solid green;
+        }
+        .mark2 {
+            background-color: #007aff;
+            border: 1px solid #007aff;
+        }
+        .mark3 {
+            background-color: yellowgreen;
+            border: 1px solid yellowgreen;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var card = BI.createWidget({
+                renderEl : $('#container'),
+                type : 'bi.card',
+                defaultShowName : 'card1',
+                items : [
+                    {
+                        type : 'bi.label',
+                        cardName : 'card1',
+                        text : '测试一',
+                        cls : 'mark1'
+                    },
+                    {
+                        type : 'bi.label',
+                        cardName : 'card2',
+                        text : '测试二',
+                        cls : 'mark2'
+                    },
+                    {
+                        type : 'bi.label',
+                        cardName : 'card3',
+                        text : '测试三',
+                        cls : 'mark3'
+                    }
+                ]
+            });
+            $('#card1').click(function() {
+                card.showCardByName("card1");
+            });
+            $('#card2').click(function() {
+                card.showCardByName("card2");
+            });
+            $('#card3').click(function() {
+                card.showCardByName("card3");
+            });
+            $('#showlast').click(function() {
+                card.showLastCard();
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+<button id="card1">Show Card1</button>
+<button id="card2">Show Card2</button>
+<button id="card3">Show Card3</button>
+<button id="showlast">Show Last Card</button>
+<div id="container" style="position:relative;width:200px; height: 200px; top: 40px; left: 40px; background: papayawhip"></div>
+</body>
+</html>

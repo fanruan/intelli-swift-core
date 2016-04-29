@@ -1,0 +1,16 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-custom-sort-item {
+  border: 1px solid;
+  border-color: #d4dadd;
+}
+.bi-custom-sort-item .bi-button-mask {
+  opacity: 0.03;
+  filter: alpha(opacity=3);
+}
+.bi-sortable-holder {
+  background-color: #1a1a1a;
+  opacity: 0.1;
+  filter: alpha(opacity=10);
+}

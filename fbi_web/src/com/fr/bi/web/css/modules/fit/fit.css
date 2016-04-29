@@ -1,0 +1,26 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-fit .fit-drag-area {
+  background: #f3f3f3;
+}
+.bi-fit .fit-dashboard {
+  background: #f3f3f3;
+}
+.bi-fit .fit-dashboard .ui-resizable-s {
+  bottom: 0;
+}
+.bi-fit .fit-dashboard .ui-resizable-s:hover {
+  border-bottom: 1px solid #e85050;
+}
+.bi-fit .fit-dashboard .ui-resizable-e:hover {
+  border-right: 1px solid #e85050;
+}
+.bi-fit .layout-combo {
+  border: 1px solid transparent;
+}
+.bi-fit .layout-combo:hover {
+  border-radius: 2px;
+  border: 1px solid #d3d9dc;
+  background: #ffffff;
+}

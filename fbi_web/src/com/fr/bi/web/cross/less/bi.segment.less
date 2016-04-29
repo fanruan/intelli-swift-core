@@ -1,0 +1,58 @@
+@import "bi-extra-core.less";
+
+.fs-segment {
+  text-align: center;
+  font-size: 12px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.fs-segment-item {
+  position: absolute;
+  color: @color-bi-text-gray;
+  background-color: @color-segment-unselected-background;
+  border-top: 1px solid @color-segment-unselected-border;
+  border-bottom: 1px solid @color-segment-unselected-border;
+  top : 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  &:hover {
+    background-color: @color-segment-hover-background;
+    .opacity(.2);
+  }
+}
+
+.fs-segment-first {
+  .border-corner-radius(6px, 0, 0, 6px);
+  border-left: 1px solid @color-segment-unselected-border;
+}
+
+.fs-segment-last {
+  .border-corner-radius(0, 6px, 6px, 0);
+  border-right: 1px solid @color-segment-unselected-border;
+  &:hover {
+    border-color: @color-segment-hover-background;
+    .opacity(.2);
+  }
+}
+
+.fs-segment-item.active {
+  color: @color-segment-selected-text;
+  background-color: @color-segment-selected-background;
+  border-color: @color-segment-selected-background;
+  &:hover {
+    background-color: @color-segment-selected-background;
+    .opacity(1);
+  }
+}
+.fs-segment-split {
+  border-right : 1px solid @color-segment-unselected-border;
+  &:hover {
+    border-color: @color-segment-hover-background;
+    .opacity(.2);
+  }
+}
+.fs-segment-split.active {
+  border-color: @color-segment-selected-background;
+}

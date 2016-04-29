@@ -1,0 +1,1 @@
+package com.fr.bi.cal.analyze.cal.index.loader;/** * Created by Hiram on 2015/7/8. */public interface NFilterValue {}

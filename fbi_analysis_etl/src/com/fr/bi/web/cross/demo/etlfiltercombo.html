@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=GBK">
+    <meta http-equiv="Page-Enter" content="revealTrans(duration=5.0,transition=3)">
+
+    <title>FR.BIDezi</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=base.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=modules.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=analysis_etl.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=zh_CN"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.chart.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=core.js"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=data.js&version=&__pre__=true"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=formula.js&version=&__pre__=true"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&cmd=refresh"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js&cmd=refresh"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=dezi.js&cmd=refresh"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var combo = BI.createWidget({
+                type : 'bi.filter_combo_etl',
+                height:25,
+                width:25
+            })
+            combo.element.appendTo($("div.b"))
+        });
+    </script>
+</head>
+<body>
+<div class="a">
+</div>
+<div class="b">
+</div>
+</body>
+</html>

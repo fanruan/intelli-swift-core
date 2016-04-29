@@ -1,0 +1,11 @@
+/****��Ӽ����ȵ�--�����ֱ����Ҫspace****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-unused-helper {
+  background-color: #009de3;
+  font-size: 13px;
+  color: #ffffff;
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
+  opacity: 0.7;
+  z-index: 1000000000;
+}

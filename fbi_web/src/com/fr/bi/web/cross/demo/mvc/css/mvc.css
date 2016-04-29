@@ -1,0 +1,420 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.mvc-button:hover,
+.mvc-button.hover {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.mvc-button.active,
+.mvc-button:active {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.mvc-color-red {
+  color: #ea4738;
+}
+.mvc-color-blue {
+  color: #0088cc;
+}
+.mvc-font-big {
+  font-size: 16px;
+  font-weight: bold;
+}
+.mvc-font-bold {
+  font-weight: bold;
+}
+.mvc-border {
+  border: 1px solid #d4dadd;
+}
+.bi-mvc .left {
+  border-right: 1px solid #cccccc;
+}
+.bi-mvc .left .left-title {
+  font-size: 18px;
+  color: #ffffff;
+  background: #0088cc;
+}
+.bi-mvc .left .left-classify {
+  color: #999999;
+  background: #E6E6FA;
+}
+.bi-mvc .left .left-nav .left-nav-button {
+  color: #0088cc;
+  border: 1px solid #cccccc;
+}
+.bi-mvc .left .left-nav .left-nav-button:active,
+.bi-mvc .left .left-nav .left-nav-button.active {
+  background: #333333;
+  color: #ffffff;
+}
+.bi-mvc .right {
+  border-left: 1px solid #cccccc;
+}
+.bi-mvc .right > div > .first-col {
+  border-right: 1px solid #cccccc;
+}
+.bi-mvc .right .right-title {
+  font-size: 18px;
+  color: #ffffff;
+  background: #0088cc;
+}
+.bi-mvc .right .right-classify {
+  color: #999999;
+  background: #E6E6FA;
+}
+.bi-mvc .right .right-nav .right-nav-button {
+  color: #0088cc;
+  border: 1px solid #cccccc;
+}
+.bi-mvc .right .right-nav .right-nav-button:active,
+.bi-mvc .right .right-nav .right-nav-button.active {
+  background: #333333;
+  color: #ffffff;
+}
+.bi-mvc .top {
+  color: #999999;
+  border-bottom: 1px solid #cccccc;
+}
+.bi-mvc .bottom {
+  color: #999999;
+  border-top: 1px solid #cccccc;
+}
+.bi-default .nav-button {
+  font-size: 18px;
+  color: #ffffff;
+}
+.bi-default .button1 {
+  color: #ffffff;
+  background: #ff69b4;
+}
+.bi-default .button2 {
+  color: #ffffff;
+  background: #6495ED;
+}
+.bi-default .button3 {
+  color: #ffffff;
+  background: #008B8B;
+}
+.bi-default .button4 {
+  color: #ffffff;
+  background: #B8860B;
+}
+.bi-default .button5 {
+  color: #ffffff;
+  background: #0088cc;
+}
+.mvc-layer {
+  font-size: 18px;
+  background: #ffffff;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+}
+.bi-basic .title {
+  font-size: 14px;
+  color: #999999;
+}
+.bi-set-get .left-title,
+.bi-set-get .right-title {
+  background: #0088cc;
+  color: #ffffff;
+}
+.bi-set-get .left-nav {
+  border-bottom: 1px solid #cccccc;
+}
+.bi-set-get .left-nav.active,
+.bi-set-get .left-nav:active {
+  color: #ffffff;
+  background-color: #d9534f;
+}
+.bi-local .top-button {
+  background-color: #448eea;
+  color: #ffffff;
+}
+.bi-local .bottom-label {
+  background-color: #EA4738;
+  color: #ffffff;
+}
+.bi-local .delete-button {
+  background-color: #008B8B;
+  color: #ffffff;
+}
+.bi-local .vessel-border {
+  border-left: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+  border-right: 1px solid #cccccc;
+}
+.bi-event .title {
+  background: #0088cc;
+  color: #ffffff;
+}
+.bi-event .front {
+  background: #ADD8E6;
+}
+.bi-event .nav {
+  border: 1px solid #cccccc;
+}
+.bi-skip-to {
+  color: #ffffff;
+}
+.bi-skip-to .red-pane {
+  background-color: #0088cc;
+}
+.bi-skip-to .blue-pane {
+  background-color: #6495ED;
+}
+.bi-skip-to .green-pane {
+  background-color: #008B8B;
+}
+.bi-skip-to .yellow-pane {
+  background-color: #B8860B;
+}
+.bi-change .outer-text {
+  background-color: #0088cc;
+  color: #ffffff;
+}
+.bi-change .inner {
+  border-left: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+  border-right: 1px solid #cccccc;
+}
+.bi-change .type-first {
+  background-color: #008B8B;
+}
+.bi-change .type-second {
+  background-color: #6495ED;
+}
+.bi-change .type-third {
+  background-color: #0088cc;
+}
+.bi-layer .layer-background {
+  background: #B8860B;
+}
+.bi-layer .layer-button {
+  color: #ffffff;
+  background: #0088cc;
+  border: 1px solid #cccccc;
+}
+.bi-float-box {
+  background: #ffffff;
+}
+.bi-float-box .float-box-button {
+  color: #ffffff;
+  background: #0088cc;
+  border: 1px solid #cccccc;
+}
+.bi-tmp .tmp-button {
+  color: #ffffff;
+  background: #0088cc;
+}
+.bi-static .green-button {
+  color: #ffffff;
+  background-color: #008B8B;
+}
+.bi-static .blue-button {
+  color: #ffffff;
+  background-color: #0088cc;
+}
+.bi-mvc-layout .layout-bg-white {
+  background-color: #ffffff;
+}
+.bi-mvc-layout .layout-bg-gray {
+  background-color: #eeeeee;
+}
+.bi-mvc-layout .layout-bg1 {
+  color: #ffffff;
+  background-color: #0088cc;
+}
+.bi-mvc-layout .layout-bg2 {
+  color: #ffffff;
+  background-color: #008B8B;
+}
+.bi-mvc-layout .layout-bg3 {
+  color: #ffffff;
+  background-color: #6495ED;
+}
+.bi-mvc-layout .layout-bg4 {
+  color: #ffffff;
+  background-color: #ff69b4;
+}
+.bi-mvc-layout .layout-bg5 {
+  color: #ffffff;
+  background-color: #B8860B;
+}
+.bi-mvc-layout .layout-bg6 {
+  color: #ffffff;
+  background-color: #d9534f;
+}
+.bi-mvc-layout .layout-bg7 {
+  color: #ffffff;
+  background-color: #ea4738;
+}
+.bi-mvc-layout .layout-bg8 {
+  color: #ffffff;
+  background-color: #6495ed;
+}
+.bi-splice-duplicate .superiors-label {
+  color: white;
+  background-color: #008B8B;
+}
+.bi-splice-duplicate .sd-child {
+  border: 1px solid #cccccc;
+}
+.bi-splice-duplicate .sd-child .right-button-add {
+  color: white;
+  background-color: #0088cc;
+}
+.bi-splice-duplicate .sd-child .right-button-del {
+  color: white;
+  background-color: #d9534f;
+}
+.bi-vertical .border {
+  border: 1px solid #cccccc;
+}
+.bi-float-center .center-element {
+  min-width: 300px;
+  max-width: 400px;
+}
+.bi-lattice .lattice-item {
+  min-width: 200px;
+  max-width: 300px;
+}
+.bi-font {
+  -webkit-user-select: initial !important;
+  -moz-user-select: initial !important;
+  -ms-user-select: initial !important;
+  user-select: initial !important;
+  background: #ffffff;
+}
+.bi-font .font-description {
+  font-size: 14px;
+}
+.bi-font .b-font {
+  font-size: 30px;
+}
+.bi-i18n {
+  -webkit-user-select: initial !important;
+  -moz-user-select: initial !important;
+  -ms-user-select: initial !important;
+  user-select: initial !important;
+  background: #ffffff;
+}
+.bi-i18n .title {
+  font-size: 30px;
+  color: #008B8B;
+}
+.bi-i18n .key {
+  color: #0088cc;
+}
+.bi-i18n .value {
+  color: #008B8B;
+}
+.bi-mvc-combo .button-combo {
+  border: 1px solid #d4dadd;
+  border-radius: 2px;
+}
+.bi-mvc-data-structure {
+  font-size: 14px;
+}
+.bi-mvc-data-structure .title {
+  font-size: 30px;
+  color: #008B8B;
+}
+.bi-mvc-data-structure .structure-1 {
+  color: #008B8B;
+}
+.bi-mvc-data-structure .structure-2 {
+  color: #B8860B;
+}
+.bi-mvc-data-structure .structure-3 {
+  color: #0088cc;
+}
+.bi-mvc-data-structure .structure-4 {
+  color: #d9534f;
+}
+.bi-mvc-data-structure .structure-5 {
+  color: #ff69b4;
+}
+.bi-mvc-data-structure .structure-6 {
+  color: #6495ed;
+}
+.bi-mvc-data-structure .structure-7 {
+  color: #002B8B;
+}
+.bi-mvc-data-structure .structure-8 {
+  color: #2cc28B;
+}
+.bi-mvc-data-structure .sObjectK {
+  color: #0088cc;
+}
+.bi-mvc-data-structure .sObjectV {
+  color: #008B8B;
+}
+.bi-mvc-data-structure .sColon {
+  color: #d9534f;
+}
+.bi-mvc-data-structure .sArrayV {
+  color: #6495ed;
+}
+.bi-mvc-singletree-trigger {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-mvc-adapt-editor .adapt-editor-mvc {
+  max-width: 300px;
+  min-width: 200px;
+}
+.bi-mvc-sign-style-editor .sign-style-editor-border {
+  border: 1px solid #d4dadd;
+}
+.bi-mvc-sign-style-editor .sign-style-editor-mvc {
+  color: #808080;
+}
+.mvc-package-data {
+  font-size: 14px;
+}
+.mvc-package-data .title-label {
+  font-size: 22px;
+  color: #008B8B;
+}
+.mvc-package-data .description-label {
+  color: #6495ed;
+}
+.mvc-package-data .json-property {
+  color: #1A5988;
+}
+.mvc-package-data .json-semi-colon {
+  color: #14171A;
+}
+.mvc-package-data .json-value {
+  color: #222222;
+}
+.mvc-etl-data {
+  font-size: 14px;
+}
+.mvc-etl-data .title-label {
+  font-size: 22px;
+  color: #008B8B;
+}
+.mvc-etl-data .description-label {
+  color: #6495ed;
+}
+.mvc-etl-data .json-property {
+  color: #1A5988;
+}
+.mvc-etl-data .json-semi-colon {
+  color: #14171A;
+}
+.mvc-etl-data .json-value {
+  color: #222222;
+}
+.mvc-etl-circle-view .mvc-circle-self {
+  border: 1px solid #d4dadd;
+}
+.bi-mvc-branch-relation .branch-relation-item {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  background-color: #d8f3fe;
+}

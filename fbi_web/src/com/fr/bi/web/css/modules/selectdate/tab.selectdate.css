@@ -1,0 +1,23 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-select-date {
+  border: 1px solid #ffffff;
+  background-color: #ffffff;
+  -webkit-border-radius: 4px 4px 0px 0px;
+  -moz-border-radius: 4px 4px 0px 0px;
+  border-radius: 4px 4px 0px 0px;
+}
+.bi-select-date .bi-widget-attr-label {
+  font-size: 14px;
+  color: #1a1a1a;
+  border-bottom: 2px solid transparent;
+}
+.bi-select-date .bi-widget-attr-label:hover,
+.bi-select-date .bi-widget-attr-label.active {
+  color: #009de3;
+}
+.bi-select-date .bi-widget-attr-label.active {
+  color: #009de3;
+  border-bottom: 2px solid #178cdf;
+}

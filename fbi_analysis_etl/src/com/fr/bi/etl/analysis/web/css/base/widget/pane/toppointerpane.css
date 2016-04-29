@@ -1,0 +1,40 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-analysis-etl-top-pointer-pane .bi-analysis-etl-top-pointer-pane-item {
+  top: -1px;
+  border: 1px solid #eaeaea;
+  background: #ffffff;
+}
+.bi-analysis-etl-top-pointer-pane .x-pointer-top {
+  z-index: 1;
+}
+.bi-analysis-etl-top-pointer-pane .x-pointer-top svg path {
+  stroke: #eaeaea;
+  fill: #ffffff;
+}
+.bi-analysis-etl-top-pointer-pane .disable {
+  background: #ffffff;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.bi-animate-pointer-height-resize {
+  -webkit-animation: position-left-0-300 0.5s ease;
+  -moz-animation: position-left-0-300 0.5s ease;
+  -o-animation: position-left-0-300 0.5s ease;
+  animation: position-left-0-300 0.5s ease;
+}
+@keyframes position-left-0-300 {
+  from  {height:0} to {height:310px}  /**to{1: 1;}**/;
+}
+@-webkit-keyframes position-left-0-300 {
+  from  {height:0} to {height:310px}  /**to{1: 1;}**/;
+}
+@-moz-keyframes position-left-0-300 {
+  from  {height:0} to {height:310px}  /**to{1: 1;}**/;
+}
+@-o-keyframes position-left-0-300 {
+  from  {height:0} to {height:310px}  /**to{1: 1;}**/;
+}

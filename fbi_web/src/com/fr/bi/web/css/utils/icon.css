@@ -1,0 +1,433 @@
+.tree-collapse-icon-type1 .x-icon,
+.tree-collapse-icon-type1:hover .x-icon,
+.tree-collapse-icon-type1:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-1.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-1.png');
+  _background: none;
+}
+.tree-collapse-icon-type1.native .x-icon,
+.tree-collapse-icon-type1.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-1.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-1.png');
+  _background: none;
+}
+.tree-collapse-icon-type2 .x-icon,
+.tree-collapse-icon-type2:hover .x-icon,
+.tree-collapse-icon-type2:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-2.png');
+  _background: none;
+}
+.tree-collapse-icon-type2.native .x-icon,
+.tree-collapse-icon-type2.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-2.png');
+  _background: none;
+}
+.tree-collapse-icon-type3 .x-icon,
+.tree-collapse-icon-type3:hover .x-icon,
+.tree-collapse-icon-type3:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-3.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-3.png');
+  _background: none;
+}
+.tree-collapse-icon-type3.native .x-icon,
+.tree-collapse-icon-type3.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-3.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-3.png');
+  _background: none;
+}
+.tree-collapse-icon-type4 .x-icon,
+.tree-collapse-icon-type4:hover .x-icon,
+.tree-collapse-icon-type4:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-4.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-4.png');
+  _background: none;
+}
+.tree-collapse-icon-type4.native .x-icon,
+.tree-collapse-icon-type4.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-4.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-collapse-4.png');
+  _background: none;
+}
+.tree-expand-icon-type1 .x-icon,
+.tree-expand-icon-type1:hover .x-icon,
+.tree-expand-icon-type1:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-1.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-1.png');
+  _background: none;
+}
+.tree-expand-icon-type1.native .x-icon,
+.tree-expand-icon-type1.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-1.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-1.png');
+  _background: none;
+}
+.tree-expand-icon-type2 .x-icon,
+.tree-expand-icon-type2:hover .x-icon,
+.tree-expand-icon-type2:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-2.png');
+  _background: none;
+}
+.tree-expand-icon-type2.native .x-icon,
+.tree-expand-icon-type2.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-2.png');
+  _background: none;
+}
+.tree-expand-icon-type3 .x-icon,
+.tree-expand-icon-type3:hover .x-icon,
+.tree-expand-icon-type3:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-3.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-3.png');
+  _background: none;
+}
+.tree-expand-icon-type3.native .x-icon,
+.tree-expand-icon-type3.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-3.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-3.png');
+  _background: none;
+}
+.tree-expand-icon-type4 .x-icon,
+.tree-expand-icon-type4:hover .x-icon,
+.tree-expand-icon-type4:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-4.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-4.png');
+  _background: none;
+}
+.tree-expand-icon-type4.native .x-icon,
+.tree-expand-icon-type4.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-4.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-expand-4.png');
+  _background: none;
+}
+.tree-vertical-line-type2 .x-icon,
+.tree-vertical-line-type2:hover .x-icon,
+.tree-vertical-line-type2:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-2.png');
+  _background: none;
+}
+.tree-vertical-line-type2.native .x-icon,
+.tree-vertical-line-type2.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-2.png');
+  _background: none;
+}
+.tree-vertical-line-type3 .x-icon,
+.tree-vertical-line-type3:hover .x-icon,
+.tree-vertical-line-type3:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-3.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-3.png');
+  _background: none;
+}
+.tree-vertical-line-type3.native .x-icon,
+.tree-vertical-line-type3.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-3.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-3.png');
+  _background: none;
+}
+.tree-vertical-line-type4 .x-icon,
+.tree-vertical-line-type4:hover .x-icon,
+.tree-vertical-line-type4:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-4.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-4.png');
+  _background: none;
+}
+.tree-vertical-line-type4.native .x-icon,
+.tree-vertical-line-type4.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-4.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/tree-vertical-line-4.png');
+  _background: none;
+}
+.check-box-icon .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-normal.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-normal.png');
+  _background: none;
+}
+.check-box-icon:hover .x-icon,
+.check-box-icon:focus .x-icon,
+.check-box-icon.hover .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-normal.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-normal.png');
+  _background: none;
+}
+.check-box-icon:active .x-icon,
+.check-box-icon.active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-active.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-active.png');
+  _background: none;
+}
+.check-box-icon.native .x-icon,
+.check-box-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-disable.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-disable.png');
+  _background: none;
+}
+.check-half-select-icon .x-icon,
+.check-half-select-icon:hover .x-icon,
+.check-half-select-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected_new.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected_new.png');
+  _background: none;
+}
+.check-half-select-icon.native .x-icon,
+.check-half-select-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected_new.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected_new.png');
+  _background: none;
+}
+.loading-bar-icon .x-icon,
+.loading-bar-icon:hover .x-icon,
+.loading-bar-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/loading_bar.gif') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/loading_bar.gif');
+  _background: none;
+}
+.loading-bar-icon.native .x-icon,
+.loading-bar-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/loading_bar.gif') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/loading_bar.gif');
+  _background: none;
+}
+.left-join-icon .x-icon,
+.left-join-icon:hover .x-icon,
+.left-join-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/left-join.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/left-join.png');
+  _background: none;
+}
+.left-join-icon.native .x-icon,
+.left-join-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/left-join.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/left-join.png');
+  _background: none;
+}
+.right-join-icon .x-icon,
+.right-join-icon:hover .x-icon,
+.right-join-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/right-join.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/right-join.png');
+  _background: none;
+}
+.right-join-icon.native .x-icon,
+.right-join-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/right-join.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/right-join.png');
+  _background: none;
+}
+.inner-join-icon .x-icon,
+.inner-join-icon:hover .x-icon,
+.inner-join-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/inner-join.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/inner-join.png');
+  _background: none;
+}
+.inner-join-icon.native .x-icon,
+.inner-join-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/inner-join.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/inner-join.png');
+  _background: none;
+}
+.outer-join-icon .x-icon,
+.outer-join-icon:hover .x-icon,
+.outer-join-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/outer-join.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/outer-join.png');
+  _background: none;
+}
+.outer-join-icon.native .x-icon,
+.outer-join-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/outer-join.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/outer-join.png');
+  _background: none;
+}
+.data-link-test-fail-icon .x-icon,
+.data-link-test-fail-icon:hover .x-icon,
+.data-link-test-fail-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/test_fail.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/test_fail.png');
+  _background: none;
+}
+.data-link-test-fail-icon.native .x-icon,
+.data-link-test-fail-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/test_fail.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/test_fail.png');
+  _background: none;
+}
+.data-link-test-success-icon .x-icon,
+.data-link-test-success-icon:hover .x-icon,
+.data-link-test-success-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/test_success.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/test_success.png');
+  _background: none;
+}
+.data-link-test-success-icon.native .x-icon,
+.data-link-test-success-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/test_success.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/test_success.png');
+  _background: none;
+}
+.business-package-icon .x-icon,
+.business-package-icon:hover .x-icon,
+.business-package-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package.png');
+  _background: none;
+}
+.business-package-icon.native .x-icon,
+.business-package-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package.png');
+  _background: none;
+}
+.business-package-add-icon .x-icon,
+.business-package-add-icon:hover .x-icon,
+.business-package-add-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package_add.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package_add.png');
+  _background: none;
+}
+.business-package-add-icon.native .x-icon,
+.business-package-add-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package_add.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package_add.png');
+  _background: none;
+}
+.business-package-selected-icon .x-icon,
+.business-package-selected-icon:hover .x-icon,
+.business-package-selected-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/package_selected.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/package_selected.png');
+  _background: none;
+}
+.business-package-selected-icon.native .x-icon,
+.business-package-selected-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/package_selected.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/package_selected.png');
+  _background: none;
+}
+.card-view-report-icon .x-icon,
+.card-view-report-icon:hover .x-icon,
+.card-view-report-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/report.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/report.png');
+  _background: none;
+}
+.card-view-report-icon.native .x-icon,
+.card-view-report-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/report.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/report.png');
+  _background: none;
+}
+.table-style1-icon .x-icon,
+.table-style1-icon:hover .x-icon,
+.table-style1-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_1.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_1.png');
+  _background: none;
+}
+.table-style1-icon.native .x-icon,
+.table-style1-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_1.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_1.png');
+  _background: none;
+}
+.table-style2-icon .x-icon,
+.table-style2-icon:hover .x-icon,
+.table-style2-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_2.png');
+  _background: none;
+}
+.table-style2-icon.native .x-icon,
+.table-style2-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_2.png');
+  _background: none;
+}
+.table-style3-icon .x-icon,
+.table-style3-icon:hover .x-icon,
+.table-style3-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_3.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_3.png');
+  _background: none;
+}
+.table-style3-icon.native .x-icon,
+.table-style3-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_3.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/table_style_3.png');
+  _background: none;
+}
+.example-excel-icon .x-icon,
+.example-excel-icon:hover .x-icon,
+.example-excel-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/example.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/example.png');
+  _background: none;
+}
+.example-excel-icon.native .x-icon,
+.example-excel-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/example.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/example.png');
+  _background: none;
+}

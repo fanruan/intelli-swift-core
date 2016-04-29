@@ -1,0 +1,51 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-conf-etl {
+  background: #f4f4f4;
+}
+.bi-conf-etl .empty-tip {
+  color: #c4c6c6;
+  font-size: 16px;
+}
+.bi-conf-etl .etl-data-set-pane {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  background: #ffffff;
+}
+.bi-conf-etl .etl-data-set-pane .data-set-pane-north {
+  border-bottom: 1px solid #d4dadd;
+  color: #808080;
+  font-size: 14px;
+}
+.bi-conf-etl .etl-data-set-pane .data-set-main .refresh-button {
+  font-size: 16px;
+}
+.bi-conf-etl .etl-data-set-pane .data-set-main .table-name-label {
+  color: #808080;
+  font-size: 14px;
+}
+.bi-conf-etl .etl-data-set-pane .data-set-main .table-name-editor {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-conf-etl .etl-etl-set-pane {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  background: #ffffff;
+}
+.bi-conf-etl .etl-etl-set-pane .etl-set-pane-north {
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-conf-etl .etl-etl-set-pane .etl-set-pane-north .north-label {
+  color: #808080;
+  font-size: 14px;
+}
+.bi-conf-etl .etl-remove-table {
+  font-size: 14px;
+  color: #009de3;
+}

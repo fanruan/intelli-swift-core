@@ -1,0 +1,19 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-analysis-etl-operator-group-pane {
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-analysis-etl-operator-group-pane .select-field {
+  border-right: 1px solid #eaeaea;
+}
+.bi-analysis-etl-operator-group-pane .bi-region-nav {
+  background: #d8f2fd;
+  border-bottom: 1px solid #a3d6e8;
+}
+.bi-analysis-etl-operator-group-pane .target-region .bi-region-nav {
+  background: #e1f4e7;
+  border-bottom: 1px solid #9fd3ae;
+}

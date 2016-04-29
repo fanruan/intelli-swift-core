@@ -1,0 +1,13 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-etl-add-group-field-float-box-field-pane {
+  background-color: #ffffff;
+  z-index: 2;
+}
+.bi-etl-add-group-field-float-box-field-button {
+  font-size: 16px;
+}
+.bi-etl-add-group-field-float-box-label {
+  color: #808080;
+}

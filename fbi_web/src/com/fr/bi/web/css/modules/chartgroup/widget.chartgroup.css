@@ -1,0 +1,19 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-chart-type-group {
+  background: #f3f3f3;
+  border: 1px solid #eaeaea;
+  font-size: 22px;
+}
+.bi-chart-type-group .bi-table-type-combo:hover,
+.bi-chart-type-group .bi-table-type-combo.active {
+  background: #d4dadd;
+}
+.bi-chart-type-group .bi-table-type-combo .table-type {
+  font-size: 12px;
+}
+.bi-chart-type-group .detail-chart-type:hover,
+.bi-chart-type-group .detail-chart-type.active {
+  background: #d4dadd;
+}

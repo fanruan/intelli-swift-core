@@ -1,0 +1,112 @@
+@import "../bibase";
+.base-disabled{
+  cursor: default !important;
+  color: #c4c6c6 !important;
+  //.opacity(0.5);
+  & .b-font:before{
+    color: #c4c6c6 !important;
+  }
+}
+.base-invalid{
+  cursor: default !important;
+}
+
+.clearfix{
+  .clearfix();
+}
+
+
+//标红色
+.bi-keyword-red-mark {
+  color: @color-bi-text-redmark;
+  vertical-align:top;
+}
+
+//高亮色
+.bi-high-light{
+  color: @color-bi-text-highlight;
+}
+
+//水印颜色
+.bi-water-mark{
+  color: @water-mark-color;
+  cursor: text;
+}
+
+//提示文本, 灰色字体
+.bi-tips {
+  color: @color-bi-text-tips;
+}
+
+//只有背景变化
+.bi-list-item{
+  &:hover,&.hover{
+    background-color: @color-bi-background-gray;
+  }
+  &.disabled{
+    &, &:hover, &:active{
+      background-color: @color-bi-background-default;
+    }
+  }
+}
+
+//文字hover和active时变化
+.bi-list-item-effect{
+  &.active,&:active{
+    color: @color-bi-text-highlight;
+  }
+  &.disabled{
+    &, &:hover, &:active{
+      color: @color-bi-text-black;
+    }
+  }
+}
+
+//文字和背景hover时变化
+.bi-list-item-hover{
+  &:hover,&.hover{
+    color: @color-bi-text-highlight;
+    background-color: @color-bi-background-gray;
+  }
+  &.disabled{
+    &, &:hover, &:active{
+      background-color: @color-bi-background-default;
+    }
+  }
+}
+
+//文字和背景hover和active时变化
+.bi-list-item-active{
+  &:hover,&.hover{
+    background-color: @color-bi-background-gray;
+  }
+  &.active,&:active{
+    color: @color-bi-text-highlight;
+    background-color: @color-bi-background-gray;
+  }
+  &.disabled{
+    &, &:hover, &:active{
+      background-color: @color-bi-background-default;
+    }
+  }
+}
+
+//有选中效果
+.bi-list-item-select{
+  &:hover, &.hover {
+    color: @color-bi-text-highlight;
+    background-color: @color-bi-background-gray;
+  }
+  &:active, &.active {
+    color: @color-bi-text;
+    background-color: @color-bi-background-highlight;
+    & .bi-high-light{
+      color: @color-bi-text;
+    }
+  }
+  &.disabled {
+    &, &:hover, &:active {
+      background-color: @color-bi-background-default;
+    }
+  }
+}

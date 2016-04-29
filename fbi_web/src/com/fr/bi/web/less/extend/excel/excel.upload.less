@@ -1,0 +1,35 @@
+@import "../../bibase";
+.bi-excel-upload{
+  background: @color-bi-background-gray;
+  & .upload-excel-pane{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .upload-north{
+      border-bottom: 1px solid @color-bi-border-normal;
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+    & .upload-tool{
+      & .upload-info{
+        color: @color-bi-text-gray;
+        font-size: @font-size-14;
+      }
+      & .excel-name{
+        color: @color-bi-text-black;
+      }
+    }
+  }
+  & .upload-excel-preview{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .preview-north{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+    & .preview-empty-tip{
+      color: @color-bi-text-gray;
+      font-size: @font-size-16;
+    }
+  }
+}

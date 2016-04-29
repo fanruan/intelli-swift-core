@@ -1,0 +1,15 @@
+@import "../../../../bibase";
+@import "../../../../animate";
+
+.bi-analysis-etl-operator-button-column {
+    font-size: @font-size-13;
+    color:@background-color-black;
+
+    &.active, &:active, &.hover, &:hover {
+        background: @background-color-light-blue;
+    }
+
+    .transition-hover-css3(delete, rotate(90deg) scale(1.2));
+
+    .transition-hover-css3(set, rotate(90deg) scale(1.2));
+}

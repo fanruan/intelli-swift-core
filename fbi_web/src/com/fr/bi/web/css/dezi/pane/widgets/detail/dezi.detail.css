@@ -1,0 +1,64 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-widget-attribute-setter {
+  background: #ffffff;
+}
+.bi-widget-attribute-setter .widget-attr-north {
+  background: #f3f3f3;
+}
+.bi-widget-attribute-setter .widget-attr-north .bi-widget-attr-name-input {
+  font-size: 16px;
+}
+.bi-widget-attribute-setter .widget-attr-west {
+  background: #f3f3f3;
+}
+.bi-widget-attribute-setter .widget-attr-west .widget-select-data-pane {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-widget-attribute-setter .widget-attr-center {
+  background: #f3f3f3;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-show-data-pane .bi-sp-control-display {
+  min-width: 864px;
+  border: 1px solid #7691a3;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-show-data-pane .bi-statistic-button-group .bi-statistic-tab-button {
+  -webkit-border-radius: 2px 2px 0px 0px;
+  -moz-border-radius: 2px 2px 0px 0px;
+  border-radius: 2px 2px 0px 0px;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-show-data-pane .bi-statistic-button-group .bi-statistic-tab-button.active {
+  background: #009de3;
+  color: #ffffff;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-show-data-pane .widget-top-wrapper {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-show-data-pane .widget-top-wrapper .bi-widget-attr-tab .bi-data-style-button-group {
+  font-size: 16px;
+  border-bottom: 3px solid #ffffff;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-show-data-pane .widget-top-wrapper .bi-widget-attr-tab .bi-data-style-button-group.active {
+  border-bottom: 3px solid #009de3;
+  color: #009de3;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-show-data-pane .widget-top-wrapper .bi-widget-real-data .bi-real-data-warning {
+  color: #e85050;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-show-data-pane .bi-view-setter-card-block > div {
+  min-width: 182px;
+  max-width: 282px;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-attr-chart {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}

@@ -1,0 +1,11 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-multi-path-chooser .no-path-label {
+  font-size: 14px;
+  color: #e85050;
+}
+.bi-multi-path-chooser .one-path-label {
+  color: #58cc7d;
+  font-size: 14px;
+}

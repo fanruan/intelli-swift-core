@@ -1,0 +1,3 @@
+在这里添加的js文件，都是会用到决策平台中的，要js文件生效，需要在
+fbi模块的com.fr.BIPlate的getPlateJavaScriptFiles4WebClient
+方法中加上新加的js文件

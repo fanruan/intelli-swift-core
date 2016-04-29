@@ -1,0 +1,103 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.solid-triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #fddddd;
+}
+.solid-triangle-down {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #fddddd;
+}
+.solid-triangle-left {
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-right: 10px solid #fddddd;
+  border-bottom: 10px solid transparent;
+}
+.solid-triangle-right {
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-left: 10px solid #fddddd;
+  border-bottom: 10px solid transparent;
+}
+.solid-triangle-topleft {
+  width: 0;
+  height: 0;
+  border-top: 10px solid #fddddd;
+  border-right: 10px solid transparent;
+}
+.solid-triangle-topright {
+  width: 0;
+  height: 0;
+  border-top: 10px solid #fddddd;
+  border-left: 10px solid transparent;
+}
+.solid-triangle-bottomleft {
+  width: 0;
+  height: 0;
+  border-bottom: 10px solid #fddddd;
+  border-right: 10px solid transparent;
+}
+.solid-triangle-bottomright {
+  width: 0;
+  height: 0;
+  border-bottom: 10px solid #fddddd;
+  border-left: 10px solid transparent;
+}
+.triangle-top {
+  position: absolute;
+  width: 16px;
+  height: 10px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.triangle-top:before {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  border-bottom: 10px solid #ccc;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  content: "";
+}
+.triangle-top:after {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 0px;
+  border-bottom: 9px solid #f5f5f5;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  content: "";
+}
+.triangle-bottom {
+  position: absolute;
+  width: 16px;
+  height: 10px;
+  border-top: 1px solid #f5f5f5;
+}
+.triangle-bottom:after {
+  position: absolute;
+  right: 1px;
+  top: -1px;
+  border-top: 9px solid #f5f5f5;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  content: "";
+}
+.triangle-bottom:before {
+  position: absolute;
+  border-top: 10px solid #cccccc;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  content: "";
+}

@@ -1,0 +1,45 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-etl-convert {
+  background: #f4f4f4;
+}
+.bi-etl-convert .convert-north .convert-north-label {
+  color: #808080;
+  font-size: 14px;
+}
+.bi-etl-convert .convert-table-name {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-etl-convert .convert-table-name .table-name-text {
+  color: #808080;
+  font-size: 14px;
+}
+.bi-etl-convert .convert-operator-pane {
+  background-color: #ffffff;
+}
+.bi-etl-convert .convert-operator-pane .table-name-text-twenty {
+  color: #808080;
+  font-size: 12px;
+}
+.bi-etl-convert .convert-operator-pane .base-field-text-trigger {
+  border: 1px solid #d4dadd;
+}
+.bi-etl-convert .convert-preview-result {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-etl-convert .convert-preview-result .convert-result-text {
+  color: #808080;
+  font-size: 14px;
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-etl-convert .convert-preview-result .convert-result-tip {
+  color: #808080;
+  font-size: 16px;
+}

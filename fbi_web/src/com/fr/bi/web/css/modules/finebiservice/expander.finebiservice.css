@@ -1,0 +1,15 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-finebi-service-expander {
+  border-top: 1px solid #eaeaea;
+}
+.bi-finebi-service-expander .finebi-service-expander-title {
+  font-size: 14px;
+}
+.bi-finebi-service-expander .finebi-service-expander-title .b-font {
+  font-size: 16px;
+}
+.bi-finebi-service-expander .finebi-service-expander-item {
+  font-size: 14px;
+}

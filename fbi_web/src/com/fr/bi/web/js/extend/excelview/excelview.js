@@ -1,0 +1,185 @@
+/**
+ * ExcelView
+ *
+ * Created by GUY on 2016/3/30.
+ * @class BI.ExcelView
+ * @extends BI.Widget
+ */
+BI.ExcelView = BI.inherit(BI.Single, {
+
+    _defaultConfig: function () {
+        return BI.extend(BI.ExcelView.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-excel-view",
+            height: 25,
+            items: []
+        });
+    },
+
+    _init: function () {
+        BI.ExcelView.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
+        this.open = BI.createWidget({
+            type: "bi.button",
+            level: "success",
+            height: o.height,
+            text: BI.i18nText("BI-Open_Excel_View")
+        });
+        this.close = BI.createWidget({
+            type: "bi.button",
+            invisible: true,
+            height: o.height,
+            text: BI.i18nText("BI-Close_Excel_View")
+        });
+        this.table = BI.createWidget({
+            type: "bi.excel_table",
+            columnSize: BI.makeArray(o.items[0].length, ""),
+            items: this._createItems(o.items)
+        });
+        this.combo = BI.createWidget({
+            type: "bi.combo",
+            isDefaultInit: false,
+            element: this.element,
+            el: {
+                type: "bi.horizontal_adapt",
+                items: [this.open, this.close]
+            },
+            adjustLength: 20,
+            popup: {
+                type: "bi.popup_view",
+                cls: "excel-table-popup-view",
+                logic: {
+                    dynamic: false
+                },
+                maxWidth: BI.MAX,
+                maxHeight: BI.MAX,
+                el: this.table
+            },
+            direction: "left,custom"
+        });
+        this.combo.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {
+            self.table.resizeHeader();
+            self._showClose();
+        });
+        this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
+            self._showOpen();
+        })
+
+    },
+
+    _createItems: function (items) {
+        var self = this;
+        var store = [];
+        var draggable = {
+            cursor: BICst.cursorUrl,
+            cursorAt: {left: 5, top: 5},
+            drag: function (e, ui) {
+            },
+            start: function () {
+                self.combo.hideView();
+            },
+            stop: function () {
+                self.combo.showView();
+            },
+            helper: function () {
+                var text;
+                if (store.length > 1) {
+                    text = BI.i18nText("BI-All_Field_Count", store.length);
+                } else {
+                    text = BI.Utils.getFieldNameByID(store[0]);
+                }
+                var data = BI.map(store, function (idx, fId) {
+                    var fieldType = BI.Utils.getFieldTypeByID(fId);
+                    var targetType = BICst.TARGET_TYPE.STRING;
+                    switch (fieldType) {
+                        case BICst.COLUMN.STRING:
+                            targetType = BICst.TARGET_TYPE.STRING;
+                            break;
+                        case BICst.COLUMN.NUMBER:
+                            targetType = BICst.TARGET_TYPE.NUMBER;
+                            break;
+                        case BICst.COLUMN.DATE:
+                            targetType = BICst.TARGET_TYPE.DATE;
+                            break;
+                    }
+                    return {
+                        id: fId,
+                        name: BI.Utils.getFieldNameByID(fId),
+                        _src: {
+                            id: fId,
+                            field_id: fId
+                        },
+                        type: targetType
+                    };
+                });
+                var help = BI.createWidget({
+                    type: "bi.helper",
+                    data: {data: data},
+                    text: text
+                });
+                BI.createWidget({
+                    type: "bi.absolute",
+                    element: "body",
+                    items: [{
+                        el: help
+                    }]
+                });
+                return help.element;
+            }
+        };
+        var result = [];
+        BI.each(items, function (i, row) {
+            var r = [];
+            BI.each(row, function (j, item) {
+                r.push(BI.extend(item.value ? {
+                    type: "bi.excel_view_cell",
+                    drag: draggable,
+                    title: BI.Utils.getFieldNameByID(item.value),
+                    handler: function () {
+                        if (this.isSelected()) {
+                            store.push(this.getValue());
+                        } else {
+                            BI.remove(store, this.getValue());
+                        }
+                    }
+                } : {}, item))
+            });
+            result.push(r);
+        });
+        return result;
+    },
+
+    _showOpen: function () {
+        this.open.setVisible(true);
+        this.close.setVisible(false);
+    },
+
+    _showClose: function () {
+        this.open.setVisible(false);
+        this.close.setVisible(true);
+    },
+
+    isSelected: function () {
+
+    },
+
+    setSelected: function (b) {
+
+    },
+
+    doRedMark: function () {
+
+    },
+
+    unRedMark: function () {
+
+    },
+
+    doHighLight: function () {
+
+    },
+
+    unHighLight: function () {
+
+    }
+});
+$.shortcut('bi.excel_view', BI.ExcelView);

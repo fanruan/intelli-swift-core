@@ -1,0 +1,13 @@
+@import "../../../../bibase";
+
+.bi-excel-view-setting-item {
+  cursor: pointer;
+  &:active, &.active {
+    color: @color-bi-text;
+    background: @color-bi-background-highlight;
+  }
+  & .excel-view-setting-item-cell {
+    border-left: 1px solid @color-bi-border-line;
+  }
+  border-bottom: 1px solid @color-bi-border-line;
+}

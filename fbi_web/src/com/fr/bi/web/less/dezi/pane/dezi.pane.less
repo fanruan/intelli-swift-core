@@ -1,0 +1,53 @@
+@import "../../bibase";
+
+.bi-toolbar {
+  border-bottom: 1px solid @color-dashboard-toolbar-border;
+  background: @color-bi-background-normal;
+  color: @color-dashboard-toolbar-font;
+  & .save-as{
+
+  }
+  & .undo{
+
+  }
+  & .redo{
+
+  }
+  & .layout-combo{
+    border: 1px solid transparent;
+    &:hover{
+      border-radius: 2px;
+      border: 1px solid @color-dashboard-toolbar-border;
+      background: @color-bi-background-default;
+    }
+  }
+}
+
+.bi-drag-area{
+  background: @color-bi-background-normal;
+}
+
+.bi-toolbar-button {
+  .border-corner-radius(4px, 4px, 4px, 4px);
+
+  &:hover {
+    background-color: #f1f4fb;
+    .box-shadow( 0px 0px 1px, #cccccc);
+    .opacity(1);
+  }
+
+  &:active {
+    background-color: rgb(255,255,255);
+    .box-shadow( 0px 0px 1px, #cccccc);
+    .opacity(0.6);
+  }
+}
+
+/***************************************DashBoard**************************************************/
+.bi-widget-dashboard,.bi-dashboard {
+  background: @color-bi-background-normal;
+}
+
+/***************************************Tab**************************************************/
+.bi-dashboard-south{
+}

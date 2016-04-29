@@ -1,0 +1,31 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-tab-sheet-button {
+  border: 1px solid #d4dadd;
+  border-left-width: 0px;
+  background: #eaeaea;
+}
+.bi-tab-sheet-button.active,
+.bi-tab-sheet-button:active {
+  border-top-color: #f4f4f4;
+  background: #f4f4f4;
+}
+.bi-tab-sheet-button .icon-anamate {
+  transition: transform 0.5s ease;
+  -webkit-transition: -webkit-transform 0.5s ease;
+  -moz-transition: -moz-transform 0.5s ease;
+  -o-transition: -o-transform 0.5s ease;
+}
+.bi-tab-sheet-button .icon-anamate:hover,
+.bi-tab-sheet-button .icon-anamate.hover {
+  transform: scale(1.2);
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -o-transform: scale(1.2);
+}
+.bi-tab-sheet-button .bi-label {
+  margin-left: 10px;
+}

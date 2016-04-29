@@ -1,0 +1,25 @@
+@import "../../../../bibase";
+
+.bi-string-region{
+  border: 1px solid @color-dimension-region-border;
+  & .bi-region-nav{
+    & .bi-region-north-title{
+      font-size: @font-size-14;
+    }
+  }
+  & .bi-region-comment{
+    font-size: @font-size-14;
+    color: @color-bi-text-dark;
+  }
+}
+
+//维度或指标放置的容器必须放在外面
+.bi-string-dimension-container{
+  background: @color-dimension-background;
+  .border-radius(2px);
+}
+
+.bi-string-target-container{
+  background: @color-target-background;
+  .border-radius(2px);
+}

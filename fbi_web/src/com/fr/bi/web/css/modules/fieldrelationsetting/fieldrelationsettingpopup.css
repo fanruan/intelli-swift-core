@@ -1,0 +1,12 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.detail-table-path-setting-field-label {
+  font-size: 14px;
+  color: #808080;
+  border-bottom: 1px solid #d4dadd;
+}
+.detail-table-path-setting-tip-label {
+  font-size: 14px;
+  color: #009de3;
+}

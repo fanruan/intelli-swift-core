@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/conf/bi_3.0conf.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/conf/conf_excel.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=widget.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=dezi.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=conf.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/fbi_fe.css"/>
+
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/ui/cupertino/jquery-ui.custom.css"/>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/web/core/js/excanvas.js"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/ui/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/ui/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/ui/jquery.ui.mouse.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/ui/jquery.ui.position.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/ui/jquery.ui.button.js"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/ui/jquery.ui.resizable.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/ui/jquery.ui.draggable.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/ui/jquery.ui.droppable.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/ui/jquery.ui.sortable.js"></script>
+
+
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/third/jquery.ui.effect.js"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/bi_constant.js"></script>
+    
+	<script type="text/javascript" src="${servletURL}?op=emb&resource=widget.js"></script>
+	<script type="text/javascript" src="${servletURL}?op=emb&resource=dezi.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=conf.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/conf/fe_conf.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+        	FR.FEConfigure._init({
+                tableName : '${tableName}',
+                md5TableName : '${md5TableName}'
+            });
+
+        });
+    </script>
+</head>
+<body>
+<canvas id="bus_relation" style="display: none"></canvas>
+<canvas id="bus_relation_hover" style="display: none"></canvas>
+</body>
+</html>

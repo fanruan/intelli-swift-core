@@ -1,0 +1,19 @@
+@import "../../bibase";
+
+.bi-select-string {
+  border: 1px solid @color-bi-border-default;
+  background-color: @color-bi-background-default;
+  .border-corner-radius(4px,4px, 0px, 0px);
+  & .bi-widget-attr-label{
+    font-size: @font-size-14;
+    color: @color-bi-text-black;
+    border-bottom: 2px solid transparent;
+    &:hover, &.active{
+      color: @color-bi-text-highlight;
+    }
+    &.active{
+      color: @color-bi-text-highlight;
+      border-bottom: 2px solid @color-bi-border-highlight;
+    }
+  }
+}

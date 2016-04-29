@@ -1,0 +1,46 @@
+@import "../../../bibase";
+@import "../../../animate";
+
+.bi-analysis-etl-preview-table {
+  background: @color-bi-background-default;
+  overflow: hidden;
+
+  & .bi_preview_table_drag_clone {
+    background: @background-color-light-blue;
+    top:0px;
+    opacity: (0.5);
+  }
+
+  & .drop-helper svg path {
+    stroke:@border-color-outline;
+  }
+
+  & .rect-border svg path {
+    stroke:@border-color-outline;
+  }
+
+  & .rect-border-dragging {
+     & svg path {
+       stroke:@border-color-dark;
+     }
+    & .drop-helper svg path {
+      stroke:@border-color-outline;
+    }
+
+
+  }
+
+  .transition(drop-helper, left);
+
+  & &-null-label {
+    color : @font-color-gray;
+    font-size :@font-size-16;
+    zoom:2;
+  }
+
+  & .bi-table {
+    & .bi-adaptive-layout > table {
+      border : 1px solid @border-color-line;
+    }
+  }
+}

@@ -1,0 +1,44 @@
+@import "../../../../bibase";
+.bi-table-add-union{
+  & > div > div > table{
+    border-top: 1px solid @color-bi-border-normal;
+    border-right: 1px solid @color-bi-border-normal;
+    & .merge-field-warning{
+      background: @color-bi-tip-warning-background;
+    }
+    & .result-table{
+      background: @color-table-result-background;
+    }
+    & .table-color0{
+      background: @color-table-background1;
+    }
+    & .table-color1{
+      background: @color-table-background2;
+    }
+    & .table-color2{
+      background: @color-table-background3;
+    }
+    & .table-color3{
+      background: @color-table-background4;
+    }
+    & .table-color4{
+      background: @color-table-background5;
+    }
+    & > thead > tr{
+      & > td{
+        min-width: 80px;
+      }
+      :last-child{
+        min-width: 40px;
+      }
+    }
+  }
+  & .table-field-combo{
+    & .bi-select-text-trigger{
+      border: none;
+      & .bi-trigger-icon-button{
+        border-left: none;
+      }
+    }
+  }
+}

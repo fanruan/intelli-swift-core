@@ -1,0 +1,43 @@
+@import "../../bibase";
+.bi-update-cube-pane{
+  & .cube-path-label{
+    color: @color-bi-text-black;
+    font-weight: bold;
+  }
+  & .cube-path-input{
+
+  }
+  & .notify-path{
+    color: @color-bi-text-gray;
+  }
+  & .notify-immediate{
+    color: @color-bi-text-warning;
+  }
+
+  & .bi-cube-update-time-setting{
+    border: 1px solid @color-bi-background-dark;
+    & .setting-north{
+      background-color: @color-bi-background-gray;
+      border-bottom: 1px solid @color-bi-split-dark;
+    }
+
+    & .setting-body{
+      min-height: 20px;
+    }
+  }
+
+  & .bi-cube-log-accordion{
+    border: 1px solid @color-bi-split-dark;
+    &.no-up-border{
+      border-top: none;
+    }
+    & .accordion-head{
+      background-color: @color-bi-background-dark;
+    }
+
+    & .accordion-child-head{
+      background-color: @color-bi-background-default;
+    }
+  }
+
+}

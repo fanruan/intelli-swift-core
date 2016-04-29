@@ -1,0 +1,19 @@
+@import "../../../bibase";
+@import "../../../animate";
+
+.bi-tab-sheet-button {
+  border: 1px solid @color-bi-border-normal;
+  border-left-width: 0px;
+  background: @background-color-light;
+
+  &.active, &:active{
+    border-top-color:@background-color-active;
+    background: @background-color-active;
+  }
+
+  .transition-hover-css3(icon-anamate, scale(1.2));
+
+  & .bi-label {
+    margin-left:10px;
+  }
+}

@@ -1,0 +1,26 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-excel-view-setting {
+  background-color: #f4f4f4;
+}
+.bi-excel-view-setting .excel-view-setting-tree-pane {
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
+}
+.bi-excel-view-setting .excel-view-setting-tree-pane .excel-view-setting-tree-title {
+  font-size: 16px;
+  color: #009de3;
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-excel-view-setting .excel-view-setting-excel-pane {
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
+}
+.bi-excel-view-setting .excel-view-setting-excel-pane .excel-view-setting-excel-toolbar {
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-excel-view-setting .excel-view-setting-excel-pane .excel-view-setting-excel-toolbar .excel-view-setting-excel-toolbar-title {
+  font-size: 16px;
+  color: #808080;
+}

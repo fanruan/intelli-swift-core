@@ -1,0 +1,21 @@
+@import "../../../bibase";
+
+.bi-set-match-relation-target-region {
+  border: 1px solid @color-bi-border-normal;
+  .border-radius(2px);
+  & .target-region-title {
+    border-bottom: 1px solid @color-bi-border-normal;
+    & .region-title-label {
+      max-width: 250px;
+      color: @color-bi-text-gray
+    }
+  }
+  & .target-region-button {
+    max-width: 150px;
+    border: 1px solid @color-bi-border-normal;
+    .border-radius(2px);
+    &:active, &.active{
+      border: 1px solid @color-bi-border-highlight;
+    }
+  }
+}

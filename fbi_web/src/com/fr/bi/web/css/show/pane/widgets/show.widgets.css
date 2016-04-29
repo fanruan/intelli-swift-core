@@ -1,0 +1,59 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/***************************************FR.DbTabPane**************************************************/
+.bi-dashboard-tab {
+  background: #f4f4f4;
+  border: 1px solid #cccccc;
+  color: #707690;
+}
+.bi-dashboard-tab .bi-dashboard-tab-item {
+  border-right: 1px solid #cccccc;
+  font-size: 14px;
+}
+.bi-dashboard-tab .bi-dashboard-tab-item:hover,
+.bi-dashboard-tab .bi-dashboard-tab-item.hover {
+  background-color: #fafafa;
+}
+.bi-dashboard-tab .bi-dashboard-tab-item:active,
+.bi-dashboard-tab .bi-dashboard-tab-item.active {
+  background-color: #ffffff;
+}
+/*******************widgets****************/
+.bi-dashboard-widget {
+  background: #ffffff;
+}
+.bi-dashboard-widget .dashboard-title .dashboard-title-text {
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
+  font-size: 16px;
+}
+.bi-dashboard-widget .dashboard-title .dashboard-title-filter {
+  font-size: 16px;
+}
+.bi-dashboard-widget .dashboard-title .dashboard-title-filter:hover,
+.bi-dashboard-widget .dashboard-title .dashboard-title-filter:active {
+  background-color: #f3f3f3;
+}
+.bi-dashboard-widget .dashboard-title .dashboard-title-detail {
+  font-size: 16px;
+}
+.bi-dashboard-widget .dashboard-title .dashboard-title-detail:hover,
+.bi-dashboard-widget .dashboard-title .dashboard-title-detail:active {
+  background-color: #f3f3f3;
+}
+.bi-dashboard-widget .dashboard-title .operator-region {
+  z-index: 100000;
+}
+.bi-dashboard-widget .dashboard-title:active,
+.bi-dashboard-widget .dashboard-title.active {
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
+}
+.bi-dashboard-widget .ui-resizable-s {
+  bottom: 0;
+}
+.bi-dashboard-widget .ui-resizable-s:hover {
+  border-bottom: 1px solid #e85050;
+}
+.bi-dashboard-widget .ui-resizable-e:hover {
+  border-right: 1px solid #e85050;
+}

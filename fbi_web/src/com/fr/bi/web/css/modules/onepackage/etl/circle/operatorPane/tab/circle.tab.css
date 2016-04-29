@@ -1,0 +1,19 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-circle-tab .select-field-button {
+  border: none;
+  color: #009de3;
+}
+.bi-circle-tab .level-condition {
+  max-width: 460px;
+}
+.bi-circle-tab .field-popup {
+  background-color: #d8f2fd;
+  border: 1px solid #d8f2fd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  color: #808080;
+  font-size: 14px;
+}

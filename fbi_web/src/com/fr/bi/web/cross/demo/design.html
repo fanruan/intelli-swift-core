@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5, IE=EmulateIE7, chrome=1">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>${layoutType}</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.fs.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=toolbar.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.chart.js&inter=${__locale__}"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=widget.css&cmd=refresh"/>
+    <link rel="stylesheet" type="text/css"
+          href="${servletURL}?op=resource&resource=/com/fr/bi/web/cross/demo/design/css/design.css"/>
+
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=core.js"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=formula.js&version=${__version__}&__pre__=true"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=const.js&cmd=refresh"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&cmd=refresh"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=widget.js&cmd=refresh"></script>
+
+</head>
+
+<body>
+
+</body>
+<script type="text/javascript">
+    BI.Text.prototype._init = function () {
+        BI.Text.superclass._init.apply(this, arguments);
+        var o = this.options;
+        this.text = BI.createWidget({
+            type: "bi.layout",
+            attributes: {'contenteditable': true},
+            cls: "bi-text"
+        });
+        this.text.element.appendTo(this.element);
+        if (o.text || o.value) {
+            this.text.element.text(o.text || o.value);
+        }
+        if (o.hgap + o.lgap > 0) {
+            this.text.element.css({
+                "margin-left": o.hgap + o.lgap + "px"
+            })
+        }
+        if (o.hgap + o.rgap > 0) {
+            this.text.element.css({
+                "margin-right": o.hgap + o.rgap + "px"
+            })
+        }
+        if (o.vgap + o.tgap > 0) {
+            this.text.element.css({
+                "margin-top": o.vgap + o.tgap + "px"
+            })
+        }
+        if (o.vgap + o.bgap > 0) {
+            this.text.element.css({
+                "margin-bottom": o.vgap + o.bgap + "px"
+            })
+        }
+        if (BI.isNumber(o.height)) {
+            this.element.css({"lineHeight": o.height + "px"});
+        }
+        if (BI.isNumber(o.lineHeight)) {
+            this.element.css({"lineHeight": o.lineHeight + "px"});
+        }
+        this.text.element.css({
+            "textAlign": o.textAlign,
+            "whiteSpace": o.whiteSpace
+        });
+        this.element.css({
+            "textAlign": o.textAlign,
+            "whiteSpace": o.whiteSpace
+        });
+        if (o.keyword && o.py) {
+            this.text.element.__textKeywordMarked__(o.text, o.keyword, o.py);
+        }
+    };
+</script>
+
+<script type="text/javascript">
+    var west = BI.createWidget({
+        type: "bi.border",
+        cls: "left",
+        items: {
+            north: {
+                el: {
+                    type: "bi.label",
+                    cls: "left-title",
+                    text: "BI控件",
+                    height: 30
+                },
+                height: 30
+            },
+            center: {
+                el: {
+                    type: "bi.layout"
+                }
+            }
+        }
+    });
+    BI.createWidget({
+        type: "bi.border",
+        cls: "bi-design",
+        element: "body",
+        items: {
+            north: {
+                el: {
+                    type: "bi.label",
+                    cls: "top",
+                    text: "BI设计器",
+                    height: 30
+                },
+                height: 30,
+                bottom: 1
+            },
+            west: {
+                el: west,
+                width: 220,
+                right: 2
+            },
+            south: {
+                el: {
+                    type: "bi.label",
+                    cls: "bottom",
+                    text: "BI设计器",
+                    height: 20
+                },
+                height: 20,
+                top: 1
+            },
+            center: {
+                el: {
+                    type: "bi.layout",
+                    cls: "center-pane"
+                }
+            }
+        }
+    })
+</script>
+</html>

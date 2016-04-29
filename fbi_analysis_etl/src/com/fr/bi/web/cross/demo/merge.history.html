@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=GBK">
+    <meta http-equiv="Page-Enter" content="revealTrans(duration=5.0,transition=3)">
+
+    <title>FR.BIDezi</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=base.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=modules.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=analysis_etl.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=zh_CN"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.chart.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=core.js"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=data.js&version=&__pre__=true"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=formula.js&version=&__pre__=true"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&cmd=refresh"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js&cmd=refresh"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=dezi.js&cmd=refresh"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var icon = BI.createWidget({
+                type: "bi.analysis_etl_merge_history",
+                model : {
+                   items:[{
+                       id:1,
+                       pId:null,
+                       value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.MERGED_TABLE
+                   },{
+                       id:2,
+                       pId:1,
+                       value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.ADD_COLUMN
+                   }, {
+                       id:3,
+                       pId:1,
+                       value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.FILTER
+                   },{
+                       id:4,
+                       pId:3,
+                       value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.GROUP
+                   },{
+                       id:5,
+                       pId:4,
+                       value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_FIELD
+                   },
+                   {
+                       id:6,
+                       pId:2,
+                       value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_NONE_FIELD
+                   }]
+                },
+                element:$("div.b")
+            })
+        });
+    </script>
+</head>
+<body>
+<div class="a">
+</div>
+<div class="b" style=>
+</div>
+</body>
+</html>

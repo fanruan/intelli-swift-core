@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/fbi/fbi.iml" filepath="$PROJECT_DIR$/fbi/fbi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_base/fbi_base.iml" filepath="$PROJECT_DIR$/fbi_base/fbi_base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_cluster/fbi_cluster.iml" filepath="$PROJECT_DIR$/fbi_cluster/fbi_cluster.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_conf/fbi_conf.iml" filepath="$PROJECT_DIR$/fbi_conf/fbi_conf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_cube_base/fbi_cube_base.iml" filepath="$PROJECT_DIR$/fbi_cube_base/fbi_cube_base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_cube_generate/fbi_cube_generate.iml" filepath="$PROJECT_DIR$/fbi_cube_generate/fbi_cube_generate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_engine_analyse/fbi_engine_analyse.iml" filepath="$PROJECT_DIR$/fbi_engine_analyse/fbi_engine_analyse.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_engine_base/fbi_engine_base.iml" filepath="$PROJECT_DIR$/fbi_engine_base/fbi_engine_base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_engine_cache/fbi_engine_cache.iml" filepath="$PROJECT_DIR$/fbi_engine_cache/fbi_engine_cache.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_engine_finereport/fbi_engine_finereport.iml" filepath="$PROJECT_DIR$/fbi_engine_finereport/fbi_engine_finereport.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_engine_generate/fbi_engine_generate.iml" filepath="$PROJECT_DIR$/fbi_engine_generate/fbi_engine_generate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_web/fbi_web.iml" filepath="$PROJECT_DIR$/fbi_web/fbi_web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_web_base/fbi_web_base.iml" filepath="$PROJECT_DIR$/fbi_web_base/fbi_web_base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_web_conf/fbi_web_conf.iml" filepath="$PROJECT_DIR$/fbi_web_conf/fbi_web_conf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_web_dezi/fbi_web_dezi.iml" filepath="$PROJECT_DIR$/fbi_web_dezi/fbi_web_dezi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fbi_web_report/fbi_web_report.iml" filepath="$PROJECT_DIR$/fbi_web_report/fbi_web_report.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../fbi3.5/project/fservice4bi.iml" filepath="$PROJECT_DIR$/../../fbi3.5/project/fservice4bi.iml" />
+    </modules>
+  </component>
+</project>

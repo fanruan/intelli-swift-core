@@ -1,0 +1,46 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+ul.CodeMirror-hints {
+  z-index: 1000000000;
+}
+.view-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 100000;
+}
+.ui-effects-transfer {
+  background: #ff6600;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  border-radius: 5px;
+  border: 2px #8e8e8e;
+  z-index: 1000000000;
+}
+.ui-effects-resize {
+  position: absolute;
+  background: #ff6600;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  border-radius: 0px 0px 2px 2px;
+  border: 2px #8e8e8e;
+  z-index: 1000000000;
+}
+.ui-sortable-place-holder {
+  border: 1px dashed #039935 !important;
+}
+.ui-drag-over {
+  width: 100%;
+  height: 20px;
+  margin-top: 5px;
+  border-radius: 2px;
+}
+.dragged {
+  position: absolute;
+  top: 0;
+  opacity: 0.5;
+  z-index: 200000000;
+}

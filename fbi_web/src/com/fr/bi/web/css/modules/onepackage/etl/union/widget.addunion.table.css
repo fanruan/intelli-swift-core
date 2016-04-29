@@ -1,0 +1,40 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-table-add-union > div > div > table {
+  border-top: 1px solid #d4dadd;
+  border-right: 1px solid #d4dadd;
+}
+.bi-table-add-union > div > div > table .merge-field-warning {
+  background: #fddddd;
+}
+.bi-table-add-union > div > div > table .result-table {
+  background: #d9f2fc;
+}
+.bi-table-add-union > div > div > table .table-color0 {
+  background: #fef6df;
+}
+.bi-table-add-union > div > div > table .table-color1 {
+  background: #daf3dc;
+}
+.bi-table-add-union > div > div > table .table-color2 {
+  background: #d6f7f0;
+}
+.bi-table-add-union > div > div > table .table-color3 {
+  background: #e8e6fe;
+}
+.bi-table-add-union > div > div > table .table-color4 {
+  background: #fee9e9;
+}
+.bi-table-add-union > div > div > table > thead > tr > td {
+  min-width: 80px;
+}
+.bi-table-add-union > div > div > table > thead > tr :last-child {
+  min-width: 40px;
+}
+.bi-table-add-union .table-field-combo .bi-select-text-trigger {
+  border: none;
+}
+.bi-table-add-union .table-field-combo .bi-select-text-trigger .bi-trigger-icon-button {
+  border-left: none;
+}

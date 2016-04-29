@@ -1,0 +1,45 @@
+@import "../../bibase";
+.bi-data-link-tables-pane{
+  & .schema-mode{
+    font-size: @font-size-14;
+    color: @color-bi-text-gray;
+  }
+  & .tables-pane{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .package-table-selected{
+      background: @color-table-active-background;
+      border: 1px solid @color-bi-border-highlight;
+    }
+    & .north-bottom-line{
+      border-top: 1px solid @color-bi-border-normal;
+    }
+    & .server-data-comment{
+      font-size: @font-size-16;
+      color: @color-bi-text-gray;
+    }
+  }
+  & .previous-next-page{
+    border: 1px solid @color-bi-border-normal;
+    .border-radius(2px);
+  }
+  & .test-fail-pane{
+    & .test-connection-fail-detail-button{
+      font-size: @font-size-14;
+      color: @color-bi-text-highlight;
+    }
+    & .test-fail-detail-info{
+      background: @color-bi-background-gray;
+      color: @color-bi-text-gray;
+      border: 1px solid @color-bi-border-normal;
+      .border-radius(2px);
+    }
+    & .test-connection-fail-comment{
+      font-size: @font-size-16;
+      color: @color-bi-text-gray;
+    }
+  }
+  & .bi-database-tables-search-result-pane{
+    background: @color-bi-background-default;
+  }
+}

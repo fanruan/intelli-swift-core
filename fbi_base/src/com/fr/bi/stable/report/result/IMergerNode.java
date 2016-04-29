@@ -1,0 +1,1 @@
+package com.fr.bi.stable.report.result;import com.fr.bi.stable.gvi.GroupValueIndex;/** * Created by Hiram on 2015/1/27. */public interface IMergerNode extends LightNode {    GroupValueIndex[] getGroupValueIndexArray();    void setGroupValueIndexArray(GroupValueIndex[] groupValueIndexArray);    void setCk(DimensionCalculator ck);}
