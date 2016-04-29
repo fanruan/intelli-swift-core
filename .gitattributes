@@ -1,20 +1,4 @@
 * text=auto !eol
-.idea/.name -text
-.idea/compiler.xml -text
-.idea/copyright/profiles_settings.xml -text
-.idea/dataSources.xml -text
-.idea/encodings.xml -text
-.idea/inspectionProfiles/Project_Default.xml -text
-.idea/inspectionProfiles/profiles_settings.xml -text
-.idea/libraries/lib.xml -text
-.idea/misc.xml -text
-.idea/modules.xml -text
-.idea/project.iml -text
-.idea/scopes/scope_settings.xml -text
-.idea/sqldialects.xml -text
-.idea/uiDesigner.xml -text
-.idea/vcs.xml -text
-.idea/workspace.xml -text
 /BIColumnKeyAdapter.java -text
 fbi/.classpath -text
 fbi/.project -text
