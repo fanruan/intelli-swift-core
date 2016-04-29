@@ -140,11 +140,20 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             var pos = model.getIndexByValue(v);
             if(pos === 0) {
                 if(widget.options.allHistory === true) {
-                    widget.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE);
+                    BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"),BI.i18nText("BI-Confirm_Delete_Etl_History"), function (v) {
+                        if(v === true) {
+                            widget.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE);
+                        }
+                    })
                 }
                 return;
             }
-            self._removeSheet(v, widget, model)
+            BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), BI.i18nText("BI-Confirm_Delete_Etl_History"), function (v) {
+                if(v === true) {
+                    self._removeSheet(v, widget, model)
+                }
+            })
+
         })
         button.setValid(model.isValid(button.getValue()))
         this._getTabButtonGroup(widget).addItemFromIndex(button, index);

@@ -190,7 +190,7 @@ BI.HorizontalCellLayout = BI.inherit(BI.Layout, {
     },
 
     addItem: function (item) {
-        BI.HorizontalLayout.superclass.addItem.apply(this, arguments);
+        BI.HorizontalCellLayout.superclass.addItem.apply(this, arguments);
         var w = this._addElement(item);
         this.options.items.push(item);
         w.element.appendTo(this.element);
@@ -198,7 +198,7 @@ BI.HorizontalCellLayout = BI.inherit(BI.Layout, {
     },
 
     populate: function (items) {
-        BI.HorizontalLayout.superclass.populate.apply(this, arguments);
+        BI.HorizontalCellLayout.superclass.populate.apply(this, arguments);
         var self = this;
         BI.each(items, function (i, item) {
             if (!!item) {

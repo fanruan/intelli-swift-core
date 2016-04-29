@@ -46,6 +46,12 @@ BI.SortList = BI.inherit(BI.Widget, {
             next: o.next,
             hasNext: o.hasNext
         });
+        this.loader.on(BI.Controller.EVENT_CHANGE, function (type, value, obj) {
+            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+            if (type === BI.Events.CLICK) {
+                self.fireEvent(BI.SortList.EVENT_CHANGE, value, obj);
+            }
+        })
 
         this.loader.element.sortable({
             containment: o.containment || this.element,

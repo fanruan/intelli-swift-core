@@ -2,6 +2,14 @@
  * Created by 小灰灰 on 2016/4/11.
  */
 BI.ETLTableWarningPopover = BI.inherit(BI.ETLTableNamePopover, {
+
+    _defaultConfig : function () {
+        var conf = BI.ETLTableWarningPopover.superclass._defaultConfig.apply(this, arguments);
+        return BI.extend(conf, {
+            text : BI.i18nText("BI-ETL_Saving_Warning_Text")
+        })
+    },
+
     rebuildNorth: function (north) {
         var self = this, o = this.options;
         BI.createWidget({
@@ -22,7 +30,7 @@ BI.ETLTableWarningPopover = BI.inherit(BI.ETLTableNamePopover, {
             element: center,
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-ETL_Saving_Warning_Text"),
+                text: o.text,
                 textAlign: "left",
                 whiteSpace : "normal",
                 cls: "rename-label",

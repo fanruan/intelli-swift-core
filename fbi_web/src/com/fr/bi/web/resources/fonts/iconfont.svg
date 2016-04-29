@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg">
 <metadata>
-Created by FontForge 20120731 at Mon Apr 18 14:56:16 2016
+Created by FontForge 20120731 at Fri Apr 29 11:13:07 2016
  By admin
 </metadata>
 <defs>
@@ -19,7 +19,7 @@ Created by FontForge 20120731 at Mon Apr 18 14:56:16 2016
     bbox="0 -218 1152 896"
     underline-thickness="50"
     underline-position="-100"
-    unicode-range="U+0078-E6A3"
+    unicode-range="U+0078-E6AA"
   />
 <missing-glyph horiz-adv-x="374" 
 d="M34 0v682h272v-682h-272zM68 34h204v614h-204v-614z" />
@@ -466,5 +466,19 @@ d="M960 541v4v5q0 2 -0.5 4.5t-1.5 3.5t-2 1h-90q-8 0 -18 -12l-93 -107q-7 -9 -12 1
 t-38 2.5t-37.5 -3t-42 -8.5t-40 -17.5t-42 -27q-52 -42 -68 -114l-25 -96h-171q-4 0 -7.5 -3.5t-3.5 -7.5v-90q0 -4 3.5 -7.5t7.5 -3.5h142l-88 -343q-5 -18 -12.5 -30t-15 -15.5t-14.5 -4.5t-12 0l-4 1h-63v-112h63q27 0 44 1.5t37.5 7.5t32.5 18q32 30 54 131l86 346h120
 q4 0 7.5 3.5t3.5 7.5v-7q0 -4 18 -4h90q9 0 16 -13l36 -74q5 -10 -3 -19l-101 -113q-4 -5 -18 -5h-76q-4 0 -11 -6.5t-7 -11.5v-90q0 -4 18 -4h90q14 0 18 5l128 144q7 9 12 -2l72 -140q3 -7 16 -7h90h3q1 0 1 1v3v90v4v5q0 2 -0.5 4.5t-1.5 3.5t-2 1h-34q-13 0 -16 7
 l-56 110q-5 11 2 20l66 75q10 12 18 12h76h3q1 0 1 1v3v90z" />
+    <glyph glyph-name="uniE6A4" unicode="&#xe6a4;" 
+d="M384 704h320v-64h-320v64zM192 512h704v-64h-704v64zM384 320h320v-64h-320v64zM192 128h704v-64h-704v64z" />
+    <glyph glyph-name="uniE6A5" unicode="&#xe6a5;" 
+d="M192 704h320v-64h-320v64zM192 512h704v-64h-704v64zM192 320h320v-64h-320v64zM192 128h704v-64h-704v64z" />
+    <glyph glyph-name="uniE6A6" unicode="&#xe6a6;" 
+d="M256 469h512v-42h-512v42zM256 341h512v-42h-512v42zM345 581l364 -364l-30 -30l-364 364z" />
+    <glyph glyph-name="uniE6A7" unicode="&#xe6a7;" 
+d="M299 135v-50l426 258v43l-426 254v-53l389 -223z" />
+    <glyph glyph-name="uniE6A8" unicode="&#xe6a8;" 
+d="M640 171l171 -171l170 171h-341zM43 263v-50l426 258v43l-426 254v-53l389 -223z" />
+    <glyph glyph-name="uniE6A9" unicode="&#xe6a9;" 
+d="M671 456l-372 135v49l426 -158v-52l-426 -158v53zM725 331v-49l-426 -154v43z" />
+    <glyph glyph-name="uniE6AA" unicode="&#xe6aa;" 
+d="M415 542l-372 134v49l426 -157v-53l-426 -157v52zM469 417v-49l-426 -155v43zM640 171l171 -171l170 171h-341z" />
   </font>
 </defs></svg>

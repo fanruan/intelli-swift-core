@@ -15,20 +15,32 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
     _init: function () {
         BI.ETLFilterGroupPopup.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        self.fields = o.fields;
         self.storedValue = [];
         BI.each(o.value, function (i ,item) {
-            if (BI.find(self.fields, function (i, field) {
+            if (BI.find(o.fields, function (i, field) {
                     if (field.field_name === item){
                         return true;
                     }
                 })){
                 self.storedValue.push(item)
             }
+        });
+        var items = [];
+        BI.each(self.storedValue, function (i, item) {
+            items.push({
+                text : item,
+                value : item,
+                selected : true
+            });
+        })
+        BI.each(o.fields, function (i, item) {
+            if (BI.indexOf(self.storedValue, item.field_name) === -1 && item.field_type === BICst.COLUMN.STRING){
+                items.push({text : item.field_name, value : item.field_name});
+            }
         })
         self.list = BI.createWidget({
             type : 'bi.etl_group_sortable_list',
-
+            items : items,
             height : self._constants.LIST_HEIGHT
         });
         self.list.on(BI.ETLGroupSortableList.EVENT_CHANGE, function(){
@@ -152,22 +164,7 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
     },
 
     populate: function () {
-        var self = this;
-        var items = [];
-        BI.each(self.storedValue, function (i, item) {
-            items.push({
-                text : item,
-                value : item,
-                selected : true
-            });
-        })
-        BI.each(self.fields, function (i, item) {
-            if (BI.indexOf(self.storedValue, item.field_name) === -1 && item.field_type === BICst.COLUMN.STRING){
-                items.push({text : item.field_name, value : item.field_name});
-            }
-        })
-        self.list.populate(items)
-        self._afterListChanged();
+        this._afterListChanged();
     }
 
 });
