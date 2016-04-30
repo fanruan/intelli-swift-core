@@ -53,6 +53,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             initialFieldInfo(discovery);
             initialRowCount(discovery);
             initialTimeStamp(discovery);
+            initialVersion(discovery);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
@@ -83,6 +84,16 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         timeStampWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
         rowCountLocation.setReaderSourceLocation();
         timeStampReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
+
+    }
+
+    private void initialVersion(ICubeResourceDiscovery discovery) throws Exception {
+        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
+        rowCountLocation.setIntegerTypeWrapper();
+        rowCountLocation.setWriterSourceLocation();
+        versionWriter = (ICubeIntegerWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+        rowCountLocation.setReaderSourceLocation();
+        versionReader = (ICubeIntegerReaderWrapper) discovery.getCubeReader(rowCountLocation);
 
     }
 

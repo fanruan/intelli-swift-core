@@ -53,8 +53,13 @@ public class DetailAllGVIRunner extends AbstractGVIRunner {
                     }
                     set.add(new BIRowValue(rowIndex, ob));
                 }
+
             }
         });
+        Iterator<BIDetailTarget> itT = paras.getNoneCalculateList().iterator();
+        while (itT.hasNext()) {
+            itT.next().clear();
+        }
         actionPerform(action, set);
     }
 
@@ -70,4 +75,5 @@ public class DetailAllGVIRunner extends AbstractGVIRunner {
             }
         }
     }
+
 }

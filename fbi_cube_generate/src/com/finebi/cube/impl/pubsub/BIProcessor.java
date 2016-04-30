@@ -35,12 +35,14 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
                 public T call() throws Exception {
                     try {
                         T result = mainTask();
+                        release();
                         messagePublish.publicFinishMessage(getFinishMess());
                         return result;
 
                     } catch (Exception e) {
                         messagePublish.publicStopMessage(getStopMess());
                         BILogger.getLogger().error(e.getMessage(), e);
+                        release();
                     }
                     return null;
                 }
@@ -75,6 +77,9 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
      * @return
      */
     public abstract T mainTask();
+
+
+    public abstract void release();
 
     @Override
     public Future<T> getResult() {
