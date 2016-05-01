@@ -1087,7 +1087,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/matchingrelationship/infopane/unsettingtargetregion.infopane.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/infopane/settargetregion.infopane.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/infopane/infopane.js",
-                "com/fr/bi/web/js/modules/matchingrelationship/settingpane/pathchooserleveltree.settingpane.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/settingpane.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/multipathchooser.settingpane.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/targetlabelcontrol.settingpane.js",

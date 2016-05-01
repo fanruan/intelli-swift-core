@@ -47,9 +47,9 @@ public class StringControlWidget extends BISummaryWidget {
         Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadGroup(this, new BISummaryTarget[0], this.getDimensions(), this.getDimensions(), new BISummaryTarget[0], -1, true, (BISession) session);
         List<Node> nodelist = tree.getChilds();
         Iterator<Node> it = nodelist.iterator();
-        Set<String> set = new HashSet<String>();
+        List<String> list = new ArrayList<String>();
         while (it.hasNext()){
-            set.add(it.next().getShowValue());
+            list.add(it.next().getShowValue());
         }
         List<String> selected_value = new ArrayList<String>();
 
@@ -57,7 +57,7 @@ public class StringControlWidget extends BISummaryWidget {
             JSONArray selectedValueArray = new JSONArray(selected_values);
             selected_value = Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray));
         }
-        Set<String> result = getSearchResult(set, keyword, selected_value);
+        List<String> result = getSearchResult(list, keyword, selected_value);
         if(data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH){
             return new JSONObject().put(BIJSONConstant.JSON_KEYS.VALUE, result.size());
         }
@@ -95,15 +95,15 @@ public class StringControlWidget extends BISummaryWidget {
 
     }
 
-    private boolean hasNextByTimes(Set<String> items, int times) {
+    private boolean hasNextByTimes(List<String> items, int times) {
         return times * 100 < items.size();
     }
 
-    private Set<String> getItemsByTimes(Set<String> items, int times) {
+    private List<String> getItemsByTimes(List<String> items, int times) {
         if(times == -1){
             return items;
         }
-        Set<String> result = new HashSet<String>();
+        List<String> result = new ArrayList<String>();
         int i = 0;
         Iterator<String> it = items.iterator();
         while (it.hasNext() && i < (times - 1) * 100){
@@ -117,10 +117,10 @@ public class StringControlWidget extends BISummaryWidget {
         return result;
     }
 
-    private Set<String> getSearchResult(Set<String> source, String keyword, List<String> selectedValue) throws JSONException {
+    private List<String> getSearchResult(List<String> source, String keyword, List<String> selectedValue) throws JSONException {
         if(StringUtils.isNotEmpty(keyword) || !selectedValue.isEmpty()){
-            Set<String> find = new HashSet<String>();
-            Set<String> match = new HashSet<String>();
+            List<String> find = new ArrayList<String>();
+            List<String> match = new ArrayList<String>();
             keyword = keyword.toLowerCase();
             Iterator<String> it = source.iterator();
             while (it.hasNext()){

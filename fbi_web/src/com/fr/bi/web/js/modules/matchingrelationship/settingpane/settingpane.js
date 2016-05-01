@@ -40,8 +40,10 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         });
 
         this.dimensiontreeCombo.on(BI.DimensionTreeCombo.EVENT_CHANGE, function(){
+            var fieldId = this.getValue()[0];
+            self._checkDimensionAndTargetRelation(BI.Utils.getTableIdByFieldID(fieldId));
             self.pathChooser.populate({
-                dimensionFieldId: this.getValue()[0],
+                dimensionFieldId: fieldId,
                 targetIds: o.targetIds
             });
         });
@@ -49,6 +51,12 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         this.pathChooser = BI.createWidget({
             type: "bi.multi_path_chooser",
             height: 200
+        });
+
+        this.emptyItem = BI.createWidget({
+            type: "bi.default",
+            items: [],
+            height: 30
         });
 
         BI.createWidget({
@@ -72,6 +80,9 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                         width: this.constants.labelWidth
                     }, this.dimensiontreeCombo]
                 },
+                height: 30
+            }, {
+                el: this.emptyItem,
                 height: 30
             }, {
                 el: {
@@ -100,6 +111,31 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         });
     },
 
+    _checkDimensionAndTargetRelation: function (tId) {
+        var o = this.options;
+        var tIds = BI.Utils.getForeignRelationTablesByTableID(o.targetIds[0]);
+        var contains = BI.contains(tIds, tId);
+        if(!!contains){
+            if(!this.selectCombineTableCombo){
+                this.selectCombineTableCombo = BI.createWidget({
+                    type: "bi.text_icon_combo",
+                    height: 30
+                });
+                this.emptyItem.addItem(this.selectCombineTableCombo);
+            }else{
+                var tables = BI.Utils.getFirstCommonPrimaryTablesByTableIDs([tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0])]);
+                var items = BI.map(tables, function(idx, tId){
+                    return {
+                        text: BI.Utils.getTableNameByID(tId),
+                        value: tId
+                    };
+                });
+                this.selectCombineTableCombo.populate(items);
+            }
+        }
+        this.emptyItem && this.emptyItem.setVisible(contains);
+    },
+
     populate: function(items){
         var  o = this.options;
         o.targetIds = items;
@@ -109,6 +145,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             dimensionFieldId: BI.Utils.getFieldIDByDimensionID(o.dimensionId),
             targetIds: o.targetIds
         });
+        this._checkDimensionAndTargetRelation(BI.Utils.getTableIDByDimensionID(o.targetIds[0]));
     },
 
     setValue: function(v){
