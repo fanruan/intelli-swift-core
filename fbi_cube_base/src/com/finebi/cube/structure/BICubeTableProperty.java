@@ -33,6 +33,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private static String VERSION_DATA = "version";
     private static String TIMESTAMP_DATA = "timestamp";
     private List<DBField> tableFields = null;
+    private ICubeResourceDiscovery discovery;
+
     private ICubeStringWriter fieldInfoWriter;
     private ICubeStringReader fieldInfoReader;
 
@@ -48,62 +50,201 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     public BICubeTableProperty(ICubeResourceLocation currentLocation) {
         this.currentLocation = currentLocation.copy();
-        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
         try {
-            initialFieldInfo(discovery);
-            initialRowCount(discovery);
-            initialTimeStamp(discovery);
-            initialVersion(discovery);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
-    private void initialFieldInfo(ICubeResourceDiscovery discovery) throws Exception {
-        ICubeResourceLocation mainLocation = this.currentLocation.buildChildLocation(MAIN_DATA);
-        mainLocation.setStringType();
-        mainLocation.setReaderSourceLocation();
-        fieldInfoReader = (ICubeStringReader) discovery.getCubeReader(mainLocation);
-        mainLocation.setWriterSourceLocation();
-        fieldInfoWriter = (ICubeStringWriter) discovery.getCubeWriter(mainLocation);
+    protected boolean isFieldWriterAvailable() {
+        return fieldInfoWriter != null;
     }
 
-    private void initialRowCount(ICubeResourceDiscovery discovery) throws Exception {
-        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(ROW_COUNT_DATA);
-        rowCountLocation.setLongTypeWrapper();
-        rowCountLocation.setReaderSourceLocation();
-        rowCountReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
-        rowCountLocation.setWriterSourceLocation();
-        rowCountWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+    protected boolean isFieldReaderAvailable() {
+        return fieldInfoReader != null;
     }
 
-    private void initialTimeStamp(ICubeResourceDiscovery discovery) throws Exception {
-        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
-        rowCountLocation.setLongTypeWrapper();
-        rowCountLocation.setWriterSourceLocation();
-        timeStampWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
-        rowCountLocation.setReaderSourceLocation();
-        timeStampReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
+    protected boolean isVersionWriterAvailable() {
+        return versionWriter != null;
+    }
+
+    protected boolean isVersionReaderAvailable() {
+        return versionReader != null;
+    }
+
+    protected boolean isRowCountWriterAvailable() {
+        return rowCountWriter != null;
+    }
+
+    protected boolean isRowCountReaderAvailable() {
+        return rowCountReader != null;
+    }
+
+    protected boolean isTimeStampWriterAvailable() {
+        return timeStampWriter != null;
+    }
+
+    protected boolean isTimeStampReaderAvailable() {
+        return timeStampReader != null;
+    }
+
+    protected boolean isFieldInit() {
+        return tableFields != null;
+    }
+
+    private void initialFieldInfoReader() throws Exception {
+        if (!isFieldReaderAvailable()) {
+            ICubeResourceLocation mainLocation = this.currentLocation.buildChildLocation(MAIN_DATA);
+            mainLocation.setStringType();
+            mainLocation.setReaderSourceLocation();
+            fieldInfoReader = (ICubeStringReader) discovery.getCubeReader(mainLocation);
+        }
+    }
+
+    private void initialFieldInfoWriter() throws Exception {
+        if (!isFieldWriterAvailable()) {
+            ICubeResourceLocation mainLocation = this.currentLocation.buildChildLocation(MAIN_DATA);
+            mainLocation.setStringType();
+            mainLocation.setWriterSourceLocation();
+            fieldInfoWriter = (ICubeStringWriter) discovery.getCubeWriter(mainLocation);
+        }
+    }
+
+    private void initialRowCountWriter() throws Exception {
+        if (!isRowCountWriterAvailable()) {
+            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(ROW_COUNT_DATA);
+            rowCountLocation.setLongTypeWrapper();
+            rowCountLocation.setWriterSourceLocation();
+            rowCountWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+        }
+    }
+
+    private void initialRowCountReader() throws Exception {
+        if (!isRowCountReaderAvailable()) {
+            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(ROW_COUNT_DATA);
+            rowCountLocation.setLongTypeWrapper();
+            rowCountLocation.setReaderSourceLocation();
+            rowCountReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
+        }
+    }
+
+    private void initialTimeStampReader() throws Exception {
+        if (!isTimeStampReaderAvailable()) {
+            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
+            rowCountLocation.setLongTypeWrapper();
+            rowCountLocation.setReaderSourceLocation();
+            timeStampReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
+        }
 
     }
 
-    private void initialVersion(ICubeResourceDiscovery discovery) throws Exception {
-        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
-        rowCountLocation.setIntegerTypeWrapper();
-        rowCountLocation.setWriterSourceLocation();
-        versionWriter = (ICubeIntegerWriterWrapper) discovery.getCubeWriter(rowCountLocation);
-        rowCountLocation.setReaderSourceLocation();
-        versionReader = (ICubeIntegerReaderWrapper) discovery.getCubeReader(rowCountLocation);
+    private void initialTimeStampWriter() throws Exception {
+        if (!isTimeStampWriterAvailable()) {
+            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
+            rowCountLocation.setLongTypeWrapper();
+            rowCountLocation.setWriterSourceLocation();
+            timeStampWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+        }
+    }
 
+    private void initialVersionReader() throws Exception {
+        if (!isVersionReaderAvailable()) {
+            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(VERSION_DATA);
+            rowCountLocation.setIntegerTypeWrapper();
+            rowCountLocation.setReaderSourceLocation();
+            versionReader = (ICubeIntegerReaderWrapper) discovery.getCubeReader(rowCountLocation);
+        }
+    }
+
+    private void initialVersionWriter() throws Exception {
+        if (!isVersionWriterAvailable()) {
+            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(VERSION_DATA);
+            rowCountLocation.setIntegerTypeWrapper();
+            rowCountLocation.setWriterSourceLocation();
+            versionWriter = (ICubeIntegerWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+        }
+    }
+
+    public ICubeStringWriter getFieldInfoWriter() {
+        try {
+            initialFieldInfoWriter();
+            return fieldInfoWriter;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeStringReader getFieldInfoReader() {
+        try {
+            initialFieldInfoReader();
+            return fieldInfoReader;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeIntegerWriterWrapper getVersionWriter() {
+        try {
+            initialVersionWriter();
+            return versionWriter;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeIntegerReaderWrapper getVersionReader() {
+        try {
+            initialVersionReader();
+            return versionReader;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeLongWriterWrapper getRowCountWriter() {
+        try {
+            initialRowCountWriter();
+            return rowCountWriter;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeLongReaderWrapper getRowCountReader() {
+        try {
+            initialRowCountReader();
+            return rowCountReader;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeLongWriterWrapper getTimeStampWriter() {
+        try {
+            initialTimeStampWriter();
+            return timeStampWriter;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeLongReaderWrapper getTimeStampReader() {
+        try {
+            initialTimeStampReader();
+            return timeStampReader;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 
     private void initialField() {
-        if (fieldInfoReader.canRead() && !isFieldInit()) {
+        if (getFieldInfoReader().canRead() && !isFieldInit()) {
             tableFields = new ArrayList<DBField>();
             try {
-                int columnSize = Integer.parseInt(fieldInfoReader.getSpecificValue(0));
+                int columnSize = Integer.parseInt(getFieldInfoReader().getSpecificValue(0));
                 for (int pos = 1; pos <= columnSize; pos++) {
-                    JSONObject jo = new JSONObject(fieldInfoReader.getSpecificValue(pos));
+                    JSONObject jo = new JSONObject(getFieldInfoReader().getSpecificValue(pos));
                     DBField field = DBField.getBiEmptyField();
                     field.parseJSON(jo);
                     tableFields.add(field);
@@ -118,20 +259,17 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
     }
 
-    private boolean isFieldInit() {
-        return tableFields != null;
-    }
 
     @Override
     public void recordTableStructure(List<DBField> fields) {
         Iterator<DBField> fieldIterator = fields.iterator();
         int position = 0;
-        fieldInfoWriter.recordSpecificValue(position, String.valueOf(fields.size()));//First position records size of columns.
+        getFieldInfoWriter().recordSpecificValue(position, String.valueOf(fields.size()));//First position records size of columns.
         position++;
         while (fieldIterator.hasNext()) {
             DBField field = fieldIterator.next();
             try {
-                fieldInfoWriter.recordSpecificValue(position, field.createJSON().toString());
+                getFieldInfoWriter().recordSpecificValue(position, field.createJSON().toString());
                 position++;
             } catch (Exception e) {
                 BINonValueUtils.beyondControl("the field:" + field.toString() + " createJson method has problem.");
@@ -142,20 +280,23 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     @Override
     public void recordRowCount(long rowCount) {
-        rowCountWriter.recordSpecificValue(0, rowCount);
+        getRowCountWriter().recordSpecificValue(0, rowCount);
 
     }
 
     @Override
     public void recordLastTime() {
-        timeStampWriter.recordSpecificValue(0, System.currentTimeMillis());
+        recordLastTime(System.currentTimeMillis());
     }
 
+    protected void recordLastTime(long time) {
+        getTimeStampWriter().recordSpecificValue(0, time);
+    }
 
     @Override
     public int getRowCount() {
         try {
-            return Integer.parseInt(String.valueOf(rowCountReader.getSpecificValue(0)));
+            return Integer.parseInt(String.valueOf(getRowCountReader().getSpecificValue(0)));
         } catch (BIResourceInvalidException e) {
             BILogger.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -166,7 +307,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     @Override
     public Date getCubeLastTime() {
         try {
-            return new Date(timeStampReader.getSpecificValue(0));
+            return new Date(getTimeStampReader().getSpecificValue(0));
         } catch (BIResourceInvalidException e) {
             BILogger.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -176,13 +317,13 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     @Override
     public void recordTableGenerateVersion(int version) {
-        versionWriter.recordSpecificValue(0, version);
+        getVersionWriter().recordSpecificValue(0, version);
     }
 
     @Override
     public int getTableVersion() {
         try {
-            return Integer.parseInt(String.valueOf(versionReader.getSpecificValue(0)));
+            return Integer.parseInt(String.valueOf(getVersionReader().getSpecificValue(0)));
         } catch (BIResourceInvalidException e) {
             BILogger.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -198,22 +339,35 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     @Override
     public Boolean isPropertyExist() {
-        return fieldInfoReader.canRead();
+        return getFieldInfoReader().canRead();
     }
 
     @Override
     public void clear() {
-        fieldInfoWriter.clear();
-        fieldInfoReader.clear();
-
-        versionWriter.clear();
-        versionReader.clear();
-
-        rowCountWriter.clear();
-        rowCountReader.clear();
-
-        timeStampWriter.clear();
-        timeStampReader.clear();
+        if (isFieldWriterAvailable()) {
+            fieldInfoWriter.clear();
+        }
+        if (isFieldReaderAvailable()) {
+            fieldInfoReader.clear();
+        }
+        if (isVersionWriterAvailable()) {
+            versionWriter.clear();
+        }
+        if (isVersionReaderAvailable()) {
+            versionReader.clear();
+        }
+        if (isRowCountWriterAvailable()) {
+            rowCountWriter.clear();
+        }
+        if (isRowCountReaderAvailable()) {
+            rowCountReader.clear();
+        }
+        if (isTimeStampWriterAvailable()) {
+            timeStampWriter.clear();
+        }
+        if (isTimeStampReaderAvailable()) {
+            timeStampReader.clear();
+        }
     }
 }
 

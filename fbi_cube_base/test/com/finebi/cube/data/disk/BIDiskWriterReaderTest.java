@@ -51,4 +51,39 @@ public class BIDiskWriterReaderTest extends TestCase {
             BILogger.getLogger().error(e.getMessage(), e);
         }
     }
+
+    public void testSimpleWriteReaderOpenTime() {
+        try {
+            long time = System.currentTimeMillis();
+            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "writer");
+            location.setByteType();
+
+            for (int i = 0; i < 100000; i++) {
+                location.setWriterSourceLocation();
+
+                BIByteNIOWriter writer = (BIByteNIOWriter) discovery.getCubeWriter(location);
+                location.setReaderSourceLocation();
+
+                BIByteNIOReader reader = (BIByteNIOReader) discovery.getCubeReader(location);
+            }
+            System.out.println(System.currentTimeMillis() - time);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+    }
+    public void testSimpleObjectOpenTime() {
+        try {
+            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "writer");
+
+            long time = System.currentTimeMillis();
+
+            for (int i = 0; i < 100000; i++) {
+                location.setWriterSourceLocation();
+                BIByteNIOWriter writer = new BIByteNIOWriter("D:\\temp\\arrayBasic.xml");
+            }
+            System.out.println(System.currentTimeMillis() - time);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+    }
 }

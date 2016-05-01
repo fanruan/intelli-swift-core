@@ -180,6 +180,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     public void clear() {
         columnManager.clear();
         relationManager.clear();
+        tableProperty.clear();
     }
 
     @Override

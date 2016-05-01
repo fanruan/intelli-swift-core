@@ -21,4 +21,8 @@ public class BITableSourceTestTool {
     public static ITableSource getDBTableSourceC() {
         return new DBTableSource("DB_A", "Table_C");
     }
+
+    public static ITableSource getDBTableSourceD() {
+        return new DBTableSource("DB_D", "Table_D");
+    }
 }
