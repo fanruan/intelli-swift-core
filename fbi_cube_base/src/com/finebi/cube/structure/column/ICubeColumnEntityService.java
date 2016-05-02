@@ -38,7 +38,6 @@ public interface ICubeColumnEntityService<T> extends ICubeColumnReaderService<T>
 
     Comparator<T> getGroupComparator();
 
-    void releaseDetailDataWriter();
 
     /**
      * 从数据库中读取的原始数值，

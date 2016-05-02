@@ -3,9 +3,6 @@ package com.finebi.cube.structure.detail;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeReader;
 import com.finebi.cube.data.output.ICubeWriter;
-import com.finebi.cube.exception.BIBuildReaderException;
-import com.finebi.cube.exception.BIBuildWriterException;
-import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.ICubeDetailDataService;
@@ -27,40 +24,67 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     public BICubeDetailData(ICubeResourceLocation superLocation) {
         try {
             currentLocation = superLocation.buildChildLocation("detail.fbi");
-            initial();
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
 
-    protected void initial() throws IllegalCubeResourceLocationException, BIBuildWriterException, BIBuildReaderException {
-        currentLocation.setWriterSourceLocation();
-        currentLocation = setDetailType();
-        ICubeResourceDiscovery resourceDiscovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-        cubeWriter = resourceDiscovery.getCubeWriter(currentLocation);
-        currentLocation.setReaderSourceLocation();
-        cubeReader = resourceDiscovery.getCubeReader(currentLocation);
-    }
-
     protected abstract ICubeResourceLocation setDetailType();
 
     @Override
     public void addDetailDataValue(int rowNumber, T originalValue) {
-        cubeWriter.recordSpecificValue(rowNumber, originalValue);
+        getCubeWriter().recordSpecificValue(rowNumber, originalValue);
     }
 
-    @Override
-    public void releaseDetailDataWriter() {
-        if (cubeWriter != null) {
-            cubeWriter.clear();
+    protected boolean isCubeWriterAvailable() {
+        return cubeWriter != null;
+    }
+
+    protected boolean isCubeReaderAvailable() {
+        return cubeReader != null;
+    }
+
+    public ICubeWriter<T> getCubeWriter() {
+        if (!isCubeWriterAvailable()) {
+            initCubeWriter();
+        }
+        return cubeWriter;
+    }
+
+    public ICubeReader<T> getCubeReader() {
+        if (!isCubeReaderAvailable()) {
+            initCubeReader();
+        }
+        return cubeReader;
+    }
+
+    private void initCubeReader() {
+        try {
+            currentLocation = setDetailType();
+            ICubeResourceDiscovery resourceDiscovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+            currentLocation.setReaderSourceLocation();
+            cubeReader = resourceDiscovery.getCubeReader(currentLocation);
+        } catch (Exception e) {
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
+    }
+
+    private void initCubeWriter() {
+        try {
+            currentLocation = setDetailType();
+            ICubeResourceDiscovery resourceDiscovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+            currentLocation.setWriterSourceLocation();
+            cubeWriter = resourceDiscovery.getCubeWriter(currentLocation);
+        } catch (Exception e) {
+            BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
     @Override
     public T getOriginalValueByRow(int rowNumber) {
         try {
-            return cubeReader.getSpecificValue(rowNumber);
+            return getCubeReader().getSpecificValue(rowNumber);
         } catch (BIResourceInvalidException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
@@ -70,7 +94,11 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
 
     @Override
     public void clear() {
-        cubeWriter.clear();
-        cubeReader.clear();
+        if (isCubeWriterAvailable()) {
+            cubeWriter.clear();
+        }
+        if (isCubeReaderAvailable()) {
+            cubeReader.clear();
+        }
     }
 }

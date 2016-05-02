@@ -6,9 +6,6 @@ import com.finebi.cube.data.input.ICubeReader;
 import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
 import com.finebi.cube.data.output.ICubeWriter;
 import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
-import com.finebi.cube.exception.BIBuildReaderException;
-import com.finebi.cube.exception.BIBuildWriterException;
-import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -32,40 +29,115 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     protected ICubeIntegerWriter groupLengthWriter;
     protected Comparator groupComparator;
     protected GroupValueSearchAssistance groupValueSearchAssistance;
+    protected ICubeResourceLocation superLocation;
     protected ICubeResourceLocation currentLocation;
+    private ICubePrimitiveResourceDiscovery primitiveResourceDiscovery;
 
     public BICubeGroupData(ICubeResourceLocation superLocation) {
         try {
+            this.superLocation = superLocation;
             currentLocation = superLocation.buildChildLocation("group.fbi");
-            ICubePrimitiveResourceDiscovery primitiveResourceDiscovery = BIFactoryHelper.getObject(ICubePrimitiveResourceDiscovery.class);
+            primitiveResourceDiscovery = BIFactoryHelper.getObject(ICubePrimitiveResourceDiscovery.class);
             groupValueSearchAssistance = new GroupValueSearchAssistance();
-            ICubeResourceLocation sizeLocation = superLocation.buildChildLocation("size.fbi");
-            sizeLocation.setIntegerType();
-            sizeLocation.setReaderSourceLocation();
-            groupLengthReader = (ICubeIntegerReader) primitiveResourceDiscovery.getCubeReader(sizeLocation);
-            sizeLocation.setWriterSourceLocation();
-            groupLengthWriter = (ICubeIntegerWriter) primitiveResourceDiscovery.getCubeWriter(sizeLocation);
-            initial();
+
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
+    private void initGroupWriter() {
+        try {
+            ICubeResourceLocation currentLocation = setGroupType();
+            ICubeResourceDiscovery resourceDiscovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+            currentLocation.setWriterSourceLocation();
+            groupWriter = resourceDiscovery.getCubeWriter(currentLocation);
+        } catch (Exception e) {
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
+    }
 
-    protected void initial() throws IllegalCubeResourceLocationException, BIBuildWriterException, BIBuildReaderException {
-        currentLocation.setWriterSourceLocation();
-        currentLocation = setGroupType();
-        ICubeResourceDiscovery resourceDiscovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-        groupWriter = resourceDiscovery.getCubeWriter(currentLocation);
-        currentLocation.setReaderSourceLocation();
-        groupReader = resourceDiscovery.getCubeReader(currentLocation);
+    private void initGroupReader() {
+        try {
+            ICubeResourceLocation currentLocation = setGroupType();
+            ICubeResourceDiscovery resourceDiscovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+            currentLocation.setReaderSourceLocation();
+            groupReader = resourceDiscovery.getCubeReader(currentLocation);
+        } catch (Exception e) {
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
+    }
+
+    private void initGroupLengthReader() {
+        try {
+            ICubeResourceLocation sizeLocation = superLocation.buildChildLocation("size.fbi");
+            sizeLocation.setIntegerType();
+            sizeLocation.setReaderSourceLocation();
+            groupLengthReader = (ICubeIntegerReader) primitiveResourceDiscovery.getCubeReader(sizeLocation);
+        } catch (Exception e) {
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
+    }
+
+    private void initGroupLengthWriter() {
+        try {
+            ICubeResourceLocation sizeLocation = superLocation.buildChildLocation("size.fbi");
+            sizeLocation.setIntegerType();
+            sizeLocation.setWriterSourceLocation();
+            groupLengthWriter = (ICubeIntegerWriter) primitiveResourceDiscovery.getCubeWriter(sizeLocation);
+        } catch (Exception e) {
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
+    }
+
+    public ICubeWriter<T> getGroupWriter() {
+        if (!isGroupWriterAvailable()) {
+            initGroupWriter();
+        }
+        return groupWriter;
+    }
+
+    public ICubeReader<T> getGroupReader() {
+        if (!isGroupReaderAvailable()) {
+            initGroupReader();
+        }
+        return groupReader;
+    }
+
+    public ICubeIntegerReader getGroupLengthReader() {
+        if (!isLengthReaderAvailable()) {
+            initGroupLengthReader();
+        }
+        return groupLengthReader;
+    }
+
+    public ICubeIntegerWriter getGroupLengthWriter() {
+        if (!isLengthWriterAvailable()) {
+            initGroupLengthWriter();
+        }
+        return groupLengthWriter;
+    }
+
+    protected boolean isGroupReaderAvailable() {
+        return groupReader != null;
+    }
+
+    protected boolean isGroupWriterAvailable() {
+        return groupWriter != null;
+    }
+
+    protected boolean isLengthReaderAvailable() {
+        return groupLengthReader != null;
+    }
+
+    protected boolean isLengthWriterAvailable() {
+        return groupLengthWriter != null;
     }
 
     protected abstract ICubeResourceLocation setGroupType();
 
     @Override
     public void addGroupDataValue(int positionInGroup, T groupValue) {
-        groupWriter.recordSpecificValue(positionInGroup, groupValue);
+        getGroupWriter().recordSpecificValue(positionInGroup, groupValue);
     }
 
     @Override
@@ -90,7 +162,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     public int sizeOfGroup() {
 
         try {
-            return groupLengthReader.getSpecificValue(0);
+            return getGroupLengthReader().getSpecificValue(0);
         } catch (BIResourceInvalidException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
@@ -100,7 +172,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     @Override
     public T getGroupValueByPosition(int position) {
         try {
-            return groupReader.getSpecificValue(position);
+            return getGroupReader().getSpecificValue(position);
 
         } catch (BIResourceInvalidException e) {
             BILogger.getLogger().error(e.getMessage(), e);
@@ -111,15 +183,23 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
 
     @Override
     public void writeSizeOfGroup(int size) {
-        groupLengthWriter.recordSpecificPositionValue(0, size);
+        getGroupLengthWriter().recordSpecificPositionValue(0, size);
     }
 
     @Override
     public void clear() {
-        groupWriter.clear();
-        groupReader.clear();
-        groupLengthReader.clear();
-        groupLengthWriter.clear();
+        if (isGroupWriterAvailable()) {
+            groupWriter.clear();
+        }
+        if (isGroupReaderAvailable()) {
+            groupReader.clear();
+        }
+        if (isLengthReaderAvailable()) {
+            groupLengthReader.clear();
+        }
+        if (isLengthWriterAvailable()) {
+            groupLengthWriter.clear();
+        }
     }
 
     public class GroupValueSearchAssistance implements ArrayLookupHelper.Lookup<T> {

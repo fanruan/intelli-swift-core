@@ -26,10 +26,8 @@ public class BICubeTablePropertyTest extends TestCase {
     private BICubeTableProperty property;
     private ICubeResourceRetrievalService retrievalService;
     private ICubeConfiguration cubeConfiguration;
-    ICubeResourceLocation location;
+    private ICubeResourceLocation location;
 
-    static {
-    }
 
     public BICubeTablePropertyTest() {
         try {
@@ -53,7 +51,7 @@ public class BICubeTablePropertyTest extends TestCase {
 
     }
 
-    public void testRowCountWrite() {
+    public void testRowCountWriteAvailable() {
         synchronized (this.getClass()) {
             try {
                 assertFalse(property.isRowCountReaderAvailable());
@@ -75,7 +73,7 @@ public class BICubeTablePropertyTest extends TestCase {
 
     }
 
-    public void testRowCountRead() {
+    public void testRowCountReadAvailable() {
         synchronized (this.getClass()) {
             try {
                 assertFalse(property.isRowCountReaderAvailable());
@@ -101,7 +99,7 @@ public class BICubeTablePropertyTest extends TestCase {
 
     }
 
-    public void testVersionWriteRead() {
+    public void testVersionAvailable() {
         synchronized (this.getClass()) {
 
             try {
@@ -133,7 +131,7 @@ public class BICubeTablePropertyTest extends TestCase {
         }
     }
 
-    public void testLastTimeWriteRead() {
+    public void testLastTimeAvailable() {
         try {
             synchronized (this.getClass()) {
                 assertFalse(property.isRowCountReaderAvailable());
@@ -174,7 +172,7 @@ public class BICubeTablePropertyTest extends TestCase {
         }
     }
 
-    public void testFieldInfoWriteRead() {
+    public void testFieldInfoAvailable() {
         try {
             synchronized (this.getClass()) {
 
@@ -228,7 +226,7 @@ public class BICubeTablePropertyTest extends TestCase {
     }
 
 
-    public void testPropertyWriteRead() {
+    public void testPropertyAvailable() {
         try {
             synchronized (this.getClass()) {
                 assertFalse(property.isRowCountReaderAvailable());
