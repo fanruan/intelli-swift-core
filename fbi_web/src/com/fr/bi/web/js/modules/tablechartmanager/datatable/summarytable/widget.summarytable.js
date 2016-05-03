@@ -1,6 +1,5 @@
 /**
- * @class BI.SummaryTable
- * @type {*|void}
+ * 汇总表（分组表、交叉表）
  */
 BI.SummaryTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
@@ -72,35 +71,6 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         })
     },
 
-    populate: function (noDataChange) {
-        if (noDataChange === true) {
-            this._populateWithoutReq();
-            return;
-        }
-        this._populate();
-    },
-
-    //无数据变化——如是否显示汇总行列，是否显示序号
-    _populateWithoutReq: function () {
-        var widgetId = this.options.wId;
-        var widgetType = BI.Utils.getWidgetTypeByID(widgetId);
-        switch (widgetType) {
-            case BICst.Widget.TABLE:
-                this._populateGroupTable();
-                break;
-            case BICst.Widget.CROSS_TABLE:
-                if (BI.isNotNull(self.model.getData().t)) {
-                    this._populateCrossTable();
-                } else {
-                    this._populateGroupTable();
-                }
-                break;
-            case BICst.Widget.COMPLEX_TABLE:
-                this._populateComplexTable();
-                break;
-        }
-    },
-
     /**
      * 无维度或指标发生变化时（如：展开节点）
      * @private
@@ -118,20 +88,21 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             var widgetType = BI.Utils.getWidgetTypeByID(wId);
             switch (widgetType) {
                 case BICst.Widget.TABLE:
-                    self._populateGroupTable();
+                    self._prepareData4GroupTable();
                     break;
                 case BICst.Widget.CROSS_TABLE:
                     //如果没有列表头，还是以分组表展示——后台传这样的数据
                     if (BI.isNotNull(self.model.getData().t)) {
-                        self._populateCrossTable();
+                        self._prepareData4CrossTable();
                     } else {
-                        self._populateGroupTable();
+                        self._prepareData4GroupTable();
                     }
                     break;
                 case BICst.Widget.COMPLEX_TABLE:
                     self._populateComplexTable();
                     break;
             }
+            self._populateTable();
         }, this.model.getExtraInfo());
     },
 
@@ -160,58 +131,21 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         }, this.model.getExtraInfo());
     },
 
-
-    //有数据变化的，需要请求到后台的
-    _populate: function () {
-        var self = this;
-        var widgetId = this.options.wId;
-        this.loading();
-        this.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
-        this.table.setVPage(1);
-        BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
-            self.loaded();
-            if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.table.setVisible(false);
-                return;
-            }
-            self.model.setDataAndPage(jsonData);
-            var widgetType = BI.Utils.getWidgetTypeByID(widgetId);
-            switch (widgetType) {
-                case BICst.Widget.TABLE:
-                    self._populateGroupTable();
-                    break;
-                case BICst.Widget.CROSS_TABLE:
-                    //如果没有列表头，还是以分组表展示——后台传这样的数据
-                    if (BI.isNotNull(self.model.getData().t)) {
-                        self._populateCrossTable();
-                    } else {
-                        self._populateGroupTable();
-                    }
-                    break;
-                case BICst.Widget.COMPLEX_TABLE:
-                    self._populateComplexTable();
-                    break;
-            }
-        }, this.model.getExtraInfo());
-    },
-
     /**
      * 分组表
      * @private
      */
-    _populateGroupTable: function () {
+    _prepareData4GroupTable: function () {
         //创建表格的各种属性——回调各种点击事件
         this.model.createGroupTableAttrs(BI.bind(this._onClickHeaderOperator, this), BI.bind(this._populateNoDimsChange, this), BI.bind(this._onClickBodyCellOperator, this));
-        this._populateTable();
     },
 
     /**
      * 交叉表
      * @private
      */
-    _populateCrossTable: function () {
+    _prepareData4CrossTable: function () {
         this.model.createCrossTableAttrs(BI.bind(this._onClickHeaderOperator, this), BI.bind(this._populateNoDimsChange, this), BI.bind(this._onClickBodyCellOperator, this));
-        this._populateTable();
     },
 
     /**
@@ -290,6 +224,40 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
         this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
+    },
+
+    populate: function () {
+        var self = this;
+        var widgetId = this.options.wId;
+        this.loading();
+        this.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
+        this.table.setVPage(1);
+        BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
+            self.loaded();
+            if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                self.table.setVisible(false);
+                return;
+            }
+            self.model.setDataAndPage(jsonData);
+            var widgetType = BI.Utils.getWidgetTypeByID(widgetId);
+            switch (widgetType) {
+                case BICst.Widget.TABLE:
+                    self._prepareData4GroupTable();
+                    break;
+                case BICst.Widget.CROSS_TABLE:
+                    //如果没有列表头，还是以分组表展示——后台传这样的数据
+                    if (BI.isNotNull(self.model.getData().t)) {
+                        self._prepareData4CrossTable();
+                    } else {
+                        self._prepareData4GroupTable();
+                    }
+                    break;
+                case BICst.Widget.COMPLEX_TABLE:
+                    self._populateComplexTable();
+                    break;
+            }
+            self._populateTable();
+        }, this.model.getExtraInfo());
     }
 });
 BI.SummaryTable.EVENT_CHANGE = "EVENT_CHANGE";

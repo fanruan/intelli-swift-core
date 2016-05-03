@@ -537,6 +537,16 @@
             });
             return view[regionType];
         },
+        
+        getRegionTypeByDimensionID: function(dId) {
+            var wId = BI.Utils.getWidgetIDByDimensionID(dId);
+            var view = BI.Utils.getWidgetViewByID(wId);
+            return BI.findKey(view, function (regionType, dIds) {
+                if (BI.contains(dIds, dId)) {
+                    return true
+                }
+            });
+        },
 
         isDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
             var self = this;
@@ -1014,7 +1024,7 @@
                 }
             }
 
-            //钻取条件
+            //钻取条件  对于交叉表，要考虑的不仅仅是used，还有行表头与列表头之间的钻取问题
             var drill = this.getDrillByID(wid);
             if (BI.isNotNull(drill)) {
                 BI.each(drill, function (drId, drArray) {
@@ -1023,7 +1033,14 @@
                     }
                     BI.isNotNull(widget.dimensions[drId]) && (widget.dimensions[drId].used = false);
                     BI.each(drArray, function (i, drill) {
-                        BI.isNotNull(widget.dimensions[drill.dId]) && (widget.dimensions[drill.dId].used = (i === drArray.length - 1));
+                        if(BI.isNotNull(widget.dimensions[drill.dId])) {
+                            widget.dimensions[drill.dId].used = (i === drArray.length - 1);
+                            var drillRegionType = self.getRegionTypeByDimensionID(drId);
+                            //从原来的region中pop出来
+                            var tempRegionType = self.getRegionTypeByDimensionID(drill.dId);
+                            BI.remove(widget.view[tempRegionType], drill.dId);
+                            widget.view[drillRegionType].push(drill.dId);
+                        }
                         BI.each(drArray[i].values, function (i, v) {
                             var filterValue = parseSimpleFilter(v);
                             if (BI.isNotNull(filterValue)) {
