@@ -13,8 +13,11 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         buttonGap: 10,
         titleHeight: 50,
         labelWidth: 45,
-        labelHeight: 45,
-        gap: 30
+        labelHeight: 30,
+        gap: 30,
+        combineComboPosition: 2,
+        Multi_Path: 1,
+        Multi_Match_Multi: 2
     },
 
     _defaultConfig: function () {
@@ -40,18 +43,29 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         });
 
         this.dimensiontreeCombo.on(BI.DimensionTreeCombo.EVENT_CHANGE, function(){
-            self.pathChooser.populate({
-                dimensionFieldId: this.getValue()[0],
+            var fieldId = this.getValue()[0];
+            self._checkDimensionAndTargetRelation(BI.Utils.getTableIdByFieldID(fieldId));
+            self.tab.populate({
+                dimensionFieldId: fieldId,
                 targetIds: o.targetIds
             });
         });
 
-        this.pathChooser = BI.createWidget({
-            type: "bi.multi_path_chooser",
-            height: 200
+        this.tab = BI.createWidget({
+            type: "bi.tab",
+            height: 200,
+            cardCreator: BI.bind(this._createTabs, this)
         });
 
-        BI.createWidget({
+        this.tab.setSelect(this.constants.Multi_Path);
+
+        this.emptyItem = BI.createWidget({
+            type: "bi.default",
+            tgap: 5,
+            items: []
+        });
+
+        this.layout = BI.createWidget({
             type: "bi.vtape",
             hgap: this.constants.titleGap,
             element: this.element,
@@ -74,6 +88,9 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 },
                 height: 30
             }, {
+                el: this.emptyItem,
+                height: 0
+            }, {
                 el: {
                     type: "bi.left",
                     items: [{
@@ -88,16 +105,70 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                         cls: "path-set-doubt"
                     }]
                 },
-                height: 45
+                height: this.constants.labelHeight
             }, {
                 type: "bi.vertical",
                 cls: "select-path-region",
                 scrolly: false,
                 scrollable: true,
                 vgap: 10,
-                items: [this.pathChooser]
+                items: [this.tab]
             }]
         });
+    },
+
+    _createTabs: function (v) {
+        switch (v) {
+            case this.constants.Multi_Path:
+                return BI.createWidget({
+                    type: "bi.multi_path_chooser",
+                    height: 200
+                });
+            case this.constants.Multi_Match_Multi:
+                return BI.createWidget({
+                    type: "bi.multi_match_multi_path_chooser",
+                    height: 200
+                });
+        }
+    },
+
+    _checkDimensionAndTargetRelation: function (tId) {
+        var o = this.options;
+        var self = this;
+        var tIds = BI.Utils.getForeignRelationTablesByTableID(BI.Utils.getTableIDByDimensionID(o.targetIds[0]));
+        var contains = BI.contains(tIds, tId);
+        var combineCombo = this.layout.attr("items")[this.constants.combineComboPosition];
+        if(true){
+            if(!this.selectCombineTableCombo){
+                this.selectCombineTableCombo = BI.createWidget({
+                    type: "bi.text_icon_combo",
+                    width: 220,
+                    height: 30
+                });
+                this.selectCombineTableCombo.on(BI.TextIconCombo.EVENT_CHANGE, function () {
+                    self.tab.populate({
+                        dimensionFieldId: BI.Utils.getFieldIDByDimensionID(o.dimensionId),
+                        targetIds: o.targetIds,
+                        combineTableId: this.getValue()[0]
+                    });
+                });
+                this.emptyItem.addItem(this.selectCombineTableCombo);
+            }
+            var tables = BI.Utils.getCommonPrimaryTablesByTableIDs([tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0])]);
+            var items = BI.map(tables, function(idx, tId){
+                return {
+                    text: BI.Utils.getTableNameByID(tId),
+                    value: tId
+                };
+            });
+            this.selectCombineTableCombo.populate(items);
+            combineCombo.height = 35;
+            this.tab.setSelect(this.constants.Multi_Match_Multi);
+        }else{
+            combineCombo.height = 0;
+            this.tab.setSelect(this.constants.Multi_Path);
+        }
+        this.layout.resize();
     },
 
     populate: function(items){
@@ -105,7 +176,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         o.targetIds = items;
         this.targetLine.populate(o.targetIds);
         this.dimensiontreeCombo.populate(o.targetIds);
-        this.pathChooser.populate({
+        this.tab.populate({
             dimensionFieldId: BI.Utils.getFieldIDByDimensionID(o.dimensionId),
             targetIds: o.targetIds
         });
@@ -114,14 +185,16 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
     setValue: function(v){
         var o = this.options;
         if(BI.isEmpty(v)){
+            this._checkDimensionAndTargetRelation(BI.Utils.getTableIdByFieldID(this.dimensiontreeCombo.getValue()[0]));
             return;
         }
+        this._checkDimensionAndTargetRelation(BI.Utils.getTableIdByFieldID(v._src.field_id));
         this.dimensiontreeCombo.setValue(v._src.field_id);
-        this.pathChooser.populate({
+        this.tab.populate({
             dimensionFieldId: v._src.field_id,
             targetIds: o.targetIds
         });
-        this.pathChooser.setValue(v.target_relation);
+        this.tab.setValue(v.target_relation);
     },
 
     getValue: function(){
@@ -129,7 +202,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             _src: {
                 field_id: this.dimensiontreeCombo.getValue()[0]
             },
-            target_relation: this.pathChooser.getValue()
+            target_relation: this.tab.getValue()
         }
     }
 });
