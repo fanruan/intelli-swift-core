@@ -47,11 +47,27 @@ if (!window.BI) {
             return localeText;
         },
 
+        assert: function (v, is) {
+            if (this.isFunction(is)) {
+                if (!is(v)) {
+                    throw new Error(v + "值不合法");
+                } else {
+                    return true;
+                }
+            }
+            if (!this.isArray(is)) {
+                is = [is];
+            }
+            if (!this.deepContains(is, v)) {
+                throw new Error(v + "值不合法");
+            }
+        },
+
         UUID: function () {
             var f = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
             var str = "";
             for (var i = 0; i < 16; i++) {
-                var r = parseInt(f.length * Math.random());
+                var r = parseInt(f.length * Math.random(), 10);
                 str += f[r];
             }
             return str;

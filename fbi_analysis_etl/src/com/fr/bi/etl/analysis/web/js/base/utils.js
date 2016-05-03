@@ -100,7 +100,6 @@ BI.extend(BI.Utils, {
         return formulaString;
     },
 
-
     _buildData : function(model, filterValueGetter) {
         //测试数据
         var header = [];
@@ -124,6 +123,8 @@ BI.extend(BI.Utils, {
         return [items, header];
     }
 })
+
+window.confirm = BI.Msg.confirm;
 
 BI.Utils.triggerPreview = BI.throttle(function (widget, previewModel, operatorType) {
     widget.setPreviewOperator(operatorType);
