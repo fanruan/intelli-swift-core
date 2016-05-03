@@ -52,6 +52,8 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
         if (value.length === 0){
             conditionItems.push(BI.createWidget({
                 type : 'bi.label',
+                height : 50,
+                cls : 'bi-filter-popup-pane-etl-empty-label',
                 text : BI.i18nText('BI-Please_Add_Filter'),
                 textAlign : 'center'
             }))
@@ -173,13 +175,10 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
         })
     },
 
-    _initValue : function () {
+    initValue : function () {
         var self = this;
-        if (BI.isNull(self.storeValue) || BI.isNull(self.storeValue.value)){
+        if (BI.isNull(self.storeValue) || !BI.isNotEmptyArray(this.storeValue.value)){
             self.storeValue = BI.deepClone(this.options.originValue);
-        }
-        if (!BI.isNotEmptyArray(this.storeValue.value)){
-            this.storeValue.value = [];
         }
     },
 
@@ -193,7 +192,6 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this;
-        self._initValue();
         self.condition.empty();
         BI.each(self._createConditionItems(), function(idx, item){
             self.condition.addItem(item)
