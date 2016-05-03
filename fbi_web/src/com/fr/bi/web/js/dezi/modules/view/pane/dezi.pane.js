@@ -11,7 +11,9 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BIDezi.PaneView.superclass._defaultConfig.apply(this, arguments), {})
+        return BI.extend(BIDezi.PaneView.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-pane-view"
+        })
     },
 
     _init: function () {

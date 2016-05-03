@@ -519,7 +519,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     type: "bi.target_body_normal_cell",
                     text: v,
                     dId: tId,
-                    clicked: pValues
+                    clicked: []
                 });
             }
         });

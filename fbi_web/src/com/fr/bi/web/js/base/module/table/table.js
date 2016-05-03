@@ -781,8 +781,8 @@ BI.Table = BI.inherit(BI.Widget, {
                 self.setColumnSize(o.columnSize);
             }
         };
-        BI.Resizers.add(this.getName(), function () {
-            if (self.element.is(":visible")) {
+        BI.Resizers.add(this.getName(), function (e) {
+            if (self.element.is(":visible") && BI.isWindow(e.target)) {
                 self._resize();
                 self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
             }

@@ -13,9 +13,11 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
         var o = this.options;
         var tId = o.tId, filter = o.filter;
         var relation = "", value = "";
+        var model = new BI.WidgetFilterModel();
         switch (filter.filter_type) {
+            //number
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
-                relation = BI.i18nText("BI-Equal")
+                relation = BI.i18nText("BI-Equal");
                 value = filter.filter_value;
                 break;
             case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
@@ -24,11 +26,11 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
                 break;
             case BICst.TARGET_FILTER_NUMBER.BELONG_VALUE:
                 relation = BI.i18nText("BI-In");
-                value = this._getRangeText(filter.filter_value);
+                value = model.getNumberRangeText(filter.filter_value);
                 break;
             case BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE:
                 relation = BI.i18nText("BI-Not_In");
-                value = this._getRangeText(filter.filter_value);
+                value = model.getNumberRangeText(filter.filter_value);
                 break;
             case BICst.TARGET_FILTER_NUMBER.IS_NULL:
                 relation = BI.i18nText("BI-Is_Null");
@@ -36,6 +38,86 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
             case BICst.TARGET_FILTER_NUMBER.NOT_NULL:
                 relation = BI.i18nText("BI-Not_Null");
                 break;
+            //string
+            case BICst.TARGET_FILTER_STRING.BELONG_VALUE:
+                var v = filter.filter_value;
+                var sType = v.type;
+                relation = sType === BI.Selection.All ? BI.i18nText("BI-Not_In") : BI.i18nText("BI-In");
+                value = v.value;
+                break;
+            case BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE:
+                var v = filter.filter_value;
+                var sType = v.type;
+                relation = sType === BI.Selection.All ? BI.i18nText("BI-In") : BI.i18nText("BI-Not_In");
+                value = v.value;
+                break;
+            case BICst.TARGET_FILTER_STRING.CONTAIN:
+                relation = BI.i18nText("BI-Contain");
+                value = filter.filter_value;
+                break;
+            case BICst.TARGET_FILTER_STRING.NOT_CONTAIN:
+                relation = BI.i18nText("BI-Not_Contain");
+                value = filter.filter_value;
+                break;
+            case BICst.TARGET_FILTER_STRING.IS_NULL:
+                relation = BI.i18nText("BI-Is_Null");
+                break;
+            case BICst.TARGET_FILTER_STRING.NOT_NULL:
+                relation = BI.i18nText("BI-Not_Null");
+                break;
+            case BICst.TARGET_FILTER_STRING.BEGIN_WITH:
+                relation = BI.i18nText("BI-Begin_With");
+                value = filter.filter_value;
+                break;
+            case BICst.TARGET_FILTER_STRING.END_WITH:
+                relation = BI.i18nText("BI-End_With");
+                value = filter.filter_value;
+                break;
+            case BICst.TARGET_FILTER_STRING.NOT_BEGIN_WITH:
+                relation = BI.i18nText("BI-Not_Begin_With");
+                value = filter.filter_value;
+                break;
+            case BICst.TARGET_FILTER_STRING.NOT_END_WITH:
+                relation = BI.i18nText("BI-Not_End_With");
+                value = filter.filter_value;
+                break;
+            //date
+            case BICst.FILTER_DATE.BELONG_DATE_RANGE:
+                relation = BI.i18nText("BI-In");
+                value = model.getDateRangeText(filter.filter_value);
+                break;
+            case BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE:
+                relation = BI.i18nText("BI-Not_In");
+                value = model.getDateRangeText(filter.filter_value);
+                break;
+            case BICst.FILTER_DATE.BELONG_WIDGET_VALUE:
+                break;
+            case BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE:
+                break;
+            case BICst.FILTER_DATE.EQUAL_TO:
+                relation = BI.i18nText("BI-Equal");
+                value = filter.filter_value;
+                break;
+            case BICst.FILTER_DATE.NOT_EQUAL_TO:
+                relation = BI.i18nText("BI-Not_Equal_To");
+                value = filter.filter_value;
+                break;
+            case BICst.FILTER_DATE.IS_NULL:
+                relation = BI.i18nText("BI-Is_Null");
+                break;
+            case BICst.FILTER_DATE.NOT_NULL:
+                relation = BI.i18nText("BI-Not_Null");
+                break;
+            case BICst.FILTER_DATE.EARLY_THAN:
+                relation = BI.i18nText("BI-Sooner_Than");
+                break;
+            case BICst.FILTER_DATE.LATER_THAN:
+                relation = BI.i18nText("BI-Later_Than");
+                break;
+            case BICst.FILTER_DATE.CONTAINS:
+                relation = BI.i18nText("BI-Contain");
+                break;
+
         }
         BI.createWidget({
             type: "bi.left",
@@ -52,28 +134,14 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
                 cls: ""
             }, {
                 type: "bi.label",
-                text: value,
+                text: value.toString(),
                 height: 30,
                 cls: ""
             }],
             hgap: 10,
             vgap: 5
         })
-    },
-
-    _getRangeText: function( filterValue) {
-        var text = "";
-        var closemin = filterValue.closemin, closemax = filterValue.closemax, min = filterValue.min, max = filterValue.max;
-        if(BI.isNotNull(min) && BI.isNotEmptyString(min) && BI.isNotNull(max) && BI.isNotEmptyString(max)) {
-            text = min + (closemin ? "<=" : "<") + BI.i18nText("BI-Value") + (closemax ? "<=" : "<") + max;
-        } else if(BI.isNotNull(min) && BI.isNotEmptyString(min)) {
-            text = min + (closemin ? "<=" : "<") + BI.i18nText("BI-Value");
-        } else if(BI.isNotNull(max) && BI.isNotEmptyString(max)) {
-            text = BI.i18nText("BI-Value") + (closemax ? "<=" : "<") + max;
-        } else {
-
-        }
-        return text;
     }
+
 });
 $.shortcut("bi.target_filter_item", BI.TargetFilterItem);
