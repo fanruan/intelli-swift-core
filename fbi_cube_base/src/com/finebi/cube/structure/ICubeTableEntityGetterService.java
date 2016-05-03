@@ -5,6 +5,7 @@ import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.DBField;
 
 import java.util.Date;
@@ -18,7 +19,7 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeTableEntityGetterService {
+public interface ICubeTableEntityGetterService extends Release{
 
     int getTableVersion();
 

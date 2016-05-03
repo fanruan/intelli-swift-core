@@ -46,10 +46,7 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
         return columnEntity.getGroupComparator();
     }
 
-    @Override
-    public void releaseDetailDataWriter() {
-        columnEntity.releaseDetailDataWriter();
-    }
+
 
     @Override
     public void addGroupValue(int position, T groupValue) {

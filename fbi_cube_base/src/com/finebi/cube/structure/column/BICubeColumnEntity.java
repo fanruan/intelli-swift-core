@@ -49,10 +49,6 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         groupDataService.setGroupComparator(groupComparator);
     }
 
-    @Override
-    public void releaseDetailDataWriter() {
-        detailDataService.releaseDetailDataWriter();
-    }
 
     @Override
     public void addOriginalDataValue(int rowNumber, T originalValue) {
@@ -163,6 +159,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         detailDataService.clear();
         indexDataService.clear();
         groupDataService.clear();
+        cubeVersion.clear();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.fr.bi.conf.report.widget.field.target.detailtarget;
 
+import com.fr.bi.common.inter.Release;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.stable.data.Table;
@@ -11,7 +12,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import java.util.List;
 import java.util.Map;
 
-public interface BIDetailTarget extends BITargetAndDimension {
+public interface BIDetailTarget extends BITargetAndDimension, Release {
 
     /**
      * 创建索引map

@@ -29,26 +29,36 @@ public class BIRelationIndexGenerator extends BIProcessor {
         return null;
     }
 
+    @Override
+    public void release() {
+
+    }
+
     private void buildRelationIndex() {
+        ICubeTableEntityGetterService primaryTable = null;
+        ICubeTableEntityGetterService foreignTable = null;
+        ICubeColumnEntityService primaryColumn = null;
+        ICubeColumnEntityService foreignColumn = null;
+        BICubeRelationEntity tableRelation = null;
         try {
             BIColumnKey primaryKey = relation.getPrimaryField();
             BIColumnKey foreignKey = relation.getForeignField();
             ITableKey primaryTableKey = relation.getPrimaryTable();
             ITableKey foreignTableKey = relation.getForeignTable();
-            ICubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
-            ICubeTableEntityGetterService foreignTable = cube.getCubeTable(foreignTableKey);
+            primaryTable = cube.getCubeTable(primaryTableKey);
+            foreignTable = cube.getCubeTable(foreignTableKey);
             /**
              * 关联的主字段对象
              */
-            ICubeColumnEntityService primaryColumn = (ICubeColumnEntityService) cube.getCubeColumn(primaryTableKey, primaryKey);
+            primaryColumn = (ICubeColumnEntityService) cube.getCubeColumn(primaryTableKey, primaryKey);
             /**
              * 关联的子字段对象
              */
-            ICubeColumnEntityService foreignColumn = (ICubeColumnEntityService) cube.getCubeColumn(foreignTableKey, foreignKey);
+            foreignColumn = (ICubeColumnEntityService) cube.getCubeColumn(foreignTableKey, foreignKey);
             /**
              * 表间关联对象
              */
-            BICubeRelationEntity tableRelation = (BICubeRelationEntity) cube.getCubeRelation(primaryTableKey, relation);
+            tableRelation = (BICubeRelationEntity) cube.getCubeRelation(primaryTableKey, relation);
 
             final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
             /**
@@ -79,6 +89,23 @@ public class BIRelationIndexGenerator extends BIProcessor {
             tableRelation.addRelationNULLIndex(0, appearPrimaryValue.NOT(foreignTable.getRowCount()));
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
+        } finally {
+            if (primaryTable != null) {
+                primaryTable.clear();
+            }
+            if (foreignTable != null) {
+                foreignTable.clear();
+            }
+            if (primaryColumn != null) {
+                primaryColumn.clear();
+            }
+            if (foreignColumn != null) {
+                foreignColumn.clear();
+            }
+            if (tableRelation != null) {
+                tableRelation.clear();
+            }
+
         }
 
     }

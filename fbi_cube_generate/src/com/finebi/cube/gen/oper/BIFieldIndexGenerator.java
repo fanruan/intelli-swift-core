@@ -59,6 +59,11 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         return null;
     }
 
+    @Override
+    public void release() {
+        columnEntityService.clear();
+    }
+
     public void buildTableIndex() {
         IntList nullRowNumbers = new IntList();
         Map<T, IntList> group2rowNumber = createTreeMap(nullRowNumbers);
@@ -75,7 +80,6 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             groupPosition++;
         }
         columnEntityService.addNULLIndex(0, buildGroupValueIndex(nullRowNumbers));
-        columnEntityService.clear();
     }
 
     private GroupValueIndex buildGroupValueIndex(IntList groupRowNumbers) {
