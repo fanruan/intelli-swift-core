@@ -130,6 +130,13 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     }
 
     @Override
+    public void clear() {
+        if (cubeTableService != null) {
+            cubeTableService.clear();
+        }
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

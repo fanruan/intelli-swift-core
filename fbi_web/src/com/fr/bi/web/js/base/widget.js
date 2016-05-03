@@ -126,6 +126,7 @@ BI.Widget = BI.inherit(FR.Widget, {
     },
 
     setEnable: function (enable) {
+        BI.assert(enable, [true, false]);
         if (enable === true) {
             this.options.disabled = false;
             this.element.removeClass("base-disabled disabled");
@@ -136,11 +137,13 @@ BI.Widget = BI.inherit(FR.Widget, {
     },
 
     setVisible: function (visible) {
+        BI.assert(visible, [true, false]);
         BI.Widget.superclass.setVisible.apply(this, arguments);
         this.fireEvent(BI.Events.VIEW, visible);
     },
 
     setValid: function (valid) {
+        BI.assert(valid, [true, false]);
         this.options.invalid = !valid;
         if (valid === true) {
             this.element.removeClass("base-invalid invalid");

@@ -3,7 +3,6 @@ package com.finebi.cube.gen.oper;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
-import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
@@ -19,9 +18,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  * @author Connery
  * @since 4.0
  */
-public class BIFieldPathIndexBuilder extends BIProcessor {
-    private ICube cube;
-    private BICubeTablePath relationPath;
+public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
     private BIColumnKey field;
 
     public BIFieldPathIndexBuilder(ICube cube, DBField field, BICubeTablePath relationPath) {
@@ -29,8 +26,7 @@ public class BIFieldPathIndexBuilder extends BIProcessor {
     }
 
     public BIFieldPathIndexBuilder(ICube cube, BIColumnKey columnKey, BICubeTablePath relationPath) {
-        this.cube = cube;
-        this.relationPath = relationPath;
+        super(cube, relationPath);
         this.field = columnKey;
     }
 
@@ -40,12 +36,20 @@ public class BIFieldPathIndexBuilder extends BIProcessor {
         return null;
     }
 
+    @Override
+    public void release() {
+
+    }
+
     private void buildFieldPathIndex() {
+        ICubeColumnReaderService primaryColumnReader = null;
+        ICubeRelationEntityGetterService tablePathReader = null;
+        ICubeRelationEntityService targetPathEntity = null;
         try {
-            ICubeColumnReaderService primaryColumnReader = buildPrimaryColumnReader();
+            primaryColumnReader = buildPrimaryColumnReader();
             int primaryFieldRowCount = primaryColumnReader.sizeOfGroup();
-            ICubeRelationEntityGetterService tablePathReader = buildTableRelationPathReader();
-            ICubeRelationEntityService targetPathEntity = buildTargetRelationPathWriter();
+            tablePathReader = buildTableRelationPathReader();
+            targetPathEntity = buildTargetRelationPathWriter();
             final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
             for (int row = 0; row < primaryFieldRowCount; row++) {
                 GroupValueIndex frontGroupValueIndex = primaryColumnReader.getBitmapIndex(row);
@@ -56,14 +60,20 @@ public class BIFieldPathIndexBuilder extends BIProcessor {
             targetPathEntity.addRelationNULLIndex(0, appearPrimaryValue.NOT(getJuniorTableRowCount()));
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
+        } finally {
+            if (primaryColumnReader != null) {
+                primaryColumnReader.clear();
+            }
+            if (tablePathReader != null) {
+                tablePathReader.clear();
+            }
+            if (targetPathEntity != null) {
+                tablePathReader.clear();
+            }
         }
     }
 
-    private int getJuniorTableRowCount() throws BITablePathEmptyException {
-        ITableKey primaryTableKey = relationPath.getLastRelation().getForeignTable();
-        ICubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
-        return primaryTable.getRowCount();
-    }
+
 
     private ICubeColumnReaderService buildPrimaryColumnReader() throws BITablePathEmptyException, BICubeColumnAbsentException {
         ITableKey primaryTableKey = relationPath.getFirstRelation().getPrimaryTable();

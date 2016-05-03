@@ -103,11 +103,11 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_COLUMN_RESIZE, function () {
-            self._resizeRegion();
-            self._resizeHeader();
             self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+            self._resizeRegion();
+            self._resizeHeader();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
 

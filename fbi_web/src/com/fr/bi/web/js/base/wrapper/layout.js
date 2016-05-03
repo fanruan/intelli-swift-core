@@ -88,7 +88,7 @@ BI.Layout = BI.inherit(BI.Widget, {
      * @param {JSON/BI.Widget} item 子组件
      */
     addItem: function (item) {
-        this.options.items.push(item);
+
     },
 
     addItems: function (items) {

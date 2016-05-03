@@ -34,10 +34,10 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
             type : 'bi.absolute'
         })
         self.smallCombo = BI.createWidget({
-            type: "bi.numerical_interval_combo",
+            type: o.filter_type === BICst.TARGET_FILTER_NUMBER.SMALL_OR_EQUAL_CAL_LINE  ? "bi.numerical_interval_combo" : "bi.numerical_interval_more_combo",
             cls: "numerical-interval-small-combo",
             height: self._constants.HEIGHT - self._constants.BORDER * 2,
-            offsetStyle: o.filter_type == BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE ? "left" : "right"
+            offsetStyle: "left"
         });
         self.smallCombo.on(BI.NumericalIntervalCombo.EVENT_CHANGE, function () {
             self.storedValue.close = self.smallCombo.getValue()[0];

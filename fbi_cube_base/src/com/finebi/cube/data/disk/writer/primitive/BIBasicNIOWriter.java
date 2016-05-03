@@ -175,5 +175,19 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BIBasicNIOWriter)) return false;
 
+        BIBasicNIOWriter<?> that = (BIBasicNIOWriter<?>) o;
+
+        return !(baseFile != null ? !baseFile.equals(that.baseFile) : that.baseFile != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return baseFile != null ? baseFile.hashCode() : 0;
+    }
 }

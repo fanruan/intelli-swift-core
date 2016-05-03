@@ -41,7 +41,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
         widget.pane.empty();
        
         widget.combo.setValue(fields.length > 0  ? fields[0].value : null);
-        widget.checkBox.setSelected(model.get('showOther'));
+        widget.checkBox.setSelected(model.get('showOther') || false);
         widget.createEditor(this.options.field_type, model.get('other') || "");
         this.clickCheckBox(widget, model)
         var items = model.get(ETLCst.ITEMS);

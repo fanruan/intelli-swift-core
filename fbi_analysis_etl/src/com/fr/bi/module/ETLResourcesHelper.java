@@ -176,6 +176,8 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.date.range.etl.js",
 				"com/fr/bi/etl/analysis/web/js/modules/etl.config.js",
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.value.multichooser.pane.etl.js",
+				"com/fr/bi/etl/analysis/web/js/modules/filter/item/trigger.more.numericalinterval.js",
+				"com/fr/bi/etl/analysis/web/js/modules/filter/item/combo.more.numericalinterval.js",
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.number.oneside.etl.js",
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.group.etl.js",
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.group.popover.js",
