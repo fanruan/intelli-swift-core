@@ -633,9 +633,10 @@
             return BI.filter(tables, function(idx, tableId){
                 var foreignTables = BI.Utils.getForeignRelationTablesByTableID(tableId);
                 return !!BI.find(tables, function(idx, tId){
-                    return BI.contains(foreignTables, tId);
+                    return !BI.contains(foreignTables, tId);
                 })
             });
+
         },
 
         getCommonPrimaryTablesByTableIDs: function (tableIds) {
