@@ -126,9 +126,9 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 }
                 return text;
             case BICst.Widget.NUMBER:
-                return this._getNumberRangeText(widgetValue);
+                return this.getNumberRangeText(widgetValue);
             case BICst.Widget.DATE:
-                return this._getDateRangeText(widgetValue);
+                return this.getDateRangeText(widgetValue);
             case BICst.Widget.MONTH:
                 var year = widgetValue.year, month = widgetValue.month;
                 if(BI.isNumeric(year) && BI.isNumeric(month)) {
@@ -160,7 +160,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
     },
 
-    _getNumberRangeText: function( filterValue) {
+    getNumberRangeText: function( filterValue) {
         var text = "";
         var closemin = filterValue.closemin, closemax = filterValue.closemax, min = filterValue.min, max = filterValue.max;
         if(BI.isNotNull(min) && BI.isNotEmptyString(min) && BI.isNotNull(max) && BI.isNotEmptyString(max)) {
@@ -173,7 +173,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         return text;
     },
 
-    _getDateRangeText: function(filterValue) {
+    getDateRangeText: function(filterValue) {
         var start = filterValue.start, end = filterValue.end;
         if(BI.isNotNull(start) || BI.isNotNull(end)){
             return (BI.isNotNull(start) ? (start.year + "/" + (start.month + 1) + "/" + start.day) : "")

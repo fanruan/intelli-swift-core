@@ -37,6 +37,7 @@ BI.NumericalIntervalCombo = BI.inherit(BI.Widget, {
         this.trigger = BI.createWidget({
             type: "bi.numerical_interval_trigger",
             height: o.height-2,
+            items: o.items,
             value: o.value
         })
         this.popup = BI.createWidget({

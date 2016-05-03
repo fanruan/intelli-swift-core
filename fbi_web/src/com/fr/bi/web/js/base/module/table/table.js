@@ -782,7 +782,7 @@ BI.Table = BI.inherit(BI.Widget, {
             }
         };
         BI.Resizers.add(this.getName(), function (e) {
-            if (BI.isWindow(e.target) && self.element.is(":visible")) {
+            if (self.element.is(":visible") && BI.isWindow(e.target)) {
                 self._resize();
                 self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
             }
