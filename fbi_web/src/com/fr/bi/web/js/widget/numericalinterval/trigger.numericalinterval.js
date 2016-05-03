@@ -4,22 +4,22 @@
 BI.NumericalIntervalTrigger = BI.inherit(BI.Widget, {
     constants: {
         triggerHeight: 28,
-        triggerWidth: 26,
-        less_arrow: 0,
-        less_equal_arrow: 1
+        triggerWidth: 26
     },
 
     _defaultConfig: function () {
         var conf = BI.NumericalIntervalTrigger.superclass._defaultConfig.apply(this, arguments)
         return BI.extend(conf, {
             baseCls: "bi-numerical-interval-trigger",
-            height:30
+            items: [],
+            height: 30
         })
     },
     _init: function () {
-        var o = this.options, triggerCls = "less-arrow-font";
-        BI.NumericalIntervalTrigger.superclass._init.apply(this, arguments)
-        if (o.value === 1   ) {
+        var o = this.options;
+        BI.NumericalIntervalTrigger.superclass._init.apply(this, arguments);
+        var triggerCls = "less-arrow-font";
+        if (o.value === 1) {
             triggerCls = "less-equal-arrow-font"
         }
         this.trigger = BI.createWidget({
@@ -32,11 +32,12 @@ BI.NumericalIntervalTrigger = BI.inherit(BI.Widget, {
             tipType: "warning",
             cls: triggerCls
         });
-
-
+        if (BI.isNotNull(o.value)) {
+            this.setValue(o.value);
+        }
     },
 
-    setEnable:function(b){
+    setEnable: function (b) {
         this.trigger.setEnable(b);
     },
 
@@ -51,7 +52,10 @@ BI.NumericalIntervalTrigger = BI.inherit(BI.Widget, {
         this.trigger.setTitle(v);
     },
     setValue: function (v) {
-        var c = this.constants;
+        var self = this, o = this.options;
+        BI.each(o.items, function(){
+
+        });
         if (v === c.less_arrow) {
             this.trigger.element.removeClass("less-equal-arrow-font");
             this.trigger.element.addClass("less-arrow-font");
@@ -61,7 +65,5 @@ BI.NumericalIntervalTrigger = BI.inherit(BI.Widget, {
         }
 
     }
-
-
-})
-$.shortcut("bi.numerical_interval_trigger", BI.NumericalIntervalTrigger)
+});
+$.shortcut("bi.numerical_interval_trigger", BI.NumericalIntervalTrigger);
