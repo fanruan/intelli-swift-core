@@ -58,7 +58,6 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
                         }
                         fields.push({
                             field_name : dimension.name,
-                            field_id : dimension._src.field_id,
                             field_type : field_type
                         });
                         hasUsed = true;
@@ -71,7 +70,6 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
                     if (dimension.used === true){
                         fields.push({
                             field_name : dimension.name,
-                            field_id : dimension._src.field_id,
                             field_type : BICst.COLUMN.NUMBER
                         });
                         hasUsed = true;
