@@ -24,7 +24,12 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
                 if(items.length === 1) {
                     break;
                 }
-                this._removeSheet(button.getValue(), widget, model);
+                var id = button.getValue();
+                BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"),  BI.i18nText("BI-Confirm_Delete") +  model.getName(id) + "?", function (v) {
+                    if(v === true) {
+                        self._removeSheet(id, widget, model);
+                    }
+                })
                 break;
             }
             case ETLCst.ANALYSIS_TABLE_SET.COPY:{
@@ -150,6 +155,9 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
     deleteMergeSheet : function (v, widget, model) {
         var oldMergeTable = model.getSheetData(v);
         var parents = oldMergeTable[ETLCst.PARENTS];
+        while(parents.length === 1) {
+            parents = parents[0][ETLCst.PARENTS];
+        }
         var self = this;
         self._removeSheet(v, widget, model);
         BI.each(parents, function (idx, item) {

@@ -61,11 +61,10 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
     
     
     update : function (widget, model) {
-        var v = {};
+        var v =  model.update();
         v.etlType = ETLCst.ETL_TYPE.FILTER;
         var parent = model.get(ETLCst.PARENTS)[0];
         v.fields = BI.deepClone(parent[ETLCst.FIELDS])
-        v.operator = model.get('operator');
         return v;
     }
 
