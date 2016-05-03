@@ -528,7 +528,7 @@ BI.Table = BI.inherit(BI.Widget, {
             function mergeRow(i, j) {
                 var height = (preCol[j].attr("height") | 0) + o.rowSize + 1;
                 preCol[j].attr("height", height).css("height", height);
-                preCW[j].element.css("height", height);
+                //preCW[j].element.css("height", height);
                 var rowspan = ((preCol[j].attr("rowspan") || 1) | 0) + 1;
                 preCol[j].attr("rowspan", rowspan);
                 preCol[j].__mergeRows.pushDistinct(i);

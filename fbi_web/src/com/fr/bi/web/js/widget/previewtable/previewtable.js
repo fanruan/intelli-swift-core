@@ -75,7 +75,7 @@ BI.PreviewTable = BI.inherit(BI.Widget, {
 
     _adjustColumns: function () {
         var self = this, o = this.options;
-        if (BI.isNotNull(o.isNeedFreeze)) {
+        if (o.isNeedFreeze === true) {
             //如果存在百分比的情况
             if (this._isPercentage(o.columnSize)) {
                 if (this._hasAdaptCol(o.columnSize)) {
