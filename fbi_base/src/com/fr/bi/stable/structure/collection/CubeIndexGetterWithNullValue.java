@@ -20,6 +20,11 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
     }
 
     @Override
+    public int sizeOfGroup() {
+        return 0;
+    }
+
+    @Override
     public GroupValueIndex[] getGroupIndex(Object[] groupValues) {
         throw new UnsupportedOperationException();
     }
@@ -86,6 +91,11 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
         } else {
             return new CIterator(getter.previousIterator(start));
         }
+    }
+
+    @Override
+    public Object getGroupValue(int position) {
+        return null;
     }
 
     @Override

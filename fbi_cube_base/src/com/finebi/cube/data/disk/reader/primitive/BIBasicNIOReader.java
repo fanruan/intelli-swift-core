@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
+import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
@@ -26,6 +27,7 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
     protected Map<Long, FileChannel> fcMap = new ConcurrentHashMap<Long, FileChannel>();
     boolean[] initIndex = new boolean[INIT_INDEX_LENGTH];
     private boolean isValid = true;
+    private ICubeSourceReleaseManager releaseManager;
     private File baseFile;
 
     public BIBasicNIOReader(File cacheFile) {
@@ -98,6 +100,14 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
 
     @Override
     public void clear() {
+        if (useReleaseManager()) {
+            releaseManager.release(this);
+        } else {
+            releaseSource();
+        }
+    }
+
+    public void releaseSource() {
         readWriteLock.writeLock().lock();
         if (!isValid) {
             return;
@@ -114,6 +124,9 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         }
     }
 
+    private boolean useReleaseManager() {
+        return releaseManager != null;
+    }
 
     private void releaseBuffer() {
         for (Entry<Long, MappedByteBuffer> entry : buffers.entrySet()) {
@@ -141,6 +154,10 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         fcMap.put(index, channel);
     }
 
+    @Override
+    public void setReleaseHelper(ICubeSourceReleaseManager releaseHelper) {
+        this.releaseManager = releaseHelper;
+    }
 
     protected abstract void initChild(Long index, MappedByteBuffer buffer);
 

@@ -1,4 +1,4 @@
-package com.finebi.cube.data;
+package com.finebi.cube.data.cache;
 
 import com.finebi.cube.exception.BICubeResourceAvailableException;
 import com.finebi.cube.exception.BICubeResourceUnavailableException;

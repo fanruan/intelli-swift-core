@@ -1,6 +1,7 @@
-package com.finebi.cube.data;
+package com.finebi.cube.data.cache;
 
 
+import com.finebi.cube.exception.BICacheInaccessibleException;
 import com.finebi.cube.exception.BICubeResourceAvailableException;
 import com.finebi.cube.exception.BICubeResourceUnavailableException;
 
@@ -38,4 +39,6 @@ public interface IResourceCacheItem<R> {
      * @throws BICubeResourceUnavailableException 当前资源不可获得
      */
     R getAvailableResource() throws BICubeResourceUnavailableException;
+
+    void cache(R resource) throws BICacheInaccessibleException;
 }
