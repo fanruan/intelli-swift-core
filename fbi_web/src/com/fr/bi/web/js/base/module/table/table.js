@@ -461,79 +461,127 @@ BI.Table = BI.inherit(BI.Widget, {
         this._resize();
     },
 
-    _createCells: function (items, columnSize, mergeCols, store, widgets, start) {
-        var self = this, o = this.options, preCol = {}, preRow = {}, preW = {}, map = {};
+    _createCells: function (items, columnSize, mergeCols, TDs, Ws, start) {
+        var self = this, o = this.options, preCol = {}, preRow = {}, preRW = {}, preCW = {}, map = {};
         columnSize = columnSize || o.columnSize;
         mergeCols = mergeCols || o.mergeCols;
-        store = store || {};
-        widgets = widgets || {};
+        TDs = TDs || {};
+        Ws = Ws || {};
         start = start || 0;
         var frag = document.createDocumentFragment();
         BI.each(items, function (i, rows) {
             var tr = $("<tr>").addClass((i & 1) === 0 ? "odd" : "even");
+            var can = false;
             BI.each(rows, function (j, row) {
                 if (!map[i]) {
                     map[i] = {};
                 }
-                if (!store[i]) {
-                    store[i] = {};
+                if (!TDs[i]) {
+                    TDs[i] = {};
                 }
-                if (!widgets[i]) {
-                    widgets[i] = {};
+                if (!Ws[i]) {
+                    Ws[i] = {};
                 }
                 map[i][j] = row;
-                //优先合并行,若行能合并则不考虑列的合并
-                if (!mergeCols.contains(j) || j === 0 || !o.isNeedMerge || !o.mergeRule(map[i][j], map[i][j - 1])) {
-                    if (!mergeCols.contains(j) || i === 0 || !o.isNeedMerge || !o.mergeRule(map[i][j], map[i - 1][j])) {
-                        var width = self._calculateWidth(columnSize[j]);
-                        var height = self._calculateHeight(o.rowSize);
-                        var td = $("<td>").attr("height", height)
-                            .attr("width", width).css({"width": width, "height": height, "position": "relative"})
-                            .addClass((j & 1) === 0 ? "odd" : "even");
-                        var w = BI.createWidget(row, {
-                            type: "bi.table_cell",
-                            width: BI.isNumeric(width) ? width : "",
-                            height: BI.isNumeric(height) ? height : "",
-                            _row: i,
-                            _col: j + start
-                        });
-                        td.append(w.element);
-                        tr.append(td);
-                        preCol[j] = td;
-                        preRow[i] = td;
-                        preRow[i].__mergeCols = [j];
-                        preW[i] = w;
-                        store[i][j] = td;
-                        widgets[i][j] = w;
-                    } else {//需要合并列
-                        if (o.isNeedFreeze) {
-                            var height = (preCol[j].attr("height") | 0) + o.rowSize + 1;
-                            preCol[j].attr("height", height).css("height", height);
-                        }
-                        var rowspan = ((preCol[j].attr("rowspan") || 1) | 0) + 1;
-                        preCol[j].attr("rowspan", rowspan);
-                    }
-                } else {//需要合并行
-                    if (columnSize[j]) {
-                        var width = preRow[i].attr("width") | 0;
-                        if (width > 0 && columnSize[j]) {
-                            width = width + columnSize[j] + 1;
-                        } else {
-                            width = width + columnSize[j]
-                        }
-                        width = self._calculateWidth(width);
-                        preRow[i].attr("width", width).css("width", width);
-                        preW[i].element.width(width);
-                    }
-                    store[i][j] = preRow[i];
-                    store[i][j].__mergeCols = store[i][j].__mergeCols.concat(j);
-                    widgets[i][j] = preW[i];
-                    var colspan = ((preRow[i].attr("colspan") || 1) | 0) + 1;
-                    preRow[i].attr("colspan", colspan);
-                }
 
+                if (o.isNeedMerge && mergeCols.contains(j)) {
+                    if (i === 0 && j === 0) {
+                        createOneEl(0, 0);
+                    } else if (j === 0 && i > 0) {
+                        var isNeedMergeRow = o.mergeRule(map[i][j], map[i - 1][j]);
+                        if (isNeedMergeRow === true) {
+                            mergeRow(i, j);
+                            preRow[i] = preCol[j];
+                            preRW[i] = preCW[j];
+                        } else {
+                            createOneEl(i, j);
+                        }
+                    } else if (i === 0 && j > 0) {
+                        var isNeedMergeCol = o.mergeRule(map[i][j], map[i][j - 1]);
+                        if (isNeedMergeCol === true) {
+                            mergeCol(i, j);
+                            preCol[j] = preRow[j - 1];
+                            preCW[j] = preRW[j - 1];
+                        } else {
+                            createOneEl(i, j);
+                        }
+                    } else {
+                        var isNeedMergeRow = o.mergeRule(map[i][j], map[i - 1][j]);
+                        var isNeedMergeCol = o.mergeRule(map[i][j], map[i][j - 1]);
+                        if (isNeedMergeCol && isNeedMergeRow) {
+                            return;
+                        }
+                        if (isNeedMergeCol) {
+                            mergeCol(i, j);
+                        }
+                        if (isNeedMergeRow) {
+                            mergeRow(i, j);
+                        }
+                        if (!isNeedMergeCol && !isNeedMergeRow) {
+                            createOneEl(i, j);
+                        }
+                    }
+                } else {
+                    createOneEl(i, j);
+                }
             });
-            frag.appendChild(tr[0]);
+            function mergeRow(i, j) {
+                var height = (preCol[j].attr("height") | 0) + o.rowSize + 1;
+                preCol[j].attr("height", height).css("height", height);
+                preCW[j].element.css("height", height);
+                var rowspan = ((preCol[j].attr("rowspan") || 1) | 0) + 1;
+                preCol[j].attr("rowspan", rowspan);
+                preCol[j].__mergeRows.pushDistinct(i);
+                TDs[i][j] = preCol[j];
+                Ws[i][j] = preCW[j];
+            }
+
+            function mergeCol(i, j) {
+                if (columnSize[j]) {
+                    var width = preRow[i].attr("width") | 0;
+                    if (width > 0 && columnSize[j]) {
+                        width = width + columnSize[j] + 1;
+                    } else {
+                        width = width + columnSize[j]
+                    }
+                    width = self._calculateWidth(width);
+                    preRow[i].attr("width", width).css("width", width);
+                    preRW[i].element.width(width);
+                }
+                var colspan = ((preRow[i].attr("colspan") || 1) | 0) + 1;
+                preRow[i].attr("colspan", colspan);
+                preRow[i].__mergeCols.pushDistinct(j);
+                TDs[i][j] = preRow[i];
+                Ws[i][j] = preRW[i];
+            }
+
+            function createOneEl(r, c) {
+                var width = self._calculateWidth(columnSize[c]);
+                var height = self._calculateHeight(o.rowSize);
+                var td = $("<td>").attr("height", height)
+                    .attr("width", width).css({"width": width, "height": height, "position": "relative"})
+                    .addClass((c & 1) === 0 ? "odd" : "even");
+                var w = BI.createWidget(map[r][c], {
+                    type: "bi.table_cell",
+                    width: BI.isNumeric(width) ? width : "",
+                    height: BI.isNumeric(height) ? height : "",
+                    _row: r,
+                    _col: c + start
+                });
+                td.append(w.element);
+                tr.append(td);
+                preCol[c] = td;
+                preCol[c].__mergeRows = [r];
+                preCW[c] = w;
+                preRow[r] = td;
+                preRow[r].__mergeCols = [c];
+                preRW[r] = w;
+                TDs[r][c] = td;
+                Ws[r][c] = w;
+                can = true;
+            }
+
+            can && frag.appendChild(tr[0]);
         });
         return frag;
     },
@@ -552,132 +600,42 @@ BI.Table = BI.inherit(BI.Widget, {
         return frag;
     },
 
-    _createHeaderCells: function (items, columnSize, mergeCols, store, widgets, start) {
-        var self = this, o = this.options, preCol = {}, preRow = {}, preW = {}, map = {};
-        var isRight = this._isRightFreeze();
-        columnSize = columnSize || o.columnSize;
-        mergeCols = mergeCols || o.mergeCols;
-        store = store || {};
-        widgets = widgets || {};
-        start = start || 0;
-        var frag = document.createDocumentFragment();
-        BI.each(items, function (i, rows) {
-            var tr = $("<tr>").addClass((i & 1) === 0 ? "odd" : "even");
-            BI.each(rows, function (j, row) {
-                if (!map[i]) {
-                    map[i] = {};
-                }
-                if (!store[i]) {
-                    store[i] = {};
-                }
-                if (!widgets[i]) {
-                    widgets[i] = {};
-                }
-                map[i][j] = row;
-                if (j === 0 || !o.isNeedMerge || !o.mergeRule(map[i][j], map[i][j - 1])) {
-                    if (i === 0 || !o.isNeedMerge || !o.mergeRule(map[i][j], map[i - 1][j])) {
-                        var width = self._calculateWidth(columnSize[j]);
-                        var height = self._calculateHeight(o.headerRowSize || o.rowSize);
-                        var td = $("<td>").attr("height", height)
-                            .attr("width", width).css({"width": width, "height": height, "position": "relative"})
-                            .addClass((j & 1) === 0 ? "odd" : "even");
-                        //只有header的最后一行去掉最后一列才可以调整列宽
-                        if (o.isNeedResize && i === items.length - 1 && j < rows.length - 1) {
-                            td.resizable({
-                                handles: "e",
-                                minWidth: 15,
-                                start: function (event, ui) {
-                                    self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE);
-                                },
-                                resize: function (e, ui) {
-                                    o.columnSize[start + j] = ui.size.width;
-                                    self.setColumnSize(o.columnSize);
-                                    self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE);
-                                    e.stopPropagation();
-                                    return false;
-                                },
-                                stop: function (e, ui) {
-                                    self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
-                                }
-                            })
+    _createHeaderCells: function (items, columnSize, mergeCols, TDs, Ws, start) {
+        var self = this, o = this.options;
+        start || (start = 0);
+        var frag = this._createCells(items, columnSize, mergeCols, TDs, Ws, start);
+
+        if (o.isNeedResize === true) {
+            var tds = TDs[BI.size(TDs) - 1];
+            BI.each(tds, function (j, td) {
+                j = j | 0;
+                if (j < BI.size(tds) - 1) {
+                    td.resizable({
+                        handles: "e",
+                        minWidth: 15,
+                        start: function (event, ui) {
+                            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE);
+                        },
+                        resize: function (e, ui) {
+                            o.columnSize[start + j] = ui.size.width;
+                            self.setColumnSize(o.columnSize);
+                            self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE);
+                            e.stopPropagation();
+                            return false;
+                        },
+                        stop: function (e, ui) {
+                            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
                         }
-                        var w = BI.createWidget(row, {
-                            type: "bi.table_header_cell",
-                            width: BI.isNumeric(width) ? width : "",
-                            height: BI.isNumeric(height) ? height : "",
-                            _row: i,
-                            _col: j + start
-                        });
-                        td.append(w.element);
-                        tr.append(td);
-                        preCol[j] = td;
-                        preRow[i] = td;
-                        preRow[i].__mergeCols = [j];
-                        preW[i] = w;
-                        store[i][j] = td;
-                        widgets[i][j] = w;
-                    } else {//需要合并列
-                        if (o.isNeedFreeze) {
-                            var height = (preCol[j].attr("height") | 0) + (o.headerRowSize || o.rowSize) + 1;
-                            preCol[j].attr("height", height).css("height", height);
-                        }
-                        var rowspan = ((preCol[j].attr("rowspan") || 1) | 0) + 1;
-                        preCol[j].attr("rowspan", rowspan);
-                    }
-                } else {//需要合并行
-                    if (columnSize[j]) {
-                        var width = preRow[i].attr("width") | 0;
-                        if (width > 0) {
-                            width = width + columnSize[j] + 1;
-                        } else {
-                            width = width + columnSize[j]
-                        }
-                        width = self._calculateWidth(width);
-                        preRow[i].attr("width", width).css("width", width);
-                        preW[i].element.width(width);
-                    }
-                    store[i][j] = preRow[i];
-                    store[i][j].__mergeCols = store[i][j].__mergeCols.concat(j);
-                    widgets[i][j] = preW[i];
-                    var colspan = ((preRow[i].attr("colspan") || 1) | 0) + 1;
-                    preRow[i].attr("colspan", colspan);
+                    })
                 }
-            });
-            frag.appendChild(tr[0]);
-        });
+            })
+        }
         return frag;
     },
 
-    _createFooterCells: function (items, columnSize, store, widgets) {
-        var o = this.options, frag = document.createDocumentFragment();
-        columnSize = columnSize || o.columnSize;
-        store = store || {};
-        widgets = widgets || {};
-        BI.each(items, function (i, rows) {
-            var tr = $("<tr>").addClass((i & 1) === 0 ? "odd" : "even");
-            if (!store[i]) {
-                store[i] = {};
-            }
-            if (!widgets[i]) {
-                widgets[i] = {};
-            }
-            BI.each(rows, function (j, row) {
-                var width = self._calculateWidth(columnSize[j]);
-                var td = $("<td>").height(o.footerRowSize || o.rowSize)
-                    .attr("width", width).css("width", width)
-                    .addClass((j & 1) === 0 ? "odd" : "even");
-                var w = BI.createWidget(row, {
-                    type: "bi.table_footer_cell",
-                    _row: i,
-                    _col: j
-                });
-                td.append(w.element);
-                tr.append(td);
-                store[i][j] = td;
-                widgets[i][j] = w;
-            });
-            frag.appendChild(tr[0]);
-        });
+    _createFooterCells: function (items, columnSize, TDs, Ws) {
+        var o = this.options;
+        var frag = this._createCells(items, columnSize, [], TDs, Ws, 0);
         return frag;
     },
 

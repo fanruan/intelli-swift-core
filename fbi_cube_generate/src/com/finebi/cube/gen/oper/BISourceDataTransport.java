@@ -44,6 +44,11 @@ public class BISourceDataTransport extends BIProcessor {
         return null;
     }
 
+    @Override
+    public void release() {
+        tableEntityService.clear();
+    }
+
     private void recordTableInfo() {
         DBField[] columns = getFieldsArray();
         List<DBField> columnList = new ArrayList<DBField>();

@@ -49,7 +49,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
         self.label = BI.createWidget({
             type : 'bi.label',
             whiteSpace : 'normal',
-            textAlign : 'left',
+            textAlign : 'center',
             textHeight : 20,
             lgap : 10
         });
@@ -75,9 +75,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
     },
 
     populate : function () {
-        if (BI.isNotNull(this.storedValue)){
-            this.label.setText(BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
-        }
+        this.label.setText(BI.isNotNull(this.storedValue) ? BI.i18nText('BI-(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
     },
     
     getValue: function () {

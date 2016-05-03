@@ -13,4 +13,9 @@ class FinishObserverProcessor extends BIProcessor<String> {
     public String mainTask() {
         return "catch the Message about finish status of cube Building";
     }
+
+    @Override
+    public void release() {
+
+    }
 }

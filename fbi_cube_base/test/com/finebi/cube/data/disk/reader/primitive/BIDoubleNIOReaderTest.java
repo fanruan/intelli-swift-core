@@ -2,6 +2,7 @@ package com.finebi.cube.data.disk.reader.primitive;
 
 import com.finebi.cube.data.disk.writer.primitive.BIDoubleNIOWriter;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.general.ComparatorUtils;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -27,6 +28,24 @@ public class BIDoubleNIOReaderTest extends TestCase {
             }
             System.out.println("time:" + (System.currentTimeMillis() - start));
             assertEquals(sum, count);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
+
+    public void testEquals() {
+        try {
+            BIDoubleNIOWriter writer = new BIDoubleNIOWriter(BIByteNIOReaderTest.NIO_PATH_TEST);
+            BIDoubleNIOWriter writer_two = new BIDoubleNIOWriter(BIByteNIOReaderTest.NIO_PATH_TEST);
+            BIDoubleNIOReader reader = new BIDoubleNIOReader(new File(BIByteNIOReaderTest.NIO_PATH_TEST));
+            BIDoubleNIOReader reader_two = new BIDoubleNIOReader(new File(BIByteNIOReaderTest.NIO_PATH_TEST));
+            assertTrue(ComparatorUtils.equals(writer, writer_two));
+            assertFalse(ComparatorUtils.equals(reader, reader_two));
+            assertTrue(ComparatorUtils.equals(writer.hashCode(), writer_two.hashCode()));
+            assertFalse(ComparatorUtils.equals(reader.hashCode(), reader_two.hashCode()));
+            System.out.println(writer.hashCode());
+            System.out.println(writer_two.hashCode());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
             assertTrue(false);

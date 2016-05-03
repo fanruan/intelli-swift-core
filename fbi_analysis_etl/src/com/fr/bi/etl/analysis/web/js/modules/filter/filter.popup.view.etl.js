@@ -50,6 +50,7 @@ BI.ETLFilterPopupView = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
+        this.loader.initValue();
         this.popupView.populate.apply(this.popupView, arguments);
     },
 
