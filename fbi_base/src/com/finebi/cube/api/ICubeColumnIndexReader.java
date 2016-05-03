@@ -62,4 +62,14 @@ public interface ICubeColumnIndexReader<T> {
 
     T createValue(Object v);
 
+    /**
+     * 获得相应位置的Group数据。
+     *
+     * @param position 位置
+     * @return Group的值
+     */
+    T getGroupValue(int position);
+
+    int sizeOfGroup();
+
 }

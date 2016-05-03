@@ -1,5 +1,6 @@
 package com.finebi.cube.data.output.primitive;
 
+import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.fr.bi.common.inter.Release;
 
 /**
@@ -18,4 +19,7 @@ public interface ICubePrimitiveWriter<T> extends Release {
     void recordSpecificPositionValue(long position, T value);
 
     void flush();
+
+    void setReleaseManager(ICubeSourceReleaseManager releaseHelper);
+
 }

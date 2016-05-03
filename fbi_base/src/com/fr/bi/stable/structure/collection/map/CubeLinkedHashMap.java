@@ -17,6 +17,16 @@ public class CubeLinkedHashMap extends LinkedHashMap implements
     private static final long serialVersionUID = 3909440186382050281L;
 
     @Override
+    public Object getGroupValue(int position) {
+        return null;
+    }
+
+    @Override
+    public int sizeOfGroup() {
+        return 0;
+    }
+
+    @Override
     public GroupValueIndex[] getGroupIndex(Object[] keys) {
         java.util.List<GroupValueIndex> list = new java.util.ArrayList<GroupValueIndex>();
         for (int i = 0; i < keys.length; i++) {

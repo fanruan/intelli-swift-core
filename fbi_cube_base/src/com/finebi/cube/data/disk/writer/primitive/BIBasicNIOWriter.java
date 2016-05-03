@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.writer.primitive;
 
+import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.finebi.cube.data.output.primitive.ICubePrimitiveWriter;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -20,7 +21,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     private File baseFile;
     private FileChannel fc;
     private long currentIndex = -1L;
-
+    private ICubeSourceReleaseManager releaseManager;
     private long file_index = -1L;
 
     public BIBasicNIOWriter(File cacheFile) {
@@ -45,10 +46,22 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     @Override
     public void clear() {
         synchronized (this) {
-            clearBuffer();
-            currentIndex = -1L;
-            file_index = -1L;
+            if (useReleaseManager()) {
+                releaseManager.release(this);
+            } else {
+                releaseSource();
+            }
         }
+    }
+
+    public void releaseSource() {
+        clearBuffer();
+        currentIndex = -1L;
+        file_index = -1L;
+    }
+
+    private boolean useReleaseManager() {
+        return releaseManager != null;
     }
 
     public void clearBuffer() {
@@ -78,6 +91,10 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
         } else {
             throw BINonValueUtils.illegalArgument("The value of position is" + position + ",which must be positive value.");
         }
+    }
+
+    public void setReleaseManager(ICubeSourceReleaseManager releaseManager) {
+        this.releaseManager = releaseManager;
     }
 
     @Override

@@ -53,7 +53,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         try {
             int position = columnReaderService.getPositionOfGroup(groupValue);
             //todo lookup 抛出异常代替返回-1
-            if(position == -1){
+            if (position == -1) {
                 return GVIFactory.createAllEmptyIndexGVI();
             }
             return relationEntityGetterService.getBitmapIndex(position);
@@ -64,7 +64,8 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         }
     }
 
-    private T getGroupValue(int groupValuePosition) {
+    @Override
+    public T getGroupValue(int groupValuePosition) {
         return columnReaderService.getGroupValue(groupValuePosition);
     }
 
@@ -108,8 +109,14 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         return descSet.iterator(start);
     }
 
+
     public int size() {
         return columnReaderService.sizeOfGroup();
+    }
+
+    @Override
+    public int sizeOfGroup() {
+        return size();
     }
 
     public boolean isEmpty() {
@@ -118,6 +125,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     public void clear() {
         columnReaderService.clear();
+        relationEntityGetterService.clear();
     }
 
     @Override
@@ -127,7 +135,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     @Override
     public T createValue(Object v) {
-        return (T)v;
+        return (T) v;
     }
 
     private class CSet<V> implements Set<V>, Serializable {
@@ -331,4 +339,6 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     public long nonPrecisionSize() {
         return size();
     }
+
+
 }

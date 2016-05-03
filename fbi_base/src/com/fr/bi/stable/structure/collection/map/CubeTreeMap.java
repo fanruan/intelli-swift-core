@@ -22,6 +22,11 @@ public class CubeTreeMap<K> extends TreeMap implements ICubeColumnIndexReader, R
     }
 
     @Override
+    public int sizeOfGroup() {
+        return 0;
+    }
+
+    @Override
     public GroupValueIndex[] getGroupIndex(Object[] keys) {
         java.util.List<GroupValueIndex> list = new java.util.ArrayList();
         for (int i = 0; i < keys.length; i++) {
@@ -82,5 +87,10 @@ public class CubeTreeMap<K> extends TreeMap implements ICubeColumnIndexReader, R
     @Override
     public long nonPrecisionSize() {
         return size();
+    }
+
+    @Override
+    public Object getGroupValue(int position) {
+        return null;
     }
 }

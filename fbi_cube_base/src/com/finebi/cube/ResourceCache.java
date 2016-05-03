@@ -1,7 +1,7 @@
 package com.finebi.cube;
 
-import com.finebi.cube.data.IResourceCache;
-import com.finebi.cube.data.IResourceCacheItem;
+import com.finebi.cube.data.cache.IResourceCache;
+import com.finebi.cube.data.cache.IResourceCacheItem;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.sun.javafx.collections.MappingChange;
 

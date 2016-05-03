@@ -40,6 +40,11 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
         return res;
     }
 
+    @Override
+    public int sizeOfGroup() {
+        return 0;
+    }
+
     private T getKey(int keyIndex) {
         return lmp.get(keyIndex);
     }
@@ -106,6 +111,11 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
     @Override
     public T createValue(Object v) {
         return lmp.createValue(v);
+    }
+
+    @Override
+    public T getGroupValue(int position) {
+        return null;
     }
 
     private class CSet<V> implements Set<V>, Serializable {
