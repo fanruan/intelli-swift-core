@@ -1089,6 +1089,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/matchingrelationship/infopane/infopane.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/settingpane.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/multipathchooser.settingpane.js",
+                "com/fr/bi/web/js/modules/matchingrelationship/settingpane/multimatchmulti.settingpane.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/targetlabelcontrol.settingpane.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/dimensiontreecombo/dimensiontree.combo.js",
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/dimensiontreecombo/dimensiontree.popup.js",

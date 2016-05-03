@@ -57,6 +57,8 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             cardCreator: BI.bind(this._createTabs, this)
         });
 
+        this.tab.setSelect(this.constants.Multi_Path);
+
         this.emptyItem = BI.createWidget({
             type: "bi.default",
             tgap: 5,
@@ -132,19 +134,27 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
 
     _checkDimensionAndTargetRelation: function (tId) {
         var o = this.options;
+        var self = this;
         var tIds = BI.Utils.getForeignRelationTablesByTableID(BI.Utils.getTableIDByDimensionID(o.targetIds[0]));
         var contains = BI.contains(tIds, tId);
         var combineCombo = this.layout.attr("items")[this.constants.combineComboPosition];
-        if(!!contains){
+        if(true){
             if(!this.selectCombineTableCombo){
                 this.selectCombineTableCombo = BI.createWidget({
                     type: "bi.text_icon_combo",
                     width: 220,
                     height: 30
                 });
+                this.selectCombineTableCombo.on(BI.TextIconCombo.EVENT_CHANGE, function () {
+                    self.tab.populate({
+                        dimensionFieldId: BI.Utils.getFieldIDByDimensionID(o.dimensionId),
+                        targetIds: o.targetIds,
+                        combineTableId: this.getValue()[0]
+                    });
+                });
                 this.emptyItem.addItem(this.selectCombineTableCombo);
             }
-            var tables = BI.Utils.getFirstCommonPrimaryTablesByTableIDs([tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0])]);
+            var tables = BI.Utils.getCommonPrimaryTablesByTableIDs([tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0])]);
             var items = BI.map(tables, function(idx, tId){
                 return {
                     text: BI.Utils.getTableNameByID(tId),
@@ -168,8 +178,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         this.dimensiontreeCombo.populate(o.targetIds);
         this.tab.populate({
             dimensionFieldId: BI.Utils.getFieldIDByDimensionID(o.dimensionId),
-            targetIds: o.targetIds,
-            commonPrimaryTable:
+            targetIds: o.targetIds
         });
     },
 

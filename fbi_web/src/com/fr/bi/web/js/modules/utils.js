@@ -628,13 +628,14 @@
             return this.getPathsFromTableAToTableB(tableA, tableB);
         },
 
-        getFirstCommonPrimaryTablesByTableIDs: function (tableIds) {
-            var tables = this.getCommonPrimaryTablesByTableIDs(tableIds);
-            return BI.filter(tables, function(idx, tableId){
-                var foreignTables = BI.Utils.getForeignRelationTablesByTableID(tableId);
-                return !!BI.find(tables, function(idx, tId){
-                    return !BI.contains(foreignTables, tId);
-                })
+        getFirstCommonPrimaryTablesBetweenTwoTablesByIDs: function (tableId1, tableId2) {
+            var primaryTables = this.getPrimaryRelationTablesByTableID(tableId1);
+            var connectionSet = Pool.connections.connectionSet;
+            var result = [];
+            BI.find(connectionSet, function (idx, obj) {
+                if(obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)){
+                    return;
+                }
             });
 
         },
