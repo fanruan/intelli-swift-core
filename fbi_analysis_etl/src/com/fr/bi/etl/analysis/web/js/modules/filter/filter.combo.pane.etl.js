@@ -24,8 +24,6 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
     _init: function () {
         BI.ETLFilterPopupPane.superclass._init.apply(this, arguments);
         var self = this, opts = this.options;
-        self.storeValue = BI.deepClone(opts.value || opts.originValue);
-        self._checkValid();
         self.condition =  BI.createWidget({
             type: "bi.vertical",
             height: self._constants.CONDITIONS_HEIGHT,
@@ -52,6 +50,11 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
         var value = self.storeValue.value;
         var conditionItems = [];
         if (value.length === 0){
+            conditionItems.push(BI.createWidget({
+                type : 'bi.label',
+                text : BI.i18nText('BI-Please_Add_Filter'),
+                textAlign : 'center'
+            }))
             return conditionItems;
         }
         conditionItems.push(self._createConditionItem(0));
@@ -61,9 +64,6 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
             }
             conditionItems.push(self._createAndOr());
             conditionItems.push(self._createConditionItem(1));
-            self.addButton.setEnable(false);
-        } else {
-            self.addButton.setEnable(true);
         }
         return conditionItems;
     },
@@ -86,6 +86,7 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
             delete self.storeValue.type;
             self.populate();
         })
+        self.addButton.setEnable(index === 0);
         return condition;
     },
 
@@ -131,6 +132,9 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
         this.addButton.on(BI.Button.EVENT_CHANGE, function(){
             var value = self.storeValue.value;
             value.push({});
+            if (value.length === 1){
+                self.condition.empty();
+            }
             if (value.length === 2){
                 self.condition.addItem(self._createAndOr());
             }
@@ -144,7 +148,7 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
             text : BI.i18nText('BI-Clears') + BI.i18nText('BI-Filter')
         });
         this.clearButton.on(BI.Button.EVENT_CHANGE, function(){
-            self.setValue(BI.deepClone(opts.value ||opts.originValue));
+            self._clearValue();
             self.populate();
         });
         return BI.createWidget({
@@ -160,7 +164,20 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
         });
     },
 
-    _checkValid : function() {
+    _clearValue : function () {
+        var values = this.storeValue.value;
+        BI.each(values, function (i, item) {
+            values[i] = {
+                filter_type : item.filter_type
+            }
+        })
+    },
+
+    _initValue : function () {
+        var self = this;
+        if (BI.isNull(self.storeValue) || BI.isNull(self.storeValue.value)){
+            self.storeValue = BI.deepClone(this.options.originValue);
+        }
         if (!BI.isNotEmptyArray(this.storeValue.value)){
             this.storeValue.value = [];
         }
@@ -168,7 +185,6 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         this.storeValue = v || {};
-        this._checkValid();
     },
 
     getValue: function () {
@@ -177,6 +193,7 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this;
+        self._initValue();
         self.condition.empty();
         BI.each(self._createConditionItems(), function(idx, item){
             self.condition.addItem(item)
