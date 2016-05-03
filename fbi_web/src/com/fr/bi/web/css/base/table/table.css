@@ -26,7 +26,7 @@
   clear: both;
   vertical-align: middle;
   border-spacing: 0;
-  border-collapse: collapse;
+  border-collapse: separate;
 }
 .bi-table > div > div > table,
 .bi-table > div > div > div > table,

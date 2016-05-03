@@ -33,11 +33,30 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
         self.editorPane = BI.createWidget({
             type : 'bi.absolute'
         })
+        this.bigCombo = BI.createWidget({
+
+        });
         self.smallCombo = BI.createWidget({
-            type: o.filter_type === BICst.TARGET_FILTER_NUMBER.SMALL_OR_EQUAL_CAL_LINE  ? "bi.numerical_interval_combo" : "bi.numerical_interval_more_combo",
             cls: "numerical-interval-small-combo",
             height: self._constants.HEIGHT - self._constants.BORDER * 2,
-            offsetStyle: "left"
+            type: "bi.icon_combo",
+            items: o.filter_type === BICst.TARGET_FILTER_NUMBER.SMALL_OR_EQUAL_CAL_LINE ? [{
+                text: "(" + BI.i18nText("BI-Less_Than") + ")",
+                iconClass: "less-arrow-font",
+                value: 0
+            }, {
+                text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
+                value: 1,
+                iconClass: "less-equal-arrow-font"
+            }] : [{
+                text: "(" + BI.i18nText("BI-More_Than") + ")",
+                iconClass: "more-arrow-font",
+                value: 0
+            }, {
+                text: "(" + BI.i18nText("BI-More_Than_And_Equal") + ")",
+                value: 1,
+                iconClass: "more-equal-arrow-font"
+            }]
         });
         self.smallCombo.on(BI.NumericalIntervalCombo.EVENT_CHANGE, function () {
             self.storedValue.close = self.smallCombo.getValue()[0];
