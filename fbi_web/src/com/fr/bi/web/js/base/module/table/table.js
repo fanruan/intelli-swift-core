@@ -528,7 +528,7 @@ BI.Table = BI.inherit(BI.Widget, {
             function mergeRow(i, j) {
                 var height = (preCol[j].attr("height") | 0) + o.rowSize + 1;
                 preCol[j].attr("height", height).css("height", height);
-                preCW[j].element.css("height", height);
+                //preCW[j].element.css("height", height);
                 var rowspan = ((preCol[j].attr("rowspan") || 1) | 0) + 1;
                 preCol[j].attr("rowspan", rowspan);
                 preCol[j].__mergeRows.pushDistinct(i);
@@ -603,7 +603,7 @@ BI.Table = BI.inherit(BI.Widget, {
     _createHeaderCells: function (items, columnSize, mergeCols, TDs, Ws, start) {
         var self = this, o = this.options;
         start || (start = 0);
-        var frag = this._createCells(items, columnSize, mergeCols, TDs, Ws, start);
+        var frag = this._createCells(items, columnSize, BI.range(o.columnSize.length), TDs, Ws, start);
 
         if (o.isNeedResize === true) {
             var tds = TDs[BI.size(TDs) - 1];

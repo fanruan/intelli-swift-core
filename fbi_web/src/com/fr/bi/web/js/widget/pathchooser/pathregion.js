@@ -36,8 +36,10 @@ BI.PathRegion = BI.inherit(BI.Widget, {
         })
     },
 
-    hasItem: function () {
-        return this.items.length > 0;
+    hasItem: function (val) {
+        return BI.any(this.items, function (i, item) {
+            return val === item.getValue();
+        });
     },
 
     addItem: function (value, text) {

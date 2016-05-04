@@ -110,7 +110,7 @@ PathChooserView = BI.inherit(BI.View, {
                         {region: "区域A", value: "IDA", text: "ID"}],
                     [{region: "区域A3", value: "学号1"},
                         {region: "区域A1", value: "IDA1", text: "ID"},
-                        {region: "区域A", value: "IDA", text: "ID"}]
+                        {region: "区域A", value: "IDA5", text: "ID5"}]
                 ]
         });
         pathchooser.setValue();
