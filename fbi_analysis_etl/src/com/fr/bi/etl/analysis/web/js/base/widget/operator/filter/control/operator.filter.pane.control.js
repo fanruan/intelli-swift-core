@@ -19,6 +19,7 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
             }
         }
         this.populate(widget, model);
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, widget.controller, widget.options.value.operatorType)
     },
 
     getFilterValue : function (field, widget, model) {
@@ -58,7 +59,13 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
         }
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, BI.isNotNull(items) && items.length !== 0)
     },
-    
+
+    isDefalutValue : function (widget, model) {
+        var operator = model.get('operator');
+        var items = operator.items;
+        return BI.isNull(items) || items.length === 0
+    },
+
     
     update : function (widget, model) {
         var v =  model.update();
