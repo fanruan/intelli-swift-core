@@ -147,7 +147,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 });
                 this.selectCombineTableCombo.on(BI.TextIconCombo.EVENT_CHANGE, function () {
                     self.tab.populate({
-                        dimensionFieldId: BI.Utils.getFieldIDByDimensionID(o.dimensionId),
+                        dimensionFieldId: self.dimensiontreeCombo.getValue()[0],
                         targetIds: o.targetIds,
                         combineTableId: this.getValue()[0]
                     });
@@ -156,10 +156,11 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             }
             var tables = BI.Utils.getFirstCommonPrimaryTablesBetweenTwoTablesByIDs(tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0]));
             var items = BI.map(tables, function(idx, tId){
-                return {
+                var item = {
                     text: BI.Utils.getTableNameByID(tId),
                     value: tId
                 };
+                return item;
             });
             this.selectCombineTableCombo.populate(items);
             combineCombo.height = 35;
