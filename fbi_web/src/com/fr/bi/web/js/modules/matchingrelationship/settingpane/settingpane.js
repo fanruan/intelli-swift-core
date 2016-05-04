@@ -138,7 +138,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         var tIds = BI.Utils.getForeignRelationTablesByTableID(BI.Utils.getTableIDByDimensionID(o.targetIds[0]));
         var contains = BI.contains(tIds, tId);
         var combineCombo = this.layout.attr("items")[this.constants.combineComboPosition];
-        if(!!contains){
+        if(true){
             if(!this.selectCombineTableCombo){
                 this.selectCombineTableCombo = BI.createWidget({
                     type: "bi.text_icon_combo",

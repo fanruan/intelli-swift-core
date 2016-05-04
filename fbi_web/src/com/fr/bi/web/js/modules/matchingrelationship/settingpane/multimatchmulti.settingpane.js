@@ -182,7 +182,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         BI.backEach(lvalue, function (idx, val) {
             v.push(BI.Utils.getForeignIdFromRelation(val));
             if (idx === 0) {
-                v.push(BI.Utils.getBI.Utils.getPrimaryIdFromRelation(val));
+                v.push(BI.Utils.getTableIdByFieldID(BI.Utils.getPrimaryIdFromRelation(val)));
             }
         });
         BI.each(rvalue, function (idx, val) {

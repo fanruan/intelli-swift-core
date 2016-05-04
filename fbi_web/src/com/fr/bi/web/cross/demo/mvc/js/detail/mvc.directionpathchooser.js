@@ -15,13 +15,13 @@ DirectionPathChooserView = BI.inherit(BI.View, {
             width: 800,
             height: 400,
             items: [
-                [{"region":"T4","text":"Name","value":"6aece09515d96690Name"},
-                    {"region":"T1","text":"ID","value":"3e9bd22b517429f7ID","direction":-1},
-                    {"region":"T3","text":"ID","value":"da331a613ae22505ID","direction":-1}],
-                [{"region":"T4","text":"Name","value":"6aece09515d96690Name"},
-                    {"region":"T1","text":"ID","value":"3e9bd22b517429f7ID","direction":-1},
-                    {"region":"T2","text":"ID","value":"a6da3db624125d37ID","direction":-1},
-                    {"region":"T3","text":"ID","value":"da331a613ae22505ID","direction":-1}]
+                [{region: "区域A3", value: "学号", "direction": 1},
+                    {region: "区域A1", value: "IDA1", text: "ID", "direction": -1},
+                    {region: "区域A2", value: "IDA2", text: "ID", "direction": -1},
+                    {region: "区域A", value: "IDA", text: "ID"}],
+                [{region: "区域A3", value: "学号1", "direction": 1},
+                    {region: "区域A1", value: "IDA1", text: "ID", "direction": -1},
+                    {region: "区域A", value: "IDA5", text: "ID5"}]
             ]
         });
         pathchooser.setValue();
