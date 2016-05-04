@@ -288,8 +288,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             } else if (BI.isNotNull(child.s)) {
                 var values = [];
                 if (BI.isNotNull(child.s.c) || BI.isNotNull(child.s.s)) {
-                    self._createTableSumItems(child.s.c, values);
-                    self.showColTotal === true && self._createTableSumItems(child.s.s, values);
+                    //交叉表，pValue来自于行列表头的结合
+                    var ob = {index: 0};
+                    self._createTableSumItems(child.s.c, values, pValues, ob);
+                    self.showColTotal === true && self._createTableSumItems(child.s.s, values, pValues, ob);
                 } else {
                     BI.each(child.s, function (j, sum) {
                         var tId = self.targetIds[j];
@@ -473,12 +475,12 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     /**
      * 交叉表的(指标)汇总值
      */
-    _createTableSumItems: function(s, sum){
+    _createTableSumItems: function(s, sum, pValues, ob){
         var self = this;
         BI.each(s, function(i, v){
             if(BI.isNotNull(v) && (BI.isNotNull(v.c) || BI.isNotNull(v.s))){
-                self._createTableSumItems(v.c, sum);
-                self._createTableSumItems(v.s, sum);
+                self._createTableSumItems(v.c, sum, pValues, ob);
+                self.showColTotal === true && self._createTableSumItems(v.s, sum, pValues, ob);
             } else {
                 var tId = self.targetIds[i];
                 if(self.targetIds.length === 0) {
@@ -488,8 +490,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     type: "bi.target_body_normal_cell",
                     text: v,
                     dId: tId,
-                    clicked: []
+                    clicked: pValues.concat(self.crossPV[ob.index])
                 });
+                ob.index++;
             }
         });
     },
@@ -507,6 +510,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 if(BI.isNotNull(item.children)) {
                     parseHeader(item.children);
                 } else if(BI.isNotNull(item.isSum)) {
+                    //合计
                     item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
                     self.header.push(item);
                 } else {
@@ -518,6 +522,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 }
             });
         }
+
         parseHeader(this.crossItems);
     },
 
@@ -577,16 +582,66 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     _createCrossTableItems: function(){
         var self = this;
         var top = this.data.t, left = this.data.l;
+
+        //根据所在的层，汇总情况——是否含有汇总
+        this.crossItemsSums = [];
+        this.crossItemsSums[0] = [];
+        if(BI.isNotNull(left.s)){
+            this.crossItemsSums[0].push(true);
+        }
+        this._initCrossItemsSum(0, left.c);
+
+        //交叉表items
+        var crossItem = {
+            children: this._createCrossPartItems(top.c, 0)
+        };
+        if(this.showColTotal === true){
+            BI.each(this.targetIds, function(i, tId){
+                crossItem.children.push({
+                    type: "bi.normal_header_cell",
+                    dId: tId,
+                    text: BI.i18nText("BI-Summary_Values"),
+                    tag: BI.UUID(),
+                    sortFilterChange: function(v){
+                        self.resetETree();
+                        self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
+                        self.headerOperatorCallback(v, tId);
+                    },
+                    isSum: true
+                });
+            });
+        }
+        this.crossItems = [crossItem];
+
+        //用cross parent value来对应到联动的时候的列表头值
+        this.crossPV = [];
+        function parseCrossItem2Array(crossItems, pValues, pv){
+            BI.each(crossItems, function(i, crossItem){
+                if(BI.isNotNull(crossItem.children)) {
+                    var tempPV = [];
+                    if(BI.isNotNull(crossItem.dId)){
+                        tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                    }
+                    parseCrossItem2Array(crossItem.children, pValues, tempPV);
+                } else if(BI.isNotNull(crossItem.dId)){
+                    pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                } else if(BI.isNotNull(crossItem.isSum)){
+                    pValues.push(pv);
+                }
+            });
+        }
+        parseCrossItem2Array(this.crossItems, this.crossPV, []);
+
         var item = {
             children: this._createTableItems(left.c, 0)
         };
         if(this.showRowTotal === true){
             //汇总值
-            var sums = [];
+            var sums = [], ob = {index: 0};
             if(BI.isNotNull(left.s.c) && BI.isNotNull(left.s.s)){
-                this._createTableSumItems(left.s.c, sums);
+                this._createTableSumItems(left.s.c, sums, [], ob);
             } else {
-                this._createTableSumItems(left.s, sums);
+                this._createTableSumItems(left.s, sums, [], ob);
             }
             if(this.showColTotal === true) {
                 var outerValues = [];
@@ -614,30 +669,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         }
 
         this.items = [item];
-
-        //根据所在的层，汇总情况——是否含有汇总
-        this.crossItemsSums = [];
-        this.crossItemsSums[0] = [];
-        if(BI.isNotNull(left.s)){
-            this.crossItemsSums[0].push(true);
-        }
-        this._initCrossItemsSum(0, left.c);
-
-        //交叉表items
-        var crossItem = {
-            children: this._createCrossPartItems(top.c, 0)
-        };
-        if(this.showColTotal === true){
-            BI.each(this.targetIds, function(i, tId){
-                crossItem.children.push({
-                    type: "bi.page_table_cell",
-                    text: BI.i18nText("BI-Summary_Values"),
-                    tag: BI.UUID(),
-                    isSum: true
-                });
-            });
-        }
-        this.crossItems = [crossItem];
     },
 
     /**

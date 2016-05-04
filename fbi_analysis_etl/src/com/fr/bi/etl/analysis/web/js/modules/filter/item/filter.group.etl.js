@@ -35,13 +35,19 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
                 value : self.storedValue,
                 targetText : self._getTargetText()
             });
+            groupPopOver.on(BI.PopoverSection.EVENT_CLOSE, function () {
+                BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            })
             groupPopOver.on(BI.ETLFilterGroupPopup.EVENT_CHANGE, function (v) {
+                BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
                 self.storedValue = groupPopOver.getValue();
                 self.populate();
                 self.fireEvent(BI.ETLGroupSettingPane.EVENT_VALUE_CHANGED);
             });
             BI.Popovers.remove("etlGroup");
-            BI.Popovers.create("etlGroup", groupPopOver).open("etlGroup");
+            var layer = BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
+            BI.Popovers.create("etlGroup", groupPopOver, {container: layer}).open("etlGroup");
             groupPopOver.populate();
         });
         self.labels = BI.createWidget({
