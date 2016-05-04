@@ -133,6 +133,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
 
     _createRegionPathsByItems: function(items){
         this.options.dimensionFieldId = items.dimensionFieldId;
+        this.options.combineTableId = items.combineTableId;
         var combineFieldId = BI.Utils.getFieldIDsOfTableID(items.combineTableId)[0];
         var lregion = this._createLeftRegionPath(combineFieldId, BI.Utils.getFieldIDByDimensionID(items.targetIds[0]));
         var rregion = this._createRightRegionPath(combineFieldId, items.dimensionFieldId);
@@ -150,24 +151,42 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
     },
 
     _packageValueByValue: function (value) {
-        var self = this;
-        var key = BI.find(BI.keys(this.pathValueMap), function (idx, key) {
-            return BI.isEqual(value, self.pathValueMap[key]);
+        var self = this, o = this.options;
+        var combineIndex = 0;
+        BI.find(value, function(idx, val){
+            combineIndex = idx;
+            return BI.Utils.getTableIdByFieldID(val) === o.combineTableId;
         });
-        if (BI.isNull(key)) {
-            return this.path;
-        }else{
-            return this.pathRelationMap[key];
-        }
+        var lvalue = BI.first(value, combineIndex + 1);
+        var rvalue = BI.rest(combineIndex);
+        var lkey = null, rkey = null;
+        BI.any(BI.keys(this.pathValueMap), function (idx, key) {
+            if(BI.isEqual(lvalue, self.pathValueMap[key])){
+                lkey = key;
+            }
+            if(BI.isEqual(rvalue, self.pathValueMap[key])){
+                rkey = key;
+            }
+            return BI.isNotNull(lkey) && BI.isNotNull(rkey);
+        });
+        var result = {};
+        result.lpath = this.pathRelationMap[lkey] || this.lpath;
+        result.rpath = this.pathRelationMap[rkey] || this.rpath;
+        return result;
     },
 
     _unpackValueByValue: function (value) {
-        var v = [], self = this, value = this._checkPathOfOneTable(value);
-        BI.backEach(value, function (idx, val) {
+        var v = [], self = this;
+        var lvalue = this._checkPathOfOneTable(value.lpath);
+        var rvalue = this._checkPathOfOneTable(value.rpath);
+        BI.backEach(lvalue, function (idx, val) {
             v.push(BI.Utils.getForeignIdFromRelation(val));
             if (idx === 0) {
-                v.push(self.options.dimensionFieldId);
+                v.push(BI.Utils.getPrimaryIdFromRelation(val));
             }
+        });
+        BI.each(rvalue, function (idx, val) {
+            v.push(BI.Utils.getForeignIdFromRelation(val));
         });
         return v;
     },
@@ -183,14 +202,27 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         }
     },
 
+    _assertValue: function (v) {
+        v = v || {};
+        v.lpath = v.lpath || [];
+        v.rpath = v.rpath || [];
+        return v;
+    },
+
     setValue: function (v) {
         //lpath, rpath
-        //this.path = v;
-        //this.pathChooser.setValue(this._unpackValueByValue(v));
+        v = this._assertValue(v);
+        this.lpath = v.lpath;
+        this.lpath = v.rpath;
+        this.pathChooser.setValue(this._unpackValueByValue(v));
     },
 
     getValue: function () {
         //lpath, rpath
+        return {
+            lpath: this.lpath,
+            rpath: this.rpath
+        };
     }
 });
 $.shortcut('bi.multi_match_multi_path_chooser', BI.MultiMatchMultiPathChooser);
