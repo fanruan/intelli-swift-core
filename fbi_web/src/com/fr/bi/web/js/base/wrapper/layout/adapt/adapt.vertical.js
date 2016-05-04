@@ -29,7 +29,7 @@ BI.VerticalAdaptLayout = BI.inherit(BI.Layout, {
             "white-space": "nowrap",
             "border-spacing": "0px",
             "border": "none",
-            "border-collapse": "collapse"
+            "border-collapse": "separate"
         }).appendTo(this.element);
         this.tr = BI.createWidget({
             type: "bi.layout",
