@@ -101,11 +101,16 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.MVCWidget, {
                                                        items: self.controller.getSheets(),
                                                        value: self.controller.getCurrentSheets()
                                                    });
+                                                   popover.on(BI.PopoverSection.EVENT_CLOSE, function () {
+                                                       BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+                                                   })
                                                    popover.on(BI.AnalysisETLMergeSheetPopover.EVENT_CHANGE, function (v) {
                                                        self.controller.setCurrent2Sheet(v);
                                                    });
+
                                                    BI.Popovers.remove("etlChooseSheetForMerge");
-                                                   BI.Popovers.create("etlChooseSheetForMerge", popover, {width : 500, height : 400}).open("etlChooseSheetForMerge");
+                                                   BI.Popovers.create("etlChooseSheetForMerge", popover, {width : 500, height : 400, container:  BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlChooseSheetForMerge");
+                                                   BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
                                                }
                                            }],
                                            right:[]

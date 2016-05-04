@@ -472,7 +472,6 @@ BI.Table = BI.inherit(BI.Widget, {
         var frag = document.createDocumentFragment();
         BI.each(items, function (i, rows) {
             var tr = $("<tr>").addClass((i & 1) === 0 ? "odd" : "even");
-            var can = false;
             BI.each(rows, function (j, row) {
                 if (!map[i]) {
                     map[i] = {};
@@ -579,10 +578,9 @@ BI.Table = BI.inherit(BI.Widget, {
                 preRW[r] = w;
                 TDs[r][c] = td;
                 Ws[r][c] = w;
-                can = true;
             }
 
-            can && frag.appendChild(tr[0]);
+            frag.appendChild(tr[0]);
         });
         return frag;
     },

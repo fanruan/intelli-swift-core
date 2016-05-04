@@ -355,7 +355,16 @@ BI.PathChooser = BI.inherit(BI.Widget, {
         var routes = {};
         var s, e;
         for (var i = 0, len = nodes.length; i < len + 1; i++) {
-            if (i === len) {
+            if (len === 0) {
+                s = [];
+                BI.each(this.start, function (i, id) {
+                    s.push(tree.search(id));
+                });
+                e = [];
+                BI.each(this.end, function (i, id) {
+                    e.push(tree.search(id));
+                });
+            } else if (i === len) {
                 s = e;
                 e = [];
                 BI.each(this.end, function (i, id) {

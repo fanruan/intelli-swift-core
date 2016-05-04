@@ -179,7 +179,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             this.table.on(BI.Table.EVENT_TABLE_REGION_RESIZE, function () {
                 self._resizeFreezeScroll();
             });
-            this.table.on(BI.Table.EVENT_TABLE_COLUMN_RESIZE, function () {
+            this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
                 self._resizeFreezeScroll();
             });
 
@@ -238,7 +238,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             this.table.on(BI.Table.EVENT_TABLE_REGION_RESIZE, function () {
                 self._resizeScroll();
             });
-            this.table.on(BI.Table.EVENT_TABLE_COLUMN_RESIZE, function () {
+            this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
                 self._resizeScroll();
             });
         }

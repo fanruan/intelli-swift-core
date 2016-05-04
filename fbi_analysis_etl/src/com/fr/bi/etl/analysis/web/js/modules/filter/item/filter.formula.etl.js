@@ -37,14 +37,19 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
                 type: "bi.etl_filter_formula_popup",
                 fieldItems: self.fieldItems
             });
+            formulaPopOver.on(BI.PopoverSection.EVENT_CLOSE, function () {
+                BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            })
             formulaPopOver.on(BI.ETLFilterFormulaPopup.EVENT_CHANGE, function () {
                 self.storedValue = formulaPopOver.getValue();
                 self.populate();
                 self.fireEvent(BI.ETLFormulaSettingPane.EVENT_CONFIRM);
             });
             formulaPopOver.setValue(self.storedValue);
+            var layer = BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
             BI.Popovers.remove("etlFormula");
-            BI.Popovers.create("etlFormula", formulaPopOver).open("etlFormula");
+            BI.Popovers.create("etlFormula", formulaPopOver, {container: layer}).open("etlFormula");
         });
         self.label = BI.createWidget({
             type : 'bi.label',

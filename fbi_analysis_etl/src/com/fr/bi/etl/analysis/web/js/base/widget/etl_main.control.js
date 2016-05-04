@@ -12,7 +12,7 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
             self._showNamePop(widget, model);
         });
         BI.Popovers.remove("etlTableWarning");
-        BI.Popovers.create("etlTableWarning", warningPopover, {width : 400, height : 320}).open("etlTableWarning");
+        BI.Popovers.create("etlTableWarning", warningPopover, {width : 400, height : 320, container:widget.element}).open("etlTableWarning");
     },
 
     _showNamePop : function (widget, model) {
@@ -20,13 +20,17 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
         var namePopover = BI.createWidget({
             type: "bi.etl_table_name_popover",
         });
+        namePopover.on(BI.PopoverSection.EVENT_CLOSE, function () {
+            BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+        })
         namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v) {
             model.set('id', BI.UUID());
             model.set('table_name', v);
             self._doSave(widget, model);
         });
         BI.Popovers.remove("etlTableName");
-        BI.Popovers.create("etlTableName", namePopover, {width : 400, height : 320}).open("etlTableName");
+        BI.Popovers.create("etlTableName", namePopover, {width : 400, height : 320, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
+        BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
         namePopover.populate(model.getTableDefaultName());
         namePopover.setTemplateNameFocus();
     },
