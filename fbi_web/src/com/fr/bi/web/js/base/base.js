@@ -512,7 +512,7 @@ if (!window.BI) {
                 return obj;
             }
 
-            var type = toString.call(obj);
+            var type = Object.prototype.toString.call(obj);
 
             // Date
             if (type === '[object Date]') {
