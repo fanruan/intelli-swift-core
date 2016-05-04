@@ -77,8 +77,8 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                     var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
-                        text: BI.Utils.getFieldNameByID(primaryId),
-                        value: primaryId,
+                        text: "primaryKey",
+                        value: BI.Utils.getTableIdByFieldID(primaryId),
                         direction: -1
                     });
                 }
@@ -119,8 +119,8 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                     var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
-                        text: BI.Utils.getFieldNameByID(primaryId),
-                        value: primaryId,
+                        text: "primaryKey",
+                        value: BI.Utils.getTableIdByFieldID(primaryId),
                         direction: -1
                     });
                 }
@@ -182,7 +182,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         BI.backEach(lvalue, function (idx, val) {
             v.push(BI.Utils.getForeignIdFromRelation(val));
             if (idx === 0) {
-                v.push(BI.Utils.getPrimaryIdFromRelation(val));
+                v.push(BI.Utils.getBI.Utils.getPrimaryIdFromRelation(val));
             }
         });
         BI.each(rvalue, function (idx, val) {
