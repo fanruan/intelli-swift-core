@@ -512,7 +512,7 @@ if (!window.BI) {
                 return obj;
             }
 
-            var type = toString.call(obj);
+            var type = Object.prototype.toString.call(obj);
 
             // Date
             if (type === '[object Date]') {
@@ -535,9 +535,9 @@ if (!window.BI) {
             else if (type === '[object Object]' && obj.constructor === Object) {
                 clone = {};
 
-                for (key in obj) {
-                    clone[key] = BI.deepClone(obj[key]);
-                }
+                _.each(obj, function (o, key) {
+                    clone[key] = BI.deepClone(o);
+                });
             }
 
             return clone || obj;

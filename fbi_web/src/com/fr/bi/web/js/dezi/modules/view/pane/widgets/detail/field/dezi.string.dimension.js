@@ -53,7 +53,8 @@ BIDezi.StringDimensionView = BI.inherit(BI.View, {
     _createCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.control_dimension_combo"
+            type: "bi.control_dimension_combo",
+            dId: this.model.get("id")
         });
         this.combo.on(BI.ControlDimensionCombo.EVENT_CHANGE, function (v) {
             switch (v) {
