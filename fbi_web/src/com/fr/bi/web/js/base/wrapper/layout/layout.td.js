@@ -36,7 +36,7 @@ BI.TdLayout = BI.inherit(BI.Layout, {
             "height": "100%",
             "border-spacing": "0px",
             "border": "none",
-            "border-collapse": "collapse"
+            "border-collapse": "separate"
         }).appendTo(this.element);
         this.rows = 0;
         this.populate(this.options.items);

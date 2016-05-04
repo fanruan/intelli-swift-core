@@ -24,7 +24,7 @@ BIShow.CustomGroupView = BI.inherit(BI.BarFloatSection, {
     rebuildNorth: function (north) {
         var id = this.model.get("id");
         var dimensionName = BI.Utils.getFieldNameByID(BI.Utils.getFieldIDByDimensionID(id));
-        var name = BI.i18nJoint("BI-Custom_Group_Detail", dimensionName);
+        var name = BI.i18nText("BI-Custom_Group_Detail", dimensionName);
         BI.createWidget({
             type: "bi.label",
             element: north,
