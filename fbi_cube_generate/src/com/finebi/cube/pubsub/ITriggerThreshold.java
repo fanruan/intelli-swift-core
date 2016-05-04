@@ -1,6 +1,7 @@
 package com.finebi.cube.pubsub;
 
 import com.finebi.cube.exception.*;
+import com.finebi.cube.impl.pubsub.BITriggerThreshold;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.router.fragment.IFragmentTag;
 import com.finebi.cube.router.status.IStatusTag;
@@ -49,26 +50,47 @@ public interface ITriggerThreshold {
 
 
     /**
+     * 添加一个状态，与此函数添加的全部状态是与关系
+     *
+     * @param statusTag 主题
+     */
+    void addAndStatus(Integer conditionIndex, IStatusTag statusTag) throws BIStatusDuplicateException, BIRegisterIsForbiddenException;
+
+    /**
+     * 添加一个主题，与此函数添加的主题是与关系
+     *
+     * @param topicTag 主题
+     */
+    void addAndTopic(Integer conditionIndex, ITopicTag topicTag) throws BITopicDuplicateException, BIRegisterIsForbiddenException;
+
+    /**
+     * 添加一个分片，与此函数添加的分片是与关系
+     *
+     * @param fragmentTag 主题
+     */
+    void addAndFragment(Integer conditionIndex, IFragmentTag fragmentTag) throws BIFragmentDuplicateException, BIRegisterIsForbiddenException;
+
+    /**
      * 添加一个主题，添加的全部主题是与关系
      *
      * @param topicTag 主题
      */
 
-    void addOrTopic(ITopicTag topicTag);
+    void addOrTopic(ITopicTag topicTag) throws BITopicDuplicateException, BIRegisterIsForbiddenException;
 
     /**
      * 添加一个分片，添加的全部分片是与关系
      *
      * @param fragmentTag 主题
      */
-    void addOrFragment(IFragmentTag fragmentTag);
+    void addOrFragment(IFragmentTag fragmentTag) throws BIFragmentDuplicateException, BIRegisterIsForbiddenException;
 
     /**
      * 添加一个分片，添加的全部分片是与关系
      *
      * @param statusTag 主题
      */
-    void addOrStatus(IStatusTag statusTag);
+    void addOrStatus(IStatusTag statusTag) throws BIStatusDuplicateException, BIRegisterIsForbiddenException;
 
     /**
      * 处理消息
@@ -78,4 +100,6 @@ public interface ITriggerThreshold {
     void handleMessage(IMessage message) throws BIThresholdIsOffException;
 
     boolean isMeetThreshold();
+
+    BITriggerThreshold.ConditionAndSet getMeetCondition() throws BIThresholdUnsatisfiedException;
 }

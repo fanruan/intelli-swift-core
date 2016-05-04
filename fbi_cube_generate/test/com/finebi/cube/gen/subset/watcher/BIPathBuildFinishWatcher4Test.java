@@ -3,6 +3,7 @@ package com.finebi.cube.gen.subset.watcher;
 import com.finebi.cube.exception.BIDeliverFailureException;
 import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
 import com.finebi.cube.gen.subset.BICubeBuildProbeTool;
+import com.finebi.cube.message.IMessage;
 
 /**
  * This class created on 2016/4/20.
@@ -12,7 +13,7 @@ import com.finebi.cube.gen.subset.BICubeBuildProbeTool;
  */
 public class BIPathBuildFinishWatcher4Test extends BIPathBuildFinishWatcher {
     @Override
-    public void process() {
+    public void process(IMessage lastReceiveMessage) {
         System.out.println("Path Build Finish");
         try {
             messagePublish.publicFinishMessage(generateFinishBody(""));

@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk;
 
+import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.ICubePrimitiveResourceDiscovery;
 import com.finebi.cube.data.disk.reader.primitive.BIPrimitiveNIOReaderManager;
 import com.finebi.cube.data.disk.writer.primitive.BIPrimitiveNIOWriterManager;
@@ -9,6 +10,7 @@ import com.finebi.cube.exception.BIBuildReaderException;
 import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
@@ -53,14 +55,22 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
 
     @Override
     public ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
-        return readerManager.buildCubeReader(resourceLocation);
+        BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
+        ICubePrimitiveReader reader = readerManager.buildCubeReader(resourceLocation);
+        releaseRecorder.record(reader);
+        reader.setReleaseHelper(releaseRecorder);
+        return reader;
     }
 
     @Override
     public ICubePrimitiveWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException {
         ResourceLock lock = getLock(resourceLocation);
         synchronized (lock) {
-            return writerManager.buildCubeWriter(resourceLocation);
+            BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
+            ICubePrimitiveWriter writer = writerManager.buildCubeWriter(resourceLocation);
+            releaseRecorder.record(writer);
+            writer.setReleaseManager(releaseRecorder);
+            return writer;
         }
     }
 

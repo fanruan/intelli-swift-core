@@ -55,6 +55,12 @@ public interface IMessage {
      */
     boolean isStatusMessage();
 
+    /**
+     * 当前的消息是否是停机消息
+     *
+     * @return 是否是停机消息
+     */
+    boolean isStopStatus();
 //    /**
 //     * 由于Message可能被多个接收者获得。因此要避免某一个接收者更改了Message，影响其他接收者
 //     * 因此通过

@@ -178,7 +178,9 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
     @Override
     public void clear() {
-        columnManager.clear();
+        if (columnManager != null) {
+            columnManager.clear();
+        }
         relationManager.clear();
         tableProperty.clear();
     }
