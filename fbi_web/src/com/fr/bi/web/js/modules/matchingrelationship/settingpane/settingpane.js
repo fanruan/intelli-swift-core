@@ -154,7 +154,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 });
                 this.emptyItem.addItem(this.selectCombineTableCombo);
             }
-            var tables = BI.Utils.getCommonPrimaryTablesByTableIDs([tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0])]);
+            var tables = BI.Utils.getFirstCommonPrimaryTablesBetweenTwoTablesByIDs([tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0])]);
             var items = BI.map(tables, function(idx, tId){
                 return {
                     text: BI.Utils.getTableNameByID(tId),

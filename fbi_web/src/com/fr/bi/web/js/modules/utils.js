@@ -631,13 +631,28 @@
         getFirstCommonPrimaryTablesBetweenTwoTablesByIDs: function (tableId1, tableId2) {
             var primaryTables = this.getPrimaryRelationTablesByTableID(tableId1);
             var connectionSet = Pool.connections.connectionSet;
-            var result = [];
-            BI.find(connectionSet, function (idx, obj) {
-                if(obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)){
-                    return;
+            var getDirectPrimaryTable = function (tId) {
+                var find = BI.filter(connectionSet, function (idx, obj) {
+                    return obj.foreignKey.table_id === tId;
+                });
+                return BI.pluck(BI.pluck(find, "foreignKey"), "table_id");
+            };
+            var result = [], tableIds = [tableId1];
+            while (BI.isNotEmptyArray(tableIds)) {
+                BI.each(tableIds, function (idx, tId) {
+                    if(BI.contains(primaryTables, tId)){
+                        result.push(tId);
+                    }
+                });
+                if(BI.isNotEmptyArray(result)){
+                    break;
                 }
-            });
-
+                tableIds = BI.map(tableIds, function(idx, tId){
+                    return getDirectPrimaryTable(tId);
+                });
+                tableIds = BI.flatten(tableIds);
+            }
+            return result;
         },
 
         getCommonPrimaryTablesByTableIDs: function (tableIds) {
