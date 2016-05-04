@@ -645,7 +645,7 @@
                 var find = BI.filter(connectionSet, function (idx, obj) {
                     return obj.foreignKey.table_id === tId;
                 });
-                return BI.pluck(BI.pluck(find, "foreignKey"), "table_id");
+                return BI.pluck(BI.pluck(find, "primaryKey"), "table_id");
             };
             var result = [], tableIds = [tableId2];
             while (BI.isNotEmptyArray(tableIds)) {

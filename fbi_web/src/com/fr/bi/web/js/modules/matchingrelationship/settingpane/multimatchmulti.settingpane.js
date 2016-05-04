@@ -77,7 +77,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                     var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
-                        text: "primaryKey",
+                        text: BI.i18nText("BI-Primary_Key"),
                         value: BI.Utils.getTableIdByFieldID(primaryId),
                         direction: -1
                     });
@@ -119,7 +119,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                     var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
-                        text: "primaryKey",
+                        text: BI.i18nText("BI-Primary_Key"),
                         value: BI.Utils.getTableIdByFieldID(primaryId),
                         direction: -1
                     });
