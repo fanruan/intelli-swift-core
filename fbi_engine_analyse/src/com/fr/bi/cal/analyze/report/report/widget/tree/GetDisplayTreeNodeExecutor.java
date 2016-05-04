@@ -1,5 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
+import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -12,6 +15,10 @@ import java.util.List;
  */
 public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
+
+    public GetDisplayTreeNodeExecutor(TreeWidget widget, Paging paging, BISession session) {
+        super(widget, paging, session);
+    }
 
     public JSONObject getResultJSON() throws JSONException {
         JSONArray result = new JSONArray();
