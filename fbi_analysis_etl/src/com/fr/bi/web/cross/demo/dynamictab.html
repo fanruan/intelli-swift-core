@@ -27,11 +27,13 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-
+            var bb = BI.Layers.create("bb")
             var icon = BI.createWidget({
-                element:$("div.b"),
-                type: "bi.dynamic_tab"
+                element:bb,
+                type: "bi.analysis_etl_main"
             })
+            icon.populate();
+            BI.Layers.show("bb")
         });
     </script>
 </head>

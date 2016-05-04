@@ -7,7 +7,7 @@
   font-size: 12px;
 }
 .bi-analysis-etl-merge-preview-table .bi-adaptive-layout > table {
-  border: 1px solid #eaeaea;
+  border-left: 1px solid #eaeaea;
 }
 .bi-analysis-etl-merge-preview-table .left {
   background: #fef6df;
