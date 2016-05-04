@@ -184,6 +184,19 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
             return fragmentTagThreshold;
         }
 
+        /**
+         * 当前的ConditionItem是在使用
+         * 如果当前Item为空，由于判断Threshold是否达到目标值，是依据条件池是否为空来判断的。
+         * 所有当前的Item会是达到状态。
+         * 这里存在一个问题。初始化首先会添加一个0位的条件，默认是用来做
+         * and使用的。
+         * 倘若当在不添加任何And条件情况下，添加Or条件的时候。那么这个时候接受到任何消息。
+         * 当前阀值都会是满足态。
+         * 所以该isUsable就是用来判断当前Item是否在使用。
+         * 如果不在使用，那么就不做条件判断
+         *
+         * @return Item是否在使用
+         */
         public boolean isUsable() {
             return topicTagThreshold.isSwitchOn() || fragmentTagThreshold.isSwitchOn() || statusTagThreshold.isSwitchOn();
         }
@@ -194,6 +207,8 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
             } catch (BIThresholdIsOffException e) {
                 /**
                  * 没有开启，那么说明没有监控。
+                 * 返回True的原因是：
+                 * 监视的条件池为空认为是条件达到
                  */
                 return true;
             }
@@ -205,6 +220,8 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
             } catch (BIThresholdIsOffException e) {
                 /**
                  * 没有开启，那么说明没有监控。
+                 * 返回True的原因是：
+                 * 监视的条件池为空认为是条件达到
                  */
                 return true;
             }
@@ -216,6 +233,8 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
             } catch (BIThresholdIsOffException e) {
                 /**
                  * 没有开启，那么说明没有监控。
+                 * 返回True的原因是：
+                 * 监视的条件池为空认为是条件达到
                  */
                 return true;
             }
