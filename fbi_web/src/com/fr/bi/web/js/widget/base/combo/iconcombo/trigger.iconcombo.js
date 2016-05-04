@@ -21,7 +21,7 @@ BI.IconComboTrigger = BI.inherit(BI.Trigger, {
             type: "bi.icon_change_button",
             forceNotSelected: true,
             element: this.element,
-            height: 25
+            height: o.height
         });
         if (BI.isKey(o.value)) {
             this.setValue(o.value);

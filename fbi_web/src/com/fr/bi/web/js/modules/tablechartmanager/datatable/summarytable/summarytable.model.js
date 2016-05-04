@@ -107,39 +107,34 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         //使用中的行表头——考虑钻取
         var self = this;
         this.dimIds = [];
+        this.crossDimIds = [];
         var view = BI.Utils.getWidgetViewByID(this.wId);
         var drill = BI.Utils.getDrillByID(this.wId);
-        BI.each(view[BICst.REGION.DIMENSION1], function(i, dId){
-            if(BI.isNotNull(drill)) {
-                //钻取状态时是否展示  {1: [{dId: 2, value: []}, {dId: 3, value: []}]}
-                var drilled = false, used = false;
-                BI.each(drill, function(drId, drArray){
-                    if(BI.isNotEmptyArray(drArray)){
-                        if(drId === dId) {
-                            drilled = true;
-                        }
-                        BI.each(drArray, function(i, dr){
-                            if(dr.dId === dId){
-                                drilled = true;
-                                used = (i === drArray.length - 1);
-                            }
-                        });
-                    }
-                });
-                if(drilled === true) {
-                    used === true && (self.dimIds.push(dId));
-                } else {
-                    BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
-                }
-            } else {
-                BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
-            }
-        });
 
-        //使用中的列表头
-        this.crossDimIds = [];
+        BI.each(view[BICst.REGION.DIMENSION1], function(i, dId){
+            BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
+        });
         BI.each(view[BICst.REGION.DIMENSION2], function(i, dId){
             BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
+        });
+        BI.each(drill, function(drId, drArray){
+            if(drArray.length !== 0) {
+                BI.remove(self.dimIds, drId);
+                BI.remove(self.crossDimIds, drId);
+                BI.each(drArray, function(i, dr){
+                    var tempDrId = dr.dId;
+                    if(i === drArray.length - 1) {
+                        if(BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
+                            self.dimIds.push(tempDrId);
+                        } else {
+                            self.crossDimIds.push(tempDrId);
+                        }
+                    } else {
+                        BI.remove(self.dimIds, tempDrId);
+                        BI.remove(self.crossDimIds, tempDrId);
+                    }
+                });
+            }
         });
 
         //使用中的指标
@@ -472,36 +467,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             }
         });
         //根据crossItems创建部分header
-        this._createCrossPartHeader(this.data.t.c);
-        //创建合计部分的header
-        if(this.showColTotal === true){
-            BI.each(this.crossItemsSums[this.crossItemsSums.length - 1], function(i ,v){
-                BI.each(targetsArray, function(j, targetCell){
-                    self.header.push(BI.extend(targetCell, {tag: BI.UUID()}));
-                });
-            });
-        }
-    },
-
-    /**
-     * 交叉表——crossHeader
-     */
-    _createCrossPartHeader: function(c){
-        var self = this;
-        var dId = null;
-        BI.each(c, function(i, child){
-            if(BI.isNotNull(child.n) && BI.isNotNull(child.c)){
-                self._createCrossPartHeader(child.c);
-            } else {
-                dId = child.n;
-                //可能出现无指标的情况
-                self.header.push({
-                    type: "bi.page_table_cell",
-                    text: self.targetIds.contains(child.n) ? BI.Utils.getDimensionNameByID(child.n) : "",
-                    tag: BI.UUID()
-                })
-            }
-        });
+        this._createCrossPartHeader();
     },
 
     /**
@@ -515,14 +481,44 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 self._createTableSumItems(v.s, sum);
             } else {
                 var tId = self.targetIds[i];
+                if(self.targetIds.length === 0) {
+                    tId = self.crossDimIds[i];
+                }
                 sum.push({
                     type: "bi.target_body_normal_cell",
                     text: v,
                     dId: tId,
-                    clicked: pValues
+                    clicked: []
                 });
             }
         });
+    },
+
+    /**
+     * 交叉表——crossHeader
+     */
+    _createCrossPartHeader: function(){
+        var self = this;
+        var dId = null;
+        //可以直接根据crossItems确定header的后半部分
+        function parseHeader(items){
+            BI.each(items, function(i, item){
+                var dName = BI.Utils.getDimensionNameByID(self.targetIds[i%(self.targetIds.length)]);
+                if(BI.isNotNull(item.children)) {
+                    parseHeader(item.children);
+                } else if(BI.isNotNull(item.isSum)) {
+                    item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
+                    self.header.push(item);
+                } else {
+                    self.header.push({
+                        type: "bi.page_table_cell",
+                        text: dName,
+                        tag: BI.UUID()
+                    })
+                }
+            });
+        }
+        parseHeader(this.crossItems);
     },
 
     _createGroupTableItems: function(){
@@ -595,7 +591,11 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             if(this.showColTotal === true) {
                 var outerValues = [];
                 BI.each(left.s.s, function(i, v){
+                    //有列表头无指标情况下，以该列表头为指标（内容都是--）
                     var tId = self.targetIds[i];
+                    if(self.targetIds.length === 0) {
+                        tId = self.crossDimIds[i];
+                    }
                     outerValues.push({
                         type: "bi.target_body_normal_cell",
                         text: v,
@@ -662,15 +662,25 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         var self = this, crossHeaderItems = [];
         currentLayer++;
         BI.each(c, function(i, child){
-            if(BI.isNull(child.c)){
+            if(BI.isNull(child.c) && (self.targetIds.contains(child.n) || self.crossDimIds.contains(child.n))){
                 return;
             }
             var cId = BI.isEmptyString(child.n) ? self.EMPTY_VALUE : child.n;
-            var currDid = self.dimIds[currentLayer - 1], currValue = child.n;
+            var currDid = self.crossDimIds[currentLayer - 1], currValue = child.n;
             var nodeId = BI.isNotNull(parent) ? parent.get("id") + cId : cId;
             var node = new BI.Node(nodeId);
             node.set("name", child.n);
             self.crossTree.addNode(parent, node);
+            var pValues = [];
+            var tempLayer = currentLayer, tempNodeId = nodeId;
+            while (tempLayer > 0) {
+                pValues.push({
+                    value: [self.crossTree.search(tempNodeId).get("name")],
+                    dId: self.crossDimIds[tempLayer - 1]
+                });
+                tempNodeId = self.crossTree.search(tempNodeId).getParent().get("id");
+                tempLayer--;
+            }
             var item = {
                 type: "bi.normal_expander_cell",
                 text: currValue,
@@ -691,8 +701,29 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     self.clickValue = child.n;
                     self.expanderCallback();
                 },
-                drillCallback: function() {
+                drillCallback: function(drillId) {
+                    var drillMap = BI.Utils.getDrillByID(self.wId);
+                    //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
+                    //当前钻取的根节点
+                    var rootId = currDid;
+                    BI.each(drillMap, function(drId, ds){
+                        if(currDid === drId || (ds.length > 0 && ds[ds.length - 1].dId === currDid)) {
+                            rootId = drId;
+                        }
+                    });
 
+                    var drillOperators = drillMap[rootId] || [];
+                    //上钻
+                    if(drillId === BI.NormalExpanderCell.UP_DRILL) {
+                        drillOperators.pop();
+                    } else {
+                        drillOperators.push({
+                            dId: drillId,
+                            values: pValues
+                        });
+                    }
+                    drillMap[rootId] = drillOperators;
+                    self.clickedCallback(BI.extend(BI.Utils.getLinkageValuesByID(self.wId), drillMap));
                 }
             };
             if(currentLayer < self.crossDimIds.length) {
@@ -720,13 +751,13 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     });
                 });
             }
-            if(currentLayer < self.crossDimIds.length || BI.isEmptyArray(self.targetIds)){
-                crossHeaderItems.push(item);
-            } else {
-                //需要push多次(存在没有指标的情况)
+            //最后一层（无children）
+            if(BI.isNull(item.children)) {
                 BI.each(self.targetIds, function(i, tId){
                     crossHeaderItems.push(item);
                 })
+            } else {
+                crossHeaderItems.push(item);
             }
         });
         return crossHeaderItems;

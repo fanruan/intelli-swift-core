@@ -13,7 +13,8 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
             name: "",
             type: BICst.Widget.DETAIL,
             settings: {},
-            target_relation: {}
+            target_relation: {},
+            filter_value: {}
         })
     },
 
@@ -32,10 +33,15 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
             });
             var dimensions = this.get("dimensions");
             this._setDefaultRelation(dimensions);
-
+            var allIds = BI.keys(dimensions);
+            var filterValue = this.get("filter_value");
+            BI.each(filterValue, function(id, filter){
+                !allIds.contains(id) && delete filterValue[id];
+            });
             this.set({
                 view: views,
-                dimensions: dimensions
+                dimensions: dimensions,
+                filter_value: filterValue
             });
         }
         if (key1 === "dimensions") {

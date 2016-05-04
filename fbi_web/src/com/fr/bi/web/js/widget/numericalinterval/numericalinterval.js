@@ -48,7 +48,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                     return true;
                 },
                 cls: "numerical-interval-small-editor"
-            })
+            });
 
             this.bigEditor = BI.createWidget({
                 type: "bi.editor",
@@ -60,35 +60,70 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                 tipType: "warning",
                 quitChecker: function () {
                     return false;
-                }
-
-                ,
+                },
                 validationChecker: function (v) {
                     if (!BI.isNumeric(v)) {
                         self.bigEditorBubbleType = c.typeError;
                         return false;
                     }
                     return true;
-                }
-                ,
+                },
                 cls: "numerical-interval-big-editor"
             });
 
+            //this.smallCombo = BI.createWidget({
+            //    type: "bi.numerical_interval_combo",
+            //    cls: "numerical-interval-small-combo",
+            //    height: o.height,
+            //    value: o.closemin ? 1 : 0,
+            //    offsetStyle: "left"
+            //});
+            //
+            //this.bigCombo = BI.createWidget({
+            //    type: "bi.numerical_interval_combo",
+            //    cls: "numerical-interval-big-combo",
+            //    height: o.height,
+            //    value: o.closemax ? 1 : 0,
+            //    offsetStyle: "left"
+            //});
             this.smallCombo = BI.createWidget({
-                type: "bi.numerical_interval_combo",
+                type: "bi.icon_combo",
                 cls: "numerical-interval-small-combo",
-                height: o.height,
-                value: o.closemin ? 1 : 0,
-                offsetStyle: "left"
-            })
-
+                height: o.height - 2,
+                items: [{
+                    text: "(" + BI.i18nText("BI-Less_Than") + ")",
+                    iconClass: "less-arrow-font",
+                    value: 0
+                }, {
+                    text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
+                    value: 1,
+                    iconClass: "less-equal-arrow-font"
+                }]
+            });
+            if (o.closemin === true) {
+                this.smallCombo.setValue(1);
+            } else {
+                this.smallCombo.setValue(0);
+            }
             this.bigCombo = BI.createWidget({
-                type: "bi.numerical_interval_combo",
+                type: "bi.icon_combo",
                 cls: "numerical-interval-big-combo",
-                height: o.height,
-                value: o.closemax ? 1 : 0,
-                offsetStyle: "left"
-            })
+                height: o.height - 2,
+                items: [{
+                    text: "(" + BI.i18nText("BI-Less_Than") + ")",
+                    iconClass: "less-arrow-font",
+                    value: 0
+                }, {
+                    text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
+                    value: 1,
+                    iconClass: "less-equal-arrow-font"
+                }]
+            });
+            if (o.closemax === true) {
+                this.bigCombo.setValue(1);
+            } else {
+                this.bigCombo.setValue(0);
+            }
             this.label = BI.createWidget({
                 type: "bi.label",
                 text: BI.i18nText("BI-Value"),
@@ -97,7 +132,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                 height: o.height - c.border * 2,
                 level: "warning",
                 tipType: "warning"
-            })
+            });
             this.left = BI.createWidget({
                 type: "bi.htape",
                 items: [{
@@ -107,7 +142,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                     width: c.width - c.border * 2
                 }]
 
-            })
+            });
             this.right = BI.createWidget({
                 type: "bi.htape",
                 items: [{
@@ -119,33 +154,33 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
             });
 
 
-                BI.createWidget({
-                    element: self.element,
-                    type: "bi.center",
-                    hgap: 15,
-                    height: o.height,
-                    items: [
-                        {
-                            type: "bi.absolute",
-                            items: [{
-                                el: self.left,
-                                left: -15,
-                                right: 0,
-                                top: 0,
-                                bottom: 0
-                            }]
-                        },{
-                            type: "bi.absolute",
-                            items: [{
-                                el: self.right,
-                                left: 0,
-                                right: -15,
-                                top: 0,
-                                bottom: 0
-                            }]
-                        }
-                    ]
-                });
+            BI.createWidget({
+                element: self.element,
+                type: "bi.center",
+                hgap: 15,
+                height: o.height,
+                items: [
+                    {
+                        type: "bi.absolute",
+                        items: [{
+                            el: self.left,
+                            left: -15,
+                            right: 0,
+                            top: 0,
+                            bottom: 0
+                        }]
+                    }, {
+                        type: "bi.absolute",
+                        items: [{
+                            el: self.right,
+                            left: 0,
+                            right: -15,
+                            top: 0,
+                            bottom: 0
+                        }]
+                    }
+                ]
+            });
 
             BI.createWidget({
                 element: self.element,
@@ -223,8 +258,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
             self.bigEditor.setTitle(v);
             self.smallEditor.setTitle(v);
             self.label.setTitle(v);
-        }
-        ,
+        },
 
         _setFocusEvent: function (w) {
             var self = this, c = this.constants;
@@ -251,8 +285,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                 }
 
             })
-        }
-        ,
+        },
         _setBlurEvent: function (w) {
             var c = this.constants, self = this;
             w.on(BI.Editor.EVENT_BLUR, function () {
@@ -273,8 +306,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                         self._setTitle("");
                 }
             })
-        }
-        ,
+        },
 
         _setErrorEvent: function (w) {
             var c = this.constants, self = this
@@ -285,8 +317,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                 });
                 self.fireEvent(BI.NumericalInterval.EVENT_ERROR);
             })
-        }
-        ,
+        },
 
 
         _setValidEvent: function (w) {
@@ -344,7 +375,6 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                         self.fireEvent(BI.NumericalInterval.EVENT_VALID);
                 }
             })
-
         },
 
 
@@ -410,8 +440,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                 }
                 self.bigCombo.setValue(combo_value);
             }
-        }
-        ,
+        },
 
 
         getValue: function () {

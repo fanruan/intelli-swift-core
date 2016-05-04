@@ -47,25 +47,37 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
         var widget = BI.Utils.getWidgetCalculationByID(wId);
         var usedDimensions = {}, hasUsed = false;
         var fields = [];
-        BI.each(widget.dimensions, function (i, dimension) {
-            if (dimension.used === true){
-                usedDimensions[i] = dimension;
-                var field_type =  BI.Utils.getFieldTypeByID(dimension._src);
-                if (field_type === BICst.COLUMN.DATE && dimension.group.type !== BICst.GROUP.YMD){
-                    field_type = BICst.COLUMN.NUMBER;
-                }
-                fields.push({
-                    field_name : dimension.name,
-                    field_id : dimension._src.field_id,
-                    field_type : field_type
-                });
-                hasUsed = true;
-            } else {
-                self._deleteView(i, widget.view);
-            }
-        })
+        if(BI.isNotNull(widget.view)) {
+            BI.each([BICst.REGION.DIMENSION1, BICst.REGION.DIMENSION2], function (idx, item) {
+                BI.each(widget.view[item], function (idx, id) {
+                    var dimension = widget.dimensions[id];
+                    if (dimension.used === true){
+                        var field_type =  BI.Utils.getFieldTypeByID(dimension._src);
+                        if (field_type === BICst.COLUMN.DATE && dimension.group.type !== BICst.GROUP.YMD){
+                            field_type = BICst.COLUMN.NUMBER;
+                        }
+                        fields.push({
+                            field_name : dimension.name,
+                            field_type : field_type
+                        });
+                        hasUsed = true;
+                    }
+                })
+            })
+            BI.each([BICst.REGION.TARGET1, BICst.REGION.TARGET2, BICst.REGION.TARGET3], function (idx, item) {
+                BI.each(widget.view[item], function (idx, id) {
+                    var dimension = widget.dimensions[id];
+                    if (dimension.used === true){
+                        fields.push({
+                            field_name : dimension.name,
+                            field_type : BICst.COLUMN.NUMBER
+                        });
+                        hasUsed = true;
+                    }
+                })
+            })
+        }
         if (hasUsed === true){
-            widget.dimensions = usedDimensions;
             items.push({
                 value : BI.UUID(),
                 table_name : widget.name,

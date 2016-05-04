@@ -33,18 +33,19 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
             type: "bi.float_box"
         }, options);
         floatbox.populate(section);
-        this.add(name, floatbox);
+        this.add(name, floatbox, options);
         return this;
     },
 
-    add: function (name, floatbox) {
+    add: function (name, floatbox, options) {
         var self = this;
+        options || (options = {});
         if (this._check(name)) {
             return this;
         }
         BI.createWidget({
             type: "bi.absolute",
-            element: "body",
+            element: options.container || this.options.render,
             items: [{
                 el: (this.floatLayer[name] = BI.createWidget({
                     type: 'bi.center_adapt',
