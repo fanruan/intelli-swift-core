@@ -90,7 +90,7 @@
                 );
             },
             isFunction = function (Function) {
-                return toString.call(Function) === "[object Function]";
+                return Object.prototype.toString.call(Function) === "[object Function]";
             },
             split = "onabort.onerror.onloadstart.onprogress".split("."),
             length = split.length,

@@ -1095,8 +1095,8 @@
         if (a instanceof _) a = a._wrapped;
         if (b instanceof _) b = b._wrapped;
         // Compare `[[Class]]` names.
-        var className = toString.call(a);
-        if (className !== toString.call(b)) return false;
+        var className = Object.prototype.toString.call(a);
+        if (className !== Object.prototype.toString.call(b)) return false;
         switch (className) {
             // Strings, numbers, regular expressions, dates, and booleans are compared by value.
             case '[object RegExp]':
@@ -1198,7 +1198,7 @@
     // Is a given value an array?
     // Delegates to ECMA5's native Array.isArray
     _.isArray = nativeIsArray || function(obj) {
-        return toString.call(obj) === '[object Array]';
+        return Object.prototype.toString.call(obj) === '[object Array]';
     };
 
     // Is a given variable an object?
@@ -1210,7 +1210,7 @@
     // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
     _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
         _['is' + name] = function(obj) {
-            return toString.call(obj) === '[object ' + name + ']';
+            return Object.prototype.toString.call(obj) === '[object ' + name + ']';
         };
     });
 
@@ -1242,7 +1242,7 @@
 
     // Is a given value a boolean?
     _.isBoolean = function(obj) {
-        return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
+        return obj === true || obj === false || Object.prototype.toString.call(obj) === '[object Boolean]';
     };
 
     // Is a given value equal to null?

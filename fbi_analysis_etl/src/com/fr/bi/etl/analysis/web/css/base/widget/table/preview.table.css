@@ -36,5 +36,5 @@
   zoom: 2;
 }
 .bi-analysis-etl-preview-table .bi-table .bi-adaptive-layout > table {
-  border: 1px solid #eaeaea;
+  border-right: 1px solid #eaeaea;
 }
