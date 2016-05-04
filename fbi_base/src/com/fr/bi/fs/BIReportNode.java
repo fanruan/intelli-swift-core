@@ -145,14 +145,14 @@ public class BIReportNode extends DAOBean implements Entry {
      * @param reportName
      * @param path
      */
-    public BIReportNode(long userId, String parentId, String reportName, String path) {
+    public BIReportNode(long userId, String parentId, String reportName, String path, String description) {
         this.path = path;
         this.userid = userId;
         this.parentid = parentId;
         this.createtime = new Date();
         this.reportname = reportName;
-        this.description = StringUtils.EMPTY;
         this.username = StringUtils.EMPTY;
+        this.description = description;
         updateLastModifyTime();
     }
     /**
@@ -162,12 +162,12 @@ public class BIReportNode extends DAOBean implements Entry {
      * @param reportName
      * @param path
      */
-    public BIReportNode(long userId, String reportName, String path) {
+    public BIReportNode(long userId, String reportName, String path, String description) {
         this.path = path;
         this.userid = userId;
         this.createtime = new Date();
         this.reportname = reportName;
-        this.description = StringUtils.EMPTY;
+        this.description = description;
         this.username = StringUtils.EMPTY;
         updateLastModifyTime();
     }

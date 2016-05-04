@@ -145,7 +145,9 @@ BI.PathChooser = BI.inherit(BI.Widget, {
             var sleft = 50 + 100 * startRegionIndex;
             var radioStartX = sleft, radioStartY = stop;
             var etop = stop;
-            var eleft = 50 + 100 * self.getRegionIndexById(BI.last(line));
+            var endRegionIndex = self.getRegionIndexById(BI.last(line));
+            var endOffset = self.regions[endRegionIndex].getIndexByValue(BI.last(line));
+            var eleft = 50 + 100 * endRegionIndex;
             if (self.start.contains(start)) {
                 radioStartX = sleft - 50;
                 path += "M" + (sleft - 50) + "," + stop;
@@ -177,18 +179,19 @@ BI.PathChooser = BI.inherit(BI.Widget, {
                 });
             }
             if (idx > 0) {
-                path += "L" + (eleft - 50) + "," + etop + "L" + (eleft - 50) + "," + 47.5 + "L" + eleft + "," + 47.5;
+                var endY = endOffset * 29 + 47.5;
+                path += "L" + (eleft - 50) + "," + etop + "L" + (eleft - 50) + "," + endY + "L" + eleft + "," + endY;
                 self.pathes[start][i].push({
                     x: eleft - 50,
                     y: etop
                 });
                 self.pathes[start][i].push({
                     x: eleft - 50,
-                    y: 47.5
+                    y: endY
                 });
                 self.pathes[start][i].push({
                     x: eleft,
-                    y: 47.5
+                    y: endY
                 });
             } else {
                 path += "L" + eleft + "," + etop;
@@ -272,7 +275,11 @@ BI.PathChooser = BI.inherit(BI.Widget, {
         this.texts = {};
         var zip = BI.unzip(o.items);
         this.start = BI.uniq(BI.pluck(BI.first(zip), "value"));
-        this.end = BI.uniq(BI.pluck(BI.last(zip), "value"));
+        this.end = [];
+        BI.each(o.items, function (i, item) {
+            self.end.push(BI.last(item).value);
+        });
+        this.end = BI.uniq(this.end);
         var regions = [];
         var tree = new BI.Tree();
         var branches = {}, max = 0;
@@ -343,34 +350,38 @@ BI.PathChooser = BI.inherit(BI.Widget, {
                 delete branches[node.id];
             }
         });
-        //当只有一条关联时会出现nodes为空的情况
-        if (nodes.length === 0) {
-            nodes.push(this.end[0]);
-        }
 
         //填充节点
         var routes = {};
         var s, e;
-        for (var i = 0; i < nodes.length; i++) {
-            if (i === 0) {
+        for (var i = 0, len = nodes.length; i < len + 1; i++) {
+            if (i === len) {
+                s = e;
+                e = [];
+                BI.each(this.end, function (i, id) {
+                    e.push(tree.search(id));
+                });
+            } else if (i === 0) {
                 s = [];
                 BI.each(this.start, function (i, id) {
                     s.push(tree.search(id));
                 });
-                e = tree.search(nodes[i]);
+                e = [tree.search(nodes[i])];
             } else {
-                s = [tree.search(e || tree.getRoot(), nodes[i - 1])];
-                e = tree.search(s[0], nodes[i]);
+                s = [tree.search(e[0] || tree.getRoot(), nodes[i - 1])];
+                e = [tree.search(s[0], nodes[i])];
             }
             BI.each(s, function (i, n) {
                 tree._recursion(n, [n.id], function (node, route) {
-                    if (node === e) {
+                    if (e.contains(node)) {
                         if (!routes[n.id]) {
                             routes[n.id] = [];
                         }
                         routes[n.id].push(route);
                         self._pushNodes(route);
-                        return true;
+                        if (e.length <= 1) {
+                            return true;
+                        }
                     }
                 })
             });

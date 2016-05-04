@@ -66,12 +66,13 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
 
     _getTargetText : function () {
         var text;
+        var nValue = BI.isFunction(this.options.nValueGetter) ? this.options.nValueGetter() : 'N'
         switch (this.options.filterType){
             case  BICst.TARGET_FILTER_NUMBER.TOP_N:
-                text = BI.i18nText('BI-ETL_Top_N', this.options.nValue || 'N');
+                text = BI.i18nText('BI-ETL_Top_N', nValue);
                 break;
             case BICst.TARGET_FILTER_NUMBER.TOP_N :
-                text = BI.i18nText('BI-ETL_Bottom_N', this.options.nValue || 'N');
+                text = BI.i18nText('BI-ETL_Bottom_N', nValue);
                 break;
             default :
                 text = BI.i18nText('BI-Average_Value');
@@ -97,6 +98,13 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
                 textAlign : 'left',
                 height : 25,
                 text : self._getTargetText()
+            }))
+        } else {
+            self.labels.addItem(BI.createWidget({
+                type : 'bi.label',
+                textAlign : 'center',
+                height : 25,
+                text : BI.i18nText('BI-(Empty)')
             }))
         }
     },

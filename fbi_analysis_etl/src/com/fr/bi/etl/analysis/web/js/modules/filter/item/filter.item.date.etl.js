@@ -50,7 +50,7 @@ BI.DateETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
     _createDate: function () {
         var self = this;
         this.filterWidget = BI.createWidget({
-            type: "bi.multidate_param_combo"
+            type: "bi.multidate_combo"
         });
         this.filterWidget.on(BI.MultiDateParamCombo.EVENT_VALID, function () {
             self.fireEvent(BI.AbstractETLFilterItem.EVENT_VALUE_CHANGED);

@@ -64,7 +64,7 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
     _createCombo: function () {
         var self = this;
         var combo = BI.createWidget({
-            type: 'bi.multidate_param_combo'
+            type: 'bi.multidate_combo'
         });
         combo.on(BI.MultiDateCombo.EVENT_ERROR, function () {
             self._clearTitle();

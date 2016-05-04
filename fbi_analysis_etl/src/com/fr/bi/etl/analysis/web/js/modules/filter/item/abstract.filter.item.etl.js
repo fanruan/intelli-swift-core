@@ -72,6 +72,7 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
         this.filterType.on(BI.TextIconDownListCombo.EVENT_CHANGE, function () {
             self.filter_type = self.filterType.getValue()[0];
             self._refreshFilterWidget();
+            self.fireEvent(BI.AbstractETLFilterItem.EVENT_VALUE_CHANGED);
         });
         this.filterType.setValue(BI.isNotNull(o.value.filter_type) ? o.value.filter_type : o.defaultType);
         return this.filterType;

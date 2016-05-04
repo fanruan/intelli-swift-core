@@ -17,6 +17,7 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
         this.modal = this.options.modal;
         this.floatManager = {};
         this.floatLayer = {};
+        this.floatContainer = {};
         this.zindex = BI.zIndex_floatbox;
         this.zindexMap = {};
     },
@@ -33,18 +34,19 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
             type: "bi.float_box"
         }, options);
         floatbox.populate(section);
-        this.add(name, floatbox);
+        this.add(name, floatbox, options);
         return this;
     },
 
-    add: function (name, floatbox) {
+    add: function (name, floatbox, options) {
         var self = this;
+        options || (options = {});
         if (this._check(name)) {
             return this;
         }
-        BI.createWidget({
+        this.floatContainer[name] = BI.createWidget({
             type: "bi.absolute",
-            element: "body",
+            cls: "bi-list-view",
             items: [{
                 el: (this.floatLayer[name] = BI.createWidget({
                     type: 'bi.center_adapt',
@@ -62,6 +64,17 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
                 self.close(key);
             })
         })(name);
+        BI.createWidget({
+            type: "bi.absolute",
+            element: options.container || this.options.render,
+            items: [{
+                el: this.floatContainer[name],
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }]
+        });
         return this;
     },
 
@@ -69,12 +82,12 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
         if (!this._check(name)) {
             return this;
         }
-        this.$body || (this.$body = $(this.options.render));
-        this.modal && this.$body.__hasZIndexMask__(this.zindexMap[name]) && this.$body.__releaseZIndexMask__(this.zindexMap[name]);
+        var container = this.floatContainer[name];
+        this.modal && container.element.__hasZIndexMask__(this.zindexMap[name]) && container.element.__releaseZIndexMask__(this.zindexMap[name]);
         this.zindexMap[name] = this.zindex;
-        this.modal && this.$body.__buildZIndexMask__(this.zindex++);
+        this.modal && container.element.__buildZIndexMask__(this.zindex++);
         this.get(name).setZindex(this.zindex++);
-        this.floatLayer[name].visible();
+        this.floatContainer[name].visible();
         this.get(name).show();
         return this;
     },
@@ -83,8 +96,8 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
         if (!this._check(name)) {
             return this;
         }
-        this.floatLayer[name].invisible();
-        this.modal && this.$body.__releaseZIndexMask__(this.zindexMap[name]);
+        this.floatContainer[name].invisible();
+        this.modal && this.floatContainer[name].element.__releaseZIndexMask__(this.zindexMap[name]);
         return this;
     },
 
@@ -96,11 +109,12 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
         if (!this._check(name)) {
             return this;
         }
-        this.floatLayer[name].destroy();
-        this.modal && this.$body.__releaseZIndexMask__(this.zindexMap[name]);
+        this.floatContainer[name].destroy();
+        this.modal && this.floatContainer[name].element.__releaseZIndexMask__(this.zindexMap[name]);
         delete this.floatManager[name];
         delete this.floatLayer[name];
         delete this.zindexMap[name];
+        delete this.floatContainer[name];
         return this;
     }
 });
