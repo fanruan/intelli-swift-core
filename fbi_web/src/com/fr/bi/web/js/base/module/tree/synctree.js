@@ -134,7 +134,7 @@ BI.SyncTree = BI.inherit(BI.TreeView, {
         });
         var complete = function (d) {
             var nodes = d.items || [];
-            if (nodes.length > 0) {
+            if (nodes.length > 0 && !!d.hasNext) {
                 callback(self._dealWidthNodes(nodes));
             }
         };

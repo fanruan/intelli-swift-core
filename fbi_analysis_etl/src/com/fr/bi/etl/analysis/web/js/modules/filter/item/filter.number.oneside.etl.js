@@ -55,7 +55,7 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
                 iconClass: "more-equal-arrow-font"
             }]
         });
-        self.smallCombo.on(BI.NumericalIntervalCombo.EVENT_CHANGE, function () {
+        self.smallCombo.on(BI.IconCombo.EVENT_CHANGE, function () {
             self.storedValue.close = self.smallCombo.getValue()[0];
             self.fireEvent(BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM);
         })

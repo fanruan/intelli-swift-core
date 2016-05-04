@@ -45,7 +45,7 @@ PageTableView = BI.inherit(BI.View, {
         }, {
             type: "bi.page_table_cell",
             text: "header2"
-        },{
+        }, {
             type: "bi.page_table_cell",
             text: "jine",
             tag: 1
@@ -71,16 +71,17 @@ PageTableView = BI.inherit(BI.View, {
             children: [{
                 type: "bi.page_table_cell",
                 text: "node1",
-                children: [{
-                    type: "bi.page_table_cell",
-                    text: "childnode1"
-                }, {
-                    type: "bi.page_table_cell",
-                    text: "childnode2"
-                }, {
-                    type: "bi.page_table_cell",
-                    text: BI.i18nText("BI-Summary_Values")
-                }]
+                values: [1, 2, 3]
+                //children: [{
+                //    type: "bi.page_table_cell",
+                //    text: "childnode1"
+                //}, {
+                //    type: "bi.page_table_cell",
+                //    text: "childnode2"
+                //}, {
+                //    type: "bi.page_table_cell",
+                //    text: BI.i18nText("BI-Summary_Values")
+                //}]
             }]
         }];
 

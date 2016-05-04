@@ -106,6 +106,16 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         })
     },
 
+    refresh: function(){
+        var self = this;
+        this.update({
+            noset: true,
+            success: function(data){
+                self._updateComplete({}, data);
+            }
+        });
+    },
+
     local: function(){
         if(this.model.has("immediateUpdate")){
             this.model.get("immediateUpdate");

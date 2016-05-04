@@ -1283,18 +1283,15 @@
                 }
             }
 
-            //指标中的日期类型的过滤条件
+            //日期类型的过滤条件
             var dimensions = widget.dimensions;
             BI.each(dimensions, function (dId, dimension) {
-                if (!self.isDimensionByDimensionID(dId)) {
-                    var filterValue = dimension.filter_value || {};
-                    if (BI.isNotNull(filterValue)) {
-                        parseFilter(filterValue);
-                    }
+                var filterValue = dimension.filter_value || {};
+                if (BI.isNotNull(filterValue)) {
+                    parseFilter(filterValue);
                 }
             });
-
-
+            
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             return widget;
         },
