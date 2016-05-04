@@ -62,6 +62,7 @@ BI.CubePath = BI.inherit(BI.Widget, {
                 cancelButton.setVisible(true);
                 tipLabel.setVisible(true);
                 pathInput.setVisible(true);
+                pathInput.focus();
                 pathLabel.setVisible(false);
             }
         });
