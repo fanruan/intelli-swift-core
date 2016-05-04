@@ -356,7 +356,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
 
         _setComboValueChangedEvent: function (w) {
             var self = this, c = this.constants;
-            w.on(BI.NumericalIntervalCombo.EVENT_CHANGE, function () {
+            w.on(BI.IconCombo.EVENT_CHANGE, function () {
                 switch (self._checkValidation()) {
                     case c.typeError:
                         self._setTitle(BI.i18nText("BI-Numerical_Interval_Input_Data"));
