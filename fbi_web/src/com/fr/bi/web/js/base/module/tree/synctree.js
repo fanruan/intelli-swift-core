@@ -134,20 +134,22 @@ BI.SyncTree = BI.inherit(BI.TreeView, {
         });
         var complete = function (d) {
             var nodes = d.items || [];
-            if (nodes.length > 0 && !!d.hasNext) {
-                callback(self._dealWidthNodes(nodes));
+            if (nodes.length > 0) {
+                callback(self._dealWidthNodes(nodes), !!d.hasNext);
             }
         };
         var times = 1;
 
-        function callback(nodes) {
+        function callback(nodes, hasNext) {
             self.nodes.addNodes(treeNode, nodes);
 
-            BI.delay(function () {
-                times++;
-                op.times = times;
-                o.itemsCreator(op, complete);
-            }, 100);
+            if (hasNext === true) {
+                BI.delay(function () {
+                    times++;
+                    op.times = times;
+                    o.itemsCreator(op, complete);
+                }, 100);
+            }
         }
 
         if (!treeNode.children) {
