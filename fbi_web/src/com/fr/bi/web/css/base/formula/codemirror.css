@@ -184,12 +184,21 @@
 }
 .cm-s-default span[class*="fieldName"] {
   color: white;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
   padding: 1px ;
-  margin: 1px 3px;
+  margin: 1px 0px;
   background: #009de3;
+}
+.cm-s-default span[class*="start"] {
+  -webkit-border-radius: 3px 0px 0px 3px;
+  -moz-border-radius: 3px 0px 0px 3px;
+  border-radius: 3px 0px 0px 3px;
+  margin-left: 3px;
+}
+.cm-s-default span[class*="end"] {
+  -webkit-border-radius: 0px 3px 3px 0px;
+  -moz-border-radius: 0px 3px 3px 0px;
+  border-radius: 0px 3px 3px 0px;
+  margin-right: 3px;
 }
 .cm-s-default span[class*="#"] {
   color: #009de3;
