@@ -83,6 +83,7 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
             return this;
         }
         var container = this.floatContainer[name];
+        container.element.css("zIndex", this.zindex++);
         this.modal && container.element.__hasZIndexMask__(this.zindexMap[name]) && container.element.__releaseZIndexMask__(this.zindexMap[name]);
         this.zindexMap[name] = this.zindex;
         this.modal && container.element.__buildZIndexMask__(this.zindex++);
