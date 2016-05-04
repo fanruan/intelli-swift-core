@@ -129,11 +129,24 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
 .cm-s-default .cm-link {color: #00c;}
 .cm-s-default span[class*="fieldName"]{
   color: white;
-  .border-radius(3px);
   padding: 1px ;
-  margin: 1px 3px;
+  margin: 1px 0px;
   background: @color-bi-text-highlight;
 
+}
+
+.cm-s-default span[class*="start"]{
+  .border-radius(3px 0px 0px 3px);
+  margin-left :3px;
+}
+
+.cm-s-default span[class*="end"]{
+  .border-radius(0px 3px 3px 0px);
+  margin-right :3px;
+}
+
+.cm-s-default span[class*="start end"]{
+  .border-radius(3px);
 }
 
 .cm-s-default .cm-error {color: #f00;}

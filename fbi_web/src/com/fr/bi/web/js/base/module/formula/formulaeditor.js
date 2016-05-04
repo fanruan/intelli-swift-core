@@ -107,7 +107,7 @@
             var from = this.editor.getCursor();
             this.editor.replaceSelection(field);
             var to = this.editor.getCursor();
-            this.editor.markText(from, to, {className: 'fieldName', atomic: true});
+            this.editor.markText(from, to, {className: 'fieldName', atomic: true, startStyle : "start", endStyle:"end"});
             this.editor.replaceSelection(" ");
             this.editor.focus();
         },
