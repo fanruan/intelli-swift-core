@@ -316,7 +316,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
             o.crossHeader = crossHeader;
         }
         var deep = Math.max(o.mergeCols.length, this._maxDeep(o.items) - 1);
-        var vDeep = this._maxDeep(o.crossItems) - 1; //纵向深度
+        var vDeep = o.header.length; //纵向深度
         var header = this._createHeader(deep, vDeep);
         items = this._formatItems(o.items, deep);
         this.table.populate(items, header);
