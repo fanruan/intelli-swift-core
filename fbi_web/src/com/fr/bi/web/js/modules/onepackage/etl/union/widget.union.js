@@ -261,7 +261,9 @@ BI.Union = BI.inherit(BI.Widget, {
                             }, {
                                 el: this.resultTab,
                                 height: "fill"
-                            }]
+                            }],
+                            hgap: this.constants.UNION_GAP_TEN,
+                            vgap: this.constants.UNION_GAP_TEN
                         },
                         height: "fill"
                     }]
