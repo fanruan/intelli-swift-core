@@ -88,7 +88,9 @@ BI.ETLNumberNFilterPane = BI.inherit(BI.Widget, {
                 field_name : o.field_name,
                 filterType : o.filterType,
                 value : BI.deepClone(self.storedValue.group),
-                nValue : self.storedValue.value
+                nValueGetter : function (){
+                    return self.storedValue.value
+                }
             })
             self.group.on(BI.ETLGroupSettingPane.EVENT_VALUE_CHANGED, function () {
                 self.storedValue.group = self.group.getValue();

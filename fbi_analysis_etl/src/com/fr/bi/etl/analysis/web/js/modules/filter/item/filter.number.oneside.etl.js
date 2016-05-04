@@ -26,16 +26,13 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
             items : BICst.ETL_FILTER_NUMBER_SEGMENT
         })
         self.segment.on(BI.Segment.EVENT_CHANGE, function () {
-            self.storedValue.type = self.segment.getValue();
+            self.storedValue.type = self.segment.getValue()[0];
             self.populate();
             self.fireEvent(BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM);
         })
         self.editorPane = BI.createWidget({
             type : 'bi.absolute'
         })
-        this.bigCombo = BI.createWidget({
-
-        });
         self.smallCombo = BI.createWidget({
             cls: "numerical-interval-small-combo",
             height: self._constants.HEIGHT - self._constants.BORDER * 2,

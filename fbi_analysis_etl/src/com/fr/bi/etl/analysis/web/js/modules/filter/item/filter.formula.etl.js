@@ -75,7 +75,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
     },
 
     populate : function () {
-        this.label.setText(BI.isNotNull(this.storedValue) ? BI.i18nText('BI-(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
+        this.label.setText(BI.isNull(this.storedValue) ? BI.i18nText('BI-(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
     },
     
     getValue: function () {

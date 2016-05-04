@@ -81,6 +81,9 @@ BI.extend(BI.Utils, {
     },
 
     getTextFromFormulaValue: function (formulaValue, fieldItems) {
+        if (BI.isNull(formulaValue) || BI.isNull(fieldItems)){
+            return '';
+        }
         var formulaString = "";
         var regx = /\$[\{][^\}]*[\}]|\w*\w|\$\{[^\$\(\)\+\-\*\/)\$,]*\w\}|\$\{[^\$\(\)\+\-\*\/]*\w\}|\$\{[^\$\(\)\+\-\*\/]*[\u4e00-\u9fa5]\}|\w|(.)/g;
         var result = formulaValue.match(regx);
