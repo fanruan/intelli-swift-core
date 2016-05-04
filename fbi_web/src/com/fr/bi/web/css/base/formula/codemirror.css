@@ -200,6 +200,11 @@
   border-radius: 0px 3px 3px 0px;
   margin-right: 3px;
 }
+.cm-s-default span[class*="start end"] {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
 .cm-s-default span[class*="#"] {
   color: #009de3;
 }
