@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.ICubeIndexDataGetterService;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -24,18 +24,21 @@ import java.util.*;
 public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     protected ICubeColumnReaderService<T> columnReaderService;
     private BICubeTablePath path;
-    private ICubeRelationEntityGetterService relationEntityGetterService;
+    private ICubeIndexDataGetterService indexDataGetterService;
     private CSet<Map.Entry<T, GroupValueIndex>> ascSet = new CSet<Map.Entry<T, GroupValueIndex>>(true);
     private CSet<Map.Entry<T, GroupValueIndex>> descSet = new CSet<Map.Entry<T, GroupValueIndex>>(false);
 
     public BIColumnIndexReader(ICubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
         this.columnReaderService = columnReaderService;
-        path = BICubePathUtils.convert(relationList);
-        try {
-            relationEntityGetterService = columnReaderService.getRelationIndexGetter(path);
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
+        if (relationList!=null) {
+            path = BICubePathUtils.convert(relationList);
+            try {
+                indexDataGetterService = columnReaderService.getRelationIndexGetter(path);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
         }
+        indexDataGetterService = columnReaderService;
     }
 
 
@@ -56,7 +59,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
             if (position == -1) {
                 return GVIFactory.createAllEmptyIndexGVI();
             }
-            return relationEntityGetterService.getBitmapIndex(position);
+            return indexDataGetterService.getBitmapIndex(position);
         } catch (BIResourceInvalidException e) {
             throw BINonValueUtils.beyondControl(e);
         } catch (BICubeIndexException e) {
@@ -71,7 +74,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     private GroupValueIndex getGroupValueIndex(int groupValuePosition) {
         try {
-            return relationEntityGetterService.getBitmapIndex(groupValuePosition);
+            return indexDataGetterService.getBitmapIndex(groupValuePosition);
         } catch (BICubeIndexException e) {
             throw BINonValueUtils.beyondControl(e);
         }
@@ -125,7 +128,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     public void clear() {
         columnReaderService.clear();
-        relationEntityGetterService.clear();
+        indexDataGetterService.clear();
     }
 
     @Override

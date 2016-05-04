@@ -121,7 +121,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public ICubeColumnIndexReader loadGroup(BIKey key) {
-        return null;
+        return loadGroup(key,null);
     }
 
     @Override
@@ -247,14 +247,16 @@ public class BICubeTableAdapter implements ICubeTableService {
     @Override
     public ICubeColumnIndexReader loadGroup(BIKey columnIndex, List<BITableSourceRelation> relationList) {
         ICubeColumnReaderService columnReaderService = getColumnReader(columnIndex);
-        try {
-            BICubeTablePath path = BICubePathUtils.convert(relationList);
-            if (path.size() > 0 && !columnReaderService.existRelationPath(path)) {
-                BIFieldPathIndexBuilder indexBuilder = new BIFieldPathIndexBuilder(cube, getDBField(columnIndex), path);
-                indexBuilder.mainTask();
+        if (relationList!=null) {
+            try {
+                BICubeTablePath path = BICubePathUtils.convert(relationList);
+                if (path.size() > 0 && !columnReaderService.existRelationPath(path)) {
+                    BIFieldPathIndexBuilder indexBuilder = new BIFieldPathIndexBuilder(cube, getDBField(columnIndex), path);
+                    indexBuilder.mainTask();
+                }
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e);
             }
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
         }
         return new BIColumnIndexReader(columnReaderService, relationList);
     }
