@@ -598,7 +598,7 @@
         getPrimaryRelationTablesByTableID: function (tableId) {
             var primaryTables = [];
             BI.each(Pool.foreignRelations[tableId], function (tId, relations) {
-                if (relations.length === 1) {
+                if (relations.length > 0) {
                     primaryTables.push(tId);
                 }
             });
@@ -636,6 +636,18 @@
                 return [[{primaryKey: {field_id: from}, foreignKey: {field_id: to}}]]
             }
             return this.getPathsFromTableAToTableB(tableA, tableB);
+        },
+
+        getFirstCommonPrimaryTablesBetweenTwoTablesByIDs: function (tableId1, tableId2) {
+            var primaryTables = this.getPrimaryRelationTablesByTableID(tableId1);
+            var connectionSet = Pool.connections.connectionSet;
+            var result = [];
+            BI.find(connectionSet, function (idx, obj) {
+                if(obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)){
+                    return;
+                }
+            });
+
         },
 
         getCommonPrimaryTablesByTableIDs: function (tableIds) {
@@ -709,6 +721,7 @@
 
         //获取相关的主表和子表，包括tableIds的公共子表以及这些子表的所有主表
         getRelativePrimaryAndForeignTableIDs: function (tableIds) {
+            var self = this;
             var result = [];
             var commonIds = this.getCommonForeignTablesByTableIDs(tableIds);
             result = result.concat(commonIds);
