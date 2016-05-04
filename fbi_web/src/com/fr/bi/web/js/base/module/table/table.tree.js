@@ -116,6 +116,13 @@ BI.TableTree = BI.inherit(BI.Widget, {
             if (!isCross && BI.isArray(node.values)) {
                 next = next.concat(node.values);
             }
+            if (isCross && BI.isArray(node.values)) {
+                for (var i = 0, len = node.values.length; i < len - 1; i++) {
+                    if (next.length > 0) {
+                        result.push(next);
+                    }
+                }
+            }
             if (next.length > 0) {
                 result.push(next);
             }
@@ -154,7 +161,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
         BI.TableTree.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var deep = Math.max(o.mergeCols.length, this._maxDeep(o.items) - 1);
-        var vDeep = this._maxDeep(o.crossItems) - 1; //纵向深度
+        var vDeep = o.crossHeader.length; //纵向深度
         var header = this._createHeader(deep, vDeep);
         var items = this._formatItems(o.items, deep);
         this.table = BI.createWidget({
