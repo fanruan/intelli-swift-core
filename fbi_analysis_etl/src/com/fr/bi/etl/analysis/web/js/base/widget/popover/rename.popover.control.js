@@ -25,8 +25,12 @@ BI.ETLRenamePopoverController = BI.inherit(BI.Controller, {
                 callback.apply(this, [v]);
             }
         });
+        renamePopover.on(BI.PopoverSection.EVENT_CLOSE, function () {
+            BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+        })
         BI.Popovers.remove("etlTableRename");
-        BI.Popovers.create("etlTableRename", renamePopover, {width : 400, height : 320}).open("etlTableRename");
+        BI.Popovers.create("etlTableRename", renamePopover, {width : 400, height : 320, container :  BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableRename");
+        BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
         renamePopover.populate(name);
         renamePopover.setTemplateNameFocus();
     }
