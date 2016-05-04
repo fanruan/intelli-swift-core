@@ -10,7 +10,7 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
         LIST_HEIGHT : 164,
         FIRST_DETAIL_HEIGHT : 25,
         SECOND_DETAIL_HEIGHT : 100,
-        LIST_DOWN_HEIGHT : 148,
+        LIST_DOWN_HEIGHT : 138,
         LABEL_WIDTH : 60
     },
 
@@ -70,7 +70,7 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
     },
     
     _initModel : function () {
-        return BI.AnalysisETLOperatorAddColumnExprPeriodModel;
+        return BI.AnalysisETLOperatorAddColumnExprNumberFieldsModel;
     },
 
     _createDetail: function () {
