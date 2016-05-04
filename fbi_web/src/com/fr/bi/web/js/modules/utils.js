@@ -647,7 +647,7 @@
                 });
                 return BI.pluck(BI.pluck(find, "foreignKey"), "table_id");
             };
-            var result = [], tableIds = [tableId1];
+            var result = [], tableIds = [tableId2];
             while (BI.isNotEmptyArray(tableIds)) {
                 BI.each(tableIds, function (idx, tId) {
                     if(BI.contains(primaryTables, tId)){
