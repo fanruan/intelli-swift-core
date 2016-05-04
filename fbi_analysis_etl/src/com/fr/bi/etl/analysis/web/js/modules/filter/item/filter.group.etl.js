@@ -33,13 +33,19 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
                 value : self.storedValue,
                 targetText : self._getTargetText()
             });
+            groupPopOver.on(BI.PopoverSection.EVENT_CLOSE, function () {
+                BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            })
             groupPopOver.on(BI.ETLFilterGroupPopup.EVENT_CHANGE, function (v) {
+                BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
                 self.storedValue = groupPopOver.getValue();
                 self.populate();
                 self.fireEvent(BI.ETLGroupSettingPane.EVENT_VALUE_CHANGED);
             });
             BI.Popovers.remove("etlGroup");
-            BI.Popovers.create("etlGroup", groupPopOver).open("etlGroup");
+            var layer = BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
+            BI.Popovers.create("etlGroup", groupPopOver, {container: layer}).open("etlGroup");
             groupPopOver.populate();
         });
         self.labels = BI.createWidget({
@@ -66,12 +72,13 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
 
     _getTargetText : function () {
         var text;
+        var nValue = BI.isFunction(this.options.nValueGetter) ? this.options.nValueGetter() : 'N'
         switch (this.options.filterType){
             case  BICst.TARGET_FILTER_NUMBER.TOP_N:
-                text = BI.i18nText('BI-ETL_Top_N', this.options.nValue || 'N');
+                text = BI.i18nText('BI-ETL_Top_N', nValue);
                 break;
             case BICst.TARGET_FILTER_NUMBER.TOP_N :
-                text = BI.i18nText('BI-ETL_Bottom_N', this.options.nValue || 'N');
+                text = BI.i18nText('BI-ETL_Bottom_N', nValue);
                 break;
             default :
                 text = BI.i18nText('BI-Average_Value');
@@ -97,6 +104,13 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
                 textAlign : 'left',
                 height : 25,
                 text : self._getTargetText()
+            }))
+        } else {
+            self.labels.addItem(BI.createWidget({
+                type : 'bi.label',
+                textAlign : 'center',
+                height : 25,
+                text : BI.i18nText('BI-(Empty)')
             }))
         }
     },

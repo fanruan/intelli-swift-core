@@ -13,23 +13,23 @@ Table_View = BI.inherit(BI.View, {
         var items = [[{
             text: "第一行第一列"
         }, {
-            text: "第一行第二列"
+            text: "第一行第一列"
         }, {
-            text: "第一行第三列"
+            text: "第一行第一列"
         }], [{
-            text: "第二行第一列"
+            text: "第一行第一列"
         }, {
-            text: "第二行第二列"
+            text: "第一行第一列"
         }, {
-            text: "第二行第三列"
+            text: "第一行第一列"
         }], [{
-            text: "第二行第一列"
+            text: "第三行第一列"
         }, {
             text: "第三行第二列"
         }, {
             text: "第三行第三列"
         }], [{
-            text: "第二行第一列"
+            text: "第四行第一列"
         }, {
             text: "第四行第二列"
         }, {
@@ -290,7 +290,7 @@ Table_View = BI.inherit(BI.View, {
             type: "bi.table_view",
             isNeedResize: true,
             isNeedMerge: true,
-            mergeCols: [0],
+            mergeCols: [0, 1],
             columnSize: [100, 200, 300],
             items: items,
             header: header

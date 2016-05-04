@@ -37,19 +37,24 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
                 type: "bi.etl_filter_formula_popup",
                 fieldItems: self.fieldItems
             });
+            formulaPopOver.on(BI.PopoverSection.EVENT_CLOSE, function () {
+                BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            })
             formulaPopOver.on(BI.ETLFilterFormulaPopup.EVENT_CHANGE, function () {
                 self.storedValue = formulaPopOver.getValue();
                 self.populate();
                 self.fireEvent(BI.ETLFormulaSettingPane.EVENT_CONFIRM);
             });
             formulaPopOver.setValue(self.storedValue);
+            var layer = BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
             BI.Popovers.remove("etlFormula");
-            BI.Popovers.create("etlFormula", formulaPopOver).open("etlFormula");
+            BI.Popovers.create("etlFormula", formulaPopOver, {container: layer}).open("etlFormula");
         });
         self.label = BI.createWidget({
             type : 'bi.label',
             whiteSpace : 'normal',
-            textAlign : 'left',
+            textAlign : 'center',
             textHeight : 20,
             lgap : 10
         });
@@ -75,9 +80,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
     },
 
     populate : function () {
-        if (BI.isNotNull(this.storedValue)){
-            this.label.setText(BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
-        }
+        this.label.setText(BI.isNull(this.storedValue) ? BI.i18nText('BI-(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
     },
     
     getValue: function () {

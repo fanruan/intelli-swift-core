@@ -25,7 +25,8 @@ BIDezi.DetailTableModel = BI.inherit(BI.Model, {
                 view: this.get("view"),
                 type: this.get("type"),
                 page: this.get("page"),
-                settings: this.get("settings")
+                settings: this.get("settings"),
+                filter_value: this.get("filter_value")
             }
         }, {
             silent: true

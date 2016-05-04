@@ -20,6 +20,8 @@ Scene1View = BI.inherit(BI.View, {
             type: "bi.sort_list",
             width: "100%",
             height: "100%",
+            containment: this.element,
+            connectWith: ".bi-sort-list",
             itemsCreator: function (op, callback) {
                 callback(BI.createItems(items, {
                     height: 30,

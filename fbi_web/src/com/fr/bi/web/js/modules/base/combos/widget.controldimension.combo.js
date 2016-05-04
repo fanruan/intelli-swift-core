@@ -4,6 +4,10 @@
  */
 BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
 
+    constants: {
+        FROM_POSITION: 1
+    },
+
     _defaultConfig: function(){
         return BI.extend(BI.ControlDimensionCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-control-combo"
@@ -28,12 +32,18 @@ BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
         BI.ControlDimensionCombo.superclass._init.apply(this, arguments);
         var self = this,o = this.options;
 
+        var items = this.defaultItems();
+        var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIDByDimensionID(o.dId));
+        var fieldName = BI.Utils.getFieldNameByID(BI.Utils.getFieldIDByDimensionID(o.dId));
+
+        items[this.constants.FROM_POSITION][0].text = items[this.constants.FROM_POSITION][0].text + tableName + "." + fieldName;
+
         this.combo = BI.createWidget({
             type: "bi.down_list_combo",
             element: this.element,
             height: 25,
             iconCls: "detail-dimension-set-font",
-            items: this.defaultItems()
+            items: items
         });
 
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function(v){

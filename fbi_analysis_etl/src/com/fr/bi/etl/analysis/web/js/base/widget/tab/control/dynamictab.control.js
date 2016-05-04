@@ -236,9 +236,13 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
                 type: "bi.analysis_etl_choose_sheet_popover",
                 items: items
             });
+            popover.on(BI.PopoverSection.EVENT_CLOSE, function () {
+                BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            })
             popover.on(BI.AnalysisETLMergeSheetPopover.EVENT_CHANGE, func);
             BI.Popovers.remove("etlChooseSheetForMerge");
-            BI.Popovers.create("etlChooseSheetForMerge", popover, {width : 500, height : 400}).open("etlChooseSheetForMerge");
+            BI.Popovers.create("etlChooseSheetForMerge", popover, {width : 500, height : 400, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlChooseSheetForMerge");
+            BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
         }
     },
 

@@ -56,7 +56,7 @@ BI.AnalysisETLDetailSelectDataLevel2Item = BI.inherit(BI.Single, {
                 type: "bi.detail_select_data_preview_section",
                 text: o.text,
                 value: o.value
-            })).open(self.getName());
+            }), {container: BI.Layers.get(ETLCst.ANALYSIS_LAYER)}).open(self.getName());
         });
 
         BI.createWidget({

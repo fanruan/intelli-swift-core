@@ -12,8 +12,16 @@
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
 }
-.bi-etl-filter-number-oneside .numerical-interval-big-combo .bi-numerical-interval-trigger,
-.bi-etl-filter-number-oneside .numerical-interval-small-combo .bi-numerical-interval-trigger {
+.bi-etl-filter-number-oneside .numerical-interval-small-combo {
+  border: 1px solid #d4dadd;
+  -moz-border-radius-topright: 2px;
+  -webkit-border-top-right-radius: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+.bi-etl-filter-number-oneside .numerical-interval-small-combo .bi-icon-combo-trigger {
   font-size: 18px;
 }
 .bi-etl-filter-number-oneside .bi-editor {

@@ -537,6 +537,16 @@
             });
             return view[regionType];
         },
+        
+        getRegionTypeByDimensionID: function(dId) {
+            var wId = BI.Utils.getWidgetIDByDimensionID(dId);
+            var view = BI.Utils.getWidgetViewByID(wId);
+            return BI.findKey(view, function (regionType, dIds) {
+                if (BI.contains(dIds, dId)) {
+                    return true
+                }
+            });
+        },
 
         isDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
             var self = this;
@@ -588,7 +598,7 @@
         getPrimaryRelationTablesByTableID: function (tableId) {
             var primaryTables = [];
             BI.each(Pool.foreignRelations[tableId], function (tId, relations) {
-                if (relations.length === 1) {
+                if (relations.length > 0) {
                     primaryTables.push(tId);
                 }
             });
@@ -626,6 +636,18 @@
                 return [[{primaryKey: {field_id: from}, foreignKey: {field_id: to}}]]
             }
             return this.getPathsFromTableAToTableB(tableA, tableB);
+        },
+
+        getFirstCommonPrimaryTablesBetweenTwoTablesByIDs: function (tableId1, tableId2) {
+            var primaryTables = this.getPrimaryRelationTablesByTableID(tableId1);
+            var connectionSet = Pool.connections.connectionSet;
+            var result = [];
+            BI.find(connectionSet, function (idx, obj) {
+                if(obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)){
+                    return;
+                }
+            });
+
         },
 
         getCommonPrimaryTablesByTableIDs: function (tableIds) {
@@ -699,6 +721,7 @@
 
         //获取相关的主表和子表，包括tableIds的公共子表以及这些子表的所有主表
         getRelativePrimaryAndForeignTableIDs: function (tableIds) {
+            var self = this;
             var result = [];
             var commonIds = this.getCommonForeignTablesByTableIDs(tableIds);
             result = result.concat(commonIds);
@@ -1014,7 +1037,7 @@
                 }
             }
 
-            //钻取条件
+            //钻取条件  对于交叉表，要考虑的不仅仅是used，还有行表头与列表头之间的钻取问题
             var drill = this.getDrillByID(wid);
             if (BI.isNotNull(drill)) {
                 BI.each(drill, function (drId, drArray) {
@@ -1023,7 +1046,14 @@
                     }
                     BI.isNotNull(widget.dimensions[drId]) && (widget.dimensions[drId].used = false);
                     BI.each(drArray, function (i, drill) {
-                        BI.isNotNull(widget.dimensions[drill.dId]) && (widget.dimensions[drill.dId].used = (i === drArray.length - 1));
+                        if(BI.isNotNull(widget.dimensions[drill.dId])) {
+                            widget.dimensions[drill.dId].used = (i === drArray.length - 1);
+                            var drillRegionType = self.getRegionTypeByDimensionID(drId);
+                            //从原来的region中pop出来
+                            var tempRegionType = self.getRegionTypeByDimensionID(drill.dId);
+                            BI.remove(widget.view[tempRegionType], drill.dId);
+                            widget.view[drillRegionType].push(drill.dId);
+                        }
                         BI.each(drArray[i].values, function (i, v) {
                             var filterValue = parseSimpleFilter(v);
                             if (BI.isNotNull(filterValue)) {

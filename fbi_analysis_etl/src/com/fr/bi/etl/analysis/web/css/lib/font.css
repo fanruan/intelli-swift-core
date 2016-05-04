@@ -46,12 +46,12 @@
   color: #009de3;
 }
 .more-font .b-font:before {
-  content: "\ee6a7";
+  content: "\e6a7";
   color: #009de3;
 }
 .more-font.native .b-font:before,
 .more-font.disabled .b-font:before {
-  content: "\ee6a7";
+  content: "\e6a7";
   color: #009de3;
 }
 .more-equal-font .b-font:before {
