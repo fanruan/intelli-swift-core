@@ -604,7 +604,7 @@ BI.Table = BI.inherit(BI.Widget, {
     _createHeaderCells: function (items, columnSize, mergeCols, TDs, Ws, start) {
         var self = this, o = this.options;
         start || (start = 0);
-        var frag = this._createCells(items, columnSize, BI.range(o.columnSize.length), TDs, Ws, start, o.rowSize || o.headerRowSize);
+        var frag = this._createCells(items, columnSize, BI.range(o.columnSize.length), TDs, Ws, start, o.headerRowSize || o.rowSize);
 
         if (o.isNeedResize === true) {
             var tds = TDs[BI.size(TDs) - 1];
