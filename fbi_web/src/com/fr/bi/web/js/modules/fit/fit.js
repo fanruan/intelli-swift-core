@@ -226,7 +226,6 @@ BI.Fit = BI.inherit(BI.Widget, {
         });
         return BI.createWidget({
             type: "bi.absolute",
-            cls: "fit-drag-area",
             items: [{
                 el: dragGroup,
                 top: 10,
