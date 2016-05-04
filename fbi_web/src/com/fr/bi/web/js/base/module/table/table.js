@@ -461,13 +461,14 @@ BI.Table = BI.inherit(BI.Widget, {
         this._resize();
     },
 
-    _createCells: function (items, columnSize, mergeCols, TDs, Ws, start) {
+    _createCells: function (items, columnSize, mergeCols, TDs, Ws, start, rowSize) {
         var self = this, o = this.options, preCol = {}, preRow = {}, preRW = {}, preCW = {}, map = {};
         columnSize = columnSize || o.columnSize;
         mergeCols = mergeCols || o.mergeCols;
         TDs = TDs || {};
         Ws = Ws || {};
         start = start || 0;
+        rowSize || (rowSize = o.rowSize);
         var frag = document.createDocumentFragment();
         BI.each(items, function (i, rows) {
             var tr = $("<tr>").addClass((i & 1) === 0 ? "odd" : "even");
@@ -526,7 +527,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 }
             });
             function mergeRow(i, j) {
-                var height = (preCol[j].attr("height") | 0) + o.rowSize + 1;
+                var height = (preCol[j].attr("height") | 0) + rowSize + 1;
                 preCol[j].attr("height", height).css("height", height);
                 //preCW[j].element.css("height", height);
                 var rowspan = ((preCol[j].attr("rowspan") || 1) | 0) + 1;
@@ -557,7 +558,7 @@ BI.Table = BI.inherit(BI.Widget, {
 
             function createOneEl(r, c) {
                 var width = self._calculateWidth(columnSize[c]);
-                var height = self._calculateHeight(o.rowSize);
+                var height = self._calculateHeight(rowSize);
                 var td = $("<td>").attr("height", height)
                     .attr("width", width).css({"width": width, "height": height, "position": "relative"})
                     .addClass((c & 1) === 0 ? "odd" : "even");
@@ -603,7 +604,7 @@ BI.Table = BI.inherit(BI.Widget, {
     _createHeaderCells: function (items, columnSize, mergeCols, TDs, Ws, start) {
         var self = this, o = this.options;
         start || (start = 0);
-        var frag = this._createCells(items, columnSize, BI.range(o.columnSize.length), TDs, Ws, start);
+        var frag = this._createCells(items, columnSize, BI.range(o.columnSize.length), TDs, Ws, start, o.headerRowSize || o.rowSize);
 
         if (o.isNeedResize === true) {
             var tds = TDs[BI.size(TDs) - 1];
