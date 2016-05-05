@@ -89,7 +89,6 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
         if (floors == parentValues.length) {
             BIDimension dimension = widget.getViewDimensions()[floors];
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey());
-
             ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()));
             if (times == -1) {
                 Iterator<Map.Entry> it = dataReader.iterator();
@@ -110,14 +109,16 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     }
                 }
             }
+            ti.clear();
         }
         if (floors < parentValues.length) {
             String[] groupValue = new String[1];
             groupValue[0] = parentValues[floors];
             BIDimension dimension = widget.getViewDimensions()[floors];
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey());
-            ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()));
+            ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getRelationList(dimension));
             GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
+            ti.clear();
             createGroupValueWithParentValues(dataList, parentValues, gvi, floors + 1, times);
         }
     }

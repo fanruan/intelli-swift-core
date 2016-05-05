@@ -386,7 +386,7 @@
 
         getDimensionSortByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-               return Data.SharingPool.get("dimensions", did, "sort");
+                return Data.SharingPool.get("dimensions", did, "sort");
             }
         },
 
@@ -537,8 +537,8 @@
             });
             return view[regionType];
         },
-        
-        getRegionTypeByDimensionID: function(dId) {
+
+        getRegionTypeByDimensionID: function (dId) {
             var wId = BI.Utils.getWidgetIDByDimensionID(dId);
             var view = BI.Utils.getWidgetViewByID(wId);
             return BI.findKey(view, function (regionType, dIds) {
@@ -643,7 +643,7 @@
             var connectionSet = Pool.connections.connectionSet;
             var result = [];
             BI.find(connectionSet, function (idx, obj) {
-                if(obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)){
+                if (obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)) {
                     return;
                 }
             });
@@ -857,7 +857,7 @@
                 first: function (call) {
                     var copy = BI.deepClone(data);
                     copy.page = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options :options})}, function (res) {
+                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options: options})}, function (res) {
                         call(res);
                     });
                 },
@@ -865,7 +865,7 @@
                 prev: function (call) {
                     var copy = BI.deepClone(data);
                     copy.page = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
-                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options :options})}, function (res) {
+                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options: options})}, function (res) {
                         call(res);
                     });
                 },
@@ -873,7 +873,7 @@
                 next: function (call) {
                     var copy = BI.deepClone(data);
                     copy.page = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
-                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options :options})}, function (res) {
+                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options: options})}, function (res) {
                         call(res);
                     });
                 },
@@ -881,14 +881,14 @@
                 all: function (call) {
                     var copy = BI.deepClone(data);
                     copy.page = BICst.TABLE_PAGE_OPERATOR.ALL_PAGE;
-                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options :options})}, function (res) {
+                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options: options})}, function (res) {
                         call(res);
                     });
                 }
             };
         },
 
-        getWidgetDataByWidgetInfo: function (bounds, dimensions, settings, type, view, page, callback, options) {
+        getWidgetDataByWidgetInfo: function (bounds, dimensions, settings, type, view, page, wId, callback, options) {
             var self = this;
             var filterValue = [];
             var data = {
@@ -898,7 +898,7 @@
                     dimensions: dimensions,
                     filter: {
                         filter_type: BICst.FILTER_TYPE.AND,
-                        filter_value: filterValue.concat(self.getControlCalculations())
+                        filter_value: filterValue.concat(self.getControlCalculations(wId))
                     },
                     view: view,
                     page: page
@@ -914,7 +914,7 @@
             //控件
             var widgetIds = this.getAllWidgetIDs();
             BI.each(widgetIds, function (i, id) {
-                if(id === notcontain){
+                if (id === notcontain) {
                     return;
                 }
                 var value = self.getWidgetValueByID(id);
@@ -984,6 +984,9 @@
                                 break;
                             case BICst.Widget.TREE:
                                 fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
+                                var treeValue = {};
+                                createTreeFilterValue(treeValue, fValue, dimId, i);
+                                fValue = treeValue;
                                 break;
                         }
                         filterValues.push({
@@ -1046,7 +1049,7 @@
                     }
                     BI.isNotNull(widget.dimensions[drId]) && (widget.dimensions[drId].used = false);
                     BI.each(drArray, function (i, drill) {
-                        if(BI.isNotNull(widget.dimensions[drill.dId])) {
+                        if (BI.isNotNull(widget.dimensions[drill.dId])) {
                             widget.dimensions[drill.dId].used = (i === drArray.length - 1);
                             var drillRegionType = self.getRegionTypeByDimensionID(drId);
                             //从原来的region中pop出来
@@ -1182,6 +1185,7 @@
                             date = new Date(parseComplexDate(wValue));
                         }
                         break;
+
                 }
                 return date;
             }
@@ -1255,7 +1259,7 @@
                         filterValue.end = value.start;
                     }
                 }
-                if(filterType === BICst.FILTER_DATE.LATER_THAN){
+                if (filterType === BICst.FILTER_DATE.LATER_THAN) {
                     var date = getDateControlValue(filterValue.wId);
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
@@ -1291,7 +1295,7 @@
                     parseFilter(filterValue);
                 }
             });
-            
+
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             return widget;
         },
@@ -1331,6 +1335,7 @@
             });
             return this.isTableInRelativeTables(tIds, tableId);
         }
+
     });
 
 
@@ -1402,5 +1407,22 @@
                 return new Date(value.year, value.month, value.day).getTime();
 
         }
+    }
+
+    function createTreeFilterValue(result, v, dId, floor) {
+        if (floor === 0) {
+            if (BI.isNull(result.value)) {
+                result.value = [];
+            }
+            BI.isNull(result.type) && (result.type = 1);
+            BI.each(v, function (value, child) {
+                result.value.push(value);
+            })
+
+        }
+        BI.each(v, function (value, child) {
+                createTreeFilterValue(result, child, dId, floor - 1);
+            }
+        );
     }
 })();
