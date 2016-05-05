@@ -63,7 +63,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     protected void resetFiledWriter() {
         if (isFieldWriterAvailable()) {
-            fieldInfoWriter.clear();
+            fieldInfoWriter.releaseResource();
             fieldInfoWriter = null;
         }
     }
@@ -353,55 +353,55 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     protected void resetFieldReader() {
         if (isFieldReaderAvailable()) {
-            fieldInfoReader.clear();
+            fieldInfoReader.releaseResource();
             fieldInfoReader = null;
         }
     }
 
     protected void resetVersionWriter() {
         if (isVersionWriterAvailable()) {
-            versionWriter.clear();
+            versionWriter.releaseResource();
             versionWriter = null;
         }
     }
 
     protected void resetVersionReader() {
         if (isVersionReaderAvailable()) {
-            versionReader.clear();
+            versionReader.releaseResource();
             versionReader = null;
         }
     }
 
     protected void resetRowCountWriter() {
         if (isRowCountWriterAvailable()) {
-            rowCountWriter.clear();
+            rowCountWriter.releaseResource();
             rowCountWriter = null;
         }
     }
 
     protected void resetRowCountReader() {
         if (isRowCountReaderAvailable()) {
-            rowCountReader.clear();
+            rowCountReader.releaseResource();
             rowCountReader = null;
         }
     }
 
     protected void resetTimeStampWriter() {
         if (isTimeStampWriterAvailable()) {
-            timeStampWriter.clear();
+            timeStampWriter.releaseResource();
             timeStampWriter = null;
         }
     }
 
     protected void resetTimeStampReader() {
         if (isTimeStampReaderAvailable()) {
-            timeStampReader.clear();
+            timeStampReader.releaseResource();
             timeStampWriter = null;
         }
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         resetFiledWriter();
         resetFieldReader();
         resetVersionWriter();

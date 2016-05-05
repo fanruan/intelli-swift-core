@@ -51,7 +51,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
     private void flushProperty() {
         if (tableProperty != null) {
-            tableProperty.clear();
+            tableProperty.releaseResource();
         }
         tableProperty = new BICubeTableProperty(currentLocation);
 
@@ -181,12 +181,12 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         if (columnManager != null) {
-            columnManager.clear();
+            columnManager.releaseResource();
         }
-        relationManager.clear();
-        tableProperty.clear();
+        relationManager.releaseResource();
+        tableProperty.releaseResource();
     }
 
     @Override

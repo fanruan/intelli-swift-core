@@ -69,9 +69,9 @@ public class BIUserPackageConfigurationManager {
      * 更新
      */
     public void envChanged() {
-        packageConfigManager.clear();
+        packageConfigManager.releaseResource();
 //        updateManager.clear();
-        singleManager.clear();
+        singleManager.releaseResource();
     }
 
 //    public Map<String, Set<String>> getCurrentPackageGroup4Generating() {

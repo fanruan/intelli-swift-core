@@ -215,7 +215,7 @@ public class LRUWithKHashMap<K, V> implements Release {
      * 资源释放
      */
     @Override
-    public void clear() {
+    public void releaseResource() {
         fifo.clear();
         lru.clear();
     }

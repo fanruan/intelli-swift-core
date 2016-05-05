@@ -62,7 +62,7 @@ public class BICubeTablePropertyTest extends TestCase {
             } catch (Exception e) {
                 assertTrue(false);
             } finally {
-                property.clear();
+                property.releaseResource();
 
                 File file = new File(location.getAbsolutePath());
                 if (file.exists()) {
@@ -88,7 +88,7 @@ public class BICubeTablePropertyTest extends TestCase {
             } catch (Exception e) {
                 assertFalse(true);
             } finally {
-                property.clear();
+                property.releaseResource();
 
                 File file = new File(location.getAbsolutePath());
                 if (file.exists()) {
@@ -121,7 +121,7 @@ public class BICubeTablePropertyTest extends TestCase {
             } catch (Exception e) {
                 assertFalse(true);
             } finally {
-                property.clear();
+                property.releaseResource();
 
                 File file = new File(location.getAbsolutePath());
                 if (file.exists()) {
@@ -163,7 +163,7 @@ public class BICubeTablePropertyTest extends TestCase {
         } catch (Exception e) {
             assertTrue(false);
         } finally {
-            property.clear();
+            property.releaseResource();
 
             File file = new File(location.getAbsolutePath());
             if (file.exists()) {
@@ -216,7 +216,7 @@ public class BICubeTablePropertyTest extends TestCase {
         } catch (Exception e) {
             assertTrue(false);
         } finally {
-            property.clear();
+            property.releaseResource();
 
             File file = new File(location.getAbsolutePath());
             if (file.exists()) {
@@ -258,7 +258,7 @@ public class BICubeTablePropertyTest extends TestCase {
         } catch (Exception e) {
             assertTrue(false);
         } finally {
-            property.clear();
+            property.releaseResource();
             File file = new File(location.getAbsolutePath());
             if (file.exists()) {
                 BIFileUtils.delete(file);

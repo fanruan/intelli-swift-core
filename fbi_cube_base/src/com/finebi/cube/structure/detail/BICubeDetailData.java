@@ -94,20 +94,20 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
 
     protected void resetCubeWriter() {
         if (isCubeWriterAvailable()) {
-            cubeWriter.clear();
+            cubeWriter.releaseResource();
             cubeWriter = null;
         }
     }
 
     protected void resetCubeReader() {
         if (isCubeReaderAvailable()) {
-            cubeReader.clear();
+            cubeReader.releaseResource();
             cubeReader = null;
         }
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         resetCubeReader();
         resetCubeWriter();
 

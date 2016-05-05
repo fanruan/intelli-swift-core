@@ -28,8 +28,8 @@ public class BICubePrimitiveReaderWrapper<T> implements ICubeReader<T> {
     }
 
     @Override
-    public void clear() {
-        reader.clear();
+    public void releaseResource() {
+        reader.releaseResource();
     }
 
     @Override

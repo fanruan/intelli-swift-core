@@ -84,7 +84,7 @@ public class CubeTILoaderAdapter implements ICubeDataLoader {
      * 释放资源
      */
     @Override
-    public void clear() {
+    public void releaseResource() {
 
     }
 }

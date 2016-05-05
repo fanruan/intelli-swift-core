@@ -219,8 +219,8 @@ public class DiskBaseRootNode extends Node implements Release {
      * 释放
      */
     @Override
-    public void clear() {
-        pageNodes.clear();
+    public void releaseResource() {
+        pageNodes.releaseResource();
     }
 
 }

@@ -92,19 +92,19 @@ public class BIRelationIndexGenerator extends BIProcessor {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
             if (primaryTable != null) {
-                primaryTable.clear();
+                primaryTable.releaseResource();
             }
             if (foreignTable != null) {
-                foreignTable.clear();
+                foreignTable.releaseResource();
             }
             if (primaryColumn != null) {
-                primaryColumn.clear();
+                primaryColumn.releaseResource();
             }
             if (foreignColumn != null) {
-                foreignColumn.clear();
+                foreignColumn.releaseResource();
             }
             if (tableRelation != null) {
-                tableRelation.clear();
+                tableRelation.releaseResource();
             }
 
         }

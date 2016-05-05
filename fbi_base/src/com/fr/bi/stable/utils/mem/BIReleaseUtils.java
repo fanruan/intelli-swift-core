@@ -47,7 +47,7 @@ public class BIReleaseUtils {
             return;
         }
         for (int i = 0, len = releases.length; i < len; i++) {
-            releases[i].clear();
+            releases[i].releaseResource();
         }
     }
 
@@ -60,7 +60,7 @@ public class BIReleaseUtils {
             }
             T manager = userMap.get(key);
             if (manager != null) {
-                manager.clear();
+                manager.releaseResource();
                 userMap.remove(key);
             }
         }

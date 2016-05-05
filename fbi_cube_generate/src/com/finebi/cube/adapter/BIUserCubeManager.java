@@ -103,7 +103,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
 
     }
 }

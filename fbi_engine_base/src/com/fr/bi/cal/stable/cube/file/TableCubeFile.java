@@ -402,7 +402,7 @@ public class TableCubeFile extends AbstractCubeFile {
      * @see com.fr.bi.common.inter.Release#clear()
      */
     @Override
-    public void clear() {
+    public void releaseResource() {
     }
 
 }

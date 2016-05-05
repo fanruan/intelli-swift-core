@@ -150,7 +150,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
 
     @Override
     public void clear(long user) {
-        getUserGroupConfigManager(user).clear();
+        getUserGroupConfigManager(user).releaseResource();
     }
 
     @Override

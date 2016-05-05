@@ -36,7 +36,7 @@ public abstract class AbstractNIOWriter<T> extends NIOReadWriter implements NIOW
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         synchronized (this) {
             clearBuffer();
             currentIndex = -1L;

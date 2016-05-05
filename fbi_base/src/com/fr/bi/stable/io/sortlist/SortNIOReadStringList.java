@@ -39,7 +39,7 @@ public class SortNIOReadStringList implements ISortNIOReadList<String> {
      * 释放资源
      */
     @Override
-    public void clear() {
+    public void releaseResource() {
     }
 
     @Override

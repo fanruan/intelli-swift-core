@@ -30,8 +30,8 @@ public class CacheTree extends Tree implements Release {
     }
 
     @Override
-    public void clear() {
-        super.clear();
+    public void releaseResource() {
+        super.releaseResource();
         cache.clear();
     }
 }

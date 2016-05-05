@@ -54,10 +54,10 @@ public class BIByteArrayNIOWriter implements ICubeByteArrayWriter {
     }
 
     @Override
-    public void clear() {
-        startPositionRecorder.clear();
-        lengthRecorder.clear();
-        contentRecorder.clear();
+    public void releaseResource() {
+        startPositionRecorder.releaseResource();
+        lengthRecorder.releaseResource();
+        contentRecorder.releaseResource();
     }
 
     @Override

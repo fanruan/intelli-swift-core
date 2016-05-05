@@ -106,7 +106,7 @@ public abstract class AbstractSingleTableUpdateManager implements XMLable, JSONT
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         Iterator<Map.Entry<Table, SingleTableUpdateAction>> iter = single_table_update.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<Table, SingleTableUpdateAction> entry = iter.next();

@@ -50,14 +50,14 @@ public class StringReadMappedList implements NIOReader<String> {
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         if (byteNIOReader != null) {
-            byteNIOReader.clear();
+            byteNIOReader.releaseResource();
             byteNIOReader = null;
         }
     }
 
     public void delete() {
-        clear();
+        releaseResource();
     }
 }

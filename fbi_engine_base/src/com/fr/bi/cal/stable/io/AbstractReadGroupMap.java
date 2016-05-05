@@ -94,12 +94,12 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         if (lmp != null) {
-            lmp.clear();
+            lmp.releaseResource();
         }
         if (indexes != null) {
-            indexes.clear();
+            indexes.releaseResource();
         }
     }
 

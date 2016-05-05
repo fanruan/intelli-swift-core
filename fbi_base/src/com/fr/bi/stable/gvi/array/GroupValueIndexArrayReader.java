@@ -37,7 +37,7 @@ public class GroupValueIndexArrayReader implements NIOReader<GroupValueIndex>, I
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
     }
 
 }

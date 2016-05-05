@@ -49,10 +49,10 @@ public class ByteWriteMappedList implements NIOWriter<byte[]> {
     }
 
     @Override
-    public void clear() {
-        index_array.clear();
-        size_array.clear();
-        byteList.clear();
+    public void releaseResource() {
+        index_array.releaseResource();
+        size_array.releaseResource();
+        byteList.releaseResource();
     }
 
     @Override

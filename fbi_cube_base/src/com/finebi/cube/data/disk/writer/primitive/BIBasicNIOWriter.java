@@ -44,7 +44,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         synchronized (this) {
             if (useReleaseManager()) {
                 releaseManager.release(this);

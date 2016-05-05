@@ -67,8 +67,8 @@ public class LRUWithKConcurrentHashMap<K, V> extends LRUWithKHashMap<K, V> {
      * 资源释放
      */
     @Override
-    public void clear() {
-        super.clear();
+    public void releaseResource() {
+        super.releaseResource();
         lockMap.clear();
     }
 

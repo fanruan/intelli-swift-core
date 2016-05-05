@@ -157,11 +157,11 @@ public class CubeRunner {
         setStatue(Status.REPLACING);
         BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         long start = System.currentTimeMillis();
-        CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
+        CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).releaseResource();
         BIConfigureManagerCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
         BIConfigureManagerCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
-        CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-        BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
+        CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).releaseResource();
+        BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).releaseResource();
         renameToCurrentDirect();
         setStatue(Status.LOADED);
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));

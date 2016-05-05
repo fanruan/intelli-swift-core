@@ -160,7 +160,7 @@ public class GroupIndexCreator<F, T> implements CubeGenerator {
 
     private void releaseManager(){
         if (needRelease){
-            manager.clear();
+            manager.releaseResource();
         }
     }
 
@@ -188,9 +188,9 @@ public class GroupIndexCreator<F, T> implements CubeGenerator {
                 indexGroupWriter.add(row, CubeConstant.NULLINDEX);
             }
         }
-        valueIndexMap.clear();
+        valueIndexMap.releaseResource();
         releaseManager();
-        indexGroupWriter.clear();
+        indexGroupWriter.releaseResource();
         cf.deteleDetailFile();
         indexGroupVersionFile.write(version);
     }

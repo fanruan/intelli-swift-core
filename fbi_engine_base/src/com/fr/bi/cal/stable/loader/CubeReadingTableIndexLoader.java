@@ -67,7 +67,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
             for (Map.Entry<Long, ICubeDataLoader> entry : userMap.entrySet()) {
                 ICubeDataLoader loader = entry.getValue();
                 if (loader != null) {
-                    loader.clear();
+                    loader.releaseResource();
                 }
             }
             userMap.clear();
@@ -152,12 +152,12 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
      * 释放资源
      */
     @Override
-    public void clear() {
+    public void releaseResource() {
         synchronized (CubeReadingTableIndexLoader.class) {
             for (Map.Entry<String, AbstractTIPathLoader> entry : childLoaderMap.entrySet()) {
                 AbstractTIPathLoader loader = entry.getValue();
                 if (loader != null) {
-                    loader.clear();
+                    loader.releaseResource();
                 }
             }
             userMap.clear();

@@ -255,9 +255,9 @@ public class BIMultiTableIndex implements ICubeTableService {
      * 释放资源
      */
     @Override
-    public void clear() {
+    public void releaseResource() {
         for (ICubeTableService ti : cs) {
-            ti.clear();
+            ti.releaseResource();
         }
     }
 

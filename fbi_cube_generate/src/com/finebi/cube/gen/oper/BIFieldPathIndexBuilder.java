@@ -63,13 +63,13 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
             throw BINonValueUtils.beyondControl(e);
         } finally {
             if (primaryColumnReader != null) {
-                primaryColumnReader.clear();
+                primaryColumnReader.releaseResource();
             }
             if (tablePathReader != null) {
-                tablePathReader.clear();
+                tablePathReader.releaseResource();
             }
             if (targetPathEntity != null) {
-                tablePathReader.clear();
+                tablePathReader.releaseResource();
             }
         }
     }

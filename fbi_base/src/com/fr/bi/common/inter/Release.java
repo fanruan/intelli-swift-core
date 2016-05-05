@@ -9,6 +9,6 @@ public interface Release {
     /**
      * 释放资源
      */
-    void clear();
+    void releaseResource();
 
 }

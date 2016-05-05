@@ -80,10 +80,10 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
 
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         Iterator<ICubeRelationEntityService> it = container.values().iterator();
         while (it.hasNext()) {
-            it.next().clear();
+            it.next().releaseResource();
         }
         super.clear();
     }

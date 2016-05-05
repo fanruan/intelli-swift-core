@@ -127,8 +127,8 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     }
 
     public void clear() {
-        columnReaderService.clear();
-        indexDataGetterService.clear();
+        columnReaderService.releaseResource();
+        indexDataGetterService.releaseResource();
     }
 
     @Override

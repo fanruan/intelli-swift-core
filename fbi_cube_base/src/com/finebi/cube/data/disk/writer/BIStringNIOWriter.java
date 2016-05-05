@@ -33,9 +33,9 @@ public class BIStringNIOWriter implements ICubeStringWriter {
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
         if (byteWriteMappedList != null) {
-            byteWriteMappedList.clear();
+            byteWriteMappedList.releaseResource();
             byteWriteMappedList = null;
         }
     }

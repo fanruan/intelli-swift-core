@@ -332,7 +332,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
     }
 
     @Override

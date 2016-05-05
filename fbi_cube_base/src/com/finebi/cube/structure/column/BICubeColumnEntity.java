@@ -155,11 +155,11 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     @Override
-    public void clear() {
-        detailDataService.clear();
-        indexDataService.clear();
-        groupDataService.clear();
-        cubeVersion.clear();
+    public void releaseResource() {
+        detailDataService.releaseResource();
+        indexDataService.releaseResource();
+        groupDataService.releaseResource();
+        cubeVersion.releaseResource();
     }
 
     @Override

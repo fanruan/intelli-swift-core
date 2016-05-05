@@ -30,10 +30,10 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
     }
 
     @Override
-    public void clear() {
+    public void releaseResource() {
 
         if (byteArray != null) {
-            byteArray.clear();
+            byteArray.releaseResource();
             byteArray = null;
         }
 

@@ -41,10 +41,10 @@ public class BIGroupValueIndexLRUCacheNIOReader extends BIGroupValueIndexNIORead
     }
 
     @Override
-    public void clear() {
-        super.clear();
+    public void releaseResource() {
+        super.releaseResource();
         if (cache != null) {
-            cache.clear();
+            cache.releaseResource();
         }
     }
 }
