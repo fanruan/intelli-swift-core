@@ -892,7 +892,7 @@
 
         getWidgetDataByWidgetInfo: function (dimensions, view, callback, options) {
             var self = this;
-            var filterValue = [];
+            options || (options = {});
             var data = {
                     bounds: {
                         left: 0,
@@ -904,7 +904,7 @@
                     dimensions: dimensions,
                     filter: {
                         filter_type: BICst.FILTER_TYPE.AND,
-                        filter_value: filterValue.concat(self.getControlCalculations())
+                        filter_value: self.getControlCalculations(options.id)
                     },
                     view: view
                 }
