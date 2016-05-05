@@ -85,17 +85,27 @@ public class BICubeVersion implements ICubeVersion {
         return versionReader != null;
     }
 
+    protected void resetVersionReader() {
+        if (isVersionReaderAvailable()) {
+            versionReader.clear();
+            versionReader = null;
+        }
+    }
+
     protected boolean isVersionWriterAvailable() {
         return versionWriter != null;
     }
 
-    @Override
-    public void clear() {
-        if (isVersionReaderAvailable()) {
-            versionReader.clear();
-        }
+    protected void resetVersionWriter() {
         if (isVersionWriterAvailable()) {
             versionWriter.clear();
+            versionWriter = null;
         }
+    }
+
+    @Override
+    public void clear() {
+        resetVersionReader();
+        resetVersionWriter();
     }
 }

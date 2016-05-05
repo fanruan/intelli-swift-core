@@ -1122,6 +1122,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         var self = this;
         //表预览按钮
         var allTables = this.model.getAllTables();
+        var isEnable = false, warningTitle = "";
         if (allTables.length === 1) {
             //如果不是etl表，也是可以预览的
             if (BI.isNotNull(allTables[0][0].etl_type)) {
@@ -1136,15 +1137,18 @@ BI.ETL = BI.inherit(BI.Widget, {
             } else {
                 self.tablePreview.setEnable(true);
             }
-            this.updateSetButton.setEnable(true);
-            this.excelViewButton.setEnable(true);
-            this.saveButton.setEnable(true);
+            isEnable = true;
         } else {
             this.tablePreview.setEnable(false);
-            this.updateSetButton.setEnable(false);
-            this.excelViewButton.setEnable(false);
-            this.saveButton.setEnable(false);
+            warningTitle = allTables.length === 0 ? BI.i18nText("BI-Etl_Table_On_The_Right_Cannot_Be_Null") : BI.i18nText("BI-Final_Table_Only_Be_One");
         }
+        this.updateSetButton.setEnable(isEnable);
+        this.excelViewButton.setEnable(isEnable);
+        this.saveButton.setEnable(isEnable);
+
+        this.updateSetButton.setWarningTitle(warningTitle);
+        this.excelViewButton.setWarningTitle(warningTitle);
+        this.saveButton.setWarningTitle(warningTitle);
     },
 
     getValue: function () {

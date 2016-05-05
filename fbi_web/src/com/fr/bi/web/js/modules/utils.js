@@ -386,7 +386,13 @@
 
         getDimensionSortByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-               return Data.SharingPool.get("dimensions", did, "sort");
+                return Data.SharingPool.get("dimensions", did, "sort");
+            }
+        },
+
+        getDimensionSrcByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "_src");
             }
         },
 
@@ -537,8 +543,8 @@
             });
             return view[regionType];
         },
-        
-        getRegionTypeByDimensionID: function(dId) {
+
+        getRegionTypeByDimensionID: function (dId) {
             var wId = BI.Utils.getWidgetIDByDimensionID(dId);
             var view = BI.Utils.getWidgetViewByID(wId);
             return BI.findKey(view, function (regionType, dIds) {
@@ -643,7 +649,7 @@
             var connectionSet = Pool.connections.connectionSet;
             var result = [];
             BI.find(connectionSet, function (idx, obj) {
-                if(obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)){
+                if (obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)) {
                     return;
                 }
             });
@@ -804,8 +810,7 @@
             return fromIds;
         },
 
-        getWidgetDataByDimensionInfo: function (src, sort, group, filter_value) {
-
+        getWidgetDataByDimensionInfo: function (src, options) {
             var name = "__StatisticWidget__" + BI.UUID();
             var data = {
                 type: BICst.Widget.STRING,
@@ -817,14 +822,11 @@
                 },
                 name: name,
                 dimensions: {
-                    "1234567": {
+                    "1234567": BI.extend({
                         name: "__Dimension__",
                         _src: src,
-                        group: group || {},
-                        sort: sort || {},
-                        filter_value: filter_value || {},
                         type: BICst.TARGET_TYPE.STRING
-                    }
+                    }, options)
                 },
                 view: {
                     10000: ["1234567"]
@@ -857,7 +859,7 @@
                 first: function (call) {
                     var copy = BI.deepClone(data);
                     copy.page = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options :options})}, function (res) {
+                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options: options})}, function (res) {
                         call(res);
                     });
                 },
@@ -865,7 +867,7 @@
                 prev: function (call) {
                     var copy = BI.deepClone(data);
                     copy.page = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
-                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options :options})}, function (res) {
+                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options: options})}, function (res) {
                         call(res);
                     });
                 },
@@ -873,7 +875,7 @@
                 next: function (call) {
                     var copy = BI.deepClone(data);
                     copy.page = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
-                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options :options})}, function (res) {
+                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options: options})}, function (res) {
                         call(res);
                     });
                 },
@@ -881,27 +883,30 @@
                 all: function (call) {
                     var copy = BI.deepClone(data);
                     copy.page = BICst.TABLE_PAGE_OPERATOR.ALL_PAGE;
-                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options :options})}, function (res) {
+                    Data.Req.reqWidgetSettingByData({widget: BI.extend(copy, {text_options: options})}, function (res) {
                         call(res);
                     });
                 }
             };
         },
 
-        getWidgetDataByWidgetInfo: function (bounds, dimensions, settings, type, view, page, callback, options) {
+        getWidgetDataByWidgetInfo: function (dimensions, view, callback, options) {
             var self = this;
             var filterValue = [];
             var data = {
-                    type: type,
-                    bounds: bounds,
+                    bounds: {
+                        left: 0,
+                        top: 0,
+                        width: 0,
+                        height: 0
+                    },
                     name: "__StatisticWidget__" + BI.UUID(),
                     dimensions: dimensions,
                     filter: {
                         filter_type: BICst.FILTER_TYPE.AND,
                         filter_value: filterValue.concat(self.getControlCalculations())
                     },
-                    view: view,
-                    page: page
+                    view: view
                 }
                 ;
             Data.Req.reqWidgetSettingByData({widget: BI.extend(data, options)}, function (res) {
@@ -914,7 +919,7 @@
             //控件
             var widgetIds = this.getAllWidgetIDs();
             BI.each(widgetIds, function (i, id) {
-                if(id === notcontain){
+                if (id === notcontain) {
                     return;
                 }
                 var value = self.getWidgetValueByID(id);
@@ -1046,7 +1051,7 @@
                     }
                     BI.isNotNull(widget.dimensions[drId]) && (widget.dimensions[drId].used = false);
                     BI.each(drArray, function (i, drill) {
-                        if(BI.isNotNull(widget.dimensions[drill.dId])) {
+                        if (BI.isNotNull(widget.dimensions[drill.dId])) {
                             widget.dimensions[drill.dId].used = (i === drArray.length - 1);
                             var drillRegionType = self.getRegionTypeByDimensionID(drId);
                             //从原来的region中pop出来
@@ -1255,7 +1260,7 @@
                         filterValue.end = value.start;
                     }
                 }
-                if(filterType === BICst.FILTER_DATE.LATER_THAN){
+                if (filterType === BICst.FILTER_DATE.LATER_THAN) {
                     var date = getDateControlValue(filterValue.wId);
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
@@ -1291,7 +1296,7 @@
                     parseFilter(filterValue);
                 }
             });
-            
+
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             return widget;
         },

@@ -58,5 +58,9 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
         table.fields = newFields;
         table.operator = value;
         return table;
+    },
+
+    isDefalutValue : function (widget, model) {
+        return !this.isValid(widget, model)
     }
 })

@@ -1,5 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
+import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.general.ComparatorUtils;
@@ -18,9 +21,13 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
     private String keyword;
     private String parent_values;
 
+    public GetTreeSelectTreeNodeExecutor(TreeWidget widget, Paging paging, BISession session) {
+        super(widget, paging, session);
+    }
+
     @Override
-    public void parseJSON(JSONObject jo, List<List<String>> dataList) throws JSONException {
-        super.parseJSON(jo, dataList);
+    public void parseJSON(JSONObject jo) throws JSONException {
+        super.parseJSON(jo);
         if (jo.has("not_selected_value")) {
             notSelectedValueString = jo.getString("not_selected_value");
         }

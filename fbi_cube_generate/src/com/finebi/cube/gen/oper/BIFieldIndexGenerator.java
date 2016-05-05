@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityService;
@@ -47,13 +48,14 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             ICubeTableEntityService tableEntityService = (ICubeTableEntityService) cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
             rowCount = tableEntityService.getRowCount();
+            tableEntityService.clear();
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         initial();
         buildTableIndex();
         return null;

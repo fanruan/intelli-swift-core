@@ -3,6 +3,7 @@ package com.finebi.cube.gen.oper;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
@@ -31,7 +32,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
     }
 
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         buildFieldPathIndex();
         return null;
     }

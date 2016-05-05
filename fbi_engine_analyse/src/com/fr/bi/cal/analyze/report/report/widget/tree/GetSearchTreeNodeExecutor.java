@@ -1,5 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
+import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
@@ -18,9 +21,13 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
     private String keyword;
     private String lastSearchValue;
 
+    public GetSearchTreeNodeExecutor(TreeWidget widget, Paging paging, BISession session) {
+        super(widget, paging, session);
+    }
 
-    public void parseJSON(JSONObject jo, List<List<String>> dataList) throws JSONException {
-        super.parseJSON(jo, dataList);
+
+    public void parseJSON(JSONObject jo) throws JSONException {
+        super.parseJSON(jo);
         if (jo.has("keyword")) {
             keyword = jo.getString("keyword");
         }

@@ -104,6 +104,58 @@ public class BISubscribe implements ISubscribe {
     }
 
     @Override
+    public void orSubscribe(IFragmentTag fragmentTag) throws BITopicAbsentException, BIFragmentAbsentException, BIRegisterIsForbiddenException {
+        ITopicTag superTopicTag = fragmentTag.getSuperTopicTag();
+        try {
+            trigger.addOrFragment(fragmentTag);
+        } catch (BIFragmentDuplicateException ignore) {
+            BILogger.getLogger().error("ignore", ignore);
+        }
+        if (!router.isSubscribed(this, superTopicTag, fragmentTag)) {
+            try {
+                router.subscribe(this, superTopicTag, fragmentTag);
+            } catch (BISubscribeDuplicateException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+        }
+
+    }
+
+    @Override
+    public void orSubscribe(IStatusTag statusTag) throws BITopicAbsentException, BIFragmentAbsentException,
+            BIStatusAbsentException, BIRegisterIsForbiddenException {
+        IFragmentTag superFragmentTag = statusTag.getSuperFragmentTag();
+        ITopicTag superTopicTag = superFragmentTag.getSuperTopicTag();
+        try {
+            trigger.addOrStatus(statusTag);
+        } catch (BIStatusDuplicateException ignore) {
+            BILogger.getLogger().error("ignore", ignore);
+        }
+        if (!router.isSubscribed(this, superTopicTag, superFragmentTag, statusTag)) {
+            try {
+                router.subscribe(this, superTopicTag, superFragmentTag, statusTag);
+            } catch (BISubscribeDuplicateException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+        }
+    }
+
+    @Override
+    public void orSubscribe(ITopicTag topicTag) throws BITopicAbsentException, BIRegisterIsForbiddenException {
+        try {
+            trigger.addOrTopic(topicTag);
+        } catch (BITopicDuplicateException ignore) {
+            BILogger.getLogger().error("ignore", ignore);
+        }
+        if (!router.isSubscribed(this, topicTag)) {
+            try {
+                router.subscribe(this, topicTag);
+            } catch (BISubscribeDuplicateException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+        }
+    }
+    @Override
     public boolean isSubscribed(ITopicTag topicTag) throws BITopicAbsentException {
         return router.isSubscribed(this, topicTag);
     }

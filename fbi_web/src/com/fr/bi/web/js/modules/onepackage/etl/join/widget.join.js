@@ -292,7 +292,9 @@ BI.Join = BI.inherit(BI.Widget, {
                             }, {
                                 el: this.resultTab,
                                 height: "fill"
-                            }]
+                            }],
+                            hgap: this.constants.JOIN_GAP_TEN,
+                            vgap: this.constants.JOIN_GAP_TEN
                         },
                         height: "fill"
                     }]

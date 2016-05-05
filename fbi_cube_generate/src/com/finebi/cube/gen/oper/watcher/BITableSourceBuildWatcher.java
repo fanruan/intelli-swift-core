@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.oper.watcher;
 
 import com.finebi.cube.exception.BIDeliverFailureException;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.ICubeTableEntityService;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -18,10 +19,15 @@ public class BITableSourceBuildWatcher extends BICubeBuildWatcher {
     }
 
     @Override
-    public void process() {
+    public void process(IMessage lastReceiveMessage) {
         try {
-            messagePublish.publicFinishMessage(generateFinishBody(""));
-            tableEntityService.recordLastTime();
+            if (lastReceiveMessage.isStopStatus()) {
+                messagePublish.publicStopMessage(generateStopBody(""));
+            } else {
+                messagePublish.publicFinishMessage(generateFinishBody(""));
+                tableEntityService.recordLastTime();
+                tableEntityService.clear();
+            }
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);
         }

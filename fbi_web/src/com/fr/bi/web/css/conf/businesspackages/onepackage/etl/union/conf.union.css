@@ -54,12 +54,6 @@
   color: #808080;
   font-size: 14px;
 }
-.bi-etl-union .union-merge-field table {
-  border-left: 1px solid #d4dadd;
-}
-.bi-etl-union .union-merge-field table td {
-  border-bottom: 1px solid #d4dadd;
-}
 .bi-etl-union .union-preview-result {
   background: #ffffff;
   -webkit-border-radius: 2px;

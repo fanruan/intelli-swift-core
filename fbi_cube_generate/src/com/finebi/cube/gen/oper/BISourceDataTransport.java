@@ -3,6 +3,7 @@ package com.finebi.cube.gen.oper;
 import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BICubeTableEntity;
 import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityService;
@@ -37,7 +38,7 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         recordTableInfo();
         long count = transport();
         tableEntityService.recordRowCount(count);

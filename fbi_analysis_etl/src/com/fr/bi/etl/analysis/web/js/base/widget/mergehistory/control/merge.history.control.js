@@ -57,7 +57,7 @@ BI.MergeHistoryController = BI.inherit(BI.MVCController,  {
             }
         });
         BI.Layers.show(widget.getName());
-        this.refreshPopData(widget, item);
+        this._refreshPopData(widget, item);
     },
 
     _setBranchValue: function (id) {
@@ -67,7 +67,7 @@ BI.MergeHistoryController = BI.inherit(BI.MVCController,  {
         })
     },
 
-    refreshPopData : function (widget, model){
+    _refreshPopData : function (widget, model){
         BI.Utils.triggerMergePreview(widget.previewTable, model, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
     }
 

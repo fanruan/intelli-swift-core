@@ -63,4 +63,37 @@ public class BICubeLongDetailDataTest extends TestCase {
             assertTrue(false);
         }
     }
+
+    public void testReset() {
+        try {
+            testAvailable();
+            detailData.resetCubeWriter();
+            assertFalse(detailData.isCubeWriterAvailable());
+            assertTrue(detailData.isCubeReaderAvailable());
+            detailData.resetCubeReader();
+            assertFalse(detailData.isCubeWriterAvailable());
+            assertFalse(detailData.isCubeReaderAvailable());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
+
+    public void testResetInitial() {
+        try {
+            testReset();
+
+            assertEquals(Long.valueOf("12"), detailData.getOriginalValueByRow(0));
+
+            detailData.addDetailDataValue(0, Long.valueOf("124"));
+            assertEquals(Long.valueOf("124"), detailData.getOriginalValueByRow(0));
+
+
+            assertTrue(detailData.isCubeReaderAvailable());
+            assertTrue(detailData.isCubeWriterAvailable());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
 }

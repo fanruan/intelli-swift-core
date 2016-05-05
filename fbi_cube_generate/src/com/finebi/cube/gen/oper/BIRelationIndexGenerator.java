@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
@@ -24,7 +25,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
     }
 
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         buildRelationIndex();
         return null;
     }
