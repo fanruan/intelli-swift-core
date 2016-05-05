@@ -116,6 +116,12 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             self.controller.doNewSave();
             self.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)
         })
+        this.operatorEditPane.on(BI.TopPointerSavePane.EVENT_INVALID, function(){
+            self.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, arguments)
+        })
+        this.operatorEditPane.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function(){
+            self.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, arguments)
+        })
         this.operatorEditPane.on(BI.TopPointerSavePane.EVENT_CANCEL, function(){
             self.controller.changeEditState(false);
             self.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)

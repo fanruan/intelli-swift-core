@@ -10,6 +10,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     _init: function () {
         BI.HistoryTabColltroller.superclass._init.apply(this, arguments);
         this.addTempModel = false;
+        this.invalidIndex = Number.MAX_VALUE;
     },
 
     _selectLastTab : function(widget, model) {
@@ -93,13 +94,13 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
 
     setInvalid : function(v, title, widget, model){
         var index = model.getIndexByValue(v);
-        if (index < this.invalidIndex){
+        if (index <= this.invalidIndex){
             this.invalidIndex = index;
             var items = model.get(ETLCst.ITEMS);
-            for(var i = index + 1; i < items.length; i++) {
-                var btn = widget.tabButton.getButton(item[i].value);
+            for(var i = index; i < items.length; i++) {
+                var btn = widget.tabButton.getButton(items[i].value);
                 btn.setValid(false);
-                btn.setWarningTitle(title);
+                btn.setTitle(title);
             }
         }
     },
@@ -109,9 +110,10 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         var index = model.getIndexByValue(v);
         if (index === this.invalidIndex){
             var items = model.get(ETLCst.ITEMS);
-            for(var i = index + 1; i < items.length; i++) {
-                var btn = widget.tabButton.getButton(item[i].value);
+            for(var i = index; i < items.length; i++) {
+                var btn = widget.tabButton.getButton(items[i].value);
                 btn.setValid(true);
+                btn.setTitle(btn.getText());
             }
             this.invalidIndex = Number.MAX_VALUE;
         }

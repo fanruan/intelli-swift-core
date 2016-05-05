@@ -18,12 +18,12 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
         var operator = model.get('operator') || {};
         var value = operator.assist || [];
         var invalidName;
-        BI.some(parent[ETLCst.FIELDS], function (i, f) {
-            var parentField = BI.find(value, function (idx, name) {
-                return f.field_name === name
+        BI.some(value, function (i, v) {
+            var parentField = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
+                return field.field_name === v
             })
             if (BI.isNull(parentField)){
-                invalidName = f.field_name;
+                invalidName = v;
             }
         })
         if (BI.isNull(invalidName)){

@@ -10,6 +10,7 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodPercentController = BI.inherit(BI.A
                 type : 'bi.label',
                 cls : 'detail-label',
                 textAlign : 'left',
+                height : 25,
                 text : text,
                 title : text
             })
