@@ -6,6 +6,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY) || {});
         this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY) || {})
         this._initDefault()
+        this.changed = false;
     },
 
     _initDefault : function () {
@@ -47,6 +48,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         });
         this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, dimensions)
         this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, view)
+        this.changed = true;
     },
 
 
@@ -58,6 +60,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     setDimensionUsedById: function (id, used) {
         var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
         dimensions[id].used = used;
+        this.changed = true;
     },
 
     getDimensionNameById : function (id) {
@@ -68,6 +71,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     setDimensionNameById : function (id, name) {
         var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
         dimensions[id].name = name;
+        this.changed = true;
     },
 
     /**
@@ -134,6 +138,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         view[regionType].push(id);
         this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, dimensions)
         this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, view)
+        this.changed = true;
         return id;
     },
 
@@ -143,6 +148,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         var type = sorted.regionType;
         view[type] = dims;
         this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, view)
+        this.changed = true;
     },
 
     _createFields : function () {
@@ -205,6 +211,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     setDimensionGroupById : function (id, group) {
         var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
         dimensions[id].group = group;
+        this.changed = true;
     },
 
     isValid : function () {
@@ -244,6 +251,10 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         });
         result = result || {};
         return result.text;
+    },
+    
+    isDefalutValue : function () {
+        return !this.changed;
     }
 });
 BI.AnalysisETLOperatorGroupPaneModel.DIMKEY = "dimensions";

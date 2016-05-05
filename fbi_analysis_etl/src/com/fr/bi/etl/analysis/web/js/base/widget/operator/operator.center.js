@@ -200,7 +200,8 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             pane.on(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function () {
                 self.operatorCard.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, arguments)
             });
-            pane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function () {
+            pane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (model, type) {
+                self.title.setEnable(model.isDefalutValue())
                 self.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, arguments)
             })
             var card = {

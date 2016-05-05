@@ -57,6 +57,10 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
             }
         }))
     },
+
+    isDefalutValue : function () {
+        return this.getAddColumns().length === 0
+    },
     
     update : function () {
         var v = BI.AnalysisETLOperatorAddColumnPaneModel.superclass.update.apply(this, arguments);
