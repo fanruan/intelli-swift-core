@@ -39,7 +39,6 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
         this.title.on(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, function(v){
             self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments)
             self.controller.showOperatorPane(v);
-            self.controller.refreshPreviewData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[v.getValue()].operatorType)
         })
 
         this.title.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(v){
@@ -112,10 +111,6 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
         this.operatorPane.on(BI.TopPointerSavePane.EVENT_CANCEL, function(){
             self.controller.clearOperator()
             self.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)
-        })
-        this.operatorPane.on(BI.TopPointerSavePane.EVENT_EDIT, function(){
-            self.controller.changeEditState(true)
-            self.controller.refreshPreviewData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[self.title.getValue()].operatorType)
         })
         this.operatorPane.on(BI.TopPointerSavePane.EVENT_SAVE, function(){
             self.controller.doNewSave();
@@ -200,7 +195,8 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             pane.on(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function () {
                 self.operatorCard.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, arguments)
             });
-            pane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function () {
+            pane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (model, type) {
+                self.title.setEnable(model.isDefalutValue())
                 self.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, arguments)
             })
             var card = {

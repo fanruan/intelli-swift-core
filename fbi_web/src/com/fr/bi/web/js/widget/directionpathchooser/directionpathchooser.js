@@ -28,7 +28,7 @@ BI.DirectionPathChooser = BI.inherit(BI.Widget, {
             items: o.items
         });
         this.pathChooser.on(BI.PathChooser.EVENT_CHANGE, function (start, index) {
-            self._unselectAllArrows();
+            //self._unselectAllArrows();
             self._setValue(start, index);
         });
         this._drawArrows();
@@ -96,12 +96,14 @@ BI.DirectionPathChooser = BI.inherit(BI.Widget, {
                     if (i > 0 && i < dots.length - 1) {
                         var arrow;
                         if (dot.y === dots[i - 1].y) {
-                            if (dots[i + 1].y != dot.y && store[path[path.length - 2]].direction === -1) {
-                                if (i - 1 > 0) {
-                                    arrow = self._drawOneArrow(dots[i - 1], 3);
+                            if (dots[i + 1].y != dot.y) {
+                                if (store[path[path.length - 2]].direction === -1) {
+                                    if (i - 1 > 0) {
+                                        arrow = self._drawOneArrow(dots[i - 1], 3);
+                                    }
+                                } else {
+                                    arrow = self._drawOneArrow(dots[i], 1);
                                 }
-                            } else {
-                                arrow = self._drawOneArrow(dot, 1);
                             }
                         } else if (dot.x === dots[i - 1].x) {
                             if (dot.y > dots[i - 1].y) {
@@ -167,8 +169,21 @@ BI.DirectionPathChooser = BI.inherit(BI.Widget, {
 
     _setValue: function (start, index) {
         var self = this;
+        var lineColor = this._const.lineColor;
         var selectLineColor = this._const.selectLineColor;
         var routes = this.pathChooser.routes;
+        var starts = this.pathChooser.start;
+        var each = [start];
+        if (starts.contains(start)) {
+            each = starts;
+        }
+        BI.each(each, function (i, s) {
+            BI.each(self.arrows[s], function (j, arrows) {
+                BI.each(arrows, function (k, arrow) {
+                    arrow.attr({fill: lineColor, stroke: lineColor}).toFront();
+                });
+            });
+        });
         BI.each(this.arrows[start][index], function (i, arrow) {
             arrow.attr({fill: selectLineColor, stroke: selectLineColor}).toFront();
         });

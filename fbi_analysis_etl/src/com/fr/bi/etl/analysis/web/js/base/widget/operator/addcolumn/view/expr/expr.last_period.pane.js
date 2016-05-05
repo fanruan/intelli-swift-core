@@ -16,7 +16,7 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodPane  = BI.inherit(BI.AnalysisETLOp
             items : []
         });
         self.yearMonthSeason.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
-            self.controller.setValueField(v);
+            self.controller.setDateField(v);
         })
         self.layout.addItems([{el : {
             type : 'bi.label',

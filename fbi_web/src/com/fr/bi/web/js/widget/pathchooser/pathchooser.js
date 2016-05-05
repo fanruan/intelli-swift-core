@@ -273,12 +273,13 @@ BI.PathChooser = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.store = {};
         this.texts = {};
-        var zip = BI.unzip(o.items);
-        this.start = BI.uniq(BI.pluck(BI.first(zip), "value"));
+        this.start = [];
         this.end = [];
         BI.each(o.items, function (i, item) {
+            self.start.push(BI.first(item).value);
             self.end.push(BI.last(item).value);
         });
+        this.start = BI.uniq(this.start);
         this.end = BI.uniq(this.end);
         var regions = [];
         var tree = new BI.Tree();
