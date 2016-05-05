@@ -10,8 +10,11 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -106,7 +109,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     }
                 }
             }
-            ti.releaseResource();
+            ti.clear();
         }
         if (floors < parentValues.length) {
             String[] groupValue = new String[1];
@@ -115,7 +118,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey());
             ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getRelationList(dimension));
             GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
-            ti.releaseResource();
+            ti.clear();
             createGroupValueWithParentValues(dataList, parentValues, gvi, floors + 1, times);
         }
     }

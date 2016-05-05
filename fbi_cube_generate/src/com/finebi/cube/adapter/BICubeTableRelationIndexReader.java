@@ -29,7 +29,7 @@ public class BICubeTableRelationIndexReader implements ICubeTableIndexReader {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
 
     }
 }

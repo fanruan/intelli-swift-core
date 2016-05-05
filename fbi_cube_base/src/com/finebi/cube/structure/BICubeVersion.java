@@ -87,7 +87,7 @@ public class BICubeVersion implements ICubeVersion {
 
     protected void resetVersionReader() {
         if (isVersionReaderAvailable()) {
-            versionReader.releaseResource();
+            versionReader.clear();
             versionReader = null;
         }
     }
@@ -98,13 +98,13 @@ public class BICubeVersion implements ICubeVersion {
 
     protected void resetVersionWriter() {
         if (isVersionWriterAvailable()) {
-            versionWriter.releaseResource();
+            versionWriter.clear();
             versionWriter = null;
         }
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         resetVersionReader();
         resetVersionWriter();
     }

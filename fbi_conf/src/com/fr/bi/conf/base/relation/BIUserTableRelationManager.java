@@ -62,7 +62,7 @@ public class BIUserTableRelationManager implements Release {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         oldAnalyserHandler.clear();
         currentAnalyserHandler.clear();
         tableRelationshipService.clear();

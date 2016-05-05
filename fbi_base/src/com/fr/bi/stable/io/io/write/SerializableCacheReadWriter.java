@@ -56,12 +56,12 @@ public class SerializableCacheReadWriter<T extends ParseBytes> implements Releas
      * TODO 需要删除
      */
     @Override
-    public void releaseResource() {
+    public void clear() {
         if (reader != null) {
-            reader.releaseResource();
+            reader.clear();
         }
         if (writer != null) {
-            writer.releaseResource();
+            writer.clear();
         }
     }
 
@@ -122,7 +122,7 @@ public class SerializableCacheReadWriter<T extends ParseBytes> implements Releas
         synchronized (this) {
             writer.add(size++, value == null ? null : value.getBytes());
             if (reader != null) {
-                reader.releaseResource();
+                reader.clear();
             }
             reader = new ByteReadMappedList(baseFile.getAbsolutePath());
         }

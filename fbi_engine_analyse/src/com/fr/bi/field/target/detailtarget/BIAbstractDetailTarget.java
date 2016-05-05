@@ -130,9 +130,9 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         if (cubeTableService != null) {
-            cubeTableService.releaseResource();
+            cubeTableService.clear();
         }
     }
 

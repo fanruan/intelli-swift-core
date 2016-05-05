@@ -52,9 +52,9 @@ public class DateWriteMappedList implements NIOWriter<Long> {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         if (lml != null) {
-            lml.releaseResource();
+            lml.clear();
             lml = null;
         }
     }

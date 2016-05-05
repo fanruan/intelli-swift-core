@@ -47,7 +47,7 @@ public class BISourceDataTransport extends BIProcessor {
 
     @Override
     public void release() {
-        tableEntityService.releaseResource();
+        tableEntityService.clear();
     }
 
     private void recordTableInfo() {

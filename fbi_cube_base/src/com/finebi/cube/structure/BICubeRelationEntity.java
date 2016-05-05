@@ -51,8 +51,8 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     }
 
     @Override
-    public void releaseResource() {
-        indexDataService.releaseResource();
+    public void clear() {
+        indexDataService.clear();
     }
 
     @Override

@@ -73,7 +73,7 @@ public class BIPackageConfigManager implements Release {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         synchronized (currentPackageManager) {
             analysisPackageManager.clearPackages();
             currentPackageManager.clearPackages();
@@ -279,7 +279,7 @@ public class BIPackageConfigManager implements Release {
      */
     public void parseGroupJSON(long userId, JSONObject jo) throws JSONException {
         synchronized (groupCollectionManager) {
-            groupCollectionManager.releaseResource();
+            groupCollectionManager.clear();
             if (jo.has("changedPackage")) {
                 JSONObject changedPackage = jo.getJSONObject("changedPackage");
                 if (changedPackage != null) {

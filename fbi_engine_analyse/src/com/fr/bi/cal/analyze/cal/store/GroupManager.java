@@ -143,11 +143,11 @@ public class GroupManager {
      * 释放内存
      */
     public void release() {
-        crossCalculators.releaseResource();
-        groupPages.releaseResource();
-        complexGroupPages.releaseResource();
-        singleDimensionGroup.releaseResource();
-        noneDimensionGroup.releaseResource();
+        crossCalculators.clear();
+        groupPages.clear();
+        complexGroupPages.clear();
+        singleDimensionGroup.clear();
+        noneDimensionGroup.clear();
         System.gc();
     }
 

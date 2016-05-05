@@ -135,7 +135,7 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
      * 释放资源，之前需要释放的，现在暂时没有什么需要释放的
      */
     @Override
-    public void releaseResource() {
+    public void clear() {
 //        root.release();
     }
 

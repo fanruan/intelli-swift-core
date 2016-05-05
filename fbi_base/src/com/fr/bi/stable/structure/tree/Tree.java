@@ -135,7 +135,7 @@ public class Tree implements Release {
     }
 
     @Override
-    public void releaseResource() {
-        root.releaseResource();
+    public void clear() {
+        root.clear();
     }
 }

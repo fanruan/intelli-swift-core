@@ -58,7 +58,7 @@ public class DetailAllGVIRunner extends AbstractGVIRunner {
         });
         Iterator<BIDetailTarget> itT = paras.getNoneCalculateList().iterator();
         while (itT.hasNext()) {
-            itT.next().releaseResource();
+            itT.next().clear();
         }
         actionPerform(action, set);
     }

@@ -30,7 +30,7 @@ public class SortNIOReadLongList implements ISortNIOReadList<Long> {
      * 释放资源
      */
     @Override
-    public void releaseResource() {
+    public void clear() {
     }
 
     @Override

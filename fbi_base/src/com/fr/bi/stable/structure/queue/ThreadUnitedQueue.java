@@ -82,8 +82,8 @@ public class ThreadUnitedQueue<T extends Delete> implements Release {
 				iter.remove();
 				synchronized (o) {
 					if(!o.isClear()){
-						o.releaseResource();
-						o.get().releaseResource();
+						o.clear();
+						o.get().clear();
 						o.get().delete();
 					}
 				}
@@ -95,12 +95,12 @@ public class ThreadUnitedQueue<T extends Delete> implements Release {
 	 * @see com.fr.bi.common.inter.Release#clear()
 	 */
 	@Override
-	public void releaseResource() {
+	public void clear() {
 		isClear = true;
 		map.clear();
 		releaseInThread();
 		if(!queue.isEmpty()){
-			queue.pop().get().releaseResource();
+			queue.pop().get().clear();
 		}
 	}
 

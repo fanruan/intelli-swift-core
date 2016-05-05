@@ -64,13 +64,13 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 throw BINonValueUtils.beyondControl(e.getMessage(), e);
             } finally {
                 if (lastRelationEntity != null) {
-                    lastRelationEntity.releaseResource();
+                    lastRelationEntity.clear();
                 }
                 if (frontRelationPathReader != null) {
-                    frontRelationPathReader.releaseResource();
+                    frontRelationPathReader.clear();
                 }
                 if (targetPathEntity != null) {
-                    targetPathEntity.releaseResource();
+                    targetPathEntity.clear();
                 }
             }
         }
@@ -99,7 +99,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         ITableKey primaryTableKey = relationPath.getFirstRelation().getPrimaryTable();
         ICubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
         int rowCount = primaryTable.getRowCount();
-        primaryTable.releaseResource();
+        primaryTable.clear();
         return rowCount;
     }
 
@@ -107,7 +107,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         ITableKey primaryTableKey = relationPath.getLastRelation().getForeignTable();
         ICubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
         int rowCount = primaryTable.getRowCount();
-        primaryTable.releaseResource();
+        primaryTable.clear();
         return rowCount;
     }
 

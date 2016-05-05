@@ -88,7 +88,7 @@ public class BIGroupTagContainer extends BITreeMapContainer<BIGroupTagName, BIBu
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         super.clear();
     }
 

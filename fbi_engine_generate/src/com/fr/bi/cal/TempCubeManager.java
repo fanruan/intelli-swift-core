@@ -40,7 +40,7 @@ public class TempCubeManager implements Release {
 
     public static void release(TempCubeTask task) {
         if (cubeMap.get(task) != null) {
-            cubeMap.get(task).releaseResource();
+            cubeMap.get(task).clear();
         }
         cubeMap.remove(task);
     }
@@ -86,7 +86,7 @@ public class TempCubeManager implements Release {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         if (loader != null) {
             loader = null;
         }
@@ -124,7 +124,7 @@ public class TempCubeManager implements Release {
                 loaderGenerating.generateCube();
                 loader = loaderGenerating;
                 if (release != null) {
-                    release.releaseResource();
+                    release.clear();
                 }
             }
         }

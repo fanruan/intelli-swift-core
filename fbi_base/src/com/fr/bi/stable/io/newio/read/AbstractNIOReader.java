@@ -50,7 +50,7 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
     protected abstract T getValue(Long index, int l);
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         synchronized (this) {
             gotohell = true;
             try {
@@ -129,7 +129,7 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
     }
 
     public void delete() {
-        releaseResource();
+        clear();
         File f = baseFile;
         int i = 0;
         while (f.exists()) {

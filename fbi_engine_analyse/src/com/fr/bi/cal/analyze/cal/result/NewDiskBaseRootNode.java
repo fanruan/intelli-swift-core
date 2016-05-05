@@ -25,7 +25,7 @@ public class NewDiskBaseRootNode extends Node implements Release {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         pageNodes.clear();
     }
 

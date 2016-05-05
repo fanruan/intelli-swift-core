@@ -28,7 +28,7 @@ public class SortNIOReadDoubleList implements ISortNIOReadList<Double> {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
     }
 
     @Override

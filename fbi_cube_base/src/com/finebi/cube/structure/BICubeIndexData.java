@@ -158,34 +158,34 @@ public class BICubeIndexData implements ICubeIndexDataService {
 
     protected void resetIndexReader() {
         if (isIndexReaderAvailable()) {
-            indexReader.releaseResource();
+            indexReader.clear();
             indexReader = null;
         }
     }
 
     protected void resetIndexWriter() {
         if (isIndexWriterAvailable()) {
-            indexWriter.releaseResource();
+            indexWriter.clear();
             indexWriter = null;
         }
     }
 
     protected void resetNullReader() {
         if (isNullReaderAvailable()) {
-            nullReader.releaseResource();
+            nullReader.clear();
             nullReader = null;
         }
     }
 
     protected void resetNullWriter() {
         if (isNullWriterAvailable()) {
-            nullWriter.releaseResource();
+            nullWriter.clear();
             nullReader = null;
         }
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         resetIndexReader();
         resetIndexWriter();
         resetNullReader();

@@ -153,13 +153,13 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
                 String id = tableIndex.getId();
 
                 try {
-                    tableIndex.releaseResource();
+                    tableIndex.clear();
                 } catch (Exception e) {
                     BILogger.getLogger().error("TableIndex Release Failed!", e);
                 }
                 storedIndexes.remove(id);
                 if (storedNIOManager.get(id) != null) {
-                    storedNIOManager.get(id).releaseResource();
+                    storedNIOManager.get(id).clear();
                     storedNIOManager.remove(id);
                 }
                 storedCount.remove(id);
@@ -254,12 +254,12 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
 
     private void release() {
         synchronized (LOCK) {
-            manager.releaseResource();
+            manager.clear();
             for (Map.Entry<String, ICubeTableService> entry : storedIndexes.entrySet()) {
-                entry.getValue().releaseResource();
+                entry.getValue().clear();
             }
             for (Map.Entry<String, SingleUserNIOReadManager> entry : storedNIOManager.entrySet()) {
-                entry.getValue().releaseResource();
+                entry.getValue().clear();
             }
             for (Map.Entry<String, String> entry : storedPath.entrySet()) {
                 BIFileUtils.delete(new File(BIBaseConstant.CACHE.getCacheDirectory() + File.separator + entry.getValue()));

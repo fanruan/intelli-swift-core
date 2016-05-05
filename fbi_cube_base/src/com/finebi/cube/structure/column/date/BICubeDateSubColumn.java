@@ -118,8 +118,8 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
-    public void releaseResource() {
-        columnEntity.releaseResource();
+    public void clear() {
+        columnEntity.clear();
     }
 
     @Override

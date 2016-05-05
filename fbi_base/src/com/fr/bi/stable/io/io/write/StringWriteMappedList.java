@@ -31,9 +31,9 @@ public class StringWriteMappedList implements NIOWriter<String> {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         if (byteWriteMappedList != null) {
-            byteWriteMappedList.releaseResource();
+            byteWriteMappedList.clear();
             byteWriteMappedList = null;
         }
     }

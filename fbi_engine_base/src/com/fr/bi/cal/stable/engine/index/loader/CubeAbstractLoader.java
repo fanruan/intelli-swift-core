@@ -28,13 +28,13 @@ public abstract class CubeAbstractLoader implements ICubeDataLoader {
      * 释放
      */
     @Override
-    public void releaseResource() {
+    public void clear() {
         synchronized (this) {
         	if(indexMap != null){
-        		indexMap.releaseResource();
+        		indexMap.clear();
         	}
         	if(getNIOReaderManager() != null){
-        		getNIOReaderManager().releaseResource();
+        		getNIOReaderManager().clear();
         	}
         }
     }

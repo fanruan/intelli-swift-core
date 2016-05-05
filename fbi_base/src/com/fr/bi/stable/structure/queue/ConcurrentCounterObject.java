@@ -49,7 +49,7 @@ public class ConcurrentCounterObject<T> implements Release {
 	 * @see com.fr.bi.common.inter.Release#clear()
 	 */
 	@Override
-	public void releaseResource() {
+	public void clear() {
 		// TODO Auto-generated method stub
 		isClear = true;
 	}

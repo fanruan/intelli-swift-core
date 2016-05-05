@@ -44,10 +44,10 @@ public class BIGroupValueIndexNIOWriter implements ICubeGroupValueIndexWriter {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
 
         if (bytesArray != null) {
-            bytesArray.releaseResource();
+            bytesArray.clear();
             bytesArray = null;
         }
     }

@@ -102,7 +102,7 @@ public class UpdateFrequencyManager  implements XMLable,JSONTransform, Release {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         updateList.clear();
     }
 }

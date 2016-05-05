@@ -98,7 +98,7 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
     protected abstract T getValue(Long page, int index);
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         if (useReleaseManager()) {
             releaseManager.release(this);
         } else {

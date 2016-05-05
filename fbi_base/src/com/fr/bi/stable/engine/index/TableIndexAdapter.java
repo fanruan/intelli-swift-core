@@ -24,7 +24,7 @@ public class TableIndexAdapter implements ICubeTableService {
     private final RuntimeException NULL_EXCEPTION = new NullTableIndexException();
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         throw NULL_EXCEPTION;
     }
 

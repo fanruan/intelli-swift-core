@@ -92,14 +92,14 @@ public class BIReadingTableIndexLoader extends AbstractTIPathLoader {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         synchronized (this) {
             if(indexMap != null){
-                indexMap.releaseResource();
+                indexMap.clear();
             }
             SingleUserNIOReadManager manager = NIOUtils.getReadingManager(user.getUserId());
             if(manager != null){
-                manager.releaseResource();
+                manager.clear();
             }
         }
     }

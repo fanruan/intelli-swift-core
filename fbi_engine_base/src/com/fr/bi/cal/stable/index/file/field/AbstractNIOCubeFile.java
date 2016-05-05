@@ -39,7 +39,7 @@ public abstract class AbstractNIOCubeFile<K> extends AbstractCubeFile implements
     @Override
     public void clearWriter() {
         if (list != null) {
-            list.releaseResource();
+            list.clear();
         }
     }
 

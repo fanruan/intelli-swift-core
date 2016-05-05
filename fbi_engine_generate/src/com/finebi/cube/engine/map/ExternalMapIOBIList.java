@@ -160,18 +160,18 @@ public abstract class ExternalMapIOBIList<K, T> implements ExternalMapIO<K, BILi
 
     @Override
 	public void close() {
-        getValueWriter().releaseResource();
+        getValueWriter().clear();
         try {
-            getValueReader().releaseResource();
+            getValueReader().clear();
         } catch (FileNotFoundException ex) {
             BILogger.getLogger().error(ex.getMessage(), ex);
         }
         try {
-            getKeyReader().releaseResource();
+            getKeyReader().clear();
         } catch (FileNotFoundException ex) {
             BILogger.getLogger().error(ex.getMessage(), ex);
         }
-        getKeyWriter().releaseResource();
+        getKeyWriter().clear();
     }
 
     @Override

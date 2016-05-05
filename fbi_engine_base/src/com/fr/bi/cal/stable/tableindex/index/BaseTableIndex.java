@@ -202,7 +202,7 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
     }
 
     @Override
-    public void releaseResource() {
-        cube.releaseResource();
+    public void clear() {
+        cube.clear();
     }
 }

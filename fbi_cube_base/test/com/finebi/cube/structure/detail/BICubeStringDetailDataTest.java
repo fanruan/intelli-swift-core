@@ -83,7 +83,7 @@ public class BICubeStringDetailDataTest extends TestCase {
         try {
             testReset();
             assertEquals("abc", detailData.getOriginalValueByRow(0));
-            detailData.releaseResource();
+            detailData.clear();
             detailData.addDetailDataValue(0, "dabc");
             assertEquals("dabc", detailData.getOriginalValueByRow(0));
 

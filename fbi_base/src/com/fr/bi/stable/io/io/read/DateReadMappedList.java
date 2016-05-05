@@ -25,7 +25,7 @@ public class DateReadMappedList implements NIOReader<Long> {
      * 清除
      */
     @Override
-    public void releaseResource() {
+    public void clear() {
     }
 
     @Override

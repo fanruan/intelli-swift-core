@@ -73,10 +73,10 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
     }
 
     @Override
-    public void releaseResource() {
-        positionReader.releaseResource();
-        lengthReader.releaseResource();
-        contentReader.releaseResource();
+    public void clear() {
+        positionReader.clear();
+        lengthReader.clear();
+        contentReader.clear();
     }
 
     @Override

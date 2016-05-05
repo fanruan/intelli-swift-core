@@ -28,7 +28,7 @@ public class SummaryRoot extends Root<BIValueKey> implements SummaryNode<BIValue
     }
 
     @Override
-    public void releaseResource() {
-        super.releaseResource();
+    public void clear() {
+        super.clear();
     }
 }

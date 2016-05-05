@@ -58,7 +58,7 @@ public class CubeGeneratingTableIndexLoader extends CubeAbstractLoader {
             for (Entry<Long, ICubeDataLoader> entry : userMap.entrySet()) {
                 ICubeDataLoader loader = entry.getValue();
                 if (loader != null) {
-                    loader.releaseResource();
+                    loader.clear();
                 }
             }
             userMap.clear();

@@ -163,7 +163,7 @@ public class MemoryCubeFile extends AbstractCubeFile {
      * 释放资源
      */
     @Override
-    public void releaseResource() {
+    public void clear() {
 
     }
 

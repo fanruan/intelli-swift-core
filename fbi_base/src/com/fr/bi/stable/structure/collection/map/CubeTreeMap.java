@@ -93,9 +93,4 @@ public class CubeTreeMap<K> extends TreeMap implements ICubeColumnIndexReader, R
     public Object getGroupValue(int position) {
         return null;
     }
-
-    @Override
-    public void releaseResource() {
-        super.clear();
-    }
 }

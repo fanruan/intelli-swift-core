@@ -210,7 +210,7 @@ public class Root<T> implements Node<T> {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         childs.clear();
         parent = null;
         left = null;

@@ -189,34 +189,34 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
 
     protected void resetGroupWriter() {
         if (isGroupWriterAvailable()) {
-            groupWriter.releaseResource();
+            groupWriter.clear();
             groupWriter = null;
         }
     }
 
     protected void resetGroupReader() {
         if (isGroupReaderAvailable()) {
-            groupReader.releaseResource();
+            groupReader.clear();
             groupReader = null;
         }
     }
 
     protected void resetLengthReader() {
         if (isLengthReaderAvailable()) {
-            groupLengthReader.releaseResource();
+            groupLengthReader.clear();
             groupLengthReader = null;
         }
     }
 
     protected void resetLengthWriter() {
         if (isLengthWriterAvailable()) {
-            groupLengthWriter.releaseResource();
+            groupLengthWriter.clear();
             groupLengthWriter = null;
         }
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         resetGroupWriter();
         resetGroupReader();
         resetLengthReader();

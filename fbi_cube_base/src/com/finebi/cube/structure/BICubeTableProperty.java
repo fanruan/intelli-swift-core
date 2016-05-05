@@ -63,7 +63,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     protected void resetFiledWriter() {
         if (isFieldWriterAvailable()) {
-            fieldInfoWriter.releaseResource();
+            fieldInfoWriter.clear();
             fieldInfoWriter = null;
         }
     }
@@ -353,55 +353,55 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     protected void resetFieldReader() {
         if (isFieldReaderAvailable()) {
-            fieldInfoReader.releaseResource();
+            fieldInfoReader.clear();
             fieldInfoReader = null;
         }
     }
 
     protected void resetVersionWriter() {
         if (isVersionWriterAvailable()) {
-            versionWriter.releaseResource();
+            versionWriter.clear();
             versionWriter = null;
         }
     }
 
     protected void resetVersionReader() {
         if (isVersionReaderAvailable()) {
-            versionReader.releaseResource();
+            versionReader.clear();
             versionReader = null;
         }
     }
 
     protected void resetRowCountWriter() {
         if (isRowCountWriterAvailable()) {
-            rowCountWriter.releaseResource();
+            rowCountWriter.clear();
             rowCountWriter = null;
         }
     }
 
     protected void resetRowCountReader() {
         if (isRowCountReaderAvailable()) {
-            rowCountReader.releaseResource();
+            rowCountReader.clear();
             rowCountReader = null;
         }
     }
 
     protected void resetTimeStampWriter() {
         if (isTimeStampWriterAvailable()) {
-            timeStampWriter.releaseResource();
+            timeStampWriter.clear();
             timeStampWriter = null;
         }
     }
 
     protected void resetTimeStampReader() {
         if (isTimeStampReaderAvailable()) {
-            timeStampReader.releaseResource();
+            timeStampReader.clear();
             timeStampWriter = null;
         }
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         resetFiledWriter();
         resetFieldReader();
         resetVersionWriter();

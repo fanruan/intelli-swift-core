@@ -30,7 +30,7 @@ public class SortNIOReadIntList implements ISortNIOReadList<Integer> {
      * 释放资源
      */
     @Override
-    public void releaseResource() {
+    public void clear() {
     }
 
     @Override

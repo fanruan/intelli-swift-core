@@ -27,12 +27,12 @@ public class SingleUserNIOReadManager implements Release {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         synchronized (this) {
             for (Entry<String, NIOReader<?>> o : NIOMap.entrySet()) {
                 if (o.getValue() != null) {
                     try {
-                        o.getValue().releaseResource();
+                        o.getValue().clear();
                     } catch (Throwable e) {
                         BILogger.getLogger().error(e.getMessage(), e);
                     }

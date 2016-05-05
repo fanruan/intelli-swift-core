@@ -83,7 +83,7 @@ public abstract class AbstractLoginUserInfoManager implements Release, XMLable {
     }
 
     @Override
-    public void releaseResource() {
+    public void clear() {
         anylysis = null;
         current = null;
     }
