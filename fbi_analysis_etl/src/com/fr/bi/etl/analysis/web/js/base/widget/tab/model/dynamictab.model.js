@@ -55,7 +55,7 @@ BI.DynamictabModel = BI.inherit(BI.MVCModel, {
             }
         })
         this.set(ETLCst.ITEMS, newItem)
-        this.set(id)
+        this.unset(id)
         return deletePos;
     },
 

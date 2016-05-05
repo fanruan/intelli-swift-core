@@ -62,7 +62,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
     },
 
     setDimensionGroupById : function (id, group, widget, model) {
-        return model.setDimensionGroupById(id, group)
+        model.setDimensionGroupById(id, group)
         this._refreshPreview(widget, model);
     },
 

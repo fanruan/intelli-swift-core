@@ -29,7 +29,7 @@ BI.SelectFieldDataCombo = BI.inherit(BI.Widget, {
             height: o.height
         });
 
-        this.func = BI.Utils.getWidgetDataByDimensionInfo({field_id: o.field_id}, {}, {}, {});
+        this.func = BI.Utils.getWidgetDataByDimensionInfo({field_id: o.field_id});
 
         switch (BI.Utils.getFieldTypeByID(o.field_id)) {
             case BICst.COLUMN.DATE:
@@ -54,7 +54,7 @@ BI.SelectFieldDataCombo = BI.inherit(BI.Widget, {
         if(options.times === 1){
             self.func.first(function (res) {
                 callback({
-                    items: self._createItemsByData(res),
+                    items: self._createItemsByData(res.value),
                     hasNext: res.hasNext
                 });
             });
@@ -63,7 +63,7 @@ BI.SelectFieldDataCombo = BI.inherit(BI.Widget, {
         if(options.type === BI.MultiSelectCombo.REQ_GET_ALL_DATA){
             self.func.all(function(res){
                 callback({
-                    items: self._createItemsByData(res),
+                    items: self._createItemsByData(res.value),
                     hasNext: res.hasNext
                 });
             });
@@ -71,21 +71,21 @@ BI.SelectFieldDataCombo = BI.inherit(BI.Widget, {
         }
         if(options.type === BI.MultiSelectCombo.REQ_GET_DATA_LENGTH){
             self.func.all(function(res){
-                callback({count: res.value.length});
+                callback({count: res.value});
             });
             return;
         }
         self.func.next(function(res){
             callback({
-                items: self._createItemsByData(res),
+                items: self._createItemsByData(res.value),
                 hasNext: res.hasNext
             });
         });
     },
 
-    _createItemsByData: function (data) {
+    _createItemsByData: function (values) {
         var result = [];
-        BI.each(data.value, function(idx, value){
+        BI.each(values, function(idx, value){
             result.push({
                 text: value,
                 value: value,

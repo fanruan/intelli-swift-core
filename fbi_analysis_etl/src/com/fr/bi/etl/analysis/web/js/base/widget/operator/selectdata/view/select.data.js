@@ -27,7 +27,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.MVCWidget, {
 
         this.center.on(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, function(v){
             self.saveButton.setEnable(false)
-            self.controller.refreshPopData();
+            self.controller.refreshPopData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[v.getValue()].operatorType);
             self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments)
         })
 

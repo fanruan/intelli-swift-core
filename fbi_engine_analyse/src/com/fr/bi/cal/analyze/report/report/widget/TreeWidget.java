@@ -5,20 +5,31 @@ import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
+import com.fr.bi.cal.analyze.executor.tree.TreeExecutor;
 import com.fr.bi.cal.analyze.report.report.widget.tree.*;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.BIDataColumnFactory;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
+import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.dimension.BIDimensionFactory;
+import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.BIField;
+import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.relation.BISimpleRelation;
 import com.fr.bi.stable.utils.BIIDUtils;
+import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.fs.base.entity.User;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -30,7 +41,7 @@ import java.util.*;
 /**
  * Created by roy on 16/4/14.
  */
-public class TreeWidget extends BISummaryWidget {
+public class TreeWidget extends BIAbstractWidget {
     private int page = -1;
     private int data_type = BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA;
     private String id;
@@ -42,16 +53,49 @@ public class TreeWidget extends BISummaryWidget {
     private String keyword;
     private String last_search_value;
     private String not_selected_value;
+    private String[] viewData;
+    private BIDimension[] dimensions;
+    protected NameObject targetSort;
+    protected Map<String, DimensionFilter> targetFilterMap = new HashMap<String, DimensionFilter>();
 
 
     @Override
     public BIDimension[] getViewDimensions() {
-        return new BIDimension[0];
+        String[] array = viewData;
+        List<BIDimension> usedDimensions = new ArrayList<BIDimension>();
+        for (int i = 0; i < array.length; i++) {
+            BIDimension dimension = BITravalUtils.getTargetByName(array[i], dimensions);
+            if (dimension.isUsed()) {
+                usedDimensions.add(dimension);
+            }
+
+        }
+        return usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
     }
 
     @Override
     public BIDimension[] getViewTargets() {
         return new BIDimension[0];
+    }
+
+    @Override
+    public <T extends BITargetAndDimension> T[] getDimensions() {
+        return null;
+    }
+
+    @Override
+    public <T extends BITargetAndDimension> T[] getTargets() {
+        return null;
+    }
+
+    @Override
+    public List<Table> getUsedTableDefine() {
+        return null;
+    }
+
+    @Override
+    public List<BIField> getUsedFieldDefine() {
+        return null;
     }
 
     @Override
@@ -63,29 +107,26 @@ public class TreeWidget extends BISummaryWidget {
     public JSONObject createDataJSON(BISessionProvider session) throws Exception {
         Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
         paging.setCurrentPage(page);
-        Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadGroup(this, new BISummaryTarget[0], this.getDimensions(), this.getDimensions(), new BISummaryTarget[0], this.page, true, (BISession) session);
-        List<List<String>> dataList = new ArrayList<List<String>>();
-        createDataList(tree, dataList, 0);
         JSONObject resultJo = new JSONObject();
         switch (data_type) {
             case BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA:
-                resultJo = getInitDataJSON(dataList);
+                resultJo = getInitDataJSON((BISession) session);
                 break;
             case BIReportConstant.TREE.TREE_REQ_TYPE.DISPLAY_DATA:
-                resultJo = getDisplayDataJSON(dataList);
+                resultJo = getDisplayDataJSON((BISession) session);
                 break;
             case BIReportConstant.TREE.TREE_REQ_TYPE.SEARCH_DATA:
                 try {
-                    resultJo = getSearchDataJSON(dataList);
+                    resultJo = getSearchDataJSON((BISession) session);
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 }
                 break;
             case BIReportConstant.TREE.TREE_REQ_TYPE.SELECTED_DATA:
-                resultJo = getSelectedDataJSON(dataList);
+                resultJo = getSelectedDataJSON((BISession) session);
                 break;
             case BIReportConstant.TREE.TREE_REQ_TYPE.ADJUST_DATA:
-                resultJo = getAdjustDataJSON(dataList);
+                resultJo = getAdjustDataJSON((BISession) session);
                 break;
         }
         return resultJo;
@@ -100,6 +141,17 @@ public class TreeWidget extends BISummaryWidget {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
+        parseDimension(jo, userId);
+        parseSortFilter(jo, userId);
+        if (jo.has("view")) {
+            JSONObject views = jo.getJSONObject("view");
+            JSONArray dimIds = views.getJSONArray(BIReportConstant.REGION.DIMENSION1);
+            viewData = new String[dimIds.length()];
+            for (int i = 0; i < dimIds.length(); i++) {
+                viewData[i] = dimIds.getString(i);
+            }
+        }
+
         if (jo.has("tree_options")) {
             JSONObject treeJo = jo.getJSONObject("tree_options");
             if (treeJo.has("type")) {
@@ -139,8 +191,10 @@ public class TreeWidget extends BISummaryWidget {
     }
 
 
-    private JSONObject getInitDataJSON(List<List<String>> dataList) throws JSONException {
-        GetTreeTreeNodeExecutor executor = new GetTreeTreeNodeExecutor();
+    private JSONObject getInitDataJSON(BISession session) throws JSONException {
+        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
+        paging.setCurrentPage(page);
+        GetTreeTreeNodeExecutor executor = new GetTreeTreeNodeExecutor(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("id", id);
         jo.put("times", times);
@@ -148,117 +202,111 @@ public class TreeWidget extends BISummaryWidget {
         jo.put("floors", floors);
         jo.put("parent_values", parent_values);
         jo.put("selected_values", selected_values);
-        executor.parseJSON(jo, dataList);
+        executor.parseJSON(jo);
         return executor.getResultJSON();
     }
 
-    private JSONObject getSearchDataJSON(List<List<String>> dataList) throws Exception {
-        GetSearchTreeNodeExecutor executor = new GetSearchTreeNodeExecutor();
+    private JSONObject getSearchDataJSON(BISession session) throws Exception {
+        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
+        paging.setCurrentPage(page);
+        GetSearchTreeNodeExecutor executor = new GetSearchTreeNodeExecutor(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
         jo.put("keyword", keyword);
         jo.put("last_search_value", last_search_value);
         jo.put("selected_values", selected_values);
-        executor.parseJSON(jo, dataList);
+        executor.parseJSON(jo);
         return executor.getResultJSON();
 
 
     }
 
-    private JSONObject getDisplayDataJSON(List<List<String>> dataList) throws JSONException {
-        GetDisplayTreeNodeExecutor executor = new GetDisplayTreeNodeExecutor();
+    private JSONObject getDisplayDataJSON(BISession session) throws JSONException {
+        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
+        paging.setCurrentPage(page);
+        GetDisplayTreeNodeExecutor executor = new GetDisplayTreeNodeExecutor(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
         jo.put("selected_values", selected_values);
-        executor.parseJSON(jo, dataList);
+        executor.parseJSON(jo);
         return executor.getResultJSON();
     }
 
-    private JSONObject getSelectedDataJSON(List<List<String>> dataList) throws JSONException {
-        GetTreeSelectTreeNodeExecutor executor = new GetTreeSelectTreeNodeExecutor();
+    private JSONObject getSelectedDataJSON(BISession session) throws JSONException {
+        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
+        paging.setCurrentPage(page);
+        GetTreeSelectTreeNodeExecutor executor = new GetTreeSelectTreeNodeExecutor(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
         jo.put("not_selected_value", not_selected_value);
         jo.put("keyword", keyword);
         jo.put("selected_values", selected_values);
         jo.put("parent_values", parent_values);
-        executor.parseJSON(jo, dataList);
+        executor.parseJSON(jo);
         return executor.getResultJSON();
 
     }
 
-    private JSONObject getAdjustDataJSON(List<List<String>> dataList) throws JSONException {
-        AdjustTreeDataStructureExecutorTree executor = new AdjustTreeDataStructureExecutorTree();
+    private JSONObject getAdjustDataJSON(BISession session) throws JSONException {
+        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
+        paging.setCurrentPage(page);
+        AdjustTreeDataStructureExecutorTree executor = new AdjustTreeDataStructureExecutorTree(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
         jo.put("selected_values", selected_values);
-        executor.parseJSON(jo, dataList);
+        executor.parseJSON(jo);
         return executor.getResultJSON();
     }
 
-    private void createDataList(Node tree, List<List<String>> dataList, int floors) {
-        if (tree.isEmptyChilds()) {
-            return;
-        }
-        if (dataList.size() <= floors) {
-            dataList.add(new ArrayList<String>());
-        }
-        for (int i = 0; i < tree.getChildLength(); i++) {
-            dataList.get(floors).add(tree.getChild(i).getShowValue());
-            createDataList(tree.getChild(i), dataList, floors + 1);
-        }
-    }
 
-    private void parseDimensionMap(JSONObject jo, long userId) throws Exception {
-        Iterator it = jo.keys();
-        while (it.hasNext()) {
-            String dimensionId = (String) it.next();
-            JSONObject dims = jo.getJSONObject(dimensionId);
-            if (dims.has("dimension_map")) {
-                JSONObject dimMap = dims.getJSONObject("dimension_map");
-                Iterator iterator = dimMap.keys();
-                while (iterator.hasNext()) {
-                    String targetId = (String) iterator.next();
-                    JSONObject tar = dimMap.getJSONObject(targetId);
-                    Map<String, BIDataColumn> dimensionMap = new HashMap<String, BIDataColumn>();
-                    dimensionsMap.put(dimensionId, dimensionMap);
-                    if (tar.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
-                        Object ob = tar.get(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-                        if (ob instanceof JSONObject) {
-                            JSONObject j = (JSONObject) ob;
-                            String fieldId = j.getString("field_id");
-                            dimensionMap.put(targetId, BIDataColumnFactory.createBIDataColumnByFieldID(fieldId, new BIUser(userId)));
-                        }
-                    }
-                    if (tar.has("target_relation")) {
-                        Map<String, List<BISimpleRelation>> relationMap = new HashMap<String, List<BISimpleRelation>>();
-                        relationsMap.put(dimensionId, relationMap);
-                        Object t = tar.get("target_relation");
-                        if (t instanceof JSONArray) {
-                            JSONArray rel = (JSONArray) t;
-                            int lens = rel.length();
-                            List<BISimpleRelation> relationList = new ArrayList<BISimpleRelation>();
-                            if (lens == 1) {
-                                String primaryFieldId = rel.optJSONObject(0).optJSONObject("primaryKey").optString("field_id");
-                                String foreignFieldId = rel.optJSONObject(0).optJSONObject("foreignKey").optString("field_id");
-                                if (ComparatorUtils.equals(BIIDUtils.getTableIDFromFieldID(primaryFieldId), BIIDUtils.getTableIDFromFieldID(foreignFieldId))) {
-                                    relationMap.put(targetId, relationList);
-                                    continue;
-                                }
-                            }
-                            for (int j = 0; j < lens; j++) {
-                                BISimpleRelation relation = new BISimpleRelation();
-                                relation.parseJSON(rel.optJSONObject(j));
-                                relationList.add(relation);
-                            }
-                            relationMap.put(targetId, relationList);
-                        }
-                    } else {
-                        BILogger.getLogger().error("error missing field:" + tar.toString() + this.getClass().getName());
-                    }
+    private void parseDimension(JSONObject jo, long userId) throws Exception {
+        JSONObject dimAndTar = jo.optJSONObject("dimensions");
+        if (dimAndTar == null) {
+            dimAndTar = new JSONObject();
+        }
+        JSONObject view = jo.optJSONObject("view");
+        if (view == null) {
+            view = new JSONObject();
+        }
+        Iterator<String> regions = view.keys();
+        JSONArray dimensionIds = new JSONArray();
+        while (regions.hasNext()) {
+            String region = regions.next();
+            if (ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1)) {
+                for (int i = 0; i < view.getJSONArray(region).length(); i++) {
+                    dimensionIds.put(view.getJSONArray(region).getString(i));
                 }
             }
         }
+        List<BIDimension> dims = new ArrayList<BIDimension>();
+        for (int i = 0; i < dimensionIds.length(); i++) {
+            JSONObject dimJo = dimAndTar.getJSONObject(dimensionIds.getString(i));
+            dimJo.put("did", dimensionIds.getString(i));
+            dims.add(BIDimensionFactory.parseDimension(dimJo, userId));
+        }
+        this.dimensions = dims.toArray(new BIDimension[dims.size()]);
+    }
+
+    private void parseSortFilter(JSONObject jo, long userId) throws Exception {
+        if (jo.has("sort")) {
+            JSONObject targetSort = (JSONObject) jo.get("sort");
+            this.targetSort = new NameObject(targetSort.getString("sort_target"), targetSort.getInt("type"));
+        }
+
+        if (jo.has("filter_value")) {
+            JSONObject targetFilter = (JSONObject) jo.get("filter_value");
+            Iterator it = targetFilter.keys();
+            while (it.hasNext()) {
+                String key = it.next().toString();
+                JSONObject filter = targetFilter.getJSONObject(key);
+                filter.put("target_id", key);
+                this.targetFilterMap.put(key, DimensionFilterFactory.parseFilter(filter, userId));
+            }
+        }
+    }
+
+    public Table getTargetTable() {
+        return getViewDimensions()[0].createTableKey();
     }
 
 
