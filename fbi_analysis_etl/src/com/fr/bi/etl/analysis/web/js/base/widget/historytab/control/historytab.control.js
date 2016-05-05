@@ -54,7 +54,6 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
 
     _refreshAfterSheets : function (table, widget, model) {
         var self = this;
-        this.populateOneTab(table.value, widget, model)
         var index = model.getIndexByValue(table.value);
         //从index开始更新index后面的面板信息
         var items = model.get(ETLCst.ITEMS);
@@ -77,6 +76,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
 
     saveOneSheet : function (table, widget, model) {
         model.saveItem(table);
+        this.populateOneTab(table.value, widget, model)
         this._refreshAfterSheets(table, widget, model)
         this.deferChange(widget, model);
     },
