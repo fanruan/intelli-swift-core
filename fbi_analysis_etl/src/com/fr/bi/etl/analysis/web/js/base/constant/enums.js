@@ -22,6 +22,12 @@ BI.ANALYSIS_ETL_HEADER = {
     NORMAL:"normal"
 }
 
+ETLCst.PREVIEW = {
+    NORMAL:1,
+    MERGE:2,
+    SELECT:3
+}
+
 BI.ANALYSIS_ETL_ADD_COLUMN_TYPE = {
     FORMULA:"formula",
     DATE_DIFF:"date_diff",
