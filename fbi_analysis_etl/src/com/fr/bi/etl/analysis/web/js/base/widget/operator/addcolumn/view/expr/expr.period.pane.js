@@ -10,7 +10,7 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
         LIST_HEIGHT : 164,
         FIRST_DETAIL_HEIGHT : 25,
         SECOND_DETAIL_HEIGHT : 100,
-        LIST_DOWN_HEIGHT : 148,
+        LIST_DOWN_HEIGHT : 138,
         LABEL_WIDTH : 60
     },
 
@@ -70,7 +70,7 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
     },
     
     _initModel : function () {
-        return BI.AnalysisETLOperatorAddColumnExprPeriodModel;
+        return BI.AnalysisETLOperatorAddColumnExprNumberFieldsModel;
     },
 
     _createDetail: function () {
@@ -105,11 +105,25 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
         });
     },
 
+    refreshGroup : function(items){
+        var self = this;
+        var list = BI.createWidget({
+            type : 'bi.etl_group_sortable_list',
+            items : items
+        });
+        list.on(BI.ETLGroupSortableList.EVENT_CHANGE, function(){
+            self.controller.setGroup(list.getValue())
+        })
+        self.listContainer.empty();
+        self.listContainer.addItem(list);
+    },
+    
     _createGroup: function () {
         var self = this;
-        self.list = BI.createWidget({
-            type : 'bi.etl_group_sortable_list'
-        });
+        self.listContainer = BI.createWidget({
+            type : 'bi.vertical',
+            height : 133
+        })
         return BI.createWidget({
             type : 'bi.vertical',
             cls : 'group-list',
@@ -127,7 +141,7 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
                     })
                 },
                 {
-                    el : self.list
+                    el : self.listContainer
                 }
             ]
         });

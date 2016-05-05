@@ -2,9 +2,11 @@ package com.finebi.cube.impl.message;
 
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.impl.router.status.BIStatusTag;
+import com.finebi.cube.impl.router.status.BIStatusTestTool;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageFragment;
 import com.finebi.cube.message.IMessageTopic;
+import com.finebi.cube.router.status.IStatusTag;
 
 /**
  * This class created on 2016/3/22.
@@ -15,6 +17,14 @@ import com.finebi.cube.message.IMessageTopic;
 public class BIMessageTestTool {
     public static IMessage generateMessageTa() {
         IMessage message = buildTopic(BIMessageTopicTestTool.generateTa());
+        return message;
+    }
+
+    public static IMessage generateMessageStatusFinish() {
+        IStatusTag tag = BIStatusTestTool.generateFinishA();
+        IMessage message = new BIMessage(new BIMessageTopic(tag.getSuperFragmentTag().getSuperTopicTag()),
+                new BIMessageFragment(tag.getSuperFragmentTag()),
+                new BIMessageStatus(tag), null);
         return message;
     }
 

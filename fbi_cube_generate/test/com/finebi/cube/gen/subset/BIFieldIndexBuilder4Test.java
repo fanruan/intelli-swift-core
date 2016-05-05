@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.subset;
 
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.fr.bi.stable.data.db.DBField;
@@ -14,7 +15,7 @@ import com.fr.bi.stable.data.source.ITableSource;
  */
 public class BIFieldIndexBuilder4Test extends BIFieldIndexGenerator {
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         System.out.println("Field Index!");
         BICubeBuildProbeTool.INSTANCE.getFlag().put(hostDBField.getFieldName() + tableSource.getSourceID(), 11);
 //        try {

@@ -5,7 +5,8 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
     _constants: {
         BUTTON_HEIGHT : 30,
         BUTTON_WIDTH : 88,
-        BUTTON_LEFT : 65
+        BUTTON_LEFT : 65,
+        PANE_HEIGHT : 120,
     },
 
     _defaultConfig: function () {
@@ -61,6 +62,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
         BI.createWidget({
             type : 'bi.vertical',
             element : self.element,
+            height : self._constants.PANE_HEIGHT,
             items : [
                 BI.createWidget({
                     type : 'bi.absolute',
@@ -80,7 +82,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
     },
 
     populate : function () {
-        this.label.setText(BI.isNull(this.storedValue) ? BI.i18nText('BI-(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
+        this.label.setText((BI.isNull(this.storedValue) || BI.isEmptyString(this.storedValue)) ? BI.i18nText('BI-(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
     },
     
     getValue: function () {

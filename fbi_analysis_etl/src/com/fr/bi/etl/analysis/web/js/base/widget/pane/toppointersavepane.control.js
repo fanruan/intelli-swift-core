@@ -13,7 +13,7 @@ BI.TopPointerSavePaneController = BI.inherit(BI.MVCController, {
 
     refreshSaveButtonStatus : function (status, title, widget) {
         widget.save.setEnable(status);
-        widget.save.setTitle(status === true ? "" : title);
+        widget.save.setWarningTitle(status === true ? "" : title);
     },
 
     setEnable : function (v, widget) {

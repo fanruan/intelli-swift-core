@@ -2,6 +2,11 @@
  * Created by 小灰灰 on 2016/4/14.
  */
 BI.AnalysisETLOperatorAbstractController = BI.inherit(BI.MVCController, {
+
+    _construct : function (widget, model) {
+        this.trigger = BI.Utils.triggerPreview()
+    },
+
     hideOperatorPane : function (widget) {
         widget.center.hideOperatorPane()
     },
@@ -10,16 +15,15 @@ BI.AnalysisETLOperatorAbstractController = BI.inherit(BI.MVCController, {
         widget.center.populate(model.update(), BI.extend(this.options, {
             showContent:widget.options.showContent,
         }));
-        this.refreshPopData(widget, model);
+        this.refreshPopData(this._editing ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, widget, model);
     },
 
-    refreshPopData : function (widget, model){
-        var operatorType = this._editing ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL
-        BI.Utils.triggerPreview(widget.center, model, operatorType)
+    refreshPopData : function (operatorType, widget, model){
+        this.trigger(widget.center, model, operatorType, ETLCst.PREVIEW.NORMAL)
     },
 
     refreshPreviewData:function (tempModel, operatorType, widget, model) {
-        BI.Utils.triggerPreview(widget.center, tempModel, operatorType);
+        this.trigger(widget.center, tempModel, operatorType, ETLCst.PREVIEW.NORMAL);
     }
     
 })

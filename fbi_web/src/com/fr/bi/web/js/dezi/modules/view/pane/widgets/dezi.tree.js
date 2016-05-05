@@ -33,6 +33,7 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         });
 
 
+
         this.widget = BI.createWidget({
             type: "bi.vtape",
             element: vessel,

@@ -56,6 +56,39 @@ public interface ISubscribe {
      * @throws BISubscribeDuplicateException
      */
     void subscribe(ITopicTag topicTag) throws BITopicAbsentException, BIRegisterIsForbiddenException;
+    /**
+     * 订阅相应主题下的分片
+     *
+     * @param fragment    主题分片
+     * @param topicTag    主题
+     * @param fragmentTag
+     */
+    void orSubscribe(IFragmentTag fragmentTag) throws BITopicAbsentException
+            , BIFragmentAbsentException, BIRegisterIsForbiddenException;
+
+    /**
+     * 订阅相应主题下的分片
+     *
+     * @param fragment    主题分片
+     * @param status      状态
+     * @param topicTag    主题
+     * @param fragmentTag 主题分片
+     * @param statusTag
+     */
+
+    void orSubscribe(IStatusTag statusTag) throws BITopicAbsentException, BIFragmentAbsentException,
+            BIStatusAbsentException, BIRegisterIsForbiddenException;
+
+
+    /**
+     * 订阅主题下的全部消息
+     *
+     * @param topicTag 主题
+     * @return
+     * @throws BITopicAbsentException
+     * @throws BISubscribeDuplicateException
+     */
+    void orSubscribe(ITopicTag topicTag) throws BITopicAbsentException, BIRegisterIsForbiddenException;
 
     boolean isSubscribed(ITopicTag topicTag) throws BITopicAbsentException;
 

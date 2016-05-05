@@ -1,6 +1,8 @@
 BI.MergeHistoryController = BI.inherit(BI.MVCController,  {
 
-    
+    _construct : function () {
+       this.trigger = BI.Utils.triggerPreview();
+    },
 
     populate : function (widget, model) {
         this.buttonGroup = [];
@@ -57,7 +59,7 @@ BI.MergeHistoryController = BI.inherit(BI.MVCController,  {
             }
         });
         BI.Layers.show(widget.getName());
-        this.refreshPopData(widget, item);
+        this._refreshPopData(widget, item);
     },
 
     _setBranchValue: function (id) {
@@ -67,8 +69,8 @@ BI.MergeHistoryController = BI.inherit(BI.MVCController,  {
         })
     },
 
-    refreshPopData : function (widget, model){
-        BI.Utils.triggerMergePreview(widget.previewTable, model, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
+    _refreshPopData : function (widget, model){
+        this.trigger(widget.previewTable, model, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, ETLCst.PREVIEW.MERGE)
     }
 
 })

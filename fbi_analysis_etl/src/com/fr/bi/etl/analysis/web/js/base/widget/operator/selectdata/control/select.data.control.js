@@ -6,6 +6,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
     _construct : function(widget, model) {
         BI.AnalysisETLOperatorSelectDataController.superclass._construct.apply(this, arguments);
         this._editing = model.get(ETLCst.FIELDS).length === 0;
+        this.trigger = BI.Utils.triggerPreview()
     },
 
     addField : function(fieldId, widget, model){
@@ -63,13 +64,12 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
     },
 
 
-    refreshPopData : function (widget, model){
-        var operatorType = this._editing ? ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL
-        BI.Utils.triggerSelectDataPreview(widget.center, model, operatorType)
+    refreshPopData : function (operatorType, widget, model){
+        this.trigger(widget.center, model, operatorType, ETLCst.PREVIEW.SELECT)
     },
 
     refreshPreviewData:function (tempModel, operatorType, widget, model) {
-        BI.Utils.triggerPreview(widget.center, tempModel, operatorType);
+        this.trigger(widget.center, tempModel, operatorType, ETLCst.PREVIEW.NORMAL);
     },
 
     deleteFieldByIndex : function (v, widget, model) {
@@ -143,7 +143,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
         this._refreshSelectDataPane(widget, model);
         this._refreshButtonState(widget, model);
         this._refreshCenterState(widget, model);
-        this.refreshPopData(widget, model);
+        this.refreshPopData(this._editing ? ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, widget, model);
         this._editing === true ? this._clearMask(widget) : this._showMask(widget);
     },
     

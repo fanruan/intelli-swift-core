@@ -47,7 +47,6 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
 
-
     @Override
     public void addGroupValue(int position, T groupValue) {
         columnEntity.addGroupValue(position, groupValue);

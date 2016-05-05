@@ -92,13 +92,24 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
 
     }
 
-    @Override
-    public void clear() {
+    protected void resetCubeWriter() {
         if (isCubeWriterAvailable()) {
             cubeWriter.clear();
+            cubeWriter = null;
         }
+    }
+
+    protected void resetCubeReader() {
         if (isCubeReaderAvailable()) {
             cubeReader.clear();
+            cubeReader = null;
         }
+    }
+
+    @Override
+    public void clear() {
+        resetCubeReader();
+        resetCubeWriter();
+
     }
 }

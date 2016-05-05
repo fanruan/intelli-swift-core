@@ -1,6 +1,7 @@
 package com.finebi.cube.impl.operate;
 
 import com.finebi.cube.impl.router.fragment.BIFragmentTag;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.operate.IOperation;
 import com.finebi.cube.operate.IOperationID;
 import com.finebi.cube.pubsub.IProcessor;
@@ -23,7 +24,7 @@ public abstract class BIOperationBase extends TestCase {
     public BIOperationBase(IOperationID operationID, IFragmentID fragmentID) {
         operation = BIFactoryHelper.getObject(IOperation.class, operationID, new IProcessor<Integer>() {
             @Override
-            public void process() {
+            public void process(IMessage lastReceiveMessage) {
                 processBase();
             }
 

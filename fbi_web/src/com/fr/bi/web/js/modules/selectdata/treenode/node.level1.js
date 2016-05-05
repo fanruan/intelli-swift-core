@@ -23,7 +23,8 @@ BI.DetailSelectDataLevel1Node = BI.inherit(BI.Widget, {
             pId: o.pId,
             open: o.open,
             text: o.text,
-            value: o.value
+            value: o.value,
+            title: o.title
         });
         this.node.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);

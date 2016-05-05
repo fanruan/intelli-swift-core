@@ -60,4 +60,31 @@ public class BICubeVersionTest extends TestCase {
             assertFalse(true);
         }
     }
+
+    public void testReset() {
+        try {
+            testAvailable();
+            version.resetVersionWriter();
+            assertFalse(version.isVersionWriterAvailable());
+            assertTrue(version.isVersionReaderAvailable());
+            version.resetVersionReader();
+
+            assertFalse(version.isVersionWriterAvailable());
+            assertFalse(version.isVersionReaderAvailable());
+
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
+    public void testResetInitial() {
+        try {
+            testReset();
+            testAvailable();
+
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
 }

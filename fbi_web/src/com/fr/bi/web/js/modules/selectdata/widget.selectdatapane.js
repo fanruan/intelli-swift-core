@@ -85,8 +85,8 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                         searchResult.push({
                             id: finded.pId,
                             type: "bi.detail_select_data_level0_node",
-                            text: BI.Utils.getTableNameByID(finded.pId),
-                            title: BI.Utils.getTableNameByID(finded.pId),
+                            text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
+                            title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
                             value: finded.pId,
                             isParent: true,
                             open: true
@@ -192,18 +192,18 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
         //Excel View
         var excelView = BI.Utils.getExcelViewByTableId(tableId);
         var viewFields = [];
-        if(BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
+        if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
             var excel = excelView.excel;
             var positions = excelView.positions;
             var items = [];
-            BI.each(excel, function(i, row) {
+            BI.each(excel, function (i, row) {
                 var item = [];
-                BI.each(row, function(j, cell) {
+                BI.each(row, function (j, cell) {
                     item.push({text: cell})
                 });
                 items.push(item);
             });
-            BI.each(positions, function(id, position) {
+            BI.each(positions, function (id, position) {
                 viewFields.push(id);
                 items[position.row][position.col].value = id;
             });

@@ -81,7 +81,6 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
                  */
                 readWriteLock.writeLock().unlock();
             }
-
         }
         /**
          * 读取数据

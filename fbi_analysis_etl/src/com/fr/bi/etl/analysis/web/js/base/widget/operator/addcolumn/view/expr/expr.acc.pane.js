@@ -9,10 +9,10 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
         WIDTH : 200,
         COMBO_PANE_WIDTH : 270,
         PANE_HEIGHT : 200,
-        GROUP_HEIGHT : 178,
+        GROUP_HEIGHT : 158,
         DETAIL_WIDTH : 230,
-        LIST_HEIGHT : 164,
-        LIST_DOWN_HEIGHT : 148
+        LIST_HEIGHT : 144,
+        LIST_DOWN_HEIGHT : 128
     },
 
     _initView: function () {
@@ -46,21 +46,6 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
         self.rule.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
             self.controller.setRule(v);
         });
-        self.sumType = BI.createWidget({
-            type: "bi.text_icon_combo",
-            height : self._constants.HEIGHT,
-            width : self._constants.WIDTH,
-            items : BICst.SUMMARY_TYPE_ITEMS
-        });
-        self.sumType.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
-            self.controller.setSumType(v);
-        });
-        self.sumLabel = BI.createWidget({
-            type : 'bi.label',
-            cls : 'label-name',
-            text : BI.i18nText('BI-Statistic_Type'),
-            textAlign : 'left'
-        })
         return BI.createWidget({
             type : 'bi.absolute',
             width : self._constants.COMBO_PANE_WIDTH,
@@ -81,18 +66,12 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
                 },
                 left : 0,
                 top : 45
-            },{el : self.sumLabel,
-                left : 0,
-                top : 85
             },{el : self.fieldCombo,
                 left : 70,
                 top : 0
             },{el : self.rule,
                 left : 70,
                 top : 40
-            },{el : self.sumType,
-                left : 70,
-                top : 80
             }
             ]
         })
@@ -100,9 +79,10 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
 
     _createGroupPane : function () {
         var self = this;
-        self.list = BI.createWidget({
-            type : 'bi.etl_group_sortable_list'
-        });
+        self.listContainer = BI.createWidget({
+            type : 'bi.vertical',
+            height : 127
+        })
         self.groupPane = BI.createWidget({
             type : 'bi.absolute',
             width : self._constants.WIDTH,
@@ -124,7 +104,7 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
                             })
                         },
                         {
-                            el : self.list
+                            el : self.listContainer
                         }
                     ]
             }
@@ -135,11 +115,25 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
         return self.groupPane;
     },
 
+    refreshGroup : function(items){
+        var self = this;
+        var list = BI.createWidget({
+            type : 'bi.etl_group_sortable_list',
+            items : items
+        });
+        list.on(BI.ETLGroupSortableList.EVENT_CHANGE, function(){
+            self.controller.setGroup(list.getValue())
+        })  
+        self.listContainer.empty();
+        self.listContainer.addItem(list);
+    },
+    
     _createDetailPane : function () {
         var self = this;
         self.labels = BI.createWidget({
             type : 'bi.vertical',
             cls : 'detail-view',
+            lgap : self._constants.LGAP,
             height : self._constants.LIST_DOWN_HEIGHT
         });
         return BI.createWidget({
@@ -174,5 +168,3 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
     }
 });
 $.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_ACC, BI.AnalysisETLOperatorAddColumnAccPane);
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_RANK, BI.AnalysisETLOperatorAddColumnAccPane);
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_SUM, BI.AnalysisETLOperatorAddColumnAccPane);
