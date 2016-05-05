@@ -29,28 +29,10 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
             height: o.height
         });
 
-        var group = {};
-        var type = BI.Utils.getFieldTypeByDimensionID(o.dId);
-        switch (type) {
-            case BICst.COLUMN.DATE:
-                group = {type: BICst.GROUP.Y};
-                break;
-            case BICst.COLUMN.NUMBER:
-                group = {type: BICst.GROUP.AUTO_GROUP};
-                break;
-        }
-
-        var tmpGroup = BI.Utils.getDimensionGroupByID(o.dId);
-        if(BI.has(tmpGroup, "type")){
-            group = tmpGroup;
-        }
-
         this.dimension = {
             name: BI.Utils.getDimensionNameByID(o.dId),
-            _src: {
-                field_id: BI.Utils.getFieldIDByDimensionID(o.dId)
-            },
-            group: group,
+            _src: BI.Utils.getDimensionSrcByID(o.dId),
+            group: BI.Utils.getDimensionGroupByID(o.dId),
             sort: BI.Utils.getDimensionSortByID(o.dId)
         };
 
@@ -71,22 +53,17 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    _itemsCreator: function(options, callback){
+    _itemsCreator: function (options, callback) {
         var o = this.options, self = this;
 
         BI.Utils.getWidgetDataByWidgetInfo({
-            height: 0,
-            width: 0,
-            left: 0,
-            top: 0
-        }, {
             "1234567": self.dimension
-        }, {}, BICst.Widget.STRING, {
+        }, {
             "10000": ["1234567"]
-        }, -1, function (data) {
+        }, function (data) {
             if (options.type == BI.MultiSelectCombo.REQ_GET_ALL_DATA) {
                 callback({
-                    items: self._createItemsByData(data)
+                    items: self._createItemsByData(data.value)
                 });
                 return;
             }
@@ -95,15 +72,19 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
                 return;
             }
             callback({
-                items: self._createItemsByData(data),
+                items: self._createItemsByData(data.value),
                 hasNext: data.hasNext
             });
-        }, {text_options: options});
+        }, {
+            type: BICst.Widget.STRING,
+            page: -1,
+            text_options: options
+        });
     },
 
-    _createItemsByData: function (data) {
+    _createItemsByData: function (values) {
         var result = [];
-        BI.each(data.value, function(idx, value){
+        BI.each(values, function (idx, value) {
             result.push({
                 text: value,
                 value: value,
@@ -113,7 +94,7 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
         return result;
     },
 
-    _assertValue: function(v){
+    _assertValue: function (v) {
         v = v || {};
         v.type = v.type || BI.Selection.Multi;
         v.value = v.value || [];
