@@ -173,7 +173,7 @@ public class BIGetTreeNodeAction extends ActionNoSessionCMD {
                     } else {
                         nodeJa.put("id", id + "_" + times + "_" + (i + 1));
                     }
-                    nodeJa.put("times", 1);
+//                    nodeJa.put("times", 1);
                     nodeJa.put("text", list.get(i));
                     nodeJa.put("title", list.get(i));
 //                    nodeJa.put("parentValues", parentValues);
