@@ -92,7 +92,7 @@ BI.FieldRelationSettingWithPreviewPopup = BI.inherit(BI.BarPopoverSection, {
                     type: BICst.TREE.TREE_REQ_TYPE.INIT_DATA
                 }, op);
                 var wId = self.model.getWidgetId();
-                BI.Utils.getWidgetDataByWidgetInfo(self._createPreviewDimensions(), BI.Utils.getWidgetViewByID(wId), function (jsonData) {
+                BI.Utils.getWidgetDataByWidgetInfo(self._createPreviewDimensions(), BI.Utils.getWidgetViewByID(wId),wId, function (jsonData) {
                     callback(jsonData);
                 }, {
                     type: BI.Utils.getWidgetTypeByID(wId),

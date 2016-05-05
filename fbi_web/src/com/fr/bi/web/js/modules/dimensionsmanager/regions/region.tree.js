@@ -21,7 +21,6 @@ BI.TreeRegion = BI.inherit(BI.AbstractRegion, {
 
         this.relationButton.on(BI.TextButton.EVENT_CHANGE, function () {
             self.popup = BI.createWidget({
-                //type: "bi.field_relation_setting_popup",
                 type: "bi.field_relation_setting_with_preview_popup",
                 wId: o.wId
             });

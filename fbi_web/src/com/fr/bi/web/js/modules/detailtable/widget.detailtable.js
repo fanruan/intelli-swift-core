@@ -65,7 +65,7 @@ BI.DetailTable = BI.inherit(BI.Widget, {
         var ob = {};
         ob.page = this.pageOperator;
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
-            var json = jsonData.data, row = jsonData.row, page = jsonData.page, size = jsonData.size;
+            var json = jsonData.data, row = jsonData.row, size = jsonData.size;
             if (BI.isNull(json) || BI.isNull(row)) {
                 return;
             }
