@@ -130,7 +130,34 @@
                 }
             });
             var countIds = this.getCountFieldIDsOfTableID(tableId);
-            return countIds.concat(transIds).concat(fieldIds);
+            var tNum = [], tString = [], tDate = [], fNum = [], fString = [], fDate = [];
+            BI.each(transIds, function(i, id){
+                switch (BI.Utils.getFieldTypeByID(id)) {
+                    case BICst.COLUMN.NUMBER:
+                        tNum.push(id);
+                        break;
+                    case BICst.COLUMN.STRING:
+                        tString.push(id);
+                        break;
+                    case BICst.COLUMN.DATE:
+                        tDate.push(id);
+                        break;
+                }
+            });
+            BI.each(fieldIds, function(i, id){
+                switch (BI.Utils.getFieldTypeByID(id)) {
+                    case BICst.COLUMN.NUMBER:
+                        fNum.push(id);
+                        break;
+                    case BICst.COLUMN.STRING:
+                        fString.push(id);
+                        break;
+                    case BICst.COLUMN.DATE:
+                        fDate.push(id);
+                        break;
+                }
+            });
+            return countIds.concat(tNum).concat(tString).concat(tDate).concat(fNum).concat(fString).concat(fDate);
         },
 
         getExcelViewByTableId: function (tableId) {
