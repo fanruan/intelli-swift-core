@@ -105,11 +105,24 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
         });
     },
 
+    refreshGroup : function(items){
+        var self = this;
+        var list = BI.createWidget({
+            type : 'bi.etl_group_sortable_list',
+            items : items
+        });
+        list.on(BI.ETLGroupSortableList.EVENT_CHANGE, function(){
+            self.controller.setGroup(list.getValue())
+        })
+        self.listContainer.empty();
+        self.listContainer.addItem(list);
+    },
+    
     _createGroup: function () {
         var self = this;
-        self.list = BI.createWidget({
-            type : 'bi.etl_group_sortable_list'
-        });
+        self.listContainer = BI.createWidget({
+            type : 'bi.vertical'
+        })
         return BI.createWidget({
             type : 'bi.vertical',
             cls : 'group-list',
@@ -127,7 +140,7 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
                     })
                 },
                 {
-                    el : self.list
+                    el : self.listContainer
                 }
             ]
         });
