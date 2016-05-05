@@ -1,9 +1,11 @@
 package com.finebi.cube.impl.message;
 
+import com.finebi.cube.impl.router.status.BIStatusID;
 import com.finebi.cube.message.*;
+import com.finebi.cube.router.status.IWaitingStatusTag;
+import com.fr.general.ComparatorUtils;
 
 /**
- *
  * This class created on 2016/3/22.
  *
  * @author Connery
@@ -55,6 +57,13 @@ public class BIMessage implements IMessage {
     @Override
     public boolean isStatusMessage() {
         return statusTag != null;
+    }
+
+    public boolean isStopStatus() {
+        if (isStatusMessage()) {
+            return ComparatorUtils.equals(getStatus().getStatusTag().getStatusID(), new BIStatusID(IWaitingStatusTag.STATUS_STOP_TAG));
+        }
+        return false;
     }
 
     @Override

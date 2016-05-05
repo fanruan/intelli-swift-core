@@ -5,6 +5,7 @@ import com.fr.bi.common.container.BIMapContainer;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Map;
 public class BIResourceCache<R> extends BIMapContainer<ICubeResourceLocation, IResourceCacheItem<R>> implements IResourceCache<R> {
     @Override
     protected Map<ICubeResourceLocation, IResourceCacheItem<R>> initContainer() {
-        return null;
+        return new HashMap<ICubeResourceLocation, IResourceCacheItem<R>>();
     }
 
     @Override
