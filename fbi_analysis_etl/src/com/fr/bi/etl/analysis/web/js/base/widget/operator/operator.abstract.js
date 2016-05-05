@@ -25,7 +25,7 @@ BI.AnalysisETLOperatorAbstractPane = BI.inherit(BI.MVCWidget, {
         var self = this;
 
         this.center.on(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, function(v){
-            self.controller.refreshPopData();
+            self.controller.refreshPopData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[v.getValue()].operatorType);
             self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments)
         })
 

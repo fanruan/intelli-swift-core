@@ -5,7 +5,8 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
     _constants: {
         BUTTON_HEIGHT : 30,
         BUTTON_WIDTH : 88,
-        BUTTON_LEFT : 65
+        BUTTON_LEFT : 65,
+        PANE_HEIGHT : 120,
     },
 
     _defaultConfig: function () {
@@ -30,6 +31,7 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
             var groupPopOver = BI.createWidget({
                 type: "bi.etl_filter_group_popup",
                 fields : o.fields,
+                field : o.field_name,
                 value : self.storedValue,
                 targetText : self._getTargetText()
             });
@@ -56,6 +58,7 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
         BI.createWidget({
             type : 'bi.vertical',
             element : self.element,
+            height : self._constants.PANE_HEIGHT,
             items : [
                     BI.createWidget({
                         type : 'bi.absolute',

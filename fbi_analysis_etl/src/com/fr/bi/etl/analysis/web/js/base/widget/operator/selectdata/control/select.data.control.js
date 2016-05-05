@@ -63,8 +63,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
     },
 
 
-    refreshPopData : function (widget, model){
-        var operatorType = this._editing ? ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL
+    refreshPopData : function (operatorType, widget, model){
         BI.Utils.triggerSelectDataPreview(widget.center, model, operatorType)
     },
 
@@ -143,7 +142,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
         this._refreshSelectDataPane(widget, model);
         this._refreshButtonState(widget, model);
         this._refreshCenterState(widget, model);
-        this.refreshPopData(widget, model);
+        this.refreshPopData(this._editing ? ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, widget, model);
         this._editing === true ? this._clearMask(widget) : this._showMask(widget);
     },
     

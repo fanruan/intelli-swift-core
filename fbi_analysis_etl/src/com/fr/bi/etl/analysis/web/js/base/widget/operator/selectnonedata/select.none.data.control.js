@@ -14,6 +14,5 @@ BI.AnalysisETLOperatorSelectNoneDataController = BI.inherit(BI.AnalysisETLOperat
     populate : function (widget, model) {
         BI.AnalysisETLOperatorSelectNoneDataController.superclass.populate.apply(this, arguments);
         this.refreshCenterState(widget);
-        this.refreshPopData(widget, model)
     }
 })
