@@ -5,6 +5,7 @@ import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.*;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -30,7 +31,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
     }
 
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         buildRelationPathIndex();
         return null;
     }

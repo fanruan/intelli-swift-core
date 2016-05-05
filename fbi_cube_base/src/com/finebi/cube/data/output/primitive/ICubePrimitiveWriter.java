@@ -22,4 +22,5 @@ public interface ICubePrimitiveWriter<T> extends Release {
 
     void setReleaseManager(ICubeSourceReleaseManager releaseHelper);
 
+    void releaseSource();
 }

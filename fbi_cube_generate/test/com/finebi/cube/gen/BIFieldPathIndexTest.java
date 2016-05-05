@@ -34,7 +34,7 @@ public class BIFieldPathIndexTest extends BICubeTestBase {
             BIFieldIndexGeneratorTest fieldIndexGenerator = new BIFieldIndexGeneratorTest();
             fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableA(), 2);
 
-            indexBuilder.mainTask();
+            indexBuilder.mainTask(null);
             ICubeColumnReaderService getterService = cube.getCubeColumn(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BIColumnKey.covertColumnKey(new DBField("tableA", "gender", DBConstant.CLASS.STRING, 6)));
 
             ICubeRelationEntityGetterService relationEntityGetterService = getterService.getRelationIndexGetter(BICubePathTestTool.getABC());

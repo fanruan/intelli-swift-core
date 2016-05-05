@@ -94,12 +94,11 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     private void initialFieldInfoReader() throws Exception {
-        if (!isFieldReaderAvailable()) {
-            ICubeResourceLocation mainLocation = this.currentLocation.buildChildLocation(MAIN_DATA);
-            mainLocation.setStringType();
-            mainLocation.setReaderSourceLocation();
-            fieldInfoReader = (ICubeStringReader) discovery.getCubeReader(mainLocation);
-        }
+        ICubeResourceLocation mainLocation = this.currentLocation.buildChildLocation(MAIN_DATA);
+        mainLocation.setStringType();
+        mainLocation.setReaderSourceLocation();
+        fieldInfoReader = (ICubeStringReader) discovery.getCubeReader(mainLocation);
+
     }
 
     private void initialFieldInfoWriter() throws Exception {
@@ -158,12 +157,11 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     private void initialVersionWriter() throws Exception {
-        if (!isVersionWriterAvailable()) {
-            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(VERSION_DATA);
-            rowCountLocation.setIntegerTypeWrapper();
-            rowCountLocation.setWriterSourceLocation();
-            versionWriter = (ICubeIntegerWriterWrapper) discovery.getCubeWriter(rowCountLocation);
-        }
+        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(VERSION_DATA);
+        rowCountLocation.setIntegerTypeWrapper();
+        rowCountLocation.setWriterSourceLocation();
+        versionWriter = (ICubeIntegerWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+
     }
 
     public ICubeStringWriter getFieldInfoWriter() {
@@ -177,7 +175,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     public ICubeStringReader getFieldInfoReader() {
         try {
-            initialFieldInfoReader();
+            if (!isFieldReaderAvailable()) {
+                initialFieldInfoReader();
+            }
             return fieldInfoReader;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -186,7 +186,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     public ICubeIntegerWriterWrapper getVersionWriter() {
         try {
-            initialVersionWriter();
+            if (!isVersionWriterAvailable()) {
+                initialVersionWriter();
+            }
             return versionWriter;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);

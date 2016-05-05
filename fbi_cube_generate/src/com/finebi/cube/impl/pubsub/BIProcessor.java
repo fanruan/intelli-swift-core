@@ -1,6 +1,7 @@
 package com.finebi.cube.impl.pubsub;
 
 import com.finebi.cube.exception.BIDeliverFailureException;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageBody;
 import com.finebi.cube.pubsub.IProcessor;
 import com.finebi.cube.pubsub.IPublish;
@@ -27,18 +28,24 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
     }
 
     @Override
-    public void process() {
+    public void process(final IMessage lastReceiveMessage) {
+        if (lastReceiveMessage.isStopStatus()) {
+            try {
+                messagePublish.publicStopMessage(getStopMess());
+            } catch (BIDeliverFailureException e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
+        }
         try {
             messagePublish.publicRunningMessage(getRunningMess());
             Future<T> result = executorService.submit(new Callable<T>() {
                 @Override
                 public T call() throws Exception {
                     try {
-                        T result = mainTask();
+                        T result = mainTask(lastReceiveMessage);
                         release();
                         messagePublish.publicFinishMessage(getFinishMess());
                         return result;
-
                     } catch (Exception e) {
                         messagePublish.publicStopMessage(getStopMess());
                         BILogger.getLogger().error(e.getMessage(), e);
@@ -54,10 +61,9 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
             } catch (BIDeliverFailureException e1) {
                 throw BINonValueUtils.beyondControl(e1);
             }
-
         }
-
     }
+
 
     protected IMessageBody getRunningMess() {
         return null;
@@ -74,9 +80,10 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
     /**
      * TODO 捕获异常，发送终止消息，停止其他监听对象的等待。
      *
+     * @param lastReceiveMessage
      * @return
      */
-    public abstract T mainTask();
+    public abstract T mainTask(IMessage lastReceiveMessage);
 
 
     public abstract void release();

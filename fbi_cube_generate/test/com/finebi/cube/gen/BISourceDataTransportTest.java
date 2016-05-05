@@ -33,7 +33,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         try {
             setUp();
             dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<ITableSource>());
-            dataTransport.mainTask();
+            dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

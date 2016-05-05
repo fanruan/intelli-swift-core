@@ -48,7 +48,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             while (columnKeyIterator.hasNext()) {
                 BIColumnKey columnKey = columnKeyIterator.next();
                 BIFieldIndexGenerator fieldIndexGenerator = new BIFieldIndexGenerator(cube, tableSource, tableSource.getFieldsArray(null)[columnIndex], columnKey);
-                fieldIndexGenerator.mainTask();
+                fieldIndexGenerator.mainTask(null);
             }
 
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.subset;
 
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.ICube;
 
@@ -12,7 +13,7 @@ import com.finebi.cube.structure.ICube;
  */
 public class BIRelationIndexBuilder4Test extends BIRelationIndexGenerator {
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         System.out.println("Relation Index!");
         BICubeBuildProbeTool.INSTANCE.getFlag().put("RelationIndex", 20);
 
