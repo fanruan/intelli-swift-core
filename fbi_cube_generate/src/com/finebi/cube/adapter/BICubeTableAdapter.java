@@ -251,7 +251,7 @@ public class BICubeTableAdapter implements ICubeTableService {
             BICubeTablePath path = BICubePathUtils.convert(relationList);
             if (path.size() > 0 && !columnReaderService.existRelationPath(path)) {
                 BIFieldPathIndexBuilder indexBuilder = new BIFieldPathIndexBuilder(cube, getDBField(columnIndex), path);
-                indexBuilder.mainTask(null);
+                indexBuilder.mainTask();
             }
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
