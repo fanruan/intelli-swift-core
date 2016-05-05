@@ -21,7 +21,7 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
                     if (field.field_name === item){
                         return true;
                     }
-                })){
+                }) && item !== o.field){
                 self.storedValue.push(item)
             }
         });
@@ -34,7 +34,7 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
             });
         })
         BI.each(o.fields, function (i, item) {
-            if (BI.indexOf(self.storedValue, item.field_name) === -1 && item.field_type === BICst.COLUMN.STRING){
+            if (BI.indexOf(self.storedValue, item.field_name) === -1 && item.field_name !== o.field){
                 items.push({text : item.field_name, value : item.field_name});
             }
         })
@@ -57,7 +57,6 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
 
     _afterListChanged : function(){
         var self = this, o = this.options;
-        self.sure.setEnable(this.storedValue.length !== 0);
         self.labels.clear();
         if (self.storedValue.length !== 0){
             BI.each(self.storedValue, function (i, item) {
