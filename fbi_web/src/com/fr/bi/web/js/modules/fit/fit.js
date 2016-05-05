@@ -271,10 +271,14 @@ BI.Fit = BI.inherit(BI.Widget, {
         }
     },
 
-    copyRegion: function (id, el) {
+    copyRegion: function (id, newId) {
         var flag = false;
         var region = this.arrangement.getRegionByName(id);
-        if (!(flag = this.arrangement.addRegion(el, {
+        if (!(flag = this.arrangement.addRegion({
+                el: this._createItem(newId),
+                width:region.width,
+                height: region.height
+            }, {
                 left: region.left + region.width / 2,
                 top: region.top + region.height / 2
             }))) {
@@ -288,6 +292,9 @@ BI.Fit = BI.inherit(BI.Widget, {
                     }))) {
                 }
             }
+        }
+        if(flag === true){
+            this.fireEvent(BI.Fit.EVENT_CHANGE);
         }
         return flag;
     },

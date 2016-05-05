@@ -49,6 +49,12 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                         dId: self.seriesDid,
                         value: [obj.category]
                     }];
+                    if(BI.isNotNull(self.cataDid)){
+                        clicked.push({
+                            dId: self.cataDid,
+                            value: [obj.seriesName]
+                        })
+                    }
                     break;
 
             }
@@ -131,6 +137,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             var top = data.t, left = data.l;
             return BI.map(top.c, function (id, tObj) {
                 var data = BI.map(left.c, function (idx, obj) {
+                    self.tarIdMap[obj.s.c[id].s] = targetIds[0];
                     var wType = BI.Utils.getWidgetTypeByID(o.wId);
                     if(wType === BICst.Widget.ACCUMULATE_BAR || wType === BICst.Widget.BAR){
                         return {
@@ -180,6 +187,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 return res;
             });
         }
+        return [];
     },
 
     _formatDataForBubble: function (data) {
@@ -233,6 +241,9 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
     _formatDataForAxis: function(da){
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
+        if(BI.isEmptyArray(data)){
+            return [];
+        }
         var view = BI.Utils.getWidgetViewByID(o.wId);
         BI.each(this.targetIds, function(idx, tId){
             if(BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)){
@@ -268,6 +279,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
     populate: function () {
         var self = this, o = this.options;
         this.tarIdMap = {};
+        this.chartDisplay.loading();
         BI.Utils.getWidgetDataByID(o.wId, function(jsonData){
             self.chartDisplay.setChartType(BI.Utils.getWidgetTypeByID(o.wId));
             var view = BI.Utils.getWidgetViewByID(o.wId);
@@ -278,8 +290,14 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             }else{
                 self.chartDisplay.hideTheOtherYAxis();
             }
+            self.chartDisplay.resize();
             self.chartDisplay.populate(self._createDataByData(jsonData.data));
+            self.chartDisplay.loaded();
         });
+    },
+
+    resize: function () {
+        this.chartDisplay.resize();
     },
 
     _send2AllChildLinkWidget: function(wid, dId, clicked) {

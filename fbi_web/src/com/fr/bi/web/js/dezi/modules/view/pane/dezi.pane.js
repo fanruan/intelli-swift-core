@@ -48,7 +48,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
 
     duplicate: function (copy, key1, key2) {
         if (key1 === "widgets") {
-            this.dashboard.populate();
+            this.dashboard.copyRegion(key2, copy);
             this._refreshWidgets();
         }
     },

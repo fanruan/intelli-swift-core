@@ -647,18 +647,6 @@
             return this.getPathsFromTableAToTableB(tableA, tableB);
         },
 
-        getFirstCommonPrimaryTablesBetweenTwoTablesByIDs: function (tableId1, tableId2) {
-            var primaryTables = this.getPrimaryRelationTablesByTableID(tableId1);
-            var connectionSet = Pool.connections.connectionSet;
-            var result = [];
-            BI.find(connectionSet, function (idx, obj) {
-                if (obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)) {
-                    return;
-                }
-            });
-
-        },
-
         getCommonPrimaryTablesByTableIDs: function (tableIds) {
             var self = this;
             var commonTables = [];

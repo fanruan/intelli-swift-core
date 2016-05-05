@@ -35,7 +35,6 @@ public class TargetFilterFactory {
                     filter = new GeneralORFilter();
                     break;
                 case BIReportConstant.FILTER_TYPE.FORMULA:
-                case BIReportConstant.FILTER_TYPE.EMPTY_FORMULA:
                     filter = new FormulaFilter();
                     break;
                 case BIReportConstant.FILTER_TYPE.TREE_FILTER:
@@ -49,6 +48,7 @@ public class TargetFilterFactory {
                     filter = new SummaryNumberFilter();
                     break;
                 case BIReportConstant.FILTER_TYPE.EMPTY_CONDITION:
+                case BIReportConstant.FILTER_TYPE.EMPTY_FORMULA:
                     filter = null;
                     break;
                 default:
