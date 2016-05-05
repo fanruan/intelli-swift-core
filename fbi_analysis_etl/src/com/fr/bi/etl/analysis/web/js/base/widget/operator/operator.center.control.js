@@ -16,6 +16,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
 
     clearOperator : function (widget){
         this.hideOperatorPane(widget)
+        this._getTitle(widget).setEnable(true)
         this._getTitle(widget).clearAllSelected();
         this._getTitle(widget).setSaveButtonEnabled(true)
     },

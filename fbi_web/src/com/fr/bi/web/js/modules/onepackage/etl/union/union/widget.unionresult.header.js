@@ -42,11 +42,12 @@ BI.UnionResultHeader = BI.inherit(BI.Widget, {
                     initValue += (initValue === "") ? n : ("/" + n);
                 }
             });
+            var title = name[0] === initValue ? name[0] : (name[0] + "(" + initValue + ")");
             var nameEditor = BI.createWidget({
                 type: "bi.sign_initial_editor",
                 allowBlank: false,
                 value: initValue,
-                title: name[0] + "(" + initValue + ")",
+                title: title,
                 width: 100,
                 errorText: BI.i18nText("BI-Can_Not_Have_Rename_Fields"),
                 validationChecker: function(v){
@@ -57,7 +58,7 @@ BI.UnionResultHeader = BI.inherit(BI.Widget, {
             nameEditor.on(BI.SignInitialEditor.EVENT_CHANGE, function(){
                 var nameValue = nameEditor.getValue();
                 self.mergeResult[i][0] = nameValue.state;
-                nameEditor.setTitle(nameValue.state + "(" + initValue + ")" );
+                nameEditor.setTitle(nameValue.state === initValue ? nameValue.state : (nameValue.state + "(" + initValue + ")"));
                 self.fireEvent(BI.UnionResultHeader.EVENT_CHANGE, self.mergeResult);
             });
             var editorIcon = BI.createWidget({

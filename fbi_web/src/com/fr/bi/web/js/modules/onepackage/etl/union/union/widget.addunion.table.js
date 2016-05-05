@@ -85,9 +85,9 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
             height: 30,
             cls: "table-field-combo",
             items: tFields,
-            tipType: "warning"
+            tipType: isValidOb.valid === true ? "success" : "warning",
+            title: isValidOb.valid === true ? allFields[fArray[index]].field_name : isValidOb.comment
         });
-        isValidOb.valid === false && (combo.setWarningTitle(isValidOb.comment));
         combo.setValue(fArray[index]);
         combo.on(BI.TextIconCombo.EVENT_CHANGE, function(){
             self.fireEvent(BI.TableAddUnion.EVENT_CHANGE, indexOfMerge, index, combo.getValue()[0]);
@@ -142,7 +142,7 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
                 validArray.push({valid: true}) :
                 validArray.push({
                     valid: false,
-                    comment: fieldTypeValid === false ? BI.i18nText("BI-Field_Type_InValid") : BI.i18nText("BI-ETL_Join_Wrong_Merge_Field")
+                    comment: fieldTypeValid === false ? BI.i18nText("BI-Field_Type_InValid") : BI.i18nText("BI-Two_More_Fields_Can_Merge")
                 });
         });
         return validArray;
