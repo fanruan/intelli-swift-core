@@ -29,7 +29,7 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
 
     @Override
     public void process(final IMessage lastReceiveMessage) {
-        if (lastReceiveMessage.isFragmentMessage()) {
+        if (lastReceiveMessage.isStopStatus()) {
             try {
                 messagePublish.publicStopMessage(getStopMess());
             } catch (BIDeliverFailureException e) {

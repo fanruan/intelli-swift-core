@@ -23,4 +23,7 @@ public interface ICubePrimitiveReader<T> extends Release {
     boolean canReader();
 
     void setReleaseHelper(ICubeSourceReleaseManager releaseHelper);
+
+    void releaseSource();
+
 }

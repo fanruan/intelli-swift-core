@@ -37,7 +37,6 @@ public class BICubeReleaseRecorder implements ICubeSourceReleaseManager {
 
     public void remove(Object obj) {
         if (content.containsKey(obj)) {
-
             content.remove(obj);
         } else {
 //            throw BINonValueUtils.beyondControl();
@@ -46,11 +45,13 @@ public class BICubeReleaseRecorder implements ICubeSourceReleaseManager {
 
     @Override
     public void release(ICubePrimitiveWriter writer) {
+//        writer.releaseSource();
         remove(writer);
     }
 
     @Override
     public void release(ICubePrimitiveReader reader) {
+//        reader.releaseSource();
         remove(reader);
     }
 }

@@ -21,9 +21,13 @@ public class BITableSourceBuildWatcher extends BICubeBuildWatcher {
     @Override
     public void process(IMessage lastReceiveMessage) {
         try {
-            messagePublish.publicFinishMessage(generateFinishBody(""));
-            tableEntityService.recordLastTime();
-            tableEntityService.clear();
+            if (lastReceiveMessage.isStopStatus()) {
+                messagePublish.publicStopMessage(generateStopBody(""));
+            } else {
+                messagePublish.publicFinishMessage(generateFinishBody(""));
+                tableEntityService.recordLastTime();
+                tableEntityService.clear();
+            }
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);
         }

@@ -41,6 +41,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
             if (tableProperty.isPropertyExist()) {
                 columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields());
             }
+
             relationManager = new BICubeTableRelationEntityManager(this.resourceRetrievalService, this.tableKey);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -49,6 +50,9 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
 
     private void flushProperty() {
+        if (tableProperty != null) {
+            tableProperty.clear();
+        }
         tableProperty = new BICubeTableProperty(currentLocation);
 
     }
