@@ -12,7 +12,7 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodController = BI.inherit(BI.Analysis
 
     _getSelectedFields : function (model) {
         var fields = [];
-        if (model.has('date')){
+        if (BI.isNotNull(model.get('date'))){
             fields.push(model.get('date'));
         }
         return fields.concat(BI.AnalysisETLOperatorAddColumnExprLastPeriodController.superclass._getSelectedFields.apply(this, arguments));
@@ -21,7 +21,7 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodController = BI.inherit(BI.Analysis
     _refreshCombo : function (widget, model) {
         BI.AnalysisETLOperatorAddColumnExprLastPeriodController.superclass._refreshCombo.apply(this, arguments);
         widget.yearMonthSeason.populate(this._createLeftItems(model));
-        widget.yearMonthSeason.setValue(widget.get('date'));
+        widget.yearMonthSeason.setValue(model.get('date'));
     },
 
     _refreshComboValue : function (combo, oldValue, widget, model) {
@@ -29,16 +29,14 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodController = BI.inherit(BI.Analysis
         if (combo !== widget.yearMonthSeason && combo.getValue()[0] === model.get('date')){
             widget.yearMonthSeason.setValue(oldValue);
             model.set('date', oldValue);
-            this._populateLabel(widget, model);
-            this._checkCanSave(widget, model);
         }
     },
 
     setDateField : function (field, widget, model) {
         var oldValue = model.get('date');
         model.set('date', field);
-        this._afterValueSetted(widget, model);
         this._refreshComboValue(widget.yearMonthSeason, oldValue, widget, model)
+        this._afterValueSetted(widget, model);
     },
 
     populate : function (widget, model) {
@@ -50,12 +48,14 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodController = BI.inherit(BI.Analysis
 
     _populateLabel : function (widget, model) {
         widget.labels.empty();
+        var text = BI.i18nText('BI-Calculate_Target_Each_Value_Get', model.get('date') || '', model.get('field')||'');
         widget.labels.addItem(
             BI.createWidget({
                 type : 'bi.label',
                 cls : 'detail-label',
                 textAlign : 'left',
-                text : BI.i18nText('BI-Calculate_Target_Each_Value_Get', model.get('date') || '', model.get('field')||'')
+                text : text,
+                title : text
             })
         )
         this._populateDownLabel(widget.labels, model);
@@ -64,21 +64,25 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodController = BI.inherit(BI.Analysis
     _populateDownLabel : function (label, model) {
         var group = model.get('group') || [];
         BI.each(group, function (i, item) {
+            var text = i === group.length -1 ? BI.i18nText('BI-Calculate_Target_Include_In_Same_Last', item, model.get('date') || ''): BI.i18nText('BI-Calculate_Target_Include_In_Same', item);
             label.addItem(
                 BI.createWidget({
                     type : 'bi.label',
                     cls : 'detail-label',
                     textAlign : 'left',
-                    text : i === group.length -1 ? BI.i18nText('BI-Calculate_Target_Include_In_Same_Last', item, model.get('date') || ''): BI.i18nText('BI-Calculate_Target_Include_In_Same', item)
+                    text : text,
+                    title : text
                 })
             )
         })
+        var text = BI.i18nText('BI-Brackets_Value', model.get('field')||'');
         label.addItem(
             BI.createWidget({
                 type : 'bi.label',
                 cls : 'detail-label',
                 textAlign : 'left',
-                text : BI.i18nText('BI-Brackets_Value', model.get('field')||'')
+                text : text,
+                title : text
             })
         )  
     }

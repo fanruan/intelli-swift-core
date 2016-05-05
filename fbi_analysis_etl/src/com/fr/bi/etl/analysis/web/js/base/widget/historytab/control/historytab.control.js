@@ -42,15 +42,16 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         var item = model.addItemAfter(operator, position, table);
         this._addNewButtonAfterPos(item, position, widget, model);
         widget.tab.setSelect(item["value"]);
+        this._refreshAfterSheets(item, widget, model)
         this.deferChange(widget, model);
     },
 
     populateOneTab : function (v, widget, model) {
-        widget.tab.getTab(v).populate(this.findItem(v, widget, model), this.options)
+        var tab = widget.tab.getTab(v)
+        tab.populate(this.findItem(v, widget, model), this.options)
     },
 
-    saveOneSheet : function (table, widget, model) {
-        model.saveItem(table);
+    _refreshAfterSheets : function (table, widget, model) {
         var self = this;
         this.populateOneTab(table.value, widget, model)
         var index = model.getIndexByValue(table.value);
@@ -58,11 +59,9 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         var items = model.get(ETLCst.ITEMS);
         for(var i = index + 1; i < items.length; i++) {
             setTimeout(function (item) {
-               return function() {
-                   self.populateOneTab(item.value, widget, model)
-                   var btn = widget.tabButton.getButton(item.value);
-                   btn.setValid(model.isValid(item.value))
-               }
+                return function() {
+                    self.populateOneTab(item.value, widget, model)
+                }
             }(items[i]),0);
         }
         if(widget.options.allHistory === true){
@@ -72,6 +71,12 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             }, 0)
 
         }
+    },
+
+
+    saveOneSheet : function (table, widget, model) {
+        model.saveItem(table);
+        this._refreshAfterSheets(table, widget, model)
         this.deferChange(widget, model);
     },
 
@@ -84,6 +89,32 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             return "bi.analysis_etl_merge_history";
         }
         return model.getOperatorType(v);
+    },
+
+    setInvalid : function(v, title, widget, model){
+        var index = model.getIndexByValue(v);
+        if (index < this.invalidIndex){
+            this.invalidIndex = index;
+            var items = model.get(ETLCst.ITEMS);
+            for(var i = index + 1; i < items.length; i++) {
+                var btn = widget.tabButton.getButton(item[i].value);
+                btn.setValid(false);
+                btn.setWarningTitle(title);
+            }
+        }
+    },
+
+    refreshValidFields : function(v, fields, widget, model){
+        model.setFields(v, fields);
+        var index = model.getIndexByValue(v);
+        if (index === this.invalidIndex){
+            var items = model.get(ETLCst.ITEMS);
+            for(var i = index + 1; i < items.length; i++) {
+                var btn = widget.tabButton.getButton(item[i].value);
+                btn.setValid(true);
+            }
+            this.invalidIndex = Number.MAX_VALUE;
+        }
     },
 
 

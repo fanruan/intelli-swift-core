@@ -98,6 +98,14 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
             self.controller.saveOneSheet(model);
         });
 
+        tab.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function(fields){
+            self.controller.refreshValidFields(v, fields);
+        });
+
+        tab.on(BI.TopPointerSavePane.EVENT_INVALID, function(title){
+            self.controller.setInvalid(v, title);
+        });
+
         tab.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(){
             self.controller.clickTitleSave()
         });

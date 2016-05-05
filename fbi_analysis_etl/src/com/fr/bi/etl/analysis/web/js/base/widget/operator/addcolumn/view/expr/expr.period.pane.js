@@ -121,7 +121,8 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
     _createGroup: function () {
         var self = this;
         self.listContainer = BI.createWidget({
-            type : 'bi.vertical'
+            type : 'bi.vertical',
+            height : 133
         })
         return BI.createWidget({
             type : 'bi.vertical',

@@ -31,7 +31,7 @@ BI.AnalysisETLOperatorAddColumnExprPeriodController = BI.inherit(BI.MVCControlle
     },
     _getSelectedFields : function (model) {
         var fields = [];
-        if (model.has('field')){
+        if (BI.isNotNull(model.get('field'))){
             fields.push(model.get('field'));
         }
         return fields;
@@ -62,8 +62,6 @@ BI.AnalysisETLOperatorAddColumnExprPeriodController = BI.inherit(BI.MVCControlle
         if (combo !== widget.combo && combo.getValue()[0] === model.get('field')){
             widget.combo.setValue(oldValue);
             model.set('field', oldValue);
-            this._populateLabel(widget, model);
-            this._checkCanSave(widget, model);
         } 
     },
 
@@ -77,8 +75,8 @@ BI.AnalysisETLOperatorAddColumnExprPeriodController = BI.inherit(BI.MVCControlle
     setValueField : function (value, widget, model) {
         var oldValue = model.get('field');
         model.set('field', value);
-        this._afterValueSetted(widget, model);
         this._refreshComboValue(widget.combo, oldValue, widget, model)
+        this._afterValueSetted(widget, model);
     },
 
     populate : function (widget, model) {
