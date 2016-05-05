@@ -63,6 +63,7 @@
 .bi-list-item-hover.disabled,
 .bi-list-item-hover.disabled:hover,
 .bi-list-item-hover.disabled:active {
+  color: #1a1a1a;
   background-color: #ffffff;
 }
 .bi-list-item-active:hover,
@@ -96,5 +97,11 @@
 .bi-list-item-select.disabled,
 .bi-list-item-select.disabled:hover,
 .bi-list-item-select.disabled:active {
-  background-color: #ffffff;
+  color: #c4c6c6 !important;
+  background-color: #ffffff !important;
+}
+.bi-list-item-select.disabled .bi-high-light,
+.bi-list-item-select.disabled:hover .bi-high-light,
+.bi-list-item-select.disabled:active .bi-high-light {
+  color: #c4c6c6 !important;
 }

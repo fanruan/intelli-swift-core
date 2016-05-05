@@ -23,11 +23,11 @@ BI.EditorIconCheckCombo = BI.inherit(BI.Single, {
             self.fireEvent(BI.EditorIconCheckCombo.EVENT_CHANGE);
         });
         this.popup = BI.createWidget({
-            type: "bi.text_icon_check_combo_popup",
+            type: "bi.text_value_check_combo_popup",
             chooseType: o.chooseType,
             items: o.items
         });
-        this.popup.on(BI.TextIconCheckComboPopup.EVENT_CHANGE, function () {
+        this.popup.on(BI.TextValueCheckComboPopup.EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.editorIconCheckCombo.hideView();
             self.fireEvent(BI.EditorIconCheckCombo.EVENT_CHANGE);

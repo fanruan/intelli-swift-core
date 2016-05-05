@@ -17,12 +17,12 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
     _initView: function () {
         var self = this, o = this.options;
         self.combo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height : self._constants.HEIGHT,
             width : self._constants.WIDTH,
             items : []
         });
-        self.combo.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.combo.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setValueField(v);
         })
         self.layout = BI.createWidget(    {

@@ -81,7 +81,7 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
             })
         });
         var combo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height: 30,
             cls: "table-field-combo",
             items: tFields,
@@ -89,7 +89,7 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
             title: isValidOb.valid === true ? allFields[fArray[index]].field_name : isValidOb.comment
         });
         combo.setValue(fArray[index]);
-        combo.on(BI.TextIconCombo.EVENT_CHANGE, function(){
+        combo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self.fireEvent(BI.TableAddUnion.EVENT_CHANGE, indexOfMerge, index, combo.getValue()[0]);
         });
         return combo;

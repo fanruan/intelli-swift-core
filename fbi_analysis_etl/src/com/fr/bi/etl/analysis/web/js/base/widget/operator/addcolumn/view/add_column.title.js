@@ -42,13 +42,13 @@ BI.AnalysisETLOperatorAddColumnPaneTitle = FR.extend(BI.MVCWidget, {
             self.controller.changeColumnName();
         })
         this.typeCombo = BI.createWidget({
-            type: "bi.text_icon_down_list_combo",
+            type: "bi.text_value_down_list_combo",
             cls:"add-column-type",
             items:ETLCst.ANALYSIS_ADD_COLUMN_TYPE,
             width: 200,
             height: 30
         })
-        this.typeCombo.on(BI.TextIconDownListCombo.EVENT_CHANGE, function () {
+        this.typeCombo.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self.controller.changeColumnType();
             self.fireEvent(BI.AnalysisETLOperatorAddColumnPaneTitle.EVENT_ADD_COLUMN_TYPE_CHANGE, self.typeCombo.getValue())
         })

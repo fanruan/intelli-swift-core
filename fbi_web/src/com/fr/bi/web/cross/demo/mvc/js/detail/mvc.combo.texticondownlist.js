@@ -11,7 +11,7 @@ TextIconDownListComboView = BI.inherit(BI.View, {
 
     _render: function(vessel){
         var combo = BI.createWidget({
-            type: "bi.text_icon_down_list_combo",
+            type: "bi.text_value_down_list_combo",
             width: 200,
             height: 30,
             items: BICst.FILTER_DATE_COMBO

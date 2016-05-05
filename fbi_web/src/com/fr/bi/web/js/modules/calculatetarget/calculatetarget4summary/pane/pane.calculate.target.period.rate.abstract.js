@@ -10,11 +10,11 @@ BI.CalculateTargetAbstractPeriodRatePane = BI.inherit(BI.Widget, {
         BI.CalculateTargetAbstractPeriodRatePane.superclass._init.apply(this, arguments);
         var self = this;
         this.valueCombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height: 30
         });
 
-        this.valueCombo.on(BI.TextIconCombo.EVENT_CHANGE, function () {
+        this.valueCombo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
             self._refreshLabel();
             self.fireEvent(BI.CalculateTargetAbstractPeriodRatePane.EVENT_CHANGE)
         });

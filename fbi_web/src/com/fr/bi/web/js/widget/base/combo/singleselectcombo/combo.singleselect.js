@@ -28,14 +28,14 @@ BI.SingleSelectCombo = BI.inherit(BI.Widget, {
             height: o.height
         });
         this.popup = BI.createWidget({
-            type: "bi.text_icon_combo_popup",
+            type: "bi.text_value_combo_popup",
             chooseType: o.chooseType,
             items: o.items
         });
         this.popup.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        this.popup.on(BI.TextIconComboPopup.EVENT_CHANGE, function () {
+        this.popup.on(BI.TextValueComboPopup.EVENT_CHANGE, function () {
             self.combo.hideView();
             self.fireEvent(BI.SingleSelectCombo.EVENT_CHANGE, arguments);
         });
