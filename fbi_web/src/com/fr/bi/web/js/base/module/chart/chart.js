@@ -96,7 +96,6 @@ BI.Chart = BI.inherit(BI.Widget, {
                 },
                 "categoryGap": "20.0%",
                 "borderColor": "rgb(255,255,0)",
-                "borderRadius": 12,
                 "borderWidth": 1,
                 "gap": "20.0%",
                 "tooltip": {
@@ -276,7 +275,6 @@ BI.Chart = BI.inherit(BI.Widget, {
                 "endAngle": 360,
                 "animation": true
             },
-            "borderColor": "rgb(0,0,255)",
             "shadow": false,
             "legend": {
                 "borderColor": "rgb(204,204,204)",
@@ -314,8 +312,6 @@ BI.Chart = BI.inherit(BI.Widget, {
                 "rgb(248,149,136)",
                 "rgb(124,214,207)"
             ],
-            "borderRadius": 0,
-            "borderWidth": 1,
             "chartType": "pie",
             "style": "gradual",
             "plotShadow": false,

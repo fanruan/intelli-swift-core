@@ -49,6 +49,12 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                         dId: self.seriesDid,
                         value: [obj.category]
                     }];
+                    if(BI.isNotNull(self.cataDid)){
+                        clicked.push({
+                            dId: self.cataDid,
+                            value: [obj.seriesName]
+                        })
+                    }
                     break;
 
             }

@@ -197,7 +197,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         this.pathValueMap = {};
         items = this._createRegionPathsByItems(items);
         this.pathChooser.populate(items);
-        if(BI.size(this.pathValueMap) > 1){
+        if(items.length > 1){
             this.pathChooser.setValue();
         }
     },
@@ -211,18 +211,20 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         //lpath, rpath
-        v = this._assertValue(v);
-        this.lpath = v.lpath;
-        this.lpath = v.rpath;
-        this.pathChooser.setValue(this._unpackValueByValue(v));
+        //todo 待多路径后台确定需要信息
+        //v = this._assertValue(v);
+        //this.lpath = v.lpath;
+        //this.lpath = v.rpath;
+        //this.pathChooser.setValue(this._unpackValueByValue(v));
     },
 
     getValue: function () {
         //lpath, rpath
-        return {
-            lpath: this.lpath,
-            rpath: this.rpath
-        };
+        //todo 待多路径后台确定需要信息
+        //return {
+        //    lpath: this.lpath,
+        //    rpath: this.rpath
+        //};
     }
 });
 $.shortcut('bi.multi_match_multi_path_chooser', BI.MultiMatchMultiPathChooser);
