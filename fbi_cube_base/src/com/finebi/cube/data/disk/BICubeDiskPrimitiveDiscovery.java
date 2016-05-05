@@ -1,6 +1,8 @@
 package com.finebi.cube.data.disk;
 
+import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.ICubePrimitiveResourceDiscovery;
+import com.finebi.cube.data.cache.BIResourceSimpleCache;
 import com.finebi.cube.data.disk.reader.primitive.BIPrimitiveNIOReaderManager;
 import com.finebi.cube.data.disk.writer.primitive.BIPrimitiveNIOWriterManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
@@ -9,6 +11,7 @@ import com.finebi.cube.exception.BIBuildReaderException;
 import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
@@ -31,6 +34,8 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     private BIPrimitiveNIOReaderManager readerManager;
     private static BICubeDiskPrimitiveDiscovery instance;
     private Map<ICubeResourceLocation, ResourceLock> resourceLockMap;
+    private BIResourceSimpleCache<ICubePrimitiveReader> readerCache;
+    private BIResourceSimpleCache<ICubePrimitiveWriter> writerCache;
 
     public static BICubeDiskPrimitiveDiscovery getInstance() {
         if (instance != null) {
@@ -49,18 +54,39 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         writerManager = BIPrimitiveNIOWriterManager.getInstance();
         readerManager = BIPrimitiveNIOReaderManager.getInstance();
         resourceLockMap = new HashMap<ICubeResourceLocation, ResourceLock>();
+        writerCache = new BIResourceSimpleCache<ICubePrimitiveWriter>();
+        readerCache = new BIResourceSimpleCache<ICubePrimitiveReader>();
+
     }
 
     @Override
     public ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
-        return readerManager.buildCubeReader(resourceLocation);
+        BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
+        if (readerCache.isAvailableResource(resourceLocation)) {
+            return readerCache.getResource(resourceLocation);
+        } else {
+            ICubePrimitiveReader reader = readerManager.buildCubeReader(resourceLocation);
+            releaseRecorder.record(reader);
+            reader.setReleaseHelper(releaseRecorder);
+            readerCache.makeAvailable(resourceLocation, reader);
+            return reader;
+        }
     }
 
     @Override
     public ICubePrimitiveWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException {
         ResourceLock lock = getLock(resourceLocation);
         synchronized (lock) {
-            return writerManager.buildCubeWriter(resourceLocation);
+            if (writerCache.isAvailableResource(resourceLocation)) {
+                return writerCache.getResource(resourceLocation);
+            } else {
+                BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
+                ICubePrimitiveWriter writer = writerManager.buildCubeWriter(resourceLocation);
+                releaseRecorder.record(writer);
+                writer.setReleaseManager(releaseRecorder);
+                writerCache.makeAvailable(resourceLocation, writer);
+                return writer;
+            }
         }
     }
 

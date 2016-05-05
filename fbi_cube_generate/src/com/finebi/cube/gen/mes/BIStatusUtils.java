@@ -14,4 +14,12 @@ public class BIStatusUtils {
     public static IStatusTag generateStatusFinish(ITopicTag targetTopic, String fragmentID) {
         return BIStatusTag.getFinishStatusTag(BIFragmentUtils.generateFragment(targetTopic, fragmentID));
     }
+
+    public static IStatusTag generateStatusStop(ITopicTag targetTopic, String fragmentID) {
+        return BIStatusTag.getStopStatusTag(BIFragmentUtils.generateFragment(targetTopic, fragmentID));
+    }
+
+    public static IStatusTag generateStopFromFinish(IStatusTag finish) {
+        return BIStatusTag.getStopStatusTag(finish.getSuperFragmentTag());
+    }
 }

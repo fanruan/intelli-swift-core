@@ -1,5 +1,7 @@
 package com.finebi.cube.pubsub;
 
+import com.finebi.cube.message.IMessage;
+
 /**
  * 订阅者当订阅的的条件被满足时候，
  * 该对象的process函数被调用。
@@ -9,7 +11,7 @@ package com.finebi.cube.pubsub;
  * @since 4.0
  */
 public interface IProcessor<R> {
-    void process();
+    void process(IMessage lastReceiveMessage);
 
     void setPublish(IPublish publish);
 

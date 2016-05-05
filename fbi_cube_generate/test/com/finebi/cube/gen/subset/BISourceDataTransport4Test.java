@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.subset;
 
 import com.finebi.cube.gen.oper.BISourceDataTransport;
+import com.finebi.cube.message.IMessage;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.structure.ICube;
 
@@ -14,7 +15,7 @@ import java.util.Set;
  */
 public class BISourceDataTransport4Test extends BISourceDataTransport {
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         System.out.println("Source Data Transport!");
         BICubeBuildProbeTool.INSTANCE.getFlag().put(tableSource.getSourceID(), 10);
 

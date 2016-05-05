@@ -2,6 +2,7 @@ package com.finebi.cube.gen.sub;
 
 import com.finebi.cube.exception.BIDeliverFailureException;
 import com.finebi.cube.impl.pubsub.BISubscribe;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.pubsub.IProcessor;
 import com.finebi.cube.pubsub.IPublish;
 import com.finebi.cube.pubsub.ISubscribeID;
@@ -19,7 +20,7 @@ public class BICubeFinishWatcher extends BISubscribe {
     public BICubeFinishWatcher(ISubscribeID subscribeID, final IPublish publish) {
         super(subscribeID, new IProcessor() {
             @Override
-            public void process() {
+            public void process(IMessage lastReceiveMessage) {
                 try {
                     publish.publicFinishMessage(null);
                 } catch (BIDeliverFailureException e) {

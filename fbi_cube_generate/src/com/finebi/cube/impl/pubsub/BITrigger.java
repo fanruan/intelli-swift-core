@@ -51,10 +51,25 @@ public class BITrigger implements ITrigger {
     }
 
     @Override
+    public void addOrTopic(ITopicTag topicTag) throws BITopicDuplicateException, BIRegisterIsForbiddenException {
+        threshold.addOrTopic(topicTag);
+    }
+
+    @Override
+    public void addOrFragment(IFragmentTag fragmentTag) throws BIFragmentDuplicateException, BIRegisterIsForbiddenException {
+        threshold.addAndFragment(fragmentTag);
+    }
+
+    @Override
+    public void addOrStatus(IStatusTag statusTag) throws BIStatusDuplicateException, BIRegisterIsForbiddenException {
+        threshold.addOrStatus(statusTag);
+    }
+
+    @Override
     public void handleMessage(IMessage message) throws BIThresholdIsOffException {
         threshold.handleMessage(message);
         if (threshold.isMeetThreshold()) {
-            processor.process();
+            processor.process(message);
         }
     }
 }
