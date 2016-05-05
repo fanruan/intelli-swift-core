@@ -70,11 +70,15 @@
         },
 
         getPackageNameByID: function (packageId) {
-            return Pool.packages[packageId].name;
+            if(BI.isNotNull(Pool.packages[packageId])) {
+                return Pool.packages[packageId].name;
+            }
         },
 
         getTableIDsOfPackageID: function (packageId) {
-            return BI.pluck(Pool.packages[packageId].tables, "id");
+            if(BI.isNotNull(Pool.packages[packageId])) {
+                return BI.pluck(Pool.packages[packageId].tables, "id");
+            }
         },
 
         /**
@@ -86,37 +90,47 @@
         },
 
         getFieldIDsOfTableID: function (tableId) {
-            var fields = Pool.tables[tableId].fields;
-            return BI.pluck(fields[0].concat(fields[1]).concat(fields[2]), "id");
+            if(BI.isNotNull(Pool.tables[tableId])) {
+                var fields = Pool.tables[tableId].fields;
+                return BI.pluck(fields[0].concat(fields[1]).concat(fields[2]), "id");
+            }
         },
 
         getStringFieldIDsOfTableID: function (tableId) {
             var self = this;
-            var fields = Pool.tables[tableId].fields;
-            return BI.filter(BI.pluck(fields[0], "id"), function (idx, id) {
-                return self.getFieldTypeByID(id) === BICst.COLUMN.STRING;
-            });
+            if(BI.isNotNull(Pool.tables[tableId])) {
+                var fields = Pool.tables[tableId].fields;
+                return BI.filter(BI.pluck(fields[0], "id"), function (idx, id) {
+                    return self.getFieldTypeByID(id) === BICst.COLUMN.STRING;
+                });
+            }
         },
 
         getNumberFieldIDsOfTableID: function (tableId) {
             var self = this;
-            var fields = Pool.tables[tableId].fields;
-            return BI.filter(BI.pluck(fields[0], "id"), function (idx, id) {
-                return self.getFieldTypeByID(id) === BICst.COLUMN.NUMBER;
-            });
+            if(BI.isNotNull(Pool.tables[tableId])) {
+                var fields = Pool.tables[tableId].fields;
+                return BI.filter(BI.pluck(fields[0], "id"), function (idx, id) {
+                    return self.getFieldTypeByID(id) === BICst.COLUMN.NUMBER;
+                });
+            }
         },
 
         getDateFieldIDsOfTableID: function (tableId) {
             var self = this;
-            var fields = Pool.tables[tableId].fields;
-            return BI.filter(BI.pluck(fields[0], "id"), function (idx, id) {
-                return self.getFieldTypeByID(id) === BICst.COLUMN.DATE;
-            });
+            if(BI.isNotNull(Pool.tables[tableId])) {
+                var fields = Pool.tables[tableId].fields;
+                return BI.filter(BI.pluck(fields[0], "id"), function (idx, id) {
+                    return self.getFieldTypeByID(id) === BICst.COLUMN.DATE;
+                });
+            }
         },
 
         getCountFieldIDsOfTableID: function (tableId) {
-            var fields = Pool.tables[tableId].fields;
-            return BI.pluck(fields[3], "id");
+            if(BI.isNotNull(Pool.tables[tableId])) {
+                var fields = Pool.tables[tableId].fields;
+                return BI.pluck(fields[3], "id");
+            }
         },
 
         getSortedFieldIdsOfOneTableByTableId: function (tableId) {
@@ -173,7 +187,7 @@
             BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
             var field = Pool.fields[fieldId];
             var fieldName = translations[fieldId];
-            if (BI.isNull(fieldName)) {
+            if (BI.isNull(fieldName) && BI.isNotNull(field)) {
                 fieldName = field.field_name;
                 if (field.field_type === BICst.COLUMN.COUNTER) {
                     //记录数 表名+"记录数"fbi_Records
@@ -185,21 +199,24 @@
         },
 
         getFieldTypeByID: function (fieldId) {
-            BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
-            return Pool.fields[fieldId].field_type;
+            BI.isNotNull(fieldId) && BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
+            if(BI.isNotNull(Pool.fields[fieldId])) {
+                return Pool.fields[fieldId].field_type;
+            }
         },
 
         getFieldIsUsableByID: function (fieldId) {
-            BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
-            return Pool.fields[fieldId].is_usable;
+            BI.isNotNull(fieldId) && BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
+            if(BI.isNotNull(Pool.fields[fieldId])) {
+                return Pool.fields[fieldId].is_usable;
+            }
         },
 
         getTableIdByFieldID: function (fieldId) {
-            if (BI.isNull(fieldId)) {
-                return null
+            BI.isNotNull(fieldId) && BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
+            if(BI.isNotNull(Pool.fields[fieldId])) {
+                return Pool.fields[fieldId].table_id;
             }
-            BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
-            return Pool.fields[fieldId].table_id;
         },
 
         getAllFieldIDs: function () {
@@ -314,6 +331,20 @@
 
         isWidgetExistByID: function (wid) {
             return this.getAllWidgetIDs().contains(wid);
+        },
+
+        //是否所有数据存在（配置部分将数据修改的情况）
+        isAllFieldsExistByWidgetID: function(wid){
+            var allDimIds = this.getAllDimensionIDs(wid);
+            var allExist = true;
+            BI.some(allDimIds, function(i, dId){
+                var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
+                if(BI.isNull(Pool.fields[fieldId])) {
+                    allExist = false;
+                    return true;
+                } 
+            });
+            return allExist;
         },
 
         //获取某组件下所有的维度
@@ -510,7 +541,7 @@
                 return Data.SharingPool.get("dimensions", did, "dimension_map");
             }
         },
-
+        
         isDimensionByDimensionID: function (dId) {
             var wId = this.getWidgetIDByDimensionID(dId);
             var views = this.getWidgetViewByID(wId);

@@ -42,7 +42,35 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.Widget.BUBBLE:
             case BICst.Widget.SCATTER:
                 return this._createChart();
+            case BICst.Widget.NONE:
+                return this._createNoDataPane();
         }
+    },
+
+    _createNoDataPane: function(){
+        return BI.createWidget({
+            type: "bi.center_adapt",
+            items: [{
+                type: "bi.horizontal_auto",
+                cls: "dimension-no-data-icon",
+                items: [{
+                    type: "bi.icon",
+                    width: 110,
+                    height: 110
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Source_Data_Removed_Can_Not_Display_Here"),
+                    cls: "no-data-detail-comment",
+                    height: 30
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Please_Contact_Admin"),
+                    cls: "contact-admin-comment",
+                    height: 30
+                }],
+                vgap: 5
+            }]
+        })
     },
 
     _createChart: function () {
@@ -70,7 +98,11 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-        this.tableChartTab.setSelect(BI.Utils.getWidgetTypeByID(this.options.wId));
+        var widgetType = BI.Utils.getWidgetTypeByID(this.options.wId);
+        if(!BI.Utils.isAllFieldsExistByWidgetID(this.options.wId)){
+            widgetType = BICst.Widget.NONE;
+        }
+        this.tableChartTab.setSelect(widgetType);
         this.tableChartTab.populate();
     }
 });

@@ -573,6 +573,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/tablecell/normal/cell.tarbody.normal.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/tablecell/normal/expandercell.normal.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
+                "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
 
 
                 //自适应布局
