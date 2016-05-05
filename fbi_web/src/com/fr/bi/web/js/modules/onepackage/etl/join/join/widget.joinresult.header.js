@@ -36,11 +36,12 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
         this.mergeResult = mergeResult;
         var items = [];
         BI.each(this.mergeResult, function(i, name){
+            var title = name.name === name.column_name ? name.name : (name.name + "(" + name.column_name + ")");
             var nameEditor = BI.createWidget({
                 type: "bi.sign_initial_editor",
                 allowBlank: false,
                 value: name.column_name,
-                title: name.name + "(" + name.column_name + ")",
+                title: title,
                 width: 100,
                 validationChecker: function(v){
                     return self._checkName(i, v);
@@ -51,7 +52,7 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
             nameEditor.on(BI.SignInitialEditor.EVENT_CHANGE, function(){
                 var nameValue = nameEditor.getValue();
                 self.mergeResult[i].name = nameValue.state;
-                nameEditor.setTitle(nameValue.state + "(" + name.column_name + ")");
+                nameEditor.setTitle(nameValue.state === name.column_name ? nameValue.state : (nameValue.state + "(" + name.column_name + ")"));
                 self.fireEvent(BI.JoinResultHeader.EVENT_CHANGE, self.mergeResult);
             });
             var editorIcon = BI.createWidget({
