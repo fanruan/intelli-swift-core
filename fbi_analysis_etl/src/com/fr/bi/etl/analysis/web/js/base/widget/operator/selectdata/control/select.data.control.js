@@ -6,6 +6,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
     _construct : function(widget, model) {
         BI.AnalysisETLOperatorSelectDataController.superclass._construct.apply(this, arguments);
         this._editing = model.get(ETLCst.FIELDS).length === 0;
+        this.trigger = BI.Utils.triggerPreview()
     },
 
     addField : function(fieldId, widget, model){
@@ -64,11 +65,11 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
 
 
     refreshPopData : function (operatorType, widget, model){
-        BI.Utils.triggerSelectDataPreview(widget.center, model, operatorType)
+        this.trigger(widget.center, model, operatorType, ETLCst.PREVIEW.SELECT)
     },
 
     refreshPreviewData:function (tempModel, operatorType, widget, model) {
-        BI.Utils.triggerPreview(widget.center, tempModel, operatorType);
+        this.trigger(widget.center, tempModel, operatorType, ETLCst.PREVIEW.NORMAL);
     },
 
     deleteFieldByIndex : function (v, widget, model) {
