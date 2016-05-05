@@ -61,6 +61,13 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         return fieldInfoWriter != null;
     }
 
+    protected void resetFiledWriter() {
+        if (isFieldWriterAvailable()) {
+            fieldInfoWriter.clear();
+            fieldInfoWriter = null;
+        }
+    }
+
     protected boolean isFieldReaderAvailable() {
         return fieldInfoReader != null;
     }
@@ -344,32 +351,65 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         return getFieldInfoReader().canRead();
     }
 
-    @Override
-    public void clear() {
-        if (isFieldWriterAvailable()) {
-            fieldInfoWriter.clear();
-        }
+    protected void resetFieldReader() {
         if (isFieldReaderAvailable()) {
             fieldInfoReader.clear();
+            fieldInfoReader = null;
         }
+    }
+
+    protected void resetVersionWriter() {
         if (isVersionWriterAvailable()) {
             versionWriter.clear();
+            versionWriter = null;
         }
+    }
+
+    protected void resetVersionReader() {
         if (isVersionReaderAvailable()) {
             versionReader.clear();
+            versionReader = null;
         }
+    }
+
+    protected void resetRowCountWriter() {
         if (isRowCountWriterAvailable()) {
             rowCountWriter.clear();
+            rowCountWriter = null;
         }
+    }
+
+    protected void resetRowCountReader() {
         if (isRowCountReaderAvailable()) {
             rowCountReader.clear();
+            rowCountReader = null;
         }
+    }
+
+    protected void resetTimeStampWriter() {
         if (isTimeStampWriterAvailable()) {
             timeStampWriter.clear();
+            timeStampWriter = null;
         }
+    }
+
+    protected void resetTimeStampReader() {
         if (isTimeStampReaderAvailable()) {
             timeStampReader.clear();
+            timeStampWriter = null;
         }
+    }
+
+    @Override
+    public void clear() {
+        resetFiledWriter();
+        resetFieldReader();
+        resetVersionWriter();
+        resetVersionReader();
+        resetRowCountWriter();
+        resetRowCountReader();
+        resetTimeStampWriter();
+        resetTimeStampReader();
     }
 }
 

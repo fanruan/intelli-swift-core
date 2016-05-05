@@ -156,20 +156,40 @@ public class BICubeIndexData implements ICubeIndexDataService {
         getNullWriter().recordSpecificValue(position, groupValueIndex);
     }
 
-    @Override
-    public void clear() {
+    protected void resetIndexReader() {
         if (isIndexReaderAvailable()) {
             indexReader.clear();
+            indexReader = null;
         }
+    }
+
+    protected void resetIndexWriter() {
         if (isIndexWriterAvailable()) {
             indexWriter.clear();
+            indexWriter = null;
         }
+    }
+
+    protected void resetNullReader() {
         if (isNullReaderAvailable()) {
             nullReader.clear();
+            nullReader = null;
         }
+    }
+
+    protected void resetNullWriter() {
         if (isNullWriterAvailable()) {
             nullWriter.clear();
+            nullReader = null;
         }
+    }
+
+    @Override
+    public void clear() {
+        resetIndexReader();
+        resetIndexWriter();
+        resetNullReader();
+        resetNullWriter();
     }
 
     @Override

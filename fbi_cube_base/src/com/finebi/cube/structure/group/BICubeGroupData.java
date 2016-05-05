@@ -186,20 +186,41 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         getGroupLengthWriter().recordSpecificPositionValue(0, size);
     }
 
-    @Override
-    public void clear() {
+
+    protected void resetGroupWriter() {
         if (isGroupWriterAvailable()) {
             groupWriter.clear();
+            groupWriter = null;
         }
+    }
+
+    protected void resetGroupReader() {
         if (isGroupReaderAvailable()) {
             groupReader.clear();
+            groupReader = null;
         }
+    }
+
+    protected void resetLengthReader() {
         if (isLengthReaderAvailable()) {
             groupLengthReader.clear();
+            groupLengthReader = null;
         }
+    }
+
+    protected void resetLengthWriter() {
         if (isLengthWriterAvailable()) {
             groupLengthWriter.clear();
+            groupLengthWriter = null;
         }
+    }
+
+    @Override
+    public void clear() {
+        resetGroupWriter();
+        resetGroupReader();
+        resetLengthReader();
+        resetLengthWriter();
     }
 
     public class GroupValueSearchAssistance implements ArrayLookupHelper.Lookup<T> {
