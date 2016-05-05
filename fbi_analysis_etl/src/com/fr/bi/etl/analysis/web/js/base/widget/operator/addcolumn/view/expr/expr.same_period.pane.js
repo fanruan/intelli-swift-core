@@ -16,7 +16,7 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodPane  = BI.inherit(BI.AnalysisETLOp
             items : []
         });
         self.year.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
-            self.controller.setValueField(v);
+            self.controller.setYearField(v);
         })
         self.monthSeason = BI.createWidget({
             type: "bi.text_icon_combo",
@@ -25,7 +25,7 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodPane  = BI.inherit(BI.AnalysisETLOp
             items : []
         });
         self.monthSeason.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
-            self.controller.setValueField(v);
+            self.controller.setMonthSeasonField(v);
         })
         self.layout.addItems([{el : {
             type : 'bi.label',
@@ -40,7 +40,7 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodPane  = BI.inherit(BI.AnalysisETLOp
             type : 'bi.label',
             cls : 'label-name',
             width : self._constants.LABEL_WIDTH,
-            text : BI.i18nText('BI-Value_From'),
+            text : BI.i18nText('BI-Month_Fen') + '/'+ BI.i18nText('BI-Quarter'),
             textAlign : 'right'
         },
             left : 500,

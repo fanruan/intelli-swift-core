@@ -9,19 +9,10 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodPercentController = BI.inherit(BI.A
                 type : 'bi.label',
                 cls : 'detail-label',
                 textAlign : 'left',
-                text : 'aaaaaa'
+                text : BI.i18nText('BI-Calculate_Target_Last_Include_In_Same', model.get('monthSeason') || '', model.get('field')||'')
             })
         )
         widget.secondDetail.empty();
-        BI.each(['a', 'b', 'c'], function (i, item) {
-            widget.secondDetail.addItem(
-                BI.createWidget({
-                    type : 'bi.label',
-                    cls : 'detail-label',
-                    textAlign : 'left',
-                    text : item
-                })
-            )
-        })
+        this._populateDownLabel(widget.secondDetail, model);
     }
 })

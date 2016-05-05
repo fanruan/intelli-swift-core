@@ -390,6 +390,12 @@
             }
         },
 
+        getDimensionSrcByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "_src");
+            }
+        },
+
         getDimensionGroupByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 return Data.SharingPool.get("dimensions", did, "group");
@@ -804,8 +810,7 @@
             return fromIds;
         },
 
-        getWidgetDataByDimensionInfo: function (src, sort, group, filter_value) {
-
+        getWidgetDataByDimensionInfo: function (src, options) {
             var name = "__StatisticWidget__" + BI.UUID();
             var data = {
                 type: BICst.Widget.STRING,
@@ -817,14 +822,11 @@
                 },
                 name: name,
                 dimensions: {
-                    "1234567": {
+                    "1234567": BI.extend({
                         name: "__Dimension__",
                         _src: src,
-                        group: group || {},
-                        sort: sort || {},
-                        filter_value: filter_value || {},
                         type: BICst.TARGET_TYPE.STRING
-                    }
+                    }, options)
                 },
                 view: {
                     10000: ["1234567"]
@@ -888,20 +890,23 @@
             };
         },
 
-        getWidgetDataByWidgetInfo: function (bounds, dimensions, settings, type, view, page, wId, callback, options) {
+        getWidgetDataByWidgetInfo: function (dimensions, view, wid,callback, options) {
             var self = this;
             var filterValue = [];
             var data = {
-                    type: type,
-                    bounds: bounds,
+                    bounds: {
+                        left: 0,
+                        top: 0,
+                        width: 0,
+                        height: 0
+                    },
                     name: "__StatisticWidget__" + BI.UUID(),
                     dimensions: dimensions,
                     filter: {
                         filter_type: BICst.FILTER_TYPE.AND,
                         filter_value: filterValue.concat(self.getControlCalculations(wId))
                     },
-                    view: view,
-                    page: page
+                    view: view
                 }
                 ;
             Data.Req.reqWidgetSettingByData({widget: BI.extend(data, options)}, function (res) {
