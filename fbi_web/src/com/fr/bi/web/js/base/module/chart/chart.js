@@ -3,7 +3,7 @@
  * @class BI.Chart
  * @extends BI.Widget
  */
-BI.Chart = BI.inherit(BI.Widget, {
+BI.Chart = BI.inherit(BI.Pane, {
 
     _defaultConfig: function () {
         return BI.extend(BI.Chart.superclass._defaultConfig.apply(this, arguments), {
@@ -79,6 +79,7 @@ BI.Chart = BI.inherit(BI.Widget, {
         } else {
             this.wants2SetData = true;
         }
+        this.loaded();
     },
 
     _createChartConfigByType: function () {
@@ -275,6 +276,7 @@ BI.Chart = BI.inherit(BI.Widget, {
                 "endAngle": 360,
                 "animation": true
             },
+            "borderColor": "rgb(0,0,255)",
             "shadow": false,
             "legend": {
                 "borderColor": "rgb(204,204,204)",

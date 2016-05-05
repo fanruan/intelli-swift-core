@@ -29,28 +29,12 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
             height: o.height
         });
 
-        var group = {};
-        var type = BI.Utils.getFieldTypeByDimensionID(o.dId);
-        switch (type) {
-            case BICst.COLUMN.DATE:
-                group = {type: BICst.GROUP.Y};
-                break;
-            case BICst.COLUMN.NUMBER:
-                group = {type: BICst.GROUP.AUTO_GROUP};
-                break;
-        }
-
-        var tmpGroup = BI.Utils.getDimensionGroupByID(o.dId);
-        if(BI.has(tmpGroup, "type")){
-            group = tmpGroup;
-        }
-
         this.dimension = {
             name: BI.Utils.getDimensionNameByID(o.dId),
             _src: {
                 field_id: BI.Utils.getFieldIDByDimensionID(o.dId)
             },
-            group: group,
+            group: BI.Utils.getDimensionGroupByID(o.dId),
             sort: BI.Utils.getDimensionSortByID(o.dId)
         };
 
