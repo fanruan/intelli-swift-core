@@ -23,13 +23,13 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -51,7 +51,7 @@ public class BuildCubeTask implements CubeTask {
 //        cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
 //        cubeBuildStuffManager.initialCubeStuff();
         this.biUser = biUser;
-        cubeConfiguration = new BICubeConfiguration();
+        cubeConfiguration = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         cube = new BICube(retrievalService);
     }
@@ -80,10 +80,9 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             BILogger.getLogger().info(result.get());
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw BINonValueUtils.beyondControl(e);
-        } catch (ExecutionException e) {
+            BIFileUtils.moveFile(BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId())).getRootURI().getPath(),
+                    BICubeConfiguration.getConf(Long.toString(biUser.getUserId())).getRootURI().getPath());
+        } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
     }

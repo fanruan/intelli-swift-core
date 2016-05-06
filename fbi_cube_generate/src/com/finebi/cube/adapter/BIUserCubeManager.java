@@ -39,7 +39,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
     public BIUserCubeManager(BIUser user) {
         this.user = user;
-        cube = new BICube(new BICubeResourceRetrieval(new BICubeConfiguration()));
+        cube = new BICube(new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(user.getUserId()))));
     }
 
     @Override
