@@ -16,12 +16,12 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
     _initView: function () {
         var self = this, o = this.options;
         self.combo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             width : self._constants.COMBO_WIDTH,
             height : self._constants.ITEM_HEIGHT,
             items : []
         });
-        self.combo.on(BI.TextIconCombo.EVENT_CHANGE, function(){
+        self.combo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
         });
         self.checkBox = BI.createWidget({
             type: "bi.checkbox"

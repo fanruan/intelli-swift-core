@@ -145,7 +145,7 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
                 self.storedValue.value = {type : BICst.ETL_FILTER_NUMBER_AVG_TYPE.ALL};
             }
             self.editor = BI.createWidget({
-                type: "bi.text_icon_combo",
+                type: "bi.text_value_combo",
                 width:'',
                 height:self._constants.HEIGHT,
                 items :BICst.ETL_FILTER_NUMBER_AVG_ITEMS,
@@ -161,7 +161,7 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
                 bottom : 0,
                 top : 0,
             });
-            self.editor.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+            self.editor.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
                 self.storedValue.value.type = v;
                 self.populateGroupContainer();
                 self.fireEvent(BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM);

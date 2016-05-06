@@ -1,6 +1,7 @@
 package com.fr.bi.web.conf.services.packs;
 
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -20,8 +21,10 @@ public class BIGetPackageGroupAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        JSONObject jo = new JSONObject().put("packages", BIConfigureManagerCenter.getPackageManager().createPackageJSON(userId))
-                .put("groups", BIConfigureManagerCenter.getPackageManager().createGroupJSON(userId));
+        BISystemPackageConfigurationProvider packageManager = BIConfigureManagerCenter.getPackageManager();
+        JSONObject jo = new JSONObject().put("packages", packageManager.createPackageJSON(userId))
+                .put("groups", packageManager.createGroupJSON(userId));
         WebUtils.printAsJSON(res, jo);
+
     }
 }

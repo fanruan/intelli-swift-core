@@ -25,7 +25,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
         //最上面的更新方式下拉框
         this.updateType = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             height: 28,
             items: [{
                 text: BI.i18nText("BI-Always_Updates"),
@@ -39,7 +39,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.updateType.setValue(this.model.getUpdateType());
-        this.updateType.on(BI.TextIconCheckCombo.EVENT_CHANGE, function(){
+        this.updateType.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             var v = this.getValue()[0];
             switch (v) {
                 case BICst.SINGLE_TABLE_UPDATE_TYPE.ALL:
@@ -310,7 +310,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         });
 
         this.globalUpdateSet = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: [{
                 text: BI.i18nText("BI-Update_Together"),
                 value: BICst.SINGLE_TABLE_UPDATE.TOGETHER

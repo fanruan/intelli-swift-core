@@ -3,23 +3,7 @@
 .bi-select-data-level1-item {
   & .select-date-level1-item-button {
     .border-radius(3px);
-    &:hover, &.hover {
-      color: @color-bi-text-highlight;
-      background-color: @color-bi-background-gray;
-    }
-    &:active, &.active {
-      color: @color-bi-text;
-      background-color: @color-bi-background-highlight;
-      & .bi-high-light {
-        color: @color-bi-text;
-      }
-    }
-    &.disabled {
-      &, &:hover, &:active {
-        color: @color-bi-text-disabled !important;
-        background-color: @color-bi-background-default !important;
-      }
-    }
+    .list-item-select();
   }
 
   & .select-data-top-line, & .select-data-bottom-line {
