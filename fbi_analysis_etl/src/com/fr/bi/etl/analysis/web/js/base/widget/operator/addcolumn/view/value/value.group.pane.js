@@ -153,6 +153,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
         pane.on(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function (valid) {
             self.controller.setValid(pane.getName(), valid)
         })
+        pane.checkValid();
         return pane;
     },
 

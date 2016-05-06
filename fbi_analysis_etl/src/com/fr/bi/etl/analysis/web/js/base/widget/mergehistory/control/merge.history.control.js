@@ -1,6 +1,8 @@
 BI.MergeHistoryController = BI.inherit(BI.MVCController,  {
 
-    
+    _construct : function () {
+       this.trigger = BI.Utils.triggerPreview();
+    },
 
     populate : function (widget, model) {
         this.buttonGroup = [];
@@ -68,7 +70,7 @@ BI.MergeHistoryController = BI.inherit(BI.MVCController,  {
     },
 
     _refreshPopData : function (widget, model){
-        BI.Utils.triggerMergePreview(widget.previewTable, model, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
+        this.trigger(widget.previewTable, model, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, ETLCst.PREVIEW.MERGE)
     }
 
 })

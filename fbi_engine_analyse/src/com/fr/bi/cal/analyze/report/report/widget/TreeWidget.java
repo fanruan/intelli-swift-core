@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -8,6 +9,7 @@ import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.tree.TreeExecutor;
 import com.fr.bi.cal.analyze.report.report.widget.tree.*;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
@@ -17,13 +19,18 @@ import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.dimension.BIDimensionFactory;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
+import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.relation.BISimpleRelation;
+import com.fr.bi.stable.relation.BITableRelation;
+import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -57,6 +64,7 @@ public class TreeWidget extends BIAbstractWidget {
     private BIDimension[] dimensions;
     protected NameObject targetSort;
     protected Map<String, DimensionFilter> targetFilterMap = new HashMap<String, DimensionFilter>();
+    protected Map<BIDimension, List<BITableSourceRelation>> dimensionMap = new HashMap<BIDimension, List<BITableSourceRelation>>();
 
 
     @Override
@@ -141,7 +149,7 @@ public class TreeWidget extends BIAbstractWidget {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        parseDimension(jo, userId);
+        parseDimensions(jo, userId);
         parseSortFilter(jo, userId);
         if (jo.has("view")) {
             JSONObject views = jo.getJSONObject("view");
@@ -259,34 +267,6 @@ public class TreeWidget extends BIAbstractWidget {
     }
 
 
-    private void parseDimension(JSONObject jo, long userId) throws Exception {
-        JSONObject dimAndTar = jo.optJSONObject("dimensions");
-        if (dimAndTar == null) {
-            dimAndTar = new JSONObject();
-        }
-        JSONObject view = jo.optJSONObject("view");
-        if (view == null) {
-            view = new JSONObject();
-        }
-        Iterator<String> regions = view.keys();
-        JSONArray dimensionIds = new JSONArray();
-        while (regions.hasNext()) {
-            String region = regions.next();
-            if (ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1)) {
-                for (int i = 0; i < view.getJSONArray(region).length(); i++) {
-                    dimensionIds.put(view.getJSONArray(region).getString(i));
-                }
-            }
-        }
-        List<BIDimension> dims = new ArrayList<BIDimension>();
-        for (int i = 0; i < dimensionIds.length(); i++) {
-            JSONObject dimJo = dimAndTar.getJSONObject(dimensionIds.getString(i));
-            dimJo.put("did", dimensionIds.getString(i));
-            dims.add(BIDimensionFactory.parseDimension(dimJo, userId));
-        }
-        this.dimensions = dims.toArray(new BIDimension[dims.size()]);
-    }
-
     private void parseSortFilter(JSONObject jo, long userId) throws Exception {
         if (jo.has("sort")) {
             JSONObject targetSort = (JSONObject) jo.get("sort");
@@ -307,6 +287,34 @@ public class TreeWidget extends BIAbstractWidget {
 
     public Table getTargetTable() {
         return getViewDimensions()[0].createTableKey();
+    }
+
+    private void parseDimensions(JSONObject jo, long userId) throws Exception {
+        JSONObject dims = jo.getJSONObject("dimensions");
+        JSONArray view = jo.getJSONObject("view").getJSONArray(BIReportConstant.REGION.DIMENSION1);
+        this.dimensions = new BIDimension[view.length()];
+        for (int i = 0; i < view.length(); i++) {
+            JSONObject dimObject = dims.getJSONObject(view.getString(i));
+            dimObject.put("did", view.getString(i));
+            this.dimensions[i] = BIDimensionFactory.parseDimension(dimObject, userId);
+            JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
+            Iterator it = dimensionMap.keys();
+            JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
+            List<BITableSourceRelation> relationList = new ArrayList<BITableSourceRelation>();
+            for (int j = 0; j < relationJa.length(); j++) {
+                BISimpleRelation viewRelation = new BISimpleRelation();
+                viewRelation.parseJSON(relationJa.getJSONObject(j));
+                BITableRelation tableRelation = new BITableRelation();
+                tableRelation.parseJSON(viewRelation.createJSON());
+                BITableSourceRelation tableSourceRelation = new BITableSourceRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField(), BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tableRelation.getPrimaryTable().getID(), new BIUser(userId)), BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tableRelation.getForeignTable().getID(), new BIUser(userId)));
+                relationList.add(tableSourceRelation);
+            }
+            this.dimensionMap.put(this.dimensions[i], relationList);
+        }
+    }
+
+    public List<BITableSourceRelation> getRelationList(BIDimension dimension) {
+        return this.dimensionMap.get(dimension);
     }
 
 

@@ -3,7 +3,7 @@
  * @class BI.Chart
  * @extends BI.Widget
  */
-BI.Chart = BI.inherit(BI.Widget, {
+BI.Chart = BI.inherit(BI.Pane, {
 
     _defaultConfig: function () {
         return BI.extend(BI.Chart.superclass._defaultConfig.apply(this, arguments), {
@@ -94,6 +94,7 @@ BI.Chart = BI.inherit(BI.Widget, {
         } else {
             this.wants2SetData = true;
         }
+        this.loaded();
     },
 
     _createChartConfigByType: function () {
@@ -111,7 +112,6 @@ BI.Chart = BI.inherit(BI.Widget, {
                 },
                 "categoryGap": "20.0%",
                 "borderColor": "rgb(255,255,0)",
-                "borderRadius": 12,
                 "borderWidth": 1,
                 "gap": "20.0%",
                 "tooltip": {
@@ -329,8 +329,6 @@ BI.Chart = BI.inherit(BI.Widget, {
                 "rgb(248,149,136)",
                 "rgb(124,214,207)"
             ],
-            "borderRadius": 0,
-            "borderWidth": 1,
             "chartType": "pie",
             "style": "gradual",
             "plotShadow": false,

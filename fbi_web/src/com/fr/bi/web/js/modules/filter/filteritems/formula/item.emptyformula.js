@@ -169,7 +169,7 @@ BI.FormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
         }
         return {
             id: this.id,
-            filter_type: BICst.FILTER_TYPE_FORMULA_EMPTY
+            filter_type: BICst.FILTER_TYPE.EMPTY_FORMULA
         };
     }
 });

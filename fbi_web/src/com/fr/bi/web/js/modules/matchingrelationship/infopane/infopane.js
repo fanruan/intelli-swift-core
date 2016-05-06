@@ -84,14 +84,25 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
     },
 
     _getMD5ByPathAndDimensionFieldId: function(path, fId){
-        var fArray = BI.pluck(path, "foreignKey");
-        var pArray = BI.pluck(path, "primaryKey");
-        var s = fId;
-        BI.each(fArray, function(idx, item){
-            (idx > 0) && (s += item.field_id);
-        });
-        s += pArray[0];
-        return BI.MD5.hex_md5(s);
+        var res = "";
+        var getMD5Result = function(pa){
+            var fArray = BI.pluck(pa, "foreignKey");
+            var pArray = BI.pluck(pa, "primaryKey");
+            var s = fId;
+            BI.each(fArray, function(idx, item){
+                (idx > 0) && (s += item.field_id);
+            });
+            s += pArray[0];
+            return s;
+        };
+        if(BI.isArray(path)){
+            res = getMD5Result(path);
+        }else{
+            BI.each(path, function(idx, p){
+                res += getMD5Result(p);
+            })
+        }
+        return BI.MD5.hex_md5(res);
     },
 
     populate: function(res){

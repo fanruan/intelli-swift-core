@@ -124,22 +124,32 @@ BI.extend(BI.Utils, {
 
         })
         return [items, header];
+    },
+
+    triggerPreview : function () {
+        return BI.throttle(function (widget, previewModel, operatorType, type) {
+            switch (type) {
+                case ETLCst.PREVIEW.SELECT : {
+                    widget.setPreviewOperator(operatorType);
+                    var model = {};
+                    model[ ETLCst.FIELDS] = previewModel.getTempFields();
+                    widget.populatePreview.apply(widget, BI.Utils._buildData(model, widget.controller.getFilterValue))
+                    return;
+                }
+                case ETLCst.PREVIEW.MERGE : {
+                    widget.populate.apply(widget, BI.concat(BI.Utils._buildData(previewModel), operatorType));
+                    return;
+                }
+                default : {
+                    widget.setPreviewOperator(operatorType);
+                    widget.populatePreview.apply(widget, BI.Utils._buildData(previewModel.update(), widget.controller.getFilterValue));
+                    return
+                }
+            }
+        }, 300)
     }
+
 })
 
 window.confirm = BI.Msg.confirm;
 
-BI.Utils.triggerPreview = BI.throttle(function (widget, previewModel, operatorType) {
-    widget.setPreviewOperator(operatorType);
-    widget.populatePreview.apply(widget, BI.Utils._buildData(previewModel.update(), widget.controller.getFilterValue))
-}, 300)
-
-BI.Utils.triggerMergePreview = BI.throttle(function (widget, previewModel, operatorType) {
-    widget.populate.apply(widget, BI.concat(BI.Utils._buildData(previewModel), operatorType))
-}, 300)
-BI.Utils.triggerSelectDataPreview = BI.throttle(function (widget, previewModel, operatorType) {
-    widget.setPreviewOperator(operatorType);
-    var model = {};
-    model[ ETLCst.FIELDS] = previewModel.getTempFields();
-    widget.populatePreview.apply(widget, BI.Utils._buildData(model, widget.controller.getFilterValue))
-}, 300)

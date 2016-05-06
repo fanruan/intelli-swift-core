@@ -80,7 +80,8 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
     _createGroupPane : function () {
         var self = this;
         self.listContainer = BI.createWidget({
-            type : 'bi.vertical'
+            type : 'bi.vertical',
+            height : 127
         })
         self.groupPane = BI.createWidget({
             type : 'bi.absolute',

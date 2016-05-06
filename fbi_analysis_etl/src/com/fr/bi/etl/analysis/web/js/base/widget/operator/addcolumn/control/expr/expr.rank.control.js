@@ -37,7 +37,9 @@ BI.AnalysisETLOperatorAddColumnExprRankController = BI.inherit(BI.AnalysisETLOpe
         })
         model.set('rule', model.get('rule') || BICst.TARGET_TYPE.SUM_OF_ALL);
         model.set('sortType', model.get('rule') || BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC);
-        widget.rule.setValue(rule.value);
+        if (BI.isNotNull(rule)){
+            widget.rule.setValue(rule.value);
+        }
         this._afterValueSetted(widget, model);
     }
 })

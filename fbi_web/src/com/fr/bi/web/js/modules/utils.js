@@ -563,6 +563,9 @@
             var ids = this.getAllTargetDimensionIDs(wId);
             return BI.some(ids, function (i, id) {
                 var tids = self.getExpressionValuesByDimensionID(id);
+                if (!BI.isArray(tids)) {
+                    tids = [tids];
+                }
                 if (tids.contains(dId)) {
                     return true;
                 }
@@ -642,18 +645,6 @@
                 return [[{primaryKey: {field_id: from}, foreignKey: {field_id: to}}]]
             }
             return this.getPathsFromTableAToTableB(tableA, tableB);
-        },
-
-        getFirstCommonPrimaryTablesBetweenTwoTablesByIDs: function (tableId1, tableId2) {
-            var primaryTables = this.getPrimaryRelationTablesByTableID(tableId1);
-            var connectionSet = Pool.connections.connectionSet;
-            var result = [];
-            BI.find(connectionSet, function (idx, obj) {
-                if (obj.foreignKey.table_id === tableId2 && BI.contains(primaryTables, obj.primaryKey.table_id)) {
-                    return;
-                }
-            });
-
         },
 
         getCommonPrimaryTablesByTableIDs: function (tableIds) {
@@ -894,21 +885,20 @@
             var self = this;
             options || (options = {});
             var data = {
-                    bounds: {
-                        left: 0,
-                        top: 0,
-                        width: 0,
-                        height: 0
-                    },
-                    name: "__StatisticWidget__" + BI.UUID(),
-                    dimensions: dimensions,
-                    filter: {
-                        filter_type: BICst.FILTER_TYPE.AND,
-                        filter_value: self.getControlCalculations(options.id)
-                    },
-                    view: view
-                }
-                ;
+                bounds: {
+                    left: 0,
+                    top: 0,
+                    width: 0,
+                    height: 0
+                },
+                name: "__StatisticWidget__" + BI.UUID(),
+                dimensions: dimensions,
+                filter: {
+                    filter_type: BICst.FILTER_TYPE.AND,
+                    filter_value: self.getControlCalculations(options.id)
+                },
+                view: view
+            };
             Data.Req.reqWidgetSettingByData({widget: BI.extend(data, options)}, function (res) {
                 callback(res);
             })
@@ -927,7 +917,7 @@
                     var dimensionIds = self.getAllDimensionIDs(id);
                     BI.each(dimensionIds, function (i, dimId) {
                         var fValue = value, fType = "";
-                        if (BI.isNull(fValue) || BI.isEmptyString(value)) {
+                        if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value)) {
                             return;
                         }
                         switch (self.getWidgetTypeByID(id)) {
@@ -989,6 +979,9 @@
                                 break;
                             case BICst.Widget.TREE:
                                 fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
+                                var treeValue = {};
+                                createTreeFilterValue(treeValue, fValue, dimId, i);
+                                fValue = treeValue;
                                 break;
                         }
                         filterValues.push({
@@ -1187,6 +1180,7 @@
                             date = new Date(parseComplexDate(wValue));
                         }
                         break;
+
                 }
                 return date;
             }
@@ -1336,6 +1330,7 @@
             });
             return this.isTableInRelativeTables(tIds, tableId);
         }
+
     });
 
 
@@ -1407,5 +1402,21 @@
                 return new Date(value.year, value.month, value.day).getTime();
 
         }
+    }
+
+    function createTreeFilterValue(result, v, dId, floor) {
+        if (floor === 0) {
+            if (BI.isNull(result.value)) {
+                result.value = [];
+            }
+            BI.isNull(result.type) && (result.type = 1);
+            BI.each(v, function (value, child) {
+                result.value.push(value);
+            })
+        }
+        BI.each(v, function (value, child) {
+                createTreeFilterValue(result, child, dId, floor - 1);
+            }
+        );
     }
 })();
