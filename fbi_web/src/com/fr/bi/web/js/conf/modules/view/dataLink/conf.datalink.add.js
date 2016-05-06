@@ -48,24 +48,24 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
 
         //数据库
         this.databaseCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: self.model.get("databaseItems"),
             width: 460,
             height: 28
         });
-        this.databaseCombo.on(BI.TextIconCombo.EVENT_CHANGE, function(){
+        this.databaseCombo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self._onDatabaseChange(self.databaseCombo.getValue()[0]);
         });
         var database = this._createItemWrap( BI.i18nText("BI-Database"), this.databaseCombo);
 
         //驱动器
         this.driverCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: [],
             width: 460,
             height: 28
         });
-        this.driverCombo.on(BI.TextIconCombo.EVENT_CHANGE, function(){
+        this.driverCombo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self._onDriverChange(self.driverCombo.getValue()[0]);
         });
         var driver = this._createItemWrap( BI.i18nText("BI-Driver"), this.driverCombo);
@@ -119,7 +119,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
 
         //原始编码
         this.oldCodeCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: self.model.get("codeItems"),
             width: 460,
             height: 28
@@ -128,7 +128,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
 
         //新编码
         this.newCodeCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: self.model.get("codeItems"),
             width: 460,
             height: 28

@@ -10,12 +10,12 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodPane  = BI.inherit(BI.AnalysisETLOp
         BI.AnalysisETLOperatorAddColumnExprLastPeriodPane.superclass._initView.apply(this, arguments);
         var self = this;
         self.yearMonthSeason = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height : self._constants.HEIGHT,
             width : self._constants.WIDTH,
             items : []
         });
-        self.yearMonthSeason.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.yearMonthSeason.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setDateField(v);
         })
         self.layout.addItems([{el : {

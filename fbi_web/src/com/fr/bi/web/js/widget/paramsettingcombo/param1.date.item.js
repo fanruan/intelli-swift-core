@@ -60,13 +60,13 @@ BI.Param1DateItem = BI.inherit(BI.Single, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         this.firstCombo = BI.createWidget({
-            type: "bi.small_text_icon_combo",
+            type: "bi.small_text_value_combo",
             width: this.constants.comboWidth,
             height: this.constants.itemHeight,
             items: BICst.BEFORE_AFTER_COMBO
         });
         this.secondCombo = BI.createWidget({
-            type: "bi.small_text_icon_combo",
+            type: "bi.small_text_value_combo",
             width: this.constants.comboWidth,
             height: this.constants.itemHeight,
             items: BICst.BEFORE_AFTER_COMBO

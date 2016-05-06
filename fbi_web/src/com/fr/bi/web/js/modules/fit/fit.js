@@ -41,12 +41,12 @@ BI.Fit = BI.inherit(BI.Widget, {
         });
 
         this.layoutCombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             items: BICst.DASHBOARD_LAYOUT_ARRAY,
             cls: "layout-combo"
         });
         this.layoutCombo.setValue(o.layoutType);
-        this.layoutCombo.on(BI.TextIconCombo.EVENT_CHANGE, function (v) {
+        this.layoutCombo.on(BI.TextValueCombo.EVENT_CHANGE, function (v) {
             self.arrangement.setLayoutType(v);
             self.fireEvent(BI.Fit.EVENT_CHANGE);
         });
@@ -266,15 +266,19 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            layoutStyle: this.getLayoutType(),
+            layoutType: this.getLayoutType(),
             regions: this.getAllRegions()
         }
     },
 
-    copyRegion: function (id, el) {
+    copyRegion: function (id, newId) {
         var flag = false;
         var region = this.arrangement.getRegionByName(id);
-        if (!(flag = this.arrangement.addRegion(el, {
+        if (!(flag = this.arrangement.addRegion({
+                el: this._createItem(newId),
+                width:region.width,
+                height: region.height
+            }, {
                 left: region.left + region.width / 2,
                 top: region.top + region.height / 2
             }))) {
@@ -289,6 +293,9 @@ BI.Fit = BI.inherit(BI.Widget, {
                 }
             }
         }
+        if(flag === true){
+            this.fireEvent(BI.Fit.EVENT_CHANGE);
+        }
         return flag;
     },
 
@@ -302,7 +309,7 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this;
-        var layoutStyle = Data.SharingPool.get("layoutStyle") || BI.Arrangement.LAYOUT_TYPE.ADAPTIVE;
+        var layoutType = Data.SharingPool.get("layoutType") || BI.Arrangement.LAYOUT_TYPE.ADAPTIVE;
         var result = [];
         var widgets = Data.SharingPool.cat("widgets");
         BI.each(widgets, function (id, widget) {
@@ -316,7 +323,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 height: bounds.height
             });
         });
-        this.setLayoutType(layoutStyle);
+        this.setLayoutType(layoutType);
         this.arrangement.populate(result);
     },
 

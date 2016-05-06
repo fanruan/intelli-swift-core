@@ -13,13 +13,13 @@ BI.CalculateTargetMonthOnMonthValuePane = BI.inherit(BI.CalculateTargetAbstractP
     },
 
     setValue: function (expression) {
-        this.valueCombo.setValue(expression.cal_target_name);
+        this.valueCombo.setValue(expression.ids);
         this._refreshLabel();
     },
 
     getValue: function () {
         var result = {};
-        result.cal_target_name = this.valueCombo.getValue()[0];
+        result.ids = this.valueCombo.getValue();
         result.period_type = BICst.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.VALUE;
         return result;
     },

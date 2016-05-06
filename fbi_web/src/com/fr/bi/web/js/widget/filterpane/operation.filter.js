@@ -176,7 +176,7 @@ BI.FilterOperation = BI.inherit(BI.Widget, {
                     break;
             }
             var addCombo = BI.createWidget({
-                type: "bi.single_select_combo",
+                type: "bi.static_combo",
                 text: text,
                 width: 90,
                 chooseType: BI.ButtonGroup.CHOOSE_TYPE_NONE,

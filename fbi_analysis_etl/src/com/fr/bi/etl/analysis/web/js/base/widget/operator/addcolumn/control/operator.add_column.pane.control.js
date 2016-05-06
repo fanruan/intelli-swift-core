@@ -7,28 +7,34 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         this._editing = false;
     },
 
-    populate : function () {
-        var widget = arguments[arguments.length - 2];
-        var model = arguments[arguments.length - 1];
+    populate : function (widget, model) {
         var cardName = this.getDefaultCardName(widget, model);
         widget.title.populate({}, {
             columnNames: this._getAllColumnNames(model)
         })
         widget.allColumnsPane.populate(model.getAddColumns())
         widget.card.showCardByName(cardName);
+        this._check(widget, model);
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
     },
 
-    getDefaultCardName : function () {
-        var widget = arguments[arguments.length - 2];
-        var model = arguments[arguments.length - 1];
+    _check : function (widget, model) {
+        var parent = model.get(ETLCst.PARENTS)[0];
+        var operator = model.get('operator');
+        var columns = operator[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY]
+        var found;
+        if (!found){
+            widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
+        }
+    },
+
+
+    getDefaultCardName : function (widget, model) {
         this._editing = model.getAddColumns().length === 0;
         return this._editing ? widget._constant.SINGLE_COLUMN_CARD : widget._constant.ALL_COLUMNS_CARD;
     },
 
-    createNewAddColumn : function () {
-        var widget = arguments[arguments.length - 2];
-        var model = arguments[arguments.length - 1];
+    createNewAddColumn : function (widget, model) {
         widget.title.populate({},{
             columnNames: this._getAllColumnNames(model)
         });
@@ -37,18 +43,14 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
     },
 
-    deleteColumnByName : function (name) {
-        var widget = arguments[arguments.length - 2];
-        var model = arguments[arguments.length - 1];
+    deleteColumnByName : function (name, widget, model) {
         model.deleteColumnByName(name);
         this._cancelEditColumn(widget, model);
         widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.getAddColumns().length !== 0)
     },
 
-    editColumnByName : function (name) {
-        var widget = arguments[arguments.length - 2];
-        var model = arguments[arguments.length - 1];
+    editColumnByName : function (name, widget, model) {
         var column = model.getColumnByName(name);
         if(BI.isNull(column)){
             console.log("error can't find column : " + name)
@@ -67,9 +69,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         return this._editing
     },
 
-    cancelColumn : function () {
-        var widget = arguments[arguments.length - 2];
-        var model = arguments[arguments.length - 1];
+    cancelColumn : function (widget, model) {
         if(this._isEditing()){
             if(model.getAddColumns().length === 0) {
                 return false;
@@ -105,9 +105,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         this._cancelEditColumn(widget, model);
     },
 
-    saveColumn : function (editing) {
-        var widget = arguments[arguments.length - 2];
-        var model = arguments[arguments.length - 1];
+    saveColumn : function (editing, widget, model) {
         if(editing !== true || !this._isEditing()) {
             return false;
         }

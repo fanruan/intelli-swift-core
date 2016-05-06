@@ -21,8 +21,8 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
     private static final long serialVersionUID = 7481595795461223558L;
     private int type = BIReportConstant.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC;
 
-    public RankConfigureCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group, int rank_type) {
-        super(target, cal_target_name, start_group);
+    public RankConfigureCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group, int rank_type) {
+        super(target, target_id, start_group);
         this.type = rank_type;
     }
 
@@ -80,7 +80,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
 
     @Override
     public BITargetKey createTargetKey() {
-        return new BIRankCalTargetKey(targetName, cal_target_name, targetMap, start_group, type);
+        return new BIRankCalTargetKey(targetName, target_id, targetMap, start_group, type);
     }
 
 

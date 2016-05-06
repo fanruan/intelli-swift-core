@@ -260,7 +260,7 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
             o.crossHeader = crossHeader;
         }
         var deep = Math.max(o.mergeCols.length, this.tableTree._maxDeep(o.items) - 1);
-        var vDeep = this.tableTree._maxDeep(o.crossItems) - 1; //纵向深度
+        var vDeep = o.crossHeader.length; //纵向深度
         var header = this._createHeader(deep, vDeep);
         items = this.tableTree._formatItems(o.items, deep);
         this._formatItemsAndMergeCols(items, o.mergeCols);

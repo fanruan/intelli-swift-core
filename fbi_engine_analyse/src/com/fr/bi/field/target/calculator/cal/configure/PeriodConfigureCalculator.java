@@ -20,8 +20,8 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
     private static final long serialVersionUID = 550160604753618347L;
     private int type = BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.VALUE;
 
-    public PeriodConfigureCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group, int period_type) {
-        super(target, cal_target_name, start_group);
+    public PeriodConfigureCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group, int period_type) {
+        super(target, target_id, start_group);
         this.type = period_type;
     }
     //TODO 待测试
@@ -65,7 +65,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
 
     @Override
     public BITargetKey createTargetKey() {
-        return new BIPeriodCalTargetKey(targetName, cal_target_name, targetMap, start_group);
+        return new BIPeriodCalTargetKey(targetName, target_id, targetMap, start_group);
     }
 
     /**

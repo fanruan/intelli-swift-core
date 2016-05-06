@@ -74,6 +74,7 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodController = BI.inherit(BI.Analysis
                 type : 'bi.label',
                 cls : 'detail-label',
                 textAlign : 'left',
+                height : 25,
                 text : text, 
                 title : text
             })

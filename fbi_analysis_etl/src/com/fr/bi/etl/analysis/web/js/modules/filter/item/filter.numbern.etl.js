@@ -21,12 +21,12 @@ BI.ETLNumberNFilterPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         self.storedValue = BI.deepClone(o.value || {});
         self.combo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             width:'',
             height:self._constants.HEIGHT,
             items :BICst.ETL_FILTER_NUMBER_N_ITEMS
         });
-        self.combo.on(BI.TextIconCombo.EVENT_CHANGE, function(){
+        self.combo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self.storedValue.type = self.combo.getValue()[0];
             self.populateGroupContainer();
         });

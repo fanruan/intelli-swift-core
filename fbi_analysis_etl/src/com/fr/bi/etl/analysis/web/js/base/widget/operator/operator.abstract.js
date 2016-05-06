@@ -34,6 +34,14 @@ BI.AnalysisETLOperatorAbstractPane = BI.inherit(BI.MVCWidget, {
             self.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)
         })
 
+        this.center.on(BI.TopPointerSavePane.EVENT_INVALID, function(){
+            self.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, arguments)
+        })
+
+        this.center.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function(){
+            self.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, arguments)
+        })
+
         this.center.on(BI.TopPointerSavePane.EVENT_SAVE, function(v){
             self.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, arguments)
         })

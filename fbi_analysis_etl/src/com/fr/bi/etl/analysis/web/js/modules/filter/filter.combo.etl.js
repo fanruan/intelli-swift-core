@@ -56,7 +56,10 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
     },
 
     getValue : function (){
-        return BI.extend(this.storedValue, {field_name : this.options.field_name});
+        if (BI.isNotNull(this.storedValue) && this.storedValue.field_type !==this.options.field_type){
+            this.storedValue = {};
+        }
+        return BI.extend(this.storedValue, {field_name : this.options.field_name, field_type : this.options.field_type});
     },
 
     populate : function (items){

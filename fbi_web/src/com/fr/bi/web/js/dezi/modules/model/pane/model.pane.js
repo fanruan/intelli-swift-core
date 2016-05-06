@@ -1,7 +1,7 @@
 BIDezi.PaneModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.PaneModel.superclass._defaultConfig.apply(this), {
-            layoutStyle: 0,
+            layoutType: 0,
             widgets: {}
         });
     },
@@ -23,7 +23,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         if (this.has("dashboard")) {
             var dashboard = this.get("dashboard");
             var widgets = this.get("widgets");
-            var layoutStyle = dashboard.layoutStyle;
+            var layoutType = dashboard.layoutType;
             var regions = dashboard.regions;
             BI.each(regions, function (i, region) {
                 if (BI.isNotNull(widgets[region.id])) {
@@ -35,7 +35,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                     }
                 }
             });
-            this.set({"widgets": widgets, layoutStyle: layoutStyle});
+            this.set({"widgets": widgets, layoutType: layoutType});
             return true;
         }
         if(this.has("addWidget")){
@@ -46,6 +46,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
             if(!widgets[wId]){
                 widgets[wId] = info;
                 widgets[wId].name = self._generateWidgetName(widgets[wId].name);
+                widgets[wId].init_time = new Date().getTime();
             }
             this.set({"widgets": widgets});
             return true;
@@ -69,15 +70,20 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
 
     similar: function (ob, key) {
         if (key === "widgets") {
-            ob.name = this._generateWidgetName();
-            ob.linkages = [];
-            ob.bounds = {
+            var obj = {};
+            obj.type = ob.type;
+            obj.name = this._generateWidgetName(ob.name);
+            obj.dimensions = ob.dimensions;
+            obj.view = ob.view;
+            obj.bounds = {
                 height: ob.bounds.height,
                 width: ob.bounds.width,
                 left: ob.bounds.left + 15,
                 top: ob.bounds.top + 15
             };
-            return ob;
+            obj.settings = ob.settings;
+            obj.value = ob.value;
+            return obj;
         }
     },
 
@@ -97,6 +103,6 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         });
         Data.SharingPool.put("dimensions", dims);
         Data.SharingPool.put("widgets", widgets);
-        Data.SharingPool.put("layoutStyle", this.get("layoutStyle"));
+        Data.SharingPool.put("layoutType", this.get("layoutType"));
     }
 });

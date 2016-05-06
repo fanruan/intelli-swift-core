@@ -103,11 +103,11 @@ BI.AnalysisETLOperatorAddColumnExprAccController = BI.inherit(BI.MVCController, 
         }
         widget.fieldCombo.setValue(model.get('field'));
         widget.rule.populate([{
-            text: BI.i18nText("BI-All_Values"),
-            value: BICst.TARGET_TYPE.SUM_OF_ALL
+            text: BI.i18nText("BI-Cumulative_Value"),
+            value: BICst.TARGET_TYPE.SUM_OF_ABOVE
         }, {
-            text: BI.i18nText("BI-All_Values_In_Group"),
-            value: BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP
+            text: BI.i18nText("BI-Cumulative_Value_In_Group"),
+            value: BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP
         }]);
         model.set('rule', model.get('rule') ||BICst.TARGET_TYPE.SUM_OF_ALL);
         widget.rule.setValue(model.get('rule'));

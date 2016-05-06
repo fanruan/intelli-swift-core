@@ -72,7 +72,6 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
                 height : self._constants.ITEM_HEIGHT
             }, this.editor, deleteIcon]
         });
-        this.checkValid();
         item.element.hover(function () {
             deleteIcon.setVisible(true);
         }, function () {
@@ -129,6 +128,9 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         pane.setValue(value)
         validationChecker(value);
         pane.on(BI.TextEditor.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_CHANGE)
+        });
+        pane.on(BI.TextEditor.EVENT_EMPTY, function () {
             self.fireEvent(BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_CHANGE)
         });
         return pane;

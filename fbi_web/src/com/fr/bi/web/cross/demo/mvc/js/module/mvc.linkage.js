@@ -31,7 +31,7 @@ LinkageView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var self = this;
         var combo = BI.createWidget({
-            type: "bi.single_select_combo",
+            type: "bi.static_combo",
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_NONE,
             width: 200,
             height: 30,
@@ -43,7 +43,7 @@ LinkageView = BI.inherit(BI.View, {
                 }
             })
         });
-        combo.on(BI.SingleSelectCombo.EVENT_CHANGE, function (val) {
+        combo.on(BI.StaticCombo.EVENT_CHANGE, function (val) {
             self._createTab(val);
         });
 

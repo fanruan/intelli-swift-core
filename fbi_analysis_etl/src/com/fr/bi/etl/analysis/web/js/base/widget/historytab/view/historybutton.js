@@ -114,6 +114,7 @@ BI.HistoryButton =  FR.extend(BI.BasicButton, {
 
     setValid : function (hasError) {
         this.hasError =   hasError;
+        this._refreshRedMark();
     },
 
     _refreshRedMark : function () {

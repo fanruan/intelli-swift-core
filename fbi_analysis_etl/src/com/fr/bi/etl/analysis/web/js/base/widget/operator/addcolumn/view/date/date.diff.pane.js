@@ -23,19 +23,19 @@ BI.AnalysisETLOperatorAddColumnDateDiffPane = BI.inherit(BI.MVCWidget, {
             self.controller.setType(type);
         });
         self.lcombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height : self._constants.HEIGHT,
             items : []
         });
-        self.lcombo.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.lcombo.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setFirstField(v);
         })
         self.rcombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height:self._constants.HEIGHT,
             items :[]
         });
-        self.rcombo.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.rcombo.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setSecondField(v);
         })
         BI.createWidget({
