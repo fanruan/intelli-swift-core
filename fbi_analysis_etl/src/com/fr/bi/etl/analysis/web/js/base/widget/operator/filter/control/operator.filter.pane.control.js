@@ -57,7 +57,24 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
             })
             widget.content.populate(items, fieldItems);
         }
+        this._check(widget, model);
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, BI.isNotNull(items) && items.length !== 0)
+    },
+
+    _check : function (widget, model) {
+        var parent = model.get(ETLCst.PARENTS)[0];
+        var items = model.get('operator')[ETLCst.ITEMS];
+        var found = BI.some(items, function (i, item) {
+            var field = BI.find(parent[ETLCst.FIELDS], function (i, field) {
+                return field.field_name === item.field_name;
+            })
+            if (BI.isNotNull(field)){
+                  
+            }
+        });
+        if (!found){
+            widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, BI.deepClone(parent[ETLCst.FIELDS]))
+        }
     },
 
     isDefalutValue : function (widget, model) {

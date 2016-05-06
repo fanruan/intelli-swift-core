@@ -3,8 +3,9 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
 
     _init: function () {
         BI.AnalysisETLOperatorGroupPaneModel.superclass._init.apply(this, arguments);
-        this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY) || {});
-        this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY) || {})
+        var operator = this.get('operator') || {};
+        this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] || {});
+        this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] || {});
         this._initDefault()
         this.changed = false;
     },
@@ -85,6 +86,16 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         var field = f["fieldInfo"], regionType = f["regionType"];
         var id = BI.UUID();
         var type = field["field_type"];
+        var getDimensionTypeByFieldType = function (fieldType) {
+            switch (fieldType) {
+                case BICst.COLUMN.STRING:
+                    return BICst.TARGET_TYPE.STRING;
+                case BICst.COLUMN.NUMBER:
+                    return BICst.TARGET_TYPE.NUMBER;
+                case BICst.COLUMN.DATE:
+                    return BICst.TARGET_TYPE.DATE;
+            }
+        };
         dimensions[id] = {
             name: BI.Func.createDistinctName(dimensions, field["field_name"]),
             _src: {
@@ -92,6 +103,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                 field_type: type,
                 field_name: field["field_name"]
             },
+            type: getDimensionTypeByFieldType(type),
             used: true
         };
         var assertTargetSummary = function (type) {
@@ -124,7 +136,6 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
             }
         };
         regionType == BICst.REGION.DIMENSION1 ? dimensions[id]["group"] = assertDimensionSummary(type) : dimensions[id]["group"] = assertTargetSummary(type);
-        dimensions[id]["type"] = self._getFieldType(dimensions[id], regionType),
         view[regionType] || (view[regionType] = []);
         view[regionType].push(id);
         this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, dimensions)
@@ -142,7 +153,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         this.changed = true;
     },
 
-    _createFields : function () {
+    createFields : function () {
         var fields = [];
         var view = this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
         var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
@@ -152,7 +163,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                 var  dimension = dimensions[v];
                 fields.push({
                     field_name : dimension["name"],
-                    field_type: dimension["type"]
+                    field_type: self._getFieldType(dimension, idx),
                 });
             })
         })
@@ -173,7 +184,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                     break;
                 }
                 case BICst.COLUMN.DATE : {
-                    if(dimension.group === BICst.GROUP.YMD){
+                    if(BI.isNotNull(dimension.group) && dimension.group.type === BICst.GROUP.YMD){
                         return BICst.COLUMN.DATE
                     }
                     return BICst.COLUMN.NUMBER
@@ -187,7 +198,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     update : function () {
         var v  = BI.AnalysisETLOperatorGroupPaneModel.superclass.update.apply(this, arguments);
         v.etlType = ETLCst.ETL_TYPE.GROUP_SUMMARY;
-        v.fields = this._createFields();
+        v.fields = this.createFields();
         v.operator = {};
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY];
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY]
@@ -202,9 +213,6 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     setDimensionGroupById : function (id, group) {
         var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
         dimensions[id].group = group;
-        var views = this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
-        var regionType = BI.indexOf(views[BICst.REGION.DIMENSION1], id) > -1 ? BICst.REGION.DIMENSION1 : BICst.REGION.TARGET1
-        dimensions[id]["type"] = this._getFieldType(dimensions[id], regionType),
         this.changed = true;
     },
 

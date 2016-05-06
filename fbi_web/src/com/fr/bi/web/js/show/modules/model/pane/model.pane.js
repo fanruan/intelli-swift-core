@@ -1,7 +1,7 @@
 BIShow.PaneModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIShow.PaneModel.superclass._defaultConfig.apply(this), {
-            layoutStyle: 0,
+            layoutType: 0,
             widgets: {}
         });
     },
@@ -24,7 +24,7 @@ BIShow.PaneModel = BI.inherit(BI.Model, {
         if (this.has("dashboard")) {
             var dashboard = this.get("dashboard");
             var widgets = this.get("widgets");
-            var layoutStyle = dashboard.layoutStyle;
+            var layoutType = dashboard.layoutType;
             var widgetTypes = dashboard.widgetTypes;
             var regions = dashboard.regions;
             BI.each(regions, function (i, region) {
@@ -48,7 +48,7 @@ BIShow.PaneModel = BI.inherit(BI.Model, {
                     }
                 }
             });
-            this.set({"widgets": widgets, layoutStyle: layoutStyle});
+            this.set({"widgets": widgets, layoutType: layoutType});
             return true;
         }
         return false;
@@ -98,6 +98,6 @@ BIShow.PaneModel = BI.inherit(BI.Model, {
         });
         Data.SharingPool.put("dimensions", dims);
         Data.SharingPool.put("widgets", widgets);
-        Data.SharingPool.put("layoutStyle", this.get("layoutStyle"));
+        Data.SharingPool.put("layoutType", this.get("layoutType"));
     }
 });

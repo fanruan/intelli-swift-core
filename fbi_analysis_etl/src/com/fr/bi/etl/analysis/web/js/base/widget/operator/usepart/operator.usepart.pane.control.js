@@ -16,27 +16,13 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
     _check : function (widget, model) {
         var parent = model.get(ETLCst.PARENTS)[0];
         var operator = model.get('operator') || {};
-        var value = operator.assist || [];
-        var invalidName;
-        BI.some(parent[ETLCst.FIELDS], function (i, f) {
-            var parentField = BI.find(value, function (idx, name) {
-                return f.field_name === name
-            })
-            if (BI.isNull(parentField)){
-                invalidName = f.field_name;
+        var newFields = [];
+        BI.each(parent[ETLCst.FIELDS], function (i, item) {
+            if (BI.indexOf(operator.value, item.field_name) === -1){
+                newFields.push(item);
             }
         })
-        if (BI.isNull(invalidName)){
-            var newFields = [];
-            BI.each(parent[ETLCst.FIELDS], function (i, item) {
-                if (BI.indexOf(value, item.field_name) > -1){
-                    newFields.push(item);
-                }
-            })
-            widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, newFields)
-        } else {
-            widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-Use_Part_Of_Fields') + invalidName + BI.i18nText('BI-Not_Fount'))
-        }
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, newFields)
 
     },
 

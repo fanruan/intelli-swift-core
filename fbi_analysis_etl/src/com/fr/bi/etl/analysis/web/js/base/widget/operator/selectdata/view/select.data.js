@@ -52,6 +52,13 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.MVCWidget, {
             self.controller.sortColumn(oldIndex, newIndex);
         })
 
+        this.center.on(BI.TopPointerSavePane.EVENT_INVALID, function(){
+            self.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, arguments)
+        })
+
+        this.center.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function(){
+            self.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, arguments)
+        })
         this.center.on(BI.Controller.EVENT_CHANGE, function(v){
             self.saveButton.setEnable(!v);
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments)

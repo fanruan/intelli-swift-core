@@ -138,6 +138,7 @@ BI.TimeInterval = BI.inherit(BI.Single, {
         this.label.setTitle("");
     },
     setValue: function (date) {
+        date = date || {};
         this.left.setValue(date.start);
         this.right.setValue(date.end);
     },

@@ -17,9 +17,9 @@ public class BIAvgOfAllKey extends BISummaryOfAllCalTargetKey {
      */
     private static final long serialVersionUID = -1147344812297195470L;
 
-    public BIAvgOfAllKey(String targetName, String cal_target_name,
+    public BIAvgOfAllKey(String targetName, String target_id,
                          Map targetMap, int start_group) {
-        super(targetName, cal_target_name, targetMap, start_group);
+        super(targetName, target_id, targetMap, start_group);
     }
 
     @Override

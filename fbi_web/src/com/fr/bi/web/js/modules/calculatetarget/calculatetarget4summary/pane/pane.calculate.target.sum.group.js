@@ -50,14 +50,14 @@ BI.CalculateTargetSumGroupPane = BI.inherit(BI.CalculateTargetAbstractGroupPane,
 
     setValue: function (expression) {
         this.principleCombo.setValue(expression.summary_type);
-        this.valueCombo.setValue(expression.cal_target_name);
+        this.valueCombo.setValue(expression.ids);
         this._refreshLabel();
     },
 
     getValue: function () {
         var result = {};
         result.summary_type = this.principleCombo.getValue()[0];
-        result.cal_target_name = this.valueCombo.getValue()[0];
+        result.ids = this.valueCombo.getValue();
         return result;
     }
 

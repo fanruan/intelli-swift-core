@@ -19,7 +19,8 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
                 }
             });
         });
-        this._checkStatus(widget, model)
+        this._checkStatus(widget, model);
+        this._check(widget, model);
         this._refreshPreview(widget, model);
     },
 
@@ -30,6 +31,44 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         });
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isValid())
     },
+
+    _check : function (widget, model) {
+        var parent = model.get(ETLCst.PARENTS)[0];
+        var view = model.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
+        var dimensions = model.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
+        var found = BI.some(view[BICst.REGION.DIMENSION1], function (i, v) {
+            var  dimension = dimensions[v];
+            var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
+                return field.field_name === dimension._src.field_name
+            })
+            if (BI.isNull(f)){
+                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount'))
+                return true;
+            } else if (dimension.group.type !== BICst.GROUP.ID_GROUP &&  f.field_type !== dimension._src.field_type){
+                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type'))
+                return true;
+            }
+        })
+        if (!found){
+            found = BI.some(view[BICst.REGION.TARGET1], function (i, v) {
+                var  dimension = dimensions[v];
+                var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
+                    return field.field_name === dimension._src.field_name
+                })
+                if (BI.isNull(f)){
+                    widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount'))
+                    return true;
+                } else if (f.field_type !== BICst.COLUMN.NUMBER && dimension.group.type !== BICst.SUMMARY_TYPE.COUNT ){
+                    widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type'))
+                    return true;
+                }
+            })
+        }
+        if (!found){
+            widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
+        }
+    },
+
 
     getDimensionUsedById : function (id, widget, model) {
         return model.getDimensionUsedById(id)

@@ -15,7 +15,7 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
     /**
      * 计算使用的指标
      */
-    private String cal_target_name;
+    private String target_id;
 
     /**
      * 从第几个分组位置开始算, 默认为0;
@@ -27,7 +27,7 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
         super.parseJSON(jo, userId);
         if (jo.has("_src")) {
             JSONObject srcJo = jo.optJSONObject("_src");
-            this.cal_target_name = srcJo.optJSONObject("expression").optString("cal_target_name");
+            this.target_id = srcJo.optJSONObject("expression").optJSONArray("ids").optString(0);
         }
         if (jo.has("type")) {
             switch (jo.optInt("type")) {
@@ -53,7 +53,7 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
     }
 
     protected String getCalTargetName() {
-        return cal_target_name;
+        return target_id;
     }
 
     protected int getStart_group() {
@@ -63,7 +63,7 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
     @Override
     public List<BIAbstractTarget> createCalculateUseTarget(BIAbstractTarget[] targets) {
         List<BIAbstractTarget> list = new ArrayList<BIAbstractTarget>();
-        BIAbstractTarget target = BITravalUtils.getTargetByName(cal_target_name, targets);
+        BIAbstractTarget target = BITravalUtils.getTargetByName(target_id, targets);
         if (target != null) {
             list.add(target);
         }
