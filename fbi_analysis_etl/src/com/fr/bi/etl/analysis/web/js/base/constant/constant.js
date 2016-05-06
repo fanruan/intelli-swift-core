@@ -181,12 +181,12 @@ ETLCst.ANALYSIS_ADD_COLUMN_EXPR_RANK_TYPE_ITEMS = [{
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.DESC,
     groupType : BICst.TARGET_TYPE.RANK
 },{
-    text: BI.i18nText("BI-Rank_In_Asc")+ BI.i18nText('BI-Ranging'),
+    text: BI.i18nText("BI-Asc_Group")+ BI.i18nText('BI-Ranging'),
     value: 'BI-Calculate_Target_Rank_Group_ASC',
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC,
     groupType : BICst.TARGET_TYPE.RANK_IN_GROUP
 }, {
-    text: BI.i18nText("BI-Asc_Group") + BI.i18nText('BI-Ranging'),
+    text: BI.i18nText("BI-Des_Group") + BI.i18nText('BI-Ranging'),
     value: 'BI-Calculate_Target_Rank_Group_DESC',
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.DESC,
     groupType : BICst.TARGET_TYPE.RANK_IN_GROUP

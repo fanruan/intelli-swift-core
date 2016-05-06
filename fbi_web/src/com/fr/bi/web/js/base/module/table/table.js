@@ -51,6 +51,9 @@ BI.Table = BI.inherit(BI.Widget, {
             return "";
         }
         width = BI.parseFloat(width);
+        if (width < 0) {
+            width = 0;
+        }
         return width > 1.01 ? width : (width * 100 + "%");
     },
 
@@ -568,6 +571,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     _row: r,
                     _col: c + start
                 });
+                w.element.css("position", "relative");
                 td.append(w.element);
                 tr.append(td);
                 preCol[c] = td;

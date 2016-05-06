@@ -29,21 +29,21 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
     _createComboPane : function () {
         var self = this;
         self.fieldCombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height : self._constants.HEIGHT,
             width : self._constants.WIDTH,
             items : []
         });
-        self.fieldCombo.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.fieldCombo.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setValueField(v);
         });
         self.rule = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height : self._constants.HEIGHT,
             width : self._constants.WIDTH,
             items : []
         });
-        self.rule.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.rule.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setRule(v);
         });
         return BI.createWidget({
@@ -80,7 +80,8 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
     _createGroupPane : function () {
         var self = this;
         self.listContainer = BI.createWidget({
-            type : 'bi.vertical'
+            type : 'bi.vertical',
+            height : 127
         })
         self.groupPane = BI.createWidget({
             type : 'bi.absolute',

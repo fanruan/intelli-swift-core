@@ -49,7 +49,7 @@ public class BITablePathBuilderTest extends BICubeTestBase {
         relationIndexBuilder.setTableA(BIMemoryDataSourceFactory.generateTableB());
         relationIndexBuilder.setTableB(BIMemoryDataSourceFactory.generateTableC());
         relationIndexBuilder.generateRelationIndex(BICubeRelationTestTool.getTbTc(), 1, 2);
-        tablePathIndexBuilder.mainTask();
+        tablePathIndexBuilder.mainTask(null);
     }
 
     public void testPathIndex() {

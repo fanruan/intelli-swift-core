@@ -25,6 +25,7 @@ BI.SmallSelectTextTrigger = BI.inherit(BI.Trigger, {
     },
 
     setValue: function (vals) {
+        var o = this.options;
         vals = BI.isArray(vals) ? vals : [vals];
         var result = [];
         BI.each(this.options.items, function (i, item) {
@@ -32,7 +33,11 @@ BI.SmallSelectTextTrigger = BI.inherit(BI.Trigger, {
                 result.push(item.text || item.value);
             }
         });
-        this.trigger.setText(result.join(","));
+        if (result.length > 0) {
+            this.trigger.setText(result.join(","));
+        } else {
+            this.trigger.setText(o.text);
+        }
     },
 
     populate: function (items) {

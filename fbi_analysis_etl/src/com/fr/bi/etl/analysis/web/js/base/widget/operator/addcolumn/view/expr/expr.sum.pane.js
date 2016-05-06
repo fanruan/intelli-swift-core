@@ -7,12 +7,12 @@ BI.AnalysisETLOperatorAddColumnSumPane  = BI.inherit(BI.AnalysisETLOperatorAddCo
         var self = this;
         var comboPane = BI.AnalysisETLOperatorAddColumnSumPane.superclass._createComboPane.apply(this, arguments);
         self.sumType = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height : self._constants.HEIGHT,
             width : self._constants.WIDTH,
             items : BICst.SUMMARY_TYPE_ITEMS
         });
-        self.sumType.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.sumType.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setSumType(v);
         });
         self.sumLabel = BI.createWidget({

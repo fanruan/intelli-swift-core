@@ -110,6 +110,8 @@ public class Service4BIConfigure extends NoSessionIDService {
 
             new BIGetSchemasByLinkAction(),
 
+            new BIGetPackageAuthorityAction(),
+            new BISavePackageAuthorityAction(),
             new BIGetInfoEnterConfAction(),
             new BIGetTableUpdateSqlAction(),
 

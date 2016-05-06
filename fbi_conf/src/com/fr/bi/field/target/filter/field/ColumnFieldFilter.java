@@ -26,11 +26,11 @@ import java.util.ArrayList;
 import java.util.Set;
 
 
-public  class ColumnFieldFilter extends ColumnFilter {
+public class ColumnFieldFilter extends ColumnFilter {
     /**
-	 *
-	 */
-	protected BIDataColumn dataColumn;
+     *
+     */
+    protected BIDataColumn dataColumn;
 
     public ColumnFieldFilter() {
     }
@@ -108,14 +108,14 @@ public  class ColumnFieldFilter extends ColumnFilter {
      */
     @Override
     public GroupValueIndex createFilterIndex(Table target, ICubeDataLoader loader, long userID) {
-        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
-        if (filterValue != null){
+        GroupValueIndex gvi = null;
+        if (filterValue != null) {
             try {
                 Set<BITableRelationPath> pathSet = BIConfigureManagerCenter.getTableRelationManager().getAllAvailablePath(userID, target, dataColumn.getTableBelongTo());
-                if (ComparatorUtils.equals(dataColumn.getTableBelongTo(), target) && pathSet.isEmpty()){
+                if (ComparatorUtils.equals(dataColumn.getTableBelongTo(), target) && pathSet.isEmpty()) {
                     gvi = filterValue.createFilterIndex(new NoneDimensionCalculator(dataColumn, new ArrayList<BITableSourceRelation>()), target, loader, userID);
                 } else {
-                    for (BITableRelationPath path : pathSet){
+                    for (BITableRelationPath path : pathSet) {
                         gvi = GVIUtils.OR(gvi, filterValue.createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convert2TableSourceRelation(path.getAllRelations(), new BIUser(userID))), target, loader, userID));
                     }
                 }
@@ -133,8 +133,8 @@ public  class ColumnFieldFilter extends ColumnFilter {
      */
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
-        if (dataColumn != null && filterValue != null){
-            if (ComparatorUtils.equals(dimension.getField(), dataColumn.createColumnKey())){
+        if (dataColumn != null && filterValue != null) {
+            if (ComparatorUtils.equals(dimension.getField(), dataColumn.createColumnKey())) {
                 return filterValue.createFilterIndex(dimension, target, loader, userId);
             }
             return createFilterIndex(target, loader, userId);

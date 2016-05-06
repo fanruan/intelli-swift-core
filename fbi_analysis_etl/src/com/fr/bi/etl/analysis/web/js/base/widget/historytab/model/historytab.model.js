@@ -54,14 +54,21 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         if(BI.isNotNull(items[index + 1])) {
             items[index + 1].parents = [items[index]];
         }
-        //todo check字段变化进行处理
     },
 
 
+    _checkGroup: function (fields, item) {
+        return BI.some(item.operator.dimensions, function (i, dimension) {
+            return BI.isNull(BI.find(fields, function (idx, field) {
+                return field.field_name === dimension._src.field_name
+            }))
+        })
+    },
+
     //检查items是否正常//TODO需要上面一起协作完成
     isValid : function (v) {
-        var item = this.findItem(v);
-        return true;
+        var idx = this.getIndexByValue(v);
+        return  true;
     },
 
     createItem : function (v, options) {
@@ -93,6 +100,11 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         return BI.find(items, function (idx, item) {
             return item.value === v;
         })
+    },
+
+    setFields : function(v, fields){
+        var item = this.findItem(v);
+        item.fields = fields;
     },
 
     getOperatorType : function (v) {

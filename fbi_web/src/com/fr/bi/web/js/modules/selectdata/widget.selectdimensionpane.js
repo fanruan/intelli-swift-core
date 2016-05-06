@@ -220,55 +220,6 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         }
     },
 
-    _getSearchResult: function (type, keyword) {
-        var self = this;
-        var searchResult = [], matchResult = [];
-        var widgetsIDs = BI.Utils.getAllWidgetIDs();
-        widgetsIDs = BI.filter(widgetsIDs, function (idx, wId) {
-            return wId !== self.options.wId;
-        });
-        //选择了组件
-        if (type & BI.SelectDataSearchSegment.SECTION_TABLE) {
-            var result = [];
-            //todo 获取所有模板， 暂时做成获取当前模板所有组件
-            var items = self._getWidgetStructureByTemplateId();
-            result.push(BI.Func.getSearchResult(items, keyword));
-            BI.each(result, function (i, sch) {
-                searchResult = searchResult.concat(sch.finded);
-                matchResult = matchResult.concat(sch.matched);
-            })
-        } else {
-            var result = [], map = {};
-            var items = [];
-            BI.each(widgetsIDs, function (i, wid) {
-                items = items.concat(self._getDimensionStructureByWidgetId(wid));
-            });
-            result.push(BI.Func.getSearchResult(items, keyword));
-            BI.each(result, function (i, sch) {
-                BI.each(sch.finded, function (j, finded) {
-                    if (!map[finded.pId]) {
-                        searchResult.push({
-                            id: finded.pId,
-                            type: "bi.detail_select_data_level0_node",
-                            text: BI.Utils.getWidgetNameByID(finded.pId),
-                            title: BI.Utils.getWidgetNameByID(finded.pId),
-                            value: finded.pId,
-                            isParent: true,
-                            open: true
-                        });
-                        map[finded.pId] = true;
-                    }
-                });
-                searchResult = searchResult.concat(sch.finded);
-                matchResult = matchResult.concat(sch.matched);
-            })
-        }
-        return {
-            finded: searchResult,
-            matched: matchResult
-        }
-    },
-
     /**
      * 模板中的所有组件
      * @param id
@@ -334,11 +285,12 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             BI.each(views, function (i, dim) {
                 if (i >= BI.parseInt(BICst.REGION.DIMENSION1) && i < (BI.parseInt(BICst.REGION.TARGET1))) {
                     BI.each(dim, function (idx, dimId) {
+                        widget.dimensions[dimId].dId = dimId;
                         dims.push(widget.dimensions[dimId]);
                     })
                 } else {
                     BI.each(dim, function (idx, dimId) {
-                        if(widget.dimensions[dimId].type === BICst.TARGET_TYPE.NUMBER){
+                        if(widget.dimensions[dimId].type === BICst.TARGET_TYPE.NUMBER || widget.dimensions[dimId].type === BICst.TARGET_TYPE.COUNTER){
                             widget.dimensions[dimId].dId = dimId;
                             tars.push(widget.dimensions[dimId]);
                         }else{
@@ -353,37 +305,6 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         return dimensions;
     },
 
-    _createCalcStructure: function(dimensions, targetIds, targetIdMap, calcId){
-        var self = this;
-        var calc = dimensions[calcId];
-        calc._src.expression.cal_target_name = BI.isArray(calc._src.expression.cal_target_name) ? calc._src.expression.cal_target_name : [calc._src.expression.cal_target_name];
-        BI.each(calc._src.expression.cal_target_name, function(idx, tId){
-            if(BI.contains(targetIds, tId) && !BI.has(targetIdMap, tId)){
-                targetIdMap[tId] = BI.UUID();
-                dimensions[targetIdMap[tId]] = dimensions[tId];
-                dimensions[targetIdMap[tId]].dId = targetIdMap[tId];
-            }
-            var type = BI.has(targetIdMap, tId) ? dimensions[targetIdMap[tId]].type : dimensions[tId].type;
-            if(BI.has(calc._src.expression, "formula_value")){
-                calc._src.expression.formula_value = calc._src.expression.formula_value.replace(tId, targetIdMap[tId] || tId);
-            }
-            calc._src.expression.cal_target_name[idx] = targetIdMap[tId] || tId;
-            if(type === BICst.TARGET_TYPE.FORMULA ||
-                type === BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE ||
-                type === BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE ||
-                type === BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE ||
-                type === BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE ||
-                type === BICst.TARGET_TYPE.SUM_OF_ABOVE ||
-                type === BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP ||
-                type === BICst.TARGET_TYPE.SUM_OF_ALL ||
-                type === BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP ||
-                type === BICst.TARGET_TYPE.RANK ||
-                type === BICst.TARGET_TYPE.RANK_IN_GROUP){
-                self._createCalcStructure(dimensions, targetIds, targetIdMap, tId);
-            }
-        });
-    },
-
     _getDimensionStructureByWidgetId: function (wId, layer) {
         var self = this;
         var dimensionStructure = [];
@@ -391,7 +312,8 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         var dimensions = this._getAllDimensions(wId);
         BI.each(dimensions, function (idx, dimension) {
             var dimensionName = dimension.name;
-            if(dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.STRING){
+            if(dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.DATE
+                || dimension.type === BICst.TARGET_TYPE.COUNTER){
                 dimensionStructure.push({
                     id: dimension.dId,
                     pId: wId,
@@ -421,79 +343,59 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         return BI.concat(dimensionStructure, targetStructure);
     },
 
-    _getCalcDimensions: function (dim, dimensions, result) {
+    /**
+     * 复制指标，维度，计算指标
+     * @param old
+     * @param dimTarIdMap
+     * @param dimensions
+     * @returns []
+     * @private
+     */
+    _createDimensionsAndTargets: function (old, dimTarIdMap, dimensions) {
         var self = this;
-        var checkUniq = function (tar, res) {
-            var tmp = BI.find(res, function(idx, item){
-                return BI.isEqual(item, tar);
-            });
-            if(BI.isNull(tmp)){
-                result.push(tar);
-            }
-        };
-        var calc = dim._src.expression.cal_target_name;
-        calc = BI.isArray(calc) ? calc : [calc];
-        checkUniq(dim, result);
-        BI.each(calc, function(id, tId){
-            var target = BI.find(dimensions, function(i, d){
-                return d.dId === tId;
-            });
-            if(target.type === BICst.TARGET_TYPE.FORMULA ||
-                target.type === BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE ||
-                target.type === BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE ||
-                target.type === BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE ||
-                target.type === BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE ||
-                target.type === BICst.TARGET_TYPE.SUM_OF_ABOVE ||
-                target.type === BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP ||
-                target.type === BICst.TARGET_TYPE.SUM_OF_ALL ||
-                target.type === BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP ||
-                target.type === BICst.TARGET_TYPE.RANK ||
-                target.type === BICst.TARGET_TYPE.RANK_IN_GROUP){
-                self._getCalcDimensions(target, dimensions, result);
-            }else{
-                checkUniq(target, result);
-            }
-        });
-    },
-
-    _changeCalcTargetIds: function (dimensions) {
-        var self = this;
-        var targetIdMap = {};
-        var targetIds = [];
-        var copyDimensions = {};
-        BI.each(dimensions, function(idx, dimension){
-            copyDimensions[dimension.dId] = dimension;
-            targetIds.push(dimension.dId);
-        });
-        BI.each(copyDimensions, function (idx, dim) {
-            if(dim.type === BICst.TARGET_TYPE.FORMULA ||
-                dim.type === BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE ||
-                dim.type === BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE ||
-                dim.type === BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE ||
-                dim.type === BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE ||
-                dim.type === BICst.TARGET_TYPE.SUM_OF_ABOVE ||
-                dim.type === BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP ||
-                dim.type === BICst.TARGET_TYPE.SUM_OF_ALL ||
-                dim.type === BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP ||
-                dim.type === BICst.TARGET_TYPE.RANK ||
-                dim.type === BICst.TARGET_TYPE.RANK_IN_GROUP){
-                self._createCalcStructure(copyDimensions, targetIds, targetIdMap, dim.dId);
-                if(!BI.has(targetIdMap, dim.dId)){
-                    targetIdMap[dim.dId] = BI.UUID();
-                    copyDimensions[targetIdMap[dim.dId]] = copyDimensions[dim.dId];
-                }
-                copyDimensions[dim.dId].dId = targetIdMap[dim.dId];
-            }
-        });
-        BI.remove(copyDimensions, function(idx){
-            return BI.contains(BI.keys(targetIdMap), idx);
-        }, this);
-        BI.each(copyDimensions, function(idx, dimension){
-            if((dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.COUNTER) && !BI.has(targetIdMap, dimension.dId)){
-                dimension.dId = BI.UUID();
-            }
-        });
-        return BI.values(copyDimensions);
+        var result = [];
+        var dimension = BI.deepClone(old);
+        if(BI.has(dimTarIdMap, old.dId)){
+            var dim = dimensions[dimTarIdMap[old.dId]] || dimension;
+            dim.dId = dimTarIdMap[old.dId];
+            return [dim];
+        }
+        switch (old.type) {
+            case BICst.TARGET_TYPE.STRING:
+            case BICst.TARGET_TYPE.NUMBER:
+            case BICst.TARGET_TYPE.DATE:
+                break;
+            case BICst.TARGET_TYPE.FORMULA:
+            case BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE:
+            case BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE:
+            case BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE:
+            case BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE:
+            case BICst.TARGET_TYPE.SUM_OF_ABOVE:
+            case BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP:
+            case BICst.TARGET_TYPE.SUM_OF_ALL:
+            case BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP:
+            case BICst.TARGET_TYPE.RANK:
+            case BICst.TARGET_TYPE.RANK_IN_GROUP:
+                var expression = dimension._src.expression;
+                expression.cal_target_name = BI.isArray(expression.cal_target_name) ? expression.cal_target_name : [expression.cal_target_name];
+                BI.each(expression.cal_target_name, function(id, tId){
+                    var find = BI.find(dimensions, function(idx, d){
+                        return d.dId === tId;
+                    });
+                    var r = self._createDimensionsAndTargets(find, dimTarIdMap, dimensions);
+                    if(BI.has(expression, "formula_value")){
+                        expression.formula_value = expression.formula_value.replace(tId, r[0].dId);
+                    }
+                    expression.cal_target_name[id] = r[0].dId;
+                    result = BI.concat(result, r);
+                });
+                break;
+        }
+        var id = BI.UUID();
+        dimTarIdMap[old.dId] = id;
+        dimension.dId = id;
+        result.push(dimension);
+        return result;
     },
 
     /**
@@ -512,24 +414,14 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 var text = dimensionName;
                 var result = [];
                 var dims = self.searcher.getValue();
+                var targetIdMap = {};
                 BI.each(dims, function(idx, dim){
-                    var type = dim.type;
-                    var newDimensions = self._changeCalcTargetIds(dimensions);
-                    if(type === BICst.TARGET_TYPE.FORMULA ||
-                        type === BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE ||
-                        type === BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE ||
-                        type === BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE ||
-                        type === BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE ||
-                        type === BICst.TARGET_TYPE.SUM_OF_ABOVE ||
-                        type === BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP ||
-                        type === BICst.TARGET_TYPE.SUM_OF_ALL ||
-                        type === BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP ||
-                        type === BICst.TARGET_TYPE.RANK ||
-                        type === BICst.TARGET_TYPE.RANK_IN_GROUP){
-                        self._getCalcDimensions(dim, newDimensions, result);
-                    }else{
-                        result.push(dim);
-                    }
+                    var copy = self._createDimensionsAndTargets(dim, targetIdMap, dimensions);
+                    BI.each(copy, function(idx, obj){
+                       if(!BI.deepContains(result, obj)){
+                           result.push(obj);
+                       }
+                    });
                 });
                 if (result.length > 1) {
                     text = BI.i18nText("BI-All_Field_Count", result.length);

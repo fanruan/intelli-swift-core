@@ -137,24 +137,24 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
 
         //原始编码
         var oldCodeCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: 460,
             height: 28
         });
-        oldCodeCombo.on(BI.TextIconCheckCombo.EVENT_CHANGE, function(){
+        oldCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setOriginalCharsetName(this.getValue());
         });
         var oldCode = this._createItemWrap(BI.i18nText("BI-Original_Code"), oldCodeCombo);
 
         //新编码
         var newCodeCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: 460,
             height: 28
         });
-        newCodeCombo.on(BI.TextIconCheckCombo.EVENT_CHANGE, function(){
+        newCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setNewCharsetName(this.getValue());
         });
         var newCode = this._createItemWrap(BI.i18nText("BI-New_Code"), newCodeCombo);

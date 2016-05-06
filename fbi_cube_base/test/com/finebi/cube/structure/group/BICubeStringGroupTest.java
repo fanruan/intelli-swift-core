@@ -48,18 +48,23 @@ public class BICubeStringGroupTest extends TestCase {
         }
     }
 
+
     public void testAvailable() {
+        available(1, "abc");
+    }
+
+    public void available(int position, String value) {
         try {
             assertFalse(groupData.isGroupReaderAvailable());
             assertFalse(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());
             assertFalse(groupData.isLengthWriterAvailable());
-            groupData.addGroupDataValue(1, "abc");
+            groupData.addGroupDataValue(position, value);
             assertFalse(groupData.isGroupReaderAvailable());
             assertTrue(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());
             assertFalse(groupData.isLengthWriterAvailable());
-            assertEquals("abc", groupData.getGroupValueByPosition(1));
+            assertEquals(value, groupData.getGroupValueByPosition(position));
             assertTrue(groupData.isGroupReaderAvailable());
             assertTrue(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());
@@ -74,6 +79,45 @@ public class BICubeStringGroupTest extends TestCase {
             assertTrue(groupData.isGroupWriterAvailable());
             assertTrue(groupData.isLengthReaderAvailable());
             assertTrue(groupData.isLengthWriterAvailable());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
+
+    public void testReset() {
+        try {
+            testAvailable();
+            groupData.resetGroupWriter();
+            assertTrue(groupData.isGroupReaderAvailable());
+            assertFalse(groupData.isGroupWriterAvailable());
+            assertTrue(groupData.isLengthReaderAvailable());
+            assertTrue(groupData.isLengthWriterAvailable());
+            groupData.resetGroupReader();
+            assertFalse(groupData.isGroupReaderAvailable());
+            assertFalse(groupData.isGroupWriterAvailable());
+            assertTrue(groupData.isLengthReaderAvailable());
+            assertTrue(groupData.isLengthWriterAvailable());
+            groupData.resetLengthWriter();
+            assertFalse(groupData.isGroupReaderAvailable());
+            assertFalse(groupData.isGroupWriterAvailable());
+            assertTrue(groupData.isLengthReaderAvailable());
+            assertFalse(groupData.isLengthWriterAvailable());
+            groupData.resetLengthReader();
+            assertFalse(groupData.isGroupReaderAvailable());
+            assertFalse(groupData.isGroupWriterAvailable());
+            assertFalse(groupData.isLengthReaderAvailable());
+            assertFalse(groupData.isLengthWriterAvailable());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
+
+    public void testResetInitial() {
+        try {
+            testReset();
+            available(1, "bcds");
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
             assertTrue(false);

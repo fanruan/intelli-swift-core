@@ -37,7 +37,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
         widgetItems = BI.sortBy(widgetItems, "text");
 
         var combo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height: this.constants.comboHeight,
             items: widgetItems
         });
@@ -80,7 +80,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
         var ids = BI.Utils.getAllWidgetIDs();
         if(!BI.contains(ids, v)){
             return BI.createWidget({
-                type: "bi.text_icon_combo",
+                type: "bi.text_value_combo",
                 height: this.constants.comboHeight,
                 items: []
             });

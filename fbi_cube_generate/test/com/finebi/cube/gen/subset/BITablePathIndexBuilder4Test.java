@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.subset;
 
 import com.finebi.cube.gen.oper.BITablePathIndexBuilder;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICube;
 
@@ -16,7 +17,7 @@ public class BITablePathIndexBuilder4Test extends BITablePathIndexBuilder {
     }
 
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         System.out.println("Table Path Index!");
         BICubeBuildProbeTool.INSTANCE.getFlag().put("tablePath", 30);
 

@@ -164,12 +164,12 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
 
         //原始编码
         var oldCodeCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: this.constants.INPUT_WIDTH,
             height: this.constants.INPUT_HEIGHT
         });
-        oldCodeCombo.on(BI.TextIconCheckCombo.EVENT_CHANGE, function () {
+        oldCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             self.model.setOriginalCharsetName(this.getValue());
             schemaCombo.setEnable(false);
         });
@@ -177,12 +177,12 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
 
         //新编码
         var newCodeCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: this.constants.INPUT_WIDTH,
             height: this.constants.INPUT_HEIGHT
         });
-        newCodeCombo.on(BI.TextIconCheckCombo.EVENT_CHANGE, function () {
+        newCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             self.model.setNewCharsetName(this.getValue());
             schemaCombo.setEnable(false);
         });
@@ -225,12 +225,12 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         });
 
         var schemaCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: [],
             width: this.constants.INPUT_WIDTH,
             height: this.constants.INPUT_HEIGHT
         });
-        schemaCombo.on(BI.TextIconCheckCombo.EVENT_CHANGE, function () {
+        schemaCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             self.model.setSchema(this.getValue()[0]);
         });
         if (BI.isNotEmptyString(this.model.getSchema())) {

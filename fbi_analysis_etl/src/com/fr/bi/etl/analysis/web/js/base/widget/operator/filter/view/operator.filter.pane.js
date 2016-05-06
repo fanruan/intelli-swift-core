@@ -23,7 +23,7 @@ BI.AnalysisETLOperatorFilterPane = FR.extend(BI.MVCWidget, {
     _initView: function () {
         var self = this;
         this.operatorCombo = BI.createWidget({
-            type:'bi.text_icon_combo',
+            type:'bi.text_value_combo',
             width: 250,
             height: 30,
             items: [{
@@ -34,7 +34,7 @@ BI.AnalysisETLOperatorFilterPane = FR.extend(BI.MVCWidget, {
                 value: BICst.FILTER_TYPE.OR
             }]
         });
-        this.operatorCombo.on(BI.TextIconCombo.EVENT_CHANGE, function () {
+        this.operatorCombo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
             self.controller.operatorChange(self.operatorCombo.getValue());
         })
         this.content = BI.createWidget({

@@ -10,6 +10,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     _init: function () {
         BI.HistoryTabColltroller.superclass._init.apply(this, arguments);
         this.addTempModel = false;
+        this.invalidIndex = Number.MAX_VALUE;
     },
 
     _selectLastTab : function(widget, model) {
@@ -42,27 +43,25 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         var item = model.addItemAfter(operator, position, table);
         this._addNewButtonAfterPos(item, position, widget, model);
         widget.tab.setSelect(item["value"]);
+        this._refreshAfterSheets(item, widget, model)
         this.deferChange(widget, model);
     },
 
     populateOneTab : function (v, widget, model) {
-        widget.tab.getTab(v).populate(this.findItem(v, widget, model), this.options)
+        var tab = widget.tab.getTab(v)
+        tab.populate(this.findItem(v, widget, model), this.options)
     },
 
-    saveOneSheet : function (table, widget, model) {
-        model.saveItem(table);
+    _refreshAfterSheets : function (table, widget, model) {
         var self = this;
-        this.populateOneTab(table.value, widget, model)
         var index = model.getIndexByValue(table.value);
         //从index开始更新index后面的面板信息
         var items = model.get(ETLCst.ITEMS);
         for(var i = index + 1; i < items.length; i++) {
             setTimeout(function (item) {
-               return function() {
-                   self.populateOneTab(item.value, widget, model)
-                   var btn = widget.tabButton.getButton(item.value);
-                   btn.setValid(model.isValid(item.value))
-               }
+                return function() {
+                    self.populateOneTab(item.value, widget, model)
+                }
             }(items[i]),0);
         }
         if(widget.options.allHistory === true){
@@ -72,6 +71,13 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             }, 0)
 
         }
+    },
+
+
+    saveOneSheet : function (table, widget, model) {
+        model.saveItem(table);
+        this.populateOneTab(table.value, widget, model)
+        this._refreshAfterSheets(table, widget, model)
         this.deferChange(widget, model);
     },
 
@@ -84,6 +90,33 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             return "bi.analysis_etl_merge_history";
         }
         return model.getOperatorType(v);
+    },
+
+    setInvalid : function(v, title, widget, model){
+        var index = model.getIndexByValue(v);
+        if (index <= this.invalidIndex){
+            this.invalidIndex = index;
+            var items = model.get(ETLCst.ITEMS);
+            for(var i = index; i < items.length; i++) {
+                var btn = widget.tabButton.getButton(items[i].value);
+                btn.setValid(false);
+                btn.setTitle(title);
+            }
+        }
+    },
+
+    refreshValidFields : function(v, fields, widget, model){
+        model.setFields(v, fields);
+        var index = model.getIndexByValue(v);
+        if (index === this.invalidIndex){
+            var items = model.get(ETLCst.ITEMS);
+            for(var i = index; i < items.length; i++) {
+                var btn = widget.tabButton.getButton(items[i].value);
+                btn.setValid(true);
+                btn.setTitle(btn.getText());
+            }
+            this.invalidIndex = Number.MAX_VALUE;
+        }
     },
 
 

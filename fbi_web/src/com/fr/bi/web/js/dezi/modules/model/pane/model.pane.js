@@ -70,15 +70,20 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
 
     similar: function (ob, key) {
         if (key === "widgets") {
-            ob.name = this._generateWidgetName();
-            ob.linkages = [];
-            ob.bounds = {
+            var obj = {};
+            obj.type = ob.type;
+            obj.name = this._generateWidgetName(ob.name);
+            obj.dimensions = ob.dimensions;
+            obj.view = ob.view;
+            obj.bounds = {
                 height: ob.bounds.height,
                 width: ob.bounds.width,
                 left: ob.bounds.left + 15,
                 top: ob.bounds.top + 15
             };
-            return ob;
+            obj.settings = ob.settings;
+            obj.value = ob.value;
+            return obj;
         }
     },
 

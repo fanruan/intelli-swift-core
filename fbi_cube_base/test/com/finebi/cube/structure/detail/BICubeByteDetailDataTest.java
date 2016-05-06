@@ -63,4 +63,32 @@ public class BICubeByteDetailDataTest extends TestCase {
             assertTrue(false);
         }
     }
+
+    public void testReset() {
+        try {
+            testAvailable();
+            detailData.resetCubeReader();
+            assertTrue(detailData.isCubeWriterAvailable());
+            assertFalse(detailData.isCubeReaderAvailable());
+            detailData.resetCubeWriter();
+            assertFalse(detailData.isCubeWriterAvailable());
+            assertFalse(detailData.isCubeReaderAvailable());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
+
+    public void testResetInitial() {
+        try {
+            testReset();
+            detailData.addDetailDataValue(0, Byte.valueOf("13"));
+            assertEquals(Byte.valueOf("13"), detailData.getOriginalValueByRow(0));
+            assertTrue(detailData.isCubeReaderAvailable());
+            assertTrue(detailData.isCubeWriterAvailable());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
 }

@@ -93,6 +93,22 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         return this.table;
     },
 
+    resize: function () {
+        switch (this.tableChartTab.getSelect()) {
+            case BICst.Widget.AXIS:
+            case BICst.Widget.BAR:
+            case BICst.Widget.PIE:
+            case BICst.Widget.RADAR:
+            case BICst.Widget.ACCUMULATE_BAR:
+            case BICst.Widget.MAP:
+            case BICst.Widget.DASHBOARD:
+            case BICst.Widget.DOUGHNUT:
+            case BICst.Widget.BUBBLE:
+            case BICst.Widget.SCATTER:
+                this.tableChartTab.getSelectedTab().resize();
+        }
+    },
+
     getValue: function () {
         return this.tableChartTab.getValue();
     },

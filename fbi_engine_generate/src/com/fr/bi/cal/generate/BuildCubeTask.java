@@ -80,6 +80,7 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             BILogger.getLogger().info(result.get());
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw BINonValueUtils.beyondControl(e);
         } catch (ExecutionException e) {

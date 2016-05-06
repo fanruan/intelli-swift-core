@@ -15,6 +15,7 @@ BI.MergeHistory = BI.inherit(BI.MVCWidget,  {
             type:"bi.button",
             cls:"single_operator",
             level:"ignore",
+            forceSelected :true,
             width:110,
             height:30,
             value:item.id,

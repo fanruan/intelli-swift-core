@@ -163,7 +163,7 @@ BI.Searcher = BI.inherit(BI.Widget, {
 
     _search: function () {
         var self = this, o = this.options, keyword = this.editor.getValue();
-        if (this._stop) {
+        if (keyword === "" || this._stop) {
             return;
         }
         if (o.isAutoSearch) {

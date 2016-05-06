@@ -67,7 +67,13 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
         self.contentItemWidget.on(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function (status, title) {
             self.controller.refreshSaveButtonStatus(status, title);
         });
-        
+        self.contentItemWidget.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function () {
+            self.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, arguments);
+        });
+        self.contentItemWidget.on(BI.TopPointerSavePane.EVENT_INVALID, function () {
+            self.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, arguments);
+        });
+
         self.contentItemWidget.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function () {
             self.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, arguments)
         })
@@ -146,4 +152,6 @@ BI.TopPointerSavePane.EVENT_CANCEL="event_cancel";
 BI.TopPointerSavePane.EVENT_SAVE="event_save";
 BI.TopPointerSavePane.EVENT_EDIT="event_edit";
 BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS="event_check_save_status";
+BI.TopPointerSavePane.EVENT_INVALID="TopPointerSavePane.EVENT_INVALID";
+BI.TopPointerSavePane.EVENT_FIELD_VALID="TopPointerSavePane.EVENT_FIELD_VALID";
 $.shortcut("bi.top_pointer_save_pane", BI.TopPointerSavePane);

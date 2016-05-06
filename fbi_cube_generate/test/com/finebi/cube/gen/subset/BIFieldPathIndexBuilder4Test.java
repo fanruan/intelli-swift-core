@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.subset;
 
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICube;
 import com.fr.bi.stable.data.db.DBField;
@@ -17,7 +18,7 @@ public class BIFieldPathIndexBuilder4Test extends BIFieldPathIndexBuilder {
     }
 
     @Override
-    public Object mainTask() {
+    public Object mainTask(IMessage lastReceiveMessage) {
         System.out.println("Path Path Index!");
 //        try {
 //            Thread.sleep(100);
