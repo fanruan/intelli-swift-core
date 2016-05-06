@@ -10,7 +10,8 @@ BI.DownListSelectTextTrigger = BI.inherit(BI.Trigger, {
     _defaultConfig: function () {
         return BI.extend(BI.DownListSelectTextTrigger.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-down-list-select-text-trigger",
-            height: 25
+            height: 25,
+            text: ""
         });
     },
 
@@ -21,7 +22,8 @@ BI.DownListSelectTextTrigger = BI.inherit(BI.Trigger, {
             type: "bi.select_text_trigger",
             element: this.element,
             height: o.height + 2,
-            items: this._formatItemArray(o.items)
+            items: this._formatItemArray(o.items),
+            text: o.text
         });
     },
 
