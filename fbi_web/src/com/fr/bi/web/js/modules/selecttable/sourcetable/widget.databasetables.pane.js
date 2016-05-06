@@ -32,6 +32,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
         this.loading();
         Data.BufferPool.getTablesByConnectionName(connName, function(res){
             self.populate(connName, res);
+            console.log(res);
             self.loaded();
         });
     },
@@ -78,7 +79,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
                 })
             });
             this.schemaCombo = BI.createWidget({
-                type: "bi.text_icon_check_combo",
+                type: "bi.text_value_check_combo",
                 items: comboItems,
                 height: 28,
                 width: 230

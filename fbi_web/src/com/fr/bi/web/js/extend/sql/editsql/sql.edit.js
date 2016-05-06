@@ -58,12 +58,12 @@ BI.EditSQL = BI.inherit(BI.Widget, {
     _createWest: function(){
         var self = this;
         this.connectionCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: [],
             width: this.constants.SQL_EDIT_COMBO_WIDTH,
             height: this.constants.SQL_EDIT_BUTTON_HEIGHT
         });
-        this.connectionCombo.on(BI.TextIconCheckCombo.EVENT_CHANGE, function(){
+        this.connectionCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setDataLinkName(this.getValue()[0]);
         });
         this.sqlEditor = BI.createWidget({

@@ -248,10 +248,23 @@ Data.Req = BIReq = {
             callback(res);
         })
     },
+    reqAuthorityByPackageId: function (packageId) {
+        return BI.requestAsync("fr_bi_configure", "get_package_authority", {package:packageId},function(res) {
+        });;
+    },
+    reqAllAuthority: function () {
+        var rolesFromServer = BI.requestSync("fs_set", "auth_getAllRole_withDeptAll", {});
+        return rolesFromServer;
+    },
+    reqUpdatePackageAuthority: function (data, callback) {
+        BI.requestAsync("fr_bi_configure", "save_package_authority", data, function (res) {
+            callback(res);
+        })
+    },
 
     reqAllBusinessPackages: function(callback) {
         BI.requestAsync("fr_bi_configure", "get_all_business_packages", {}, function(res) {
             callback(res);
         });
     }
-};
+    };

@@ -140,11 +140,11 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         if(BI.isNotEmptyArray(commonPrimaryTableIds)){
             if(!this.selectCombineTableCombo){
                 this.selectCombineTableCombo = BI.createWidget({
-                    type: "bi.text_icon_combo",
+                    type: "bi.text_value_combo",
                     width: 220,
                     height: 30
                 });
-                this.selectCombineTableCombo.on(BI.TextIconCombo.EVENT_CHANGE, function () {
+                this.selectCombineTableCombo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
                     self.tab.populate({
                         dimensionFieldId: self.dimensiontreeCombo.getValue()[0],
                         targetIds: o.targetIds,
