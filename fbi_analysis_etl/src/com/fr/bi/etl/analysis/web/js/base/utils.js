@@ -95,7 +95,7 @@ BI.extend(BI.Utils, {
                 var item = BI.find(fieldItems, function (i, item) {
                     return id === item.value;
                 });
-                formulaString = formulaString + item.text;
+                formulaString = formulaString + BI.isNull(item) ? id : item.text;
             } else {
                 formulaString = formulaString + item;
             }
