@@ -92,7 +92,7 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
             BI.each(fArray, function(idx, item){
                 (idx > 0) && (s += item.field_id);
             });
-            s += pArray[0];
+            s += pArray[0].field_id;
             return s;
         };
         if(BI.isArray(path)){
