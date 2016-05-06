@@ -3,12 +3,13 @@
  * @extend BI.Widget
  * combo : text + icon, popup : check + text
  */
-BI.SmallTextValueCheckCombo = BI.inherit(BI.Single, {
+BI.SmallTextValueCheckCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.SmallTextValueCheckCombo.superclass._defaultConfig.apply(this, arguments), {
             width: 100,
             height: 22,
-            chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
+            chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE,
+            text: ""
         })
     },
 
@@ -18,7 +19,8 @@ BI.SmallTextValueCheckCombo = BI.inherit(BI.Single, {
         this.trigger = BI.createWidget({
             type: "bi.small_select_text_trigger",
             items: o.items,
-            height: o.height
+            height: o.height,
+            text: o.text
         });
         this.popup = BI.createWidget({
             type: "bi.text_value_check_combo_popup",

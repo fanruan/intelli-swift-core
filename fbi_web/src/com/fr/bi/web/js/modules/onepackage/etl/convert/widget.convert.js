@@ -118,11 +118,7 @@ BI.Convert = BI.inherit(BI.Widget, {
         var self = this;
 
         this.baseFieldCombo = BI.createWidget({
-            type: "bi.static_combo",
-            el: {
-                type:"bi.text_trigger",
-                cls: "base-field-text-trigger"
-            }
+            type: "bi.text_value_combo"
         });
 
         this.baseFieldCombo.on(BI.StaticCombo.EVENT_CHANGE, function(){

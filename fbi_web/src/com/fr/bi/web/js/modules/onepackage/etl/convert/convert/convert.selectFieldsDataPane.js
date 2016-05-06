@@ -23,12 +23,8 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         this.combo = BI.createWidget({
-            type: "bi.static_combo",
-            el: {
-                type:"bi.text_trigger",
-                cls: "text-trigger-border",
-                height:this.constants.triggerHeight
-            }
+            type: "bi.text_value_combo",
+            height:this.constants.triggerHeight
         });
 
         this.button_tree = BI.createWidget({

@@ -9,8 +9,8 @@ BI.StaticCombo = BI.inherit(BI.Widget, {
         return BI.extend(BI.StaticCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-single-select-combo",
             height: 30,
-            text: "",
-            el:{},
+            default: "",
+            el: {},
             items: [],
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
         })
@@ -22,7 +22,7 @@ BI.StaticCombo = BI.inherit(BI.Widget, {
         this.trigger = BI.createWidget(o.el, {
             type: "bi.text_icon_item",
             cls: "bi-select-text-trigger pull-down-font",
-            text: o.text,
+            text: o.default,
             readonly: true,
             textLgap: 5,
             height: o.height
@@ -50,7 +50,7 @@ BI.StaticCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    populate: function(items){
+    populate: function (items) {
         this.combo.populate(items);
     },
 

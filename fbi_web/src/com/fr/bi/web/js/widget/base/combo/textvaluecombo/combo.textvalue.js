@@ -4,22 +4,25 @@
  * combo : text + icon, popup : text
  * 参见场景dashboard布局方式选择
  */
-BI.TextValueCombo = BI.inherit(BI.Single, {
+BI.TextValueCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TextValueCombo.superclass._defaultConfig.apply(this, arguments), {
             width: 100,
             height: 22,
-            chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
+            chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE,
+            text: "",
+            el: {}
         })
     },
 
     _init: function () {
         BI.TextValueCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.trigger = BI.createWidget({
+        this.trigger = BI.createWidget(o.el, {
             type: "bi.select_text_trigger",
             items: o.items,
-            height: o.height
+            height: o.height,
+            text: o.text
         });
         this.popup = BI.createWidget({
             type: "bi.text_value_combo_popup",

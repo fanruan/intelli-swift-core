@@ -1,12 +1,17 @@
 /**
  * Created by Young's on 2016/4/28.
  */
-BI.EditorIconCheckCombo = BI.inherit(BI.Single, {
+BI.EditorIconCheckCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.EditorIconCheckCombo.superclass._defaultConfig.apply(this, arguments), {
             width: 100,
             height: 22,
-            chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
+            chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE,
+            validationChecker: BI.emptyFn,
+            quitChecker: BI.emptyFn,
+            allowBlank: true,
+            watermark: "",
+            errorText: ""
         })
     },
 
@@ -16,9 +21,14 @@ BI.EditorIconCheckCombo = BI.inherit(BI.Single, {
         this.trigger = BI.createWidget({
             type: "bi.editor_trigger",
             items: o.items,
-            height: o.height
+            height: o.height,
+            validationChecker: o.validationChecker,
+            quitChecker: o.quitChecker,
+            allowBlank: o.allowBlank,
+            watermark: o.watermark,
+            errorText: o.errorText
         });
-        this.trigger.on(BI.EditorTrigger.EVENT_CHANGE, function(){
+        this.trigger.on(BI.EditorTrigger.EVENT_CHANGE, function () {
             self.popup.setValue(this.getValue());
             self.fireEvent(BI.EditorIconCheckCombo.EVENT_CHANGE);
         });

@@ -85,8 +85,10 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
             height: 30,
             cls: "table-field-combo",
             items: tFields,
-            tipType: isValidOb.valid === true ? "success" : "warning",
-            title: isValidOb.valid === true ? allFields[fArray[index]].field_name : isValidOb.comment
+            el: {
+                tipType: isValidOb.valid === true ? "success" : "warning",
+                title: isValidOb.valid === true ? allFields[fArray[index]].field_name : isValidOb.comment
+            }
         });
         combo.setValue(fArray[index]);
         combo.on(BI.TextValueCombo.EVENT_CHANGE, function(){

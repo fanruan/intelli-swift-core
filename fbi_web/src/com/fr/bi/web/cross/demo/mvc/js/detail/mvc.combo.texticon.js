@@ -13,6 +13,7 @@ TextIconComboView = BI.inherit(BI.View, {
             cls: "bi-mvc-text-icon-combo",
             width: 200,
             height: 30,
+            text: "默认值",
             items: [{
                 text: "MVC-1",
                 value: 1
@@ -24,11 +25,11 @@ TextIconComboView = BI.inherit(BI.View, {
                 value: 3
             }]
         });
-        combo.setValue(2);
 
         var combo2 = BI.createWidget({
             type: "bi.text_value_check_combo",
             cls: "bi-mvc-text-icon-combo",
+            text: "默认值",
             width: 200,
             height: 30,
             items: [{
@@ -42,10 +43,10 @@ TextIconComboView = BI.inherit(BI.View, {
                 value: 3
             }]
         });
-        combo2.setValue(2);
         var combo3 = BI.createWidget({
             type: "bi.editor_icon_check_combo",
             cls: "bi-mvc-text-icon-combo",
+            watermark: "默认值",
             width: 200,
             height: 30,
             items: [{
@@ -59,7 +60,6 @@ TextIconComboView = BI.inherit(BI.View, {
                 value: "3"
             }]
         });
-        combo3.setValue("1");
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
