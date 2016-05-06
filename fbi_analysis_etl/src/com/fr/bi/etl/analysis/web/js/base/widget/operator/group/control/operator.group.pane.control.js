@@ -34,7 +34,6 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
 
     _check : function (widget, model) {
         var parent = model.get(ETLCst.PARENTS)[0];
-
         var view = model.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
         var dimensions = model.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
         var found = BI.some(view[BICst.REGION.DIMENSION1], function (i, v) {

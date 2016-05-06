@@ -3,8 +3,9 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
 
     _init: function () {
         BI.AnalysisETLOperatorGroupPaneModel.superclass._init.apply(this, arguments);
-        this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY) || {});
-        this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY) || {})
+        var operator = this.get('operator') || {};
+        this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] || {});
+        this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] || {});
         this._initDefault()
         this.changed = false;
     },
