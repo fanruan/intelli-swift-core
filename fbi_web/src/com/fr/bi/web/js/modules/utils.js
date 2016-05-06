@@ -465,7 +465,7 @@
         getExpressionValuesByDimensionID: function (dId) {
             var expression = this.getExpressionByDimensionID(dId);
             if (BI.isNotNull(expression)) {
-                return expression.cal_target_name;
+                return expression.ids;
             }
             return [];
         },
@@ -563,9 +563,6 @@
             var ids = this.getAllTargetDimensionIDs(wId);
             return BI.some(ids, function (i, id) {
                 var tids = self.getExpressionValuesByDimensionID(id);
-                if (!BI.isArray(tids)) {
-                    tids = [tids];
-                }
                 if (tids.contains(dId)) {
                     return true;
                 }

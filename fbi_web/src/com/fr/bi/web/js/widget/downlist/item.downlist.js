@@ -2,7 +2,7 @@ BI.DownListItem = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         var conf = BI.DownListItem.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            extraCls: "bi-down-list-item dot-e-font",
+            extraCls: "bi-down-list-item",
             height: 25,
             logic: {
                 dynamic: true
