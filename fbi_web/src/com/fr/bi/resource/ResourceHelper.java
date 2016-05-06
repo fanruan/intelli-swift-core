@@ -1856,24 +1856,24 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
-                "com/fr/bi/web/js/widget/base/combo/texticoncombo/popup.texticon.js",
-                "com/fr/bi/web/js/widget/base/combo/texticoncombo/combo.texticon.js",
-                "com/fr/bi/web/js/widget/base/combo/texticoncombo/combo.texticonsmall.js",
+                "com/fr/bi/web/js/widget/base/combo/textvaluecombo/popup.textvalue.js",
+                "com/fr/bi/web/js/widget/base/combo/textvaluecombo/combo.textvalue.js",
+                "com/fr/bi/web/js/widget/base/combo/textvaluecombo/combo.textvaluesmall.js",
 
                 // text icon check combo
-                "com/fr/bi/web/js/widget/base/combo/texticoncheckcombo/popup.texticoncheck.js",
-                "com/fr/bi/web/js/widget/base/combo/texticoncheckcombo/combo.texticoncheck.js",
-                "com/fr/bi/web/js/widget/base/combo/texticoncheckcombo/combo.texticonchecksmall.js",
+                "com/fr/bi/web/js/widget/base/combo/textvaluecheckcombo/popup.textvaluecheck.js",
+                "com/fr/bi/web/js/widget/base/combo/textvaluecheckcombo/combo.textvaluecheck.js",
+                "com/fr/bi/web/js/widget/base/combo/textvaluecheckcombo/combo.textvaluechecksmall.js",
 
                 //editor icon check combo
                 "com/fr/bi/web/js/widget/base/combo/editoriconcheckcombo/combo.editoriconcheck.js",
 
                 //text icon pane combo
-                "com/fr/bi/web/js/widget/base/combo/texticondownlistcombo/combo.texticondownlist.js",
-                "com/fr/bi/web/js/widget/base/combo/texticondownlistcombo/trigger.texticondownlist.js",
+                "com/fr/bi/web/js/widget/base/combo/textvaluedownlistcombo/combo.textvaluedownlist.js",
+                "com/fr/bi/web/js/widget/base/combo/textvaluedownlistcombo/trigger.textvaluedownlist.js",
 
                 //单选combo
-                "com/fr/bi/web/js/widget/base/combo/singleselectcombo/combo.singleselect.js",
+                "com/fr/bi/web/js/widget/base/combo/staticcombo/combo.static.js",
 
                 //iconcombo
                 "com/fr/bi/web/js/widget/base/combo/iconcombo/trigger.iconcombo.js",

@@ -881,25 +881,24 @@
             };
         },
 
-        getWidgetDataByWidgetInfo: function (dimensions, view, wId, callback, options) {
+        getWidgetDataByWidgetInfo: function (dimensions, view, callback, options) {
             var self = this;
-            var filterValue = [];
+            options || (options = {});
             var data = {
-                    bounds: {
-                        left: 0,
-                        top: 0,
-                        width: 0,
-                        height: 0
-                    },
-                    name: "__StatisticWidget__" + BI.UUID(),
-                    dimensions: dimensions,
-                    filter: {
-                        filter_type: BICst.FILTER_TYPE.AND,
-                        filter_value: filterValue.concat(self.getControlCalculations(wId))
-                    },
-                    view: view
-                }
-                ;
+                bounds: {
+                    left: 0,
+                    top: 0,
+                    width: 0,
+                    height: 0
+                },
+                name: "__StatisticWidget__" + BI.UUID(),
+                dimensions: dimensions,
+                filter: {
+                    filter_type: BICst.FILTER_TYPE.AND,
+                    filter_value: self.getControlCalculations(options.id)
+                },
+                view: view
+            };
             Data.Req.reqWidgetSettingByData({widget: BI.extend(data, options)}, function (res) {
                 callback(res);
             })

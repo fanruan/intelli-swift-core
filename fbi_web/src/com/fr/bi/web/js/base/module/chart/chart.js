@@ -24,6 +24,8 @@ BI.Chart = BI.inherit(BI.Pane, {
         this.isInit = false;
         this.isSetOptions = false;
         this.wants2SetData = false;
+        var width = 0;
+        var height = 0;
 
         var setOptions = function () {
             self.vanCharts.setOptions(self.config);
@@ -34,21 +36,34 @@ BI.Chart = BI.inherit(BI.Pane, {
         };
         var init = function () {
             if (self.element.is(":visible")) {
+                width = self.element.width();
+                height = self.element.height();
                 self.vanCharts = VanCharts.init(self.element[0]);
                 BI.delay(setOptions, 1);
                 self.isInit = true;
             }
         };
         BI.delay(init, 1);
+
+        BI.Resizers.add(this.getName(), function () {
+            if (self.element.is(":visible")) {
+                var newW = self.element.width(), newH = self.element.height();
+                if (width > 0 && height > 0 && (width !== newW || height !== newH)) {
+                    self.vanCharts.resize();
+                    width = newW;
+                    height = newH;
+                }
+            }
+        });
     },
 
-    showTheOtherYAxis: function(){
+    showTheOtherYAxis: function () {
         this.config.yAxis = BI.makeArray(2, this.config.yAxis[0]);
         this.config.yAxis[1].position = "right";
     },
 
-    hideTheOtherYAxis: function(){
-        if(BI.has(this.config, "yAxis")){
+    hideTheOtherYAxis: function () {
+        if (BI.has(this.config, "yAxis")) {
             this.config.yAxis = BI.makeArray(1, this.config.yAxis[0]);
         }
     },
@@ -87,7 +102,7 @@ BI.Chart = BI.inherit(BI.Pane, {
         var defaultConfig = {};
         var columnConfig = {
             "plotOptions": {
-                lineWidth:2,
+                lineWidth: 2,
                 click: function () {
                     self.fireEvent(BI.Chart.EVENT_CHANGE, {
                         category: this.category,
@@ -236,7 +251,7 @@ BI.Chart = BI.inherit(BI.Pane, {
                         size: this.size
                     });
                 },
-                innerRadius:'0.0%',
+                innerRadius: '0.0%',
                 "dataLabels": {
                     "formatter": {
                         "identifier": "${CATEGORY}${SERIES}",
@@ -903,7 +918,11 @@ BI.Chart = BI.inherit(BI.Pane, {
                 defaultConfig = {
                     "plotOptions": {
                         click: function () {
-                            self.fireEvent(BI.Chart.EVENT_CHANGE, {category: this.category, seriesName: this.seriesName, value: this.value});
+                            self.fireEvent(BI.Chart.EVENT_CHANGE, {
+                                category: this.category,
+                                seriesName: this.seriesName,
+                                value: this.value
+                            });
                         },
                         "large": false,
                         "connectNulls": true,
@@ -1048,7 +1067,11 @@ BI.Chart = BI.inherit(BI.Pane, {
                 defaultConfig = {
                     "plotOptions": {
                         click: function () {
-                            self.fireEvent(BI.Chart.EVENT_CHANGE, {category: this.category, seriesName: this.seriesName, value: this.value});
+                            self.fireEvent(BI.Chart.EVENT_CHANGE, {
+                                category: this.category,
+                                seriesName: this.seriesName,
+                                value: this.value
+                            });
                         },
                         "large": false,
                         "connectNulls": false,

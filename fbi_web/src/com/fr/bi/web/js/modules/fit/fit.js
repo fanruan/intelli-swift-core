@@ -41,12 +41,12 @@ BI.Fit = BI.inherit(BI.Widget, {
         });
 
         this.layoutCombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             items: BICst.DASHBOARD_LAYOUT_ARRAY,
             cls: "layout-combo"
         });
         this.layoutCombo.setValue(o.layoutType);
-        this.layoutCombo.on(BI.TextIconCombo.EVENT_CHANGE, function (v) {
+        this.layoutCombo.on(BI.TextValueCombo.EVENT_CHANGE, function (v) {
             self.arrangement.setLayoutType(v);
             self.fireEvent(BI.Fit.EVENT_CHANGE);
         });
