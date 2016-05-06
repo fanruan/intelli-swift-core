@@ -52,7 +52,28 @@ BI.ExcelView = BI.inherit(BI.Single, {
                 },
                 maxWidth: BI.MAX,
                 maxHeight: BI.MAX,
-                el: this.table
+                el: {
+                    type: "bi.vtape",
+                    items: [{
+                        el: {
+                            type: "bi.right",
+                            items: [{
+                                type: "bi.button",
+                                text: BI.i18nText("BI-Close"),
+                                height: 28,
+                                handler: function(){
+                                    self.combo.hideView();
+                                }
+                            }],
+                            vgap: 6,
+                            rgap: 10
+                        },
+                        height: 40
+                    }, {
+                        el: this.table,
+                        height: "fill"
+                    }]
+                }
             },
             direction: "left,custom"
         });

@@ -111,9 +111,37 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
     _getFieldsStructureByTableId: function (tableId) {
         var fieldStructure = [];
         var self = this;
-        //string
+
+        //Excel View
+        var excelView = BI.Utils.getExcelViewByTableId(tableId);
+        var viewFields = [];
+        if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
+            var excel = excelView.excel;
+            var positions = excelView.positions;
+            var items = [];
+            BI.each(excel, function (i, row) {
+                var item = [];
+                BI.each(row, function (j, cell) {
+                    item.push({text: cell})
+                });
+                items.push(item);
+            });
+            BI.each(positions, function (id, position) {
+                if(BI.Utils.getFieldTypeByID(id) === BICst.COLUMN.STRING) {
+                    viewFields.push(id);
+                    items[position.row][position.col].value = id;
+                }
+            });
+            fieldStructure.push({
+                id: BI.UUID(),
+                pId: tableId,
+                type: "bi.excel_view",
+                items: items
+            });
+        }
+
         BI.each(BI.Utils.getStringFieldIDsOfTableID(tableId), function (i, fid) {
-            if(BI.Utils.getFieldTypeByID(fid) !== BICst.COLUMN.STRING){
+            if (BI.Utils.getFieldIsUsableByID(fid) === false || viewFields.contains(fid)) {
                 return;
             }
             var fname = BI.Utils.getFieldNameByID(fid);
