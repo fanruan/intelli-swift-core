@@ -64,7 +64,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 return "chart-table-font";
             case BICst.Widget.COMPLEX_TABLE:
                 return "chart-table-font";
-            case BICst.Widget.Content:
+            case BICst.Widget.CONTENT:
                 return "chart-content-font";
             case BICst.Widget.IMAGE:
                 return "chart-image-font";

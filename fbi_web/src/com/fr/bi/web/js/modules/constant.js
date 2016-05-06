@@ -13,6 +13,9 @@ BICst.Widget.Widths[BICst.Widget.DOUGHNUT] = 450;
 BICst.Widget.Widths[BICst.Widget.BUBBLE] = 450;
 BICst.Widget.Widths[BICst.Widget.SCATTER] = 450;
 BICst.Widget.Widths[BICst.Widget.RADAR] = 450;
+BICst.Widget.Widths[BICst.Widget.CONTENT] = 450;
+BICst.Widget.Widths[BICst.Widget.IMAGE] = 450;
+BICst.Widget.Widths[BICst.Widget.WEB] = 450;
 
 BICst.Widget.Widths[BICst.Widget.STRING] = 250;
 BICst.Widget.Widths[BICst.Widget.NUMBER] = 300;
@@ -38,6 +41,9 @@ BICst.Widget.Heights[BICst.Widget.DOUGHNUT] = 250;
 BICst.Widget.Heights[BICst.Widget.BUBBLE] = 250;
 BICst.Widget.Heights[BICst.Widget.SCATTER] = 250;
 BICst.Widget.Heights[BICst.Widget.RADAR] = 250;
+BICst.Widget.Heights[BICst.Widget.CONTENT] = 250;
+BICst.Widget.Heights[BICst.Widget.IMAGE] = 250;
+BICst.Widget.Heights[BICst.Widget.WEB] = 250;
 
 BICst.Widget.Heights[BICst.Widget.STRING] = 105;
 BICst.Widget.Heights[BICst.Widget.NUMBER] = 105;
