@@ -778,6 +778,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4statistics/widget.selectsingletablefield.js",
 
                 //文本控件选字段
+                "com/fr/bi/web/js/modules/selectstring/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectstring/pane.selectstring.js",
                 "com/fr/bi/web/js/modules/selectstring/tab.selectstring.js",
 
@@ -787,6 +788,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectnumber/tab.selectnumber.js",
 
                 //日期控件选字段
+                "com/fr/bi/web/js/modules/selectdate/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectdate/pane.selectdate.js",
                 "com/fr/bi/web/js/modules/selectdate/tab.selectdate.js",
 
