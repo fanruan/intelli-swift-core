@@ -359,7 +359,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
                     self._onClickListItem(item.id);
                 },
                 onRenameFolder: function(name){
-                    self.fireEvent(BI.TemplateManager.EVENT_FOLDER_RENAME, item.id, name, self.model.getCurrentNodeId(), BI.TemplateManagerButtonGroup.RENAME_FOLDER);
+                    self._onRename(id, name, BI.TemplateManagerButtonGroup.RENAME_FOLDER);
                 },
                 onDeleteFolder: function(){
                     self._onRemove(item.id, BI.TemplateManagerButtonGroup.DELETE_FOLDER);

@@ -43,7 +43,7 @@ public class BIAddReportAction extends ActionNoSessionCMD {
         //构造一个空的report
         JSONObject reportJO = new JSONObject();
         reportJO.put("widgets", new JSONObject());
-        reportJO.put("layoutStyle", 0);
+        reportJO.put("layoutType", 0);
         BIDesignReport report = new BIDesignReport(new BIDesignSetting(reportJO.toString()));
         long reportId = BIFSReportUtils.createNewBIReport(report, userId, reportName, realTime == null ? "" : realTime);
 
