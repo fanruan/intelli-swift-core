@@ -29,7 +29,7 @@ BI.CircleOperatorPane = BI.inherit(BI.LoadingPane, {
         var self = this;
         this.fetch_union_length = 0;
         this.circleManageCombo = BI.createWidget({
-            type: "bi.single_select_combo",
+            type: "bi.static_combo",
             el: {
                 type:"bi.select_text_trigger",
                 cls: "group-combo-trigger",
@@ -52,7 +52,7 @@ BI.CircleOperatorPane = BI.inherit(BI.LoadingPane, {
 
         this.circleManageCombo.setValue(BI.CircleOperatorPane.CONDITION_TYPE_NOT_HAS_PARENT);
 
-        this.circleManageCombo.on(BI.SingleSelectCombo.EVENT_CHANGE, function(){
+        this.circleManageCombo.on(BI.StaticCombo.EVENT_CHANGE, function(){
             self._checkValid();
             if(this.getValue()[0] === BI.CircleOperatorPane.CONDITION_TYPE_HAS_PARENT){
                 self._setLevelEditorVisible(false);

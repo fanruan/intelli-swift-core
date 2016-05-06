@@ -1132,7 +1132,7 @@ _Models.detail = [{
         value: "text_icon_combo"
     }, {
         pId: 12,
-        text: "bi.single_select_combo",
+        text: "bi.static_combo",
         value: "single_select_combo"
     }, {
         pId: 12,

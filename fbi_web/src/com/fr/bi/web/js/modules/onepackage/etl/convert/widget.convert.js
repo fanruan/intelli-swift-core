@@ -118,14 +118,14 @@ BI.Convert = BI.inherit(BI.Widget, {
         var self = this;
 
         this.baseFieldCombo = BI.createWidget({
-            type: "bi.single_select_combo",
+            type: "bi.static_combo",
             el: {
                 type:"bi.text_trigger",
                 cls: "base-field-text-trigger"
             }
         });
 
-        this.baseFieldCombo.on(BI.SingleSelectCombo.EVENT_CHANGE, function(){
+        this.baseFieldCombo.on(BI.StaticCombo.EVENT_CHANGE, function(){
             self.model.setGroupName(this.getValue()[0]);
             self._checkOperatorPaneValid();
             self.displayResultArea.setSelect(self.constants.SHOW_PREVIEW_TIP);

@@ -11,7 +11,7 @@ SingleSelectComboView = BI.inherit(BI.View, {
 
     _render: function (vessel) {
         var combo = BI.createWidget({
-            type: "bi.single_select_combo",
+            type: "bi.static_combo",
             text: "这个数字不会变",
             items: BI.deepClone(ITEMS),
             width: 200,

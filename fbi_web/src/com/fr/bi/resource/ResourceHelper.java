@@ -1873,7 +1873,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/base/combo/textvaluedownlistcombo/trigger.textvaluedownlist.js",
 
                 //单选combo
-                "com/fr/bi/web/js/widget/base/combo/singleselectcombo/combo.singleselect.js",
+                "com/fr/bi/web/js/widget/base/combo/staticcombo/combo.static.js",
 
                 //iconcombo
                 "com/fr/bi/web/js/widget/base/combo/iconcombo/trigger.iconcombo.js",

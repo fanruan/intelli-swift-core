@@ -14,7 +14,7 @@ ConvertView = BI.inherit(BI.View, {
         var self = this;
 
         this.baseFieldCombo = BI.createWidget({
-            type: "bi.single_select_combo",
+            type: "bi.static_combo",
             el: {
                 type:"bi.text_trigger",
                 cls: "base-field-text-trigger"
