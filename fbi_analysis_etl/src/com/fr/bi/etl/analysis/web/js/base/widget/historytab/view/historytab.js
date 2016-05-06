@@ -107,7 +107,7 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
         });
 
         tab.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(){
-            self.controller.clickTitleSave()
+            self.controller.clickTitleSave(v)
         });
 
         tab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, function () {
