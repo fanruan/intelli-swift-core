@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.detail;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.ICubeResourceLocation;
 
 /**
@@ -9,8 +10,8 @@ import com.finebi.cube.location.ICubeResourceLocation;
  * @since 4.0
  */
 public class BICubeByteDetailData extends BICubeDetailData<Byte> {
-    public BICubeByteDetailData(ICubeResourceLocation superLocation) {
-        super(superLocation);
+    public BICubeByteDetailData(ICubeResourceDiscovery discovery, ICubeResourceLocation superLocation) {
+        super(discovery, superLocation);
     }
 
     @Override

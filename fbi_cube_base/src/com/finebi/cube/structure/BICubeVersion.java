@@ -1,11 +1,10 @@
 package com.finebi.cube.structure;
 
-import com.finebi.cube.data.ICubePrimitiveResourceDiscovery;
-import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
-import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
+import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.input.ICubeIntegerReaderWrapper;
+import com.finebi.cube.data.output.ICubeIntegerWriterWrapper;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -19,14 +18,16 @@ import java.net.URISyntaxException;
  */
 public class BICubeVersion implements ICubeVersion {
 
-    private ICubeIntegerReader versionReader;
-    private ICubeIntegerWriter versionWriter;
+    private ICubeIntegerReaderWrapper versionReader;
+    private ICubeIntegerWriterWrapper versionWriter;
     private ICubeResourceLocation currentLocation;
+    private ICubeResourceDiscovery resourceDiscovery;
     private static String CUBE_VERSION = "version.fbi";
 
-    public BICubeVersion(ICubeResourceLocation location) {
+    public BICubeVersion(ICubeResourceDiscovery discovery, ICubeResourceLocation location) {
         try {
             this.currentLocation = location.buildChildLocation(CUBE_VERSION);
+            this.resourceDiscovery = discovery;
         } catch (URISyntaxException e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
@@ -46,7 +47,7 @@ public class BICubeVersion implements ICubeVersion {
         try {
             currentLocation.setIntegerType();
             currentLocation.setReaderSourceLocation();
-            versionReader = (ICubeIntegerReader) BIFactoryHelper.getObject(ICubePrimitiveResourceDiscovery.class).getCubeReader(currentLocation);
+            versionReader = (ICubeIntegerReaderWrapper) resourceDiscovery.getCubeReader(currentLocation);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
@@ -56,20 +57,20 @@ public class BICubeVersion implements ICubeVersion {
         try {
             currentLocation.setIntegerType();
             currentLocation.setWriterSourceLocation();
-            versionWriter = (ICubeIntegerWriter) BIFactoryHelper.getObject(ICubePrimitiveResourceDiscovery.class).getCubeWriter(currentLocation);
+            versionWriter = (ICubeIntegerWriterWrapper) resourceDiscovery.getCubeWriter(currentLocation);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
-    public ICubeIntegerReader getVersionReader() {
+    public ICubeIntegerReaderWrapper getVersionReader() {
         if (!isVersionReaderAvailable()) {
             initVersionReader();
         }
         return versionReader;
     }
 
-    public ICubeIntegerWriter getVersionWriter() {
+    public ICubeIntegerWriterWrapper getVersionWriter() {
         if (!isVersionWriterAvailable()) {
             initVersionWriter();
         }
@@ -78,7 +79,7 @@ public class BICubeVersion implements ICubeVersion {
 
     @Override
     public void addVersion(int version) {
-        getVersionWriter().recordSpecificPositionValue(0, version);
+        getVersionWriter().recordSpecificValue(0, version);
     }
 
     protected boolean isVersionReaderAvailable() {

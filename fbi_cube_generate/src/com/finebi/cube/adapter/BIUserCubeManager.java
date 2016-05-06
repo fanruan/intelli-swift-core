@@ -44,6 +44,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(Table td) {
+
         return getTableIndex(td.getID());
     }
 
