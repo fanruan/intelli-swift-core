@@ -68,6 +68,7 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
         v.fields = this._createFields();
         v.operator = {};
         v.operator[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY] = v[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY];
+        delete v[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY];
         return v;
     }
 })

@@ -200,7 +200,9 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         v.fields = this._createFields();
         v.operator = {};
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY];
-        v.operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY]
+        v.operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY];
+        delete  v[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY];
+        delete v[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY];
         return v;
     },
 
