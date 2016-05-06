@@ -37,7 +37,7 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
             }
         });
         this.popup.on(BI.ETLFilterPopupView.EVENT_CLICK_CONFIRM, function () {
-            self.storedValue = BI.deepClone(self.combo.getValue());
+            self.storedValue = BI.extend(BI.deepClone(self.combo.getValue()), {field_name : this.options.field_name, field_type : this.options.field_type});
             self.combo.hideView();
             self.fireEvent(BI.ETLFilterCombo.EVENT_VALUE_CHANGED);
         });
@@ -51,15 +51,15 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
     },
 
     setValue: function(v){
-        self.storedValue = v;
+        this.storedValue = v;
+        if (BI.isNotNull(this.storedValue) && BI.isNotNull(this.storedValue.field_type) && this.storedValue.field_type !==this.options.field_type){
+            v = {};
+        }
         this.combo.setValue(BI.deepClone(v));
     },
 
     getValue : function (){
-        if (BI.isNotNull(this.storedValue) && this.storedValue.field_type !==this.options.field_type){
-            this.storedValue = {};
-        }
-        return BI.extend(this.storedValue, {field_name : this.options.field_name, field_type : this.options.field_type});
+        return this.storedValue;
     },
 
     populate : function (items){
