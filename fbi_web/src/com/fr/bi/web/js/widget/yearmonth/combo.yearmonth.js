@@ -41,6 +41,7 @@ BI.YearMonthCombo = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
+        v = v || {};
         this.month.setValue(v.month);
         this.year.setValue(v.year);
     },

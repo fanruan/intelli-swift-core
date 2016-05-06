@@ -15,8 +15,8 @@ public class BIRankCalTargetKey extends BIConfiguratedCalculatorTargetKey {
      */
     private int type = BIReportConstant.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC;
 
-    public BIRankCalTargetKey(String targetName, String cal_target_name, Map targetMap, int start_group, int type) {
-        super(targetName, cal_target_name, targetMap, start_group);
+    public BIRankCalTargetKey(String targetName, String target_id, Map targetMap, int start_group, int type) {
+        super(targetName, target_id, targetMap, start_group);
         this.type = type;
     }
 

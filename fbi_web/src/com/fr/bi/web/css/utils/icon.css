@@ -431,3 +431,18 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/example.png');
   _background: none;
 }
+.dimension-no-data-icon .x-icon,
+.dimension-no-data-icon:hover .x-icon,
+.dimension-no-data-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/no_data.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/no_data.png');
+  _background: none;
+}
+.dimension-no-data-icon.native .x-icon,
+.dimension-no-data-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/no_data.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/no_data.png');
+  _background: none;
+}

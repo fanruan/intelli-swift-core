@@ -25,7 +25,7 @@ BI.CalculateTargetFormulaPane = BI.inherit(BI.Widget, {
     getValue: function () {
         var result = {};
         result.formula_value = this.formulaEditor.getValue();
-        result.cal_target_name = this.formulaEditor.getUsedFields();
+        result.ids = this.formulaEditor.getUsedFields();
         return result;
     },
 

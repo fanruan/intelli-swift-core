@@ -12,9 +12,9 @@ public class BICountOfAllKey extends BISummaryOfAllCalTargetKey {
      */
     private static final long serialVersionUID = -2455481615321220936L;
 
-    public BICountOfAllKey(String targetName, String cal_target_name,
+    public BICountOfAllKey(String targetName, String target_id,
                            Map targetMap, int start_group) {
-        super(targetName, cal_target_name, targetMap, start_group);
+        super(targetName, target_id, targetMap, start_group);
     }
 
     @Override

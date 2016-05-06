@@ -15,8 +15,8 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
 
     private static final long serialVersionUID = 1511004295587426830L;
 
-    public SumOfAllCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group) {
-        super(target, cal_target_name, start_group);
+    public SumOfAllCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
+        super(target, target_id, start_group);
     }
 
 
@@ -27,7 +27,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
 
     @Override
     public BITargetKey createTargetKey() {
-        return new BISumOfAllKey(targetName, cal_target_name, targetMap, start_group);
+        return new BISumOfAllKey(targetName, target_id, targetMap, start_group);
     }
 
     @Override

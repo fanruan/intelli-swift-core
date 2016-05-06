@@ -14,8 +14,8 @@ import java.util.concurrent.Callable;
 public class MaxOfAllCalculator extends SummaryOfAllCalculator {
     private static final long serialVersionUID = -7159902783359546550L;
 
-    public MaxOfAllCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group) {
-        super(target, cal_target_name, start_group);
+    public MaxOfAllCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
+        super(target, target_id, start_group);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class MaxOfAllCalculator extends SummaryOfAllCalculator {
 
     @Override
     public BITargetKey createTargetKey() {
-        return new BIMaxOfAllKey(targetName, cal_target_name, targetMap, start_group);
+        return new BIMaxOfAllKey(targetName, target_id, targetMap, start_group);
     }
 
     @Override

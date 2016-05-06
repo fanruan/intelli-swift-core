@@ -91,9 +91,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 }
             },
             popup: {
-                segment: {
-
-                }
+                segment: {}
             },
             itemsCreator: function (op, populate) {
                 if (BI.isNotNull(op.keyword) && BI.isNotNull(op.searchType)) {
@@ -106,7 +104,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         return;
                     }
                     if (BI.isNotNull(op.node.isParent)) {
-                        if (op.node.nodeType === self.constants.FOLDER){
+                        if (op.node.nodeType === self.constants.FOLDER) {
                             populate(self._findChildItemsFromItems(op.node.id, op.node.layer + 1));
                         }
                         if (op.node.nodeType === self.constants.TEMPLATE) {
@@ -121,14 +119,14 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         });
     },
 
-    _findChildItemsFromItems: function(pId, layer){
+    _findChildItemsFromItems: function (pId, layer) {
         var self = this;
-        var items = BI.filter(this.templateItems, function(idx, item){
+        var items = BI.filter(this.templateItems, function (idx, item) {
             return item.pId === pId + "";
         });
         var templateItems = [], folderItems = [];
         BI.each(items, function (idx, item) {
-            if(BI.has(item, "buildUrl")){
+            if (BI.has(item, "buildUrl")) {
                 templateItems.push({
                     id: item.id,
                     pId: item.pId,
@@ -141,7 +139,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     layer: layer,
                     nodeType: self.constants.TEMPLATE
                 });
-            }else{
+            } else {
                 folderItems.push({
                     id: item.id,
                     pId: item.pId,
@@ -159,13 +157,13 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         templateItems = BI.sortBy(templateItems, "text");
         folderItems = BI.sortBy(folderItems, "text");
         items = BI.concat(templateItems, folderItems);
-        items = BI.filter(items, function(idx, item){
+        items = BI.filter(items, function (idx, item) {
             return BI.Utils.getCurrentTemplateId() !== item.id;
         });
         return items;
     },
 
-    _getTemplateStructure: function(callback){
+    _getTemplateStructure: function (callback) {
         var self = this;
         var createByMe = {
             id: self.constants.CREATE_BY_ME_ID,
@@ -179,11 +177,11 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             layer: 0,
             nodeType: self.constants.FOLDER
         };
-        if(BI.isEmptyArray(this.templateItems)){
-            BI.Utils.getAllTemplates(function(res){
+        if (BI.isEmptyArray(this.templateItems)) {
+            BI.Utils.getAllTemplates(function (res) {
                 self.templateItems = res;
                 self.templateItems.push(createByMe);
-                var currentTemplate = BI.find(self.templateItems, function(idx, item){
+                var currentTemplate = BI.find(self.templateItems, function (idx, item) {
                     return item.id === BI.Utils.getCurrentTemplateId();
                 });
                 var currentTemplateItem = {
@@ -200,8 +198,8 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 };
                 callback(BI.concat([currentTemplateItem, createByMe], self._findChildItemsFromItems(-1, 1)));
             });
-        }else{
-            var currentTemplate = BI.find(self.templateItems, function(idx, item){
+        } else {
+            var currentTemplate = BI.find(self.templateItems, function (idx, item) {
                 return item.id === BI.Utils.getCurrentTemplateId();
             });
             var currentTemplateItem = {
@@ -230,8 +228,8 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
     _getWidgetStructureByTemplateId: function (id, layer, callback) {
         var self = this, o = this.options;
 
-        var call = function(widgets){
-            var result = BI.map(widgets, function(wId, widget){
+        var call = function (widgets) {
+            var result = BI.map(widgets, function (wId, widget) {
                 return {
                     id: wId,
                     pId: id,
@@ -249,35 +247,35 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             callback(BI.sortBy(result, "text"));
         };
 
-        if(!self.widgetItems[id]){
-            BI.Utils.getWidgetsByTemplateId(id, function(data){
+        if (!self.widgetItems[id]) {
+            BI.Utils.getWidgetsByTemplateId(id, function (data) {
                 var widgets = {};
-                if(id === BI.Utils.getCurrentTemplateId()){
-                    BI.each(data, function(wId, widget){
+                if (id === BI.Utils.getCurrentTemplateId()) {
+                    BI.each(data, function (wId, widget) {
                         if (wId !== o.wId) {
                             widgets[wId] = widget;
                         }
                     })
-                }else{
-                    BI.each(data, function(wId, widget){
+                } else {
+                    BI.each(data, function (wId, widget) {
                         widgets[wId] = widget;
                     })
                 }
                 self.widgetItems[id] = widgets;
                 call(self.widgetItems[id]);
             });
-        }else{
+        } else {
             call(self.widgetItems[id]);
         }
     },
 
-    _getAllDimensions: function(widgetId){
+    _getAllDimensions: function (widgetId) {
         var self = this;
         var dimensions = {}, widget = {};
-        BI.find(this.widgetItems, function(pId, wItems){
-            return widget = BI.find(wItems, function(wId, widget){
+        BI.find(this.widgetItems, function (pId, wItems) {
+            return widget = BI.find(wItems, function (wId, widget) {
                 return wId === widgetId;
-           });
+            });
         });
         if (BI.isNotNull(widget)) {
             var dims = [], tars = [], calcTars = [];
@@ -290,10 +288,10 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     })
                 } else {
                     BI.each(dim, function (idx, dimId) {
-                        if(widget.dimensions[dimId].type === BICst.TARGET_TYPE.NUMBER || widget.dimensions[dimId].type === BICst.TARGET_TYPE.COUNTER){
+                        if (widget.dimensions[dimId].type === BICst.TARGET_TYPE.NUMBER || widget.dimensions[dimId].type === BICst.TARGET_TYPE.COUNTER) {
                             widget.dimensions[dimId].dId = dimId;
                             tars.push(widget.dimensions[dimId]);
-                        }else{
+                        } else {
                             widget.dimensions[dimId].dId = dimId;
                             calcTars.push(widget.dimensions[dimId]);
                         }
@@ -312,8 +310,8 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         var dimensions = this._getAllDimensions(wId);
         BI.each(dimensions, function (idx, dimension) {
             var dimensionName = dimension.name;
-            if(dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.DATE
-                || dimension.type === BICst.TARGET_TYPE.COUNTER){
+            if (dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.DATE
+                || dimension.type === BICst.TARGET_TYPE.COUNTER) {
                 dimensionStructure.push({
                     id: dimension.dId,
                     pId: wId,
@@ -325,7 +323,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     value: dimension,
                     drag: self._createDrag(dimensionName)
                 });
-            }else{
+            } else {
                 dimensionStructure.push({
                     id: dimension.dId,
                     pId: wId,
@@ -355,7 +353,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         var self = this;
         var result = [];
         var dimension = BI.deepClone(old);
-        if(BI.has(dimTarIdMap, old.dId)){
+        if (BI.has(dimTarIdMap, old.dId)) {
             var dim = dimensions[dimTarIdMap[old.dId]] || dimension;
             dim.dId = dimTarIdMap[old.dId];
             return [dim];
@@ -377,16 +375,15 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             case BICst.TARGET_TYPE.RANK:
             case BICst.TARGET_TYPE.RANK_IN_GROUP:
                 var expression = dimension._src.expression;
-                expression.cal_target_name = BI.isArray(expression.cal_target_name) ? expression.cal_target_name : [expression.cal_target_name];
-                BI.each(expression.cal_target_name, function(id, tId){
-                    var find = BI.find(dimensions, function(idx, d){
+                BI.each(expression.ids, function (id, tId) {
+                    var find = BI.find(dimensions, function (idx, d) {
                         return d.dId === tId;
                     });
                     var r = self._createDimensionsAndTargets(find, dimTarIdMap, dimensions);
-                    if(BI.has(expression, "formula_value")){
+                    if (BI.has(expression, "formula_value")) {
                         expression.formula_value = expression.formula_value.replace(tId, r[0].dId);
                     }
-                    expression.cal_target_name[id] = r[0].dId;
+                    expression.ids[id] = r[0].dId;
                     result = BI.concat(result, r);
                 });
                 break;
@@ -415,12 +412,12 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 var result = [];
                 var dims = self.searcher.getValue();
                 var targetIdMap = {};
-                BI.each(dims, function(idx, dim){
+                BI.each(dims, function (idx, dim) {
                     var copy = self._createDimensionsAndTargets(dim, targetIdMap, dimensions);
-                    BI.each(copy, function(idx, obj){
-                       if(!BI.deepContains(result, obj)){
-                           result.push(obj);
-                       }
+                    BI.each(copy, function (idx, obj) {
+                        if (!BI.deepContains(result, obj)) {
+                            result.push(obj);
+                        }
                     });
                 });
                 if (result.length > 1) {
@@ -428,7 +425,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 }
                 var data = BI.map(result, function (id, dim) {
                     var type = dim.type;
-                    if(type === BICst.TARGET_TYPE.STRING || type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.DATE || type === BICst.TARGET_TYPE.COUNTER){
+                    if (type === BICst.TARGET_TYPE.STRING || type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.DATE || type === BICst.TARGET_TYPE.COUNTER) {
                         var dimension = {
                             dId: dim.dId,
                             type: dim.type,
@@ -439,20 +436,20 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         var sort = dim.sort;
                         var group = dim.group;
                         var filter_value = dim.filter_value;
-                        if(BI.isNotNull(sort) && sort.type === BICst.SORT.CUSTOM){
+                        if (BI.isNotNull(sort) && sort.type === BICst.SORT.CUSTOM) {
                             dimension.sort = sort;
                         }
                         var groupArray = [BICst.GROUP.CUSTOM_GROUP, BICst.SUMMARY_TYPE.SUM, BICst.SUMMARY_TYPE.MAX
-                        , BICst.SUMMARY_TYPE.MIN, BICst.SUMMARY_TYPE.AVG
+                            , BICst.SUMMARY_TYPE.MIN, BICst.SUMMARY_TYPE.AVG
                         ];
-                        if(BI.isNotNull(group) && BI.contains(groupArray, group.type)){
+                        if (BI.isNotNull(group) && BI.contains(groupArray, group.type)) {
                             dimension.group = group;
                         }
-                        if(BI.isNotNull(filter_value)){
+                        if (BI.isNotNull(filter_value)) {
                             dimension.filter_value = filter_value;
                         }
                         return dimension;
-                    }else{
+                    } else {
                         return dim;
                     }
                 });
@@ -473,7 +470,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         }
     },
 
-    populate: function(){
+    populate: function () {
         this.searcher.populate();
     }
 });
