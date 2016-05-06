@@ -64,11 +64,12 @@ BI.CalculateTargetPopupDetail = BI.inherit(BI.BarPopoverSection, {
         this.formulaEditor.on(BI.FormulaInsert.EVENT_CHANGE, function () {
             self.model.setFormulaExpression({
                 formula_value: self.formulaEditor.getValue(),
-                cal_target_name: self.formulaEditor.getUsedFields()
+                ids: self.formulaEditor.getUsedFields()
             });
         });
 
-        BI.createWidget({            type: "bi.vtape",
+        BI.createWidget({
+            type: "bi.vtape",
             vgap: 10,
             element: center,
             items: [{

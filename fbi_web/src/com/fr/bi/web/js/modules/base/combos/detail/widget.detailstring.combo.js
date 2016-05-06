@@ -4,15 +4,15 @@
  * 明细表文本维度的combo
  */
 BI.DetailStringDimensionCombo = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.DetailStringDimensionCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detail-string-dimension-combo"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.DetailStringDimensionCombo.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.combo = BI.createWidget({
             type: "bi.down_list_combo",
             element: this.element,
@@ -32,18 +32,20 @@ BI.DetailStringDimensionCombo = BI.inherit(BI.Widget, {
                     value: BICst.DETAIL_STRING_COMBO.DELETE
                 }],
                 [{
-                    text: BI.i18nText("BI-This_Target_From"),
+                    text: BI.i18nText("BI-This_Target_From") + ":" + BI.Utils.getDimensionNameByID(o.dId),
+                    title: BI.i18nText("BI-This_Target_From") + ":" + BI.Utils.getDimensionNameByID(o.dId),
+                    tipType: "warning",
                     value: BICst.DETAIL_STRING_COMBO.INFO,
                     disabled: true
                 }]
             ]
         });
-        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function(v){
+        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.DetailStringDimensionCombo.EVENT_CHANGE, v);
         })
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.combo.getValue();
     }
 

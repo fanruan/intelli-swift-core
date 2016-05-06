@@ -11,9 +11,9 @@ public abstract class BISummaryOfAllCalTargetKey extends BIConfiguratedCalculato
      */
     private static final long serialVersionUID = -1673630319417282474L;
 
-    public BISummaryOfAllCalTargetKey(String targetName, String cal_target_name,
+    public BISummaryOfAllCalTargetKey(String targetName, String target_id,
                                      Map targetMap, int start_group) {
-        super(targetName, cal_target_name, targetMap, start_group);
+        super(targetName, target_id, targetMap, start_group);
     }
 
     @Override
