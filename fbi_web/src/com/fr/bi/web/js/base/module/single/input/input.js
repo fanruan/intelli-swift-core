@@ -133,14 +133,7 @@ BI.Input = BI.inherit(BI.Single, {
             BI.trim(this.getValue()) === "" && (this._lastValue !== null && BI.trim(this._lastValue) !== "")) {
             this.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.STOPEDIT, this.getValue(), this);
             this.fireEvent(BI.Input.EVENT_STOP);
-            if (this.isValid() && BI.trim(this.getValue()) !== this._lastSubmitValue) {
-                this.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.CHANGE, this.getValue(), this);
-                this.fireEvent(BI.Input.EVENT_CHANGE);
-                this._lastSubmitValue = BI.trim(this.getValue());
-                this._lastValue = this.getValue();
-            } else {
-                this._defaultState();
-            }
+            this._valueChange();
         } else {
             this._valueChange();
         }
