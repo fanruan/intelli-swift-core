@@ -92,8 +92,10 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.Widget.TREE:
                 return "BIDezi.TreeWidgetView";
             case BICst.Widget.QUERY:
+                return "BIDezi.QueryView";
                 break;
             case BICst.Widget.RESET:
+                return "BIDezi.ResetView";
                 break;
         }
     },

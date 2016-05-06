@@ -41,12 +41,12 @@ BI.Fit = BI.inherit(BI.Widget, {
         });
 
         this.layoutCombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             items: BICst.DASHBOARD_LAYOUT_ARRAY,
             cls: "layout-combo"
         });
         this.layoutCombo.setValue(o.layoutType);
-        this.layoutCombo.on(BI.TextIconCombo.EVENT_CHANGE, function (v) {
+        this.layoutCombo.on(BI.TextValueCombo.EVENT_CHANGE, function (v) {
             self.arrangement.setLayoutType(v);
             self.fireEvent(BI.Fit.EVENT_CHANGE);
         });
@@ -266,7 +266,7 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            layoutStyle: this.getLayoutType(),
+            layoutType: this.getLayoutType(),
             regions: this.getAllRegions()
         }
     },
@@ -309,7 +309,7 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this;
-        var layoutStyle = Data.SharingPool.get("layoutStyle") || BI.Arrangement.LAYOUT_TYPE.ADAPTIVE;
+        var layoutType = Data.SharingPool.get("layoutType") || BI.Arrangement.LAYOUT_TYPE.ADAPTIVE;
         var result = [];
         var widgets = Data.SharingPool.cat("widgets");
         BI.each(widgets, function (id, widget) {
@@ -323,7 +323,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 height: bounds.height
             });
         });
-        this.setLayoutType(layoutStyle);
+        this.setLayoutType(layoutType);
         this.arrangement.populate(result);
     },
 

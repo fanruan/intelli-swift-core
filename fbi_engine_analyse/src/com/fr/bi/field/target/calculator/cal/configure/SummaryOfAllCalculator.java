@@ -17,8 +17,8 @@ import java.util.concurrent.Callable;
 public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator {
     private static final long serialVersionUID = 4448457069572400146L;
 
-    public SummaryOfAllCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group) {
-        super(target, cal_target_name, start_group);
+    public SummaryOfAllCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
+        super(target, target_id, start_group);
     }
 
     @Override

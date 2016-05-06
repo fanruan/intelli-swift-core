@@ -87,13 +87,13 @@ BI.TargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         this.id = o.id;
         this.filterType = BI.createWidget({
-            type: "bi.text_icon_down_list_combo",
+            type: "bi.text_value_down_list_combo",
             width: this._constant.COMBO_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
             items: BICst.TARGET_FILTER_NUMBER_COMBO
         });
         this.filterType.setValue(o.filter_type);
-        this.filterType.on(BI.TextIconDownListCombo.EVENT_CHANGE, function(){
+        this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function(){
             self._refreshFilterWidget(self.filterType.getValue()[0]);
             self._setNodeData({
                 filter_type : self.filterType.getValue()[0]

@@ -39,11 +39,11 @@ BI.AnalysisETLOperatorAddColumnValueConvertPane = BI.inherit(BI.MVCWidget, {
             self.controller.setType(v);
         });
         self.combo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height : self._constants.HEIGHT,
             items : []
         });
-        self.combo.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.combo.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setField(v);
         })
         BI.createWidget({

@@ -10,21 +10,21 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodPane  = BI.inherit(BI.AnalysisETLOp
         BI.AnalysisETLOperatorAddColumnExprSamePeriodPane.superclass._initView.apply(this, arguments);
         var self = this;
         self.year = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height : self._constants.HEIGHT,
             width : self._constants.WIDTH,
             items : []
         });
-        self.year.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.year.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setYearField(v);
         })
         self.monthSeason = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height : self._constants.HEIGHT,
             width : self._constants.WIDTH,
             items : []
         });
-        self.monthSeason.on(BI.TextIconCombo.EVENT_CHANGE, function(v){
+        self.monthSeason.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
             self.controller.setMonthSeasonField(v);
         })
         self.layout.addItems([{el : {

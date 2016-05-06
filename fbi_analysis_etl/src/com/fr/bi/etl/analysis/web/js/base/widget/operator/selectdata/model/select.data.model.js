@@ -83,9 +83,11 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
     },
 
     update : function () {
-        return BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
+        var v  = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
             etlType:ETLCst.ETL_TYPE.SELECT_DATA
         })
+        delete v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY]
+        return v;
     }
 
 })

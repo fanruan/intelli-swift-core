@@ -41,6 +41,7 @@ BI.YearQuarterCombo = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
+        v = v || {};
         this.quarter.setValue(v.quarter);
         this.year.setValue(v.year);
     },

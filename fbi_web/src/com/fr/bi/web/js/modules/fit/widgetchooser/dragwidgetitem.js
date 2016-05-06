@@ -91,17 +91,17 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
             settings: widget.settings
         };
 
-        if(BI.has(widget, "value")){
+        if (BI.has(widget, "value")) {
             result.value = widget.value;
         }
 
         this.button.element.draggable({
             cursor: BICst.cursorUrl,
             cursorAt: {left: 0, top: 0},
-            drag: function(e, ui){
+            drag: function (e, ui) {
                 o.drag.apply(self, [result, ui.position]);
             },
-            stop: function(e, ui){
+            stop: function (e, ui) {
                 var dimensionsAndView = self._createDimensionsAndView(widget);
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
@@ -117,7 +117,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
         this.dimensions = {};
         this.view = {};
         this.dimTarIdMap = {};
-        BI.each(widget.dimensions, function(idx, dimension){
+        BI.each(widget.dimensions, function (idx, dimension) {
             var copy = self._createDimensionsAndTargets(idx);
             self.dimensions[copy.id] = copy.dimension;
             var region = BI.find(BI.keys(widget.view), function (id, regionId) {
@@ -137,14 +137,14 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
     _createDimensionsAndTargets: function (idx) {
         var self = this;
         var dimension = BI.deepClone(self.oldDimensions[idx]);
-        if(BI.has(self.dimTarIdMap, idx)){
+        if (BI.has(self.dimTarIdMap, idx)) {
             return {id: self.dimTarIdMap[idx], dimension: self.dimensions[self.dimTarIdMap[idx]] || dimension};
         }
         switch (self.oldDimensions[idx].type) {
             case BICst.TARGET_TYPE.STRING:
             case BICst.TARGET_TYPE.NUMBER:
             case BICst.TARGET_TYPE.DATE:
-                if(BI.has(self.oldDimensions[idx], "dimension_map")){
+                if (BI.has(self.oldDimensions[idx], "dimension_map")) {
                     dimension.dimension_map = {};
                     BI.each(self.oldDimensions[idx].dimension_map, function (id, map) {
                         var result = self._createDimensionsAndTargets(id);
@@ -164,13 +164,12 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
             case BICst.TARGET_TYPE.RANK:
             case BICst.TARGET_TYPE.RANK_IN_GROUP:
                 var expression = dimension._src.expression;
-                expression.cal_target_name = BI.isArray(expression.cal_target_name) ? expression.cal_target_name : [expression.cal_target_name];
-                BI.each(expression.cal_target_name, function(id, tId){
+                BI.each(expression.ids, function (id, tId) {
                     var result = self._createDimensionsAndTargets(tId);
-                    if(BI.has(expression, "formula_value")){
+                    if (BI.has(expression, "formula_value")) {
                         expression.formula_value = expression.formula_value.replace(tId, result.id);
                     }
-                    expression.cal_target_name[id] = result.id;
+                    expression.ids[id] = result.id;
                 });
                 break;
         }

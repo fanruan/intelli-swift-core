@@ -28,7 +28,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
         this.arrangement = BI.createWidget({
             type: "bi.adaptive_arrangement",
             resizable: false,
-            layoutType: Data.SharingPool.get("layoutStyle")
+            layoutType: Data.SharingPool.get("layoutType")
         });
         this.store = {};
         this.linkages = {};

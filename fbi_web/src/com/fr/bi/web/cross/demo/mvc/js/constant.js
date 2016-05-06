@@ -1128,15 +1128,15 @@ _Models.detail = [{
         value: "triggers"
     }, {
         pId: 12,
-        text: "bi.text_icon_combo",
+        text: "bi.text_value_combo",
         value: "text_icon_combo"
     }, {
         pId: 12,
-        text: "bi.single_select_combo",
+        text: "bi.static_combo",
         value: "single_select_combo"
     }, {
         pId: 12,
-        text: "bi.text_icon_down_list_combo",
+        text: "bi.text_value_down_list_combo",
         value: "text_icon_down_list_combo"
     }, {
         pId: 12,
