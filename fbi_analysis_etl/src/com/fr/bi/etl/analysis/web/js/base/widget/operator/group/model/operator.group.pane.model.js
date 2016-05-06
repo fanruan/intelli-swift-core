@@ -3,8 +3,9 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
 
     _init: function () {
         BI.AnalysisETLOperatorGroupPaneModel.superclass._init.apply(this, arguments);
-        this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY) || {});
-        this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY) || {})
+        var operator = this.get('operator') || {};
+        this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] || {});
+        this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] || {});
         this._initDefault()
         this.changed = false;
     },
@@ -152,7 +153,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         this.changed = true;
     },
 
-    _createFields : function () {
+    createFields : function () {
         var fields = [];
         var view = this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
         var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
@@ -197,7 +198,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     update : function () {
         var v  = BI.AnalysisETLOperatorGroupPaneModel.superclass.update.apply(this, arguments);
         v.etlType = ETLCst.ETL_TYPE.GROUP_SUMMARY;
-        v.fields = this._createFields();
+        v.fields = this.createFields();
         v.operator = {};
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY];
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY];

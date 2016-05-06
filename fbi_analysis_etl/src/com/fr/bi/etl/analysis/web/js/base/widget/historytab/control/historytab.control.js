@@ -10,7 +10,6 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     _init: function () {
         BI.HistoryTabColltroller.superclass._init.apply(this, arguments);
         this.addTempModel = false;
-        this.invalidIndex = Number.MAX_VALUE;
     },
 
     _selectLastTab : function(widget, model) {
@@ -119,8 +118,9 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
 
     setInvalid : function(v, title, widget, model){
         var index = model.getIndexByValue(v);
-        if (index <= this.invalidIndex){
-            this.invalidIndex = index;
+        if (index <= model.get('invalidIndex')){
+            model.set('invalidIndex', index);
+            model.set('invalidTitle', title)
             var items = model.get(ETLCst.ITEMS);
             for(var i = index; i < items.length; i++) {
                 var btn = widget.tabButton.getButton(items[i].value);
@@ -133,14 +133,14 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     refreshValidFields : function(v, fields, widget, model){
         model.setFields(v, fields);
         var index = model.getIndexByValue(v);
-        if (index === this.invalidIndex){
+        if (index === model.get('invalidIndex')){
             var items = model.get(ETLCst.ITEMS);
             for(var i = index; i < items.length; i++) {
                 var btn = widget.tabButton.getButton(items[i].value);
                 btn.setValid(true);
                 btn.setTitle(btn.getText());
             }
-            this.invalidIndex = Number.MAX_VALUE;
+            model.set('invalidIndex', Number.MAX_VALUE);
         }
     },
 
@@ -228,6 +228,11 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             self._addNewButtonAfterPos(item, idx, widget, model)
         });
         self._selectLastTab(widget, model);
+        for(var i = model.get('invalidIndex'); i < items.length; i++) {
+            var btn = widget.tabButton.getButton(items[i].value);
+            btn.setValid(false);
+            btn.setTitle(model.get('invalidTitle'));
+        }
     },
 
     deferChange : function (widget, model) {

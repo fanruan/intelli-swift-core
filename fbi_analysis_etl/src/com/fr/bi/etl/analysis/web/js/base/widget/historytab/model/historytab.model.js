@@ -5,6 +5,9 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         BI.HistoryTabModel.superclass._init.apply(this, arguments);
         var self = this;
         this.set(ETLCst.ITEMS, []);
+        if (BI.isNull(this.get('invalidIndex'))){
+            this.set('invalidIndex', Number.MAX_VALUE);
+        }
         if (BI.isNull(this.options.etlType)){
             this.addItemAfter(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_FIELD, -1)
         } else {
@@ -54,21 +57,6 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         if(BI.isNotNull(items[index + 1])) {
             items[index + 1].parents = [items[index]];
         }
-    },
-
-
-    _checkGroup: function (fields, item) {
-        return BI.some(item.operator.dimensions, function (i, dimension) {
-            return BI.isNull(BI.find(fields, function (idx, field) {
-                return field.field_name === dimension._src.field_name
-            }))
-        })
-    },
-
-    //检查items是否正常//TODO需要上面一起协作完成
-    isValid : function (v) {
-        var idx = this.getIndexByValue(v);
-        return  true;
     },
 
     createItem : function (v, options) {
@@ -159,7 +147,8 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         }, items[items.length - 1]), {
             value:this.getValue("value"),
             table_name:this.getValue("table_name"),
-            allHistory:this.getValue("allHistory")
+            allHistory:this.getValue("allHistory"),
+            invalidIndex : this.getValue('invalidIndex')
         });
     }
 })

@@ -11,7 +11,6 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodPercentPane  = BI.inherit(BI.Analys
             type : 'bi.vertical',
             cls : 'detail-view',
             lgap : self._constants.GAP,
-            tgap : self._constants.GAP,
             height : self._constants.FIRST_DETAIL_HEIGHT
         });
         self.secondDetail = BI.createWidget({
