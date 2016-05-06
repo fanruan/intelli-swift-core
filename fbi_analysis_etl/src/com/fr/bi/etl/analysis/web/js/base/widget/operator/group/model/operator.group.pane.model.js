@@ -255,7 +255,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         return result.text;
     },
     
-    isDefalutValue : function () {
+    isDefaultValue : function () {
         return !this.changed;
     }
 });

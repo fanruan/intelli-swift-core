@@ -8,10 +8,10 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
         this.childValid = {};
     },
 
-    _checkCanSave : function (widget) {
+    _checkCanSave : function (widget, model) {
         return BI.isNull(BI.find(this.childValid, function (idx, item) {
             return item === false;
-        })) && (this.editorValid === true || !widget.checkBox.isSelected());
+        })) && (this.editorValid === true || !widget.checkBox.isSelected()) && (model.get(ETLCst.ITEMS).length > 0);
     },
 
     addCondition : function (widget, model) {
@@ -19,7 +19,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
         var f = model.getFieldByValue(v);
         this._addCondition(f, {}, widget, model);
         this._buildItems(model);
-        this.checkValid(widget)
+        this.checkValid(widget, model)
     },
 
     clickCheckBox : function (widget, model) {
@@ -28,7 +28,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
         if(widget.checkBox.isSelected() === true) {
             widget.editor.editor.focus();
         }
-        this.checkValid(widget)
+        this.checkValid(widget, model)
     },
 
     setOtherValue : function (widget, model) {
@@ -50,7 +50,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
             var field = model.getFieldByValue(item.field)
             self._addCondition(field, item, widget, model)
         })
-        this.checkValid(widget)
+        this.checkValid(widget, model)
     },
 
     _addCondition : function (field, value, widget, model) {
@@ -59,13 +59,13 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
         return pane;
     },
 
-    setValid : function (key, valid, widget) {
+    setValid : function (key, valid, widget, model) {
         this.childValid[key] = valid;
-        this.checkValid(widget)
+        this.checkValid(widget, model)
     },
 
-    checkValid : function (widget) {
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this._checkCanSave(widget))
+    checkValid : function (widget, model) {
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this._checkCanSave(widget, model))
     },
 
     setEditorValid : function (valid) {
@@ -84,7 +84,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
         delete this.childPane[key];
         delete this.childValid[key];
         this._buildItems(model);
-        this.checkValid(widget)
+        this.checkValid(widget, model)
     },
 
     _buildItems : function (model) {
