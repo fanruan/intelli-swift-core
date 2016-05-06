@@ -110,8 +110,7 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
     
     _createOneConditionType : function (){
         var self = this, opts = self.options;
-        var type = BI.isNull(self.storedValue) ? opts.field_type : self.storedValue.field_type
-        switch (type){
+        switch (opts.field_type){
             case BICst.COLUMN.STRING :
                 return 'bi.string_filter_item_etl';
             case BICst.COLUMN.DATE :

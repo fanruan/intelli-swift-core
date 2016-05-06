@@ -20,8 +20,6 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
 
     _check : function (widget, model) {
         var parent = model.get(ETLCst.PARENTS)[0];
-        var operator = model.get('operator');
-        var columns = operator[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY]
         var found;
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
