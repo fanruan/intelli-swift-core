@@ -1,0 +1,40 @@
+package com.fr.bi.web.conf.services.packs;
+
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
+import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.fs.web.service.ServiceUtils;
+import com.fr.json.JSONObject;
+import com.fr.web.utils.WebUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+
+/**
+ * Created by wuk on 16/4/26.
+ */
+public class BIGetPackageAuthorityAction extends AbstractBIConfigureAction {
+    @Override
+    protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
+            long userId = ServiceUtils.getCurrentUserID(req);
+        String tableJson = WebUtils.getHTTPRequestParameter(req, "package");
+
+
+
+
+
+        BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
+        JSONObject packageJSON = packageAndAuthorityManager.createPackageJSON(userId);
+JSONObject jsonObject=new JSONObject();
+        ArrayList list= new ArrayList();
+
+        JSONObject jo = new JSONObject().put("packages", packageJSON);
+            WebUtils.printAsJSON(res, jo);
+    }
+
+    @Override
+    public String getCMD() {
+        return "get_package_authority";
+    }
+}

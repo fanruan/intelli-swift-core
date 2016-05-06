@@ -77,63 +77,89 @@ BI.extend(BI.Utils, {
         }
         return packStructure;
     },
+
     /**
      * 获取所有业务包分组信息树结构
      * 用于业务包权限管理功能
      * @returns {Array}
      */
-    getAllGroupedPackagesTreeJSON4PrermissionManage: function () {
-        var groups = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
-        var packStructure = [], groupedPacks = [];
-        BI.each(groups, function (id, group) {
-            packStructure.push({
-                id: id,
-                text: group.name,
-                isParent: true
-            });
-            BI.each(group.children, function (i, item) {
+    getAllGroupedPackagesTreeJSON4PrermissionManage: function (tree) {
+        Data.Req.reqPakageAndGroup(function (data) {
+                var self = this;
+                var groups = data.groups, packages = data.packages;
+                var packStructure = [], groupedPacks = [];
+                BI.each(groups, function (id, group) {
                 packStructure.push({
-                    id: item.id,
-                    text: packages[item.id].name,
-                    value: item.id,
-                    pId: id
+                    id: id,
+                    text: group.name,
+                    value: group.name,
+                    pId: 0,
+                    open: true
                 });
-                groupedPacks.push(item.id);
-            })
-        });
+                    BI.each(group.children, function (i, item) {
+                        packStructure.push({
+                            id: item.id,
+                            text: packages[item.id].name,
+                            value: item.id,
+                            pId: id,
+                            open: true
+                        });
+                        groupedPacks.push(item.id);
+                    })
+                });
 
-        var isGroupedExisted = false;
-        BI.each(packages, function (id, pack) {
-            var isGrouped = false;
-            BI.any(groupedPacks, function (i, pId) {
-                if (pId === id) {
-                    isGrouped = true;
-                    return false;
+                var isGroupedExisted = false;
+                BI.each(packages, function (id, pack) {
+                    var isGrouped = false;
+                    BI.any(groupedPacks, function (i, pId) {
+                        if (pId === id) {
+                            isGrouped = true;
+                            return false;
+                        }
+                    });
+                    //未分组
+                    if (!isGrouped) {
+                        isGroupedExisted = true;
+                        packStructure.push({
+                            text: pack.name,
+                            value: pack.id,
+                            pId: 1,
+                            id: id,
+                            open: true
+                        })
                 }
             });
-            //未分组
-
-            if (!isGrouped) {
-                isGroupedExisted = true;
+                if (isGroupedExisted === true) {
                 packStructure.push({
-                    text: pack.name,
-                    value: pack.id,
-                    pId: -1,
-                    id: id
-                })
+                    text: BI.i18nText('BI-Ungrouped'),
+                    value: BI.i18nText('BI-Ungrouped'),
+                    id: 1,
+                    pId: 0,
+                    open: true
+                });
             }
-        });
-        // if (isGroupedExisted) {
-        //     packStructure.push({
-        //         text: 'undefined',
-        //         value: 'undefined',
-        //         id: -1,
-        //         isParent: true
-        //     });
-        // };
-        return packStructure;
+            Data.SharingPool.put("packStructure", packStructure);
+                tree.populate(packStructure);
+            }
+        );
     },
+    getAuthorityBypackageId: function (packageId) {
+        // Data.SharingPool.put("authorityByPackageName", Data.Req.reqAuthorityByPackageId(packageId));
+        Data.SharingPool.put("authorityByPackageName", []);
 
+    },
+    getAllAuthority: function () {
+        Data.SharingPool.put("allAuthority", Data.Req.reqAllAuthority());
+    },
+    getConfDataByField: function (table, fieldName, filterConfig, callback) {
+        Data.Req.reqFieldsDataByData({
+            table: table,
+            field: fieldName,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        });
+    },
     getAllPackageIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("packages"));
     },
@@ -377,10 +403,16 @@ BI.extend(BI.Utils, {
             callback(res);
         });
     },
+    updatePackageAuthority: function (data, callback) {
+        Data.Req.reqUpdatePackageAuthority(data, function (res) {
+            callback(res);
+        })
+    },
 
     getAllPackages: function(callback) {
         Data.Req.reqAllBusinessPackages(function(res) {
             callback(res);
         })
     }
+
 });
