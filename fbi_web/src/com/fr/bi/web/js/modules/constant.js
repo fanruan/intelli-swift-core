@@ -46,9 +46,9 @@ BICst.Widget.Heights[BICst.Widget.YEAR] = 120;
 BICst.Widget.Heights[BICst.Widget.QUARTER] = 120;
 BICst.Widget.Heights[BICst.Widget.MONTH] = 120;
 BICst.Widget.Heights[BICst.Widget.YMD] = 120;
-BICst.Widget.Heights[BICst.Widget.TREE] = 35;
-BICst.Widget.Heights[BICst.Widget.QUERY] = 35;
-BICst.Widget.Heights[BICst.Widget.RESET] = 35;
+BICst.Widget.Heights[BICst.Widget.TREE] = 80;
+BICst.Widget.Heights[BICst.Widget.QUERY] = 70;
+BICst.Widget.Heights[BICst.Widget.RESET] = 70;
 
 //布局方式
 BICst.DASHBOARD_LAYOUT_ARRAY = [{

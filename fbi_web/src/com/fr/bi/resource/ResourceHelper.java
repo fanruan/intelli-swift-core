@@ -167,6 +167,8 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.detailtable.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.string.js",
+                "com/fr/bi/web/js/show/modules/model/pane/widgets/model.query.js",
+                "com/fr/bi/web/js/show/modules/model/pane/widgets/model.reset.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.date.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.daterange.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.number.js",
@@ -262,6 +264,8 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.detailtable.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.string.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.query.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.reset.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.date.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.daterange.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.number.js",
@@ -299,6 +303,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.widget.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.detailtable.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.string.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.query.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.reset.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.date.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.year.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.yearmonth.js",

@@ -274,6 +274,16 @@
                 widgetType === BICst.Widget.YMD;
         },
 
+        isQueryControlExist: function() {
+            var self = this, isQueryExist = false;
+            BI.some(this.getAllWidgetIDs(), function(i, wId){
+                if(self.getWidgetTypeByID(wId) === BICst.Widget.QUERY) {
+                    return isQueryExist = true;
+                }
+            });
+            return isQueryExist;
+        },
+
         getWidgetDimensionsByID: function (wid) {
             return Data.SharingPool.get("widgets", wid, "dimensions") || {};
         },
@@ -288,6 +298,10 @@
 
         getWidgetSettingsByID: function (wid) {
             return Data.SharingPool.get("widgets", wid, "settings") || {};
+        },
+
+        getWidgetInitTimeByID: function(wid) {
+            return Data.SharingPool.get("widgets", wid, "init_time") || new Date().getTime();
         },
 
         getClickedByID: function (wid) {
@@ -977,7 +991,10 @@
             //控件
             var widgetIds = this.getAllWidgetIDs();
             BI.each(widgetIds, function (i, id) {
-                if (id === notcontain) {
+                //去掉自身和在自身之后创建的控件
+                if (BI.isNotNull(notcontain) &&
+                    (id === notcontain ||
+                    (self.isControlWidgetByWidgetId(notcontain) && self.getWidgetInitTimeByID(id) > self.getWidgetInitTimeByID(notcontain)))) {
                     return;
                 }
                 var value = self.getWidgetValueByID(id);
@@ -1126,7 +1143,11 @@
                     });
                 });
             }
-            filterValues = filterValues.concat(this.getControlCalculations(wid));
+
+            //所有控件过滤条件（考虑有查询按钮的情况）
+            filterValues = filterValues.concat(
+                this.isQueryControlExist() && !this.isControlWidgetByWidgetId(wid) ?
+                    Data.SharingPool.get("control_filters") : this.getControlCalculations(wid));
 
             //联动 由于这个clicked现在放到了自己的属性里，直接拿就好了
             var linkages = this.getLinkageValuesByID(wid);
@@ -1369,14 +1390,16 @@
             Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
         },
 
-        broadcastAllWidgets2Refresh: function () {
+        broadcastAllWidgets2Refresh: function (force) {
             var self = this;
             var allWidgetIds = this.getAllWidgetIDs();
-            BI.each(allWidgetIds, function (i, wId) {
-                if (!self.isControlWidgetByWidgetId(wId)) {
-                    BI.Broadcasts.send(wId);
-                }
-            });
+            if(force === true || this.isQueryControlExist() === false) {
+                BI.each(allWidgetIds, function (i, wId) {
+                    if (!self.isControlWidgetByWidgetId(wId)) {
+                        BI.Broadcasts.send(wId);
+                    }
+                });
+            }
         },
 
         /**

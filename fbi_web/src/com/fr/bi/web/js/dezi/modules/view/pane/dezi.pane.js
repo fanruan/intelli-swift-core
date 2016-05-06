@@ -86,7 +86,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         var widgetVessel = {};
         this.dashboard = BI.createWidget({
             type: "bi.fit",
-            layoutStyle: this.model.get("layoutStyle"),
+            layoutType: this.model.get("layoutType"),
             widgetCreator: function (id, info) {
                 if (!widgetVessel[id]) {
                     widgetVessel[id] = BI.createWidget();
@@ -105,7 +105,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         this.dashboard.on(BI.Fit.EVENT_CHANGE, function () {
             var value = this.getValue();
             self.set("dashboard", {
-                layoutStyle: value.layoutStyle,
+                layoutType: value.layoutType,
                 regions: value.regions
             })
         });

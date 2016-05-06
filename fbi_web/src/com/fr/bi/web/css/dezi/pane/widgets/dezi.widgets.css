@@ -57,3 +57,9 @@
 .bi-dashboard-widget .ui-resizable-e:hover {
   border-right: 1px solid #e85050;
 }
+.bi-dashboard-widget .remove-button {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background: #ffffff;
+}

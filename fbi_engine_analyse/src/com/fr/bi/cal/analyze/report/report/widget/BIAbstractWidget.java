@@ -33,6 +33,7 @@ public abstract class BIAbstractWidget implements BIWidget {
     private String blockName;
     private Rectangle rect = new Rectangle();
     private TargetFilter filter;
+    private long initTime;
     private long userId;
 
     public long getUserId() {
@@ -117,6 +118,10 @@ public abstract class BIAbstractWidget implements BIWidget {
         if (jo.has("filter")){
             JSONObject filterJo = jo.getJSONObject("filter");
             filter = TargetFilterFactory.parseFilter(filterJo, userId);
+        }
+        if(jo.has("init_time")) {
+            initTime = jo.getLong("init_time");
+
         }
         this.userId = userId;
     }

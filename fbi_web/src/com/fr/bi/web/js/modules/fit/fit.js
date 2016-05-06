@@ -266,7 +266,7 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            layoutStyle: this.getLayoutType(),
+            layoutType: this.getLayoutType(),
             regions: this.getAllRegions()
         }
     },
@@ -302,7 +302,7 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this;
-        var layoutStyle = Data.SharingPool.get("layoutStyle") || BI.Arrangement.LAYOUT_TYPE.ADAPTIVE;
+        var layoutType = Data.SharingPool.get("layoutType") || BI.Arrangement.LAYOUT_TYPE.ADAPTIVE;
         var result = [];
         var widgets = Data.SharingPool.cat("widgets");
         BI.each(widgets, function (id, widget) {
@@ -316,7 +316,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 height: bounds.height
             });
         });
-        this.setLayoutType(layoutStyle);
+        this.setLayoutType(layoutType);
         this.arrangement.populate(result);
     },
 
