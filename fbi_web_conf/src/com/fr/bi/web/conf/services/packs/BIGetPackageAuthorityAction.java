@@ -19,11 +19,6 @@ public class BIGetPackageAuthorityAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
             long userId = ServiceUtils.getCurrentUserID(req);
         String tableJson = WebUtils.getHTTPRequestParameter(req, "package");
-
-
-
-
-
         BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
         JSONObject packageJSON = packageAndAuthorityManager.createPackageJSON(userId);
 JSONObject jsonObject=new JSONObject();

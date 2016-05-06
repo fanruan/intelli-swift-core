@@ -144,7 +144,7 @@ BI.extend(BI.Utils, {
         );
     },
     getAuthorityBypackageId: function (packageId) {
-        // Data.SharingPool.put("authorityByPackageName", Data.Req.reqAuthorityByPackageId(packageId));
+        Data.SharingPool.put("authorityByPackageName", Data.Req.reqAuthorityByPackageId(packageId));
         Data.SharingPool.put("authorityByPackageName", []);
 
     },
