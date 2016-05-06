@@ -20,12 +20,78 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
 
     _check : function (widget, model) {
         var parent = model.get(ETLCst.PARENTS)[0];
-        var found;
+        var self = this;
+        var columns = model.get(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY);
+        var found = BI.some(columns, function(i ,column){
+            switch (column.add_column_type){
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.FORMULA :
+                    return self._checkFormula(widget, column, parent[ETLCst.FIELDS])
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_DIFF :
+                    var fields = [];
+                    fields.push(column.item['firstField'])
+                    fields.push(column.item['secondField'])
+                    return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name, BICst.COLUMN.DATE)
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_MONTH :
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_SEASON :
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_YEAR :
+                    return self._checkField(widget, [column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.DATE)
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_CPP:
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT:
+                    var fields = [];
+                    fields.push(column.item['field'])
+                    fields.push(column.item['date'])
+                    return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_LP:
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT:
+                    var fields = [];
+                    fields.push(column.item['field'])
+                    fields.push(column.item['monthSeason'])
+                    fields.push(column.item['year'])
+                    return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_ACC:
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_RANK:
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_SUM:
+                    return self._checkField(widget, [column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
+                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.GROUP:
+                    return BI.some(column.item['items'], function (i, item) {
+                        return self._checkField(widget, [item['field']], parent[ETLCst.FIELDS],column.field_name, item['field_type'])
+                    })
+            }
+        })
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
         }
     },
 
+    _checkField : function (widget, dates, fields, columnName, type) {
+        return BI.find(dates, function (i, date) {
+            var f = BI.find(fields, function (i, field) {
+                return date === field.field_name;
+            });
+            if (BI.isNull(f)){
+                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-New_Column_Name') + columnName + '' + date + BI.i18nText('BI-Not_Fount'))
+                return true;
+            } else  if (f.field_type !== type){
+                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-New_Column_Name') + columnName + '' + date + BI.i18nText('BI-Illegal_Field_Type'))
+                return true;
+            }
+        })
+    },
+
+    _checkFormula : function (widget, column, fields) {
+        var fs = BI.Utils.getFieldsFromFormulaValue(column.item.formula);
+        var lostField = BI.find(fs, function (i, field) {
+             if(BI.isNull(BI.find(fields, function (idx, f) {
+                return f.field_name === field;
+                }))){
+                 return field
+             }
+        })
+        if (BI.isNotNull(lostField)){
+            widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-New_Column_Name') + column.field_name + BI.i18nText('BI-Formula_Valid')) + lostField
+            return true;
+        }
+    },
 
     getDefaultCardName : function (widget, model) {
         this._editing = model.getAddColumns().length === 0;

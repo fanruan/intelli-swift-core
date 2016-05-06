@@ -103,6 +103,23 @@ BI.extend(BI.Utils, {
         return formulaString;
     },
 
+    getFieldsFromFormulaValue: function (formulaValue) {
+        var fields = [];
+        if (BI.isNull(formulaValue)){
+            return [];
+        }
+        var regx = /\$[\{][^\}]*[\}]|\w*\w|\$\{[^\$\(\)\+\-\*\/)\$,]*\w\}|\$\{[^\$\(\)\+\-\*\/]*\w\}|\$\{[^\$\(\)\+\-\*\/]*[\u4e00-\u9fa5]\}|\w|(.)/g;
+        var result = formulaValue.match(regx);
+        BI.each(result, function (i, item) {
+            var fieldRegx = /\$[\{][^\}]*[\}]/;
+            var str = item.match(fieldRegx);
+            if (BI.isNotEmptyArray(str)) {
+                fields.push(str[0].substring(2, item.length - 1));
+            } 
+        });
+        return fields;
+    },
+
     _buildData : function(model, filterValueGetter) {
         //测试数据
         var header = [];
