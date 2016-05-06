@@ -62,6 +62,7 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
     },
 
     _check : function (widget, model) {
+        var self = this;
         var parent = model.get(ETLCst.PARENTS)[0];
         var operator =  model.get('operator');
         var items =operator[ETLCst.ITEMS];
@@ -78,7 +79,7 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
                         invalid = true;
                         widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-Filter') + field.field_name + BI.i18nText('BI-Illegal_Field_Type'))
                     } else {
-                        invalid = this._checkItem(widget, item, parent[ETLCst.FIELDS]);
+                        invalid = self._checkItem(widget, item, parent[ETLCst.FIELDS]);
                     }
                 }
             }
@@ -92,8 +93,8 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
 
     _checkItem : function (widget, item, fields) {
         return BI.some(item.value, function (i, v) {
-            if (v.type === BICst.FILTER_TYPE.FORMULA ) {
-                var fs = BI.Utils.getFieldsFromFormulaValue(v.value);
+            if (v.filter_type === BICst.FILTER_TYPE.FORMULA ) {
+                var fs = BI.Utils.getFieldsFromFormulaValue(v.filter_value);
                 var lostField = BI.find(fs, function (i, field) {
                     return BI.isNull(BI.find(fields, function (idx, f) {
                         return f.field_name === field;

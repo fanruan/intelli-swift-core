@@ -11,7 +11,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
     _checkCanSave : function (widget, model) {
         return BI.isNull(BI.find(this.childValid, function (idx, item) {
             return item === false;
-        })) && (this.editorValid === true || !widget.checkBox.isSelected()) && (model.get(ETLCst.ITEMS).length > 0);
+        })) && (this.editorValid === true || !widget.checkBox.isSelected()) && (BI.isNotNull(model.get(ETLCst.ITEMS)) && model.get(ETLCst.ITEMS).length > 0);
     },
 
     addCondition : function (widget, model) {
