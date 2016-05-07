@@ -268,7 +268,6 @@
                 widgetType === BICst.Widget.DATE ||
                 widgetType === BICst.Widget.MONTH ||
                 widgetType === BICst.Widget.QUARTER ||
-                widgetType === BICst.Widget.QUERY ||
                 widgetType === BICst.Widget.TREE ||
                 widgetType === BICst.Widget.YEAR ||
                 widgetType === BICst.Widget.YMD;

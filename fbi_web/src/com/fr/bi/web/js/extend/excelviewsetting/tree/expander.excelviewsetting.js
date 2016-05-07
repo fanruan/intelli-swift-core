@@ -31,7 +31,10 @@ BI.ExcelViewSettingExpander = BI.inherit(BI.Widget, {
         });
         this.table = BI.createWidget({
             type: "bi.excel_view_setting_table",
-            fields: o.fields
+            fields: o.fields,
+            clearOneCell: function(fieldId){
+                o.clearOneCell(fieldId);
+            }
         });
         this.table.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);

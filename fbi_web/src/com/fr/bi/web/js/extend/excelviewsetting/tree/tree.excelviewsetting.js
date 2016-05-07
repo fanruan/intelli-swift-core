@@ -29,9 +29,13 @@ BI.ExcelViewSettingTree = BI.inherit(BI.Widget, {
     },
 
     _formatTable: function (tables) {
+        var self = this;
         return BI.map(tables, function (i, table) {
             return BI.extend({
-                type: "bi.excel_view_setting_expander"
+                type: "bi.excel_view_setting_expander",
+                clearOneCell: function(fieldId){
+                    self.options.clearOneCell(fieldId);
+                }
             }, table);
         });
     },

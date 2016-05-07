@@ -34,7 +34,7 @@ BI.TextToolbarBackgroundChooserTrigger = BI.inherit(BI.Trigger, {
                 el: this.font,
                 top: 3,
                 left: 2
-            },{
+            }, {
                 el: this.underline,
                 top: 9,
                 left: 2

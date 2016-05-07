@@ -24,7 +24,8 @@ BI.AnalysisETLOperatorAddColumnValueSingleController = BI.inherit(BI.MVCControll
     },
 
     populate : function (widget, model) {
-        widget.createEditor(this.options.field_type, model.get('v'))
+        widget.createEditor(this.options.field_type, model.get('v') || "")
+        this._checkCanSave(widget, model)
     },
 
     changeFieldType : function (field_type, widget, model) {

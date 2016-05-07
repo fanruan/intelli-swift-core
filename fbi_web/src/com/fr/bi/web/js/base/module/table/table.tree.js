@@ -157,11 +157,20 @@ BI.TableTree = BI.inherit(BI.Widget, {
         return result;
     },
 
+    _getVDeep: function () {
+        return this.options.crossHeader.length;//纵向深度
+    },
+
+    _getHDeep: function () {
+        var o = this.options;
+        return Math.max(o.mergeCols.length, this._maxDeep(o.items) - 1);
+    },
+
     _init: function () {
         BI.TableTree.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var deep = Math.max(o.mergeCols.length, this._maxDeep(o.items) - 1);
-        var vDeep = o.crossHeader.length; //纵向深度
+        var deep = this._getHDeep();
+        var vDeep = this._getVDeep();
         var header = this._createHeader(deep, vDeep);
         var items = this._formatItems(o.items, deep);
         this.table = BI.createWidget({
@@ -315,8 +324,8 @@ BI.TableTree = BI.inherit(BI.Widget, {
         if (crossHeader) {
             o.crossHeader = crossHeader;
         }
-        var deep = Math.max(o.mergeCols.length, this._maxDeep(o.items) - 1);
-        var vDeep = o.crossHeader.length; //纵向深度
+        var deep = this._getHDeep();
+        var vDeep = this._getVDeep();
         var header = this._createHeader(deep, vDeep);
         items = this._formatItems(o.items, deep);
         this.table.populate(items, header);

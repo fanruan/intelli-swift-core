@@ -99,7 +99,7 @@ BICst.Widget = {
     CROSS_TABLE: 23,
     COMPLEX_TABLE: 24,
 
-    Content: 25,
+    CONTENT: 25,
     IMAGE: 26,
     WEB: 27,
     COLUMN: 28,

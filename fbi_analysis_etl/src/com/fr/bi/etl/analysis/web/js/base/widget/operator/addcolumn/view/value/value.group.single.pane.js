@@ -130,9 +130,6 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         pane.on(BI.TextEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_CHANGE)
         });
-        pane.on(BI.TextEditor.EVENT_EMPTY, function () {
-            self.fireEvent(BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_CHANGE)
-        });
         return pane;
     },
 
@@ -199,7 +196,8 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         return {
             field : this.options.field.value,
             range : this.range.getValue(),
-            value : this.editor.getValue()
+            value : this.editor.getValue(),
+            field_type : this.options.field.field_type
         }
     }
 
