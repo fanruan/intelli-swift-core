@@ -7,9 +7,7 @@
  */
 BI.SelectDatePane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.SelectDatePane.superclass._defaultConfig.apply(this, arguments), {
-            wId: ""
-        })
+        return BI.extend(BI.SelectDatePane.superclass._defaultConfig.apply(this, arguments), {})
     },
 
     _init: function () {
@@ -59,7 +57,7 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 var items = self._getTablesStructureByPackId(pid);
                 result.push(BI.Func.getSearchResult(items, keyword));
             })
-            BI.each(result, function (i, sch) {
+            BI.each(result, function(i, sch){
                 searchResult = searchResult.concat(sch.finded);
                 matchResult = matchResult.concat(sch.matched);
             })
@@ -73,9 +71,9 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 });
                 result.push(BI.Func.getSearchResult(items, keyword));
             });
-            BI.each(result, function (i, sch) {
-                BI.each(sch.matched.concat(sch.finded), function (j, finded) {
-                    if (!map[finded.pId]) {
+            BI.each(result, function(i, sch){
+                BI.each(sch.matched.concat(sch.finded), function(j, finded){
+                    if(!map[finded.pId]){
                         searchResult.push({
                             id: finded.pId,
                             type: "bi.select_data_level0_node",
@@ -115,15 +113,46 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
 
     _getFieldsStructureByTableId: function (tableId) {
         var fieldStructure = [];
-        var self = this, o = this.options;
+        var self = this;
+        
+        //Excel View
+        var excelView = BI.Utils.getExcelViewByTableId(tableId);
+        var viewFields = [];
+        if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
+            var excel = excelView.excel;
+            var positions = excelView.positions;
+            var items = [];
+            BI.each(excel, function (i, row) {
+                var item = [];
+                BI.each(row, function (j, cell) {
+                    item.push({text: cell})
+                });
+                items.push(item);
+            });
+            BI.each(positions, function (id, position) {
+                if(BI.Utils.getFieldTypeByID(id) === BICst.COLUMN.DATE) {
+                    viewFields.push(id);
+                    items[position.row][position.col].value = id;
+                }
+            });
+            fieldStructure.push({
+                id: BI.UUID(),
+                pId: tableId,
+                type: "bi.excel_view",
+                items: items
+            });
+        }
+        
         //string
         BI.each(BI.Utils.getDateFieldIDsOfTableID(tableId), function (i, fid) {
+            if (BI.Utils.getFieldIsUsableByID(fid) === false || viewFields.contains(fid)) {
+                return;
+            }
             var fname = BI.Utils.getFieldNameByID(fid);
             fieldStructure.push({
                 id: fid,
                 pId: tableId,
-                type: "bi.select_string_level0_item",
-                wId: o.wId,
+                type: "bi.detail_select_data_level0_item",
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fname,
                 value: fid,
