@@ -17,7 +17,6 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 
@@ -36,7 +35,6 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
 
         //sql语句是加密过的，否则可以通过url直接操作数据库*/
         String query = WebUtils.getHTTPRequestParameter(req, "sql");
-        PrintWriter writer = WebUtils.createPrintWriter(res);
         JSONObject jo = getFlexgridPreviewJo(query, linkName);
         WebUtils.printAsJSON(res, jo);
     }
