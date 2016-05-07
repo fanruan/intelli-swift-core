@@ -1853,6 +1853,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/pager/pager.all.js",
                 "com/fr/bi/web/js/case/pager/pager.updownprenext.js",
 
+                "com/fr/bi/web/js/case/table/table.layertree.js",
                 "com/fr/bi/web/js/case/table/tabler.js",
 
                 /**

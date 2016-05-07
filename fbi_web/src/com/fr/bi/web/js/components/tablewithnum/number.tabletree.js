@@ -67,8 +67,8 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var mergeCols = o.mergeCols;
         this.tableTree = new BI.TableTree();
-        var deep = Math.max(o.mergeCols.length, this.tableTree._maxDeep(o.items) - 1);
-        var vDeep = o.header.length; //纵向深度
+        var deep = this.tableTree._getHDeep();
+        var vDeep = this.tableTree._getVDeep();
         var header = this._createHeader(deep, vDeep);
         var items = this.tableTree._formatItems(o.items, deep);
         this._formatItemsAndMergeCols(items, mergeCols);
@@ -259,8 +259,8 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
         if (BI.isNotNull(crossHeader)) {
             o.crossHeader = crossHeader;
         }
-        var deep = Math.max(o.mergeCols.length, this.tableTree._maxDeep(o.items) - 1);
-        var vDeep = o.crossHeader.length; //纵向深度
+        var deep = this.tableTree._getHDeep();
+        var vDeep = this.tableTree._getVDeep();
         var header = this._createHeader(deep, vDeep);
         items = this.tableTree._formatItems(o.items, deep);
         this._formatItemsAndMergeCols(items, o.mergeCols);

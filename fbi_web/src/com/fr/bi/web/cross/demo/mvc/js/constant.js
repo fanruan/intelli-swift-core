@@ -134,6 +134,8 @@ var _JS = [
 
     "widget/mvc.tabletree.js",
 
+    "widget/mvc.layertree.table.js",
+
     "widget/mvc.tabler.js",
 
     "widget/mvc.bubble.js",
@@ -440,6 +442,7 @@ var _Routes = {
     "/button": "ButtonView",
     "/table_view": "Table_View",
     "/tabletree": "TableTreeView",
+    "/layer_tree_table": "LayerTreeTableView",
     "/tabler": "TablerView",
     "/bubble": "BubbleView",
     "/toast": "ToastView",
@@ -803,6 +806,10 @@ _Models.widget = [{
     pId: 7,
     text: "bi.table_tree",
     value: "tabletree"
+}, {
+    pId: 7,
+    text: "bi.layer_tree_table",
+    value: "layer_tree_table"
 }, {
     pId: 7,
     text: "bi.tabler",
