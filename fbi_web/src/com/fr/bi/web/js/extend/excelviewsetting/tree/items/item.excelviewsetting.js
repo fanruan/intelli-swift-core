@@ -35,6 +35,23 @@ BI.ExcelViewSettingItem = BI.inherit(BI.BasicButton, {
             text: this._getShowText(),
             height: o.height
         });
+        var removeButton = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "close-font remove-button",
+            width: 16,
+            height: 16,
+            title: BI.i18nText("BI-Clear")
+        });
+        removeButton.on(BI.IconButton.EVENT_CHANGE, function(){
+            o.clearOneCell(o.value);
+            removeButton.setVisible(false);
+        });
+        removeButton.setVisible(false);
+        this.element.hover(function(){
+            BI.isNotEmptyString(self._getShowText()) && removeButton.setVisible(true);
+        }, function(){
+            removeButton.setVisible(false);
+        });
         BI.createWidget({
             type: "bi.htape",
             element: this.element,
@@ -43,6 +60,15 @@ BI.ExcelViewSettingItem = BI.inherit(BI.BasicButton, {
             }, {
                 el: this.cell,
                 width: 80
+            }]
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: removeButton,
+                top: 5,
+                right: 5
             }]
         })
     },

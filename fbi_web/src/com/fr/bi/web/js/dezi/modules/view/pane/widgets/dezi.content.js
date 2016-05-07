@@ -4,7 +4,7 @@
 BIDezi.ContentWidgetView = BI.inherit(BI.View, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.ContentWidgetView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-text"
+            baseCls: "bi-dashboard-widget"
         })
     },
 

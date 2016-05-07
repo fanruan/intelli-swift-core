@@ -13,3 +13,9 @@
 .bi-excel-view-setting-item .excel-view-setting-item-cell {
   border-left: 1px solid #eaeaea;
 }
+.bi-excel-view-setting-item .remove-button {
+  background: #ffffff;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+}
