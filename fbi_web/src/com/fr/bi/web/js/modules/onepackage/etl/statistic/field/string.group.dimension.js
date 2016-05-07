@@ -31,7 +31,6 @@ BI.StringGroupDimension = BI.inherit(BI.AbstractDimension, {
                     break;
                 case BICst.STATISTICS_GROUP_STRING_COMBO.GROUP_BY_CUSTOM:
                     self._setGroups();
-                    self.checkStatus();
                     break;
                 case BICst.STATISTICS_GROUP_STRING_COMBO.DELETE:
                     self.fireEvent(BI.AbstractDimension.EVENT_DESTROY);
@@ -52,6 +51,7 @@ BI.StringGroupDimension = BI.inherit(BI.AbstractDimension, {
         });
         popup.on(BI.CustomGroupPopup.EVENT_CHANGE, function(v){
             o.model.setDimensionGroupById(o.dId, v);
+            self.checkStatus();
         });
         BI.Popovers.create(id, popup).open(id);
         popup.populate(o.model.getDimensionGroupById(o.dId));

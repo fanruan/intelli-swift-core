@@ -58,6 +58,7 @@ BI.ReusePane = BI.inherit(BI.Widget, {
                 }
             }
         });
+        this.searcher.populate();
     },
 
     _getSearchResult: function (keyword) {

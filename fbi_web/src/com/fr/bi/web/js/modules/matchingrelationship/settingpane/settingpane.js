@@ -135,10 +135,9 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
     _checkDimensionAndTargetRelation: function (tId) {
         var o = this.options;
         var self = this;
-        var tIds = BI.Utils.getForeignRelationTablesByTableID(BI.Utils.getTableIDByDimensionID(o.targetIds[0]));
-        var contains = BI.contains(tIds, tId);
+        var commonPrimaryTableIds = BI.Utils.getCommonPrimaryTablesByTableIDs([BI.Utils.getTableIDByDimensionID(o.targetIds[0]), tId]);
         var combineCombo = this.layout.attr("items")[this.constants.combineComboPosition];
-        if(true){
+        if(BI.isNotEmptyArray(commonPrimaryTableIds)){
             if(!this.selectCombineTableCombo){
                 this.selectCombineTableCombo = BI.createWidget({
                     type: "bi.text_value_combo",
@@ -154,13 +153,11 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 });
                 this.emptyItem.addItem(this.selectCombineTableCombo);
             }
-            var tables = BI.Utils.getCommonPrimaryTablesByTableIDs([tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0])]);
-            var items = BI.map(tables, function(idx, tId){
-                var item = {
+            var items = BI.map(commonPrimaryTableIds, function(idx, tId){
+                return {
                     text: BI.Utils.getTableNameByID(tId),
                     value: tId
                 };
-                return item;
             });
             this.selectCombineTableCombo.populate(items);
             combineCombo.height = 35;

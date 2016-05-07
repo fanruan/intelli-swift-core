@@ -103,8 +103,8 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
         this.bold.setSelected(v["font-weight"] === "bold");
         this.italic.setSelected(v["font-style"] === "italic");
         this.underline.setSelected(v["text-decoration"] === "underline");
-        this.colorchooser.setValue(v["color"]);
-        this.backgroundchooser.setValue(v["background-color"]);
+        this.colorchooser.setValue(v["color"] || "#000000");
+        this.backgroundchooser.setValue(v["background-color"] || "#ffffff");
         this.alignchooser.setValue(v["text-align"] || "left");
     },
 

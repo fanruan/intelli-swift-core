@@ -27,7 +27,7 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.Widget.SCATTER:
             case BICst.Widget.RADAR:
                 return "BIShow.WidgetView";
-            case BICst.Widget.Content:
+            case BICst.Widget.CONTENT:
                 return "BIShow.ContentWidgetView";
             case BICst.Widget.IMAGE:
                 return "BIShow.ImageWidgetView";

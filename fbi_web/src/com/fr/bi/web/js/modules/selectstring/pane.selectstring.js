@@ -7,7 +7,9 @@
  */
 BI.SelectStringPane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.SelectStringPane.superclass._defaultConfig.apply(this, arguments), {})
+        return BI.extend(BI.SelectStringPane.superclass._defaultConfig.apply(this, arguments), {
+            wId: ""
+        })
     },
 
     _init: function () {
@@ -53,7 +55,7 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
                 var items = self._getTablesStructureByPackId(pid);
                 result.push(BI.Func.getSearchResult(items, keyword));
             })
-            BI.each(result, function(i, sch){
+            BI.each(result, function (i, sch) {
                 searchResult = searchResult.concat(sch.finded);
                 matchResult = matchResult.concat(sch.matched);
             })
@@ -67,9 +69,9 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
                 });
                 result.push(BI.Func.getSearchResult(items, keyword));
             });
-            BI.each(result, function(i, sch){
-                BI.each(sch.matched.concat(sch.finded), function(j, finded){
-                    if(!map[finded.pId]){
+            BI.each(result, function (i, sch) {
+                BI.each(sch.matched.concat(sch.finded), function (j, finded) {
+                    if (!map[finded.pId]) {
                         searchResult.push({
                             id: finded.pId,
                             type: "bi.select_data_level0_node",
@@ -110,7 +112,7 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
 
     _getFieldsStructureByTableId: function (tableId) {
         var fieldStructure = [];
-        var self = this;
+        var self = this, o = this.options;
 
         //Excel View
         var excelView = BI.Utils.getExcelViewByTableId(tableId);
@@ -127,7 +129,7 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
                 items.push(item);
             });
             BI.each(positions, function (id, position) {
-                if(BI.Utils.getFieldTypeByID(id) === BICst.COLUMN.STRING) {
+                if (BI.Utils.getFieldTypeByID(id) === BICst.COLUMN.STRING) {
                     viewFields.push(id);
                     items[position.row][position.col].value = id;
                 }
@@ -149,6 +151,7 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
                 id: fid,
                 pId: tableId,
                 type: "bi.detail_select_data_level0_item",
+                wId: o.wId,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fname,
                 value: fid,

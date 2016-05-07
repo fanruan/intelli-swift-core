@@ -29,7 +29,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
         ICubeColumnIndexReader getter = loader.getTableIndex(field).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
         Comparator comparator;
-        if(getSortType() == BIReportConstant.SORT.NONE){
+        if(getSortType() == BIReportConstant.SORT.NONE || getSortType() == BIReportConstant.SORT.CUSTOM){
             return dimension.getSort().createGroupedMap(getter).iterator();
         }
         if(getGroup().getType() == BIReportConstant.GROUP.ID_GROUP){
