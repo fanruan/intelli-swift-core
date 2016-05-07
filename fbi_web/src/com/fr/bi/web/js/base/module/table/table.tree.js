@@ -73,8 +73,8 @@ BI.TableTree = BI.inherit(BI.Widget, {
         var result = [];
 
         function track(store, node) {
+            var next;
             if (BI.isNotEmptyArray(node.children)) {
-                var next;
                 BI.each(node.children, function (index, child) {
                     var next;
                     if (store != -1) {
@@ -94,7 +94,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
                 if (BI.isNotEmptyArray(node.values)) {
                     var id = BI.UUID();
                     for (var i = next.length; i < deep; i++) {
-                        next.push({text: "汇总", tag: id});
+                        next.push({text: BI.i18nText("BI-Summary_Values"), tag: id});
                     }
                     if (!isCross) {
                         next = next.concat(node.values);
@@ -163,7 +163,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
 
     _getHDeep: function () {
         var o = this.options;
-        return Math.max(o.mergeCols.length, this._maxDeep(o.items) - 1);
+        return Math.max(o.mergeCols.length, o.freezeCols.length, this._maxDeep(o.items) - 1);
     },
 
     _init: function () {

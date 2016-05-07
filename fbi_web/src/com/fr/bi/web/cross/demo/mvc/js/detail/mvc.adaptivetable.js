@@ -237,7 +237,7 @@ AdaptiveTableView = BI.inherit(BI.View, {
         var table2 = BI.createWidget({
             type: "bi.adaptive_table",
             el: {
-                type: "bi.table_tree"
+                type: "bi.layer_tree_table"
             },
             isNeedFreeze: true,
             isNeedMerge: true,
