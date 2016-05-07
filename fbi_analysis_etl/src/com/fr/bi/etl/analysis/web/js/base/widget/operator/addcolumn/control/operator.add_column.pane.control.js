@@ -15,6 +15,11 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         widget.allColumnsPane.populate(model.getAddColumns())
         widget.card.showCardByName(cardName);
         this._check(widget, model);
+        this.doCheck();
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+    },
+    
+    doCheck : function () {
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
     },
 
