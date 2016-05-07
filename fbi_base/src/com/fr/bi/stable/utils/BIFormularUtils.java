@@ -1,5 +1,6 @@
 package com.fr.bi.stable.utils;
 
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
@@ -47,7 +48,13 @@ public class BIFormularUtils {
         try {
             String[] parameters = getRelatedParaNames(formular);
             for (int j = 0; j < parameters.length; j++) {
-                String columnName = parameters[j];
+                String columnName;
+                if (parameters[j].contains(BIReportConstant.FIELD_ID.HEAD)) {
+                    columnName = BIIDUtils.getFieldNameFromFieldID(parameters[j].substring(36, parameters[j].length()));
+                } else {
+                    columnName = parameters[j];
+                }
+
                 BIKey columnIndex = ti.getColumnIndex(columnName);
                 if (columnIndex == null) {
                     BILogger.getLogger().error(columnName + ": not found");

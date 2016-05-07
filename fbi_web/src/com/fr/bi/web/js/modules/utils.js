@@ -70,13 +70,13 @@
         },
 
         getPackageNameByID: function (packageId) {
-            if(BI.isNotNull(Pool.packages[packageId])) {
+            if (BI.isNotNull(Pool.packages[packageId])) {
                 return Pool.packages[packageId].name;
             }
         },
 
         getTableIDsOfPackageID: function (packageId) {
-            if(BI.isNotNull(Pool.packages[packageId])) {
+            if (BI.isNotNull(Pool.packages[packageId])) {
                 return BI.pluck(Pool.packages[packageId].tables, "id");
             }
         },
@@ -90,7 +90,7 @@
         },
 
         getFieldIDsOfTableID: function (tableId) {
-            if(BI.isNotNull(Pool.tables[tableId])) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
                 var fields = Pool.tables[tableId].fields;
                 return BI.pluck(fields[0].concat(fields[1]).concat(fields[2]), "id");
             }
@@ -98,7 +98,7 @@
 
         getStringFieldIDsOfTableID: function (tableId) {
             var self = this;
-            if(BI.isNotNull(Pool.tables[tableId])) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
                 var fields = Pool.tables[tableId].fields;
                 return BI.filter(BI.pluck(fields[0], "id"), function (idx, id) {
                     return self.getFieldTypeByID(id) === BICst.COLUMN.STRING;
@@ -108,7 +108,7 @@
 
         getNumberFieldIDsOfTableID: function (tableId) {
             var self = this;
-            if(BI.isNotNull(Pool.tables[tableId])) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
                 var fields = Pool.tables[tableId].fields;
                 return BI.filter(BI.pluck(fields[0], "id"), function (idx, id) {
                     return self.getFieldTypeByID(id) === BICst.COLUMN.NUMBER;
@@ -118,7 +118,7 @@
 
         getDateFieldIDsOfTableID: function (tableId) {
             var self = this;
-            if(BI.isNotNull(Pool.tables[tableId])) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
                 var fields = Pool.tables[tableId].fields;
                 return BI.filter(BI.pluck(fields[0], "id"), function (idx, id) {
                     return self.getFieldTypeByID(id) === BICst.COLUMN.DATE;
@@ -127,7 +127,7 @@
         },
 
         getCountFieldIDsOfTableID: function (tableId) {
-            if(BI.isNotNull(Pool.tables[tableId])) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
                 var fields = Pool.tables[tableId].fields;
                 return BI.pluck(fields[3], "id");
             }
@@ -145,7 +145,7 @@
             });
             var countIds = this.getCountFieldIDsOfTableID(tableId);
             var tNum = [], tString = [], tDate = [], fNum = [], fString = [], fDate = [];
-            BI.each(transIds, function(i, id){
+            BI.each(transIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
                     case BICst.COLUMN.NUMBER:
                         tNum.push(id);
@@ -158,7 +158,7 @@
                         break;
                 }
             });
-            BI.each(fieldIds, function(i, id){
+            BI.each(fieldIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
                     case BICst.COLUMN.NUMBER:
                         fNum.push(id);
@@ -200,21 +200,21 @@
 
         getFieldTypeByID: function (fieldId) {
             BI.isNotNull(fieldId) && BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
-            if(BI.isNotNull(Pool.fields[fieldId])) {
+            if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].field_type;
             }
         },
 
         getFieldIsUsableByID: function (fieldId) {
             BI.isNotNull(fieldId) && BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
-            if(BI.isNotNull(Pool.fields[fieldId])) {
+            if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].is_usable;
             }
         },
 
         getTableIdByFieldID: function (fieldId) {
             BI.isNotNull(fieldId) && BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
-            if(BI.isNotNull(Pool.fields[fieldId])) {
+            if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].table_id;
             }
         },
@@ -274,10 +274,10 @@
                 widgetType === BICst.Widget.YMD;
         },
 
-        isQueryControlExist: function() {
+        isQueryControlExist: function () {
             var self = this, isQueryExist = false;
-            BI.some(this.getAllWidgetIDs(), function(i, wId){
-                if(self.getWidgetTypeByID(wId) === BICst.Widget.QUERY) {
+            BI.some(this.getAllWidgetIDs(), function (i, wId) {
+                if (self.getWidgetTypeByID(wId) === BICst.Widget.QUERY) {
                     return isQueryExist = true;
                 }
             });
@@ -300,7 +300,7 @@
             return Data.SharingPool.get("widgets", wid, "settings") || {};
         },
 
-        getWidgetInitTimeByID: function(wid) {
+        getWidgetInitTimeByID: function (wid) {
             return Data.SharingPool.get("widgets", wid, "init_time") || new Date().getTime();
         },
 
@@ -348,15 +348,34 @@
         },
 
         //是否所有数据存在（配置部分将数据修改的情况）
-        isAllFieldsExistByWidgetID: function(wid){
+        isAllFieldsExistByWidgetID: function (wid) {
             var allDimIds = this.getAllDimensionIDs(wid);
             var allExist = true;
-            BI.some(allDimIds, function(i, dId){
-                var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
-                if(BI.isNull(Pool.fields[fieldId])) {
-                    allExist = false;
-                    return true;
-                } 
+            BI.some(allDimIds, function (i, dId) {
+                var dType = BI.Utils.getDimensionTypeByID(dId);
+                if (dType === BICst.TARGET_TYPE.STRING ||
+                    dType === BICst.TARGET_TYPE.NUMBER ||
+                    dType === BICst.TARGET_TYPE.DATE ||
+                    dType === BICst.TARGET_TYPE.COUNTER) {
+                    var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
+                    if (BI.isNull(Pool.fields[fieldId])) {
+                        allExist = false;
+                        return true;
+                    }
+                } else {
+                    //计算指标
+                    var expression = BI.Utils.getExpressionByDimensionID(dId);
+                    var fIds = expression.ids;
+                    BI.each(fIds, function (j, fId) {
+                        var dId = fId;
+                        // if (dType === BICst.TARGET_TYPE.FORMULA) {
+                        //     dId = fId.substr(BI.size(BICst.FIELD_ID.HEAD), fId.length - BI.size(BICst.FIELD_ID.HEAD))
+                        // }
+                        if (BI.isNull(Pool.fields[BI.Utils.getFieldIDByDimensionID(dId)])) {
+                            allExist = false;
+                        }
+                    });
+                }
             });
             return allExist;
         },
@@ -555,7 +574,7 @@
                 return Data.SharingPool.get("dimensions", did, "dimension_map");
             }
         },
-        
+
         isDimensionByDimensionID: function (dId) {
             var wId = this.getWidgetIDByDimensionID(dId);
             var views = this.getWidgetViewByID(wId);
@@ -1384,7 +1403,7 @@
         broadcastAllWidgets2Refresh: function (force) {
             var self = this;
             var allWidgetIds = this.getAllWidgetIDs();
-            if(force === true || this.isQueryControlExist() === false) {
+            if (force === true || this.isQueryControlExist() === false) {
                 BI.each(allWidgetIds, function (i, wId) {
                     if (!self.isControlWidgetByWidgetId(wId)) {
                         BI.Broadcasts.send(wId);

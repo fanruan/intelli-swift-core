@@ -15,6 +15,7 @@ import com.fr.bi.conf.base.pack.BISystemPackageConfigurationManager;
 import com.fr.bi.conf.base.relation.BISystemTableRelationManager;
 import com.fr.bi.conf.base.trans.BIAliasManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
+import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.fs.BITableMapper;
@@ -84,7 +85,7 @@ public class BICoreModule extends AbstractModule {
 
     private void registProviders() {
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
-        StableFactory.registerMarkedObject(BISystemPackAndAuthConfigurationProvider.XML_TAG,new BISystemPackAndAuthConfigurationManager());
+        StableFactory.registerMarkedObject(BISystemPackAndAuthConfigurationProvider.XML_TAG, new BISystemPackAndAuthConfigurationManager());
 
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
@@ -93,6 +94,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, new BIExcelViewManager());
+        StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
 
     }
 
@@ -336,8 +338,8 @@ public class BICoreModule extends AbstractModule {
     private void registerSystemManager() {
     }
 
-	@Override
-	public Service[] service4Register() {
+    @Override
+    public Service[] service4Register() {
         return new Service[]{
                 new Service4BIConfigure(),
                 new Service4BIReport(),
@@ -347,7 +349,7 @@ public class BICoreModule extends AbstractModule {
 
                 new DemoService()
         };
-	}
+    }
 
 
 }
