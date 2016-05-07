@@ -1749,8 +1749,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.vertical.js",
 
-                "com/fr/bi/web/js/third/d3-min.js",
-                "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/third/jquery.mousewheel.js",
                 "com/fr/bi/web/js/third/jquery.mCustomScrollbar.js",
                 "com/fr/bi/web/js/third/jquery.ui.core.js",
@@ -1763,6 +1761,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/third/jquery.ui.droppable.js",
                 "com/fr/bi/web/js/third/jquery.ui.sortable.js",
                 "com/fr/bi/web/js/third/jquery.ui.effect.js",
+                "com/fr/bi/web/js/third/d3-min.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
 
 
                 "com/fr/bi/web/js/case/case.js",
@@ -1853,6 +1853,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/pager/pager.all.js",
                 "com/fr/bi/web/js/case/pager/pager.updownprenext.js",
 
+                "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",
                 "com/fr/bi/web/js/case/table/tabler.js",
 
