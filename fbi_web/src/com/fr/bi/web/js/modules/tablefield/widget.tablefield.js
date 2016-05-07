@@ -221,16 +221,18 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
         var allFields = this.tableInfo.all_fields;
         var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
         var currentPrimKey = primKeyMap[fieldId] || [], currentForKey = foreignKeyMap[fieldId];
-        var relationTables = [];
+        var relationTables = [], relationIds = [];
         BI.each(currentPrimKey, function(i, maps){
             var pk = maps.primaryKey, fk = maps.foreignKey;
-            if(pk.field_id === fieldId && fk.field_id !== fieldId){
+            if(pk.field_id === fieldId && fk.field_id !== fieldId && !relationIds.contains(fk.field_id)){
+                relationIds.push(fk.field_id);
                 relationTables.push(translations[allFields[fk.field_id].table_id]);
             }
         });
         BI.each(currentForKey, function(i, maps){
             var pk = maps.primaryKey, fk = maps.foreignKey;
-            if(fk.field_id === fieldId && pk.field_id !== fieldId){
+            if(fk.field_id === fieldId && pk.field_id !== fieldId && !relationIds.contains(pk.field_id)){
+                relationIds.push(pk.field_id);
                 relationTables.push(translations[allFields[pk.field_id].table_id]);
             }
         });

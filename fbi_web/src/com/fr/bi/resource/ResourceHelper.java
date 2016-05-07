@@ -589,6 +589,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/fit/fit.widget.css",
                 "com/fr/bi/web/css/modules/fit/fit.css",
 
+                "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
+
 
                 //联动
                 "com/fr/bi/web/css/modules/linkage/linkage.target.css",

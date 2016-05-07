@@ -351,11 +351,26 @@
             var allDimIds = this.getAllDimensionIDs(wid);
             var allExist = true;
             BI.some(allDimIds, function(i, dId){
-                var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
-                if(BI.isNull(Pool.fields[fieldId])) {
-                    allExist = false;
-                    return true;
-                } 
+                var dType = BI.Utils.getDimensionTypeByID(dId);
+                if(dType === BICst.TARGET_TYPE.STRING ||
+                    dType === BICst.TARGET_TYPE.NUMBER ||
+                    dType === BICst.TARGET_TYPE.DATE ||
+                    dType === BICst.TARGET_TYPE.COUNTER) {
+                    var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
+                    if(BI.isNull(Pool.fields[fieldId])) {
+                        allExist = false;
+                        return true;
+                    }
+                } else {
+                    //计算指标
+                    var expression = BI.Utils.getExpressionByDimensionID(dId);
+                    var fIds = expression.ids;
+                    BI.each(fIds, function(j, fId) {
+                        if(BI.isNull(Pool.fields[BI.Utils.getFieldIDByDimensionID(fId)])) {
+                            allExist = false;
+                        }
+                    });
+                }
             });
             return allExist;
         },
