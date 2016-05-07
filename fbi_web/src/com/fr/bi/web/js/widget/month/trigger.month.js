@@ -46,6 +46,7 @@ BI.MonthTrigger = BI.inherit(BI.Trigger, {
             var value = self.editor.getValue();
             if (BI.isNotNull(value)) {
                 self.editor.setValue(value);
+                self.editor.setTitle(value);
             }
             self.fireEvent(BI.MonthTrigger.EVENT_CONFIRM);
         });
@@ -87,6 +88,7 @@ BI.MonthTrigger = BI.inherit(BI.Trigger, {
         if(BI.isNotNull(v)){
             this.editor.setState(v + 1);
             this.editor.setValue(v + 1);
+            this.editor.setTitle(v + 1);
         }
     },
     getKey: function () {

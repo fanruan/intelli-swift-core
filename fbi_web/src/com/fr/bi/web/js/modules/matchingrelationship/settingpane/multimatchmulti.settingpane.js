@@ -26,7 +26,9 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
             type: "bi.direction_path_chooser"
         });
         this.pathChooser.on(BI.DirectionPathChooser.EVENT_CHANGE, function () {
-            self.path = self._packageValueByValue(this.getValue());
+            var paths = self._packageValueByValue(this.getValue());
+            self.lpath = paths.lpath;
+            self.rpath = paths.rpath;
         });
         this.lpath = [];
         this.rpath = [];
@@ -154,11 +156,13 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var combineIndex = 0;
         BI.find(value, function(idx, val){
-            combineIndex = idx;
-            return BI.Utils.getTableIdByFieldID(val) === o.combineTableId;
+            if(val === o.combineTableId){
+                combineIndex = idx;
+                return true;
+            }
         });
         var lvalue = BI.first(value, combineIndex + 1);
-        var rvalue = BI.rest(combineIndex);
+        var rvalue = BI.rest(value, combineIndex);
         var lkey = null, rkey = null;
         BI.any(BI.keys(this.pathValueMap), function (idx, key) {
             if(BI.isEqual(lvalue, self.pathValueMap[key])){
@@ -212,19 +216,19 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
     setValue: function (v) {
         //lpath, rpath
         //todo 待多路径后台确定需要信息
-        //v = this._assertValue(v);
-        //this.lpath = v.lpath;
-        //this.lpath = v.rpath;
-        //this.pathChooser.setValue(this._unpackValueByValue(v));
+        v = this._assertValue(v);
+        this.lpath = v.lpath;
+        this.lpath = v.rpath;
+        this.pathChooser.setValue(this._unpackValueByValue(v));
     },
 
     getValue: function () {
         //lpath, rpath
         //todo 待多路径后台确定需要信息
-        //return {
-        //    lpath: this.lpath,
-        //    rpath: this.rpath
-        //};
+        return {
+            lpath: this.lpath,
+            rpath: this.rpath
+        };
     }
 });
 $.shortcut('bi.multi_match_multi_path_chooser', BI.MultiMatchMultiPathChooser);

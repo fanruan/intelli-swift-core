@@ -82,10 +82,10 @@ public class BIGroupFactory {
 
     public static IGroup parseStringGroup(JSONObject jo) throws Exception {
         IGroup group = null;
-        int type = jo.optInt("type", BIReportConstant.GROUP.NO_GROUP);
+        int type = jo.optInt("type", BIReportConstant.GROUP.ID_GROUP);
         switch (type) {
-            case BIReportConstant.GROUP.NO_GROUP:
-                group = new NoGroup();
+            case BIReportConstant.GROUP.ID_GROUP:
+                group = new IdGroup();
                 break;
             case BIReportConstant.GROUP.CUSTOM_GROUP:
                 group = new CustomGroup();

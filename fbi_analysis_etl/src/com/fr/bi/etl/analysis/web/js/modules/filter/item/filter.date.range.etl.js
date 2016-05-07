@@ -74,7 +74,7 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
             self.up.hidePopupView();
             self.down.hidePopupView();
         });
-        combo.on(BI.MultiDateCombo.EVENT_CONFIRM, function () {
+        combo.on(BI.MultiDateCombo.EVENT_CHANGE, function () {
             var smallDate = self.up.getKey(), bigDate = self.down.getKey();
             if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
                 self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));

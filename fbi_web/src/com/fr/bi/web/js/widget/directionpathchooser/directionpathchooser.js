@@ -30,6 +30,7 @@ BI.DirectionPathChooser = BI.inherit(BI.Widget, {
         this.pathChooser.on(BI.PathChooser.EVENT_CHANGE, function (start, index) {
             //self._unselectAllArrows();
             self._setValue(start, index);
+            self.fireEvent(BI.DirectionPathChooser.EVENT_CHANGE);
         });
         this._drawArrows();
 

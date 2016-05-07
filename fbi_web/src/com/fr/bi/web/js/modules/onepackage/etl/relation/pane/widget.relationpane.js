@@ -129,7 +129,6 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             }
         });
         this.model.setOldRelationValue(this.relationTree.getValue());
-        this.oldRelationValue = this.relationTree.getValue();
     },
 
     _createBranchItems: function(relationChildren){

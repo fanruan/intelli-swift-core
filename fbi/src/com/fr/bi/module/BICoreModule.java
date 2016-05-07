@@ -84,6 +84,7 @@ public class BICoreModule extends AbstractModule {
 
 
     private void registProviders() {
+        StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
         StableFactory.registerMarkedObject(BISystemPackAndAuthConfigurationProvider.XML_TAG, new BISystemPackAndAuthConfigurationManager());
 

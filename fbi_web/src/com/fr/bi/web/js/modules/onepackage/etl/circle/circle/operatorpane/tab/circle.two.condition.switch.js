@@ -70,7 +70,7 @@ BI.CircleTwoConditionSwitch = BI.inherit(BI.Widget, {
             self.parentSwitch.hideView();
         });
 
-        this.conditionSwitch.on(BI.Switcher.EVENT_HIDEVIEW, function(){
+        this.conditionSwitch.on(BI.Switcher.EVENT_AFTER_HIDEVIEW, function(){
             self.conditionButton.setSelected(false);
         });
 
@@ -120,7 +120,7 @@ BI.CircleTwoConditionSwitch = BI.inherit(BI.Widget, {
             self.conditionSwitch.hideView();
         });
 
-        this.parentSwitch.on(BI.Switcher.EVENT_HIDEVIEW, function(){
+        this.parentSwitch.on(BI.Switcher.EVENT_AFTER_HIDEVIEW, function(){
             self.parentButton.setSelected(false);
         });
 

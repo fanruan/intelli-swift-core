@@ -13,14 +13,14 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         ICON_BUTTON_WIDTH: 22,
         TEXT_BUTTON_H_GAP: 15
     },
-
-    _defaultConfig: function () {
+    
+    _defaultConfig: function(){
         return BI.extend(BI.FormulaFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-analysis-formula-filter-item"
         })
     },
 
-    _init: function () {
+    _init: function(){
         BI.FormulaFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.id = o.id;
@@ -31,7 +31,7 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
             cls: "close-h-font",
             width: this._constant.ICON_BUTTON_WIDTH
         });
-        this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
+        this.deleteButton.on(BI.Controller.EVENT_CHANGE, function(){
             self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.DESTROY, o.id, self);
         });
 
@@ -47,11 +47,11 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
     },
 
-    populate: function (item) {
+    populate: function(item){
         this.formula.setValue(item.filter_value);
     },
 
-    _buildFormula: function (value) {
+    _buildFormula: function(value){
         var self = this, o = this.options;
         this.fulfilLabel = BI.createWidget({
             type: "bi.text_button",
@@ -61,7 +61,7 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
             textAlign: "left",
             hgap: this._constant.TEXT_BUTTON_H_GAP
         });
-        this.fulfilLabel.on(BI.Controller.EVENT_CHANGE, function () {
+        this.fulfilLabel.on(BI.Controller.EVENT_CHANGE, function(){
             arguments[1] = BI.FilterPane.FILTER_PANE_CLICK_ITEM;
             arguments[2] = self;
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
@@ -69,14 +69,14 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         this.formula = BI.createWidget({
             type: "bi.formula_combo",
-            items: BI.isNotNull(o.dId) ? this._getTargetItems() : this._getFieldItems()
+            items: this._getFieldItems()
         });
 
         this.formula.setValue(self.formula.getValue() || value);
 
-        this.formula.on(BI.FormulaCombo.EVENT_CHANGE, function () {
+        this.formula.on(BI.FormulaCombo.EVENT_CHANGE, function(){
             self._setNodeData({
-                filter_value: this.getValue()
+                filter_value : this.getValue()
             });
             o.afterValueChange.apply(self, [self.getValue()]);
         });
