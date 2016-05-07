@@ -225,11 +225,12 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
 
     setPreviewOperator : function(operator) {
         this.controller.setPreviewOperator(operator)
-    },
-
-    hideOperatorPane : function () {
-        this.controller.hideOperatorPane()
     }
+    //,
+    //
+    // hideOperatorPane : function () {
+    //     this.controller.hideOperatorPane()
+    // }
 })
 BI.AnalysisETLOperatorCenter.DATA_CHANGE="DATA_CHANGE";
 BI.AnalysisETLOperatorCenter.EVENT_RENAME = "event_rename";

@@ -6,9 +6,14 @@ BI.AnalysisETLOperatorAbstractController = BI.inherit(BI.MVCController, {
     _construct : function (widget, model) {
         this.trigger = BI.Utils.triggerPreview()
     },
+    //
+    // hideOperatorPane : function (widget) {
+    //     widget.center.hideOperatorPane()
+    // },
 
-    hideOperatorPane : function (widget) {
-        widget.center.hideOperatorPane()
+
+    resetPointerPosition : function (widget) {
+        widget.center.controller.resetPointerPosition()
     },
 
     populate : function (widget, model) {

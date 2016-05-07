@@ -217,8 +217,8 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             BI.defer(function () {
                 var v = button.getValue();
                 var tab = widget.tab.getTab(v)
-                if (BI.isNotNull(tab) && BI.isNotNull(tab.controller.hideOperatorPane)) {
-                    tab.controller.hideOperatorPane()
+                if (BI.isNotNull(tab) && BI.isNotNull(tab.controller.resetPointerPosition)) {
+                    tab.controller.resetPointerPosition()
                 }
             })
         })
