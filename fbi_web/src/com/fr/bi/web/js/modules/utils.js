@@ -560,15 +560,30 @@
                 return false;
             }
             var wId = this.getWidgetIDByDimensionID(dId);
-            var ids = this.getAllTargetDimensionIDs(wId);
+            var ids = this.getAllDimensionIDs(wId);
             return BI.some(ids, function (i, id) {
                 var tids = self.getExpressionValuesByDimensionID(id);
-                if (!BI.isArray(tids)) {
-                    tids = [tids];
-                }
                 if (tids.contains(dId)) {
                     return true;
                 }
+                //指标是否被维度排序使用
+                var sort = self.getDimensionSortByID(id) || {};
+                if(sort.sort_target === dId){
+                    return true;
+                }
+                //指标是否被维度过滤使用
+                var filter_value = self.getDimensionFilterValueByID(id) || {};
+                var checkFilter = function (filter) {
+                    var filterType = filter.filter_type, filterValue = filter.filter_value;
+                    if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+                        return BI.some(filterValue, function (i, value) {
+                            return checkFilter(value);
+                        });
+                    }else{
+                        return filter.target_id === dId;
+                    }
+                };
+                return checkFilter(filter_value);
             });
         },
 
@@ -1286,9 +1301,7 @@
             var dimensions = widget.dimensions;
             BI.each(dimensions, function (dId, dimension) {
                 var filterValue = dimension.filter_value || {};
-                if (BI.isNotNull(filterValue)) {
-                    parseFilter(filterValue);
-                }
+                parseFilter(filterValue);
             });
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};

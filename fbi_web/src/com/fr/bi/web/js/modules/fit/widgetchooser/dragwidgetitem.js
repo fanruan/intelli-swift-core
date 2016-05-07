@@ -120,18 +120,36 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
         BI.each(widget.dimensions, function(idx, dimension){
             var copy = self._createDimensionsAndTargets(idx);
             self.dimensions[copy.id] = copy.dimension;
-            var region = BI.find(BI.keys(widget.view), function (id, regionId) {
-                return BI.contains(widget.view[regionId], idx);
+        });
+        BI.each(widget.view, function(region, dimIds){
+            self.view[region] = [];
+            BI.each(dimIds, function(idx, dId){
+                self.view[region].push(self.dimTarIdMap[dId]);
             });
-            if (!BI.has(self.view, region)) {
-                self.view[region] = [];
-            }
-            self.view[region].push(copy.id);
         });
         return {
             dimensions: this.dimensions,
             view: this.view
         }
+    },
+
+    _checkFilter: function(oldFilter, dId){
+        var filter = {};
+        var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
+        filter.filter_type = oldFilter.filter_type;
+        if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+            filter.filter_value = [];
+            BI.each(filterValue, function (i, value) {
+                filter.filter_value.push(this._checkFilter(value));
+            });
+        }else{
+            filter.filter_value = oldFilter.filter_value;
+            if(BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId){
+                var result = this._createDimensionsAndTargets(oldFilter.target_id);
+                filter.target_id = result.id;
+            }
+        }
+        return filter;
     },
 
     _createDimensionsAndTargets: function (idx) {
@@ -150,6 +168,16 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                         var result = self._createDimensionsAndTargets(id);
                         dimension.dimension_map[result.id] = map;
                     });
+                }
+                if(BI.has(self.oldDimensions[idx], "filter_value")){
+                    dimension.filter_value = this._checkFilter(self.oldDimensions[idx].filter_value, self.dimTarIdMap[idx] || idx);
+                }
+                if(BI.has(self.oldDimensions[idx], "sort")){
+                    dimension.sort = BI.deepClone(self.oldDimensions[idx].sort);
+                    if(BI.has(dimension.sort, "sort_target")){
+                        var result = self._createDimensionsAndTargets(dimension.sort.sort_target);
+                        dimension.sort.sort_target = result.id;
+                    }
                 }
                 break;
             case BICst.TARGET_TYPE.FORMULA:

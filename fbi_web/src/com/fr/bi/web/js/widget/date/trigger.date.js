@@ -299,15 +299,15 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
         return this.editor.getValue();
     },
     getValue: function () {
-        //var dateStr = this.editor.getValue();
-        //if(BI.isNotEmptyString(dateStr)){
-        //    var date = dateStr.split("-");
-        //    return {
-        //        year: date[0] | 0,
-        //        month: date[1] - 1,
-        //        day: date[2] | 0
-        //    }
-        //}
+        var dateStr = this.editor.getValue();
+        if(BI.isNotEmptyString(dateStr)){
+            var date = dateStr.split("-");
+            return {
+                year: date[0] | 0,
+                month: date[1] - 1,
+                day: date[2] | 0
+            }
+        }
         return this.store_value;
     },
 

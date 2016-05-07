@@ -69,7 +69,8 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         this.formula = BI.createWidget({
             type: "bi.formula_combo",
-            items: this._getFieldItems()
+            //items: this._getFieldItems()
+            items: this._getFieldItems1()
         });
 
         this.formula.setValue(self.formula.getValue() || value);
@@ -95,6 +96,20 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 text: BI.Utils.getFieldNameByID(fId),
                 value: fId,
                 fieldType: BI.Utils.getFieldTypeByID(fId)
+            });
+        });
+        return fieldItems;
+    },
+
+    _getFieldItems1: function(){
+        var dId = this.options.dId, field_id = this.options.field_id, fieldItems = [];
+        var wId = BI.Utils.getWidgetIDByDimensionID(dId);
+        var tIds = BI.Utils.getAllTargetDimensionIDs(wId);
+        BI.each(tIds, function (i, tId) {
+            fieldItems.push({
+                text: BI.Utils.getDimensionNameByID(tId),
+                value: tId,
+                fieldType: BI.Utils.getFieldTypeByID(BI.Utils.getFieldIDByDimensionID(tId))
             });
         });
         return fieldItems;

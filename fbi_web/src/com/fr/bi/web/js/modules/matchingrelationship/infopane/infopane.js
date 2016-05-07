@@ -90,7 +90,7 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
             var pArray = BI.pluck(pa, "primaryKey");
             var s = fId;
             BI.each(fArray, function(idx, item){
-                (idx > 0) && (s += item.field_id);
+                s += item.field_id;
             });
             s += pArray[0].field_id;
             return s;
