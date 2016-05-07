@@ -17,8 +17,8 @@ public class BIStringDimension extends BIAbstractDimension {
     }
 
     @Override
-    public void parseJSON(JSONObject jo) throws Exception {
-        super.parseJSON(jo);
+    public void parseJSON(JSONObject jo, long userId) throws Exception {
+        super.parseJSON(jo, userId);
         JSONObject group = jo.optJSONObject("group");
         if(group == null || !group.has("type")){
             group = new JSONObject().put("type", BIReportConstant.GROUP.ID_GROUP);
