@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public abstract class AbstractConfigureCalulator extends CalCalculator {
     private static final long serialVersionUID = -7031889439937906167L;
-    protected String cal_target_name;
+    protected String target_id;
 
     /**
      * 哪个分组的排名， 默认是全部值
@@ -24,15 +24,15 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
 
     protected transient Object key;
 
-    public AbstractConfigureCalulator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group) {
+    public AbstractConfigureCalulator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
         super(target);
-        this.cal_target_name = cal_target_name;
+        this.target_id = target_id;
         this.start_group = start_group;
     }
 
     protected Object getCalKey() {
         if (key == null) {
-            key = targetMap.get(cal_target_name);
+            key = targetMap.get(target_id);
         }
         return key;
     }

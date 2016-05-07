@@ -3,7 +3,8 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
 
     _init : function () {
         BI.AnalysisETLOperatorAddColumnPaneModel.superclass._init.apply(this, arguments);
-        this.set(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY, this.getAddColumns() || [])
+        var operator = this.get('operator') || {};
+        this.set(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY, operator[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY] || [])
     },
 
     getAddColumns : function () {
@@ -48,7 +49,7 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
         }))
     },
 
-    _createFields : function () {
+    createFields : function () {
         var parent = this.get(ETLCst.PARENTS)[0];
         return BI.concat(parent[ETLCst.FIELDS], BI.map(this.getAddColumns(), function (idx, item) {
             return {
@@ -58,16 +59,17 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
         }))
     },
 
-    isDefalutValue : function () {
+    isDefaultValue : function () {
         return this.getAddColumns().length === 0
     },
     
     update : function () {
         var v = BI.AnalysisETLOperatorAddColumnPaneModel.superclass.update.apply(this, arguments);
         v.etlType = ETLCst.ETL_TYPE.ADD_COLUMN;
-        v.fields = this._createFields();
+        v.fields = this.createFields();
         v.operator = {};
         v.operator[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY] = v[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY];
+        delete v[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY];
         return v;
     }
 })

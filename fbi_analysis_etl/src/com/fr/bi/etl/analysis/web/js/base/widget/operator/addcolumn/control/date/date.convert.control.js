@@ -29,7 +29,7 @@ BI.AnalysisETLOperatorAddColumnDateConvertController = BI.inherit(BI.MVCControll
         model.set(ETLCst.FIELDS, fields)
         widget.combo.populate(model.get(ETLCst.FIELDS));
         widget.combo.setValue(model.get('field') || (fields.length > 0 ? fields[0].value : null));
-        model.set("field", widget.combo.getValue()[0])
+        this.setField(widget.combo.getValue()[0], widget, model)
     },
     
     update : function (widget, model) {

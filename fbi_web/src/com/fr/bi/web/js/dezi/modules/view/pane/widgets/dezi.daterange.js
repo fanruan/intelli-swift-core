@@ -12,6 +12,10 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
 
     _init: function () {
         BIDezi.DateRangeView.superclass._init.apply(this, arguments);
+        var self = this;
+        BI.Broadcasts.on(this.model.get("id"), function(){
+            self._resetValue();
+        });
     },
 
     _render: function (vessel) {
@@ -108,6 +112,11 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
         })
+    },
+
+    _resetValue: function(){
+        this.combo.setValue();
+        this.model.set({value: this.combo.getValue(), silent: true});
     },
 
     splice: function(){

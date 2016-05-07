@@ -24,9 +24,8 @@ BI.DetailSelectCalculationTargetLevel0Item = BI.inherit(BI.BasicButton, {
         BI.DetailSelectCalculationTargetLevel0Item.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var expression = o.value._src.expression;
-        var targetIds = expression.cal_target_name;
+        var targetIds = expression.ids;
         this.icons = [];
-        targetIds = BI.isArray(targetIds) ? targetIds : [targetIds];
         var icon = BI.createWidget({
             type: "bi.center_adapt",
             cls: "select-data-field-calc-font",
@@ -58,7 +57,7 @@ BI.DetailSelectCalculationTargetLevel0Item = BI.inherit(BI.BasicButton, {
             }]
         }];
         BI.each(targetIds, function (idx, targetId) {
-            var dim = BI.find(o.dimensions, function(idx, dimension){
+            var dim = BI.find(o.dimensions, function (idx, dimension) {
                 return dimension.dId === targetId;
             });
             self._createSubItems(dim, items);
@@ -75,16 +74,16 @@ BI.DetailSelectCalculationTargetLevel0Item = BI.inherit(BI.BasicButton, {
     },
 
     _createSubItems: function (dim, items) {
-        var it= {};
-        if(dim.type === BICst.TARGET_TYPE.COUNTER || dim.type === BICst.TARGET_TYPE.NUMBER){
+        var it = {};
+        if (dim.type === BICst.TARGET_TYPE.COUNTER || dim.type === BICst.TARGET_TYPE.NUMBER) {
             it = this._createTemplateItem(dim.name, this.constants.NUMBER);
-        }else{
+        } else {
             it = this._createTemplateItem(dim.name, this.constants.CALC);
         }
-        var result = BI.find(items, function(idx, item){
+        var result = BI.find(items, function (idx, item) {
             return BI.isEqual(item, it);
         });
-        if(BI.isNull(result)){
+        if (BI.isNull(result)) {
             items.push(it);
         }
     },
@@ -103,7 +102,7 @@ BI.DetailSelectCalculationTargetLevel0Item = BI.inherit(BI.BasicButton, {
             type: "bi.htape",
             height: 25,
             items: [{
-                el:{
+                el: {
                     type: "bi.layout"
                 },
                 width: 13 * o.layer
@@ -134,9 +133,9 @@ BI.DetailSelectCalculationTargetLevel0Item = BI.inherit(BI.BasicButton, {
         };
     },
 
-    doClick: function(){
+    doClick: function () {
         BI.DetailSelectCalculationTargetLevel0Item.superclass.doClick.apply(this, arguments);
-        if(this.isValid()) {
+        if (this.isValid()) {
             this.fireEvent(BI.DetailSelectCalculationTargetLevel0Item.EVENT_CHANGE, this.getValue(), this);
         }
     },
@@ -144,10 +143,10 @@ BI.DetailSelectCalculationTargetLevel0Item = BI.inherit(BI.BasicButton, {
 
     setSelected: function (b) {
         BI.DetailSelectCalculationTargetLevel0Item.superclass.setSelected.apply(this, arguments);
-        BI.each(this.icons, function(idx, icon){
-            if(!!b){
+        BI.each(this.icons, function (idx, icon) {
+            if (!!b) {
                 icon.element.addClass("active");
-            }else{
+            } else {
                 icon.element.removeClass("active");
             }
         });

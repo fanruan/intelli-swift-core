@@ -12,6 +12,10 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
 
     _init: function () {
         BIDezi.StringWidgetView.superclass._init.apply(this, arguments);
+        var self = this;
+        BI.Broadcasts.on(this.model.get("id"), function(){
+            self._resetValue();
+        });
     },
 
 
@@ -116,6 +120,11 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
         })
+    },
+
+    _resetValue: function(){
+        this.combo.setValue();
+        this.model.set({value: this.combo.getValue(), silent: true});
     },
 
     splice: function(){

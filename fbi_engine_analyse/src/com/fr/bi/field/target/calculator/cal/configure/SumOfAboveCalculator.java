@@ -19,8 +19,8 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
 
     private static final long serialVersionUID = -3095522390932830159L;
 
-    public SumOfAboveCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group) {
-        super(target, cal_target_name, start_group);
+    public SumOfAboveCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
+        super(target, target_id, start_group);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
 
     @Override
     public BITargetKey createTargetKey() {
-        return new BISumOfAboveCalTargetKey(targetName, cal_target_name, targetMap, start_group);
+        return new BISumOfAboveCalTargetKey(targetName, target_id, targetMap, start_group);
     }
 
     private class RankDealWith implements java.util.concurrent.Callable {

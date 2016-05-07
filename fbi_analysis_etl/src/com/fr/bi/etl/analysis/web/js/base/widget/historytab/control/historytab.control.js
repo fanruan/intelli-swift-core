@@ -10,7 +10,6 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     _init: function () {
         BI.HistoryTabColltroller.superclass._init.apply(this, arguments);
         this.addTempModel = false;
-        this.invalidIndex = Number.MAX_VALUE;
     },
 
     _selectLastTab : function(widget, model) {
@@ -81,7 +80,32 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         this.deferChange(widget, model);
     },
 
-    clickTitleSave : function (table, widget, model) {
+    clickTitleSave : function (id, widget, model) {
+        var self = this;
+        var namePopover = BI.createWidget({
+            type: "bi.etl_table_name_popover",
+        });
+        namePopover.on(BI.PopoverSection.EVENT_CLOSE, function () {
+            BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+        })
+        var item = model.findItem(id)
+        namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v) {
+            var sheets = [BI.extend(BI.deepClone(item), {
+                value:model.getValue("value"),
+                table_name:v,
+                allHistory:model.getValue("allHistory")
+            })]
+            var res = {};
+            res[ETLCst.ITEMS] = sheets;
+            res[id] = BI.UUID();
+            res["table_name"] = v;
+            BI.ETLReq.reqSaveTable(res, BI.emptyFn);
+        });
+        BI.Popovers.remove("etlTableName");
+        BI.Popovers.create("etlTableName", namePopover, {width : 400, height : 320, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
+        BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+        namePopover.populate(model.getValue("table_name") + "-" + ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[item.operatorValue].text);
+        namePopover.setTemplateNameFocus();
     },
 
     getOperatorTypeByValue : function (v, widget, model) {
@@ -94,8 +118,9 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
 
     setInvalid : function(v, title, widget, model){
         var index = model.getIndexByValue(v);
-        if (index <= this.invalidIndex){
-            this.invalidIndex = index;
+        if (index <= model.get('invalidIndex')){
+            model.set('invalidIndex', index);
+            model.set('invalidTitle', title)
             var items = model.get(ETLCst.ITEMS);
             for(var i = index; i < items.length; i++) {
                 var btn = widget.tabButton.getButton(items[i].value);
@@ -108,14 +133,14 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     refreshValidFields : function(v, fields, widget, model){
         model.setFields(v, fields);
         var index = model.getIndexByValue(v);
-        if (index === this.invalidIndex){
+        if (index === model.get('invalidIndex')){
             var items = model.get(ETLCst.ITEMS);
             for(var i = index; i < items.length; i++) {
                 var btn = widget.tabButton.getButton(items[i].value);
                 btn.setValid(true);
                 btn.setTitle(btn.getText());
             }
-            this.invalidIndex = Number.MAX_VALUE;
+            model.set('invalidIndex', Number.MAX_VALUE);
         }
     },
 
@@ -203,6 +228,11 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             self._addNewButtonAfterPos(item, idx, widget, model)
         });
         self._selectLastTab(widget, model);
+        for(var i = model.get('invalidIndex'); i < items.length; i++) {
+            var btn = widget.tabButton.getButton(items[i].value);
+            btn.setValid(false);
+            btn.setTitle(model.get('invalidTitle'));
+        }
     },
 
     deferChange : function (widget, model) {
