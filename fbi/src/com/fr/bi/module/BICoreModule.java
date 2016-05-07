@@ -86,7 +86,7 @@ public class BICoreModule extends AbstractModule {
     private void registProviders() {
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
-        StableFactory.registerMarkedObject(BISystemPackAndAuthConfigurationProvider.XML_TAG,new BISystemPackAndAuthConfigurationManager());
+        StableFactory.registerMarkedObject(BISystemPackAndAuthConfigurationProvider.XML_TAG, new BISystemPackAndAuthConfigurationManager());
 
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
@@ -339,8 +339,8 @@ public class BICoreModule extends AbstractModule {
     private void registerSystemManager() {
     }
 
-	@Override
-	public Service[] service4Register() {
+    @Override
+    public Service[] service4Register() {
         return new Service[]{
                 new Service4BIConfigure(),
                 new Service4BIReport(),
@@ -350,7 +350,7 @@ public class BICoreModule extends AbstractModule {
 
                 new DemoService()
         };
-	}
+    }
 
 
 }
