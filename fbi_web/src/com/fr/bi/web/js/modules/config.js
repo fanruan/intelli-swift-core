@@ -62,11 +62,11 @@ BICst.DASHBOARD_WIDGET_ICON = [[{
     cls: "chart-detail-font"
 }, {
     text: BI.i18nText("BI-More"),
-    value: BICst.Widget.Content,
+    value: BICst.Widget.CONTENT,
     cls: "chart-more-font",
     children: [{
         text: BI.i18nText("BI-Text_Widget"),
-        value: BICst.Widget.Content,
+        value: BICst.Widget.CONTENT,
         cls: "chart-content-font"
     }, {
         text: BI.i18nText("BI-Image_Widget"),

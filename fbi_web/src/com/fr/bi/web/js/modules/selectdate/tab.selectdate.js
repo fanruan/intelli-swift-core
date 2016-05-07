@@ -13,7 +13,8 @@ BI.SelectDateTab = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.SelectDateTab.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-select-date"
+            baseCls: "bi-select-date",
+            wId: ""
         });
     },
 
@@ -24,7 +25,8 @@ BI.SelectDateTab = BI.inherit(BI.Widget, {
             type: "bi.select_data_tab",
             element: this.element,
             searcher: {
-                type: "bi.select_date_pane"
+                type: "bi.select_date_pane",
+                wId: o.wId
             }
         });
     },
