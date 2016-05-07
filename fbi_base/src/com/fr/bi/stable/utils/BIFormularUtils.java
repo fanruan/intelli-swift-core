@@ -50,7 +50,7 @@ public class BIFormularUtils {
             for (int j = 0; j < parameters.length; j++) {
                 String columnName;
                 if (parameters[j].contains(BIReportConstant.FIELD_ID.HEAD)) {
-                    columnName = BIIDUtils.getFieldNameFromFieldID(parameters[j].substring(36, parameters[j].length()));
+                    columnName = BIIDUtils.getFieldNameFromFieldID(parameters[j].substring(BIReportConstant.FIELD_ID.HEAD.length(), parameters[j].length()));
                 } else {
                     columnName = parameters[j];
                 }
