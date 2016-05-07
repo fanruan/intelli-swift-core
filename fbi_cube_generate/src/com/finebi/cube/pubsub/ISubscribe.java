@@ -21,6 +21,8 @@ public interface ISubscribe {
 
     void handleMessage(IMessage message);
 
+    boolean keepSubscribe();
+
     ISubscribeID getSubscribeID();
 
     /**
@@ -56,6 +58,7 @@ public interface ISubscribe {
      * @throws BISubscribeDuplicateException
      */
     void subscribe(ITopicTag topicTag) throws BITopicAbsentException, BIRegisterIsForbiddenException;
+
     /**
      * 订阅相应主题下的分片
      *

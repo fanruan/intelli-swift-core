@@ -23,7 +23,11 @@ public class BIMessageDispatcher implements Runnable {
 
     public void addMessage(IMessage message) {
         synchronized (messageQueue) {
-            messageQueue.add(message);
+            try {
+                messageQueue.put(message);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

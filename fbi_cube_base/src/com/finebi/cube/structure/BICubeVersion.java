@@ -45,7 +45,7 @@ public class BICubeVersion implements ICubeVersion {
 
     private void initVersionReader() {
         try {
-            currentLocation.setIntegerType();
+            currentLocation.setIntegerTypeWrapper();
             currentLocation.setReaderSourceLocation();
             versionReader = (ICubeIntegerReaderWrapper) resourceDiscovery.getCubeReader(currentLocation);
         } catch (Exception e) {
@@ -55,7 +55,7 @@ public class BICubeVersion implements ICubeVersion {
 
     private void initVersionWriter() {
         try {
-            currentLocation.setIntegerType();
+            currentLocation.setIntegerTypeWrapper();
             currentLocation.setWriterSourceLocation();
             versionWriter = (ICubeIntegerWriterWrapper) resourceDiscovery.getCubeWriter(currentLocation);
         } catch (Exception e) {

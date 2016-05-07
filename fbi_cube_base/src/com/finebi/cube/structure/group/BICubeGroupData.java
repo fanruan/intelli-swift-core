@@ -68,7 +68,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     private void initGroupLengthReader() {
         try {
             ICubeResourceLocation sizeLocation = superLocation.buildChildLocation("size.fbi");
-            sizeLocation.setIntegerType();
+            sizeLocation.setIntegerTypeWrapper();
             sizeLocation.setReaderSourceLocation();
             groupLengthReader = (ICubeIntegerReaderWrapper) resourceDiscovery.getCubeReader(sizeLocation);
         } catch (Exception e) {
@@ -79,7 +79,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     private void initGroupLengthWriter() {
         try {
             ICubeResourceLocation sizeLocation = superLocation.buildChildLocation("size.fbi");
-            sizeLocation.setIntegerType();
+            sizeLocation.setIntegerTypeWrapper();
             sizeLocation.setWriterSourceLocation();
             groupLengthWriter = (ICubeIntegerWriterWrapper) resourceDiscovery.getCubeWriter(sizeLocation);
         } catch (Exception e) {
