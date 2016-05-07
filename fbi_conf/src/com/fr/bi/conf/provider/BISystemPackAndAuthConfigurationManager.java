@@ -33,8 +33,5 @@ public class BISystemPackAndAuthConfigurationManager extends BISystemDataManager
     @Override
     public String managerTag() {
         return "packageAndAuthority";
-//        return "BusinessPackage";
     }
-
-
 }
