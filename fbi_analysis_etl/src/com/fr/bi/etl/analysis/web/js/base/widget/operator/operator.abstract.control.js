@@ -15,7 +15,7 @@ BI.AnalysisETLOperatorAbstractController = BI.inherit(BI.MVCController, {
         widget.center.populate(model.update(), BI.extend(this.options, {
             showContent:widget.options.showContent,
         }));
-        this.refreshPopData(this._editing ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, widget, model);
+        //this.refreshPopData(this._editing ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, widget, model);
     },
 
     refreshPopData : function (operatorType, widget, model){

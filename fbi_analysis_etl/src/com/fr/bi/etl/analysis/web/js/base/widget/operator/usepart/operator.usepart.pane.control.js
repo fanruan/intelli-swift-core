@@ -10,6 +10,11 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
             widget.fieldList.setValue(value);
         }
         this._check(widget, model);
+       this.doCheck(widget, model)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, widget.controller, widget.options.value.operatorType)
+    },
+    
+    doCheck  : function (widget, model) {
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.isValid(widget, model))
     },
 

@@ -58,7 +58,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
         if(this.options.showContent === true) {
             widget.operatorEditPaneItem.height = widget._constant.operatorPaneHeight;
         }
-        this._getLayout(widget).resize(this.vtapeItem)
+        this._getLayout(widget).resize(widget.vtapeItem)
         if(this.options.showContent === true) {
             this._getOperatorEditPane(widget).show(this._getPosFromValue(widget));
             this._getOperatorEditPane(widget).setEditing(false);
@@ -111,6 +111,10 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
 
     _getOperatorCard : function(widget) {
         return widget.operatorCard
+    },
+
+    doPreviewChange : function (m, type, widget, model) {
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, m, this._editing ? type : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
     },
 
     _getOperatorPane : function (widget){

@@ -213,6 +213,15 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             })
 
         })
+        button.on(BI.Controller.EVENT_CHANGE, function () {
+            BI.defer(function () {
+                var v = button.getValue();
+                var tab = widget.tab.getTab(v)
+                if (BI.isNotNull(tab) && BI.isNotNull(tab.controller.hideOperatorPane)) {
+                    tab.controller.hideOperatorPane()
+                }
+            })
+        })
         button.setValid(model.isValid(button.getValue()))
         this._getTabButtonGroup(widget).addItemFromIndex(button, index);
     },
@@ -236,11 +245,11 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     },
 
     deferChange : function (widget, model) {
-        BI.HistoryTabColltroller.superclass.deferChange.apply(this, arguments)
-        var tab = widget.tab.getSelectedTab()
-        if (BI.isNotNull(tab) && BI.isNotNull(tab.hideOperatorPane)) {
-            tab.hideOperatorPane();
-        }
+        // BI.HistoryTabColltroller.superclass.deferChange.apply(this, arguments)
+        // var tab = widget.tab.getSelectedTab()
+        // if (BI.isNotNull(tab) && BI.isNotNull(tab.controller.hideOperatorPane)) {
+        //     tab.controller.hideOperatorPane();
+        // }
     },
 
     selectLastTab : function (widget, model) {
