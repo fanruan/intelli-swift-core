@@ -2,6 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BIDeliverFailureException;
 import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
 import com.finebi.cube.gen.arrange.BICubeOperationManager;
@@ -53,7 +54,7 @@ public class BuildCubeTask implements CubeTask {
         this.biUser = biUser;
         cubeConfiguration = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        cube = new BICube(retrievalService);
+        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
 
     public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {

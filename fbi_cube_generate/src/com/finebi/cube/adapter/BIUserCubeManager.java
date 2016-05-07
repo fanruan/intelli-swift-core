@@ -3,12 +3,15 @@ package com.finebi.cube.adapter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.ICube;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
@@ -39,7 +42,9 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
     public BIUserCubeManager(BIUser user) {
         this.user = user;
-        cube = new BICube(new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(user.getUserId()))));
+        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(user.getUserId())));
+        cube = new BICube(resourceRetrievalService, discovery);
     }
 
     @Override
