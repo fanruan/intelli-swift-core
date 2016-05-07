@@ -30,6 +30,7 @@ BI.CircleOperatorPane = BI.inherit(BI.LoadingPane, {
         this.fetch_union_length = 0;
         this.circleManageCombo = BI.createWidget({
             type: "bi.text_value_combo",
+            height: this.constants.itemComboHeight,
             items: [{
                 text: BI.i18nText("BI-Layer_Base_One"),
                 value: BI.CircleOperatorPane.CONDITION_TYPE_NOT_HAS_PARENT

@@ -73,7 +73,7 @@ BI.ParamTimeInterval = BI.inherit(BI.Single, {
             self.left.hidePopupView();
             self.right.hidePopupView();
         });
-        combo.on(BI.MultiDateCombo.EVENT_CONFIRM, function () {
+        combo.on(BI.MultiDateCombo.EVENT_CHANGE, function () {
             var smallDate = self.left.getKey(), bigDate = self.right.getKey();
             if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
                 self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));
