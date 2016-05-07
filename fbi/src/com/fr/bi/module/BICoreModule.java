@@ -15,6 +15,7 @@ import com.fr.bi.conf.base.pack.BISystemPackageConfigurationManager;
 import com.fr.bi.conf.base.relation.BISystemTableRelationManager;
 import com.fr.bi.conf.base.trans.BIAliasManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
+import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.fs.BITableMapper;
@@ -83,6 +84,7 @@ public class BICoreModule extends AbstractModule {
 
 
     private void registProviders() {
+        StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
         StableFactory.registerMarkedObject(BISystemPackAndAuthConfigurationProvider.XML_TAG,new BISystemPackAndAuthConfigurationManager());
 

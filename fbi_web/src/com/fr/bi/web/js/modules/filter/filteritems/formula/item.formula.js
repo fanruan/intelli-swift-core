@@ -69,8 +69,7 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         this.formula = BI.createWidget({
             type: "bi.formula_combo",
-            //items: this._getFieldItems()
-            items: this._getFieldItems1()
+            items: BI.isNotNull(o.dId) ? this._getTargetItems() : this._getFieldItems()
         });
 
         this.formula.setValue(self.formula.getValue() || value);
@@ -85,11 +84,8 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _getFieldItems: function(){
-        var dId = this.options.dId, field_id = this.options.field_id, fieldItems = [];
-        var tId = BI.Utils.getTableIDByDimensionID(dId);
-        if(BI.isNull(tId)){
-            tId = BI.Utils.getTableIdByFieldID(field_id);
-        }
+        var field_id = this.options.field_id, fieldItems = [];
+        var tId = BI.Utils.getTableIdByFieldID(field_id);
         var fIds = BI.Utils.getFieldIDsOfTableID(tId);
         BI.each(fIds, function (i, fId) {
             fieldItems.push({
@@ -101,8 +97,8 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return fieldItems;
     },
 
-    _getFieldItems1: function(){
-        var dId = this.options.dId, field_id = this.options.field_id, fieldItems = [];
+    _getTargetItems: function(){
+        var dId = this.options.dId, fieldItems = [];
         var wId = BI.Utils.getWidgetIDByDimensionID(dId);
         var tIds = BI.Utils.getAllTargetDimensionIDs(wId);
         BI.each(tIds, function (i, tId) {
