@@ -25,7 +25,7 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
         })
         namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v) {
             model.set('id', BI.UUID());
-            model.set('table_name', v);
+            model.set('name', v);
             self._doSave(widget, model);
         });
         BI.Popovers.remove("etlTableName");

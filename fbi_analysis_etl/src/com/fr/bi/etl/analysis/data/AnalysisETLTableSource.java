@@ -20,6 +20,12 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
 
     private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
 
+    private int invalidIndex;
+
+    public void setInvalidIndex(int invalidIndex) {
+        this.invalidIndex = invalidIndex;
+    }
+
     @Override
     public int getType() {
         return Constants.TABLE_TYPE.ETL;
