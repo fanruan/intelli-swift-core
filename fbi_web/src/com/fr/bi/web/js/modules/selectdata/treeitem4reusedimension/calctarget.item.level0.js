@@ -12,6 +12,7 @@ BI.DetailSelectCalculationTargetLevel0Item = BI.inherit(BI.BasicButton, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailSelectCalculationTargetLevel0Item.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-select-calc-data-level0-item",
+            trigger: "mousedown",
             hgap: 0,
             layer: 0,
             lgap: 0,

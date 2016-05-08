@@ -47,6 +47,7 @@ BI.QuarterTrigger = BI.inherit(BI.Trigger, {
             var value = self.editor.getValue();
             if (BI.isNotNull(value)) {
                 self.editor.setValue(value);
+                self.editor.setTitle(value);
             }
             self.fireEvent(BI.QuarterTrigger.EVENT_CONFIRM);
         });
@@ -89,6 +90,7 @@ BI.QuarterTrigger = BI.inherit(BI.Trigger, {
     setValue: function (v) {
         this.editor.setState(v);
         this.editor.setValue(v);
+        this.editor.setTitle(v);
     },
 
     getKey: function () {

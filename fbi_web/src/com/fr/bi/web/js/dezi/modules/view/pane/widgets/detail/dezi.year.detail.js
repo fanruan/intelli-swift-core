@@ -88,6 +88,7 @@ BIDezi.YearDetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.select_date",
+                    wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
                 left: this.constants.DETAIL_PANE_HORIZONTAL_GAP,

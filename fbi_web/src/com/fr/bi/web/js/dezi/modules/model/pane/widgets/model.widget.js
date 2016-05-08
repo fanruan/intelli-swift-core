@@ -23,6 +23,7 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             BI.remove(linkages, function (i, linkage) {
                 return !dids.contains(linkage.from);
             });
+            this.refresh();
             this.set("linkages", linkages);
         }
         if (BI.has(changed, "linkages")) {
@@ -37,7 +38,9 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
                     BI.Broadcasts.send(preLink.to, preLink.from);
                 }
             });
-
+        }
+        if(BI.has(changed, "filter_value")) {
+            this.refresh();
         }
     },
 

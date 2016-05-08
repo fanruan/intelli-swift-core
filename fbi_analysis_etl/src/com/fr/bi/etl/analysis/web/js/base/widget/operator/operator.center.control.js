@@ -15,7 +15,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
     },
 
     clearOperator : function (widget){
-        this.hideOperatorPane(widget)
+        this._hideOperatorPane(widget)
         this._getTitle(widget).setEnable(true)
         this._getTitle(widget).clearAllSelected();
         this._getTitle(widget).setSaveButtonEnabled(true)
@@ -41,7 +41,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
         widget.operatorEditPaneItem.height = 0;
         this._getLayout(widget).resize(widget.vtapeItem)
         this._getOperatorEditPane(widget).hide();
-        this._getOperatorPane(widget).show(this._getPosFromElement(v, widget))
+        this.resetPointerPosition(widget, v);
         var showingCard = this._getOperatorPane(widget).getContentWidget().getShowingCard();
         //新建
         if(BI.isFunction(showingCard.populate)){
@@ -52,18 +52,29 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
     },
 
 
-    hideOperatorPane : function (widget) {
+    resetPointerPosition : function (widget, v) {
+        if( this._statusAdd === true) {
+            this._getOperatorPane(widget).show(this._getPosFromElement(v, widget))
+        } else {
+            if(this.options.showContent === true) {
+                this._getOperatorEditPane(widget).show(this._getPosFromValue(widget));
+            } else {
+                this._getOperatorEditPane(widget).hide()
+            }
+        }
+    },
+
+
+    _hideOperatorPane : function (widget) {
         this._statusAdd = false;
         widget.operatorPaneItem.height = 0;
         if(this.options.showContent === true) {
             widget.operatorEditPaneItem.height = widget._constant.operatorPaneHeight;
         }
-        this._getLayout(widget).resize(this.vtapeItem)
+        this._getLayout(widget).resize(widget.vtapeItem)
+        this.resetPointerPosition(widget);
         if(this.options.showContent === true) {
-            this._getOperatorEditPane(widget).show(this._getPosFromValue(widget));
             this._getOperatorEditPane(widget).setEditing(false);
-        } else {
-            this._getOperatorEditPane(widget).hide()
         }
         this._getOperatorPane(widget).hide();
     },
@@ -98,7 +109,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
         this._getTitle(widget).setEnable(v)
         this._getOperatorEditPane(widget).setEnable(v)
         this._getOperatorPane(widget).setEnable(v)
-        this.hideOperatorPane(widget);
+        this._hideOperatorPane(widget);
     },
 
     _getTitle : function(widget) {
@@ -111,6 +122,10 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
 
     _getOperatorCard : function(widget) {
         return widget.operatorCard
+    },
+
+    doPreviewChange : function (m, type, widget, model) {
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, m, this._editing ? type : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
     },
 
     _getOperatorPane : function (widget){
@@ -174,7 +189,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
     },
 
     deferChange : function (widget, model) {
-        this.hideOperatorPane(widget);
+        this._hideOperatorPane(widget);
     }
 
 })

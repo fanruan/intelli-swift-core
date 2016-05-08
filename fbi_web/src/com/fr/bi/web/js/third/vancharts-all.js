@@ -9291,7 +9291,7 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
             this._calculateRangeLegendFinalBounds(usedSize);
 
         },
-        
+
         _mergeAttr: function () {
             if(this.vanchart.isZoomRefreshState()){
                 return;
@@ -11799,19 +11799,19 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         return (s1.replace('.', '') - 0) / (s2.replace('.', '') - 0) * Math.pow(10, m);
     }
 
-    function accMul(arg1,arg2) { 
+    function accMul(arg1,arg2){
 
-        var m = 0, s1 = arg1.toString(), s2 = arg2.toString(); 
+        var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
 
-        try{ 
-            m += s1.split(".")[1].length 
-        } 
-        catch(e){} 
-        try{ 
-            m += s2.split(".")[1].length 
-        } 
-        catch(e){}  
-        return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m) ;
+        try {
+            m += s2.split('.')[1].length;
+        }
+        catch(e) {}
+        try {
+            m += s1.split('.')[1].length;
+        }
+        catch(e) {}
+        return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10, m);
     }
 
 
@@ -16063,9 +16063,9 @@ define('chart/Radar',['require','./BaseChart','../utils/BaseUtils','../Constants
 
     function Radar(vanchart, option, chartType){
         BaseChart.call(this, vanchart, option, chartType);
-        
+
         this.lastScale = null;
-        
+
         this.refresh(option);
     }
 
@@ -16289,7 +16289,7 @@ define('chart/Radar',['require','./BaseChart','../utils/BaseUtils','../Constants
         },
 
         _getGridData:function(value, reversed, scale){
-            
+
             var valueScale = scale || this.valueScale;
 
             var type = this.option.plotOptions.type || Constants.POLYGON_RADAR;
@@ -16524,7 +16524,7 @@ define('chart/Radar',['require','./BaseChart','../utils/BaseUtils','../Constants
             this.center = [plotBounds.width/2 + plotBounds.x, plotBounds.height/2 + plotBounds.y];
 
             this.lastScale = this.valueScale && this.valueScale.copy();
-            
+
             this.valueScale = valueAxis.scale.copy().rangeRound([0, this.radius]);
         },
 
@@ -22282,7 +22282,7 @@ define('render/ScatterSvgRender',['require','./BaseRender','../utils/BaseUtils',
                 this._cancelMarkerClickedState(this._bodyG, d);
             }
         }
-        
+
     };
 
     BaseUtils.inherit(ScatterSvgRender, BaseRender);
@@ -23233,7 +23233,7 @@ define('render/LegendSvgRender',['require','./BaseRender','../utils/BaseUtils','
         constructor:LegendSvgRender,
 
         render:function(){
-            
+
             var svgRoot = this.legend.getVanchartRender().getRenderRoot();
             var bounds = this.legend.bounds;
 
@@ -27632,7 +27632,7 @@ define('render/BaseAxisVmlRender',['require','./BaseRender','../utils/BaseUtils'
             this._drawAxisLabels(paper, cfg);
 
             this._drawPlotBands(paper);
-            
+
             this._drawAxisTitle(paper);
 
             this._drawPlotLines(paper, cfg);
