@@ -6,7 +6,6 @@ import com.finebi.cube.data.output.ICubeWriter;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.ICubeDetailDataService;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -20,9 +19,11 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     protected ICubeWriter<T> cubeWriter;
     protected ICubeReader<T> cubeReader;
     protected ICubeResourceLocation currentLocation;
+    private ICubeResourceDiscovery discovery;
 
-    public BICubeDetailData(ICubeResourceLocation superLocation) {
+    public BICubeDetailData(ICubeResourceDiscovery discovery, ICubeResourceLocation superLocation) {
         try {
+            this.discovery = discovery;
             currentLocation = superLocation.buildChildLocation("detail.fbi");
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -62,7 +63,7 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     private void initCubeReader() {
         try {
             currentLocation = setDetailType();
-            ICubeResourceDiscovery resourceDiscovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+            ICubeResourceDiscovery resourceDiscovery = discovery;
             currentLocation.setReaderSourceLocation();
             cubeReader = resourceDiscovery.getCubeReader(currentLocation);
         } catch (Exception e) {
@@ -73,7 +74,7 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     private void initCubeWriter() {
         try {
             currentLocation = setDetailType();
-            ICubeResourceDiscovery resourceDiscovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+            ICubeResourceDiscovery resourceDiscovery = discovery;
             currentLocation.setWriterSourceLocation();
             cubeWriter = resourceDiscovery.getCubeWriter(currentLocation);
         } catch (Exception e) {

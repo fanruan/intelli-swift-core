@@ -10,6 +10,19 @@ import com.fr.bi.stable.exception.BITablePathEmptyException;
 import java.net.URISyntaxException;
 
 /**
+ * Cube对象与Cube数据的桥梁。
+ * Cube对象代表的是Cube的结构和相应的操作。
+ * 而具体数据存在硬盘或者内存中。
+ * <p/>
+ * 当需要读写Cube时候，通过cube对象计算出唯一的
+ * Location。Cube数据通过解析Location获得相应的Read和
+ * Write接口。
+ * <p/>
+ * 这里负责的就是如何通过cube对象计算出Location。
+ * <p/>
+ * Cube对象详见structure包
+ * Cube数据详见data包，主要接口是ICubeResourceDiscovery
+ * <p/>
  * This class created on 2016/3/8.
  *
  * @author Connery

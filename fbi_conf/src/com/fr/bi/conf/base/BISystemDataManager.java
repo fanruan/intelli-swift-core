@@ -14,7 +14,7 @@ public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<
     @Override
     public MANAGER constructValue(Long key) {
         MANAGER manager = constructUserManagerValue(key);
-        initialUserManager(manager);
+        initialUserManager(key, manager);
         return manager;
     }
 
@@ -22,9 +22,11 @@ public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<
 
     public abstract String managerTag();
 
-    protected void initialUserManager(MANAGER manager) {
+    public abstract String persistUserDataName(long key);
+
+    protected void initialUserManager(long key, MANAGER manager) {
         try {
-            XMLConfigureGenerator generator = new XMLConfigureGenerator(managerTag() + ".xml", manager, managerTag());
+            XMLConfigureGenerator generator = new XMLConfigureGenerator(persistUserDataName(key) + ".xml", manager, managerTag());
             generator.readXMLFile();
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
@@ -43,7 +45,7 @@ public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<
 
     public void persistUserData(long key) {
         try {
-            XMLConfigureGenerator generator = new XMLConfigureGenerator(managerTag() + ".xml", getValue(key), managerTag());
+            XMLConfigureGenerator generator = new XMLConfigureGenerator(persistUserDataName(key) + ".xml", getValue(key), managerTag());
             FRContext.getCurrentEnv().writeResource(generator);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);

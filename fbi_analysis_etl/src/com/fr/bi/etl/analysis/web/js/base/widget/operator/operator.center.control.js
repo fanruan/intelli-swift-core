@@ -43,11 +43,11 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
         this._getOperatorEditPane(widget).hide();
         this.resetPointerPosition(widget, v);
         var showingCard = this._getOperatorPane(widget).getContentWidget().getShowingCard();
+        this._getOperatorPane(widget).setEditing(true)
         //新建
         if(BI.isFunction(showingCard.populate)){
             showingCard.populate({parents : [model.update()]});
         }
-        this._getOperatorPane(widget).setEditing(true)
         this._getTitle(widget).setSaveButtonEnabled(false)
     },
 

@@ -9,7 +9,6 @@ import com.finebi.cube.data.output.ICubeLongWriterWrapper;
 import com.finebi.cube.data.output.ICubeStringWriter;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -48,9 +47,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private ICubeLongReaderWrapper timeStampReader;
 
 
-    public BICubeTableProperty(ICubeResourceLocation currentLocation) {
+    public BICubeTableProperty(ICubeResourceLocation currentLocation, ICubeResourceDiscovery discovery) {
         this.currentLocation = currentLocation.copy();
-        discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        this.discovery = discovery;
         try {
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);

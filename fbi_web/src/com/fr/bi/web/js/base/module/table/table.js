@@ -563,7 +563,10 @@ BI.Table = BI.inherit(BI.Widget, {
                 var height = self._calculateHeight(rowSize);
                 var td = $("<td>").attr("height", height)
                     .attr("width", width).css({"width": width, "height": height, "position": "relative"})
-                    .addClass((c & 1) === 0 ? "odd" : "even");
+                    .addClass((c & 1) === 0 ? "odd-col" : "even-col")
+                    .addClass(r === 0 ? "first-row" : "")
+                    .addClass(c === 0 ? "first-col" : "")
+                    .addClass(c === rows.length - 1 ? "last-col" : "");
                 var w = BI.createWidget(map[r][c], {
                     type: "bi.table_cell",
                     width: BI.isNumeric(width) ? width : "",
@@ -1514,8 +1517,12 @@ BI.Table = BI.inherit(BI.Widget, {
         }
     },
 
-    destroy: function () {
+    empty: function () {
         BI.Resizers.remove(this.getName());
+        BI.Table.superclass.empty.apply(this, arguments);
+    },
+
+    destroy: function () {
         BI.Table.superclass.destroy.apply(this, arguments);
     }
 })

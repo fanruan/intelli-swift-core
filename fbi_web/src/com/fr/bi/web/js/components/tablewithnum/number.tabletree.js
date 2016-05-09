@@ -41,7 +41,7 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
     _createHeader: function (deep, vDeep) {
         var self = this, o = this.options;
         var header = o.header || [], crossHeader = o.crossHeader || [], showNumber = o.showNumber;
-        var items = this.tableTree._formatCrossItems(o.crossItems, vDeep);
+        var items = BI.TableTree.formatCrossItems(o.crossItems, vDeep);
         var result = [];
         //序号
         if (showNumber === true) {
@@ -66,11 +66,10 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
         BI.TableTreeWithNumber.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var mergeCols = o.mergeCols;
-        this.tableTree = new BI.TableTree();
-        var deep = Math.max(o.mergeCols.length, this.tableTree._maxDeep(o.items) - 1);
+        var deep = Math.max(o.mergeCols.length, BI.TableTree.maxDeep(o.items) - 1);
         var vDeep = o.crossHeader.length;
         var header = this._createHeader(deep, vDeep);
-        var items = this.tableTree._formatItems(o.items, deep);
+        var items = BI.TableTree.formatItems(o.items, deep);
         this._formatItemsAndMergeCols(items, mergeCols);
 
         this.table = BI.createWidget({
@@ -259,10 +258,10 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
         if (BI.isNotNull(crossHeader)) {
             o.crossHeader = crossHeader;
         }
-        var deep = Math.max(o.mergeCols.length, this.tableTree._maxDeep(o.items) - 1);
+        var deep = Math.max(o.mergeCols.length, BI.TableTree.maxDeep(o.items) - 1);
         var vDeep = o.crossHeader.length; //纵向深度
         var header = this._createHeader(deep, vDeep);
-        items = this.tableTree._formatItems(o.items, deep);
+        items = BI.TableTree.formatItems(o.items, deep);
         this._formatItemsAndMergeCols(items, o.mergeCols);
         this.table.populate(items, header);
     },
