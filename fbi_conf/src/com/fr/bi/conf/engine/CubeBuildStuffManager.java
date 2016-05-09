@@ -96,7 +96,7 @@ public class CubeBuildStuffManager implements Serializable {
         Set<BITableRelation> result = new HashSet<BITableRelation>();
         while (iterator.hasNext()) {
             BITableRelation tableRelation = iterator.next();
-            if (isRelationVaild(tableRelation)) {
+            if (isRelationValid(tableRelation)) {
                 result.add(tableRelation);
             }
         }
@@ -231,14 +231,10 @@ public class CubeBuildStuffManager implements Serializable {
         }
     }
 
-    private boolean isRelationVaild(BITableRelation relation) {
+    private boolean isRelationValid(BITableRelation relation) {
         Table primaryTable = relation.getPrimaryTable();
         Table foreignTable = relation.getForeignTable();
-        if (!allBusinessTable.contains(primaryTable) || allBusinessTable.contains(foreignTable)) {
-            return false;
-        } else {
-            return true;
-        }
+        return allBusinessTable.contains(primaryTable) && allBusinessTable.contains(foreignTable);
     }
 
     /**
