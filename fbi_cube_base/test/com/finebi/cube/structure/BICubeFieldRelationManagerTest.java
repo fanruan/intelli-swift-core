@@ -1,6 +1,7 @@
 package com.finebi.cube.structure;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeConfigurationTest;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -11,6 +12,7 @@ import com.finebi.cube.tools.DBFieldTestTool;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
@@ -31,7 +33,7 @@ public class BICubeFieldRelationManagerTest extends TestCase {
         super.setUp();
         cubeConfiguration = new BICubeConfigurationTest();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        relationEntityManager = new BICubeFieldRelationManager(retrievalService, BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()), BIColumnKey.covertColumnKey(DBFieldTestTool.generateSTRINGA()));
+        relationEntityManager = new BICubeFieldRelationManager(retrievalService, BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()), BIColumnKey.covertColumnKey(DBFieldTestTool.generateSTRINGA()), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
 
     public void testFieldRelation() {
