@@ -25,23 +25,22 @@ import java.util.Set;
 public class BIUserPackAndAuthConfigurationManager {
 
     protected BIUser user;
-    private BIPackAndAuthConfigManager packAndAuthConfigManager;
+    private BIPackAndAuthConfigManager packageConfigManager;
     private UpdateFrequencyManager updateManager;
     private SingleTableUpdateManager singleManager;
 
     public BIUserPackAndAuthConfigurationManager(long userId) {
         user = new BIUser(userId);
-
-        packAndAuthConfigManager=BIFactoryHelper.getObject(BIPackAndAuthConfigManager.class,userId);
-
+        packageConfigManager = BIFactoryHelper.getObject(BIPackAndAuthConfigManager.class, userId);
         updateManager = new UpdateFrequencyManager(userId);
         singleManager = new SingleTableUpdateManager(userId);
     }
 
 
     public BIPackAndAuthConfigManager getPackAndAuthConfigManager() {
-        return packAndAuthConfigManager;
+        return packageConfigManager;
     }
+
     public UpdateFrequencyManager getUpdateManager() {
         return updateManager;
     }
@@ -63,7 +62,7 @@ public class BIUserPackAndAuthConfigurationManager {
      */
     public void finishGenerateCubes() {
         synchronized (this) {
-            packAndAuthConfigManager.setEndBuildCube();
+            packageConfigManager.setEndBuildCube();
         }
     }
 
@@ -71,7 +70,7 @@ public class BIUserPackAndAuthConfigurationManager {
      * 更新
      */
     public void envChanged() {
-        packAndAuthConfigManager.clear();
+        packageConfigManager.clear();
 //        updateManager.clear();
         singleManager.clear();
     }
@@ -89,12 +88,12 @@ public class BIUserPackAndAuthConfigurationManager {
 //    }
 
     public void startGenerateCubes() {
-        packAndAuthConfigManager.setStartBuildCube();
+        packageConfigManager.setStartBuildCube();
     }
 
     public Set<BIBusinessPackage> getCurrentPackage4Generating() {
         Set<BIBusinessPackage> clone = new HashSet<BIBusinessPackage>();
-        for (BIBusinessPackage pack : packAndAuthConfigManager.getAllPackages()) {
+        for (BIBusinessPackage pack : packageConfigManager.getAllPackages()) {
             try {
                 clone.add((BIBasicBusinessPackage) pack.clone());
             } catch (CloneNotSupportedException e) {

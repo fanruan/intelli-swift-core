@@ -1,10 +1,11 @@
 package com.fr.bi.web.conf.services.packs;
 
-import com.fr.bi.cal.generate.CheckTask;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +37,9 @@ public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
     public void savePackageAuthority(String packageId, String roles, long userId) throws Exception {
         JSONArray packIdjo = new JSONArray(packageId);
         JSONArray roleInfojo=new JSONArray(roles);
+        BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
+        JSONObject a=packageAndAuthorityManager.createPackageJSON(userId);
 
-        BIConfigureManagerCenter.getCubeManager().addTask(new CheckTask(userId), userId);
+
     }
 }

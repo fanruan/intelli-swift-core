@@ -11,6 +11,7 @@ import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.datasource.BIDataSourceManager;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
+import com.fr.bi.conf.base.pack.BISystemPackAndAuthConfigurationManager;
 import com.fr.bi.conf.base.pack.BISystemPackageConfigurationManager;
 import com.fr.bi.conf.base.relation.BISystemTableRelationManager;
 import com.fr.bi.conf.base.trans.BIAliasManager;
@@ -49,12 +50,7 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Iterator;
 
 /**
