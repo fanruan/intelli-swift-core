@@ -22,6 +22,7 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
             case ETLCst.ANALYSIS_TABLE_SET.DELETE:{
                 var items = model.get(ETLCst.ITEMS);
                 if(items.length === 1) {
+                    BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'),  BI.i18nText('BI-Cannot-Delete-Last'))
                     break;
                 }
                 var id = button.getValue();
