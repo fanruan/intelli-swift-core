@@ -7,7 +7,9 @@
  */
 BI.SelectStringPane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.SelectStringPane.superclass._defaultConfig.apply(this, arguments), {})
+        return BI.extend(BI.SelectStringPane.superclass._defaultConfig.apply(this, arguments), {
+            wId: ""
+        })
     },
 
     _init: function () {
@@ -170,7 +172,7 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
      */
     _getFieldStructureOfOneTable: function (tableId, isRelation) {
         var fieldStructure = [];
-        var self = this;
+        var self = this, o=this.options;
 
         //Excel View
         var excelView = BI.Utils.getExcelViewByTableId(tableId);
@@ -206,6 +208,7 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
             fieldStructure.push({
                 id: fid,
                 pId: tableId,
+                wId: o.wId,
                 type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,

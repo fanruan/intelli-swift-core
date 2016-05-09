@@ -50,39 +50,16 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
      */
     @Override
     public Object createShowValue(Object value) {
-        Date date = (Date) value;
-        if (date == null) {
+        if (value == null) {
             return null;
         }
-        Calendar c = Calendar.getInstance();
-
-        c.setTime(date);
-        switch (group.getType()) {
-            case BIReportConstant.GROUP.YMD: {
-                return c.get(Calendar.YEAR) + "/" + insertZero(c.get(Calendar.MONTH) + 1) + "/" + insertZero(c.get(Calendar.DAY_OF_MONTH));
-            }
-            case BIReportConstant.GROUP.Y: {
-                return c.get(Calendar.YEAR);
-            }
-            case BIReportConstant.GROUP.S: {
-                int m = c.get(Calendar.MONTH);
-                return (m / 3 + 1);
-            }
-            case BIReportConstant.GROUP.M: {
-                int m = c.get(Calendar.MONTH);
-                return insertZero(m + 1);
-            }
-            case BIReportConstant.GROUP.W: {
-                int m = c.get(Calendar.DAY_OF_WEEK);
-                return DateConstant.getWeekString(m);
-            }
+        if (group.getType() == BIReportConstant.GROUP.YMD) {
+            Date date = new Date((Long) value);
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            return c.get(Calendar.YEAR) + "/" + insertZero(c.get(Calendar.MONTH) + 1) + "/" + insertZero(c.get(Calendar.DAY_OF_MONTH));
         }
-        return c.get(Calendar.YEAR) + "/"
-                + insertZero(c.get(Calendar.MONTH) + 1) + "/"
-                + insertZero(c.get(Calendar.DAY_OF_MONTH)) + "/ "
-                + insertZero(c.get(Calendar.HOUR_OF_DAY)) + ":"
-                + insertZero(c.get(Calendar.MINUTE)) + ":"
-                + insertZero(c.get(Calendar.SECOND));
+        return value;
     }
 
     private Object insertZero(int time) {

@@ -1,6 +1,7 @@
 package com.finebi.cube.structure.group;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.location.BICubeConfigurationTest;
 import com.finebi.cube.location.BICubeResourceRetrieval;
@@ -8,6 +9,7 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.tools.BITableSourceTestTool;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import junit.framework.TestCase;
@@ -32,7 +34,7 @@ public class BICubeStringGroupTest extends TestCase {
             cubeConfiguration = new BICubeConfigurationTest();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
-            groupData = new BICubeStringGroupData(location);
+            groupData = new BICubeStringGroupData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),location);
         } catch (BICubeResourceAbsentException e) {
             assertFalse(true);
         }

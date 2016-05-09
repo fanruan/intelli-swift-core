@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.column.date;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.BIResourceInvalidException;
@@ -23,13 +24,15 @@ import java.util.Comparator;
 public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService<T> {
     protected BICubeDateColumn hostDataColumn;
     protected BICubeColumnEntity<T> columnEntity;
+    protected ICubeResourceDiscovery discovery;
 
-    public BICubeDateSubColumn(ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
+    public BICubeDateSubColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
+        this.discovery = discovery;
         initialColumnEntity(currentLocation);
         this.hostDataColumn = hostDataColumn;
     }
 
-    protected abstract void initialColumnEntity(ICubeResourceLocation currentLocation);
+    protected abstract void initialColumnEntity( ICubeResourceLocation currentLocation);
 
     @Override
     public void addOriginalDataValue(int rowNumber, T originalValue) {

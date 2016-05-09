@@ -1,5 +1,6 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
@@ -29,20 +30,21 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     private ICubeRelationManagerService relationManager;
     private ICubeResourceLocation currentLocation;
     private ICubeTablePropertyService tableProperty;
-
+    private ICubeResourceDiscovery discovery;
     private ICubeIntegerWriter removedLineWriter;
 
-    public BICubeTableEntity(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService) {
+    public BICubeTableEntity(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         try {
             this.tableKey = tableKey;
             this.resourceRetrievalService = resourceRetrievalService;
+            this.discovery = discovery;
             currentLocation = resourceRetrievalService.retrieveResource(tableKey);
-            tableProperty = new BICubeTableProperty(currentLocation);
+            tableProperty = new BICubeTableProperty(currentLocation, discovery);
             if (tableProperty.isPropertyExist()) {
-                columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields());
+                columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
             }
 
-            relationManager = new BICubeTableRelationEntityManager(this.resourceRetrievalService, this.tableKey);
+            relationManager = new BICubeTableRelationEntityManager(this.resourceRetrievalService, this.tableKey, discovery);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
@@ -53,7 +55,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
         if (tableProperty != null) {
             tableProperty.clear();
         }
-        tableProperty = new BICubeTableProperty(currentLocation);
+        tableProperty = new BICubeTableProperty(currentLocation, discovery);
 
     }
 
@@ -65,7 +67,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
          */
         flushProperty();
         tableProperty.recordTableStructure(fields);
-        columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields());
+        columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
     }
 
     @Override

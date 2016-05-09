@@ -12,10 +12,6 @@ import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.common.factory.BIMateFactory;
-import com.fr.bi.common.factory.IModuleFactory;
-import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.common.factory.annotation.BISingletonObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,9 +22,7 @@ import java.util.Map;
  * @author Connery
  * @since 4.0
  */
-@BIMandatedObject(module = IModuleFactory.CUBE_BASE_MODULE, factory = BIMateFactory.CUBE_BASE
-        , implement = ICubePrimitiveResourceDiscovery.class)
-@BISingletonObject
+
 public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDiscovery {
     private BIPrimitiveNIOWriterManager writerManager;
     private BIPrimitiveNIOReaderManager readerManager;

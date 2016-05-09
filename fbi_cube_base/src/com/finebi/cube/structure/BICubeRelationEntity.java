@@ -1,5 +1,6 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -14,9 +15,10 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
 
 
     private ICubeIndexDataService indexDataService;
+    private ICubeResourceDiscovery discovery;
 
-    public BICubeRelationEntity(ICubeResourceLocation cubeResourceLocation) {
-        indexDataService = new BICubeIndexData(cubeResourceLocation);
+    public BICubeRelationEntity(ICubeResourceDiscovery discovery, ICubeResourceLocation cubeResourceLocation) {
+        indexDataService = new BICubeIndexData(discovery, cubeResourceLocation);
     }
 
     public BICubeRelationEntity(ICubeIndexDataService indexDataService) {
