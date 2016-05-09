@@ -235,12 +235,13 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
                 if (BI.isNull(v) || BI.isNull(v.day)) {
                     this.editor.setState("");
                     this.editor.setValue("");
+                    this.setTitle("");
                 } else {
                     var dateStr = v.year + "-" + (v.month + 1) + "-" + v.day;
                     this.editor.setState(dateStr);
                     this.editor.setValue(dateStr);
+                    this.setTitle(dateStr);
                 }
-                this.setTitle("");
                 this._setChangeIconVisible(false);
                 break;
         }
