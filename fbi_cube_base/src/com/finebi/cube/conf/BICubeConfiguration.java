@@ -2,6 +2,7 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.location.BICubeLocation;
+import com.fr.bi.stable.utils.BIParameterUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -18,28 +19,24 @@ import java.net.URISyntaxException;
 public class BICubeConfiguration implements ICubeConfiguration {
     private String range;
     private String cubeFolderName;
+    private static String CUBE_FOLDER_NAME_DEFAULT = "Advanced";
+    private static String CUBE_TEMP_FOLDER_NAME = ".tcube";
+    private static String RANGE_DEFAULT = "default";
 
     public BICubeConfiguration(String range, String cubeFolderName) {
 
         this.range = range;
-        if (range == null) {
-            this.range = "root";
-        } else {
-            this.range = range;
-        }
-        if (cubeFolderName == null) {
-            this.cubeFolderName = "Advanced";
-        } else {
-            this.cubeFolderName = cubeFolderName;
-        }
+
+        this.range = BIParameterUtils.pickValue(range, RANGE_DEFAULT);
+        this.cubeFolderName = BIParameterUtils.pickValue(cubeFolderName, CUBE_FOLDER_NAME_DEFAULT);
     }
 
     public static BICubeConfiguration getTempConf(String range) {
-        return new BICubeConfiguration(range, ".temp");
+        return new BICubeConfiguration(range, CUBE_TEMP_FOLDER_NAME);
     }
 
     public static BICubeConfiguration getConf(String range) {
-        return new BICubeConfiguration(range, "Advanced");
+        return new BICubeConfiguration(range, CUBE_FOLDER_NAME_DEFAULT);
     }
 
     @Override

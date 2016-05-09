@@ -36,5 +36,8 @@ public class BISystemPackAndAuthConfigurationManager extends BISystemDataManager
 //        return "BusinessPackage";
     }
 
-
+    @Override
+    public String persistUserDataName(long key) {
+        return managerTag();
+    }
 }
