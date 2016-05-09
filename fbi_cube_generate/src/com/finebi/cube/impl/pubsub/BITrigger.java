@@ -24,15 +24,35 @@ import com.fr.bi.common.factory.annotation.BIMandatedObject;
 public class BITrigger implements ITrigger {
     private ITriggerThreshold threshold;
     private IProcessor processor;
+    private int triggerCount;
 
     public BITrigger(IProcessor processor) {
         this.processor = processor;
         threshold = BIFactoryHelper.getObject(ITriggerThreshold.class);
+        triggerCount = 1;
     }
 
     @Override
     public ITriggerThreshold getThreshold() {
         return threshold;
+    }
+
+    @Override
+    public void setTriggerCount(int count) {
+        if (count > 0) {
+            this.triggerCount = count;
+        }
+    }
+
+    @Override
+    public boolean keepTriggerOn() {
+        return triggerCount > 0;
+    }
+
+    private void triggerOne() {
+        if (triggerCount != Integer.MAX_VALUE) {
+            triggerCount--;
+        }
     }
 
     @Override
@@ -70,6 +90,7 @@ public class BITrigger implements ITrigger {
         threshold.handleMessage(message);
         if (threshold.isMeetThreshold()) {
             processor.process(message);
+            triggerOne();
         }
     }
 }

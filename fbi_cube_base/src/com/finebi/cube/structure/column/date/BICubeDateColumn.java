@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.column.date;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.column.BICubeLongColumn;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -21,8 +22,8 @@ public class BICubeDateColumn extends BICubeLongColumn {
         subColumns.add(subColumn);
     }
 
-    public BICubeDateColumn(ICubeResourceLocation currentLocation) {
-        super(currentLocation);
+    public BICubeDateColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation) {
+        super(discovery, currentLocation);
         subColumns = new HashSet<BICubeDateSubColumn>();
     }
 

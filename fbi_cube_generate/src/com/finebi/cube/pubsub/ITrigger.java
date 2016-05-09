@@ -15,6 +15,10 @@ import com.finebi.cube.router.topic.ITopicTag;
 public interface ITrigger {
     ITriggerThreshold getThreshold();
 
+    void setTriggerCount(int count);
+
+    boolean keepTriggerOn();
+
     /**
      * 添加一个主题，与此函数添加的主题是与关系
      *

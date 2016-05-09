@@ -52,6 +52,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
+    public String persistUserDataName(long key) {
+        return managerTag();
+    }
+
+    @Override
     public Set<BIBusinessPackage> getAllPackages(long userId) {
         return null;
     }

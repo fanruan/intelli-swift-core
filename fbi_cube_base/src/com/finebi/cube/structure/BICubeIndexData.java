@@ -6,7 +6,6 @@ import com.finebi.cube.data.output.ICubeGroupValueIndexWriter;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -27,9 +26,11 @@ public class BICubeIndexData implements ICubeIndexDataService {
     private ICubeResourceLocation currentLocation;
     private ICubeResourceLocation indexLocation;
     private ICubeResourceLocation nullIndexLocation;
+    private ICubeResourceDiscovery discovery;
 
-    public BICubeIndexData(ICubeResourceLocation currentLocation) {
+    public BICubeIndexData(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation) {
         try {
+            this.discovery = discovery;
             this.currentLocation = currentLocation;
             indexLocation = currentLocation.buildChildLocation("fbi_index");
             nullIndexLocation = currentLocation.buildChildLocation("fbi_null");
@@ -45,7 +46,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         try {
             indexLocation.setGroupValueIndexType();
             indexLocation.setReaderSourceLocation();
-            indexReader = (ICubeGroupValueIndexReader) BIFactoryHelper.getObject(ICubeResourceDiscovery.class).getCubeReader(indexLocation);
+            indexReader = (ICubeGroupValueIndexReader) discovery.getCubeReader(indexLocation);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e);
         }
@@ -55,7 +56,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         try {
             indexLocation.setGroupValueIndexType();
             indexLocation.setWriterSourceLocation();
-            indexWriter = (ICubeGroupValueIndexWriter) BIFactoryHelper.getObject(ICubeResourceDiscovery.class).getCubeWriter(indexLocation);
+            indexWriter = (ICubeGroupValueIndexWriter) discovery.getCubeWriter(indexLocation);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e);
         }
@@ -65,7 +66,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         try {
             nullIndexLocation.setReaderSourceLocation();
             nullIndexLocation.setGroupValueIndexType();
-            nullReader = (ICubeGroupValueIndexReader) BIFactoryHelper.getObject(ICubeResourceDiscovery.class).getCubeReader(nullIndexLocation);
+            nullReader = (ICubeGroupValueIndexReader) discovery.getCubeReader(nullIndexLocation);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e);
         }
@@ -75,7 +76,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         try {
             nullIndexLocation.setWriterSourceLocation();
             nullIndexLocation.setGroupValueIndexType();
-            nullWriter = (ICubeGroupValueIndexWriter) BIFactoryHelper.getObject(ICubeResourceDiscovery.class).getCubeWriter(nullIndexLocation);
+            nullWriter = (ICubeGroupValueIndexWriter) discovery.getCubeWriter(nullIndexLocation);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e);
         }
