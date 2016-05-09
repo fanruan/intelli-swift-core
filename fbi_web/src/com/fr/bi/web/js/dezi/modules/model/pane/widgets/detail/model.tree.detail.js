@@ -69,7 +69,6 @@ BIDezi.TreeDetailModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
-        var self = this;
         if (this.has("addDimension")) {
             var dimension = this.get("addDimension");
             var view = this.get("view");

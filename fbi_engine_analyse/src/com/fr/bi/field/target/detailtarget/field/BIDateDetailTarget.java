@@ -53,11 +53,19 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
         if (value == null) {
             return null;
         }
-        if (group.getType() == BIReportConstant.GROUP.YMD) {
-            Date date = new Date((Long) value);
-            Calendar c = Calendar.getInstance();
-            c.setTime(date);
-            return c.get(Calendar.YEAR) + "/" + insertZero(c.get(Calendar.MONTH) + 1) + "/" + insertZero(c.get(Calendar.DAY_OF_MONTH));
+        Calendar c = Calendar.getInstance();
+        switch (group.getType()) {
+            case BIReportConstant.GROUP.YMD:
+                c.setTimeInMillis((Long) value);
+                return c.get(Calendar.YEAR) + "/" + insertZero(c.get(Calendar.MONTH) + 1) + "/" + insertZero(c.get(Calendar.DAY_OF_MONTH));
+            case BIReportConstant.GROUP.YMDHMS:
+                c.setTimeInMillis((Long) value);
+                return c.get(Calendar.YEAR) + "/"
+                        + insertZero(c.get(Calendar.MONTH) + 1) + "/"
+                        + insertZero(c.get(Calendar.DAY_OF_MONTH)) + "/ "
+                        + insertZero(c.get(Calendar.HOUR_OF_DAY)) + ":"
+                        + insertZero(c.get(Calendar.MINUTE)) + ":"
+                        + insertZero(c.get(Calendar.SECOND));
         }
         return value;
     }
