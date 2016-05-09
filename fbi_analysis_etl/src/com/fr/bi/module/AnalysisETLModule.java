@@ -22,15 +22,15 @@ import com.fr.bi.resource.ResourceConstants;
 public class AnalysisETLModule extends AbstractModule {
     @Override
     public void start() {
-        registManager();
-        registFilter();
-        registResources();
+        registerManager();
+        registerFilter();
+        registerResources();
     }
 
     /**
      *
      */
-    private void registResources() {
+    private void registerResources() {
         StableFactory.registerJavaScriptFiles(ETLResourcesHelper.DEFAULT_JS, ETLResourcesHelper.getDefaultJs());
         StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
@@ -40,7 +40,7 @@ public class AnalysisETLModule extends AbstractModule {
     /**
      *
      */
-    private void registFilter() {
+    private void registerFilter() {
         BIFilterValueMap.ALL_VALUES.put(BIReportConstant.TARGET_FILTER_NUMBER.LARGE_THAN_CAL_LINE, NumberLargeCLFilter.class);
         BIFilterValueMap.ALL_VALUES.put(BIReportConstant.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE, NumberLargeOrEqualsCLFilter.class);
         BIFilterValueMap.ALL_VALUES.put(BIReportConstant.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE, NumberSmallCLFilter.class);
@@ -70,7 +70,7 @@ public class AnalysisETLModule extends AbstractModule {
     }
 
 
-    private void registManager() {
+    private void registerManager() {
         StableFactory.registerMarkedObject(BIAnalysisBusiPackManagerProvider.XML_TAG, getBusiPackProvider());
         StableFactory.registerMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, getDataSourceProvider());
         StableFactory.registerMarkedObject(UserETLCubeManager.class.getName(), new UserETLCubeManager());
