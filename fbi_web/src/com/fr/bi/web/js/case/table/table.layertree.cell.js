@@ -23,7 +23,8 @@ BI.LayerTreeTableCell = BI.inherit(BI.Widget, {
             height: o.height,
             text: o.text,
             value: o.value,
-            lgap: 5 + 30 * o.layer
+            lgap: 5 + 30 * o.layer,
+            rgap: 5
         })
     }
 });
