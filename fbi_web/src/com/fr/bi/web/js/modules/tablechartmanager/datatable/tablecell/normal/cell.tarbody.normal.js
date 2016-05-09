@@ -137,7 +137,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
             textButton.on(BI.TextButton.EVENT_CHANGE, function(){
                 //这个clicked应该放到子widget中保存起来
                 BI.each(linkedWidgets, function(i, linkWid){
-                    BI.Broadcasts.send(linkWid, dId, clicked);
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkWid, dId, clicked);
                     self._send2AllChildLinkWidget(linkWid);
                 });
             });
@@ -149,7 +149,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var self = this, dId = this.options.dId, clicked = this.options.clicked;
         var linkage = BI.Utils.getWidgetLinkageByID(wid);
         BI.each(linkage, function(i, link) {
-            BI.Broadcasts.send(link.to, dId, clicked);
+            BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, dId, clicked);
             self._send2AllChildLinkWidget(link.to);
         });
     }
