@@ -19,26 +19,25 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.DetailTableView.superclass._init.apply(this, arguments);
         var self = this, wId = this.model.get("id");
-        BI.Broadcasts.on(wId, function(dId, v){
-            if(BI.isNotNull(dId)) {
-                var clicked = self.model.get("clicked") || {};
-                var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-                //这条链上所有的其他clicked都应当被清掉
-                BI.each(clicked, function(cid, click){
-                    if(allFromIds.contains(cid)){
-                        delete clicked[cid];
-                    }
-                });
-                if(BI.isNull(v)) {
-                    delete clicked[dId];
-                } else {
-                    clicked[dId] = v;
-                }
-                self.model.set("clicked", clicked);
-            } else {
-                self._refreshTableAndFilter();
-            }
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
+            self._refreshTableAndFilter();
         });
+        BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
+            var clicked = self.model.get("clicked") || {};
+            var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            //这条链上所有的其他clicked都应当被清掉
+            BI.each(clicked, function (cid, click) {
+                if (allFromIds.contains(cid)) {
+                    delete clicked[cid];
+                }
+            });
+            if (BI.isNull(v)) {
+                delete clicked[dId];
+            } else {
+                clicked[dId] = v;
+            }
+            self.model.set("clicked", clicked);
+        })
     },
 
 
@@ -50,7 +49,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             type: "bi.detail_table",
             wId: this.model.get("id")
         });
-        this.table.on(BI.DetailTable.EVENT_CHANGE, function(ob){
+        this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);
         });
         this.widget = BI.createWidget({
@@ -81,12 +80,12 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 height: 32
             });
             filter.on(BI.IconButton.EVENT_CHANGE, function () {
-                if(BI.isNull(self.filterPane)) {
+                if (BI.isNull(self.filterPane)) {
                     self.filterPane = BI.createWidget({
                         type: "bi.widget_filter",
                         wId: self.model.get("id")
                     });
-                    self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function(widget){
+                    self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
                         self.model.set(widget);
                     });
                     BI.createWidget({
@@ -183,7 +182,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         }
     },
 
-    _refreshTableAndFilter: function(){
+    _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.table.populate();
     },
@@ -204,11 +203,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     },
 
     change: function (changed) {
-        if(BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
-        if(BI.has(changed, "dimensions") ||
-            BI.has(changed, "sort_sequence")){
+        if (BI.has(changed, "dimensions") ||
+            BI.has(changed, "sort_sequence")) {
             this.table.populate();
         }
     },

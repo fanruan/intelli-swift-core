@@ -40,7 +40,7 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
         });
 
         this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function (value, ob) {
-            BI.Broadcasts.send(BICst.BROADCAST.TABLE_USABLE);
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
         });
 
         //TODO 暂时先选中第一个业务包
