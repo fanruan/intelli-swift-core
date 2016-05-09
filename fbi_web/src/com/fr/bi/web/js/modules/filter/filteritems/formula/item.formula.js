@@ -69,7 +69,7 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         this.formula = BI.createWidget({
             type: "bi.formula_combo",
-            items: BI.isNotNull(o.dId) ? this._getTargetItems() : this._getFieldItems()
+            items: this._getFieldItems()
         });
 
         this.formula.setValue(self.formula.getValue() || value);
@@ -83,21 +83,21 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return [this.fulfilLabel, this.formula];
     },
 
-    _getFieldItems: function(){
+    _getFieldItems: function () {
         var field_id = this.options.field_id, fieldItems = [];
         var tId = BI.Utils.getTableIdByFieldID(field_id);
         var fIds = BI.Utils.getFieldIDsOfTableID(tId);
         BI.each(fIds, function (i, fId) {
             fieldItems.push({
                 text: BI.Utils.getFieldNameByID(fId),
-                value: fId,
+                value: BICst.FIELD_ID.HEAD + fId,
                 fieldType: BI.Utils.getFieldTypeByID(fId)
             });
         });
         return fieldItems;
     },
 
-    _getTargetItems: function(){
+    _getTargetItems: function () {
         var dId = this.options.dId, fieldItems = [];
         var wId = BI.Utils.getWidgetIDByDimensionID(dId);
         var tIds = BI.Utils.getAllTargetDimensionIDs(wId);
@@ -111,16 +111,16 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return fieldItems;
     },
 
-    _setNodeData: function(v){
+    _setNodeData: function (v) {
         var o = this.options;
         o.node.set("data", BI.extend(o.node.get("data"), v));
     },
 
-    getFilterId: function(){
+    getFilterId: function () {
         return this.id;
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             id: this.id,
             filter_type: BICst.FILTER_TYPE.FORMULA,

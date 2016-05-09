@@ -125,7 +125,7 @@ BI.FormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
         BI.each(fIds, function (i, fId) {
             fieldItems.push({
                 text: BI.Utils.getFieldNameByID(fId),
-                value: fId,
+                value: BICst.FIELD_ID.HEAD + fId,
                 fieldType: BI.Utils.getFieldTypeByID(fId)
             });
         });

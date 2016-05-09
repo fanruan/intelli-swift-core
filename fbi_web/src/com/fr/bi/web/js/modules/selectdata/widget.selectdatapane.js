@@ -138,8 +138,9 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
         var fieldStructure = this._getFieldStructureOfOneTable(tableId);
         //这里加上相关表
         var relationTables = BI.Utils.getPrimaryRelationTablesByTableID(tableId);
+        BI.remove(relationTables, tableId);
         if (BI.isNotEmptyArray(relationTables)) {
-            var relationTablesStructure = []
+            var relationTablesStructure = [];
             BI.each(relationTables, function (i, rtId) {
                 relationTablesStructure.push({
                     id: rtId,

@@ -35,11 +35,13 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
     },
     
     populate : function (widget, model) {
+
         var operator = model.get('operator');
         if (BI.isNull(operator)){
             model.set('operator', {});
             operator = model.get('operator');
         }
+        this._check(widget, model);
         var items = operator.items;
         if(BI.isNull(items) || items.length === 0) {
             widget.card.showCardByName(widget._constant.nullCard)
@@ -57,7 +59,13 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
             })
             widget.content.populate(items, fieldItems);
         }
-        this._check(widget, model);
+        this.doCheck(widget, model)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, widget.controller, widget.options.value.operatorType)
+    },
+
+    doCheck : function (widget, model) {
+        var operator = model.get('operator');
+        var items = operator.items;
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, BI.isNotNull(items) && items.length !== 0)
     },
 

@@ -7,9 +7,7 @@
  */
 BI.SelectDatePane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.SelectDatePane.superclass._defaultConfig.apply(this, arguments), {
-            wId: ""
-        })
+        return BI.extend(BI.SelectDatePane.superclass._defaultConfig.apply(this, arguments), {})
     },
 
     _init: function () {
@@ -59,7 +57,7 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 var items = self._getTablesStructureByPackId(pid);
                 result.push(BI.Func.getSearchResult(items, keyword));
             })
-            BI.each(result, function (i, sch) {
+            BI.each(result, function(i, sch){
                 searchResult = searchResult.concat(sch.finded);
                 matchResult = matchResult.concat(sch.matched);
             })
@@ -73,9 +71,9 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 });
                 result.push(BI.Func.getSearchResult(items, keyword));
             });
-            BI.each(result, function (i, sch) {
-                BI.each(sch.matched.concat(sch.finded), function (j, finded) {
-                    if (!map[finded.pId]) {
+            BI.each(result, function(i, sch){
+                BI.each(sch.matched.concat(sch.finded), function(j, finded){
+                    if(!map[finded.pId]){
                         searchResult.push({
                             id: finded.pId,
                             type: "bi.select_data_level0_node",
@@ -113,9 +111,69 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
         return tablesStructure;
     },
 
+    /**
+     * 单个表展开，所有字段（包含相关表）
+     * @param tableId
+     * @returns {Array}
+     * @private
+     */
     _getFieldsStructureByTableId: function (tableId) {
-        var fieldStructure = [];
         var self = this, o = this.options;
+        var fieldStructure = this._getFieldStructureOfOneTable(tableId);
+        //这里加上相关表
+        var relationTables = BI.Utils.getPrimaryRelationTablesByTableID(tableId);
+        BI.remove(relationTables, tableId);
+        if (BI.isNotEmptyArray(relationTables)) {
+            var relationTablesStructure = [];
+            BI.each(relationTables, function (i, rtId) {
+                relationTablesStructure.push({
+                    id: rtId,
+                    pId: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
+                    type: "bi.select_data_expander",
+                    el: {
+                        type: "bi.detail_select_data_level1_node",
+                        wId: o.wId,
+                        text: BI.Utils.getTableNameByID(rtId),
+                        title: BI.Utils.getTableNameByID(rtId),
+                        value: rtId,
+                        isParent: true,
+                        open: false
+                    },
+                    popup: {
+                        items: self._getFieldStructureOfOneTable(rtId, true)
+                    }
+                });
+            });
+            fieldStructure.push({
+                type: "bi.relation_tables_expander",
+                el: {
+                    id: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
+                    pId: tableId,
+                    type: "bi.select_data_relation_tables_node",
+                    text: BI.i18nText("BI-More_Foreign_Table") + ">>",
+                    title: BI.i18nText("BI-More_Foreign_Table"),
+                    value: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
+                    isParent: true,
+                    open: false
+                },
+                popup: {
+                    items: relationTablesStructure
+                }
+            })
+        }
+        return fieldStructure;
+    },
+
+    /**
+     * 区别上面的无相关表
+     * @param tableId
+     * @param isRelation
+     * @returns {Array}
+     * @private
+     */
+    _getFieldStructureOfOneTable: function (tableId, isRelation) {
+        var fieldStructure = [];
+        var self = this;
 
         //Excel View
         var excelView = BI.Utils.getExcelViewByTableId(tableId);
@@ -132,10 +190,8 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 items.push(item);
             });
             BI.each(positions, function (id, position) {
-                if (BI.Utils.getFieldTypeByID(id) === BICst.COLUMN.DATE) {
-                    viewFields.push(id);
-                    items[position.row][position.col].value = id;
-                }
+                viewFields.push(id);
+                items[position.row][position.col].value = id;
             });
             fieldStructure.push({
                 id: BI.UUID(),
@@ -145,27 +201,26 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
             });
         }
 
-        //string
         BI.each(BI.Utils.getDateFieldIDsOfTableID(tableId), function (i, fid) {
             if (BI.Utils.getFieldIsUsableByID(fid) === false || viewFields.contains(fid)) {
                 return;
             }
-            var fname = BI.Utils.getFieldNameByID(fid);
+            var fName = BI.Utils.getFieldNameByID(fid);
             fieldStructure.push({
                 id: fid,
                 pId: tableId,
-                type: "bi.detail_select_data_level0_item",
-                wId: o.wId,
+                type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
                 fieldType: BI.Utils.getFieldTypeByID(fid),
-                text: fname,
+                text: fName,
+                title: fName,
                 value: fid,
-                drag: self._createDrag(fname, tableId)
+                drag: self._createDrag(fName)
             })
         });
         return fieldStructure;
     },
 
-    _createDrag: function (fieldName, tableId) {
+    _createDrag: function (fieldName) {
         var self = this;
         return {
             cursor: BICst.cursorUrl,

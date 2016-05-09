@@ -1,6 +1,7 @@
 package com.fr.bi.etl.analysis.conf;
 
 import com.fr.bi.conf.base.pack.BIPackageContainer;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
 
 /**
@@ -20,7 +21,7 @@ public class AnalysisPackManager {
     }
 
     public void removeTable(String tableId) {
-        set.removeTable(tableId);
+        set.removeTable(new BITableID(tableId));
     }
 
     public void addTable(AnalysisBusiTable table) {

@@ -19,12 +19,12 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
                 }
             });
         });
-        this._checkStatus(widget, model);
+        this.doCheck(widget, model);
         this._check(widget, model);
         this._refreshPreview(widget, model);
     },
 
-    _checkStatus : function (widget, model) {
+    doCheck : function (widget, model) {
         var view = model.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY)
         BI.each(view,function(region, id){
             widget.regions[region].setCommentVisible(BI.isEmpty(id));
@@ -110,20 +110,20 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         var id = model.addDimensionByField(field);
         var dm = widget.createDimension(id, field.regionType, model.getDimension(id), model.get(ETLCst.PARENTS)[0]);
         widget.regions[field.regionType].addDimension(dm)
-        this._checkStatus(widget, model)
+        this.doCheck(widget, model)
         this._refreshPreview(widget, model);
     },
 
     setSortBySortInfo: function (sorted,  widget, model) {
         model.setSortBySortInfo(sorted);
-        this._checkStatus(widget, model);
+        this.doCheck(widget, model);
         this._refreshPreview(widget, model);
     },
 
 
     deleteDimension: function (dId,  widget, model) {
         model.deleteDimension(dId);
-        this._checkStatus(widget, model)
+        this.doCheck(widget, model)
         this._refreshPreview(widget, model);
     },
     

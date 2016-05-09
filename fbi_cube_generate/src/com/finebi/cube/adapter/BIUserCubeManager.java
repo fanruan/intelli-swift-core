@@ -59,6 +59,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
     }
 
     public ICubeTableService getTableIndex(ITableSource tableSource) {
+
         return new BICubeTableAdapter(cube, tableSource);
     }
 
