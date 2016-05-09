@@ -163,8 +163,8 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         };
     },
 
-    _isAdaptiveColumn: function () {
-        return !(this.table.getColumnSize()[0] > 1.05);
+    _isAdaptiveColumn: function (columnSize) {
+        return !(BI.last(columnSize || this.table.getColumnSize()) > 1.05);
     },
 
     _resizeHeader: function () {
@@ -195,7 +195,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
                     columnSizeRight[columnSizeRight.length - 1] = block.right[block.right.length - 1]
                 }
 
-                this.table.setColumnSize(columnSizeLeft.concat(columnSizeRight));
+                this.setColumnSize(columnSizeLeft.concat(columnSizeRight));
             }
         } else {
             if (!this._isAdaptiveColumn()) {
@@ -214,14 +214,14 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
                 if (size[size.length - 1] < block.size[block.size.length - 1]) {
                     size[size.length - 1] = block.size[block.size.length - 1]
                 }
-                this.table.setColumnSize(size);
+                this.setColumnSize(size);
             }
         }
     },
 
     _resizeBody: function () {
         var columnSize = this.table.getCalculateColumnSize();
-        this.table.setColumnSize(columnSize);
+        this.setColumnSize(columnSize);
     },
 
     _resizeRegion: function () {
@@ -242,6 +242,11 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
     },
 
     setColumnSize: function (columnSize) {
+        if (this._isAdaptiveColumn(columnSize)) {
+            this.element.removeClass("fixed");
+        } else {
+            this.element.addClass("fixed");
+        }
         this.table.setColumnSize(columnSize);
     },
 
