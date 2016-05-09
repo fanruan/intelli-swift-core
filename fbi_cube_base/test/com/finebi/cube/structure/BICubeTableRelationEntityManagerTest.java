@@ -1,6 +1,7 @@
 package com.finebi.cube.structure;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.*;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
@@ -8,6 +9,7 @@ import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
@@ -28,7 +30,7 @@ public class BICubeTableRelationEntityManagerTest extends TestCase {
         super.setUp();
         cubeConfiguration = new BICubeConfigurationTest();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        relationEntityManager = new BICubeTableRelationEntityManager(retrievalService, BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()));
+        relationEntityManager = new BICubeTableRelationEntityManager(retrievalService, BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
 
     public void testBasic() {
