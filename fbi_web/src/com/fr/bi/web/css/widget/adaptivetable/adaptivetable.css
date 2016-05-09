@@ -1,3 +1,30 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
+.bi-adaptive-table > div > div > table,
+.bi-adaptive-table > div > div > div > table,
+.bi-adaptive-table > div > div > table > * > * > th,
+.bi-adaptive-table > div > div > div > table > * > * > th,
+.bi-adaptive-table > div > div > table > * > * > td,
+.bi-adaptive-table > div > div > div > table > * > * > td {
+  min-width: 80px;
+  max-width: 220px;
+}
+.bi-adaptive-table > div > div > table.last-col,
+.bi-adaptive-table > div > div > div > table.last-col,
+.bi-adaptive-table > div > div > table > * > * > th.last-col,
+.bi-adaptive-table > div > div > div > table > * > * > th.last-col,
+.bi-adaptive-table > div > div > table > * > * > td.last-col,
+.bi-adaptive-table > div > div > div > table > * > * > td.last-col {
+  min-width: 0px;
+  max-width: none;
+}
+.bi-adaptive-table.fixed > div > div > table,
+.bi-adaptive-table.fixed > div > div > div > table,
+.bi-adaptive-table.fixed > div > div > table > * > * > th,
+.bi-adaptive-table.fixed > div > div > div > table > * > * > th,
+.bi-adaptive-table.fixed > div > div > table > * > * > td,
+.bi-adaptive-table.fixed > div > div > div > table > * > * > td {
+  min-width: 0px;
+  max-width: none;
+}
