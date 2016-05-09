@@ -41,7 +41,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 value = value.field_id;
             }
             var tableId = BI.Utils.getTableIdByFieldID(value);
-            BI.Broadcasts.send(o.wId + "usable", ob.isSelected() ? tableId : "");
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, ob.isSelected() ? tableId : "");
         });
 
         //TODO 暂时先选中第一个业务包
@@ -226,7 +226,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 items: items
             });
         }
-        
+
         //count, string, number
         BI.each(BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId), function (i, fid) {
             if (BI.Utils.getFieldIsUsableByID(fid) === false || viewFields.contains(fid)) {

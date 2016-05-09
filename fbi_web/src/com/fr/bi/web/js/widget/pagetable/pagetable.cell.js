@@ -24,7 +24,8 @@ BI.PageTableCell = BI.inherit(BI.Widget, {
             height: this.options.height,
             text: this.options.text,
             value: this.options.value,
-            lgap: 5
+            lgap: 5,
+            rgap: 5
         });
     }
 });

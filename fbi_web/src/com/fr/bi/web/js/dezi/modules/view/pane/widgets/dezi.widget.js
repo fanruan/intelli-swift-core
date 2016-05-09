@@ -19,25 +19,24 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.WidgetView.superclass._init.apply(this, arguments);
         var self = this, wId = this.model.get("id");
-        BI.Broadcasts.on(wId, function(dId, v){
-            if(BI.isNotNull(dId)) {
-                var clicked = self.model.get("clicked") || {};
-                var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-                //这条链上所有的其他clicked都应当被清掉
-                BI.each(clicked, function(cid, click){
-                    if(allFromIds.contains(cid)){
-                        delete clicked[cid];
-                    }
-                });
-                if(BI.isNull(v)) {
-                    delete clicked[dId];
-                } else {
-                    clicked[dId] = v;
+        BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
+            var clicked = self.model.get("clicked") || {};
+            var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            //这条链上所有的其他clicked都应当被清掉
+            BI.each(clicked, function (cid, click) {
+                if (allFromIds.contains(cid)) {
+                    delete clicked[cid];
                 }
-                self.model.set("clicked", clicked);
+            });
+            if (BI.isNull(v)) {
+                delete clicked[dId];
             } else {
-                self._refreshTableAndFilter();
+                clicked[dId] = v;
             }
+            self.model.set("clicked", clicked);
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
+            self._refreshTableAndFilter();
         });
     },
 
@@ -49,7 +48,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             wId: self.model.get("id")
         });
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
-        this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function(widget){
+        this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
 
@@ -81,12 +80,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 height: 32
             });
             filter.on(BI.IconButton.EVENT_CHANGE, function () {
-                if(BI.isNull(self.filterPane)) {
+                if (BI.isNull(self.filterPane)) {
                     self.filterPane = BI.createWidget({
                         type: "bi.widget_filter",
                         wId: self.model.get("id")
                     });
-                    self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function(widget){
+                    self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
                         self.model.set(widget);
                     });
                     BI.createWidget({
@@ -140,7 +139,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                             self.model.set("linkages", values);
                             BI.Layers.remove(self.getName());
                         });
-                        linkage.on(BI.Linkage.EVENT_CANCEL, function(){
+                        linkage.on(BI.Linkage.EVENT_CANCEL, function () {
                             BI.Layers.remove(self.getName());
                         });
                         linkage.populate();
@@ -176,7 +175,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }
     },
 
-    _refreshTableAndFilter: function(){
+    _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
     },
@@ -204,7 +203,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             BI.has(changed, "linkages")) {
             this.tableChartPopupulate();
         }
-        if(BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
     },

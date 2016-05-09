@@ -1,5 +1,6 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
@@ -25,10 +26,12 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
 
     protected ICubeResourceRetrievalService resourceRetrievalService;
     protected ITableKey tableKey;
+    protected ICubeResourceDiscovery discovery;
 
-    public BICubeTableRelationEntityManager(ICubeResourceRetrievalService resourceRetrievalService, ITableKey tableKey) {
+    public BICubeTableRelationEntityManager(ICubeResourceRetrievalService resourceRetrievalService, ITableKey tableKey, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;
         this.tableKey = tableKey;
+        this.discovery = discovery;
     }
 
     @Override
@@ -39,7 +42,7 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
     @Override
     protected ICubeRelationEntityService generateAbsentValue(ICubeResourceLocation key) {
         try {
-            return new BICubeRelationEntity(key);
+            return new BICubeRelationEntity(discovery, key);
         } catch (Exception e) {
             BINonValueUtils.beyondControl("Please check current thread context,which may be accessed by different thread.This" +
                     "situation may be complex,because the super map have taken measure to avoid such problem situation");

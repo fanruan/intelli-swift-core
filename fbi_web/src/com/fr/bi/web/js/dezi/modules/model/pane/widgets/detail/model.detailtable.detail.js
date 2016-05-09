@@ -35,7 +35,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
             this._setDefaultRelation(dimensions);
             var allIds = BI.keys(dimensions);
             var filterValue = this.get("filter_value");
-            BI.each(filterValue, function(id, filter){
+            BI.each(filterValue, function (id, filter) {
                 !allIds.contains(id) && delete filterValue[id];
             });
             this.set({
@@ -45,8 +45,10 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
             });
         }
         if (key1 === "dimensions") {
-            BI.Broadcasts.send(this.get("id") + "usable");
-            BI.Broadcasts.send(BICst.BROADCAST.TABLE_USABLE);
+            BI.Broadcasts.send(old._src.id);
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+            //全局维度增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
         }
     },
 
@@ -54,8 +56,15 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
         var self = this;
         if (BI.has(changed, "dimensions")) {
             if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
-                BI.Broadcasts.send(self.get("id") + "usable");
-                BI.Broadcasts.send(BICst.BROADCAST.TABLE_USABLE);
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+                //全局维度增删事件
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
+            }
+            if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
+                var result = BI.find(changed.dimensions, function (did, dimension) {
+                    return !BI.has(prev.dimensions, did);
+                });
+                BI.Broadcasts.send(result._src.id, true);
             }
         }
     },

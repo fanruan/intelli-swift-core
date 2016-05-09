@@ -18,7 +18,6 @@ import java.util.Map;
 public class AutoGroup extends AbstractGroup {
 
     private static DecimalFormat nFormat = new DecimalFormat("#.##");
-    private int grouplen;
     private double start;
     @BICoreField
     private double interval;
@@ -31,11 +30,9 @@ public class AutoGroup extends AbstractGroup {
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
         double tiMax = ((Number) baseMap.lastKey()).doubleValue();
         double tiMin = ((Number) baseMap.firstKey()).doubleValue();
+        double interval = this.interval;
         if (!hasInterval) {
-            max = tiMax;
-            min = tiMin;
-            interval = (max - min) / 5;
-            initGroup();
+            interval = initGroup(tiMin, tiMax);
         }
         CubeLinkedHashMap resultMap = new CubeLinkedHashMap();
         Iterator<Map.Entry<Number, GroupValueIndex>> it = baseMap.iterator();
@@ -43,14 +40,14 @@ public class AutoGroup extends AbstractGroup {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
             double key = entry.getKey().doubleValue();
             GroupValueIndex gvi = entry.getValue();
-            String groupName = getAutoGroupName(key);
+            String groupName = getAutoGroupName(key, interval);
             GroupValueIndex g = (GroupValueIndex) resultMap.get(groupName);
             resultMap.put(groupName, gvi.OR(g));
         }
         return resultMap;
     }
 
-    private String getAutoGroupName(double value) {
+    private String getAutoGroupName(double value, double interval) {
         int index = (int) ((value - start) / interval);
         return nFormat.format(start + interval * index) + "-" + nFormat.format(start + interval * (index + 1));
     }
@@ -78,7 +75,7 @@ public class AutoGroup extends AbstractGroup {
                 hasInterval = false;
                 interval = (max - min) / 5;
             }
-            initGroup();
+            this.interval = initGroup(min, max);
         }
     }
 
@@ -88,10 +85,10 @@ public class AutoGroup extends AbstractGroup {
         return dotText.length();
     }
 
-    private void initGroup() {
+    private double initGroup(double minValue, double maxValue) {
         int magnify = 1;
-        int minCount = this.checkMagnifyCount(this.min);
-        int maxCount = this.checkMagnifyCount(this.max);
+        int minCount = this.checkMagnifyCount(minValue);
+        int maxCount = this.checkMagnifyCount(maxValue);
         int count = minCount > maxCount ? minCount : maxCount;
         StringBuilder minBuilder = new StringBuilder();
         minBuilder.append("0.");
@@ -99,7 +96,7 @@ public class AutoGroup extends AbstractGroup {
             minBuilder.append("0");
             minCount++;
         }
-        String min = String.valueOf(this.min);
+        String min = String.valueOf(minValue);
         min = min.substring(min.indexOf(".")).matches("\\.0+$") ? min.substring(0, min.indexOf(".")) : min.replace(".", "");
         min = minBuilder.append(min).toString();
 
@@ -108,7 +105,7 @@ public class AutoGroup extends AbstractGroup {
             maxBuilder.append("0");
             maxCount++;
         }
-        String max = String.valueOf(this.max);
+        String max = String.valueOf(maxValue);
         max = max.substring(max.indexOf(".")).matches("\\.0+$") ? max.substring(0, max.indexOf(".")) : max.replace(".", "");
         max = maxBuilder.append(max).toString();
 
@@ -117,7 +114,7 @@ public class AutoGroup extends AbstractGroup {
             i--;
         }
         min = min.substring(0, i);
-        max = this.min == 0 ? max.substring(0, max.length() - 1) : max.substring(0, i);
+        max = maxValue == 0 ? max.substring(0, max.length() - 1) : max.substring(0, i);
         int length = max.length() - 2;
         StringBuilder add = new StringBuilder("0.");
         while (--length > 0) {
@@ -131,24 +128,11 @@ public class AutoGroup extends AbstractGroup {
         BigDecimal b1 = new BigDecimal(max);
         BigDecimal b2 = new BigDecimal(add.toString());
         double genMax = b1.add(b2).doubleValue() * magnify;
+        this.start = genMin;
         if(!hasInterval){
-            this.interval = (genMax - genMin) / 5;
+            return (genMax - genMin) / 5;
+        }else{
+            return this.interval;
         }
-        setAutoGroupValue(genMin, genMax, this.interval, this.hasInterval, genMin);
-    }
-
-    /**
-     * @param min         起始值
-     * @param max         最大值
-     * @param interval    间隔
-     * @param hasInterval 是否有间隔
-     * @param start       开始值
-     */
-    protected void setAutoGroupValue(double min, double max, double interval, boolean hasInterval, double start) {
-        int ilen = (int) ((max - min) / interval);
-        ilen = ((max - min) == interval * ilen && start == min) ? ilen : ilen + 1;
-        this.grouplen = hasInterval ? ilen : 5;
-        this.interval = interval;
-        this.start = start;
     }
 }

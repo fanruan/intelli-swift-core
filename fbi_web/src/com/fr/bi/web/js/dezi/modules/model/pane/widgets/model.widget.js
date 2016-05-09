@@ -28,18 +28,18 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
         }
         if (BI.has(changed, "linkages")) {
             //找到所有被删除掉的linkages，通知到相关的组件
-            BI.each(pre.linkages, function(i, preLink) {
-                var found = BI.some(changed.linkages, function(j, link){
-                    if(link.from === preLink.from && link.to === preLink.to) {
+            BI.each(pre.linkages, function (i, preLink) {
+                var found = BI.some(changed.linkages, function (j, link) {
+                    if (link.from === preLink.from && link.to === preLink.to) {
                         return true;
                     }
                 });
-                if(found === false) {
-                    BI.Broadcasts.send(preLink.to, preLink.from);
+                if (found === false) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + preLink.to, preLink.from);
                 }
             });
         }
-        if(BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "filter_value")) {
             this.refresh();
         }
     },
