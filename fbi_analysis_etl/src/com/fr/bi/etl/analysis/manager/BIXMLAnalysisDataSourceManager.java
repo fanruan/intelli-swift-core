@@ -1,6 +1,5 @@
 package com.fr.bi.etl.analysis.manager;
 
-import com.fr.base.FRContext;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
@@ -8,22 +7,16 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.etl.analysis.data.AnalysisTableSource;
 import com.fr.bi.exception.BIFieldAbsentException;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.file.XMLFileManager;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.EnvChangedListener;
-import com.fr.stable.xml.XMLPrintWriter;
-import com.fr.stable.xml.XMLableReader;
 
-import java.io.File;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by 小灰灰 on 2015/12/14.
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = AnalysisDataSource.class)
-public class BIXMLAnalysisDataSourceManager extends XMLFileManager implements AnalysisDataSource {
+public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
 
     private static final String XML_TAG = "DataSourceManager";
 
@@ -44,7 +37,6 @@ public class BIXMLAnalysisDataSourceManager extends XMLFileManager implements An
 
     public BIXMLAnalysisDataSourceManager(long userId) {
         this.userId = userId;
-        readXMLFile();
     }
 
     static {
@@ -65,7 +57,6 @@ public class BIXMLAnalysisDataSourceManager extends XMLFileManager implements An
         md5Tables.clear();
 
         idMd5Tables.clear();
-        readXMLFile();
     }
 
     @Override
@@ -120,37 +111,7 @@ public class BIXMLAnalysisDataSourceManager extends XMLFileManager implements An
             if (oldMD5 != null && !idMd5Tables.values().contains(oldMD5)) {
                 md5Tables.remove(oldMD5);
             }
-            try {
-                FRContext.getCurrentEnv().writeResource(this);
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
         }
-    }
-
-
-    @Override
-    public void writeXML(XMLPrintWriter writer) {
-        writer.startTAG(XML_TAG);
-        writer.attr(BIBaseConstant.VERSIONTEXT, BIBaseConstant.VERSION);
-        Iterator<Map.Entry<BITableID, BICore>> idIt = idMd5Tables.entrySet().iterator();
-        while (idIt.hasNext()) {
-            Map.Entry<BITableID, BICore> entry = idIt.next();
-            writer.startTAG("idmd5");
-            writer.attr("id", entry.getKey().getIdentityValue()).attr("md5", (String) entry.getValue().getAttribute(0));
-            writer.end();
-        }
-        Iterator<AnalysisTableSource> md5tableIt = md5Tables.values().iterator();
-        while (md5tableIt.hasNext()) {
-            md5tableIt.next().writeXML(writer);
-        }
-        writer.end();
-    }
-
-
-    @Override
-    public void readXML(XMLableReader reader) {
-
     }
 
     @Override
@@ -172,12 +133,6 @@ public class BIXMLAnalysisDataSourceManager extends XMLFileManager implements An
     @Override
     public void parseJSON(JSONObject jsonObject) throws Exception {
 
-    }
-
-    @Override
-    public String fileName() {
-        //single user etl datasource
-        return "sue" + File.separator + "datasource" + File.separator + userId + ".xml";
     }
 
     @Override

@@ -207,4 +207,4 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
 
 BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_DELETE = "event_delete";
 BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_CHANGE = "event_change";
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.GROUP + "_single", BI.AnalysisETLOperatorAddColumnValueGroupSinglePane);
+$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.GROUP + "_single", BI.AnalysisETLOperatorAddColumnValueGroupSinglePane);

@@ -38,4 +38,22 @@ public class BIJSONConstant {
 
         public static final String HAS_NEXT = "hasNext";
     }
+
+    public static final class ETL_ADD_COLUMN_TYPE  {
+        public static final String FORMULA = "formula";
+        public static final String DATE_DIFF = "date_diff";
+        public static final String DATE_YEAR = "date_year";
+        public static final String DATE_SEASON = "date_season";
+        public static final String DATE_MONTH = "date_month";
+        public static final String EXPR_CPP = "expr_same_period";
+        public static final String EXPR_LP = "expr_last_period";
+        public static final String EXPR_CPP_PERCENT = "expr_same_period_percent";
+        public static final String EXPR_LP_PERCENT = "expr_last_period_percent";
+        public static final String EXPR_SUM = "expr_sum";
+        public static final String EXPR_ACC = "expr_acc";
+        public static final String EXPR_RANK = "expr_rank";
+        public static final String GROUP = "group_value";
+        public static final String SINGLE_VALUE = "single_value";
+        public static final String VALUE_CONVERT = "value_convert";
+    }
 }

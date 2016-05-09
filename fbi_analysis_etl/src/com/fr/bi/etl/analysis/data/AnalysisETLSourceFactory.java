@@ -1,7 +1,11 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.fr.bi.base.BIBasicCore;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -29,13 +33,12 @@ public class AnalysisETLSourceFactory {
         int type = jo.getInt("etlType");
         switch (type){
             case Constants.ETL_TYPE.SELECT_DATA :
-                return new AnalysisBaseTableSource(BIWidgetFactory.parseWidget(jo.getJSONObject("operator"), userId), type);
+                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type);
             case Constants.ETL_TYPE.SELECT_NONE_DATA :
-                return new AnalysisBaseTableSource(BIWidgetFactory.parseWidget(jo.getJSONObject("operator"), userId), type);
+                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type);
             default :
                 AnalysisETLTableSource source = new AnalysisETLTableSource();
-                JSONObject tableJSON = jo.getJSONObject("value");
-                JSONArray parents = tableJSON.getJSONArray("parents");
+                JSONArray parents = jo.getJSONArray("parents");
                 List<AnalysisTableSource> ps = new ArrayList<AnalysisTableSource>();
                 for (int i = 0; i < parents.length(); i ++){
                     ps.add(createOneTableSource(parents.getJSONObject(i), userId));
@@ -44,10 +47,19 @@ public class AnalysisETLSourceFactory {
                     source.setInvalidIndex(jo.getInt("invalidIndex"));
                 }
                 source.setParents(ps);
-                source.setOperators(AnalysisETLOperatorFactory.createOperatorsByJSON(tableJSON.getJSONObject("oprators"), userId));
+                source.setOperators(AnalysisETLOperatorFactory.createOperatorsByJSON(jo, userId));
                 return source;
         }
     }
 
+    private static BIWidget createWidget(JSONObject jo, long userId) throws Exception {
+        if (jo.has("core")){
+            AnalysisTableSource source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByCore(BIBasicCore.generateValueCore(jo.getString("core")), new BIUser(userId));
+            if (source.getType() == Constants.TABLE_TYPE.BASE){
+                return ((AnalysisBaseTableSource)source).getWidget();
+            }
+        }
+        return BIWidgetFactory.parseWidget(jo, userId);
+    }
 
 }
