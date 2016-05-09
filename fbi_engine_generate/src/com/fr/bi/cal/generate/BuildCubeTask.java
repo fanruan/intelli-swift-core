@@ -2,6 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BIDeliverFailureException;
 import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
 import com.finebi.cube.gen.arrange.BICubeOperationManager;
@@ -29,7 +30,6 @@ import com.fr.json.JSONObject;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -51,9 +51,9 @@ public class BuildCubeTask implements CubeTask {
 //        cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
 //        cubeBuildStuffManager.initialCubeStuff();
         this.biUser = biUser;
-        cubeConfiguration = new BICubeConfiguration();
+        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        cube = new BICube(retrievalService);
+        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
 
     public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {
@@ -80,10 +80,9 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             BILogger.getLogger().info(result.get());
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw BINonValueUtils.beyondControl(e);
-        } catch (ExecutionException e) {
+//            BIFileUtils.moveFile(BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId())).getRootURI().getPath(),
+//                    BICubeConfiguration.getConf(Long.toString(biUser.getUserId())).getRootURI().getPath());
+        } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
     }

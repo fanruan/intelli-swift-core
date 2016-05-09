@@ -2,6 +2,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
 
 
     populate : function (widget, model) {
+        this._check(widget, model);
         var parent = model.get(ETLCst.PARENTS)[0]
         widget.items_group.populate(parent[ETLCst.FIELDS]);
         var view = model.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY)
@@ -20,7 +21,6 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
             });
         });
         this.doCheck(widget, model);
-        this._check(widget, model);
         this._refreshPreview(widget, model);
     },
 

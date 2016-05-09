@@ -61,6 +61,11 @@ public class BIExcelViewManager extends BISystemDataManager<SingleUserBIExcelVie
     }
 
     @Override
+    public String persistUserDataName(long key) {
+        return managerTag();
+    }
+
+    @Override
     public void persistData(long userId) {
         persistUserData(userId);
     }

@@ -38,12 +38,12 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
             this.set({"widgets": widgets, layoutType: layoutType});
             return true;
         }
-        if(this.has("addWidget")){
+        if (this.has("addWidget")) {
             var widget = this.get("addWidget");
             var widgets = this.get("widgets");
             var wId = widget.id;
             var info = widget.info;
-            if(!widgets[wId]){
+            if (!widgets[wId]) {
                 widgets[wId] = info;
                 widgets[wId].name = self._generateWidgetName(widgets[wId].name);
                 widgets[wId].init_time = new Date().getTime();
@@ -64,6 +64,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                 });
             });
             this.set("widgets", widgets);
+            BI.Broadcasts.send(key2);
         }
         this.refresh();
     },

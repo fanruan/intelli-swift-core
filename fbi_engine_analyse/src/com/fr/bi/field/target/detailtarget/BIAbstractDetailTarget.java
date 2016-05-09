@@ -9,7 +9,9 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
+import com.fr.bi.stable.operation.group.group.IdGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
 import com.fr.bi.stable.operation.sort.BISortFactory;
 import com.fr.bi.stable.operation.sort.ISort;
@@ -126,6 +128,11 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
         }
         if (jo.has("filter_value")) {
             this.filter = TargetFilterFactory.parseFilter(jo.getJSONObject("filter_value"), userId);
+        }
+
+        if (jo.has("group")) {
+            JSONObject groupJo = jo.getJSONObject("group");
+            group = BIGroupFactory.parseDateGroup(groupJo);
         }
     }
 

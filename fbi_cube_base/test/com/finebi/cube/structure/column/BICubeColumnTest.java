@@ -1,7 +1,9 @@
 package com.finebi.cube.structure.column;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.structure.column.date.BICubeDateColumn;
 import com.finebi.cube.tools.BICubeResourceLocationTestTool;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import junit.framework.TestCase;
 
 /**
@@ -14,7 +16,8 @@ public class BICubeColumnTest extends TestCase {
 
     public void testByteCubeColumnDetail() {
 
-        BICubeByteColumn column = new BICubeByteColumn(BICubeResourceLocationTestTool.getBasic("testByteCubeColumnDetail"));
+        BICubeByteColumn column = new BICubeByteColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),
+                BICubeResourceLocationTestTool.getBasic("testByteCubeColumnDetail"));
         column.addOriginalDataValue(2, Byte.valueOf("1"));
         assertEquals(Byte.valueOf("1"), column.getOriginalValueByRow(2));
         try {
@@ -28,7 +31,7 @@ public class BICubeColumnTest extends TestCase {
 
     public void testByteCubeColumnGroup() {
 
-        BICubeByteColumn column = new BICubeByteColumn(BICubeResourceLocationTestTool.getBasic("testByteCubeColumnGroup"));
+        BICubeByteColumn column = new BICubeByteColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testByteCubeColumnGroup"));
         column.addGroupValue(2, Byte.valueOf("1"));
         assertEquals(Byte.valueOf("1"), column.getGroupValue(2));
         try {
@@ -43,7 +46,7 @@ public class BICubeColumnTest extends TestCase {
 
     public void testIntegerCubeColumnDetail() {
 
-        BICubeIntegerColumn column = new BICubeIntegerColumn(BICubeResourceLocationTestTool.getBasic("testIntegerCubeColumn"));
+        BICubeIntegerColumn column = new BICubeIntegerColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testIntegerCubeColumn"));
         column.addOriginalDataValue(1, 12);
         assertEquals(Integer.valueOf(12), column.getOriginalValueByRow(1));
 
@@ -51,7 +54,7 @@ public class BICubeColumnTest extends TestCase {
 
     public void testIntegerCubeColumnDetailNull() {
 
-        BICubeIntegerColumn column = new BICubeIntegerColumn(BICubeResourceLocationTestTool.getBasic("testIntegerCubeColumn"));
+        BICubeIntegerColumn column = new BICubeIntegerColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testIntegerCubeColumn"));
         column.addOriginalDataValue(1, null);
         assertTrue(null == column.getOriginalValueByRow(1));
 
@@ -59,7 +62,7 @@ public class BICubeColumnTest extends TestCase {
 
     public void testIntegerCubeColumnGroup() {
 
-        BICubeIntegerColumn column = new BICubeIntegerColumn(BICubeResourceLocationTestTool.getBasic("testIntegerCubeColumn"));
+        BICubeIntegerColumn column = new BICubeIntegerColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testIntegerCubeColumn"));
         column.addGroupValue(1, 12);
         assertEquals(Integer.valueOf(12), column.getGroupValue(1));
 
@@ -67,14 +70,14 @@ public class BICubeColumnTest extends TestCase {
 
     public void testIntegerCubeColumnGroupNULL() {
 
-        BICubeIntegerColumn column = new BICubeIntegerColumn(BICubeResourceLocationTestTool.getBasic("testIntegerCubeColumn"));
+        BICubeIntegerColumn column = new BICubeIntegerColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testIntegerCubeColumn"));
         column.addGroupValue(1, null);
         assertTrue(null == column.getGroupValue(1));
     }
 
     public void testDoubleCubeColumnDetail() {
 
-        BICubeDoubleColumn column = new BICubeDoubleColumn(BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
+        BICubeDoubleColumn column = new BICubeDoubleColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
         column.addOriginalDataValue(1, Double.valueOf("12"));
         assertEquals(Double.valueOf("12"), column.getOriginalValueByRow(1));
 
@@ -82,7 +85,7 @@ public class BICubeColumnTest extends TestCase {
 
     public void testDoubleCubeColumnGroup() {
 
-        BICubeDoubleColumn column = new BICubeDoubleColumn(BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
+        BICubeDoubleColumn column = new BICubeDoubleColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
         column.addGroupValue(1, Double.valueOf("12"));
         assertEquals(Double.valueOf("12"), column.getGroupValue(1));
 
@@ -90,7 +93,7 @@ public class BICubeColumnTest extends TestCase {
 
     public void testDoubleCubeColumnGroupNULL() {
 
-        BICubeDoubleColumn column = new BICubeDoubleColumn(BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
+        BICubeDoubleColumn column = new BICubeDoubleColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
         column.addGroupValue(1, null);
         assertTrue(null == column.getGroupValue(1));
 
@@ -98,14 +101,14 @@ public class BICubeColumnTest extends TestCase {
 
     public void testDoubleCubeColumnDetailNULL() {
 
-        BICubeDoubleColumn column = new BICubeDoubleColumn(BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
+        BICubeDoubleColumn column = new BICubeDoubleColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
         column.addOriginalDataValue(1, null);
         assertTrue(null == column.getOriginalValueByRow(1));
     }
 
     public void testLongCubeColumnDetail() {
 
-        BICubeLongColumn column = new BICubeLongColumn(BICubeResourceLocationTestTool.getBasic("testLongCubeColumn"));
+        BICubeLongColumn column = new BICubeLongColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testLongCubeColumn"));
         column.addOriginalDataValue(1, Long.valueOf("12"));
         assertEquals(Long.valueOf("12"), column.getOriginalValueByRow(1));
 
@@ -113,14 +116,14 @@ public class BICubeColumnTest extends TestCase {
 
     public void testLongCubeColumnDetailNULL() {
 
-        BICubeLongColumn column = new BICubeLongColumn(BICubeResourceLocationTestTool.getBasic("testLongCubeColumn"));
+        BICubeLongColumn column = new BICubeLongColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testLongCubeColumn"));
         column.addOriginalDataValue(1, null);
         assertTrue(null == column.getOriginalValueByRow(1));
     }
 
     public void testLongCubeColumnGroup() {
 
-        BICubeLongColumn column = new BICubeLongColumn(BICubeResourceLocationTestTool.getBasic("testLongCubeColumn"));
+        BICubeLongColumn column = new BICubeLongColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testLongCubeColumn"));
         column.addGroupValue(1, Long.valueOf("12"));
         assertEquals(Long.valueOf("12"), column.getGroupValue(1));
 
@@ -128,7 +131,7 @@ public class BICubeColumnTest extends TestCase {
 
     public void testLongCubeColumnGroupNULL() {
 
-        BICubeLongColumn column = new BICubeLongColumn(BICubeResourceLocationTestTool.getBasic("testLongCubeColumn"));
+        BICubeLongColumn column = new BICubeLongColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testLongCubeColumn"));
         column.addGroupValue(1, null);
         assertEquals(null, column.getGroupValue(1));
 
@@ -139,49 +142,49 @@ public class BICubeColumnTest extends TestCase {
      */
     public void testStringCubeColumnDetail() {
 
-        BICubeStringColumn column = new BICubeStringColumn(BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
+        BICubeStringColumn column = new BICubeStringColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
         column.addOriginalDataValue(1, "abc");
         assertTrue("abc".equals(column.getOriginalValueByRow(1)));
     }
 
     public void testStringCubeColumnDetailNull() {
 
-        BICubeStringColumn column = new BICubeStringColumn(BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
+        BICubeStringColumn column = new BICubeStringColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
         column.addOriginalDataValue(1, null);
         assertTrue(null == column.getOriginalValueByRow(1));
     }
 
     public void testStringCubeColumnDetailEmpty() {
 
-        BICubeStringColumn column = new BICubeStringColumn(BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
+        BICubeStringColumn column = new BICubeStringColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
         column.addOriginalDataValue(1, "");
         assertTrue("".equals(column.getOriginalValueByRow(1)));
     }
 
     public void testStringCubeColumnGroup() {
 
-        BICubeStringColumn column = new BICubeStringColumn(BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
+        BICubeStringColumn column = new BICubeStringColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
         column.addGroupValue(1, "abc");
         assertTrue("abc".equals(column.getGroupValue(1)));
     }
 
     public void testStringCubeColumnGroupNull() {
 
-        BICubeStringColumn column = new BICubeStringColumn(BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
+        BICubeStringColumn column = new BICubeStringColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
         column.addGroupValue(1, null);
         assertTrue(null == column.getGroupValue(1));
     }
 
     public void testStringCubeColumnGroupEmpty() {
 
-        BICubeStringColumn column = new BICubeStringColumn(BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
+        BICubeStringColumn column = new BICubeStringColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
         column.addGroupValue(1, "");
         assertTrue("".equals(column.getGroupValue(1)));
     }
 
     public void testDateCubeColumnGroup() {
 
-        BICubeDateColumn column = new BICubeDateColumn(BICubeResourceLocationTestTool.getBasic("testDateCubeColumnDetail"));
+        BICubeDateColumn column = new BICubeDateColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testDateCubeColumnDetail"));
         Long time = System.currentTimeMillis();
         column.addGroupValue(1, time);
         assertEquals(time, column.getGroupValue(1));
@@ -189,20 +192,18 @@ public class BICubeColumnTest extends TestCase {
 
     public void testDateCubeColumnGroupEmptyNull() {
 
-        BICubeDateColumn column = new BICubeDateColumn(BICubeResourceLocationTestTool.getBasic("testDateCubeColumnDetail"));
+        BICubeDateColumn column = new BICubeDateColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testDateCubeColumnDetail"));
         column.addGroupValue(1, null);
         assertEquals(null, column.getGroupValue(1));
     }
 
     public void testCubeColumnGroupSize() {
 
-        BICubeLongColumn column = new BICubeLongColumn(BICubeResourceLocationTestTool.getBasic("testLongCubeColumnGroup"));
+        BICubeLongColumn column = new BICubeLongColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), BICubeResourceLocationTestTool.getBasic("testLongCubeColumnGroup"));
         column.recordSizeOfGroup(10);
         assertEquals(10, column.sizeOfGroup());
 
     }
-
-
 
 
 }

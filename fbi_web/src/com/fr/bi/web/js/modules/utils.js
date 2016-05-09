@@ -1328,6 +1328,7 @@
                                 var s = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
                                 var e = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
                                 filterValue.start = new Date(2 * s - e).getTime();
+                                filterValue.end = s;
                             } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
                                 filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
                             } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
@@ -1354,14 +1355,14 @@
                     var date = getDateControlValue(filterValue.wId);
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                        filterValue.end = value.start;
+                        filterValue.end = new Date(value.start).getOffsetDate(-1).getTime();
                     }
                 }
                 if (filterType === BICst.FILTER_DATE.LATER_THAN) {
                     var date = getDateControlValue(filterValue.wId);
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                        filterValue.start = value.start;
+                        filterValue.start = new Date(value.start).getOffsetDate(1).getTime();
                     }
                 }
                 if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
@@ -1414,7 +1415,7 @@
             if (force === true || this.isQueryControlExist() === false) {
                 BI.each(allWidgetIds, function (i, wId) {
                     if (!self.isControlWidgetByWidgetId(wId)) {
-                        BI.Broadcasts.send(wId);
+                        BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + wId);
                     }
                 });
             }

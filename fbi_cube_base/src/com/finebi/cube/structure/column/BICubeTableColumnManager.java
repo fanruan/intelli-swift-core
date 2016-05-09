@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.column;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -25,13 +26,14 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
 
     private Map<BIColumnKey, ICubeColumnEntityService> columnKey2ColumnMap;
     private ICubeResourceRetrievalService resourceRetrievalService;
-
+    private ICubeResourceDiscovery discovery;
     private ITableKey tableKey;
 
-    public BICubeTableColumnManager(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, List<DBField> fieldList) {
+    public BICubeTableColumnManager(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, List<DBField> fieldList, ICubeResourceDiscovery discovery) {
         columnKey2ColumnMap = new HashMap<BIColumnKey, ICubeColumnEntityService>();
         this.resourceRetrievalService = resourceRetrievalService;
         this.tableKey = tableKey;
+        this.discovery = discovery;
         initialColumn(fieldList, tableKey);
     }
 
@@ -59,7 +61,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
      * @return
      */
     private ICubeColumnEntityService insertFieldRelationManager(ICubeColumnEntityService columnEntityService, BIColumnKey currentFieldKey) {
-        columnEntityService.setRelationManagerService(new BICubeFieldRelationManager(resourceRetrievalService, tableKey, currentFieldKey));
+        columnEntityService.setRelationManagerService(new BICubeFieldRelationManager(resourceRetrievalService, tableKey, currentFieldKey, discovery));
         return columnEntityService;
     }
 
@@ -102,7 +104,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
                 ICubeResourceLocation fieldLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
-                BICubeDateColumn dateColumn = new BICubeDateColumn(fieldLocation);
+                BICubeDateColumn dateColumn = new BICubeDateColumn(discovery, fieldLocation);
                 BIColumnKey columnKey = new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.EMPTY_SUB_TYPE);
                 this.registerColumn(insertFieldRelationManager(dateColumn, columnKey),
                         columnKey);
@@ -128,7 +130,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 BIColumnKey columnKey = new BIColumnKey(field.getFieldName(), BIColumnKey.LONG_COLUMN_TYPE, BIColumnKey.EMPTY_SUB_TYPE);
                 ICubeResourceLocation longLocation = resourceRetrievalService.retrieveResource(tableKey, columnKey
                 );
-                this.registerColumn(insertFieldRelationManager(new BICubeLongColumn(longLocation), columnKey),
+                this.registerColumn(insertFieldRelationManager(new BICubeLongColumn(discovery, longLocation), columnKey),
                         columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
@@ -142,7 +144,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 BIColumnKey columnKey = new BIColumnKey(field.getFieldName(), BIColumnKey.STRING_COLUMN_TYPE, BIColumnKey.EMPTY_SUB_TYPE);
                 ICubeResourceLocation stringLocation = resourceRetrievalService.retrieveResource(tableKey, columnKey
                 );
-                this.registerColumn(insertFieldRelationManager(new BICubeStringColumn(stringLocation), columnKey),
+                this.registerColumn(insertFieldRelationManager(new BICubeStringColumn(discovery, stringLocation), columnKey),
                         columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
@@ -156,7 +158,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 BIColumnKey columnKey = new BIColumnKey(field.getFieldName(), BIColumnKey.DOUBLE_COLUMN_TYPE, BIColumnKey.EMPTY_SUB_TYPE);
                 ICubeResourceLocation doubleLocation = resourceRetrievalService.retrieveResource(tableKey, columnKey
                 );
-                this.registerColumn(insertFieldRelationManager(new BICubeDoubleColumn(doubleLocation), columnKey),
+                this.registerColumn(insertFieldRelationManager(new BICubeDoubleColumn(discovery, doubleLocation), columnKey),
                         columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
@@ -170,7 +172,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
                 ICubeResourceLocation yearLocation = BIDateLocationTool.createYear(baseDataLocation);
                 BIColumnKey columnKey = BIDateColumnTool.generateYear(field);
-                BICubeYearColumn yearColumn = new BICubeYearColumn(yearLocation, hostDataColumn);
+                BICubeYearColumn yearColumn = new BICubeYearColumn(discovery, yearLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(yearColumn);
                 this.registerColumn(insertFieldRelationManager(yearColumn, columnKey),
                         columnKey);
@@ -186,7 +188,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
                 ICubeResourceLocation monthLocation = BIDateLocationTool.createMonth(baseDataLocation);
                 BIColumnKey columnKey = BIDateColumnTool.generateMonth(field);
-                BICubeMonthColumn monthColumn = new BICubeMonthColumn(monthLocation, hostDataColumn);
+                BICubeMonthColumn monthColumn = new BICubeMonthColumn(discovery, monthLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(monthColumn);
                 this.registerColumn(insertFieldRelationManager(monthColumn, columnKey),
                         columnKey);
@@ -202,7 +204,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
                 ICubeResourceLocation seasonLocation = BIDateLocationTool.createSeason(baseDataLocation);
                 BIColumnKey columnKey = BIDateColumnTool.generateSeason(field);
-                BICubeSeasonColumn seasonColumn = new BICubeSeasonColumn(seasonLocation, hostDataColumn);
+                BICubeSeasonColumn seasonColumn = new BICubeSeasonColumn(discovery, seasonLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(seasonColumn);
                 this.registerColumn(insertFieldRelationManager(seasonColumn, columnKey),
                         columnKey);
@@ -218,7 +220,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
                 ICubeResourceLocation weekLocation = BIDateLocationTool.createWeek(baseDataLocation);
                 BIColumnKey columnKey = BIDateColumnTool.generateWeek(field);
-                BICubeWeekColumn weekColumn = new BICubeWeekColumn(weekLocation, hostDataColumn);
+                BICubeWeekColumn weekColumn = new BICubeWeekColumn(discovery, weekLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(weekColumn);
                 this.registerColumn(insertFieldRelationManager(weekColumn, columnKey),
                         columnKey);
@@ -234,7 +236,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
                 ICubeResourceLocation dayLocation = BIDateLocationTool.createDay(baseDataLocation);
                 BIColumnKey columnKey = BIDateColumnTool.generateDay(field);
-                BICubeDayColumn dayColumn = new BICubeDayColumn(dayLocation, hostDataColumn);
+                BICubeDayColumn dayColumn = new BICubeDayColumn(discovery, dayLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(dayColumn);
                 this.registerColumn(insertFieldRelationManager(dayColumn, columnKey),
                         columnKey);
@@ -250,7 +252,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
                 ICubeResourceLocation yearMonthDayLocation = BIDateLocationTool.createYearMonthDay(baseDataLocation);
                 BIColumnKey columnKey = BIDateColumnTool.generateYearMonthDay(field);
-                BICubeYearMonthDayColumn yearMonthDayColumn = new BICubeYearMonthDayColumn(yearMonthDayLocation, hostDataColumn);
+                BICubeYearMonthDayColumn yearMonthDayColumn = new BICubeYearMonthDayColumn(discovery, yearMonthDayLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(yearMonthDayColumn);
                 this.registerColumn(insertFieldRelationManager(yearMonthDayColumn, columnKey)
                         , columnKey);

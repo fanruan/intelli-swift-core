@@ -51,6 +51,11 @@ public class BISubscribe implements ISubscribe {
     }
 
     @Override
+    public boolean keepSubscribe() {
+        return trigger.keepTriggerOn();
+    }
+
+    @Override
     public void subscribe(IFragmentTag fragmentTag) throws BITopicAbsentException, BIFragmentAbsentException, BIRegisterIsForbiddenException {
         ITopicTag superTopicTag = fragmentTag.getSuperTopicTag();
         try {
@@ -155,6 +160,7 @@ public class BISubscribe implements ISubscribe {
             }
         }
     }
+
     @Override
     public boolean isSubscribed(ITopicTag topicTag) throws BITopicAbsentException {
         return router.isSubscribed(this, topicTag);
