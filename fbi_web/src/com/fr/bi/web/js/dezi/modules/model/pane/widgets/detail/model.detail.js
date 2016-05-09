@@ -89,7 +89,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
         }
         if (BI.has(changed, "dimensions")) {
             if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
-                this.model.set("clicked", {}, {silent: true});
+                this.set("clicked", {}, {silent: true});
             }
         }
         if (BI.has(changed, "dimensions")) {

@@ -40,7 +40,7 @@ BIDezi.TreeDetailModel = BI.inherit(BI.Model, {
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
         }
         if (key1 === "dimensions") {
-            this.model.set("value", {});
+            this.set("value", {});
         }
     },
 
@@ -60,7 +60,7 @@ BIDezi.TreeDetailModel = BI.inherit(BI.Model, {
             }
         }
         if (BI.has(changed, "dimensions")) {
-            this.model.set("value", {});
+            this.set("value", {});
         }
     },
 
