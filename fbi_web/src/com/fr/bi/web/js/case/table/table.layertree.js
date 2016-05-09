@@ -49,13 +49,13 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
 
     _getHDeep: function () {
         var o = this.options;
-        return Math.max(o.mergeCols.length, o.freezeCols.length, this.tree._maxDeep(o.items) - 1);
+        return Math.max(o.mergeCols.length, o.freezeCols.length, BI.TableTree.maxDeep(o.items) - 1);
     },
 
     _createHeader: function (vDeep) {
         var self = this, o = this.options;
         var header = o.header || [], crossHeader = o.crossHeader || [];
-        var items = this.tree._formatCrossItems(o.crossItems, vDeep);
+        var items = BI.TableTree.formatCrossItems(o.crossItems, vDeep);
         var result = [];
         BI.each(items, function (row, node) {
             var c = [crossHeader[row]];
@@ -121,7 +121,6 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
     _init: function () {
         BI.LayerTreeTable.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.tree = new BI.TableTree();
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
         var header = this._createHeader(vDeep);

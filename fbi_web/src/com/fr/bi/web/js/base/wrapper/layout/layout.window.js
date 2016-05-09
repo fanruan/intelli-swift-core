@@ -60,7 +60,7 @@ BI.WindowLayout = BI.inherit(BI.Layout, {
                 item.addClass("first-col");
             }
             item.addClass(BI.isOdd(row) ? "odd-row" : "even-row");
-            item.addClass(BI.isOdd(col) ? "oddCol" : "evenCol");
+            item.addClass(BI.isOdd(col) ? "odd-col" : "even-col");
             item.addClass("center-element");
         }
 
@@ -73,7 +73,7 @@ BI.WindowLayout = BI.inherit(BI.Layout, {
                 cls += " first-col";
             }
             BI.isOdd(row + 1) ? (cls += " odd-row") : (cls += " even-row");
-            BI.isOdd(col + 1) ? (cls += " oddCol") : (cls += " evenCol");
+            BI.isOdd(col + 1) ? (cls += " odd-col") : (cls += " even-col");
             item.cls = (item.cls || "") + cls + " center-element";
         }
 
