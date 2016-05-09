@@ -22,6 +22,8 @@ public class BIGetPackageAuthorityAction extends AbstractBIConfigureAction {
         BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
 
         Set<BIBusinessPackage> allPackages = packageAndAuthorityManager.getAllPackages(userId);
+
+
         packageAndAuthorityManager.addPackage(userId, new BIBasicBusinessPackage(new BIPackageID("新建业务包c")));
         packageAndAuthorityManager.persistData(userId);
 //        BIConfigureManagerCenter.getPackageAndAuthorityManager().persistData(userId);

@@ -159,7 +159,6 @@ public class CubeRunner {
         long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BIConfigureManagerCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-        BIConfigureManagerCenter.getPackageAndAuthorityManager().finishGenerateCubes(biUser.getUserId());
         BIConfigureManagerCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();

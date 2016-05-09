@@ -29,10 +29,7 @@ public class BISystemPackAndAuthConfigurationManagerTest {
         manager.addPackage(user.getUserId(), new BIBasicBusinessPackage(new BIPackageID("新建业务包a")));
         manager.addPackage(user.getUserId(), new BIBasicBusinessPackage(new BIPackageID("新建业务包b")));
         Set<BIBusinessPackage> allPackages = manager.getAllPackages(user.getUserId());
-        for (BIBusinessPackage biBusinessPackage : allPackages) {
-            System.out.println(biBusinessPackage.getName());
-        }
-        manager.persistData(user.getUserId());
+//        manager.persistData(user.getUserId());
         HashSet<BIBusinessPackage> packages = new HashSet<BIBusinessPackage>();
         Iterator<BIBusinessPackage> it = allPackages.iterator();
         while (it.hasNext()) {
@@ -41,6 +38,9 @@ public class BISystemPackAndAuthConfigurationManagerTest {
                 packages.add(biBasicBusinessPackage);
             }
         }
+
+
+
 
     }
 
