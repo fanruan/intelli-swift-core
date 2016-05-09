@@ -75,8 +75,41 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     _createNorth: function () {
+        var saveAs = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "toolbar-save-font",
+            text: BI.i18nText("BI-Save_As"),
+            height: 30,
+            width: 70
+        });
+        saveAs.on(BI.IconTextItem.EVENT_CHANGE, function(){
+
+        });
+        var undoButton = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "toolbar-undo-font",
+            text: BI.i18nText("BI-Undo"),
+            height: 30,
+            width: 60
+        });
+        undoButton.on(BI.IconTextIconItem.EVENT_CHANGE, function(){
+             
+        });
+        var redoButton = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "toolbar-redo-font",
+            text: BI.i18nText("BI-Redo"),
+            height: 30,
+            width: 60
+        });
+        redoButton.on(BI.IconTextIconItem.EVENT_CHANGE, function(){
+
+        });
         return BI.createWidget({
-            type: "bi.layout"
+            type: "bi.left",
+            cls: "dashboard-toolbar",
+            items: [saveAs, undoButton, redoButton],
+            lgap: 20
         })
     },
 

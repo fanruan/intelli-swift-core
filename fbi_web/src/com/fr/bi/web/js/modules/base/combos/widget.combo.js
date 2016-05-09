@@ -56,6 +56,8 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                     return BICst.STRING_TREE_CONTROL_SETCOMBO_ITEMS;
                 case     BICst.Widget.RESET:
                     break;
+                case     BICst.Widget.GENERAL_QUERY:
+                    return BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS;
             }
         }
     },

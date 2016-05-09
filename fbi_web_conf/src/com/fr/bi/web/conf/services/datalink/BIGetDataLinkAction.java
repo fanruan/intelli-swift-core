@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services.datalink;
 
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +18,8 @@ public class BIGetDataLinkAction extends AbstractBIConfigureAction {
 
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-
-        WebUtils.printAsJSON(res, BIConnectionManager.getInstance().createJSON());
+        JSONObject jo = new JSONObject();
+        WebUtils.printAsJSON(res, jo.put("links", BIConnectionManager.getInstance().createJSON()));
     }
 
 }

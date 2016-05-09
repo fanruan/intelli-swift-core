@@ -53,7 +53,7 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                     }
                 });
                 addSchemaLink.on(BI.AddSchemaDataLink.EVENT_SAVE, function(data){
-                    self.model.set(id, data);
+                    self.model.set("addLink", data);
                 });
                 BI.Popovers.create(id, addSchemaLink).open(id);
             } else {
@@ -64,7 +64,7 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                     }
                 });
                 dataLink.on(BI.AddDataLink.EVENT_SAVE, function(data){
-                    self.model.set(id, data);
+                    self.model.set("addLink", data);
                 });
                 BI.Popovers.create(id, dataLink).open(id);
             }
@@ -147,7 +147,6 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                         BI.Msg.confirm(BI.i18nText('BI-Sure_Delete_Connection'),BI.i18nText('BI-Sure_Delete_Connection') + ":"+ dataLinkName, function(v){
                             if(BI.isNotNull(v) && v === true){
                                 self.model.set("delete", info.id);
-                                self.model.unset(info.id);
                             }
                         })
                     }
@@ -162,35 +161,39 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
         BI.createWidget({
             type: "bi.test_link_loading_mask",
             masker: BICst.BODY_ELEMENT,
-            link: this.model.get(id)
+            link: this.model.get("links")[id]
         });
     },
 
     _updateDataLink: function( id ){
         var self = this;
-        if(BI.isNotNull(this.model.get(id).schema)){
+        if(BI.isNotNull(this.model.get("links")[id].schema)){
             BI.Popovers.remove(id);
             var schemaLink = BI.createWidget({
                 type: "bi.add_schema_data_link",
-                info: BI.extend(self.model.get(id), {
+                info: BI.extend(self.model.get("links")[id], {
                     id: id
                 })
             });
             schemaLink.on(BI.AddSchemaDataLink.EVENT_SAVE, function(data){
-                self.model.set(id, data);
+                var links = self.model.get("links");
+                links[id] = data;
+                self.model.set( "links", links);
             });
             BI.Popovers.create(id, schemaLink).open(id);
         } else {
             BI.Popovers.remove(id);
             var dataLink = BI.createWidget({
                 type: "bi.add_data_link",
-                info: BI.extend(self.model.get(id), {
+                info: BI.extend(self.model.get("links")[id], {
                     id: id
                 })
 
             });
             dataLink.on(BI.AddDataLink.EVENT_SAVE, function(data){
-                self.model.set(id, data);
+                var links = self.model.get("links");
+                links[id] = data;
+                self.model.set("links", links);
             });
             BI.Popovers.create(id, dataLink).open(id);
         }
@@ -199,37 +202,37 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
     _copyDataLink: function(id){
         var self = this;
         var newId = BI.UUID();
-        if(BI.isNotNull(this.model.get(id).schema)){
+        if(BI.isNotNull(this.model.get("links")[id].schema)){
             var schemaLink = BI.createWidget({
                 type: "bi.add_schema_data_link",
-                info: BI.extend(self.model.get(id), {
+                info: BI.extend(self.model.get("links")[id], {
                     id: newId,
                     copy: true,
                     name: self.model.createDistinctLinkName(id)
                 })
             });
             schemaLink.on(BI.AddSchemaDataLink.EVENT_SAVE, function(data){
-                self.model.set(newId, data);
+                self.model.set("addLink", data);
             });
             BI.Popovers.create(newId, schemaLink).open(newId);
         } else {
             var dataLink = BI.createWidget({
                 type: "bi.add_data_link",
-                info: BI.extend(self.model.get(id), {
+                info: BI.extend(self.model.get("links")[id], {
                     id: newId,
                     copy: true,
                     name: self.model.createDistinctLinkName(id)
                 })
             });
             dataLink.on(BI.AddDataLink.EVENT_SAVE, function(data){
-                self.model.set(newId, data);
+                self.model.set("addLink", data);
             });
             BI.Popovers.create(newId, dataLink).open(newId);
         }
     },
 
     _refreshLinksTable: function(){
-        var links = this.model.toJSON();
+        var links = this.model.get("links");
         //排序一下
         var sortLinks = [];
         var linksArray = BI.keys(links);
@@ -255,6 +258,10 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
         }
         if(this.model.has("copy")){
             this._copyDataLink(this.model.get("copy"));
+            return true;
+        }
+        if(this.model.has("addLink")) {
+            this.model.get("addLink");
             return true;
         }
         return false;
