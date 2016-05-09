@@ -1,6 +1,7 @@
 package com.finebi.cube.structure;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.location.BICubeConfigurationTest;
@@ -10,6 +11,7 @@ import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.tools.BICubeResourceLocationTestTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import junit.framework.TestCase;
@@ -34,7 +36,7 @@ public class BICubeIndexTest extends TestCase {
             cubeConfiguration = new BICubeConfigurationTest();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
-            indexData = new BICubeIndexData(location);
+            indexData = new BICubeIndexData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), location);
         } catch (BICubeResourceAbsentException e) {
             assertFalse(true);
         }
@@ -52,7 +54,7 @@ public class BICubeIndexTest extends TestCase {
 
     public void testIndex() {
         try {
-            BICubeIndexData column = new BICubeIndexData(BICubeResourceLocationTestTool.getBasic("testIndex"));
+            BICubeIndexData column = new BICubeIndexData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),BICubeResourceLocationTestTool.getBasic("testIndex"));
             column.addIndex(0, GroupValueIndexTestTool.generateSampleIndex());
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), column.getBitmapIndex(0));
         } catch (Exception e) {
@@ -63,7 +65,7 @@ public class BICubeIndexTest extends TestCase {
 
     public void testNullIndex() {
         try {
-            BICubeIndexData column = new BICubeIndexData(BICubeResourceLocationTestTool.getBasic("testNullIndex"));
+            BICubeIndexData column = new BICubeIndexData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),BICubeResourceLocationTestTool.getBasic("testNullIndex"));
             column.addNULLIndex(0, GroupValueIndexTestTool.generateSampleIndex());
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), column.getNULLIndex(0));
         } catch (Exception e) {

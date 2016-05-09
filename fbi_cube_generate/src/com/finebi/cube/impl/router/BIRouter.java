@@ -37,6 +37,7 @@ public class BIRouter implements IRouter {
         messageDispatcher = new BIMessageDispatcher();
         messageDispatcher.setTopicRouterService(topicRouterService);
         Thread thread = new Thread(messageDispatcher);
+        thread.setName("fcube-router");
         thread.start();
 
     }

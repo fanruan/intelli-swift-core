@@ -40,6 +40,10 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         return OBJ_TAG;
     }
 
+    @Override
+    public String persistUserDataName(long key) {
+        return managerTag();
+    }
 
     @Override
     public void persistData(long userId) {
