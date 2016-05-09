@@ -82,18 +82,6 @@ BI.DetailSelectDimensionLevel0Item = BI.inherit(BI.Single, {
         });
         this.topLine.invisible();
         this.bottomLine.invisible();
-
-        //标蓝
-        //BI.Utils.isDimensionUsedById(o.value) === true && this.doHighLight();
-        //BI.Broadcasts.on("onedimensionisused", function(v){
-        //    if(v === true){
-        //        self.doHighLight();
-        //    } else {
-        //        if(BI.Utils.isDimensionUsedById(o.value) === false){
-        //            self.unHighLight();
-        //        }
-        //    }
-        //});
     },
 
     isSelected: function () {

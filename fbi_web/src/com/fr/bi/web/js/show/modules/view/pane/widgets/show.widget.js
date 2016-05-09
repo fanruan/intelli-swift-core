@@ -19,25 +19,24 @@ BIShow.WidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIShow.WidgetView.superclass._init.apply(this, arguments);
         var self = this, wId = this.model.get("id");
-        BI.Broadcasts.on(wId, function(dId, v){
-            if(BI.isNotNull(dId)) {
-                var clicked = self.model.get("clicked") || {};
-                var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-                //这条链上所有的其他clicked都应当被清掉
-                BI.each(clicked, function(cid, click){
-                    if(allFromIds.contains(cid)){
-                        delete clicked[cid];
-                    }
-                });
-                if(BI.isNull(v)) {
-                    delete clicked[dId];
-                } else {
-                    clicked[dId] = v;
+        BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
+            var clicked = self.model.get("clicked") || {};
+            var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            //这条链上所有的其他clicked都应当被清掉
+            BI.each(clicked, function (cid, click) {
+                if (allFromIds.contains(cid)) {
+                    delete clicked[cid];
                 }
-                self.model.set("clicked", clicked);
+            });
+            if (BI.isNull(v)) {
+                delete clicked[dId];
             } else {
-                self._refreshTableAndFilter();
+                clicked[dId] = v;
             }
+            self.model.set("clicked", clicked);
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
+            self._refreshTableAndFilter();
         });
     },
 
