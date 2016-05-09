@@ -16,7 +16,7 @@
 .bi-adaptive-table > div > div > div > table > * > * > th > div.last-col,
 .bi-adaptive-table > div > div > table > * > * > td > div.last-col,
 .bi-adaptive-table > div > div > div > table > * > * > td > div.last-col {
-  min-width: 0px;
+  min-width: 10px;
   max-width: none;
 }
 .bi-adaptive-table.fixed > div > div > table > div,
@@ -25,6 +25,6 @@
 .bi-adaptive-table.fixed > div > div > div > table > * > * > th > div,
 .bi-adaptive-table.fixed > div > div > table > * > * > td > div,
 .bi-adaptive-table.fixed > div > div > div > table > * > * > td > div {
-  min-width: 0px;
+  min-width: 10px;
   max-width: none;
 }
