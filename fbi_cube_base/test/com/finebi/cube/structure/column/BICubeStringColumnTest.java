@@ -1,7 +1,9 @@
 package com.finebi.cube.structure.column;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.tools.BICubeResourceLocationTestTool;
+import com.fr.bi.common.factory.BIFactoryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
 public class BICubeStringColumnTest extends BICubeColumnBasicTest<String> {
     @Override
     public ICubeColumnEntityService<String> getTestTarget() {
-        return new BICubeStringColumn(BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
+        return new BICubeStringColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),BICubeResourceLocationTestTool.getBasic("testStringCubeColumn"));
     }
 
     @Override

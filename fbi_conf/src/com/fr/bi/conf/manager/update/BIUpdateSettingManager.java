@@ -24,6 +24,11 @@ public class BIUpdateSettingManager extends BISystemDataManager<SingleUserBIUpda
     }
 
     @Override
+    public String persistUserDataName(long key) {
+        return managerTag();
+    }
+
+    @Override
     public SingleUserBIUpdateSettingManager getUpdateSettingManager(long userId) {
         try {
             return getValue(userId);
