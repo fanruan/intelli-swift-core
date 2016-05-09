@@ -177,7 +177,7 @@ BI.SelectNumberPane = BI.inherit(BI.Widget, {
      */
     _getFieldStructureOfOneTable: function (tableId, isRelation) {
         var fieldStructure = [];
-        var self = this;
+        var self = this, o = this.options;
 
         //Excel View
         var excelView = BI.Utils.getExcelViewByTableId(tableId);
@@ -214,6 +214,7 @@ BI.SelectNumberPane = BI.inherit(BI.Widget, {
                 id: fid,
                 pId: tableId,
                 type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
+                wId: o.wId,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
                 title: fieldName,
