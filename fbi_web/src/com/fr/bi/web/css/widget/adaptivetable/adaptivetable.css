@@ -10,12 +10,12 @@
   min-width: 80px;
   max-width: 220px;
 }
-.bi-adaptive-table > div > div > table > div.last-col,
-.bi-adaptive-table > div > div > div > table > div.last-col,
-.bi-adaptive-table > div > div > table > * > * > th > div.last-col,
-.bi-adaptive-table > div > div > div > table > * > * > th > div.last-col,
-.bi-adaptive-table > div > div > table > * > * > td > div.last-col,
-.bi-adaptive-table > div > div > div > table > * > * > td > div.last-col {
+.bi-adaptive-table > div > div > table.last-col > div,
+.bi-adaptive-table > div > div > div > table.last-col > div,
+.bi-adaptive-table > div > div > table > * > * > th.last-col > div,
+.bi-adaptive-table > div > div > div > table > * > * > th.last-col > div,
+.bi-adaptive-table > div > div > table > * > * > td.last-col > div,
+.bi-adaptive-table > div > div > div > table > * > * > td.last-col > div {
   max-width: none;
 }
 .bi-adaptive-table.fixed > div > div > table > div,
