@@ -8,15 +8,6 @@
 .bi-adaptive-table > div > div > table > * > * > td > div,
 .bi-adaptive-table > div > div > div > table > * > * > td > div {
   min-width: 80px;
-  max-width: 220px;
-}
-.bi-adaptive-table > div > div > table.last-col > div,
-.bi-adaptive-table > div > div > div > table.last-col > div,
-.bi-adaptive-table > div > div > table > * > * > th.last-col > div,
-.bi-adaptive-table > div > div > div > table > * > * > th.last-col > div,
-.bi-adaptive-table > div > div > table > * > * > td.last-col > div,
-.bi-adaptive-table > div > div > div > table > * > * > td.last-col > div {
-  max-width: none;
 }
 .bi-adaptive-table.fixed > div > div > table > div,
 .bi-adaptive-table.fixed > div > div > div > table > div,
@@ -25,5 +16,4 @@
 .bi-adaptive-table.fixed > div > div > table > * > * > td > div,
 .bi-adaptive-table.fixed > div > div > div > table > * > * > td > div {
   min-width: 10px;
-  max-width: none;
 }
