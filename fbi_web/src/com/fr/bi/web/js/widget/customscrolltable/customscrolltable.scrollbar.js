@@ -95,23 +95,39 @@ BI.CustomScrollTableScrollBar = BI.inherit(BI.Widget, {
     },
 
     setScrollLeft: function (scrollLeft) {
-        this.element.mCustomScrollbar('scrollTo', scrollLeft);
+        try {
+            this.element.mCustomScrollbar('scrollTo', scrollLeft);
+        } catch (e) {
+
+        }
     },
 
     setScrollTop: function (scrollTop) {
-        this.element.mCustomScrollbar('scrollTo', scrollTop);
+        try {
+            this.element.mCustomScrollbar('scrollTo', scrollTop);
+        } catch (e) {
+
+        }
     },
 
     setScrollHeight: function (height) {
-        this.container.element.height(height);
-        $(".mCSB_container", this.element).height(height);
-        this.element.mCustomScrollbar("update");
+        try {
+            this.container.element.height(height);
+            $(".mCSB_container", this.element).height(height);
+            this.element.mCustomScrollbar("update");
+        } catch (e) {
+
+        }
     },
 
     setScrollWidth: function (width) {
-        this.container.element.width(width);
-        $(".mCSB_container", this.element).width(width);
-        this.element.mCustomScrollbar("update");
+        try {
+            this.container.element.width(width);
+            $(".mCSB_container", this.element).width(width);
+            this.element.mCustomScrollbar("update");
+        } catch (e) {
+
+        }
     },
 
     setScrollToLeft: function () {
@@ -125,19 +141,35 @@ BI.CustomScrollTableScrollBar = BI.inherit(BI.Widget, {
     },
 
     scrollToTop: function () {
-        this.element.mCustomScrollbar('scrollTo', 'top');
+        try {
+            this.element.mCustomScrollbar('scrollTo', 'top');
+        } catch (e) {
+
+        }
     },
 
     scrollToBottom: function () {
-        this.element.mCustomScrollbar('scrollTo', 'bottom');
+        try {
+            this.element.mCustomScrollbar('scrollTo', 'bottom');
+        } catch (e) {
+
+        }
     },
 
     scrollToLeft: function () {
-        this.element.mCustomScrollbar('scrollTo', 'left');
+        try {
+            this.element.mCustomScrollbar('scrollTo', 'left');
+        } catch (e) {
+
+        }
     },
 
     scrollToRight: function () {
-        this.element.mCustomScrollbar('scrollTo', 'right');
+        try {
+            this.element.mCustomScrollbar('scrollTo', 'right');
+        } catch (e) {
+
+        }
     }
 });
 BI.CustomScrollTableScrollBar.EVENT_SCROLL = "CustomScrollTableScrollBar.EVENT_SCROLL";

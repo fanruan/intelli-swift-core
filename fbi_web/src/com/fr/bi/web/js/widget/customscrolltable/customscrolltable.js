@@ -176,7 +176,12 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                 self._distributeTasks();
             });
 
+            //当region区域拖拽过程中有可能会发生横向滚动条翻页事件
             this.table.on(BI.Table.EVENT_TABLE_REGION_RESIZE, function () {
+                self.bottomRightScrollBar.setScrollWidth(0);
+            });
+
+            this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
                 self._resizeFreezeScroll();
             });
             this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
@@ -235,7 +240,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                 self._distributeTasks();
             });
 
-            this.table.on(BI.Table.EVENT_TABLE_REGION_RESIZE, function () {
+            this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
                 self._resizeScroll();
             });
             this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
