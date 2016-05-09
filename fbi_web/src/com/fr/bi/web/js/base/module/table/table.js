@@ -1517,8 +1517,12 @@ BI.Table = BI.inherit(BI.Widget, {
         }
     },
 
-    destroy: function () {
+    empty: function () {
         BI.Resizers.remove(this.getName());
+        BI.Table.superclass.empty.apply(this, arguments);
+    },
+
+    destroy: function () {
         BI.Table.superclass.destroy.apply(this, arguments);
     }
 })
