@@ -44,7 +44,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
                 columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
             }
 
-            relationManager = new BICubeTableRelationEntityManager(this.resourceRetrievalService, this.tableKey);
+            relationManager = new BICubeTableRelationEntityManager(this.resourceRetrievalService, this.tableKey, discovery);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
@@ -55,7 +55,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
         if (tableProperty != null) {
             tableProperty.clear();
         }
-        tableProperty = new BICubeTableProperty(currentLocation,discovery );
+        tableProperty = new BICubeTableProperty(currentLocation, discovery);
 
     }
 
