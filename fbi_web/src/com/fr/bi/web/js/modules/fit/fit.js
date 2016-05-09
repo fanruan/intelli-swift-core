@@ -43,6 +43,8 @@ BI.Fit = BI.inherit(BI.Widget, {
         this.layoutCombo = BI.createWidget({
             type: "bi.text_value_combo",
             items: BICst.DASHBOARD_LAYOUT_ARRAY,
+            width: 120,
+            height: 25,
             cls: "layout-combo"
         });
         this.layoutCombo.setValue(o.layoutType);
@@ -276,7 +278,7 @@ BI.Fit = BI.inherit(BI.Widget, {
         var region = this.arrangement.getRegionByName(id);
         if (!(flag = this.arrangement.addRegion({
                 el: this._createItem(newId),
-                width:region.width,
+                width: region.width,
                 height: region.height
             }, {
                 left: region.left + region.width / 2,
@@ -293,7 +295,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 }
             }
         }
-        if(flag === true){
+        if (flag === true) {
             this.fireEvent(BI.Fit.EVENT_CHANGE);
         }
         return flag;
