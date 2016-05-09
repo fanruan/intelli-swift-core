@@ -535,9 +535,11 @@ if (!window.BI) {
             else if (type === '[object Object]' && obj.constructor === Object) {
                 clone = {};
 
-                _.each(obj, function (o, key) {
-                    clone[key] = BI.deepClone(o);
-                });
+                for (var i in obj) {
+                    if (_.has(obj, i)) {
+                        clone[i] = BI.deepClone(obj[i]);
+                    }
+                }
             }
 
             return clone || obj;
