@@ -4,8 +4,11 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.base.pack.data.BIBasicBusinessPackage;
 import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
 import com.fr.bi.conf.base.pack.data.BIPackageID;
-import com.fr.bi.conf.data.BIBusinessPackageTestTool;
+import com.fr.bi.conf.base.pack.data.BIPackageName;
+import com.fr.general.ComparatorUtils;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -23,12 +26,22 @@ public class BISystemPackAndAuthConfigurationManagerTest {
     public void getAllPackages() throws Exception {
         manager = new BISystemPackAndAuthConfigurationManager();
         user = new BIUser(999);
-        manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a"));
+        manager.addPackage(user.getUserId(), new BIBasicBusinessPackage(new BIPackageID("新建业务包a")));
         manager.addPackage(user.getUserId(), new BIBasicBusinessPackage(new BIPackageID("新建业务包b")));
         Set<BIBusinessPackage> allPackages = manager.getAllPackages(user.getUserId());
         for (BIBusinessPackage biBusinessPackage : allPackages) {
             System.out.println(biBusinessPackage.getName());
         }
+        manager.persistData(user.getUserId());
+        HashSet<BIBusinessPackage> packages = new HashSet<BIBusinessPackage>();
+        Iterator<BIBusinessPackage> it = allPackages.iterator();
+        while (it.hasNext()) {
+            BIBusinessPackage biBasicBusinessPackage = it.next();
+            if (ComparatorUtils.equals(new BIPackageName("BI_EMPTY_NAME"), biBasicBusinessPackage.getName())) {
+                packages.add(biBasicBusinessPackage);
+            }
+        }
+
     }
 
     @org.junit.Test
