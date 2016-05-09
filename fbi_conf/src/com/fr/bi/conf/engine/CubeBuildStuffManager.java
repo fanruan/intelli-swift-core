@@ -14,6 +14,7 @@ import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.stable.relation.BITableRelationPath;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -35,8 +36,8 @@ public class CubeBuildStuffManager implements Serializable {
     private String rootPath;
     private String buildTempPath;
     private Set<BITableSourceRelation> tableSourceRelationSet;
-
-    private Set<BITableRelation> TableRelationSet;
+    private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
+    private Set<BITableRelation> tableRelationSet;
     private Map<ITableSource, Map<String, DBField>> tableDBFieldMaps = new HashMap<ITableSource, Map<String, DBField>>();
     private Map<Table, Set<BITableSourceRelation>> primaryKeyMap;
     private Map<Table, Set<BITableSourceRelation>> foreignKeyMap;
@@ -74,7 +75,7 @@ public class CubeBuildStuffManager implements Serializable {
 
     public Set<BITableRelation> getTableRelationSet() {
         Set<BITableRelation> set = new HashSet<BITableRelation>();
-        for (BITableRelation relation : TableRelationSet) {
+        for (BITableRelation relation : tableRelationSet) {
             BIField pField = relation.getPrimaryField();
             BIField fField = relation.getForeignField();
             if (tableSourceRelationSet.contains(
@@ -90,9 +91,21 @@ public class CubeBuildStuffManager implements Serializable {
         return set;
     }
 
+    private Set<BITableRelation> filterRelation(Set<BITableRelation> tableRelationSet) {
+        Iterator<BITableRelation> iterator = tableRelationSet.iterator();
+        Set<BITableRelation> result = new HashSet<BITableRelation>();
+        while (iterator.hasNext()) {
+            BITableRelation tableRelation = iterator.next();
+            if (isRelationVaild(tableRelation)) {
+                result.add(tableRelation);
+            }
+        }
+        return tableRelationSet;
+    }
+
     public void setTableRelationSet(Set<BITableRelation> tableRelationSet) {
-        this.TableRelationSet = tableRelationSet;
-        this.tableSourceRelationSet = convertRelations(tableRelationSet);
+        this.tableRelationSet = filterRelation(tableRelationSet);
+        this.tableSourceRelationSet = convertRelations(this.tableRelationSet);
     }
 
     public Set<BITableSourceRelationPath> getRelationPaths() {
@@ -106,7 +119,12 @@ public class CubeBuildStuffManager implements Serializable {
     private Set<BITableSourceRelation> convertRelations(Set<BITableRelation> connectionSet) {
         Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
         for (BITableRelation relation : connectionSet) {
-            set.add(convert(relation));
+            try {
+                set.add(convert(relation));
+            } catch (NullPointerException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
+            }
         }
         return set;
     }
@@ -138,7 +156,11 @@ public class CubeBuildStuffManager implements Serializable {
         Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
         for (BITableRelationPath path : paths) {
 
-            set.add(convert(path));
+            try {
+                set.add(convert(path));
+            } catch (Exception e) {
+                continue;
+            }
         }
         return set;
     }
@@ -180,7 +202,9 @@ public class CubeBuildStuffManager implements Serializable {
         for (BIBusinessPackage pack : packs) {
             Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
             while (tIt.hasNext()) {
-                sources.add(tIt.next().getSource());
+                BIBusinessTable table = tIt.next();
+                allBusinessTable.add(table);
+                sources.add(table.getSource());
             }
         }
         BILoginUserInfo info = BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(userId).getCurrentUserInfo();
@@ -204,6 +228,16 @@ public class CubeBuildStuffManager implements Serializable {
                 name2Field.put(field.getFieldName(), field);
             }
             tableDBFieldMaps.put(tableSource, name2Field);
+        }
+    }
+
+    private boolean isRelationVaild(BITableRelation relation) {
+        Table primaryTable = relation.getPrimaryTable();
+        Table foreignTable = relation.getForeignTable();
+        if (!allBusinessTable.contains(primaryTable) || allBusinessTable.contains(foreignTable)) {
+            return false;
+        } else {
+            return true;
         }
     }
 
