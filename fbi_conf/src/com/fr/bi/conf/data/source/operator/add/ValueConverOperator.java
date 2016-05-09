@@ -40,7 +40,10 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
-        jo.put("field", field);
+        JSONObject item = new JSONObject();
+        item.put("field", field);
+        item.put("field_type", columnType);
+        jo.put("item", item);
         return jo;
     }
 
@@ -53,8 +56,11 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
     @Override
     public void parseJSON(JSONObject jsonObject) throws Exception {
         super.parseJSON(jsonObject);
-        if (jsonObject.has("field")){
-            field = jsonObject.getString("field");
+        if (jsonObject.has("item")){
+            JSONObject item = jsonObject.getJSONObject("item");
+            if (item.has("field")){
+                field = item.getString("field");
+            }
         }
     }
 

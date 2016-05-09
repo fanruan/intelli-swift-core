@@ -127,11 +127,10 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         }
         this._editing = true;
         this._editColumnName = name;
+        widget.card.showCardByName(widget._constant.SINGLE_COLUMN_CARD);
         widget.title.populate(column, {
             columnNames: this._getAllColumnNames(model, name)
         });
-
-        widget.card.showCardByName(widget._constant.SINGLE_COLUMN_CARD);
     },
 
     _isEditing : function () {

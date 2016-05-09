@@ -20,7 +20,7 @@ BI.AnalysisETLOperatorAddColumnDateDiffPane = BI.inherit(BI.MVCWidget, {
             items : ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE_ITEMS
         });
         self.segment.on(BI.Segment.EVENT_CHANGE, function (type) {
-            self.controller.setType(type);
+            self.controller.setType(type[0]);
         });
         self.lcombo = BI.createWidget({
             type: "bi.text_value_combo",

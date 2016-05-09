@@ -1,7 +1,7 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.fr.bi.conf.data.source.operator.IETLOperator;
-import com.fr.bi.conf.data.source.operator.add.FieldFormulaOperator;
+import com.fr.bi.conf.data.source.operator.add.ETLFormularOperator;
 import com.fr.bi.conf.data.source.operator.add.SingleValueOperator;
 import com.fr.bi.conf.data.source.operator.add.ValueConverOperator;
 import com.fr.bi.conf.data.source.operator.add.date.GetValueFromDateOperator;
@@ -75,7 +75,7 @@ public class AnalysisETLOperatorFactory {
         String type = jo.getString("add_column_type");
         IETLOperator op = null;
         if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.FORMULA)){
-            op = new FieldFormulaOperator(userId);
+            op = new ETLFormularOperator(userId);
         } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_DIFF)){
             op = new DateDiffOperator(userId);
         } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_YEAR)

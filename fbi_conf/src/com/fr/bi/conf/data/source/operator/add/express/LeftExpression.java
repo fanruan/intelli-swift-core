@@ -19,13 +19,18 @@ public class LeftExpression implements Expression {
 
 	@Override
 	public void parseJSON(JSONObject jo) throws Exception {
-
+		value = jo.optString("other", null);
+		isUnitLeft = jo.getBoolean("showOther");
 	}
 
 	@Override
 	public JSONObject createJSON() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject jo = new JSONObject();
+		jo.put("showOther", isUnitLeft);
+		if (isUnitLeft){
+			jo.put("other", value);
+		}
+		return jo;
 	}
 
 	@Override

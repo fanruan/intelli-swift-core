@@ -3,8 +3,10 @@
  */
 package com.fr.bi.conf.data.source.operator.add.express;
 
-import com.fr.bi.base.BICore;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.BICore;
+import com.fr.bi.stable.constant.DBConstant;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 /**
@@ -16,16 +18,43 @@ public class GeneralExpression implements Expression {
 	
 	private Expression[] expressions;
 	
-	private Expression leftValues;
+	private LeftExpression leftValues;
 
 	@Override
 	public void parseJSON(JSONObject jo) throws Exception {
-		
+		leftValues = new LeftExpression();
+		leftValues.parseJSON(jo);
+		if (jo.has("items")){
+			JSONArray ja = jo.getJSONArray("items");
+			expressions = new Expression[ja.length()];
+			for (int i = 0; i < ja.length(); i ++){
+				JSONObject item = ja.getJSONObject(i);
+				int type = item.getInt("field_type");
+				switch (type){
+					case DBConstant.COLUMN.STRING :
+						expressions[i] = new FilterExpression<String>();
+						break;
+					case DBConstant.COLUMN.DATE :
+						expressions[i] = new FilterExpression<Long>();
+						break;
+					default:
+						expressions[i] = new FilterExpression<Number>();
+						break;
+				}
+				expressions[i].parseJSON(item);
+			}
+		}
 	}
 
 	@Override
 	public JSONObject createJSON() throws Exception {
-		return null;
+		JSONObject jo = leftValues.createJSON();
+		JSONArray items = new JSONArray();
+		jo.put("items", items);
+		for (Expression ex : expressions){
+			items.put(ex.createJSON());
+		}
+		return jo;
 	}
 
 	@Override

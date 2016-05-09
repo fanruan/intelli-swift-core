@@ -28,7 +28,7 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
     private static final long serialVersionUID = -1675716963282566541L;
 
     @BICoreField
-    private String expression = StringUtils.EMPTY;
+    protected String expression = StringUtils.EMPTY;
 
     public FieldFormulaOperator(long userId) {
         super(userId);

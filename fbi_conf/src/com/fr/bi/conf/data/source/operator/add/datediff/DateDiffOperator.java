@@ -4,6 +4,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
+import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -46,9 +47,11 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
-        jo.put("field1", field1);
-        jo.put("field2", field2);
-        jo.put("unit", unit);
+        JSONObject item = new JSONObject();
+        jo.put("item", item);
+        item.put("firstField", field1);
+        item.put("secondField", field2);
+        item.put("type", unit);
         return jo;
     }
 
@@ -61,14 +64,17 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if (jo.has("field1")) {
-            field1 = jo.getString("field1");
-        }
-        if (jo.has("field2")) {
-            field2 = jo.getString("field2");
-        }
-        if (jo.has("unit")) {
-            unit = jo.getInt("unit");
+        if (jo.has("item")){
+            JSONObject jsonObject= jo.getJSONObject("item");
+            if (jsonObject.has("firstField")) {
+                field1 = jo.getString("firstField");
+            }
+            if (jo.has("secondField")) {
+                field2 = jo.getString("secondField");
+            }
+            if (jo.has("type")) {
+                unit = jo.getInt("unit");
+            }
         }
     }
 
@@ -98,13 +104,6 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     protected int getClassType() {
         return DBConstant.CLASS.INTEGER;
     }
-
-    /**
-     * @param key2
-     * @param key1
-     * @param map
-     */
-
 
     @Override
     public void readXML(XMLableReader reader) {
