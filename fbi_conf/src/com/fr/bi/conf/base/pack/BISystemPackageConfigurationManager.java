@@ -35,6 +35,10 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
         return "BusinessPackage";
     }
 
+    @Override
+    public String persistUserDataName(long key) {
+        return managerTag();
+    }
 
     /**
      * 完成生成cube

@@ -1,11 +1,9 @@
 package com.finebi.cube.structure.column;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.detail.BICubeLongDetailData;
 import com.finebi.cube.structure.group.BICubeLongGroupData;
-import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-
-import java.util.Comparator;
 
 /**
  * This class created on 2016/3/28.
@@ -14,14 +12,14 @@ import java.util.Comparator;
  * @since 4.0
  */
 public class BICubeLongColumn extends BICubeColumnEntity<Long> {
-    public BICubeLongColumn(ICubeResourceLocation currentLocation) {
-        super(currentLocation);
+    public BICubeLongColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation) {
+        super(discovery, currentLocation);
     }
 
     @Override
     protected void initial() {
-        detailDataService = new BICubeLongDetailData(currentLocation);
-        groupDataService = new BICubeLongGroupData(currentLocation);
+        detailDataService = new BICubeLongDetailData(discovery, currentLocation);
+        groupDataService = new BICubeLongGroupData(discovery, currentLocation);
     }
 
 

@@ -138,8 +138,9 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             self.controller.refreshPreviewData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
         })
 
-        this.operatorEditPane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function () {
-            self.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, arguments)
+        this.operatorEditPane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (model, type) {
+            self.controller.doPreviewChange(model, type)
+            
         })
 
         this.operatorEditPaneItem = {
@@ -202,7 +203,7 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
                 self.operatorCard.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, arguments)
             });
             pane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (model, type) {
-                self.title.setEnable(model.isDefalutValue())
+                self.title.setEnable(model.isDefaultValue())
                 self.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, arguments)
             })
             var card = {
@@ -224,11 +225,12 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
 
     setPreviewOperator : function(operator) {
         this.controller.setPreviewOperator(operator)
-    },
-
-    hideOperatorPane : function () {
-        this.controller.hideOperatorPane()
     }
+    //,
+    //
+    // hideOperatorPane : function () {
+    //     this.controller.hideOperatorPane()
+    // }
 })
 BI.AnalysisETLOperatorCenter.DATA_CHANGE="DATA_CHANGE";
 BI.AnalysisETLOperatorCenter.EVENT_RENAME = "event_rename";

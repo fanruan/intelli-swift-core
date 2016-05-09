@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.column;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.BIResourceInvalidException;
@@ -25,11 +26,13 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     protected ICubeGroupDataService<T> groupDataService;
     protected ICubeVersion cubeVersion;
     protected ICubeRelationManagerService relationManagerService;
+    protected ICubeResourceDiscovery discovery;
 
-    public BICubeColumnEntity(ICubeResourceLocation currentLocation) {
+    public BICubeColumnEntity(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation) {
+        this.discovery = discovery;
         this.currentLocation = currentLocation;
-        indexDataService = new BICubeIndexData(currentLocation);
-        cubeVersion = new BICubeVersion(currentLocation);
+        indexDataService = new BICubeIndexData(discovery, currentLocation);
+        cubeVersion = new BICubeVersion(discovery, currentLocation);
         initial();
     }
 

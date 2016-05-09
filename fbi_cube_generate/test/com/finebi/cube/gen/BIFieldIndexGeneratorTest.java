@@ -1,6 +1,7 @@
 package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.structure.BICubeTableEntity;
 import com.finebi.cube.structure.column.BIColumnKey;
@@ -12,6 +13,7 @@ import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -62,7 +64,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             fieldIndexGenerator(tableSource, 1);
             ICubeColumnReaderService columnReaderService = tableEntity.getColumnDataGetter(BIColumnKey.covertColumnKey(tableSource.getFieldsArray(null)[1]));
             List<String> content = duplicateRemove(tableSource.stringData);
-            Collections.sort(content, new BICubeStringGroupData(null).getGroupComparator());
+            Collections.sort(content, new BICubeStringGroupData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), null).getGroupComparator());
             for (int i = 0; i < content.size(); i++) {
                 assertEquals(content.get(i), columnReaderService.getGroupValue(i));
                 String one = content.get(i);
@@ -250,7 +252,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             fieldIndexGenerator(tableSource, 1);
             ICubeColumnReaderService columnReaderService = tableEntity.getColumnDataGetter(BIColumnKey.covertColumnKey(tableSource.getFieldsArray(null)[1]));
             List<String> content = duplicateRemove(tableSource.stringData);
-            Collections.sort(content, new BICubeStringGroupData(null).getGroupComparator());
+            Collections.sort(content, new BICubeStringGroupData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),null).getGroupComparator());
 
             for (int i = 0; i < tableSource.stringData.size(); i++) {
                 String one = (String) columnReaderService.getOriginalValueByRow(i);

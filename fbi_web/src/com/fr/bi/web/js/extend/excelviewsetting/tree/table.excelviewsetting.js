@@ -41,13 +41,17 @@ BI.ExcelViewSettingTable = BI.inherit(BI.Widget, {
     },
 
     _formatItems: function (items) {
+        var self = this;
         return BI.map(items, function (i, item) {
             return BI.extend({
-                type: "bi.excel_view_setting_item"
+                type: "bi.excel_view_setting_item",
+                clearOneCell: function(fieldId) {
+                    self.options.clearOneCell(fieldId);
+                }
             }, item);
         });
     },
-
+    
     setValue: function (v) {
         this.button_group.setValue(v);
     },

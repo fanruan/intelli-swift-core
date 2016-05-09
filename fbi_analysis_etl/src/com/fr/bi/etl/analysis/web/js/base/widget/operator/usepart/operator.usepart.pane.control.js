@@ -3,13 +3,18 @@
  */
 BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
     populate : function (widget, model) {
+        this._check(widget, model);
         var parent = model.get(ETLCst.PARENTS)[0];
         widget.fieldList.populate(parent[ETLCst.FIELDS]);
         var value = model.get('operator');
         if (!BI.isNull(value)){
             widget.fieldList.setValue(value);
         }
-        this._check(widget, model);
+        this.doCheck(widget, model)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, widget.controller, widget.options.value.operatorType)
+    },
+    
+    doCheck  : function (widget, model) {
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.isValid(widget, model))
     },
 
@@ -46,7 +51,7 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
         return table;
     },
 
-    isDefalutValue : function (widget, model) {
+    isDefaultValue : function (widget, model) {
         return !this.isValid(widget, model)
     }
 })

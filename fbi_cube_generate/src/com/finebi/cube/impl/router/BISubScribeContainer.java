@@ -75,8 +75,12 @@ public class BISubScribeContainer extends BIMapContainer<ISubscribeID, ISubscrib
         while (it.hasNext()) {
             ISubscribe subscribe = it.next();
             handleMessage(subscribe, message);
+            if (!subscribe.keepSubscribe()) {
+                it.remove();
+            }
         }
     }
+
 
     /**
      * todo 防止subscribe处理消息卡死。

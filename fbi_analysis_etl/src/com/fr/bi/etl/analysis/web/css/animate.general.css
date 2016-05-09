@@ -9,6 +9,12 @@
   -moz-transition: all 0.2s ease;
   -o-transition: all 0.2s ease;
 }
+.bi-helper {
+  transition: background 0.1s ease;
+  -webkit-transition: background 0.1s ease;
+  -moz-transition: background 0.1s ease;
+  -o-transition: background 0.1s ease;
+}
 .bi-shake-icon {
   transition: transform 0.5s ease;
   -webkit-transition: -webkit-transform 0.5s ease;

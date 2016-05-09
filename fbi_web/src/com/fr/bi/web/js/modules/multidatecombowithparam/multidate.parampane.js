@@ -42,6 +42,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
             self.fireEvent(BI.MultiDateParamPane.EVENT_CHANGE, self.tree.getValue());
         });
 
+        this.tree.populate();
+
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,

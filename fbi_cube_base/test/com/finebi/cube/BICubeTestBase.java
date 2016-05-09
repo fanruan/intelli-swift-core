@@ -1,5 +1,6 @@
 package com.finebi.cube;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeConfigurationTest;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -7,6 +8,7 @@ import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.BICubeTableEntity;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import junit.framework.TestCase;
 
 /**
@@ -27,7 +29,7 @@ public class BICubeTestBase extends TestCase {
         super.setUp();
         cubeConfiguration = new BICubeConfigurationTest();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        cube = new BICube(retrievalService);
+        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         tableEntity = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()));
     }
 

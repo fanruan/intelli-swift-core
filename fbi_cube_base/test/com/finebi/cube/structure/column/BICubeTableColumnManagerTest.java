@@ -1,12 +1,14 @@
 package com.finebi.cube.structure.column;
 
 import com.finebi.cube.BICubeTestBase;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.date.*;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.DBField;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class BICubeTableColumnManagerTest extends BICubeTestBase {
         fields.add(DBFieldTestTool.generateDATE());
 
         ITableKey tableKey = new BITableKey(BITableSourceTestTool.getDBTableSourceA());
-        managerService = new BICubeTableColumnManager(tableKey, retrievalService, fields);
+        managerService = new BICubeTableColumnManager(tableKey, retrievalService, fields, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
 
     public void testDateColumn() {

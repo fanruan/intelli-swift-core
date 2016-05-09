@@ -13,7 +13,8 @@ BI.SelectStringTab = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.SelectStringTab.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-select-string"
+            baseCls: "bi-select-string",
+            wId: ""
         });
     },
 
@@ -24,7 +25,8 @@ BI.SelectStringTab = BI.inherit(BI.Widget, {
             type: "bi.select_data_tab",
             element: this.element,
             searcher: {
-                type: "bi.select_string_pane"
+                type: "bi.select_string_pane",
+                wId: o.wId
             }
         });
     },

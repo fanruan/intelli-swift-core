@@ -50,6 +50,7 @@ BI.YearTrigger = BI.inherit(BI.Trigger, {
             var value = self.editor.getValue();
             if (BI.isNotNull(value)) {
                 self.editor.setValue(value);
+                self.editor.setTitle(value);
             }
             self.fireEvent(BI.YearTrigger.EVENT_CONFIRM);
         })
@@ -90,6 +91,7 @@ BI.YearTrigger = BI.inherit(BI.Trigger, {
     setValue: function (v) {
         this.editor.setState(v);
         this.editor.setValue(v);
+        this.editor.setTitle(v);
     },
     getKey: function () {
         return this.editor.getValue() | 0;

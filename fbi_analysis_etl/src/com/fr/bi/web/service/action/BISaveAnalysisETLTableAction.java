@@ -2,6 +2,7 @@ package com.fr.bi.web.service.action;
 
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
 import com.fr.bi.etl.analysis.manager.AnalysisDataSourceManager;
@@ -26,7 +27,8 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
         AnalysisBusiTable table = new AnalysisBusiTable(tableId, userId, tableName);
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
-        BIAnalysisETLManagerCenter.getDataSourceManager().addCore2SourceRelation(table.getID(), AnalysisETLSourceFactory.createTableSource(new JSONObject(tableJSON), userId), new BIUser(userId));
+        JSONObject jo = new JSONObject(tableJSON);
+        BIAnalysisETLManagerCenter.getDataSourceManager().addCore2SourceRelation(table.getID(), AnalysisETLSourceFactory.createTableSource(jo.getJSONArray(Constants.ITEMS), userId), new BIUser(userId));
         BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
         FRContext.getCurrentEnv().writeResource((BIXMLAnalysisDataSourceManager)(((AnalysisDataSourceManager)BIAnalysisETLManagerCenter.getDataSourceManager()).getInstance(new BIUser(userId))));
     }

@@ -37,6 +37,6 @@ BI.AnalysisETLOperatorAddColumnValueConvertController = BI.inherit(BI.MVCControl
             widget.segment.setValue(type);
             model.set('field_type', type);
         }
-
+        this._checkCanSave(widget, model);
     }
 })

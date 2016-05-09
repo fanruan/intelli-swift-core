@@ -6,14 +6,14 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
-
-import java.util.UUID;
+import com.fr.bi.stable.utils.code.BILogger;
 
 /**
  * Created by 小灰灰 on 2015/12/23.
  */
 public class AnalysisETLPackageSet extends BIPackageContainer {
     private static final String PACK_NAME = "MYETL";
+    private static final String PACK_ID = "ff8556cd-2e94-4876-b059-947cfe08aced";
     private transient AnalysisETLBusiPack pack;
 
     public AnalysisETLPackageSet(long userId) {
@@ -33,15 +33,16 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
             return pack;
         }
         synchronized (container) {
+            try {
+                pack = (AnalysisETLBusiPack) getPackage(new BIPackageID(PACK_ID));
+            } catch (BIPackageAbsentException ignore_) {
+                BILogger.getLogger().error(ignore_.getMessage());
+            }
             if (pack == null) {
                 try {
-                    addPackage(createPackage(UUID.randomUUID().toString(), PACK_NAME));
+                    pack = createPackage(PACK_ID, PACK_NAME);
+                    addPackage(pack);
                 } catch (BIPackageDuplicateException ignore) {
-                    try {
-                        pack = (AnalysisETLBusiPack) getPackage(new BIPackageID(PACK_NAME));
-                    } catch (BIPackageAbsentException ignore_) {
-
-                    }
 
                 }
 
@@ -50,11 +51,12 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
         }
     }
 
-    public void removeTable(String tableId) {
-        getPack().removeBusinessTable(new AnalysisBusiTable(tableId, user.getUserId()));
+    public void removeTable(BITableID tableId) {
+        getPack().removeBusinessTableByID(tableId);
     }
 
     public void addTable(AnalysisBusiTable table) {
+        removeTable(table.getID());
         getPack().addBusinessTable(table);
     }
 

@@ -83,33 +83,44 @@ BI.FormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return [this.fulfilLabel, this.formula];
     },
 
-    _getFieldItems: function(){
-        var dId = this.options.dId, field_id = this.options.field_id, fieldItems = [];
-        var tId = BI.Utils.getTableIDByDimensionID(dId);
-        if(BI.isNull(tId)){
-            tId = BI.Utils.getTableIdByFieldID(field_id);
-        }
+    _getFieldItems: function () {
+        var field_id = this.options.field_id, fieldItems = [];
+        var tId = BI.Utils.getTableIdByFieldID(field_id);
         var fIds = BI.Utils.getFieldIDsOfTableID(tId);
         BI.each(fIds, function (i, fId) {
             fieldItems.push({
                 text: BI.Utils.getFieldNameByID(fId),
-                value: fId,
+                value: BICst.FIELD_ID.HEAD + fId,
                 fieldType: BI.Utils.getFieldTypeByID(fId)
             });
         });
         return fieldItems;
     },
 
-    _setNodeData: function(v){
+    _getTargetItems: function () {
+        var dId = this.options.dId, fieldItems = [];
+        var wId = BI.Utils.getWidgetIDByDimensionID(dId);
+        var tIds = BI.Utils.getAllTargetDimensionIDs(wId);
+        BI.each(tIds, function (i, tId) {
+            fieldItems.push({
+                text: BI.Utils.getDimensionNameByID(tId),
+                value: tId,
+                fieldType: BI.Utils.getFieldTypeByID(BI.Utils.getFieldIDByDimensionID(tId))
+            });
+        });
+        return fieldItems;
+    },
+
+    _setNodeData: function (v) {
         var o = this.options;
         o.node.set("data", BI.extend(o.node.get("data"), v));
     },
 
-    getFilterId: function(){
+    getFilterId: function () {
         return this.id;
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             id: this.id,
             filter_type: BICst.FILTER_TYPE.FORMULA,

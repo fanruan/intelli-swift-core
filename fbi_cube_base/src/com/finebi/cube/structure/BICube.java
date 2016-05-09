@@ -1,5 +1,6 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
@@ -17,24 +18,26 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  */
 public class BICube implements ICube {
     private ICubeResourceRetrievalService resourceRetrievalService;
+    private ICubeResourceDiscovery discovery;
 
-    public BICube(ICubeResourceRetrievalService resourceRetrievalService) {
+    public BICube(ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;
+        this.discovery = discovery;
     }
 
     @Override
     public ICubeTableEntityGetterService getCubeTable(ITableKey tableKey) {
-        return new BICubeTableEntity(tableKey, resourceRetrievalService);
+        return new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
     }
 
     @Override
     public ICubeColumnReaderService getCubeColumn(ITableKey tableKey, BIColumnKey field) throws BICubeColumnAbsentException {
-        return new BICubeTableEntity(tableKey, resourceRetrievalService).getColumnDataGetter(field);
+        return new BICubeTableEntity(tableKey, resourceRetrievalService, discovery).getColumnDataGetter(field);
     }
 
     @Override
     public ICubeRelationEntityGetterService getCubeRelation(ITableKey tableKey, BICubeTablePath relationPath) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
-        return new BICubeTableEntity(tableKey, resourceRetrievalService).getRelationIndexGetter(relationPath);
+        return new BICubeTableEntity(tableKey, resourceRetrievalService, discovery).getRelationIndexGetter(relationPath);
     }
 
     @Override
