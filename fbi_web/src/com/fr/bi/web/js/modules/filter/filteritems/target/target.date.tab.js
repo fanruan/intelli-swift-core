@@ -38,6 +38,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
 
         var combo = BI.createWidget({
             type: "bi.text_value_combo",
+            width: this.constants.comboWidth,
             height: this.constants.comboHeight,
             items: widgetItems
         });

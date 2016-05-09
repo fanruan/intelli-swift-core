@@ -46,15 +46,16 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             });
             var allIds = BI.keys(dimensions);
             var filterValue = this.get("filter_value");
-            BI.each(filterValue, function(id, filter){
+            BI.each(filterValue, function (id, filter) {
                 !allIds.contains(id) && delete filterValue[id];
             });
             this.set({"dimensions": dimensions, view: views, filter_value: filterValue});
         }
         if (key1 === "dimensions") {
-            BI.Broadcasts.send(this.get("id") + "usable");
-            //全局的表使用广播
-            BI.Broadcasts.send(BICst.BROADCAST.TABLE_USABLE);
+            BI.Broadcasts.send(old._src.id);
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+            //全局维度增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
         }
     },
 
@@ -88,8 +89,19 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
         }
         if (BI.has(changed, "dimensions")) {
             if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
-                BI.Broadcasts.send(self.get("id") + "usable");
-                BI.Broadcasts.send(BICst.BROADCAST.TABLE_USABLE);
+                this.set("clicked", {}, {silent: true});
+            }
+        }
+        if (BI.has(changed, "dimensions")) {
+            if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + self.get("id"));
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
+            }
+            if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
+                var result = BI.find(changed.dimensions, function (did, dimension) {
+                    return !BI.has(prev.dimensions, did);
+                });
+                BI.Broadcasts.send(result._src.id, true);
             }
         }
     },

@@ -25,10 +25,10 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             type: "bi.chart",
             element: this.element
         });
-        this.chartDisplay.on(BI.Chart.EVENT_CHANGE, function(obj){
+        this.chartDisplay.on(BI.Chart.EVENT_CHANGE, function (obj) {
             var dId = [], clicked = [];
             BI.Msg.toast("category: " + obj.category + " seriesName: " + obj.seriesName + " value: " + obj.value + " size: " + obj.size);
-            switch (BI.Utils.getWidgetTypeByID(o.wId)){
+            switch (BI.Utils.getWidgetTypeByID(o.wId)) {
                 case BICst.Widget.BUBBLE:
                     dId = [self.tarIdMap[obj.value], self.tarIdMap[obj.category], self.tarIdMap[obj.size]];
                     clicked = [{
@@ -49,7 +49,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                         dId: self.seriesDid,
                         value: [obj.category]
                     }];
-                    if(BI.isNotNull(self.cataDid)){
+                    if (BI.isNotNull(self.cataDid)) {
                         clicked.push({
                             dId: self.cataDid,
                             value: [obj.seriesName]
@@ -58,16 +58,16 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     break;
 
             }
-            BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function(i, link){
-                if(BI.contains(dId, link.from)) {
-                    BI.Broadcasts.send(link.to, link.from, clicked);
+            BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
+                if (BI.contains(dId, link.from)) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
                     self._send2AllChildLinkWidget(link.to, link.from, clicked);
                 }
             });
         })
     },
 
-    _getShowTarget: function(){
+    _getShowTarget: function () {
         var self = this, o = this.options;
         var view = BI.Utils.getWidgetViewByID(o.wId);
         this.seriesDid = BI.find(view[BICst.REGION.DIMENSION1], function (idx, did) {
@@ -77,12 +77,12 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             return BI.Utils.isDimensionUsable(did);
         });
         this.targetIds = [];
-        BI.each(view, function(regionType, arr){
-            if(regionType >= BICst.REGION.TARGET1){
+        BI.each(view, function (regionType, arr) {
+            if (regionType >= BICst.REGION.TARGET1) {
                 self.targetIds = BI.concat(self.targetIds, arr);
             }
         });
-        return this.targetIds = BI.filter(this.targetIds, function(idx, tId){
+        return this.targetIds = BI.filter(this.targetIds, function (idx, tId) {
             return BI.Utils.isDimensionUsable(tId);
         });
 
@@ -91,7 +91,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
     _getChartTypeByTargetId: function (tId) {
         var forAxis = function () {
             var chartType = BI.Utils.getDimensionStyleOfChartByID(tId);
-            if(BI.isNotNull(chartType)){
+            if (BI.isNotNull(chartType)) {
                 type = chartType.type;
             }
             switch (type) {
@@ -139,7 +139,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 var data = BI.map(left.c, function (idx, obj) {
                     self.tarIdMap[obj.s.c[id].s] = targetIds[0];
                     var wType = BI.Utils.getWidgetTypeByID(o.wId);
-                    if(wType === BICst.Widget.ACCUMULATE_BAR || wType === BICst.Widget.BAR){
+                    if (wType === BICst.Widget.ACCUMULATE_BAR || wType === BICst.Widget.BAR) {
                         return {
                             "y": obj.n,
                             "x": obj.s.c[id].s
@@ -164,7 +164,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 var wType = BI.Utils.getWidgetTypeByID(o.wId);
                 var adjustData = BI.map(data.c, function (id, item) {
                     self.tarIdMap[item.s[idx]] = targetIds[idx];
-                    if(wType === BICst.Widget.ACCUMULATE_BAR || wType === BICst.Widget.BAR){
+                    if (wType === BICst.Widget.ACCUMULATE_BAR || wType === BICst.Widget.BAR) {
                         return {
                             y: item.n,
                             x: item.s[idx]
@@ -181,7 +181,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     name: BI.Utils.getDimensionNameByID(targetIds[idx])
                 };
                 var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[idx]);
-                if(BI.has(chart, "type") && chart.type === BICst.Widget.ACCUMULATE_COLUMN){
+                if (BI.has(chart, "type") && chart.type === BICst.Widget.ACCUMULATE_COLUMN) {
                     res.stack = "stackChart";
                 }
                 return res;
@@ -194,10 +194,10 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
         var view = BI.Utils.getWidgetViewByID(o.wId);
-        var result = BI.find(view, function(region, arr){
+        var result = BI.find(view, function (region, arr) {
             return BI.isEmptyArray(arr);
         });
-        if(BI.isNotNull(result) || BI.size(view) < this.constants.BUBBLE_REGION_COUNT){
+        if (BI.isNotNull(result) || BI.size(view) < this.constants.BUBBLE_REGION_COUNT) {
             return [];
         }
         return BI.map(data.c, function (idx, item) {
@@ -219,10 +219,10 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
         var view = BI.Utils.getWidgetViewByID(o.wId);
-        var result = BI.find(view, function(region, arr){
+        var result = BI.find(view, function (region, arr) {
             return BI.isEmptyArray(arr);
         });
-        if(BI.isNotNull(result) || BI.size(view) < this.constants.SCATTER_REGION_COUNT){
+        if (BI.isNotNull(result) || BI.size(view) < this.constants.SCATTER_REGION_COUNT) {
             return [];
         }
         return BI.map(data.c, function (idx, item) {
@@ -238,17 +238,17 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         });
     },
 
-    _formatDataForAxis: function(da){
+    _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
-        if(BI.isEmptyArray(data)){
+        if (BI.isEmptyArray(data)) {
             return [];
         }
         var view = BI.Utils.getWidgetViewByID(o.wId);
-        BI.each(this.targetIds, function(idx, tId){
-            if(BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)){
+        BI.each(this.targetIds, function (idx, tId) {
+            if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
                 data[idx].yAxis = 1;
-            }else{
+            } else {
                 data[idx].yAxis = 0;
             }
         });
@@ -280,14 +280,14 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.tarIdMap = {};
         this.chartDisplay.loading();
-        BI.Utils.getWidgetDataByID(o.wId, function(jsonData){
+        BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             self.chartDisplay.setChartType(BI.Utils.getWidgetTypeByID(o.wId));
             var view = BI.Utils.getWidgetViewByID(o.wId);
-            if(BI.has(view, BICst.REGION.TARGET2)
+            if (BI.has(view, BICst.REGION.TARGET2)
                 && BI.isNotEmptyArray(view[BICst.REGION.TARGET2])
-                && BI.Utils.getWidgetTypeByID(o.wId) === BICst.Widget.AXIS){
+                && BI.Utils.getWidgetTypeByID(o.wId) === BICst.Widget.AXIS) {
                 self.chartDisplay.showTheOtherYAxis();
-            }else{
+            } else {
                 self.chartDisplay.hideTheOtherYAxis();
             }
             self.chartDisplay.resize();
@@ -300,11 +300,11 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         this.chartDisplay.resize();
     },
 
-    _send2AllChildLinkWidget: function(wid, dId, clicked) {
+    _send2AllChildLinkWidget: function (wid, dId, clicked) {
         var self = this;
         var linkage = BI.Utils.getWidgetLinkageByID(wid);
-        BI.each(linkage, function(i, link) {
-            BI.Broadcasts.send(link.to, dId, clicked);
+        BI.each(linkage, function (i, link) {
+            BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, dId, clicked);
             self._send2AllChildLinkWidget(link.to);
         });
     }

@@ -118,7 +118,8 @@ BI.Convert = BI.inherit(BI.Widget, {
         var self = this;
 
         this.baseFieldCombo = BI.createWidget({
-            type: "bi.text_value_combo"
+            type: "bi.text_value_combo",
+            height: 30
         });
 
         this.baseFieldCombo.on(BI.StaticCombo.EVENT_CHANGE, function(){
