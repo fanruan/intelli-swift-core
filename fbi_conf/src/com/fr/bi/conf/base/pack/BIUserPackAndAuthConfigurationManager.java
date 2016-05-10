@@ -1,12 +1,9 @@
 package com.fr.bi.conf.base.pack;
 
 import com.fr.bi.base.BIUser;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.conf.base.pack.data.BIBasicBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,24 +19,19 @@ import java.util.Set;
 public class BIUserPackAndAuthConfigurationManager {
 
     protected BIUser user;
-    private BIPackAndAuthConfigManager packAndAuthConfigManager;
-    protected BIPackagesManagerService currentPackageManager;
+    protected BIPackAndAuthContainer biPackAndAuthContainer;
 
 
 
     public BIUserPackAndAuthConfigurationManager(long userId) {
         user = new BIUser(userId);
-        packAndAuthConfigManager=BIFactoryHelper.getObject(BIPackAndAuthConfigManager.class,userId);
-        currentPackageManager = BIFactoryHelper.getObject(BIPackagesManagerService.class, userId);
-
+        biPackAndAuthContainer=new BIPackAndAuthContainer();
     }
 
-    public BIPackagesManagerService getCurrentPackageManager() {
-        return currentPackageManager;
+    public BIPackAndAuthContainer getBiPackAndAuthContainer() {
+        return biPackAndAuthContainer;
     }
-    public BIPackAndAuthConfigManager getPackAndAuthConfigManager() {
-        return packAndAuthConfigManager;
-    }
+
 
     public BIUser getUser() {
         return user;
@@ -50,25 +42,11 @@ public class BIUserPackAndAuthConfigurationManager {
     }
 
 
-
-    /**
-     * 更新
-     */
-    public void envChanged() {
-        packAndAuthConfigManager.clear();
-    }
-
-
-
-    public Set<BIBusinessPackage> getCurrentPackage4Generating() {
-        Set<BIBusinessPackage> clone = new HashSet<BIBusinessPackage>();
-        for (BIBusinessPackage pack : packAndAuthConfigManager.getAllPackages()) {
-            try {
-                clone.add((BIBasicBusinessPackage) pack.clone());
-            } catch (CloneNotSupportedException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+    public Set<BIPackAndAuthority> getCurrentAuthority4Generating() {
+        Set<BIPackAndAuthority> clone = new HashSet<BIPackAndAuthority>();
+            for (BIPackAndAuthority pack : biPackAndAuthContainer.getAllPackages()) {
+                clone.add(pack);
             }
-        }
         return clone;
     }
 

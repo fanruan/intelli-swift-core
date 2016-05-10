@@ -249,8 +249,7 @@ Data.Req = BIReq = {
         })
     },
     reqAuthorityByPackageId: function (packageId) {
-        return BI.requestAsync("fr_bi_configure", "get_package_authority", {package:packageId},function(res) {
-        });;
+         return BI.requestSync("fr_bi_configure", "get_package_authority", {packageId:packageId});;
     },
     reqAllAuthority: function () {
         var rolesFromServer = BI.requestSync("fs_set", "auth_getAllRole_withDeptAll", {});

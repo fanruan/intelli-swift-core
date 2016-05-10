@@ -1,11 +1,11 @@
 package com.fr.bi.web.conf.services.packs;
 
+import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +35,18 @@ public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
      * @throws Exception
      */
     public void savePackageAuthority(String packageId, String roles, long userId) throws Exception {
-        JSONArray packIdjo = new JSONArray(packageId);
         JSONArray roleInfojo=new JSONArray(roles);
         BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
-        JSONObject a=packageAndAuthorityManager.createPackageJSON(userId);
+
+        BIPackAndAuthority biPackAndAuthority=new BIPackAndAuthority();
+        biPackAndAuthority.setBiPackageID(packageId);
+        String[] packageIdArray=new String[roleInfojo.length()];
+        for (int i = 0; i < roleInfojo.length(); i++) {
+            packageIdArray[i]=roleInfojo.getJSONObject(i).get("packageId").toString();
+        }
+        biPackAndAuthority.setRoleIdArray(packageIdArray);
+        packageAndAuthorityManager.addPackage(userId,biPackAndAuthority);
+        packageAndAuthorityManager.persistData(userId);
 
 
     }

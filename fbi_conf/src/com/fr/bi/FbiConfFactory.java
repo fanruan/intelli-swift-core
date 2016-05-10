@@ -22,11 +22,6 @@ public static void registerModuleBeans(){
 			 BILogger.getLogger().error(ignore.getMessage(),ignore);	
 			}
 		try{
-			xmlFactory.registerClass("com.fr.bi.conf.base.pack.BIPackAndAuthConfigManager",com.fr.bi.conf.base.pack.BIPackAndAuthConfigManager.class);}
-		catch(BIFactoryKeyDuplicateException ignore){
-			BILogger.getLogger().error(ignore.getMessage(),ignore);
-		}
-		try{
 			xmlFactory.registerClass("com.fr.bi.conf.base.pack.BIPackagesManagerService",com.fr.bi.conf.base.pack.BIPackageContainer.class);}
 		catch(BIFactoryKeyDuplicateException ignore){
 			 BILogger.getLogger().error(ignore.getMessage(),ignore);	

@@ -4,7 +4,6 @@ import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.provider.BICubeManagerProvider;
-import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
 import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.bi.conf.provider.BITableRelationConfigurationProvider;
 import com.fr.bi.conf.utils.BIModuleManager;
@@ -95,7 +94,6 @@ public class BIPlate extends AbstractFSPlate {
 
     private static void changeSystemEnv() {
         StableFactory.getMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, BISystemPackageConfigurationProvider.class).envChanged();
-        StableFactory.getMarkedObject(BISystemPackAndAuthConfigurationProvider.XML_TAG, BISystemPackAndAuthConfigurationProvider.class).envChanged();
         StableFactory.getMarkedObject(BITableRelationConfigurationProvider.XML_TAG, BITableRelationConfigurationProvider.class).envChanged();
 
     }

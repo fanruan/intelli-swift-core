@@ -2,14 +2,10 @@ package com.fr.bi.conf.base.pack;
 
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.base.BISystemDataManager;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackageGetterService;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
-import com.fr.bi.conf.base.pack.data.BIPackageName;
+import com.fr.bi.conf.base.pack.data.*;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
-import com.fr.json.JSONObject;
 
 import java.util.Set;
 
@@ -30,21 +26,18 @@ public class BISystemPackAndAuthConfigurationManager extends BISystemDataManager
         return "packageAndAuthority";
     }
 
+    @Override
+    public String persistUserDataName(long key) {
+        return managerTag();
+    }
 
 
 
     @Override
-    public Set<BIBusinessPackage> getAllPackages(long userId) {
-        return getUserGroupConfigManager(userId).getCurrentPackage4Generating();
+    public Set<BIPackAndAuthority> getAllPackages(long userId) {
+        return getUserGroupConfigManager(userId).getCurrentAuthority4Generating();
     }
 
-    /**
-     * 更新
-     */
-    @Override
-    public void envChanged() {
-        clear();
-    }
 
 
     @Override
@@ -53,35 +46,23 @@ public class BISystemPackAndAuthConfigurationManager extends BISystemDataManager
     }
 
 
-    @Override
-    public BIBusinessPackageGetterService getPackage(long userId, BIPackageID packageID) throws BIPackageAbsentException {
-        return getUserGroupConfigManager(userId).getPackAndAuthConfigManager().getPackage(packageID);
+    public BIPackAndAuthority getPackageByID(long userId, String packageID) throws BIPackageAbsentException {
+        Set<BIPackAndAuthority> allPackages = getAllPackages(userId);
+        for (BIPackAndAuthority packAndAuthority : allPackages) {
+            if (packAndAuthority.getBiPackageID().equals(packageID)){
+                return  packAndAuthority;
+            }
+        }
+        return null;
     }
 
 
     @Override
-    public void addPackage(long userId, BIBusinessPackage biBusinessPackage) throws BIPackageDuplicateException {
-        getUserGroupConfigManager(userId).getPackAndAuthConfigManager().addPackage(biBusinessPackage);
+    public void addPackage(long userId, BIPackAndAuthority biPackAndAuthority) throws BIPackageDuplicateException {
+        getUserGroupConfigManager(userId).getBiPackAndAuthContainer().addPackage(biPackAndAuthority);
     }
 
 
 
-
-    @Override
-    public void removePackage(long userId, BIPackageID packageID) throws BIPackageAbsentException {
-        getUserGroupConfigManager(userId).getPackAndAuthConfigManager().removePackage(packageID);
-    }
-
-
-    @Override
-    public Set<BIBusinessPackage> getPackageByName(long userId, BIPackageName packName) {
-        return getUserGroupConfigManager(userId).getPackAndAuthConfigManager().getPackageByName(packName);
-    }
-
-
-    @Override
-    public JSONObject createPackageJSON(long userId) throws Exception {
-        return getUserGroupConfigManager(userId).getPackAndAuthConfigManager().createPackageJSON();
-    }
 
 }
