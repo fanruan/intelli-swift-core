@@ -105,5 +105,8 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("dimensions", dims);
         Data.SharingPool.put("widgets", widgets);
         Data.SharingPool.put("layoutType", this.get("layoutType"));
+
+        //用于undo redo
+        var records = Data.SharingPool.get("records") || new BI.Queue(100);
     }
 });

@@ -342,6 +342,15 @@
             return BI.keys(Data.SharingPool.get("widgets", wid, "dimensions"));
         },
 
+        getAllUsedFieldIds: function(){
+            var allDIds = this.getAllDimensionIDs();
+            var fields = [];
+            BI.each(allDIds, function(i, dId){
+                fields.push(BI.Utils.getFieldIDByDimensionID(dId)); 
+            });
+            return fields;
+        },
+
         isWidgetExistByID: function (wid) {
             return this.getAllWidgetIDs().contains(wid);
         },
