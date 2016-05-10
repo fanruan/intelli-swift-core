@@ -74,7 +74,7 @@ BI.SelectDataSwitcher = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        this.tree.setValue(v)
+        this.tree.setValue(v);
     },
 
     getValue: function () {
