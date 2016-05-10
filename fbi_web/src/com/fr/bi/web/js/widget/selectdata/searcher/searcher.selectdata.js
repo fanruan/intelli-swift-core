@@ -32,6 +32,7 @@ BI.SelectDataSearcher = BI.inherit(BI.Widget, {
         });
         this.packagePane.on(BI.SelectDataSwitcher.EVENT_CHANGE, function () {
             self.searcherPane.setPackage(this.getPackageId());
+            self.fireEvent(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, arguments);
         });
         this.packagePane.on(BI.SelectDataSwitcher.EVENT_CLICK_ITEM, function () {
             self.fireEvent(BI.SelectDataSearcher.EVENT_CLICK_ITEM, arguments);
@@ -120,5 +121,6 @@ BI.SelectDataSearcher = BI.inherit(BI.Widget, {
     }
 });
 BI.SelectDataSearcher.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
+BI.SelectDataSearcher.EVENT_CLICK_PACKAGE = "EVENT_CLICK_PACKAGE";
 BI.SelectDataSearcher.EVENT_CHANGE = "SelectDataSearcher.EVENT_CHANGE";
 $.shortcut('bi.select_data_searcher', BI.SelectDataSearcher);
