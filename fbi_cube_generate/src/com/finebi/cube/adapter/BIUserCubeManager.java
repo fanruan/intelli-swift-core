@@ -8,6 +8,7 @@ import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.ICube;
+import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
@@ -22,6 +23,7 @@ import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
+import com.fr.bi.stable.utils.BIIDUtils;
 
 /**
  * This class created on 2016/4/15.
@@ -49,9 +51,13 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(Table td) {
-
-        return getTableIndex(td.getID());
+        if (BIIDUtils.isFakeTable(td.getID().getIdentityValue())) {
+            return getTableIndex(BIBasicCore.generateValueCore(td.getID().getIdentityValue()));
+        } else {
+            return getTableIndex(td.getID());
+        }
     }
+
 
     @Override
     public ICubeTableService getTableIndex(BICore core) {
