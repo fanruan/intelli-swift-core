@@ -72,11 +72,13 @@ public class BISubScribeContainer extends BIMapContainer<ISubscribeID, ISubscrib
     @Override
     public void deliverMessage(IMessage message) throws BIMessageFailureException {
         Iterator<ISubscribe> it = getAllSubscribes().iterator();
-        while (it.hasNext()) {
-            ISubscribe subscribe = it.next();
-            handleMessage(subscribe, message);
-            if (!subscribe.keepSubscribe()) {
-                it.remove();
+        synchronized (getAllSubscribes()) {
+            while (it.hasNext()) {
+                ISubscribe subscribe = it.next();
+                handleMessage(subscribe, message);
+                if (!subscribe.keepSubscribe()) {
+                    it.remove();
+                }
             }
         }
     }

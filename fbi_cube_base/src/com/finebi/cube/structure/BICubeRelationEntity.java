@@ -18,7 +18,8 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     private ICubeResourceDiscovery discovery;
 
     public BICubeRelationEntity(ICubeResourceDiscovery discovery, ICubeResourceLocation cubeResourceLocation) {
-        indexDataService = new BICubeIndexData(discovery, cubeResourceLocation);
+        this.discovery = discovery;
+        indexDataService = new BICubeIndexData(this.discovery, cubeResourceLocation);
     }
 
     public BICubeRelationEntity(ICubeIndexDataService indexDataService) {
