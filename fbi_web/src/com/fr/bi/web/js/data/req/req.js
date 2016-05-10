@@ -68,6 +68,9 @@ Data.Req = BIReq = {
     reqPakageAndGroup: function (callback) {
         return BI.requestAsync("fr_bi_configure", "get_business_package_group", {}, callback);
     },
+    reqPakageAndGroupSync: function () {
+        return BI.requestSync("fr_bi_configure", "get_business_package_group", {});
+    },
 
     reqAllTablesByConnection: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "get_all_translated_tables_by_connection", data, callback);

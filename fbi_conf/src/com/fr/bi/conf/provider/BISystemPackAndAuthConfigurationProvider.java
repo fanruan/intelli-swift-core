@@ -37,7 +37,7 @@ public interface BISystemPackAndAuthConfigurationProvider {
      * @param biPackAndAuthority 业务包
      * @throws BIPackageDuplicateException
      */
-    void addPackage(long userId, BIPackAndAuthority biPackAndAuthority) throws BIPackageDuplicateException;
+    void addPackage(long userId, BIPackAndAuthority biPackAndAuthority) throws BIPackageDuplicateException, Exception;
 
     /**
      * 持久化数据
@@ -48,6 +48,8 @@ public interface BISystemPackAndAuthConfigurationProvider {
     @Deprecated
     void persistData(long userId);
 
+    void updateAuthority(long userId, BIPackAndAuthority biPackAndAuthority) throws Exception;
 
+    boolean containPackage(long userId,BIPackAndAuthority biPackAndAuthority);
 
 }

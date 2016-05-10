@@ -22,9 +22,9 @@ public class BIGetPackageAuthorityAction extends AbstractBIConfigureAction {
         BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
 
         BIPackAndAuthority biPackAndAuthority = packageAndAuthorityManager.getPackageByID(userId, packageId);
-
-        JSONObject jo = new JSONObject().put("packageId", biPackAndAuthority==null?"":biPackAndAuthority.getRoleIdArray());
+        JSONObject jo = new JSONObject().put("roles", biPackAndAuthority==null?"":biPackAndAuthority.getRoleIdArray());
         WebUtils.printAsJSON(res, jo);
+
 
     }
 

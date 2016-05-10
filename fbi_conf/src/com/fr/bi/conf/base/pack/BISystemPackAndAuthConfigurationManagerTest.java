@@ -1,6 +1,7 @@
 package com.fr.bi.conf.base.pack;
 
 import com.fr.bi.base.BIUser;
+import com.fr.json.JSONArray;
 
 /**
  * Created by wuk on 16/5/8.
@@ -37,6 +38,12 @@ public class BISystemPackAndAuthConfigurationManagerTest {
 
     @org.junit.Test
     public void getPackage() throws Exception {
+        String roles="[3,5,4]";
+        JSONArray roleInfojo=new JSONArray(roles);
+        String[] packageIdArray=new String[roleInfojo.length()];
+        for (int i = 0; i < roleInfojo.length(); i++) {
+            packageIdArray[i]= String.valueOf(roleInfojo.getString(i));
+        }
     }
 
     @org.junit.Test

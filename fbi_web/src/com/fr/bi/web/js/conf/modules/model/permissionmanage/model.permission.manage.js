@@ -32,9 +32,7 @@ BIConf.PermissionManageModel = BI.inherit(BI.Model, {
     load: function (data) {
         Data.SharingPool.put("groups", data.groups);
         Data.SharingPool.put("packages", data.packages);
-        var self = this,
-            packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON4PrermissionManage();
-        //说不定有用
+        var packageStructure = BI.Utils.getAllGroupedPackagesTreeAsync();
         Data.SharingPool.put("packageStructure", packageStructure);
         this.set({
             packageTree : packageStructure

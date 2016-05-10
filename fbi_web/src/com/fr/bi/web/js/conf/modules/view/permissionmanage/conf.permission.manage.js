@@ -30,6 +30,8 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         return true;
     },
     refresh: function () {
+        //查询业务包数并保存在共享池中
+        // BI.Utils.getAllGroupedPackagesTreeSync();
     },
 
     _builtPackageTree: function () {
@@ -38,13 +40,12 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             type: "bi.package_tree"
         });
         this.packageTree.on(BI.PackageTree.EVENT_CHANGE, function () {
-            Data.SharingPool.put("packageId",self.packageTree.getValue());
-            self.tab.populate(JSON.parse(self.packageTree.getValue()));
+            Data.SharingPool.put("packageId",JSON.parse(self.packageTree.getValue())[0]);
+            self.tab.populate(JSON.parse(self.packageTree.getValue())[0]);
             self._setHeadTitle(JSON.parse(self.packageTree.getValue()));
             self.tab.setVisible(true);
-
         });
-        this.packageTree.populate();
+        // this.packageTree.populate();
         return this.packageTree;
     },
     _buildAuthorityPane: function () {

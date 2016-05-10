@@ -2,11 +2,11 @@ package com.fr.bi.conf.base.pack;
 
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.base.BISystemDataManager;
-import com.fr.bi.conf.base.pack.data.*;
+import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
-import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -35,7 +35,13 @@ public class BISystemPackAndAuthConfigurationManager extends BISystemDataManager
 
     @Override
     public Set<BIPackAndAuthority> getAllPackages(long userId) {
-        return getUserGroupConfigManager(userId).getCurrentAuthority4Generating();
+        Set<BIPackAndAuthority> allPackages = getUserGroupConfigManager(userId).getBiPackAndAuthContainer().getAllPackages();
+        Set<BIPackAndAuthority> clone = new HashSet<BIPackAndAuthority>();
+        for (BIPackAndAuthority pack : allPackages) {
+            clone.add(pack);
+        }
+        return clone;
+
     }
 
 
@@ -43,6 +49,17 @@ public class BISystemPackAndAuthConfigurationManager extends BISystemDataManager
     @Override
     public void persistData(long userId) {
         persistUserData(userId);
+    }
+
+    @Override
+    public void updateAuthority(long userId, BIPackAndAuthority biPackAndAuthority) throws Exception {
+        getUserGroupConfigManager(userId).getBiPackAndAuthContainer().removePackage(biPackAndAuthority);
+        getUserGroupConfigManager(userId).getBiPackAndAuthContainer().addPackage(biPackAndAuthority);
+    }
+
+    @Override
+    public boolean containPackage(long userId,BIPackAndAuthority biPackAndAuthority) {
+        return getUserGroupConfigManager(userId).getBiPackAndAuthContainer().containPackage(biPackAndAuthority);
     }
 
 
@@ -58,7 +75,7 @@ public class BISystemPackAndAuthConfigurationManager extends BISystemDataManager
 
 
     @Override
-    public void addPackage(long userId, BIPackAndAuthority biPackAndAuthority) throws BIPackageDuplicateException {
+    public void addPackage(long userId, BIPackAndAuthority biPackAndAuthority) throws Exception {
         getUserGroupConfigManager(userId).getBiPackAndAuthContainer().addPackage(biPackAndAuthority);
     }
 

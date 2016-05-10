@@ -4,7 +4,6 @@ import com.fr.bi.common.container.BISetContainer;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
-import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.Iterator;
@@ -25,8 +24,7 @@ public class BIPackAndAuthContainer extends BISetContainer<BIPackAndAuthority> {
         try {
             Iterator<BIPackAndAuthority> it = this.container.iterator();
             while (it.hasNext()) {
-                BIPackAndAuthority t=new BIPackAndAuthority();
-                t = it.next();
+                BIPackAndAuthority t = it.next();
                 biPackAndAuthContainer.container.add(t);
             }
         } catch (Exception e) {
@@ -44,13 +42,18 @@ public class BIPackAndAuthContainer extends BISetContainer<BIPackAndAuthority> {
         return this.getContainer();
     }
 
-    public void addPackage(BIPackAndAuthority biPackAndAuthority) throws BIPackageDuplicateException {
+    public void addPackage(BIPackAndAuthority biPackAndAuthority) throws Exception {
         if (!this.contain(biPackAndAuthority)) {
             this.add(biPackAndAuthority);
-        } else {
-            throw new BIPackageDuplicateException();
         }
     }
+
+    public void removePackage(BIPackAndAuthority biPackAndAuthority) {
+        synchronized (container) {
+            this.remove(biPackAndAuthority);
+        }
+    }
+
 
     public Boolean containPackage(BIPackAndAuthority biPackAndAuthority) {
         return super.contain(biPackAndAuthority);

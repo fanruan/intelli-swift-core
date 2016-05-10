@@ -36,16 +36,21 @@ public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
      */
     public void savePackageAuthority(String packageId, String roles, long userId) throws Exception {
         JSONArray roleInfojo=new JSONArray(roles);
+//        packageId=String.valueOf(new JSONArray(packageId).getString(0));
         BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
-
         BIPackAndAuthority biPackAndAuthority=new BIPackAndAuthority();
         biPackAndAuthority.setBiPackageID(packageId);
         String[] packageIdArray=new String[roleInfojo.length()];
         for (int i = 0; i < roleInfojo.length(); i++) {
-            packageIdArray[i]=roleInfojo.getJSONObject(i).get("packageId").toString();
+            packageIdArray[i]= String.valueOf(roleInfojo.getString(i));
         }
         biPackAndAuthority.setRoleIdArray(packageIdArray);
-        packageAndAuthorityManager.addPackage(userId,biPackAndAuthority);
+        boolean isExisted=packageAndAuthorityManager.containPackage(userId,biPackAndAuthority);
+        if(isExisted){
+           packageAndAuthorityManager.updateAuthority(userId,biPackAndAuthority);
+        }else {
+            packageAndAuthorityManager.addPackage(userId,biPackAndAuthority);
+        }
         packageAndAuthorityManager.persistData(userId);
 
 
