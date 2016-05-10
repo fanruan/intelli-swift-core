@@ -17,7 +17,7 @@ BIDezi.NumberDetailModel = BI.inherit(BI.Model, {
     change: function (changed, prev) {
         if (BI.has(changed, "dimensions")) {
             if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
-                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + self.get("id"));
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
             }
             if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {

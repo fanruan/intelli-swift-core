@@ -38,9 +38,12 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 }
             }
         });
-        //TODO 暂时先选中第一个业务包
-        var ids = BI.Utils.getAllPackageIDs();
-        this.searcher.setPackage(ids[0]);
+        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, function () {
+            var pId = this.getPackageId();
+            BI.Utils.setCurrentSelectPackageID(pId);
+        });
+        var id = BI.Utils.getCurrentSelectPackageID();
+        this.searcher.setPackage(id);
     },
 
     _getSearchResult: function (type, keyword, packageId) {
