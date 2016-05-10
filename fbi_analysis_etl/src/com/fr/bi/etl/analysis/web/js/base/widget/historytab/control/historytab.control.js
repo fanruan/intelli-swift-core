@@ -203,6 +203,8 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
                             widget.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE);
                         }
                     })
+                } else {
+                    BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'),  BI.i18nText('BI-Cannot-Delete-Last'))
                 }
                 return;
             }

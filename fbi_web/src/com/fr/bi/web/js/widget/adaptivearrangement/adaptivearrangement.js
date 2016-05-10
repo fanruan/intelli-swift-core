@@ -62,7 +62,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             resize: function (e, ui) {
                 self._resize(item.attr("id"), ui.size);
             },
-            stop: function (e) {
+            stop: function (e, ui) {
+                self._resize(item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
             }
         });

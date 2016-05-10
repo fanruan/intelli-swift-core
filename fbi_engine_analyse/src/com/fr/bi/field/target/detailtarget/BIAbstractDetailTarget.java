@@ -132,7 +132,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
 
         if (jo.has("group")) {
             JSONObject groupJo = jo.getJSONObject("group");
-            group = BIGroupFactory.parseDateGroup(groupJo);
+            group = BIGroupFactory.parseGroup(groupJo);
         }
     }
 

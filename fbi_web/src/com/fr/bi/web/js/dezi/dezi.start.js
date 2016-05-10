@@ -2,7 +2,7 @@ BIDezi = FR.BIDezi = BI.Dezi = {};
 BI.extend(BIDezi, {
     _init: function (options) {
         options["popConfig"] || (options["popConfig"] = {});
-        BI.Cache.setUsername(options["_createby"]);
+        BI.Cache.setUsername(options["createBy"]);
 
         var AppRouter = BI.Router.extend({
             routes: {

@@ -79,11 +79,23 @@ BI.CustomScrollTableScrollBar = BI.inherit(BI.Widget, {
     },
 
     getScrollLeft: function () {
-        return -1 * $(".mCSB_container", this.element).position().left;
+        var left = 0;
+        try {
+            left = -1 * $(".mCSB_container", this.element).position().left;
+        } catch (e) {
+
+        }
+        return left;
     },
 
     getScrollTop: function () {
-        return -1 * $(".mCSB_container", this.element).position().top;
+        var top = 0;
+        try {
+            top = -1 * $(".mCSB_container", this.element).position().top;
+        } catch (e) {
+
+        }
+        return top;
     },
 
     getScrollHeight: function () {

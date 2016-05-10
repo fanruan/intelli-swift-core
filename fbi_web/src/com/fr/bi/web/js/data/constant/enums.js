@@ -107,6 +107,9 @@ BICst.Widget = {
     AREA: 30,
     ACCUMULATE_COLUMN: 31,
     TABLE_SHOW: 31,
+
+    GENERAL_QUERY: 32,
+
     NONE: -1
 };
 

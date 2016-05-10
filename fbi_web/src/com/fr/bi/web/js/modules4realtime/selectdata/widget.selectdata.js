@@ -39,13 +39,17 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
             }
         });
 
+        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, function () {
+            var pId = this.getPackageId();
+            BI.Utils.setCurrentSelectPackageID(pId);
+        });
+
         this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function (value, ob) {
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
         });
 
-        //TODO 暂时先选中第一个业务包
-        var ids = BI.Utils.getAllPackageIDs();
-        this.searcher.setPackage(ids[0]);
+        var id = BI.Utils.getCurrentSelectPackageID();
+        this.searcher.setPackage(id);
     },
 
     /**

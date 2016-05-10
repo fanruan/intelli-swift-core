@@ -64,9 +64,13 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                 });
             });
             this.set("widgets", widgets);
-            BI.Broadcasts.send(key2);
         }
         this.refresh();
+        if (key1 === "widgets") {
+            BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX + key2);
+            //全局组件增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX);
+        }
     },
 
     similar: function (ob, key) {
@@ -105,5 +109,8 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("dimensions", dims);
         Data.SharingPool.put("widgets", widgets);
         Data.SharingPool.put("layoutType", this.get("layoutType"));
+
+        //用于undo redo
+        var records = Data.SharingPool.get("records") || new BI.Queue(100);
     }
 });

@@ -69,6 +69,22 @@
             return BI.keys(Pool.packages);
         },
 
+        getCurrentSelectPackageID: function () {
+            var id = BI.Cache.getItem(BICst.CACHE.PACKAGE_PREFIX + this.getCurrentTemplateId());
+            var ids = this.getAllPackageIDs();
+            if (ids.contains(id)) {
+                return id;
+            }
+            return ids[0];
+        },
+
+        setCurrentSelectPackageID: function (pId) {
+            if (BI.isNotEmptyString(pId)) {
+                var key = BICst.CACHE.PACKAGE_PREFIX + this.getCurrentTemplateId();
+                BI.Cache.setItem(key, pId);
+            }
+        },
+
         getPackageNameByID: function (packageId) {
             if (BI.isNotNull(Pool.packages[packageId])) {
                 return Pool.packages[packageId].name;
@@ -340,6 +356,15 @@
                 return BI.keys(Data.SharingPool.get("dimensions"))
             }
             return BI.keys(Data.SharingPool.get("widgets", wid, "dimensions"));
+        },
+
+        getAllUsedFieldIds: function () {
+            var allDIds = this.getAllDimensionIDs();
+            var fields = [];
+            BI.each(allDIds, function (i, dId) {
+                fields.push(BI.Utils.getFieldIDByDimensionID(dId));
+            });
+            return fields;
         },
 
         isWidgetExistByID: function (wid) {

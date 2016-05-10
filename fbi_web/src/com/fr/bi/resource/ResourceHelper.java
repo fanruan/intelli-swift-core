@@ -274,6 +274,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.year.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.yearmonth.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.yearquarter.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.generalquery.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.string.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.year.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.yearmonth.detail.js",
@@ -283,6 +284,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.detailtable.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.daterange.detail.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.tree.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.content.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.image.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.web.js",
@@ -291,6 +293,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.string.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.number.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.date.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.tree.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.target.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/filter/model.dimensionfilter.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/filter/model.targetfilter.js",
@@ -311,6 +314,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.daterange.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.number.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.tree.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.generalquery.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.widgets.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.string.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.date.detail.js",
@@ -330,6 +334,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.string.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.number.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.date.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.tree.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.target.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customgroup/dezi.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customsort/dezi.customsort.js",
@@ -653,6 +658,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/utils4conf.js",
                 "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/constant.js",
+                "com/fr/bi/web/js/modules/cache.js",
                 "com/fr/bi/web/js/modules/broadcast.js",
 
                 //下面是各个功能模块
@@ -784,6 +790,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4filter/widget.targetselectfield.js",
                 "com/fr/bi/web/js/modules/selectdata4filter/node/node.level0.dimension.js",
 
+                //通用查询选字段
+                "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.selectdata.tab.js",
+                "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.selectdata.pane.js",
+                "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.js",
+                "com/fr/bi/web/js/modules/selectdata4generalquery/item/item.generalquery.selectdata.js",
+
                 //分组统计选字段
                 "com/fr/bi/web/js/modules/selectdata4statistics/widget.selectsingletablefield.js",
 
@@ -824,6 +836,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/tablefield/widget.tablefield.searchresult.pane.js",
                 "com/fr/bi/web/js/modules/tablefield/widget.tablefieldwithsearch.pane.js",
 
+                //下拉树控件字段关联设置
+                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/fieldrelationsettingwithpreviewpopup.js",
+                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/model.fieldrelationsettingwithpreviewpopup.js",
+
                 //明细表字段关联设置
                 "com/fr/bi/web/js/modules/fieldrelationsetting/item.path.detailtable.js",
                 "com/fr/bi/web/js/modules/fieldrelationsetting/item.commontable.set.detailtable.js",
@@ -854,12 +870,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/formula/item.formula.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/formula/item.emptyformula.js",
 
+                "com/fr/bi/web/js/modules/filter/filteritems/generalquery/item.generalquery.notypefilter.js",
+
                 //过滤
-                "com/fr/bi/web/js/modules/filter/filter.expander.js",
+                "com/fr/bi/web/js/modules/filter/expander/filter.expander.js",
                 "com/fr/bi/web/js/modules/filter/filter.target.js",
                 "com/fr/bi/web/js/modules/filter/filter.dimension.js",
-                "com/fr/bi/web/js/modules/filter/filter.common.js",
                 "com/fr/bi/web/js/modules/filter/targetsummary/filter.target.summary.js",
+                "com/fr/bi/web/js/modules/filter/generalquery/filter.generalquery.js",
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
 
                 //计算指标
