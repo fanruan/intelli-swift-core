@@ -34,7 +34,7 @@ public class MemoryTableIndexLoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(BICore md5Core) {
-        ITableSource source = BIModuleUtils.getSource(md5Core, user);
+        ITableSource source = BIModuleUtils.getSourceByCore(md5Core, user);
         final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(null));
         cube.writeRowCount(source.read(new Traversal<BIDataValue>() {
             @Override
@@ -92,7 +92,7 @@ public class MemoryTableIndexLoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(BICore core, int start, int end) {
-        ITableSource source = BIModuleUtils.getSource(core, user);
+        ITableSource source = BIModuleUtils.getSourceByCore(core, user);
         final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(null));
         cube.writeRowCount(source.read4Part(new Traversal<BIDataValue>() {
             @Override

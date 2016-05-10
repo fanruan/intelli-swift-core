@@ -6,6 +6,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
 import com.fr.bi.conf.base.pack.data.BIBusinessTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.web.service.ServiceUtils;
@@ -61,12 +62,12 @@ public class ResourceHelper {
         JSONObject excelViews = new JSONObject();
         try {
             groups = BIConfigureManagerCenter.getPackageManager().createGroupJSON(userId);
-            packages = BIConfigureManagerCenter.getPackageManager().createPackageJSON(userId);
+            packages = BIModuleUtils.createPackJSON(userId);
             translations = BIConfigureManagerCenter.getAliasManager().getTransManager(userId).createJSON();
             relations = BIConfigureManagerCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
             source = BIConfigureManagerCenter.getDataSourceManager().createJSON(new BIUser(userId));
-            Set<BIBusinessPackage> packs = BIConfigureManagerCenter.getPackageManager().getAllPackages(userId);
+            Set<BIBusinessPackage> packs = BIModuleUtils.getAllPacks(userId);
             for (BIBusinessPackage p : packs) {
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
                     JSONObject jo = t.createJSONWithFieldsInfo(BICubeManager.getInstance().fetchCubeLoader(userId));
