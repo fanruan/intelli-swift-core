@@ -657,6 +657,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/utils4conf.js",
                 "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/constant.js",
+                "com/fr/bi/web/js/modules/cache.js",
                 "com/fr/bi/web/js/modules/broadcast.js",
 
                 //下面是各个功能模块
