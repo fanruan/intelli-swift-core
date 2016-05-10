@@ -5,10 +5,12 @@
 BICst.BROADCAST = {
     TEST: "test_broadcast",
 
-    WIDGETS_PREFIX: "widgets_",//组件增删事件 + wId
-    DIMENSIONS_PREFIX: "dimensions_",//维度增删事件 + wId
+    WIDGETS_PREFIX: "widgets_",//组件增删事件 + wId || ""
+    DIMENSIONS_PREFIX: "dimensions_",//维度增删事件 + wId || ""
     REFRESH_PREFIX: "refresh_",//刷新事件 + wId
     LINKAGE_PREFIX: "linkage_",//联动事件 + wId
 
-    SRC_PREFIX: "src_" //数据源增删事件 + srcId
+    SRC_PREFIX: "src_", //数据源(字段)增删事件 + srcId
+
+    PACKAGE_PREFIX: "package_", //业务包增删事件 + wId || ""
 };
