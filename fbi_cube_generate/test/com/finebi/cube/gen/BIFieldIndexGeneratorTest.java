@@ -3,7 +3,7 @@ package com.finebi.cube.gen;
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
-import com.finebi.cube.structure.BICubeTableEntity;
+import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;

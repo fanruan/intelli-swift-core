@@ -49,4 +49,6 @@ public interface ICubeTableEntityService extends ICubeTableEntityGetterService {
 
     void copyDetailValue(ICubeTableEntityService cube, long rowCount);
 
+    void recordParentsTable(List<ITableKey> parents);
+
 }
