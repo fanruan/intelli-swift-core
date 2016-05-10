@@ -4,6 +4,7 @@
 BI.SummaryTableModel = BI.inherit(FR.OB, {
     _init: function () {
         BI.SummaryTableModel.superclass._init.apply(this, arguments);
+        var self = this;
         this.wId = this.options.wId;
         this.EMPTY_VALUE = BI.UUID();
         this._refreshDimsInfo();
