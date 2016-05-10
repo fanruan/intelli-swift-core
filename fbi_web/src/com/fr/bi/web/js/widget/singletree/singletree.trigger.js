@@ -9,6 +9,7 @@ BI.SingleTreeTrigger = BI.inherit(BI.Trigger, {
         return BI.extend(BI.SingleTreeTrigger.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-single-tree-trigger",
             height: 30,
+            text: "",
             items: []
         });
     },
@@ -21,6 +22,7 @@ BI.SingleTreeTrigger = BI.inherit(BI.Trigger, {
         this.trigger = BI.createWidget({
             type: "bi.select_text_trigger",
             element: this.element,
+            text: o.text,
             items: o.items,
             height: o.height
         });

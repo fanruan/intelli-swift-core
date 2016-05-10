@@ -12,6 +12,7 @@ BI.MultiLayerSingleTreeCombo = BI.inherit(BI.Widget, {
             baseCls: "bi-multilayer-singletree-combo",
             isDefaultInit: false,
             height: 30,
+            text: "",
             itemsCreator: BI.emptyFn,
             items: []
         });
@@ -23,6 +24,7 @@ BI.MultiLayerSingleTreeCombo = BI.inherit(BI.Widget, {
 
         this.trigger = BI.createWidget({
             type: "bi.single_tree_trigger",
+            text: o.text,
             height: o.height,
             items: o.items
         });
