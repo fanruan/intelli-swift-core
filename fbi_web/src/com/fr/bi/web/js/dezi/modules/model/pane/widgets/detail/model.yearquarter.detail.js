@@ -24,7 +24,7 @@ BIDezi.YearQuarterDetailModel = BI.inherit(BI.Model, {
                 var result = BI.find(changed.dimensions, function (did, dimension) {
                     return !BI.has(prev.dimensions, did);
                 });
-                BI.Broadcasts.send(result._src.id, true);
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
             }
         }
     },
@@ -40,7 +40,7 @@ BIDezi.YearQuarterDetailModel = BI.inherit(BI.Model, {
             this.set("view", views);
         }
         if (key1 === "dimensions") {
-            BI.Broadcasts.send(old._src.id);
+            BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + old._src.id);
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
             //全局维度增删事件
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);

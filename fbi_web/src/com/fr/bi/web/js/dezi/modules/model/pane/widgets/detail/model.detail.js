@@ -52,7 +52,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             this.set({"dimensions": dimensions, view: views, filter_value: filterValue});
         }
         if (key1 === "dimensions") {
-            BI.Broadcasts.send(old._src.id);
+            BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + old._src.id);
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
             //全局维度增删事件
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
@@ -94,14 +94,14 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
         }
         if (BI.has(changed, "dimensions")) {
             if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
-                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + self.get("id"));
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
             }
             if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
                 var result = BI.find(changed.dimensions, function (did, dimension) {
                     return !BI.has(prev.dimensions, did);
                 });
-                BI.Broadcasts.send(result._src.id, true);
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
             }
         }
     },

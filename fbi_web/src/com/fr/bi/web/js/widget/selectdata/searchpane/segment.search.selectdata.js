@@ -59,7 +59,7 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
         });
         this.segment.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.SelectDataSearchSegment.EVENT_CHANGE);
-        })
+        });
         return this.segment;
     },
 
@@ -85,8 +85,8 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
 
     setPackage: function (pId) {
         var name = "";
-        BI.each(this.options.packages, function(i, pack){
-            if(pack.value === pId) {
+        BI.each(this.options.packages, function (i, pack) {
+            if (pack.value === pId) {
                 name = pack.text;
             }
         });
@@ -111,6 +111,10 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return this.button_group.getValue()[0] | this.segment.getValue()[0]
+    },
+
+    populatePackages: function (packages) {
+        this.options.packages = packages || [];
     }
 });
 
@@ -119,6 +123,6 @@ BI.extend(BI.SelectDataSearchSegment, {
     SECTION_PACKAGE: 0x10,
     SECTION_FIELD: 0x100,
     SECTION_TABLE: 0x1000
-})
+});
 BI.SelectDataSearchSegment.EVENT_CHANGE = "SelectDataSearchSegment.EVENT_CHANGE";
 $.shortcut('bi.select_data_search_segment', BI.SelectDataSearchSegment);

@@ -477,6 +477,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/customgroup/widget.bottom.customgroup.css",
                 "com/fr/bi/web/css/modules/customgroup/widget.view.searcher.customgroup.css",
                 "com/fr/bi/web/css/modules/customgroup/widget.pane.searcher.customgroup.css",
+                "com/fr/bi/web/css/modules/customgroup/widget.button.field.customgroup.css",
 
                 //自定义排序
                 "com/fr/bi/web/css/modules/customsort/widget.pane.customsort.css",
@@ -657,6 +658,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/utils4conf.js",
                 "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/constant.js",
+                "com/fr/bi/web/js/modules/cache.js",
                 "com/fr/bi/web/js/modules/broadcast.js",
 
                 //下面是各个功能模块
@@ -871,10 +873,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/generalquery/item.generalquery.notypefilter.js",
 
                 //过滤
-                "com/fr/bi/web/js/modules/filter/filter.expander.js",
+                "com/fr/bi/web/js/modules/filter/expander/filter.expander.js",
                 "com/fr/bi/web/js/modules/filter/filter.target.js",
                 "com/fr/bi/web/js/modules/filter/filter.dimension.js",
-                "com/fr/bi/web/js/modules/filter/filter.common.js",
                 "com/fr/bi/web/js/modules/filter/targetsummary/filter.target.summary.js",
                 "com/fr/bi/web/js/modules/filter/generalquery/filter.generalquery.js",
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
@@ -1253,6 +1254,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules4realtime/selectdata/widget.selectdata.js",
+                //实时报表文本选择字段
+                "com/fr/bi/web/js/modules4realtime/selectstring/widget.selectstring.js",
+                //实时报表数值选择字段
+                "com/fr/bi/web/js/modules4realtime/selectnumber/widget.selectnumber.js",
+                //实时报表日期选择字段
+                "com/fr/bi/web/js/modules4realtime/selectdate/widget.selectdate.js",
 
                 //表更新
                 "com/fr/bi/web/js/extend/update/update.tabledata.js",
@@ -1560,7 +1567,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/arrangement/arrangement.css",
                 /**
                  * components
-                */
+                 */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
@@ -1879,7 +1886,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                */
+                 */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -1933,7 +1940,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                */
+                 */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2197,7 +2204,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                */
+                 */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 
