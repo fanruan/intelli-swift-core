@@ -37,4 +37,4 @@ BI.AnalysisETLOperatorAddColumnSumPane  = BI.inherit(BI.AnalysisETLOperatorAddCo
     }
 
 });
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_SUM, BI.AnalysisETLOperatorAddColumnSumPane);
+$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.EXPR_SUM, BI.AnalysisETLOperatorAddColumnSumPane);

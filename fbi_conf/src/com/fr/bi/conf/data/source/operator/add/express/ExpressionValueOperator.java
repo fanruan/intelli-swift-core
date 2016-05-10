@@ -34,7 +34,7 @@ public class ExpressionValueOperator extends AbstractAddColumnOperator {
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
         if(expression != null){
-        	jo.put("expression", expression.createJSON());
+        	jo.put("item", expression.createJSON());
         }
         return jo;
     }
@@ -48,8 +48,10 @@ public class ExpressionValueOperator extends AbstractAddColumnOperator {
     @Override
     public void parseJSON(JSONObject jsonObject) throws Exception {
         super.parseJSON(jsonObject);
-        if(jsonObject.has("expression")){
-//        	expression = jsonObject.getString("expression");
+        if (jsonObject.has("item")){
+            JSONObject item = jsonObject.getJSONObject("item");
+            expression = new GeneralExpression();
+            expression.parseJSON(item);
         }
     }
 

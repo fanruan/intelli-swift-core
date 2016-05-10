@@ -29,35 +29,35 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         var columns = model.get(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY);
         var found = BI.some(columns, function(i ,column){
             switch (column.add_column_type){
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.FORMULA :
+                case BICst.ETL_ADD_COLUMN_TYPE.FORMULA :
                     return self._checkFormula(widget, column, parent[ETLCst.FIELDS])
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_DIFF :
+                case BICst.ETL_ADD_COLUMN_TYPE.DATE_DIFF :
                     var fields = [];
                     fields.push(column.item['firstField'])
                     fields.push(column.item['secondField'])
                     return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name, BICst.COLUMN.DATE)
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_MONTH :
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_SEASON :
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_YEAR :
+                case BICst.ETL_ADD_COLUMN_TYPE.DATE_MONTH :
+                case BICst.ETL_ADD_COLUMN_TYPE.DATE_SEASON :
+                case BICst.ETL_ADD_COLUMN_TYPE.DATE_YEAR :
                     return self._checkField(widget, [column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.DATE)
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_CPP:
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT:
+                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP:
+                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT:
                     var fields = [];
                     fields.push(column.item['field'])
                     fields.push(column.item['date'])
                     return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_LP:
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT:
+                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP:
+                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT:
                     var fields = [];
                     fields.push(column.item['field'])
                     fields.push(column.item['monthSeason'])
                     fields.push(column.item['year'])
                     return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_ACC:
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_RANK:
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_SUM:
+                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_ACC:
+                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_RANK:
+                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_SUM:
                     return self._checkField(widget, [column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
-                case BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.GROUP:
+                case BICst.ETL_ADD_COLUMN_TYPE.GROUP:
                     return BI.some(column.item['items'], function (i, item) {
                         return self._checkField(widget, [item['field']], parent[ETLCst.FIELDS],column.field_name, item['field_type'])
                     })
@@ -127,11 +127,10 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         }
         this._editing = true;
         this._editColumnName = name;
+        widget.card.showCardByName(widget._constant.SINGLE_COLUMN_CARD);
         widget.title.populate(column, {
             columnNames: this._getAllColumnNames(model, name)
         });
-
-        widget.card.showCardByName(widget._constant.SINGLE_COLUMN_CARD);
     },
 
     _isEditing : function () {

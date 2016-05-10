@@ -11,4 +11,4 @@ BI.AnalysisETLOperatorAddColumnAbstractDateConvertMonthPane = BI.inherit(BI.Anal
         })
     }
 })
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_MONTH, BI.AnalysisETLOperatorAddColumnAbstractDateConvertMonthPane);
+$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.DATE_MONTH, BI.AnalysisETLOperatorAddColumnAbstractDateConvertMonthPane);

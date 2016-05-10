@@ -2,8 +2,8 @@ package com.fr.bi.etl.analysis.manager;
 
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.common.container.BIStableMapContainer;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.base.BISystemDataManager;
 import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.etl.analysis.data.AnalysisTableSource;
 import com.fr.bi.exception.BIFieldAbsentException;
@@ -15,10 +15,12 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
+import java.io.File;
+
 /**
  * Created by 小灰灰 on 2015/12/14.
  */
-public class AnalysisDataSourceManager extends BIStableMapContainer<Long, AnalysisDataSource> implements BIAnalysisDataSourceManagerProvider {
+public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataSource> implements BIAnalysisDataSourceManagerProvider {
 
     private transient AnalysisDataSource superManager = getInstance(new BIUser(UserControl.getInstance().getSuperManagerID()));
 
@@ -33,13 +35,23 @@ public class AnalysisDataSourceManager extends BIStableMapContainer<Long, Analys
     }
 
     @Override
-    public AnalysisDataSource constructValue(Long key) {
+    public AnalysisDataSource constructUserManagerValue(Long userId) {
         try {
-            return BIFactoryHelper.getObject(AnalysisDataSource.class, key);
+            return BIFactoryHelper.getObject(AnalysisDataSource.class, userId);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
         return null;
+    }
+
+    @Override
+    public String managerTag() {
+        return "AnalysisDataSourceManager" ;
+    }
+
+    @Override
+    public String persistUserDataName(long key) {
+        return "sue" + File.separator + "datasource"  + key;
     }
 
     @Override
