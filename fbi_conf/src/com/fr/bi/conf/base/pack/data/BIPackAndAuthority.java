@@ -25,5 +25,19 @@ public class BIPackAndAuthority {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        BIPackAndAuthority that = (BIPackAndAuthority) o;
+
+        return biPackageID != null ? biPackageID.equals(that.biPackageID) : that.biPackageID == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return biPackageID != null ? biPackageID.hashCode() : 0;
+    }
 }

@@ -207,6 +207,23 @@ BI.extend(BI.Utils, {
             }
         );
     },
+    /**业务包权限
+     * 选择多个业务包时,默认没有角色被选中*/
+    clearAuthority: function() {
+        var allRole = Data.Req.reqAllAuthority();
+        Data.SharingPool.put("allAuthorityInfo", allRole);
+
+        var unselectedTemp=[];
+        BI.each(allRole, function (i, item) {
+            if (typeof item.text != 'undefined') {
+                unselectedTemp.push(item.text);
+            }
+        });
+        Data.SharingPool.put("unselectedRole", unselectedTemp);
+        Data.SharingPool.put("selectedRole", []);
+        return;
+
+    },
     getAuthorityInfoByPackageId: function (packageId) {
         var allRole = Data.Req.reqAllAuthority();
         var selectedTemp = Data.Req.reqAuthorityByPackageId(packageId).roles;

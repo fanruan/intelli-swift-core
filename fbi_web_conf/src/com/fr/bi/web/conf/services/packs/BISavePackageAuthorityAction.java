@@ -36,21 +36,33 @@ public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
      */
     public void savePackageAuthority(String packageId, String roles, long userId) throws Exception {
         JSONArray roleInfojo=new JSONArray(roles);
-//        packageId=String.valueOf(new JSONArray(packageId).getString(0));
-        BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
-        BIPackAndAuthority biPackAndAuthority=new BIPackAndAuthority();
-        biPackAndAuthority.setBiPackageID(packageId);
-        String[] packageIdArray=new String[roleInfojo.length()];
+        JSONArray packageIdjo=new JSONArray(packageId);
+
+        String[] rolesArray=new String[roleInfojo.length()];
         for (int i = 0; i < roleInfojo.length(); i++) {
-            packageIdArray[i]= String.valueOf(roleInfojo.getString(i));
+            rolesArray[i]= String.valueOf(roleInfojo.getString(i));
         }
-        biPackAndAuthority.setRoleIdArray(packageIdArray);
-        boolean isExisted=packageAndAuthorityManager.containPackage(userId,biPackAndAuthority);
-        if(isExisted){
-           packageAndAuthorityManager.updateAuthority(userId,biPackAndAuthority);
-        }else {
+
+        BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
+
+
+        for (int i = 0; i < packageIdjo.length(); i++) {
+            BIPackAndAuthority biPackAndAuthority=new BIPackAndAuthority();
+            biPackAndAuthority.setBiPackageID( String.valueOf(packageIdjo.getString(i)));
+            biPackAndAuthority.setRoleIdArray(rolesArray);
+
+
+            boolean isExisted=packageAndAuthorityManager.containPackage(userId,biPackAndAuthority);
+            if(isExisted){
+            packageAndAuthorityManager.updateAuthority(userId,biPackAndAuthority);
+            }else {
             packageAndAuthorityManager.addPackage(userId,biPackAndAuthority);
+            }
+
+
         }
+
+
         packageAndAuthorityManager.persistData(userId);
 
 
