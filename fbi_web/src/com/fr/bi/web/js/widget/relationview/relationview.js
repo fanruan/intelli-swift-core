@@ -130,10 +130,13 @@ BI.RelationView = BI.inherit(BI.Widget, {
             }
             var horizontal = [];
             BI.each(items, function (j, region) {
+                var items = regions[region];
                 views[i][j] = storeViews[region] = BI.createWidget({
                     type: "bi.relation_view_region",
-                    header: region,
-                    items: regions[region]
+                    value: region,
+                    text: items.length > 0 ? items[0].regionText : "",
+                    handler: items.length > 0 ? items[0].regionHandler : BI.emptyFn,
+                    items: items
                 });
                 views[i][j].on(BI.RelationViewRegion.EVENT_HOVER_IN, function (v) {
                     self._hoverIn(v)

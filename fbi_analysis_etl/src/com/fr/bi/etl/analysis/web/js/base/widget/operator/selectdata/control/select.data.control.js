@@ -13,56 +13,16 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
         if(this._editing !== true){
             return;
         }
-        var name = BI.Utils.getFieldNameByID(fieldId);
-        var fieldType = BI.Utils.getFieldTypeByID(fieldId)
-        if(fieldType === BICst.COLUMN.DATE) {
-            var group = fieldId.group
-            name += "(" + this._createDateString(group)+ ")";
-            fieldType = this._createNewFieldType(group);
-        }
-        var fieldName =  model.createDistinctName(name);
-        model.addField({"field_name":fieldName, "field_type" : fieldType, "id":fieldId, "group" : fieldId.group})
+        model.addField(fieldId)
         this._refreshState(widget, model);
     },
 
-    _createNewFieldType : function (group) {
-        switch (group) {
-            case BICst.GROUP.Y : return BICst.COLUMN.NUMBER;
-            case BICst.GROUP.S : return BICst.COLUMN.NUMBER;
-            case BICst.GROUP.M : return BICst.COLUMN.NUMBER;
-            case BICst.GROUP.W : return BICst.COLUMN.NUMBER;
-            case BICst.GROUP.YMD : return BICst.COLUMN.DATE;
-        }
-    },
-
-    _createDateString : function (group) {
-        switch (group) {
-            case BICst.GROUP.Y : return BI.i18nText("BI-Year_Fen");
-            case BICst.GROUP.S : return BI.i18nText("BI-Quarter");
-            case BICst.GROUP.M : return BI.i18nText("BI-Multi_Date_Month");
-            case BICst.GROUP.W : return BI.i18nText("BI-Week_XingQi");
-            case BICst.GROUP.YMD : return BI.i18nText("BI-Date");
-        }
-    },
-    
     _refreshSelectDataPane : function (widget, model) {
 
-        var tables = this._getTablesFromFields(model.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY));
+        var tables = model.getTempFieldsTables();
         tables = BI.Utils.getProbablySinglePathTables(tables)
         widget.selectPane.controller.setEnableTables(tables);
     },
-
-    _getTablesFromFields : function (fields) {
-        var res = {};
-        BI.each(fields, function (idx, item) {
-            var tableId = BI.Utils.getTableIdByFieldID(item.id)
-            res[tableId] = true;
-        })
-        return BI.map(res, function (idx, item) {
-            return idx;
-        })
-    },
-
 
     refreshPopData : function (operatorType, widget, model){
         this.trigger(widget.center, model, operatorType, ETLCst.PREVIEW.SELECT)
