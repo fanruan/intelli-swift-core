@@ -5,12 +5,15 @@
  */
 BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.DetailSelectDataPane.superclass._defaultConfig.apply(this, arguments), {})
+        return BI.extend(BI.DetailSelectDataPane.superclass._defaultConfig.apply(this, arguments), {
+            wId: ""
+        })
     },
 
     _init: function () {
         BI.DetailSelectDataPane.superclass._init.apply(this, arguments);
-        var self = this, packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+        var self = this, o = this.options;
+        var packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
         this.searcher = BI.createWidget({
             type: "bi.select_data_searcher",
             element: this.element,
@@ -41,6 +44,15 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
 
         var id = BI.Utils.getCurrentSelectPackageID();
         this.searcher.setPackage(id);
+
+        var broadcast = function () {
+            packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+            self.searcher.populatePackages(packageStructure);
+        };
+        //当前组件的业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX + o.wId, broadcast);
+        //全局业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX, broadcast);
     },
 
     /**
