@@ -1,9 +1,11 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.bi-analysis-target-number-field-item {
-  min-width: 510px;
+.bi-table-chart-manager .no-data-detail-comment {
+  color: #808080;
+  font-size: 14px;
 }
-.bi-analysis-target-number-field-item .condition-operator-input {
-  border: 1px solid #d4dadd;
+.bi-table-chart-manager .contact-admin-comment {
+  color: #808080;
+  font-size: 16px;
 }

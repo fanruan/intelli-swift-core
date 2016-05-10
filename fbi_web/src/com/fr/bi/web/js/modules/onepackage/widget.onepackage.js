@@ -121,7 +121,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             type: "bi.combo",
             cls: "add-new-table-combo",
             isNeedAdjustHeight: false,
-            trigger: "click,hover",
+            trigger: "hover",
             el: {
                 type: "bi.text_icon_item",
                 cls: "add-new-table-pull-down-font",

@@ -7,7 +7,29 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
 
     },
 
-    _parseComplexDate: function(v) {
+    _parseComplexDate: function(v){
+        if(v.type === BICst.MULTI_DATE_PARAM) {
+            return this._parseComplexDate4Param(v);
+        } else {
+            return this._parseComplexDateCommon(v);
+        }
+    },
+
+    _parseComplexDate4Param: function(value){
+        var wid = value.wId, se = value.startOrEnd;
+        if(BI.isNotNull(wid) && BI.isNotNull(se)) {
+            var wValue = BI.Utils.getWidgetValueByID(wid);
+            if(se === BI.MultiDateParamPane.start && BI.isNotNull(wValue.start)) {
+                return this._parseComplexDateCommon(wValue.start);
+            } else {
+                return this._parseComplexDateCommon(wValue,end);
+            }
+        } else {
+            return this._parseComplexDateCommon(BI.Utils.getWidgetValueByID())
+        }
+    },
+
+    _parseComplexDateCommon: function(v) {
         var type = v.type, value = v.value;
         var date = new Date();
         var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
@@ -97,6 +119,34 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             }
         }
     },
+    
+    parseGeneralQueryFilter: function(filter){
+        var self = this;
+        if(BI.isNull(filter)) {
+            return;
+        }
+        if(filter.filter_type === BICst.FILTER_TYPE.AND || filter.filter_type === BICst.FILTER_TYPE.OR) {
+            var children = [];
+            BI.each(filter.filter_value, function(i, value){
+                var child = self.parseGeneralQueryFilter(value);
+                if(BI.isNotNull(child)) {
+                    children.push(self.parseGeneralQueryFilter(value));
+                }
+            });
+            return {
+                id: BI.UUID(),
+                value: filter.filter_type,
+                children: children
+            };
+        } else if(BI.isNotNull(filter._src)){
+            return {
+                id: BI.UUID(),
+                type: "bi.target_filter_item",
+                tId: filter._src.field_id,
+                filter: filter
+            }
+        }
+    },
 
     isEmptyDrillById: function(wId){
         var drills = BI.Utils.getDrillByID(wId);
@@ -154,7 +204,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             case BICst.Widget.YMD:
                 if(BI.isNotNull(widgetValue)) {
                     var date = this._parseComplexDate(widgetValue);
-                    text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+                    text = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";
                 }
                 return text;
         }
@@ -175,11 +225,23 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
 
     getDateRangeText: function(filterValue) {
         var start = filterValue.start, end = filterValue.end;
-        if(BI.isNotNull(start) || BI.isNotNull(end)){
-            return (BI.isNotNull(start) ? (start.year + "/" + (start.month + 1) + "/" + start.day) : "")
-                + "-" + (BI.isNotNull(end) ? (end.year + "/" + (end.month + 1) + "/" + end.day) : "");
-        } else {
-            return "";
+        var sStart = "", sEnd = "";
+        if (BI.isNotNull(start)){
+            if(BI.isNotNull(start.year) && BI.isNotNull(start.month) && BI.isNotNull(start.day)) {
+                sStart = start.year + "/" + (start.month + 1) + "/" + start.day;
+            } else {
+                var date = this._parseComplexDate(start);
+                sStart = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";
+            }
         }
+        if(BI.isNotNull(end)) {
+            if(BI.isNotNull(end.year) && BI.isNotNull(end.month) && BI.isNotNull(end.day)) {
+                sEnd = end.year + "/" + (end.month + 1) + "/" + end.day;
+            } else {
+                var date = this._parseComplexDate(end);
+                sEnd = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";
+            }
+        }
+        return sStart + "-" + sEnd;
     }
 });
