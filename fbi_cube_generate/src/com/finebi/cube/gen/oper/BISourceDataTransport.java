@@ -4,7 +4,7 @@ import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
-import com.finebi.cube.structure.BICubeTableEntity;
+import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityService;
 import com.finebi.cube.utils.BITableKeyUtils;
