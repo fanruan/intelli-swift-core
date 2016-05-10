@@ -16,7 +16,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
@@ -61,7 +61,8 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(BICore core) {
-        return getTableIndex(BIConfigureManagerCenter.getDataSourceManager().getTableSourceByCore(core, user));
+        ITableSource source = BIModuleUtils.getSourceByCore(core, user);
+        return getTableIndex(source);
     }
 
     public ICubeTableService getTableIndex(ITableSource tableSource) {
@@ -81,8 +82,8 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(BITableID id) {
-        BICore core = BIConfigureManagerCenter.getDataSourceManager().getCoreByTableID(id, user);
-        return getTableIndex(core);
+        ITableSource source = BIModuleUtils.getSourceByID(id, user);
+        return getTableIndex(source);
     }
 
     @Override

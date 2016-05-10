@@ -90,7 +90,7 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
         });
         //标蓝
         BI.Utils.isSrcUsedBySrcID(o.id) === true && this.doHighLight();
-        BI.Broadcasts.on(o.id, function(v){
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function(v){
             if(v === true){
                 self.doHighLight();
             } else {

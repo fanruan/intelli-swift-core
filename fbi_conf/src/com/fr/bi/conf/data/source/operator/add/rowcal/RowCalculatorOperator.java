@@ -3,7 +3,7 @@
  */
 package com.fr.bi.conf.data.source.operator.add.rowcal;
 
-import com.fr.bi.base.BICore;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
@@ -11,7 +11,6 @@ import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.engine.cal.ResultDealer;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.utils.BIServerUtils;
 
 /**
@@ -36,11 +35,6 @@ public abstract class RowCalculatorOperator extends AbstractAddColumnOperator {
     }
 
 
-	@Override
-	public BICore fetchObjectCore() {
-		return null;
-	}
-	
 	@Override
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
 		 int rowCount = ti.getRowCount();

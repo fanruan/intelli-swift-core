@@ -1,13 +1,14 @@
 package com.fr.bi.etl.analysis.conf;
 
-import com.fr.bi.conf.base.pack.BIPackageContainer;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.json.JSONCreator;
+import com.fr.json.JSONObject;
 
 /**
  * Created by 小灰灰 on 2015/12/15.
  */
-public class AnalysisPackManager {
+public class AnalysisPackManager implements JSONCreator{
     private static final String XML_TAG = "AnalysisPackManager";
     private AnalysisETLPackageSet set;
 
@@ -16,7 +17,7 @@ public class AnalysisPackManager {
     }
 
 
-    public BIPackageContainer getAnylysis() {
+    public AnalysisETLPackageSet getAnylysis() {
         return set;
     }
 
@@ -30,5 +31,9 @@ public class AnalysisPackManager {
 
     public AnalysisBusiTable getTable(String tableId) throws BITableAbsentException {
         return set.getTable(tableId);
+    }
+
+    public JSONObject createJSON() throws Exception {
+        return set.createJSON();
     }
 }

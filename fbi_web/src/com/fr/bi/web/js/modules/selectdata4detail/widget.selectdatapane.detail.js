@@ -44,9 +44,22 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, ob.isSelected() ? tableId : "");
         });
 
-        //TODO 暂时先选中第一个业务包
-        var ids = BI.Utils.getAllPackageIDs();
-        this.searcher.setPackage(ids[0]);
+        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, function () {
+            var pId = this.getPackageId();
+            BI.Utils.setCurrentSelectPackageID(pId);
+        });
+
+        var id = BI.Utils.getCurrentSelectPackageID();
+        this.searcher.setPackage(id);
+
+        var broadcast = function () {
+            packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+            self.searcher.populatePackages(packageStructure);
+        };
+        //当前组件的业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX + o.wId, broadcast);
+        //全局业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX, broadcast);
     },
 
     /**
