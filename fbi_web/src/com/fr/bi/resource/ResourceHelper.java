@@ -657,6 +657,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/utils4conf.js",
                 "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/constant.js",
+                "com/fr/bi/web/js/modules/cache.js",
                 "com/fr/bi/web/js/modules/broadcast.js",
 
                 //下面是各个功能模块
@@ -871,10 +872,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/generalquery/item.generalquery.notypefilter.js",
 
                 //过滤
-                "com/fr/bi/web/js/modules/filter/filter.expander.js",
+                "com/fr/bi/web/js/modules/filter/expander/filter.expander.js",
                 "com/fr/bi/web/js/modules/filter/filter.target.js",
                 "com/fr/bi/web/js/modules/filter/filter.dimension.js",
-                "com/fr/bi/web/js/modules/filter/filter.common.js",
                 "com/fr/bi/web/js/modules/filter/targetsummary/filter.target.summary.js",
                 "com/fr/bi/web/js/modules/filter/generalquery/filter.generalquery.js",
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",

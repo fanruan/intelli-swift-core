@@ -40,10 +40,11 @@ BI.ColorChooser = BI.inherit(BI.Widget, {
             var color = this.getValue();
             self.trigger.setValue(color);
             var colors = BI.string2Array(BI.Cache.getItem("colors") || "");
-            colors.remove(color);
-            colors.unshift(color);
-            colors = colors.slice(0, 8);
-            BI.Cache.setItem("colors", BI.array2String(colors));
+            var que = new BI.Queue(8);
+            que.fromArray(colors);
+            que.remove(color);
+            que.unshift(color);
+            BI.Cache.setItem("colors", BI.array2String(que.toArray()));
             self.combo.hideView();
             self.fireEvent(BI.ColorChooser.EVENT_CHANGE, arguments);
         });
@@ -52,7 +53,7 @@ BI.ColorChooser = BI.inherit(BI.Widget, {
         });
     },
 
-    isViewVisible: function(){
+    isViewVisible: function () {
         return this.combo.isViewVisible();
     },
 
