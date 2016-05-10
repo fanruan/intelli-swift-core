@@ -79,6 +79,19 @@ BI.SelectDataSwitcher = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return this.tree.getValue();
+    },
+
+    populate: function () {
+        this.tree.populate.apply(this.tree, arguments);
+    },
+
+    populatePackages: function (pacakges) {
+        this.options.packages = pacakges;
+        var pId = this.getPackageId();
+        this.combo.populate(pacakges);
+        if (BI.isKey(pId)) {
+            this.combo.setValue(pId);
+        }
     }
 });
 BI.SelectDataSwitcher.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";

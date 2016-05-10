@@ -2,19 +2,18 @@ package com.fr.bi.module;
 
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
 import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.bi.etl.analysis.manager.*;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.*;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
+import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.AbstractTIPathLoader;
 import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.cluster.rpc.RPC;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
-import com.fr.bi.resource.ResourceConstants;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
@@ -56,12 +55,12 @@ public class AnalysisETLModule extends AbstractModule {
 
     @Override
     public BIDataSourceManagerProvider getDataSourceManagerProvider() {
-        return StableFactory.getMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, BIAnalysisDataSourceManagerProvider.class);
+        return BIAnalysisETLManagerCenter.getDataSourceManager();
     }
 
     @Override
     public BISystemPackageConfigurationProvider getBusiPackManagerProvider() {
-        return BIConfigureManagerCenter.getPackageManager();
+        return BIAnalysisETLManagerCenter.getBusiPackManager();
     }
 
     @Override

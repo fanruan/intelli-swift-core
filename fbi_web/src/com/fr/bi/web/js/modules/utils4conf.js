@@ -217,16 +217,6 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("update_settings", id);
     },
 
-    //fuck you
-    getConfDataByField: function (table, fieldName, filterConfig, callback) {
-        Data.Req.reqFieldsDataByData({
-            table: table,
-            field: fieldName,
-            filterConfig: filterConfig
-        }, function (data) {
-            callback(data.value, data.hasNext);
-        });
-    },
 
     //fuck you
     getCircleLayerLevelInfo: function (table, layerInfo, callback) {

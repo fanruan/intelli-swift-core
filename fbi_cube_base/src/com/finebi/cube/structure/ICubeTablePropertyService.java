@@ -18,7 +18,7 @@ import java.util.List;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeTablePropertyService extends Release{
+public interface ICubeTablePropertyService extends Release {
     void recordTableStructure(List<DBField> fields);
 
     void recordTableGenerateVersion(int version);
@@ -26,6 +26,10 @@ public interface ICubeTablePropertyService extends Release{
     void recordRowCount(long rowCount);
 
     void recordLastTime();
+
+    void recordParentsTable(List<ITableKey> parentTables);
+
+    List<ITableKey> getParentsTable();
 
     int getRowCount();
 
@@ -36,4 +40,6 @@ public interface ICubeTablePropertyService extends Release{
     List<DBField> getFieldInfo();
 
     Boolean isPropertyExist();
+
+
 }

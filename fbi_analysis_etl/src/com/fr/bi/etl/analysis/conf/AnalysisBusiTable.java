@@ -12,15 +12,8 @@ import com.fr.stable.bridge.StableFactory;
  */
 public class AnalysisBusiTable extends BIBusinessTable {
 
-    private String name;
-
     public AnalysisBusiTable(String id, long userId) {
         super(id, userId);
-    }
-
-    public AnalysisBusiTable(String id, long userId, String name) {
-        this(id, userId);
-        this.name = name;
     }
 
     @Override

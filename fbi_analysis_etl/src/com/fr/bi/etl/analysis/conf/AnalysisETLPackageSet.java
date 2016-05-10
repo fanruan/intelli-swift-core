@@ -7,21 +7,19 @@ import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.json.JSONCreator;
+import com.fr.json.JSONObject;
 
 /**
  * Created by 小灰灰 on 2015/12/23.
  */
-public class AnalysisETLPackageSet extends BIPackageContainer {
+public class AnalysisETLPackageSet extends BIPackageContainer implements JSONCreator {
     private static final String PACK_NAME = "MYETL";
-    private static final String PACK_ID = "ff8556cd-2e94-4876-b059-947cfe08aced";
+    private static final String PACK_ID = "myetlidfe62a664c";
     private transient AnalysisETLBusiPack pack;
 
     public AnalysisETLPackageSet(long userId) {
         super(userId);
-    }
-
-    protected AnalysisETLBusiPack createPackage() {
-        return new AnalysisETLBusiPack("", "", user, System.currentTimeMillis());
     }
 
     protected AnalysisETLBusiPack createPackage(String id, String pack) {
@@ -62,6 +60,12 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
 
     public AnalysisBusiTable getTable(String tableId) throws BITableAbsentException {
         return getPack().getSpecificTable(new BITableID(tableId));
+    }
+
+    public JSONObject createJSON() throws Exception {
+        JSONObject jo = new JSONObject();
+        jo.put(PACK_ID, getPack().createJSON());
+        return jo;
     }
 
 }

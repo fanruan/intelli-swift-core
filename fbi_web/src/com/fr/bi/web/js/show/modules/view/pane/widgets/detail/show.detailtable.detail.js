@@ -168,8 +168,6 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
 
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
-            this.dimensionsManager.populate();
-            BI.Broadcasts.send(old._src.id, true);
         }
     },
 
@@ -203,12 +201,6 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
             this.table.populate();
         }
         if (BI.has(changed, "dimensions")) {
-            if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
-                    return !BI.has(prev.dimensions, did);
-                });
-                BI.Broadcasts.send(result._src.id, true);
-            }
         }
     },
 

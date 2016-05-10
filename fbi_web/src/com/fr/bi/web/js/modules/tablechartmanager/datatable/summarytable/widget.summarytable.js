@@ -36,7 +36,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                     pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
                 }
                 self.model.setPageOperator(pageOperator);
-                self._onPageChange(function(items, header, crossItems, crossHeader){
+                self._onPageChange(function (items, header, crossItems, crossHeader) {
                     populate.apply(self.table, arguments);
                 })
             },
@@ -54,7 +54,12 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             hasHNext: function () {
                 return self.model.getPage()[3] === 1;
             },
-            isNeedMerge: true
+            isNeedMerge: true,
+            regionColumnSize: this.model.getStoredRegionColumnSize()
+        });
+        this.table.on(BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+            var columnSize = this.getCalculateRegionColumnSize();
+            self.model.setStoredRegionColumnSize(columnSize[0]);
         });
         this.table.on(BI.PageTable.EVENT_COLUMN_RESIZE, function () {
             self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: this.getColumnSize()})});
@@ -106,7 +111,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         }, this.model.getExtraInfo());
     },
 
-    _onPageChange: function(callback){
+    _onPageChange: function (callback) {
         var self = this, wId = this.options.wId;
         BI.Utils.getWidgetDataByID(wId, function (jsonData) {
             if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {

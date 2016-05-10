@@ -90,7 +90,7 @@ public class BIXMLDataSource extends XMLFileManager implements BIDataSource {
             return null;
         }
         BICore biCore = getCoreByID(id);
-        return getTableSourceByMD5(biCore);
+        return biCore == null ? null : getTableSourceByMD5(biCore);
     }
 
     @Override

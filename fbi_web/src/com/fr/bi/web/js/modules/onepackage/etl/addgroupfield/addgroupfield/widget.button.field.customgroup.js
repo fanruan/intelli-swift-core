@@ -6,14 +6,16 @@ BI.CustomGroupFieldButton = BI.inherit(BI.BasicButton, {
         var conf = BI.CustomGroupFieldButton.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
             tagName: "a",
-            baseCls: (conf.baseCls || "") + " bi-text-button display-block" + "bi-custom-group-field-button",
+            baseCls: (conf.baseCls || "") + " bi-text-button display-block" + " bi-custom-group-field-button",
             textAlign: "center",
             whiteSpace: "nowrap",
             textWidth: null,
             textHeight: null,
             hgap: 0,
+            valueLeft: "",
             valueRight: "",
-            py: ""
+            py: "",
+            title: ""
         })
     },
 
@@ -22,6 +24,7 @@ BI.CustomGroupFieldButton = BI.inherit(BI.BasicButton, {
         var self = this, o = this.options;
         this.textLeft = BI.createWidget({
             type: "bi.label",
+            cls: "button-label",
             textAlign: o.textAlign,
             whiteSpace: o.whiteSpace,
             textHeight: o.textHeight,
@@ -34,6 +37,7 @@ BI.CustomGroupFieldButton = BI.inherit(BI.BasicButton, {
 
         this.textRight = BI.createWidget({
             type: "bi.label",
+            cls: "button-label",
             textAlign: o.textAlign,
             whiteSpace: o.whiteSpace,
             textHeight: o.textHeight,
@@ -43,9 +47,11 @@ BI.CustomGroupFieldButton = BI.inherit(BI.BasicButton, {
             value: o.valueRight
         });
 
+        this.setTitle(this.getValue());
+
         BI.createWidget({
             type: "bi.left",
-            element:this.element,
+            element: this.element,
             items: [
                 self.textLeft,
                 self.textRight
@@ -53,18 +59,18 @@ BI.CustomGroupFieldButton = BI.inherit(BI.BasicButton, {
         })
     },
 
-    doClick: function(){
+    doClick: function () {
         BI.CustomGroupFieldButton.superclass.doClick.apply(this, arguments);
-        if(this.isValid()) {
+        if (this.isValid()) {
             this.fireEvent(BI.CustomGroupFieldButton.EVENT_CHANGE, this.getValue(), this);
         }
     },
 
-    doRedMark: function(){
+    doRedMark: function () {
         this.textLeft.doRedMark.apply(this.textLeft, arguments);
     },
 
-    unRedMark: function(){
+    unRedMark: function () {
         this.textLeft.unRedMark.apply(this.textLeft, arguments);
     },
 
@@ -77,21 +83,35 @@ BI.CustomGroupFieldButton = BI.inherit(BI.BasicButton, {
     },
 
 
-    setValueLeft: function(text){
+    setValueLeft: function (text) {
         BI.CustomGroupFieldButton.superclass.setValue.apply(this, arguments);
-        if(!this.isReadOnly()) {
+        if (!this.isReadOnly()) {
             text = BI.isArray(text) ? text.join(",") : text;
             this.textLeft.setValue(text);
+            this.setTitle(this.getValue());
         }
     },
 
-    setValueRight: function(text){
+    setValueRight: function (text) {
         BI.CustomGroupFieldButton.superclass.setValue.apply(this, arguments);
-        if(!this.isReadOnly()) {
+        if (!this.isReadOnly()) {
             text = BI.isArray(text) ? text.join(",") : text;
             this.textRight.setValue(text);
+            this.setTitle(this.getValue());
         }
+    },
+
+    getValueLeft: function () {
+        return this.textLeft.getValue();
+    },
+
+    getValueRight: function () {
+        return this.textRight.getValue();
+    },
+
+    getValue: function () {
+        return this.getValueLeft() + this.getValueRight();
     }
 });
 BI.CustomGroupFieldButton.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.etl_add_group_field_custom_group_field_button",BI.CustomGroupFieldButton);
+$.shortcut("bi.etl_add_group_field_custom_group_field_button", BI.CustomGroupFieldButton);

@@ -87,7 +87,7 @@ BIDezi.YearMonthDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: "bi.select_date",
+                    type: BI.Utils.isRealTime() ? "bi.select_date_4_realtime" : "bi.select_date",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
