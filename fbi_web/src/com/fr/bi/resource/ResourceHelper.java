@@ -477,6 +477,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/customgroup/widget.bottom.customgroup.css",
                 "com/fr/bi/web/css/modules/customgroup/widget.view.searcher.customgroup.css",
                 "com/fr/bi/web/css/modules/customgroup/widget.pane.searcher.customgroup.css",
+                "com/fr/bi/web/css/modules/customgroup/widget.button.field.customgroup.css",
 
                 //自定义排序
                 "com/fr/bi/web/css/modules/customsort/widget.pane.customsort.css",
