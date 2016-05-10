@@ -215,9 +215,11 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         });
 
 
-        this.cardList = BI.createWidget({
-            type: "bi.left",
-            cls: "bi-package-relation-list"
+        this.relationView = BI.createWidget({
+            type: "bi.package_table_relations_pane"
+        });
+        this.relationView.on(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, function(id){
+            self._onClickOneTable(id);
         });
 
         this.showCardLayout = BI.createWidget({
@@ -226,7 +228,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             items: [{
                 cardName: BICst.TABLES_VIEW.TILE, el: this.tableList
             }, {
-                cardName: BICst.TABLES_VIEW.RELATION, el: this.cardList
+                cardName: BICst.TABLES_VIEW.RELATION, el: this.relationView
             }]
         });
 
@@ -288,20 +290,29 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         });
     },
 
-    _refreshTablesInPackage: function () {
+    _createItemsForTableList: function () {
         var self = this;
         var tableIds = this.model.getTables();
         var tablesData = this.model.getTablesData();
-        var items = [];
-        BI.each(tableIds, function (i, table) {
+        return BI.map(tableIds, function (i, table) {
             var id = table.id;
-            items.push({
+            return {
                 id: id,
                 text: self.model.getTableTranName(id),
                 connName: tablesData[id].connection_name
-            });
+            };
         });
-        this.tableList.populate(items);
+    },
+
+    _refreshTablesInPackage: function () {
+        this.tableList.populate(this._createItemsForTableList());
+        this.relationView.populate({
+            tableIds: this.model.getTables(),
+            translations: this.model.getTranslations(),
+            relations: this.model.getRelations(),
+            all_fields: this.model.getAllFields(),
+            tableData: this.model.getTablesData()
+        });
         this._refreshEmptyTip();
         //避免出现停留在前面的搜索面板
         this.searcher.stopSearch();

@@ -1136,6 +1136,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagetables.pane.js",
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagesearcher.resultpane.js",
 
+                //表关联视图
+                "com/fr/bi/web/js/modules/onepackage/onepackagerelationspane/tablerelations.pane.js",
+                "com/fr/bi/web/js/modules/onepackage/onepackagerelationspane/tablerelations.pane.model.js",
+
                 //自适应布局
                 //选组件
                 "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/pane.reuse.js",
