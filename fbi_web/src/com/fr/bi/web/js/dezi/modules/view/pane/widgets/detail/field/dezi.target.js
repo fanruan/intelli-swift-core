@@ -2,7 +2,6 @@
  * Created by GUY on 2015/7/3.
  */
 BIDezi.TargetView = BI.inherit(BI.View, {
-
     constants: {
         TARGET_BUTTON_HEIGHT: 25,
         COMBO_WIDTH: 25,
@@ -155,6 +154,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.CHART_TYPE:
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:
+                    self._buildStyleSettingPane();
                     break;
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();

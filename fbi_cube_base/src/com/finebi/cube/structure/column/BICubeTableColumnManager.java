@@ -61,7 +61,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
      * @return
      */
     private ICubeColumnEntityService insertFieldRelationManager(ICubeColumnEntityService columnEntityService, BIColumnKey currentFieldKey) {
-        columnEntityService.setRelationManagerService(new BICubeFieldRelationManager(resourceRetrievalService, tableKey, currentFieldKey));
+        columnEntityService.setRelationManagerService(new BICubeFieldRelationManager(resourceRetrievalService, tableKey, currentFieldKey, discovery));
         return columnEntityService;
     }
 

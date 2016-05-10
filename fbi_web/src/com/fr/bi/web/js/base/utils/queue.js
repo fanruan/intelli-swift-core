@@ -22,6 +22,21 @@
             }
         },
 
+        pop: function () {
+            this.array.pop();
+        },
+
+        shift: function () {
+            this.array.shift();
+        },
+
+        unshift: function (v) {
+            this.array.unshift(v);
+            if (this.capacity && this.array.length > this.capacity) {
+                this.array.pop();
+            }
+        },
+
         remove: function (v) {
             this.array.remove(v);
         },
@@ -46,6 +61,13 @@
 
         toArray: function () {
             return this.array;
+        },
+
+        fromArray: function (array) {
+            var self = this;
+            BI.each(array, function (i, v) {
+                self.push(v);
+            })
         },
 
         clear: function () {

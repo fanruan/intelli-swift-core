@@ -87,7 +87,7 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: "bi.select_string",
+                    type: BI.Utils.isRealTime() ? "bi.select_string_4_realtime" : "bi.select_string",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
@@ -203,7 +203,6 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();
-            BI.Broadcasts.send(old._src.id);
         }
     },
 
@@ -218,14 +217,6 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
     change: function (changed, prev) {
         if (BI.has(changed, "dimensions")) {
             this.combo.setValue();
-            if (BI.size(changed.dimensions) >= BI.size(prev.dimensions)) {
-                BI.each(changed.dimensions, function (did, dimension) {
-                    BI.Broadcasts.send(dimension._src.id, true);
-                });
-                BI.each(prev.dimensions, function (did, dimension) {
-                    BI.Broadcasts.send(dimension._src.id);
-                });
-            }
         }
         if (BI.has(changed, "dimensions")) {
             this._refreshDimensions();

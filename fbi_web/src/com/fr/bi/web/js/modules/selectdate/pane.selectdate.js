@@ -7,12 +7,15 @@
  */
 BI.SelectDatePane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.SelectDatePane.superclass._defaultConfig.apply(this, arguments), {})
+        return BI.extend(BI.SelectDatePane.superclass._defaultConfig.apply(this, arguments), {
+            wId: ""
+        })
     },
 
     _init: function () {
         BI.SelectDatePane.superclass._init.apply(this, arguments);
-        var self = this, packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+        var self = this, o = this.options;
+        var packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
         this.searcher = BI.createWidget({
             type: "bi.select_data_searcher",
             element: this.element,
@@ -36,13 +39,25 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 }
             }
         });
-        //TODO 暂时先选中第一个业务包
-        var ids = BI.Utils.getAllPackageIDs();
-        this.searcher.setPackage(ids[0]);
+        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, function () {
+            var pId = this.getPackageId();
+            BI.Utils.setCurrentSelectPackageID(pId);
+        });
+        var id = BI.Utils.getCurrentSelectPackageID();
+        this.searcher.setPackage(id);
+
+        var broadcast = function () {
+            packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+            self.searcher.populatePackages(packageStructure);
+        };
+        //当前组件的业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX + o.wId, broadcast);
+        //全局业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX, broadcast);
     },
 
     _getSearchResult: function (type, keyword, packageId) {
-        var self = this;
+        var self = this, o = this.options;
         var searchResult = [], matchResult = [];
         //选择了所有数据
         if (type & BI.SelectDataSearchSegment.SECTION_ALL) {
@@ -57,7 +72,7 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 var items = self._getTablesStructureByPackId(pid);
                 result.push(BI.Func.getSearchResult(items, keyword));
             })
-            BI.each(result, function(i, sch){
+            BI.each(result, function (i, sch) {
                 searchResult = searchResult.concat(sch.finded);
                 matchResult = matchResult.concat(sch.matched);
             })
@@ -71,11 +86,12 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 });
                 result.push(BI.Func.getSearchResult(items, keyword));
             });
-            BI.each(result, function(i, sch){
-                BI.each(sch.matched.concat(sch.finded), function(j, finded){
-                    if(!map[finded.pId]){
+            BI.each(result, function (i, sch) {
+                BI.each(sch.matched.concat(sch.finded), function (j, finded) {
+                    if (!map[finded.pId]) {
                         searchResult.push({
                             id: finded.pId,
+                            wId: o.wId,
                             type: "bi.select_data_level0_node",
                             text: BI.Utils.getTableNameByID(finded.pId),
                             value: finded.pId,
@@ -96,11 +112,13 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
     },
 
     _getTablesStructureByPackId: function (packageId) {
+        var o = this.options;
         var tablesStructure = [];
         var currentTables = BI.Utils.getTableIDsOfPackageID(packageId);
         BI.each(currentTables, function (i, tid) {
             tablesStructure.push({
                 id: tid,
+                wId: o.wId,
                 type: "bi.select_data_level0_node",
                 text: BI.Utils.getTableNameByID(tid),
                 value: tid,
@@ -173,7 +191,7 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
      */
     _getFieldStructureOfOneTable: function (tableId, isRelation) {
         var fieldStructure = [];
-        var self = this;
+        var self = this, o = this.options;
 
         //Excel View
         var excelView = BI.Utils.getExcelViewByTableId(tableId);
@@ -210,6 +228,7 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                 id: fid,
                 pId: tableId,
                 type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
+                wId: o.wId,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fName,
                 title: fName,

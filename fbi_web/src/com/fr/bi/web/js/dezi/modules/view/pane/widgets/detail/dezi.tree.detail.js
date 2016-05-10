@@ -72,7 +72,7 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: "bi.select_string",
+                    type: BI.Utils.isRealTime() ? "bi.select_string_4_realtime" : "bi.select_string",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
@@ -200,22 +200,11 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();
-            BI.Broadcasts.send(old._src.id);
-            this.model.set("value", {});
         }
     },
 
 
     change: function (changed, prev) {
-        if (BI.has(changed, "dimensions")) {
-            this.model.set("value", {});
-            if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
-                    return !BI.has(prev.dimensions, did);
-                });
-                BI.Broadcasts.send(result._src.id, true);
-            }
-        }
         if (BI.has(changed, "value")) {
             this.combo.setValue(this.model.get("value"))
         }

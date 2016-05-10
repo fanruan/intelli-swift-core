@@ -138,7 +138,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
 
     createItem : function (field, value, field_type) {
         var pane =  BI.createWidget({
-            type:ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.GROUP + "_single",
+            type:ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.GROUP + "_single",
             field:field,
             value : value,
             field_type:field_type
@@ -168,4 +168,4 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
 
 
 });
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.GROUP, BI.AnalysisETLOperatorAddColumnValueGroupPane);
+$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.GROUP, BI.AnalysisETLOperatorAddColumnValueGroupPane);

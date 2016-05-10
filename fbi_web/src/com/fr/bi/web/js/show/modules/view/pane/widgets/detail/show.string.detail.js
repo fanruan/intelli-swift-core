@@ -187,8 +187,6 @@ BIShow.StringDetailView = BI.inherit(BI.View, {
 
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
-            this.dimensionsManager.populate();
-            BI.Broadcasts.send(old._src.id);
         }
     },
 
@@ -199,14 +197,6 @@ BIShow.StringDetailView = BI.inherit(BI.View, {
     change: function (changed, prev) {
         if (BI.has(changed, "dimensions")) {
             this.combo.setValue();
-            if (BI.size(changed.dimensions) >= BI.size(prev.dimensions)) {
-                BI.each(changed.dimensions, function (did, dimension) {
-                    BI.Broadcasts.send(dimension._src.id, true);
-                });
-                BI.each(prev.dimensions, function (did, dimension) {
-                    BI.Broadcasts.send(dimension._src.id);
-                });
-            }
         }
         if (BI.has(changed, "dimensions")) {
             if (BI.size(changed.dimensions) === BI.size(prev.dimensions)) {

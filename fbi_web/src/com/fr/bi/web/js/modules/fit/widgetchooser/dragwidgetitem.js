@@ -52,6 +52,8 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 return "chart-month-font";
             case BICst.Widget.TREE:
                 return "chart-tree-font";
+            case BICst.Widget.GENERAL_QUERY:
+                return "chart-general-query-font";
             case BICst.Widget.QUERY:
                 return "chart-query-font";
             case BICst.Widget.RESET:

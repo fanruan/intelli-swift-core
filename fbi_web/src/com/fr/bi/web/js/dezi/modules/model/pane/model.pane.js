@@ -38,12 +38,12 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
             this.set({"widgets": widgets, layoutType: layoutType});
             return true;
         }
-        if(this.has("addWidget")){
+        if (this.has("addWidget")) {
             var widget = this.get("addWidget");
             var widgets = this.get("widgets");
             var wId = widget.id;
             var info = widget.info;
-            if(!widgets[wId]){
+            if (!widgets[wId]) {
                 widgets[wId] = info;
                 widgets[wId].name = self._generateWidgetName(widgets[wId].name);
                 widgets[wId].init_time = new Date().getTime();
@@ -66,6 +66,11 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
             this.set("widgets", widgets);
         }
         this.refresh();
+        if (key1 === "widgets") {
+            BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX + key2);
+            //全局组件增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX);
+        }
     },
 
     similar: function (ob, key) {
@@ -104,5 +109,8 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("dimensions", dims);
         Data.SharingPool.put("widgets", widgets);
         Data.SharingPool.put("layoutType", this.get("layoutType"));
+
+        //用于undo redo
+        var records = Data.SharingPool.get("records") || new BI.Queue(100);
     }
 });

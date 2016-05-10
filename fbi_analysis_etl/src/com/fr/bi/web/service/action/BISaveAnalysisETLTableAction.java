@@ -1,13 +1,14 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.api.BICubeManager;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
 import com.fr.bi.etl.analysis.manager.AnalysisDataSourceManager;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
-import com.fr.bi.etl.analysis.manager.BIXMLAnalysisDataSourceManager;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -25,12 +26,28 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
         String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
-        AnalysisBusiTable table = new AnalysisBusiTable(tableId, userId, tableName);
+        AnalysisBusiTable table = new AnalysisBusiTable(tableId, userId);
+        BIConfigureManagerCenter.getAliasManager().setAliasName(tableId, tableName, userId);
+        FRContext.getCurrentEnv().writeResource(BIConfigureManagerCenter.getAliasManager().getTransManager(userId));
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
         JSONObject jo = new JSONObject(tableJSON);
         BIAnalysisETLManagerCenter.getDataSourceManager().addCore2SourceRelation(table.getID(), AnalysisETLSourceFactory.createTableSource(jo.getJSONArray(Constants.ITEMS), userId), new BIUser(userId));
         BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-        FRContext.getCurrentEnv().writeResource((BIXMLAnalysisDataSourceManager)(((AnalysisDataSourceManager)BIAnalysisETLManagerCenter.getDataSourceManager()).getInstance(new BIUser(userId))));
+        ((AnalysisDataSourceManager)BIAnalysisETLManagerCenter.getDataSourceManager()).persistUserData(userId);
+        JSONObject result = new JSONObject();
+        JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
+        JSONObject translations = new JSONObject();
+        translations.put(tableId, tableName);
+        JSONObject tableJSONWithFieldsInfo = table.createJSONWithFieldsInfo(BICubeManager.getInstance().fetchCubeLoader(userId));
+        JSONObject tableFields = tableJSONWithFieldsInfo.getJSONObject("tableFields");
+        JSONObject tables = new JSONObject();
+        tables.put(tableId, tableFields);
+        JSONObject fields = tableJSONWithFieldsInfo.getJSONObject("fieldsInfo");
+        result.put("packages", packages);
+        result.put("translations", translations);
+        result.put("tables", tables);
+        result.put("fields", fields);
+        WebUtils.printAsJSON(res, result);
     }
 
     @Override

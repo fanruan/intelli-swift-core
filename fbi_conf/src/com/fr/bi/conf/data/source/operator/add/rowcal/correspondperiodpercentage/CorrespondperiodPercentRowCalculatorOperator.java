@@ -14,14 +14,14 @@ import com.fr.bi.stable.engine.cal.ResultDealer;
  * @author Daniel
  *
  */
-public class CorrespondperiodPercentRowCalculatorOperator extends RowCalculatorOperator {
+public class CorrespondPeriodPercentRowCalculatorOperator extends RowCalculatorOperator {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 574637556670188056L;
 	@BICoreField
-	private static final String XML_TAG="CorrespondperiodPercentRowCalculatorOperator";
+	private static final String XML_TAG="CorrespondPeriodPercentRowCalculatorOperator";
 	@BICoreField
 	private BIKey periodKey;
 	

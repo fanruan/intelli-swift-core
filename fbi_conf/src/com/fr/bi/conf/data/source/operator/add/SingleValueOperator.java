@@ -39,7 +39,9 @@ public class SingleValueOperator extends AbstractAddColumnOperator {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
-        jo.put("value", value);
+        JSONObject item = new JSONObject();
+        item.put("v", value);
+        jo.put("item", item);
         return jo;
     }
 
@@ -52,8 +54,11 @@ public class SingleValueOperator extends AbstractAddColumnOperator {
     @Override
     public void parseJSON(JSONObject jsonObject) throws Exception {
         super.parseJSON(jsonObject);
-        if(jsonObject.has("value")){
-        	value = jsonObject.getString("value");
+        if (jsonObject.has("item")){
+            JSONObject item = jsonObject.getJSONObject("item");
+            if (item.has("v")){
+                value = item.getString("v");
+            }
         }
     }
 
