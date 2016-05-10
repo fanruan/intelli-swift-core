@@ -21,123 +21,157 @@ BICst.DASHBOARD_TOOLBAR = [{
 
 BICst.DASHBOARD_WIDGET_ICON = [[{
     text: BI.i18nText("BI-Summary_Table"),
+    title: BI.i18nText("BI-Summary_Table"),
     value: BICst.Widget.TABLE,
     cls: "chart-table-font"
 }, {
     text: BI.i18nText("BI-Cor_Chart"),
+    title: BI.i18nText("BI-Cor_Chart"),
     value: BICst.Widget.AXIS,
     cls: "chart-axis-font",
     children: [{
         text: BI.i18nText("BI-Cor_Chart"),
+        title: BI.i18nText("BI-Cor_Chart"),
         value: BICst.Widget.AXIS,
         cls: "chart-axis-font"
     }, {
         text: BI.i18nText("BI-Bar_Chart"),
+        title: BI.i18nText("BI-Bar_Chart"),
         value: BICst.Widget.BAR,
         cls: "chart-bar-font"
     }, {
         text: BI.i18nText("BI-Stacked_Bar_Chart"),
+        title: BI.i18nText("BI-Stacked_Bar_Chart"),
         value: BICst.Widget.ACCUMULATE_BAR,
         cls: "chart-accumulate-bar-font"
     }]
 }, {
     text: BI.i18nText("BI-Pie_Chart"),
+    title: BI.i18nText("BI-Pie_Chart"),
     value: BICst.Widget.PIE,
     cls: "chart-pie-font"
 }, {
     text: BI.i18nText("BI-Map"),
+    title: BI.i18nText("BI-Map"),
     value: BICst.Widget.MAP,
     cls: "chart-map-font"
 }, {
     text: BI.i18nText("BI-Dashboard_Chart"),
+    title: BI.i18nText("BI-Dashboard_Chart"),
     value: BICst.Widget.DASHBOARD,
     cls: "chart-dashboard-font"
 }, {
     text: BI.i18nText("BI-Donut_Chart"),
+    title: BI.i18nText("BI-Donut_Chart"),
     value: BICst.Widget.DOUGHNUT,
     cls: "chart-doughnut-font"
 }, {
     text: BI.i18nText("BI-Detail_Table"),
+    title: BI.i18nText("BI-Detail_Table"),
     value: BICst.Widget.DETAIL,
     cls: "chart-detail-font"
 }, {
     text: BI.i18nText("BI-More"),
+    title: BI.i18nText("BI-More"),
     value: BICst.Widget.CONTENT,
     cls: "chart-more-font",
     children: [{
         text: BI.i18nText("BI-Text_Widget"),
+        title: BI.i18nText("BI-Text_Widget"),
         value: BICst.Widget.CONTENT,
         cls: "chart-content-font"
     }, {
         text: BI.i18nText("BI-Image_Widget"),
+        title: BI.i18nText("BI-Image_Widget"),
         value: BICst.Widget.IMAGE,
         cls: "chart-image-font"
     }, {
         text: BI.i18nText("BI-Web_Widget"),
+        title: BI.i18nText("BI-Web_Widget"),
         value: BICst.Widget.WEB,
         cls: "chart-web-font"
     }]
 }, {
     text: BI.i18nText("BI-Bubble_Chart"),
+    title: BI.i18nText("BI-Bubble_Chart"),
     value: BICst.Widget.BUBBLE,
     cls: "chart-bubble-font"
 }, {
     text: BI.i18nText("BI-Scatter"),
+    title: BI.i18nText("BI-Scatter"),
     value: BICst.Widget.SCATTER,
     cls: "chart-scatter-font"
 }, {
     text: BI.i18nText("BI-Radar"),
+    title: BI.i18nText("BI-Radar"),
     value: BICst.Widget.RADAR,
     cls: "chart-radar-font"
 }
 ], [{//以下是控件
     text: BI.i18nText("BI-Text_Control"),
+    title: BI.i18nText("BI-Text_Control"),
     value: BICst.Widget.STRING,
     cls: "chart-string-font"
 }, {
     text: BI.i18nText("BI-Numeric_Control"),
+    title: BI.i18nText("BI-Numeric_Control"),
     value: BICst.Widget.NUMBER,
     cls: "chart-number-font"
 }, {
     text: BI.i18nText("BI-Tree_Control"),
+    title: BI.i18nText("BI-Tree_Control"),
     value: BICst.Widget.TREE,
     cls: "chart-tree-font"
 }, {
     text: BI.i18nText("BI-Date_Control"),
+    title: BI.i18nText("BI-Date_Control"),
     value: BICst.Widget.DATE,
     cls: "chart-date-font",
     children: [
         {
             text: BI.i18nText("BI-Year_Control"),
+            title: BI.i18nText("BI-Year_Control"),
             value: BICst.Widget.YEAR,
             cls: "chart-year-font"
         }, {
             text: BI.i18nText("BI-Year_Month_Con"),
+            title: BI.i18nText("BI-Year_Month_Con"),
             value: BICst.Widget.MONTH,
             cls: "chart-month-font"
         }, {
             text: BI.i18nText("BI-Year_Quarter_Con"),
+            title: BI.i18nText("BI-Year_Quarter_Con"),
             value: BICst.Widget.QUARTER,
             cls: "chart-quarter-font"
         }, {
             text: BI.i18nText("BI-Date_Control"),
+            title: BI.i18nText("BI-Date_Control"),
             value: BICst.Widget.YMD,
             cls: "chart-ymd-font"
         }, {
             text: BI.i18nText("BI-Date_Range_Control"),
+            title: BI.i18nText("BI-Date_Range_Control"),
             value: BICst.Widget.DATE,
             cls: "chart-date-range-font"
         }]
 }, {
+    text: BI.i18nText("BI-General_Query"),
+    title: BI.i18nText("BI-General_Query"),
+    value: BICst.Widget.GENERAL_QUERY,
+    cls: "chart-general-query-font"
+}, {
     text: BI.i18nText("BI-Query_Button"),
+    title: BI.i18nText("BI-Query_Button"),
     value: BICst.Widget.QUERY,
     cls: "chart-query-font"
 }, {
     text: BI.i18nText("BI-Reset_Button"),
+    title: BI.i18nText("BI-Reset_Button"),
     value: BICst.Widget.RESET,
     cls: "chart-reset-font"
 }], [{
     text: BI.i18nText("BI-Reuse"),
+    title: BI.i18nText("BI-Reuse"),
     value: -1,
     cls: "chart-reuse-font"
 }]];
@@ -362,15 +396,15 @@ BICst.TIME_CONTROL_SETCOMBO_ITEMS = [{
 }, {
     value: BICst.DASHBOARD_CONTROL_CLEAR,
     text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "dashboard-widget-combo-clear"
+    extraCls: "dashboard-widget-combo-clear-font"
 }, {
     value: BICst.DASHBOARD_WIDGET_COPY,
     text: BI.i18nText("BI-Copy"),
-    extraCls: "copy-h-font"
+    extraCls: "widget-copy-h-font"
 }, {
     value: BICst.DASHBOARD_WIDGET_DELETE,
     text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "delete-h-font"
+    extraCls: "widget-delete-h-font"
 }];
 
 BICst.TIME_CONTROL_SETCOMBO_ITEMS.VIEW = [];
@@ -383,39 +417,43 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [{
 }, {
     value: BICst.DASHBOARD_CONTROL_CLEAR,
     text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "fr-bi-erase-button-small"
+    extraCls: "dashboard-widget-combo-clear-font"
 }, {
-    value: BICst.DASHBOARD_WIDGET_COPY, text: BI.i18nText("BI-Copy"), extraCls: "widget-combo-menu-copy-icon"
+    value: BICst.DASHBOARD_WIDGET_COPY,
+    text: BI.i18nText("BI-Copy"),
+    extraCls: "widget-copy-h-font"
 }, {
     value: BICst.DASHBOARD_WIDGET_DELETE,
     text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-combo-menu-delete-icon"
+    extraCls: "widget-delete-h-font"
 }];
 
 BICst.NUMBER_CONTROL_SETCOMBO_ITEMS.VIEW = [{
     value: BICst.DASHBOARD_CONTROL_CLEAR,
     text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "fr-bi-erase-button-small"
+    extraCls: "dashboard-widget-combo-clear-font"
 }];
 
 //通用查询的下拉选项
 BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [{
     value: BICst.DASHBOARD_CONTROL_CLEAR,
     text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "fr-bi-erase-button-small"
+    extraCls: "dashboard-widget-combo-clear-font"
 }, {
-    value: BICst.DASHBOARD_WIDGET_COPY, text: BI.i18nText("BI-Copy"), extraCls: "widget-combo-menu-copy-icon"
+    value: BICst.DASHBOARD_WIDGET_COPY, 
+    text: BI.i18nText("BI-Copy"),
+    extraCls: "widget-copy-h-font"
 }, {
     value: BICst.DASHBOARD_WIDGET_DELETE,
     text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-combo-menu-delete-icon"
+    extraCls: "widget-delete-h-font"
 }];
 
 BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS.VIEW = [{
     value: BICst.DASHBOARD_CONTROL_CLEAR,
     text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "fr-bi-erase-button-small"
-}]
+    extraCls: "dashboard-widget-combo-clear-font"
+}];
 
 //指标下拉选项
 BICst.WIDGET_DETAIL_TARGET_ITEM = [{

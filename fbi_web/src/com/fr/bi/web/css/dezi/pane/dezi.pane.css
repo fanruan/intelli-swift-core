@@ -4,3 +4,7 @@
 .bi-pane-view {
   background: #f3f3f3;
 }
+.bi-pane-view .dashboard-toolbar {
+  border-bottom: 1px solid #d4dadd;
+  color: #808080;
+}

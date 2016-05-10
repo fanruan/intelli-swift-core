@@ -1507,6 +1507,15 @@
   content: "\e616";
   color: #009de3;
 }
+.chart-general-query-font .b-font:before {
+  content: "\e62b";
+  color: #009de3;
+}
+.chart-general-query-font.native .b-font:before,
+.chart-general-query-font.disabled .b-font:before {
+  content: "\e62b";
+  color: #009de3;
+}
 .chart-query-font .b-font:before {
   content: "\e609";
   color: #009de3;
