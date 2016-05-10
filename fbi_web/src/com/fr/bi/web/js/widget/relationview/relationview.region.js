@@ -11,7 +11,8 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
         return BI.extend(BI.RelationViewRegion.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-relation-view-region cursor-pointer",
             width: 150,
-            header: "",
+            text: "",
+            value: "",
             items: []
         });
     },
@@ -23,7 +24,8 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
             type: "bi.label",
             cls: "relation-view-region-title",
             height: 25,
-            text: o.header
+            text: o.text,
+            value: o.value
         });
         this.button_group = BI.createWidget({
             type: "bi.button_group",
@@ -49,10 +51,8 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
     _createItems: function (items) {
         var self = this;
         return BI.map(items, function (i, item) {
-            return {
+            return BI.extend(item, {
                 type: "bi.relation_view_item",
-                text: item.text,
-                value: item.value,
                 hoverIn: function () {
                     self.setValue(item.value);
                     self.fireEvent(BI.RelationViewRegion.EVENT_HOVER_IN, item.value);
@@ -61,7 +61,7 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
                     self.setValue([]);
                     self.fireEvent(BI.RelationViewRegion.EVENT_HOVER_OUT, item.value);
                 }
-            }
+            })
         });
     },
 
