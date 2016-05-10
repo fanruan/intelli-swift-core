@@ -282,6 +282,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.detailtable.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.daterange.detail.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.tree.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.content.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.image.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.web.js",
@@ -290,6 +291,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.string.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.number.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.date.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.tree.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.target.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/filter/model.dimensionfilter.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/filter/model.targetfilter.js",
@@ -329,6 +331,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.string.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.number.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.date.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.tree.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.target.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customgroup/dezi.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customsort/dezi.customsort.js",
@@ -822,6 +825,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/tablefield/widget.tablefield.js",
                 "com/fr/bi/web/js/modules/tablefield/widget.tablefield.searchresult.pane.js",
                 "com/fr/bi/web/js/modules/tablefield/widget.tablefieldwithsearch.pane.js",
+
+                //下拉树控件字段关联设置
+                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/fieldrelationsettingwithpreviewpopup.js",
+                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/model.fieldrelationsettingwithpreviewpopup.js",
 
                 //明细表字段关联设置
                 "com/fr/bi/web/js/modules/fieldrelationsetting/item.path.detailtable.js",

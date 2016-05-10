@@ -328,6 +328,9 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                             case BICst.GROUP.YMD:
                                 name = BI.i18nText("BI-Date") + "(" + name + ")";
                                 break;
+                            case BICst.GROUP.YMDHMS:
+                                name = BI.i18nText("BI-Time_ShiKe") + "(" + name + ")";
+                                break;
                         }
                         return {
                             id: fId.field_id + fId.group.type,
@@ -433,6 +436,18 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.YMD}
+            },
+            drag: drag
+        }, {
+            id: fieldId + BICst.GROUP.YMDHMS,
+            pId: fieldId,
+            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
+            text: BI.i18nText("BI-Time_ShiKe"),
+            title: BI.i18nText("BI-Time_ShiKe"),
+            value: {
+                field_id: fieldId,
+                group: {type: BICst.GROUP.YMDHMS}
             },
             drag: drag
         }];

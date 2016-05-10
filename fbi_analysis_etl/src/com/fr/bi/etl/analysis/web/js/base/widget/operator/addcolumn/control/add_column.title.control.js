@@ -25,8 +25,8 @@ BI.AnalysisETLOperatorAddColumnPaneTitleController = BI.inherit(BI.MVCController
         var model = arguments[arguments.length - 1];
         var type = widget.typeCombo.getValue()[0];
         var acceptTypes = ETLCst.ANALYSIS_ADD_COLUMN_TYPE_ACCEPT_FIELDS[type];
-        widget.fieldTypeLabel.setVisible(type !== BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.VALUE_CONVERT)
-        widget.fieldTypeSegment.setVisible(type !== BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.VALUE_CONVERT)
+        widget.fieldTypeLabel.setVisible(type !== BICst.ETL_ADD_COLUMN_TYPE.VALUE_CONVERT)
+        widget.fieldTypeSegment.setVisible(type !== BICst.ETL_ADD_COLUMN_TYPE.VALUE_CONVERT)
         widget.fieldTypeSegment.setEnabledValue(acceptTypes);
         widget.fieldTypeSegment.setValue(acceptTypes[0]);
         model.setAddColumnType(type)

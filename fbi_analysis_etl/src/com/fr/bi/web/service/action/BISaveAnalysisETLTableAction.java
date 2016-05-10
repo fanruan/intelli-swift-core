@@ -1,13 +1,11 @@
 package com.fr.bi.web.service.action;
 
-import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
 import com.fr.bi.etl.analysis.manager.AnalysisDataSourceManager;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
-import com.fr.bi.etl.analysis.manager.BIXMLAnalysisDataSourceManager;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -30,7 +28,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         JSONObject jo = new JSONObject(tableJSON);
         BIAnalysisETLManagerCenter.getDataSourceManager().addCore2SourceRelation(table.getID(), AnalysisETLSourceFactory.createTableSource(jo.getJSONArray(Constants.ITEMS), userId), new BIUser(userId));
         BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-        FRContext.getCurrentEnv().writeResource((BIXMLAnalysisDataSourceManager)(((AnalysisDataSourceManager)BIAnalysisETLManagerCenter.getDataSourceManager()).getInstance(new BIUser(userId))));
+        ((AnalysisDataSourceManager)BIAnalysisETLManagerCenter.getDataSourceManager()).persistUserData(userId);
     }
 
     @Override

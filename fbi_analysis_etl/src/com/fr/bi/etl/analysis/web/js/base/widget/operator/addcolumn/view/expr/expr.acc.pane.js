@@ -167,4 +167,4 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.MVCWidget, {
         return BI.AnalysisETLOperatorAddColumnExprNumberFieldsModel;
     }
 });
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_ACC, BI.AnalysisETLOperatorAddColumnAccPane);
+$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.EXPR_ACC, BI.AnalysisETLOperatorAddColumnAccPane);

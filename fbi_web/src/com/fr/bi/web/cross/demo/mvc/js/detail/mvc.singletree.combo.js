@@ -12,6 +12,7 @@ SingleTreeComboView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var combo = BI.createWidget({
             type: "bi.single_tree_combo",
+            text: "这是一个静态值",
             items: this.model.get('items')
         });
 

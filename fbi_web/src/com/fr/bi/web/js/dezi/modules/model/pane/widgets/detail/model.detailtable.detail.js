@@ -88,7 +88,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                     _src: src._src,
                     type: src.type,
                     sort: {type: BICst.SORT.ASC, target_id: dId},
-                    group: {type: BICst.GROUP.ID_GROUP},
+                    group: {type: BICst.GROUP.NO_GROUP},
                     used: true
                 };
 

@@ -24,13 +24,13 @@ import java.util.*;
  */
 public class BICubeTableEntity implements ICubeTableEntityService {
 
-    private ITableKey tableKey;
-    private ICubeResourceRetrievalService resourceRetrievalService;
-    private ICubeTableColumnManagerService columnManager;
-    private ICubeRelationManagerService relationManager;
-    private ICubeResourceLocation currentLocation;
-    private ICubeTablePropertyService tableProperty;
-    private ICubeResourceDiscovery discovery;
+    protected ITableKey tableKey;
+    protected ICubeResourceRetrievalService resourceRetrievalService;
+    protected ICubeTableColumnManagerService columnManager;
+    protected ICubeRelationManagerService relationManager;
+    protected ICubeResourceLocation currentLocation;
+    protected ICubeTablePropertyService tableProperty;
+    protected ICubeResourceDiscovery discovery;
     private ICubeIntegerWriter removedLineWriter;
 
     public BICubeTableEntity(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {

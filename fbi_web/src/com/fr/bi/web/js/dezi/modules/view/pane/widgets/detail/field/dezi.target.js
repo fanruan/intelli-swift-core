@@ -2,7 +2,6 @@
  * Created by GUY on 2015/7/3.
  */
 BIDezi.TargetView = BI.inherit(BI.View, {
-
     constants: {
         TARGET_BUTTON_HEIGHT: 25,
         COMBO_WIDTH: 25,
