@@ -3,7 +3,7 @@
  */
 BI.AnalysisETLOperatorAddColumnExprSamePeriodController = BI.inherit(BI.AnalysisETLOperatorAddColumnExprPeriodController, {
     _checkCanSave : function (widget, model) {
-        if (BI.isNull(model.get('year'))){
+        if (BI.isNull(model.get('period'))){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted',  BI.i18nText('BI-Year_Fen')));
         } else if (BI.isNull(model.get('monthSeason'))){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted',  BI.i18nText('BI-Month_Fen') + '/'+ BI.i18nText('BI-Quarter')));
@@ -14,8 +14,8 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodController = BI.inherit(BI.Analysis
 
     _getSelectedFields : function (model) {
         var fields = [];
-        if (BI.isNotNull(model.get('year'))){
-            fields.push(model.get('year'));
+        if (BI.isNotNull(model.get('period'))){
+            fields.push(model.get('period'));
         }
         if (BI.isNotNull(model.get('monthSeason'))){
             fields.push(model.get('monthSeason'));
@@ -26,16 +26,16 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodController = BI.inherit(BI.Analysis
     _refreshCombo : function (widget, model) {
         BI.AnalysisETLOperatorAddColumnExprSamePeriodController.superclass._refreshCombo.apply(this, arguments);
         widget.year.populate(this._createLeftItems(model));
-        widget.year.setValue(model.get('year'));
+        widget.year.setValue(model.get('period'));
         widget.monthSeason.populate(this._createLeftItems(model));
         widget.monthSeason.setValue(model.get('monthSeason'));
     },
 
     _refreshComboValue : function (combo, oldValue, widget, model) {
         BI.AnalysisETLOperatorAddColumnExprSamePeriodController.superclass._refreshComboValue.apply(this, arguments);
-        if (combo !== widget.year && combo.getValue()[0] === model.get('year')){
+        if (combo !== widget.year && combo.getValue()[0] === model.get('period')){
             widget.year.setValue(oldValue);
-            model.set('year', oldValue);
+            model.set('period', oldValue);
         }
         if (combo !== widget.monthSeason && (combo.getValue()[0] === model.get('monthSeason'))){
             widget.monthSeason.setValue(oldValue);
@@ -44,8 +44,8 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodController = BI.inherit(BI.Analysis
     },
 
     setYearField : function (value, widget, model) {
-        var oldValue = model.get('year');
-        model.set('year', value);
+        var oldValue = model.get('period');
+        model.set('period', value);
         this._refreshComboValue(widget.year, oldValue, widget, model)
         this._afterValueSetted(widget, model);
     },
@@ -60,7 +60,7 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodController = BI.inherit(BI.Analysis
     populate : function (widget, model) {
         BI.AnalysisETLOperatorAddColumnExprSamePeriodController.superclass.populate.apply(this, arguments);
         widget.year.populate(this._createLeftItems(model));
-        widget.year.setValue(model.get('year'));
+        widget.year.setValue(model.get('period'));
         widget.monthSeason.populate(this._createLeftItems(model));
         widget.monthSeason.setValue(model.get('monthSeason'));
         this._afterValueSetted(widget, model);
@@ -95,7 +95,7 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodController = BI.inherit(BI.Analysis
                 })
             )
         })
-        var text = BI.i18nText('BI-Calculate_Target_Include_In_Same_Last', model.get('year') || '', model.get('monthSeason') || '');
+        var text = BI.i18nText('BI-Calculate_Target_Include_In_Same_Last', model.get('period') || '', model.get('monthSeason') || '');
         label.addItem(
             BI.createWidget({
                 type : 'bi.label',

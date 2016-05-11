@@ -62,7 +62,7 @@ public class ResourceHelper {
         JSONObject excelViews = new JSONObject();
         try {
             groups = BIConfigureManagerCenter.getPackageManager().createGroupJSON(userId);
-            packages = BIModuleUtils.createPackJSON(userId);
+            packages = BIModuleUtils.createPackJSON(userId, req.getLocale());
             translations = BIConfigureManagerCenter.getAliasManager().getTransManager(userId).createJSON();
             relations = BIConfigureManagerCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);

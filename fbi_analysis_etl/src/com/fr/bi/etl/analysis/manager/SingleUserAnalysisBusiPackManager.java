@@ -6,16 +6,16 @@ import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.conf.AnalysisPackManager;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
 
+import java.util.Locale;
 import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = SingleUserAnalysisBusiPackManager.class)
-public class SingleUserAnalysisBusiPackManager implements JSONCreator {
+public class SingleUserAnalysisBusiPackManager{
 
 
     private long userId;
@@ -39,8 +39,8 @@ public class SingleUserAnalysisBusiPackManager implements JSONCreator {
         return pack.getTable(tableId);
     }
 
-    public JSONObject createJSON() throws Exception {
-        return pack.createJSON();
+    public JSONObject createJSON(Locale locale) throws Exception {
+        return pack.createJSON(locale);
     }
 
     public Set<BIBusinessPackage> getAllPacks(){

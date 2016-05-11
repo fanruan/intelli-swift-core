@@ -38,7 +38,7 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
 
         var operator = model.get('operator');
         if (BI.isNull(operator)){
-            model.set('operator', {});
+            model.set('operator', {type : BICst.FILTER_TYPE.AND});
             operator = model.get('operator');
         }
         this._check(widget, model);

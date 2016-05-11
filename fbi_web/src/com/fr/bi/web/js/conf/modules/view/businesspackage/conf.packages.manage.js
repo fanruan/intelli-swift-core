@@ -130,7 +130,7 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
     load: function () {
         var groupedItems = this.model.get("groups");
         var allPackages = this.model.get("packages");
-        this.groupPane.populate(groupedItems, BI.sortBy(allPackages, "position"));
+        this.groupPane.populate(BI.sortBy(groupedItems, "init_time"), BI.sortBy(allPackages, "position"));
     },
 
     change: function (changed) {

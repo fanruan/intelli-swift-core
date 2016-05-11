@@ -196,7 +196,7 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
         BI.each(groupedChosenMap, function (id, fieldName) {
             self.groupPane.addFieldWidget(id, fieldName, groupName);
             var groupID = self._getGroupID(id);
-            if (groupName != groupMap[groupID]) {
+            if (groupName != groupMap[groupID].name) {
                 self.groupPane.deleteFieldWidget(id, true);
             }
         });
@@ -249,6 +249,7 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
             item.value = BI.Utils.getConfGroupNameByGroupId(gid);
             item.children = [];
             item.id = gid;
+            item.init_time = BI.Utils.getConfGroupInitTimeByGroupId(gid);
             BI.each(BI.Utils.getConfGroupChildrenByGroupId(gid), function (i, packageObject) {
                 var object = {};
                 object.value = packageObject.id;
@@ -267,7 +268,7 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
                 unGroupedFieldItem.children.push(packageItem);
             }
         });
-        self.groupPane.populate([unGroupedFieldItem], BI.sortBy(groupedFieldItems, "position"));
+        self.groupPane.populate([unGroupedFieldItem], BI.sortBy(groupedFieldItems, "init_time"));
         self._checkChosenNum();
 
 
