@@ -23,7 +23,7 @@ public class StringNotLikeFilterValue extends StringOneValueFilterValue {
         if (StringUtils.isEmpty(value)) {
             return loader.getTableIndex(dimension.getField().getTableBelongTo()).getAllShowIndex();
         }
-        return super.createFilterIndex(dimension, target, loader, userId).NOT(loader.getTableIndex(target).getRowCount())
+        return super.createFilterIndex(dimension, target, loader, userId)
                 .AND(loader.getTableIndex(dimension.getField().getTableBelongTo()).getAllShowIndex());
     }
 
