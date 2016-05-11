@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TimeDeleteHashMap<K, V> {
 
     private static long M = 1000;
-    private static long MINUTE = 10;
+    private static long MINUTE = 1;
 
     private static long SECOND = 60;
 
