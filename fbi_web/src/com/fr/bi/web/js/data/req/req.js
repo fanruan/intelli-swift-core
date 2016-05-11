@@ -68,6 +68,9 @@ Data.Req = BIReq = {
     reqPakageAndGroup: function (callback) {
         return BI.requestAsync("fr_bi_configure", "get_business_package_group", {}, callback);
     },
+    reqPakageAndGroupSync: function () {
+        return BI.requestSync("fr_bi_configure", "get_business_package_group", {});
+    },
 
     reqAllTablesByConnection: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "get_all_translated_tables_by_connection", data, callback);
@@ -249,8 +252,7 @@ Data.Req = BIReq = {
         })
     },
     reqAuthorityByPackageId: function (packageId) {
-        return BI.requestAsync("fr_bi_configure", "get_package_authority", {package:packageId},function(res) {
-        });;
+         return BI.requestSync("fr_bi_configure", "get_package_authority", {packageId:packageId});;
     },
     reqAllAuthority: function () {
         var rolesFromServer = BI.requestSync("fs_set", "auth_getAllRole_withDeptAll", {});
@@ -264,6 +266,12 @@ Data.Req = BIReq = {
 
     reqAllBusinessPackages: function(callback) {
         BI.requestAsync("fr_bi_configure", "get_all_business_packages", {}, function(res) {
+            callback(res);
+        });
+    },
+
+    getTableNamesOfAllPackages: function(callback) {
+        BI.requestAsync("fr_bi_configure", "get_table_names_of_all_packages", {}, function(res) {
             callback(res);
         });
     }

@@ -5,6 +5,8 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
+import com.fr.bi.cal.stable.engine.TempCubeTask;
+import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.fs.BIReportNode;
@@ -36,10 +38,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BISession extends BIAbstractSession {
 
     private boolean isEdit;
+    private boolean isRealTime;
     private BIReportNode node;
     //pony 缓存loader
     private ICubeDataLoader loader;
     private CubeGenerateStatusProvider provider;
+    private String tempTableMd5;
     //pony 明细表缓存的分页信息
     private Map<DetailSortKey, ConcurrentHashMap<Integer, Integer>> detailIndexMap = new ConcurrentHashMap<DetailSortKey, ConcurrentHashMap<Integer, Integer>>();
     private Map<DetailSortKey, ConcurrentHashMap<Integer, Object[]>> detailValueMap = new ConcurrentHashMap<DetailSortKey, ConcurrentHashMap<Integer, Object[]>>();
@@ -52,12 +56,14 @@ public class BISession extends BIAbstractSession {
     private BISession(String remoteAddress, BIWeblet let, long userId, BIReportNode node) {
         super(remoteAddress, let, userId);
         this.node = node;
+        updateTime();
     }
 
     public BISession(String remoteAddress, BIWeblet let, long userId, Locale locale, BIReportNode node) {
         this(remoteAddress, let, userId, node);
         // TODO:richie在这里改变国际化的环境
         GeneralContext.setLanguage(1);
+        updateTime();
     }
 
     //TODO : 这边userid 也要把loader什么的换下，在这边实现起来不好
@@ -112,6 +118,22 @@ public class BISession extends BIAbstractSession {
 
     public void setProvider(CubeGenerateStatusProvider provider) {
         this.provider = provider;
+    }
+
+    public String getTempTableMd5() {
+        return tempTableMd5;
+    }
+
+    public void setTempTableMd5(String tempTableMd5) {
+        this.tempTableMd5 = tempTableMd5;
+    }
+
+    public boolean isRealTime() {
+        return isRealTime;
+    }
+
+    public void setIsRealTime(boolean isRealTime) {
+        this.isRealTime = isRealTime;
     }
 
     public ResultWorkBook getExportBookByName(String name) throws CloneNotSupportedException {
@@ -196,15 +218,24 @@ public class BISession extends BIAbstractSession {
     @Override
     public ICubeDataLoader getLoader() {
         synchronized (this) {
-           // if (!needGenerateTempCube()) {
+            if (!isRealTime()) {
                 return BICubeManager.getInstance().fetchCubeLoader(accessUserId);
-//            } else {
-//
-//                if (loader == null) {
-//                    loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTable(), getUserId()));
-//                }
-//                return loader;
-//            }
+            } else {
+
+                if (loader == null) {
+                    loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getUserId()));
+                }
+                return loader;
+            }
+        }
+    }
+
+    @Override
+    public void updateTime() {
+        this.lastTime = System.currentTimeMillis();
+        if (isRealTime()) {
+            CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getUserId()));
+            loader.updateTime();
         }
     }
 

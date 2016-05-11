@@ -159,7 +159,7 @@
                     BI.remove(fieldIds, fId);
                 }
             });
-            var countIds = this.getCountFieldIDsOfTableID(tableId);
+            var countIds = this.getCountFieldIDsOfTableID(tableId) || [];
             var tNum = [], tString = [], tDate = [], fNum = [], fString = [], fDate = [];
             BI.each(transIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
@@ -1108,7 +1108,8 @@
                     });
                 }
                 //通用查询直接用好了
-                if(self.getWidgetTypeByID(id) === BICst.Widget.GENERAL_QUERY && value.length === 1) {
+                if(self.getWidgetTypeByID(id) === BICst.Widget.GENERAL_QUERY &&
+                    BI.isNotNull(value) && value.length === 1) {
                     var filter = value[0];
                     parseFilter(filter);
                     filterValues.push(filter);
@@ -1285,8 +1286,21 @@
     });
 
 
-    //获取复杂日期的值
-    function parseComplexDate(v) {
+    function parseComplexDateForParam(value){
+        var wWid = value.wId, se = value.startOrEnd;
+        if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
+            var wWValue = BI.Utils.getWidgetValueByID(wWid);
+            if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
+                return parseComplexDateCommon(wWValue.start);
+            } else {
+                return parseComplexDateCommon(wWValue.end);
+            }
+        } else {
+            return parseComplexDateCommon(BI.Utils.getWidgetValueByID(value));
+        }
+    }
+
+    function parseComplexDateCommon(v) {
         var type = v.type, value = v.value;
         var date = new Date();
         var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
@@ -1333,25 +1347,18 @@
                 return date.getOffsetDate(1 * value).getTime();
             case BICst.MULTI_DATE_DAY_TODAY:
                 return date.getTime();
-
-            case BICst.MULTI_DATE_PARAM:
-                var wWid = value.wId, se = value.startOrEnd;
-                if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
-                    var wWValue = BI.Utils.getWidgetValueByID(wWid);
-                    if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
-                        return new Date(wWValue.start.year, wWValue.start.month, wWValue.start.day).getTime();
-                    } else {
-                        return new Date(wWValue.end.year, wWValue.end.month, wWValue.end.day).getTime();
-                    }
-                } else {
-                    if (BI.isNotNull(value.year) && BI.isNotNull(value.month) && BI.isNotNull(value.day)) {
-                        return new Date(value.year, value.month, value.day).getTime();
-                    }
-                }
-                break;
             case BICst.MULTI_DATE_CALENDAR:
                 return new Date(value.year, value.month, value.day).getTime();
 
+        }
+    }
+
+    //获取复杂日期的值
+    function parseComplexDate(v) {
+        if(v.type === BICst.MULTI_DATE_PARAM){
+            return parseComplexDateForParam(v.value);
+        }else{
+            return parseComplexDateCommon(v);
         }
     }
 

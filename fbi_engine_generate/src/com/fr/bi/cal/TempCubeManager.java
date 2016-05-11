@@ -129,6 +129,4 @@ public class TempCubeManager implements Release {
             }
         }
     }
-
-    ;
 }
