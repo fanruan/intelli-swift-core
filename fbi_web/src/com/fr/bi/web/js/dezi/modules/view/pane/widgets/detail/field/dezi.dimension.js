@@ -124,7 +124,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             type: "bi.dimension_string_combo",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_STRING_COMBO.ASCEND:
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
@@ -173,7 +173,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             type: "bi.dimension_number_combo",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_NUMBER_COMBO.ASCEND:
                     self.model.set("sort", {type: BICst.SORT.ASC, sort_target: s});
@@ -214,7 +214,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             type: "bi.dimension_date_combo",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_DATE_COMBO.DATE:
                     self.model.set("group", {type: BICst.GROUP.YMD});

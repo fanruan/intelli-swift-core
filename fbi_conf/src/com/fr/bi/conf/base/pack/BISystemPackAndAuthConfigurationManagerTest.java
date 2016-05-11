@@ -18,7 +18,7 @@ public class BISystemPackAndAuthConfigurationManagerTest {
 
     }
 
-    @org.junit.Test
+    //@org.junit.Test
     public void getAllPackages() throws Exception {
         JSONArray roleInfojo = new JSONArray("[3,5,4]");
 
@@ -47,7 +47,7 @@ public class BISystemPackAndAuthConfigurationManagerTest {
         System.out.println(allPackages);
     }
 
-    @org.junit.Test
+    //@org.junit.Test
     public void getPackage() throws Exception {
         String roles="[3,5,4]";
         JSONArray roleInfojo=new JSONArray(roles);
@@ -57,12 +57,12 @@ public class BISystemPackAndAuthConfigurationManagerTest {
         }
     }
 
-    @org.junit.Test
+    //@org.junit.Test
     public void addPackage() throws Exception {
 
     }
 
-    @org.junit.Test
+    //@org.junit.Test
     public void removePackage() throws Exception {
 
     }
