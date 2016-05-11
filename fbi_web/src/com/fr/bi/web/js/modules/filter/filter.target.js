@@ -22,7 +22,7 @@ BI.TargetFilter = BI.inherit(BI.Widget, {
                 item.type = t.type;
                 item.field_id = BI.Utils.getFieldIDByDimensionID(o.dId);
                 item.afterValueChange = function () {
-                    self.fireEvent(BI.CommonFilter.EVENT_CHANGE);
+                    self.fireEvent(BI.TargetFilter.EVENT_CHANGE);
                 };
             },
             expander: {
@@ -32,7 +32,7 @@ BI.TargetFilter = BI.inherit(BI.Widget, {
         });
 
         this.filter.on(BI.Filter.EVENT_CHANGE, function () {
-            self.fireEvent(BI.CommonFilter.EVENT_CHANGE);
+            self.fireEvent(BI.TargetFilter.EVENT_CHANGE);
         });
     },
 
