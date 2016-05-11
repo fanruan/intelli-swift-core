@@ -208,6 +208,8 @@ BI.Searcher = BI.inherit(BI.Widget, {
 
     stopSearch: function () {
         this._stopSearch();//先停止搜索，然后再去设置editor为空
+        //important:停止搜索必须退出编辑状态
+        this.editor.blur();
         this.editor.setValue("");
     },
 
