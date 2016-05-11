@@ -310,9 +310,10 @@ public class BIPackAndAuthConfigManager implements Release {
                 JSONObject t = jo.optJSONObject(ja.optString(i));
                 String name = t.optString("name");
                 JSONArray jt = t.optJSONArray("children");
+                long position = jo.optLong("init_time");
                 BIGroupTagName groupTagName = new BIGroupTagName(name);
                 try {
-                    groupCollectionManager.createEmptyGroup(groupTagName);
+                    groupCollectionManager.createEmptyGroup(groupTagName, position);
                     Set<String> list = new HashSet<String>();
                     for (int j = 0; j < jt.length(); j++) {
                         JSONObject g = jt.optJSONObject(j);

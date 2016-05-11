@@ -23,4 +23,8 @@ public interface BIBusinessGroupGetterService {
     Boolean containPackage(BIBusinessPackage pack);
 
     Boolean containPackage(BIPackageID packageID);
+
+    long getPosition();
+
+    void setPosition(long position);
 }

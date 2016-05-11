@@ -89,13 +89,13 @@ BI.extend(BI.Utils, {
                 var groups = data.groups, packages = data.packages;
                 var packStructure = [], groupedPacks = [];
                 BI.each(groups, function (id, group) {
-                packStructure.push({
-                    id: id,
-                    text: group.name,
-                    value: group.name,
-                    pId: 0,
-                    open: true
-                });
+                    packStructure.push({
+                        id: id,
+                        text: group.name,
+                        value: group.name,
+                        pId: 0,
+                        open: true
+                    });
                     BI.each(group.children, function (i, item) {
                         packStructure.push({
                             id: item.id,
@@ -127,18 +127,18 @@ BI.extend(BI.Utils, {
                             id: id,
                             open: true
                         })
-                }
-            });
-                if (isGroupedExisted === true) {
-                packStructure.push({
-                    text: BI.i18nText('BI-Ungrouped'),
-                    value: BI.i18nText('BI-Ungrouped'),
-                    id: 1,
-                    pId: 0,
-                    open: true
+                    }
                 });
-            }
-            Data.SharingPool.put("packStructure", packStructure);
+                if (isGroupedExisted === true) {
+                    packStructure.push({
+                        text: BI.i18nText('BI-Ungrouped'),
+                        value: BI.i18nText('BI-Ungrouped'),
+                        id: 1,
+                        pId: 0,
+                        open: true
+                    });
+                }
+                Data.SharingPool.put("packStructure", packStructure);
                 tree.populate(packStructure);
             }
         );
@@ -201,6 +201,14 @@ BI.extend(BI.Utils, {
         return [];
     },
 
+    getConfGroupInitTimeByGroupId: function (gid) {
+        var groups = Data.SharingPool.get("groups");
+        if (BI.isNotNull(groups[gid])) {
+            return groups[gid].init_time;
+        }
+        return "";
+    },
+
     getConfPackageTablesByID: function (pid) {
         return Data.SharingPool.get("packages", pid, "tables");
     },
@@ -213,7 +221,7 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("packages", pid, "name");
     },
 
-    getUpdateSettingByID: function(id) {
+    getUpdateSettingByID: function (id) {
         return Data.SharingPool.get("update_settings", id);
     },
 
@@ -376,20 +384,20 @@ BI.extend(BI.Utils, {
         });
     },
 
-    getUpdatePreviewSqlResult: function(data, callback){
+    getUpdatePreviewSqlResult: function (data, callback) {
         Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
             callback(res);
         })
     },
 
-    modifyGlobalUpdateSetting: function(data, callback){
-        Data.Req.reqModifyGlobalUpdateSetting(data, function(res) {
+    modifyGlobalUpdateSetting: function (data, callback) {
+        Data.Req.reqModifyGlobalUpdateSetting(data, function (res) {
             callback(res);
         })
     },
 
-    getCubeLog: function(callback) {
-        Data.Req.reqCubeLog(function(res){
+    getCubeLog: function (callback) {
+        Data.Req.reqCubeLog(function (res) {
             callback(res);
         });
     },
@@ -399,8 +407,8 @@ BI.extend(BI.Utils, {
         })
     },
 
-    getAllPackages: function(callback) {
-        Data.Req.reqAllBusinessPackages(function(res) {
+    getAllPackages: function (callback) {
+        Data.Req.reqAllBusinessPackages(function (res) {
             callback(res);
         })
     }

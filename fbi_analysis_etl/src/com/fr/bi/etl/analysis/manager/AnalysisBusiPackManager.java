@@ -49,7 +49,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public String persistUserDataName(long key) {
-        return "sue" + File.separator + "pack" +key;
+        return "sue" + File.separator + "pack" + key;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
-    public void createEmptyGroup(long userId, BIGroupTagName groupTagName) throws BIGroupDuplicateException {
+    public void createEmptyGroup(long userId, BIGroupTagName groupTagName, long position) throws BIGroupDuplicateException {
 
     }
 
