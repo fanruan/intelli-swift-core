@@ -51,6 +51,15 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
 
         var id = BI.Utils.getCurrentSelectPackageID();
         this.searcher.setPackage(id);
+
+        var broadcast = function () {
+            packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+            self.searcher.populatePackages(packageStructure);
+        };
+        //当前组件的业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX + o.wId, broadcast);
+        //全局业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX, broadcast);
     },
 
     /**

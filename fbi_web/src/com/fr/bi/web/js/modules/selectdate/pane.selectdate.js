@@ -14,7 +14,8 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.SelectDatePane.superclass._init.apply(this, arguments);
-        var self = this, packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+        var self = this, o = this.options;
+        var packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
         this.searcher = BI.createWidget({
             type: "bi.select_data_searcher",
             element: this.element,
@@ -44,10 +45,19 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
         });
         var id = BI.Utils.getCurrentSelectPackageID();
         this.searcher.setPackage(id);
+
+        var broadcast = function () {
+            packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+            self.searcher.populatePackages(packageStructure);
+        };
+        //当前组件的业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX + o.wId, broadcast);
+        //全局业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX, broadcast);
     },
 
     _getSearchResult: function (type, keyword, packageId) {
-        var self = this;
+        var self = this, o = this.options;
         var searchResult = [], matchResult = [];
         //选择了所有数据
         if (type & BI.SelectDataSearchSegment.SECTION_ALL) {
@@ -81,6 +91,7 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                     if (!map[finded.pId]) {
                         searchResult.push({
                             id: finded.pId,
+                            wId: o.wId,
                             type: "bi.select_data_level0_node",
                             text: BI.Utils.getTableNameByID(finded.pId),
                             value: finded.pId,
@@ -101,11 +112,13 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
     },
 
     _getTablesStructureByPackId: function (packageId) {
+        var o = this.options;
         var tablesStructure = [];
         var currentTables = BI.Utils.getTableIDsOfPackageID(packageId);
         BI.each(currentTables, function (i, tid) {
             tablesStructure.push({
                 id: tid,
+                wId: o.wId,
                 type: "bi.select_data_level0_node",
                 text: BI.Utils.getTableNameByID(tid),
                 value: tid,

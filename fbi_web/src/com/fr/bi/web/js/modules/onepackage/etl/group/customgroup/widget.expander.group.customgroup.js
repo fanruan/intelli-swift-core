@@ -79,8 +79,7 @@ BI.CustomgroupGroupExpander = BI.inherit(BI.Widget, {
                         id: item_in.id,
                         title: o.title,
                         cls: "item-custom-group",
-                        hgap: 10,
-                        height: 25
+                        hgap: 10
                     });
                     self.fieldWidgetMap[item_in.id] = fieldButton;
                     fieldButton.on(BI.CustomGroupFieldButton.EVENT_CHANGE, function (value, obj) {

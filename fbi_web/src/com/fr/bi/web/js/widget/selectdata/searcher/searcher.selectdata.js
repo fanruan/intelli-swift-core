@@ -116,6 +116,14 @@ BI.SelectDataSearcher = BI.inherit(BI.Widget, {
         return this.searcher.getValue();
     },
 
+    populatePackages: function (packages) {
+        this.options.packages = packages;
+        this.packagePane.populatePackages(packages);
+        this.searcherPane.populatePackages(packages);
+        this.searcher.stopSearch();
+        this.populate();
+    },
+
     populate: function () {
         this.packagePane.populate.apply(this.packagePane, arguments);
     }

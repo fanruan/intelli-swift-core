@@ -1,6 +1,5 @@
 package com.fr.bi.cal.stable.engine;
 
-import com.fr.bi.stable.data.Table;
 import com.fr.general.ComparatorUtils;
 
 /**
@@ -11,16 +10,16 @@ import com.fr.general.ComparatorUtils;
 public class TempCubeTask {
 
     private long userId;
-    private Table tableKey;
+    private String md5;
 
-    public TempCubeTask(Table tableKey, long userId) {
+    public TempCubeTask(String md5, long userId) {
         this.userId = userId;
-        this.tableKey = tableKey;
+        this.md5 = md5;
     }
 
     public TempCubeTask(TempCubeTask task) {
         this.userId = task.getUserId();
-        this.tableKey = task.getTableKey();
+        this.md5 = task.getMd5();
     }
 
     @Override
@@ -37,23 +36,21 @@ public class TempCubeTask {
         if (userId != key.userId) {
             return false;
         }
-        if (tableKey == null) {
-            if (key.tableKey != null) {
+        if (md5 == null) {
+            if (key.md5 != null) {
                 return false;
             }
-        } else {
-            if (key.tableKey == null) {
-                return false;
-            }
+        } else if (key.md5 == null) {
+            return false;
         }
-        return ComparatorUtils.equals(tableKey, key.tableKey);
+        return ComparatorUtils.equals(md5, key.md5);
 
     }
 
     @Override
     public int hashCode() {
         int result = (int) (userId ^ (userId >>> 32));
-        result = 31 * result + (tableKey == null ? 0 : tableKey.hashCode());
+        result = 31 * result + (md5 == null ? 0 : md5.hashCode());
         return result;
     }
 
@@ -65,11 +62,11 @@ public class TempCubeTask {
         this.userId = userId;
     }
 
-    public Table getTableKey() {
-        return tableKey;
+    public String getMd5() {
+        return md5;
     }
 
-    public void setTableKey(Table tableKey) {
-        this.tableKey = tableKey;
+    public void setMd5(String md5) {
+        this.md5 = md5;
     }
 }

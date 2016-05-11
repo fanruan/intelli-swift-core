@@ -31,12 +31,17 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private static String ROW_COUNT_DATA = "count";
     private static String VERSION_DATA = "version";
     private static String TIMESTAMP_DATA = "timestamp";
+    private static String SUPER_TABLES = "st";
+
     private List<DBField> tableFields = null;
+    private List<ITableKey> parentTable = null;
+
     private ICubeResourceDiscovery discovery;
 
     private ICubeStringWriter fieldInfoWriter;
     private ICubeStringReader fieldInfoReader;
-
+    private ICubeStringWriter parentsWriter;
+    private ICubeStringReader parentsReader;
     private ICubeIntegerWriterWrapper versionWriter;
     private ICubeIntegerReaderWrapper versionReader;
 
@@ -95,8 +100,20 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         return timeStampReader != null;
     }
 
+    protected boolean isParentWriterAvailable() {
+        return parentsWriter != null;
+    }
+
+    protected boolean isParentReaderAvailable() {
+        return parentsReader != null;
+    }
+
     protected boolean isFieldInit() {
         return tableFields != null;
+    }
+
+    protected boolean isParentTableInit() {
+        return parentTable != null;
     }
 
     private void initialFieldInfoReader() throws Exception {
@@ -108,58 +125,50 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     private void initialFieldInfoWriter() throws Exception {
-        if (!isFieldWriterAvailable()) {
-            ICubeResourceLocation mainLocation = this.currentLocation.buildChildLocation(MAIN_DATA);
-            mainLocation.setStringType();
-            mainLocation.setWriterSourceLocation();
-            fieldInfoWriter = (ICubeStringWriter) discovery.getCubeWriter(mainLocation);
-        }
+        ICubeResourceLocation mainLocation = this.currentLocation.buildChildLocation(MAIN_DATA);
+        mainLocation.setStringType();
+        mainLocation.setWriterSourceLocation();
+        fieldInfoWriter = (ICubeStringWriter) discovery.getCubeWriter(mainLocation);
     }
 
     private void initialRowCountWriter() throws Exception {
-        if (!isRowCountWriterAvailable()) {
-            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(ROW_COUNT_DATA);
-            rowCountLocation.setLongTypeWrapper();
-            rowCountLocation.setWriterSourceLocation();
-            rowCountWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
-        }
+        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(ROW_COUNT_DATA);
+        rowCountLocation.setLongTypeWrapper();
+        rowCountLocation.setWriterSourceLocation();
+        rowCountWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+
     }
 
     private void initialRowCountReader() throws Exception {
-        if (!isRowCountReaderAvailable()) {
-            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(ROW_COUNT_DATA);
-            rowCountLocation.setLongTypeWrapper();
-            rowCountLocation.setReaderSourceLocation();
-            rowCountReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
-        }
+        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(ROW_COUNT_DATA);
+        rowCountLocation.setLongTypeWrapper();
+        rowCountLocation.setReaderSourceLocation();
+        rowCountReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
+
     }
 
     private void initialTimeStampReader() throws Exception {
-        if (!isTimeStampReaderAvailable()) {
-            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
-            rowCountLocation.setLongTypeWrapper();
-            rowCountLocation.setReaderSourceLocation();
-            timeStampReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
-        }
+        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
+        rowCountLocation.setLongTypeWrapper();
+        rowCountLocation.setReaderSourceLocation();
+        timeStampReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
 
     }
 
     private void initialTimeStampWriter() throws Exception {
-        if (!isTimeStampWriterAvailable()) {
-            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
-            rowCountLocation.setLongTypeWrapper();
-            rowCountLocation.setWriterSourceLocation();
-            timeStampWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
-        }
+        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
+        rowCountLocation.setLongTypeWrapper();
+        rowCountLocation.setWriterSourceLocation();
+        timeStampWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+
     }
 
     private void initialVersionReader() throws Exception {
-        if (!isVersionReaderAvailable()) {
-            ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(VERSION_DATA);
-            rowCountLocation.setIntegerTypeWrapper();
-            rowCountLocation.setReaderSourceLocation();
-            versionReader = (ICubeIntegerReaderWrapper) discovery.getCubeReader(rowCountLocation);
-        }
+        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(VERSION_DATA);
+        rowCountLocation.setIntegerTypeWrapper();
+        rowCountLocation.setReaderSourceLocation();
+        versionReader = (ICubeIntegerReaderWrapper) discovery.getCubeReader(rowCountLocation);
+
     }
 
     private void initialVersionWriter() throws Exception {
@@ -167,12 +176,28 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         rowCountLocation.setIntegerTypeWrapper();
         rowCountLocation.setWriterSourceLocation();
         versionWriter = (ICubeIntegerWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+    }
 
+    private void initialParentTableReader() throws Exception {
+        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(SUPER_TABLES);
+        rowCountLocation.setStringType();
+        rowCountLocation.setReaderSourceLocation();
+        parentsReader = (ICubeStringReader) discovery.getCubeReader(rowCountLocation);
+
+    }
+
+    private void initialParentTableWriter() throws Exception {
+        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(SUPER_TABLES);
+        rowCountLocation.setStringType();
+        rowCountLocation.setWriterSourceLocation();
+        parentsWriter = (ICubeStringWriter) discovery.getCubeWriter(rowCountLocation);
     }
 
     public ICubeStringWriter getFieldInfoWriter() {
         try {
-            initialFieldInfoWriter();
+            if (!isFieldWriterAvailable()) {
+                initialFieldInfoWriter();
+            }
             return fieldInfoWriter;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -203,7 +228,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     public ICubeIntegerReaderWrapper getVersionReader() {
         try {
-            initialVersionReader();
+            if (!isVersionReaderAvailable()) {
+                initialVersionReader();
+            }
             return versionReader;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -212,7 +239,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     public ICubeLongWriterWrapper getRowCountWriter() {
         try {
-            initialRowCountWriter();
+            if (!isRowCountWriterAvailable()) {
+                initialRowCountWriter();
+            }
             return rowCountWriter;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -221,7 +250,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     public ICubeLongReaderWrapper getRowCountReader() {
         try {
-            initialRowCountReader();
+            if (!isRowCountReaderAvailable()) {
+                initialRowCountReader();
+            }
             return rowCountReader;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -230,7 +261,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     public ICubeLongWriterWrapper getTimeStampWriter() {
         try {
-            initialTimeStampWriter();
+            if (!isTimeStampWriterAvailable()) {
+                initialTimeStampWriter();
+            }
             return timeStampWriter;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -239,8 +272,32 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     public ICubeLongReaderWrapper getTimeStampReader() {
         try {
-            initialTimeStampReader();
+            if (!isTimeStampReaderAvailable()) {
+                initialTimeStampReader();
+            }
             return timeStampReader;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeStringWriter getParentsWriter() {
+        try {
+            if (!isParentWriterAvailable()) {
+                initialParentTableWriter();
+            }
+            return parentsWriter;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeStringReader getParentsReader() {
+        try {
+            if (!isParentReaderAvailable()) {
+                initialParentTableReader();
+            }
+            return parentsReader;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
@@ -267,6 +324,24 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
     }
 
+    private void initialParentsTable() {
+        if (getFieldInfoReader().canRead() && !isParentTableInit()) {
+            parentTable = new ArrayList<ITableKey>();
+            ICubeStringReader parentReader = getFieldInfoReader();
+            try {
+                int columnSize = Integer.parseInt(parentReader.getSpecificValue(0));
+                for (int pos = 1; pos <= columnSize; pos++) {
+                    parentTable.add(new BITableKey(parentReader.getSpecificValue(pos)));
+                }
+            } catch (BIResourceInvalidException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                BINonValueUtils.beyondControl(e.getMessage(), e);
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                BINonValueUtils.beyondControl(e.getMessage(), e);
+            }
+        }
+    }
 
     @Override
     public void recordTableStructure(List<DBField> fields) {
@@ -295,6 +370,22 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     @Override
     public void recordLastTime() {
         recordLastTime(System.currentTimeMillis());
+    }
+
+    @Override
+    public void recordParentsTable(List<ITableKey> parentTables) {
+        ICubeStringWriter writer = getParentsWriter();
+        writer.recordSpecificValue(0, Integer.toString(parentTables.size()));
+        int count = 1;
+        for (ITableKey key : parentTables) {
+            writer.recordSpecificValue(count++, key.getSourceID());
+        }
+    }
+
+    @Override
+    public List<ITableKey> getParentsTable() {
+        initialParentsTable();
+        return parentTable;
     }
 
     protected void recordLastTime(long time) {

@@ -217,16 +217,6 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("update_settings", id);
     },
 
-    //fuck you
-    getConfDataByField: function (table, fieldName, filterConfig, callback) {
-        Data.Req.reqFieldsDataByData({
-            table: table,
-            field: fieldName,
-            filterConfig: filterConfig
-        }, function (data) {
-            callback(data.value, data.hasNext);
-        });
-    },
 
     //fuck you
     getCircleLayerLevelInfo: function (table, layerInfo, callback) {
@@ -411,6 +401,12 @@ BI.extend(BI.Utils, {
 
     getAllPackages: function(callback) {
         Data.Req.reqAllBusinessPackages(function(res) {
+            callback(res);
+        })
+    },
+
+    getTableNamesOfAllPackages: function(callback){
+        Data.Req.getTableNamesOfAllPackages(function(res) {
             callback(res);
         })
     }

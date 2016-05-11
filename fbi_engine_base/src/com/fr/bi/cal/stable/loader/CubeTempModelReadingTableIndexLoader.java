@@ -165,7 +165,7 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
                 storedCount.remove(id);
                 String path = storedPath.get(id);
                 if (path != null) {
-                    BIFileUtils.delete(new File(BIBaseConstant.CACHE.getCacheDirectory() + File.separator + path));
+                    BIFileUtils.delete(new File(BIBaseConstant.CACHE.getCacheDirectory() + File.separator + task.getMd5() + File.separator + path));
                 }
                 storedPath.remove(id);
                 if (storedIndexes.isEmpty()) {
@@ -234,16 +234,16 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
      * @param
      * @return
      */
-    private ICubeTableService getTableIndexByPath(String md5) {
-        Table key = task.getTableKey();
-        String path = BIBaseConstant.CACHE.getCacheDirectory() + File.separator + cubePath + BIPathUtils.createTablePath(key.getID().getIdentityValue(), biUser.getUserId());
+    private ICubeTableService getTableIndexByPath(String pathSuffix) {
+        String md5 = task.getMd5();
+        String path = BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(md5) + File.separator + pathSuffix;
         return new BITableIndex(path, getNIOReaderManager());
     }
 
     public void update() {
         synchronized (LOCK) {
             cubePath = pathQueue.poll();
-            ICubeTableService tableIndex = getTableIndexByPath("");
+            ICubeTableService tableIndex = getTableIndexByPath(cubePath);
             storedIndexes.put(tableIndex.getId(), tableIndex);
             storedPath.put(tableIndex.getId(), cubePath);
             tableIndexTime.put(tableIndex.getId(), tableIndex);
@@ -262,7 +262,7 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
                 entry.getValue().clear();
             }
             for (Map.Entry<String, String> entry : storedPath.entrySet()) {
-                BIFileUtils.delete(new File(BIBaseConstant.CACHE.getCacheDirectory() + File.separator + entry.getValue()));
+                BIFileUtils.delete(new File(BIBaseConstant.CACHE.getCacheDirectory() + File.separator + task.getMd5() + File.separator + entry.getValue()));
             }
             storedTableIndex.clear();
             storedNIOManager.clear();

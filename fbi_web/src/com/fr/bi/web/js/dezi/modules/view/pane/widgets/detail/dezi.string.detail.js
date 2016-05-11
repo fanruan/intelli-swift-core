@@ -87,7 +87,7 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: "bi.select_string",
+                    type: BI.Utils.isRealTime() ? "bi.select_string_4_realtime" : "bi.select_string",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
