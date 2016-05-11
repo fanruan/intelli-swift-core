@@ -42,13 +42,14 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         this.packageTree.on(BI.PackageTree.EVENT_CHANGE, function () {
             Data.SharingPool.put("packageId", JSON.parse(self.packageTree.getValue()));
             self.tab.setVisible(true);
-            /*根据是否披露修改确定添加方式*/
+            /*根据是否为批量修改确定添加方式*/
             switch (self.packageTree.getSelectType()) {
                 case BI.PackageTree.SelectType.SingleSelect:
                     self.tab.populate(JSON.parse(self.packageTree.getValue())[0]);
                     self._setHeadTitle(JSON.parse(self.packageTree.getValue()));
                     break;
                 case BI.PackageTree.SelectType.MultiSelect:
+                    self._setHeadTitle()
                     self.tab.populate();
                     break;
             }
@@ -83,6 +84,9 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     },
     //设置标题
     _setHeadTitle: function (packageId) {
+        if (typeof packageId=='undefined'){
+            return;
+        }
         var self = this;
         var packStructure = Data.SharingPool.get("packStructure");
         BI.each(packStructure, function (key) {

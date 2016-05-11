@@ -5,7 +5,6 @@ import com.fr.bi.conf.base.BISystemDataManager;
 import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
-import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -60,13 +59,13 @@ public class BISystemPackAndAuthConfigurationManager extends BISystemDataManager
 
     @Override
     public boolean containPackage(long userId,BIPackAndAuthority biPackAndAuthority) {
-//        return getUserGroupConfigManager(userId).getBiPackAndAuthContainer().containPackage(biPackAndAuthority);
-        try {
-            return getPackageByID(userId,biPackAndAuthority.getBiPackageID())!=null;
-        } catch (BIPackageAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(),e);
-        }
-        return true;
+        return getUserGroupConfigManager(userId).getBiPackAndAuthContainer().containPackage(biPackAndAuthority);
+//        try {
+//            return getPackageByID(userId,biPackAndAuthority.getBiPackageID())!=null;
+//        } catch (BIPackageAbsentException e) {
+//            BILogger.getLogger().error(e.getMessage(),e);
+//        }
+//        return true;
     }
 
 
