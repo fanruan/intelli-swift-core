@@ -11,6 +11,11 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     _init: function () {
         BIConf.PermissionManageView.superclass._init.apply(this, arguments);
         this.tab.setVisible(false);
+        BI.Utils.getAllGroupedPackagesTreeAsync(function (items) {
+                this.packageTree.populate(items);
+            }
+        )
+
     },
 
     _render: function (vessel) {
@@ -30,8 +35,6 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         return true;
     },
     refresh: function () {
-        //查询业务包数并保存在共享池中
-        // BI.Utils.getAllGroupedPackagesTreeSync();
     },
 
     _builtPackageTree: function () {
@@ -40,13 +43,13 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             type: "bi.package_tree"
         });
         this.packageTree.on(BI.PackageTree.EVENT_CHANGE, function () {
-            Data.SharingPool.put("packageId", JSON.parse(self.packageTree.getValue()));
+            Data.SharingPool.put("packageId", JSON.parse(self.packageTree.getPackageIds()));
             self.tab.setVisible(true);
             /*根据是否为批量修改确定添加方式*/
             switch (self.packageTree.getSelectType()) {
                 case BI.PackageTree.SelectType.SingleSelect:
-                    self.tab.populate(JSON.parse(self.packageTree.getValue())[0]);
-                    self._setHeadTitle(JSON.parse(self.packageTree.getValue()),self.packageTree.getSelectType());
+                    self.tab.populate(JSON.parse(self.packageTree.getPackageIds())[0]);
+                    self._setHeadTitle(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
                     break;
                 case BI.PackageTree.SelectType.MultiSelect:
                     self._setHeadTitle('',self.packageTree.getSelectType())

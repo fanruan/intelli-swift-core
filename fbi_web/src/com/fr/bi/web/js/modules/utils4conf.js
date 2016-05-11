@@ -147,7 +147,8 @@ BI.extend(BI.Utils, {
      * 异步
      * @returns {Array}
      */
-    getAllGroupedPackagesTreeAsync: function (tree) {
+    
+    getAllGroupedPackagesTreeAsync: function (callback) {
         Data.Req.reqPakageAndGroup(function (data) {
                 var groups = data.groups, packages = data.packages;
                 var packStructure = [], groupedPacks = [];
@@ -202,8 +203,7 @@ BI.extend(BI.Utils, {
                         open: true
                     });
                 }
-                Data.SharingPool.put("packStructure", packStructure);
-                tree.populate(packStructure);
+            callback(packageStructure);
             }
         );
     },
