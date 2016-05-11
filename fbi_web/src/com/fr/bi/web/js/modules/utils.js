@@ -159,7 +159,7 @@
                     BI.remove(fieldIds, fId);
                 }
             });
-            var countIds = this.getCountFieldIDsOfTableID(tableId);
+            var countIds = this.getCountFieldIDsOfTableID(tableId) || [];
             var tNum = [], tString = [], tDate = [], fNum = [], fString = [], fDate = [];
             BI.each(transIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
@@ -1108,7 +1108,8 @@
                     });
                 }
                 //通用查询直接用好了
-                if(self.getWidgetTypeByID(id) === BICst.Widget.GENERAL_QUERY && value.length === 1) {
+                if(self.getWidgetTypeByID(id) === BICst.Widget.GENERAL_QUERY &&
+                    BI.isNotNull(value) && value.length === 1) {
                     var filter = value[0];
                     parseFilter(filter);
                     filterValues.push(filter);
