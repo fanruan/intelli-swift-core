@@ -119,7 +119,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         if (!"".equals(groupName)) {
             BIGroupTagName groupTagName = new BIGroupTagName(groupName);
             if (!packageConfigProvider.containGroup(userId, groupTagName)) {
-                packageConfigProvider.createEmptyGroup(userId, groupTagName);
+                packageConfigProvider.createEmptyGroup(userId, groupTagName, System.currentTimeMillis());
             }
             if (!packageConfigProvider.isPackageTaggedSpecificGroup(userId, packageID, groupTagName)) {
                 packageConfigProvider.stickGroupTagOnPackage(userId, packageID, groupTagName);

@@ -17,6 +17,7 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,11 +26,11 @@ import java.util.Set;
  */
 public class BIModuleUtils {
 
-    public static JSONObject createPackJSON(long userId) throws Exception {
+    public static JSONObject createPackJSON(long userId, Locale locale) throws Exception {
         JSONObject jo = new JSONObject();
         for (BIModule module : BIModuleManager.getModules()) {
             BISystemPackageConfigurationProvider provider = module.getBusiPackManagerProvider();
-            jo.join(provider.createPackageJSON(userId));
+            jo.join(provider.createPackageJSON(userId, locale));
         }
         return jo;
     }
@@ -80,7 +81,7 @@ public class BIModuleUtils {
         ICubeTableService ti = getTableIndex(column.getTableBelongTo(), user, childLoaderMap);
         return ti == null ? null : ti.getColumnIndex(column);
     }
-    
+
 
     public static Set<BIBusinessPackage> getAllPacks(long userId) {
         Set<BIBusinessPackage> set = new HashSet<BIBusinessPackage>();

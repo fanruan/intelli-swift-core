@@ -75,10 +75,10 @@ public abstract class NumberValuesFilterValue implements NumberFilterValue {
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-        if (jo.has("value")) {
+        if (jo.has("filter_value")) {
             JSONArray ja = null;
             try {
-                JSONObject valueOb = jo.getJSONObject("value");
+                JSONObject valueOb = jo.getJSONObject("filter_value");
                 ja = valueOb.getJSONArray("value");
             } catch (JSONException e) {
                 ja = new JSONArray();
