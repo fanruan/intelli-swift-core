@@ -49,5 +49,4 @@ BI.ProgressBar = BI.inherit(BI.Single, {
         this.bar.setValue(process);
     }
 });
-BI.ProgressBar.EVENT_CHANGE = "ProgressBar.EVENT_CHANGE";
 $.shortcut("bi.progress_bar", BI.ProgressBar);
