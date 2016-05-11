@@ -75,6 +75,8 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             }
         })
     },
+
+    
     _showTitle: function () {
         this.title = BI.createWidget({
             type: "bi.label",
