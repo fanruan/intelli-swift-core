@@ -14,7 +14,7 @@ import com.fr.bi.stable.engine.cal.ResultDealer;
  * @author Daniel
  *
  */
-public class CorrespondperiodRowCalculatorOperator extends RowCalculatorOperator {
+public class CorrespondPeriodRowCalculatorOperator extends RowCalculatorOperator {
 
 	/**
 	 * 
