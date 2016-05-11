@@ -91,7 +91,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         var packStructure = Data.SharingPool.get("packStructure");
         BI.each(packStructure, function (key) {
             if (packageId == packStructure[key].id) {
-                self.title.setText((packStructure[key].text) + ' ' + BI.i18nText('BI-Permissions_Setting'));
+                self.title.setText((packStructure[key].text) + '  ' + BI.i18nText('BI-Permissions_Setting'));
                 return;
             }
         });
