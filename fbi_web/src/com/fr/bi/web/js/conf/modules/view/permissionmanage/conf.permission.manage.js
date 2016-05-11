@@ -30,6 +30,8 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         return true;
     },
     refresh: function () {
+        //查询业务包数并保存在共享池中
+        // BI.Utils.getAllGroupedPackagesTreeSync();
     },
 
     _builtPackageTree: function () {
@@ -38,13 +40,22 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             type: "bi.package_tree"
         });
         this.packageTree.on(BI.PackageTree.EVENT_CHANGE, function () {
-            Data.SharingPool.put("packageId",self.packageTree.getValue());
-            self.tab.populate(JSON.parse(self.packageTree.getValue()));
-            self._setHeadTitle(JSON.parse(self.packageTree.getValue()));
+            Data.SharingPool.put("packageId", JSON.parse(self.packageTree.getValue()));
             self.tab.setVisible(true);
+            /*根据是否为批量修改确定添加方式*/
+            switch (self.packageTree.getSelectType()) {
+                case BI.PackageTree.SelectType.SingleSelect:
+                    self.tab.populate(JSON.parse(self.packageTree.getValue())[0]);
+                    self._setHeadTitle(JSON.parse(self.packageTree.getValue()));
+                    break;
+                case BI.PackageTree.SelectType.MultiSelect:
+                    self._setHeadTitle()
+                    self.tab.populate();
+                    break;
+            }
 
         });
-        this.packageTree.populate();
+        // this.packageTree.populate();
         return this.packageTree;
     },
     _buildAuthorityPane: function () {
@@ -64,6 +75,8 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             }
         })
     },
+
+    
     _showTitle: function () {
         this.title = BI.createWidget({
             type: "bi.label",
@@ -73,6 +86,9 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     },
     //设置标题
     _setHeadTitle: function (packageId) {
+        if (typeof packageId=='undefined'){
+            return;
+        }
         var self = this;
         var packStructure = Data.SharingPool.get("packStructure");
         BI.each(packStructure, function (key) {
@@ -90,4 +106,3 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         return this.tab;
     }
 })
-

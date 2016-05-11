@@ -9,10 +9,10 @@ import com.fr.bi.conf.data.source.operator.add.datediff.DateDiffOperator;
 import com.fr.bi.conf.data.source.operator.add.express.ExpressionValueOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.accumulate.AccumulateRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.alldata.AllDataRowCalculatorOperator;
-import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.CorrespondMonthPeriodRowCalculatorOperator;
-import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.CorrespondPeriodRowCalculatorOperator;
+import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.CorrespondMonthperiodRowCalculatorOperator;
+import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.CorrespondperiodRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondMonthPeriodPercentRowCalculatorOperator;
-import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondPeriodPercentRowCalculatorOperator;
+import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondperiodPercentRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.rank.RankRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.create.TableColumnFilterOperator;
 import com.fr.bi.conf.data.source.operator.create.TableFilterOperator;
@@ -95,11 +95,11 @@ public class AnalysisETLOperatorFactory {
         } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_SUM)){
             op = new AllDataRowCalculatorOperator();
         } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP)){
-            op = new CorrespondPeriodRowCalculatorOperator();
+            op = new CorrespondperiodRowCalculatorOperator();
         } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT)){
-            op = new CorrespondPeriodPercentRowCalculatorOperator();
+            op = new CorrespondperiodPercentRowCalculatorOperator();
         } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP)){
-            op = new CorrespondMonthPeriodRowCalculatorOperator();
+            op = new CorrespondMonthperiodRowCalculatorOperator();
         } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT)){
             op = new CorrespondMonthPeriodPercentRowCalculatorOperator();
         }

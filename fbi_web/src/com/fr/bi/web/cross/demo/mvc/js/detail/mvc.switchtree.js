@@ -15,6 +15,7 @@ SwitchTreeView = BI.inherit(BI.View, {
             type: "bi.switch_tree",
             items: BI.deepClone(TREE)
         });
+
         BI.createWidget({
             type: "bi.vtape",
             element: vessel,
