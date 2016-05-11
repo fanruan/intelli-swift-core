@@ -1254,6 +1254,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.stringdimension.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.target.combo.show.js",
 
+                //实时报表进度条
+                "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",
+                //实时报表指示器
+                "com/fr/bi/web/js/modules4show/cubeprogressindicator/cubeprogressindicator.js",
+
                 //实时报表选择字段
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/abstract.node.level.js",
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level0.js",
