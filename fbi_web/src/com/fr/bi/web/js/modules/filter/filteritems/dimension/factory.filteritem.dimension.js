@@ -67,10 +67,10 @@ BI.DimensionFilterItemFactory = {
                 type = "bi.filter_expander";
                 break;
             case BICst.FILTER_TYPE.FORMULA:
-                type = "bi.formula_filter_item";
+                type = "bi.dimension_formula_filter_item";
                 break;
             case BICst.FILTER_TYPE.EMPTY_FORMULA:
-                type = "bi.formula_empty_filter_item";
+                type = "bi.dimension_formula_empty_filter_item";
                 break;
             case BICst.FILTER_TYPE.EMPTY_CONDITION:
                 type = "bi.dimension_no_type_field_filter_item";
