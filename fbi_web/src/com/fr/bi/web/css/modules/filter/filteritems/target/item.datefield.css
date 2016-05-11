@@ -2,7 +2,7 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-analysis-date-field-item {
-  min-width: 532px;
+  min-width: 520px;
 }
 .bi-analysis-date-field-item .condition-operator-input {
   border: 1px solid #d4dadd;
