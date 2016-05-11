@@ -168,7 +168,7 @@ public interface BISystemPackageConfigurationProvider {
      * @param groupTagName 分组名
      * @throws BIGroupDuplicateException 分组重复抛错
      */
-    void createEmptyGroup(long userId, BIGroupTagName groupTagName) throws BIGroupDuplicateException;
+    void createEmptyGroup(long userId, BIGroupTagName groupTagName,long position) throws BIGroupDuplicateException;
 
     /**
      * 给业务包打上分组标签

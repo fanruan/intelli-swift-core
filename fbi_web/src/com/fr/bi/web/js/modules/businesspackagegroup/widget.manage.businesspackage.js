@@ -121,6 +121,7 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
             item.value = groupItem.name;
             item.children = [];
             item.id = groupItem.id;
+            item.init_time = groupItem.init_time;
             BI.each(groupItem.children, function (i, packageObject) {
                 var object = {};
                 object.value = packageObject.id;

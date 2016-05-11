@@ -133,8 +133,8 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     }
 
     @Override
-    public void createEmptyGroup(long userId, BIGroupTagName groupTagName) throws BIGroupDuplicateException {
-        getUserGroupConfigManager(userId).getPackageConfigManager().getGroupCollectionManager().createEmptyGroup(groupTagName);
+    public void createEmptyGroup(long userId, BIGroupTagName groupTagName, long position) throws BIGroupDuplicateException {
+        getUserGroupConfigManager(userId).getPackageConfigManager().getGroupCollectionManager().createEmptyGroup(groupTagName, position);
     }
 
     @Override
