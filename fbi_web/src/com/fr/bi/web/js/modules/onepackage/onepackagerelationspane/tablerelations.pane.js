@@ -65,7 +65,11 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         });
         BI.each(norelationTables, function(idx, tId){
             items.push({
-
+                primary: {
+                    region: tId,
+                    regionText: self.model.getTableTranName(tId),
+                    regionHandler: regionHandler
+                }
             });
         });
         return items;
