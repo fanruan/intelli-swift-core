@@ -65,6 +65,14 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
         });
     },
 
+    doRedMark: function(){
+        this.title.doRedMark.apply(this.title, arguments);
+    },
+
+    unRedMark: function(){
+        this.title.unRedMark.apply(this.title, arguments);
+    },
+
     getWidth: function () {
         return this.options.width;
     },

@@ -115,7 +115,9 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetInfoEnterConfAction(),
             new BIGetTableUpdateSqlAction(),
 
-            new BIGetAllBusinessPackagesAction()
+            new BIGetAllBusinessPackagesAction(),
+
+            new BIGetAllTableNamesOfAllPackageAction()
 
     };
 

@@ -403,6 +403,12 @@ BI.extend(BI.Utils, {
         Data.Req.reqAllBusinessPackages(function(res) {
             callback(res);
         })
+    },
+
+    getTableNamesOfAllPackages: function(callback){
+        Data.Req.getTableNamesOfAllPackages(function(res) {
+            callback(res);
+        })
     }
 
 });
