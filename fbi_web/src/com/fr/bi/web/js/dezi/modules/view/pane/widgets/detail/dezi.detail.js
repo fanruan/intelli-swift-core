@@ -51,7 +51,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             this.tableChartPopupulate();
         }
         if (BI.has(changed, "clicked")) {
-            //click的是指标无需属性当前的table
             this.tableChartPopupulate();
         }
         if (BI.has(changed, "dimensions")) {
