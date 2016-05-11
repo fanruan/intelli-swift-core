@@ -305,6 +305,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     },
 
     _refreshTablesInPackage: function () {
+        this.showCardLayout.showCardByName(this.showCardLayout.getDefaultShowName());
         this.tableList.populate(this._createItemsForTableList());
         this.relationView.populate({
             tableIds: this.model.getTables(),

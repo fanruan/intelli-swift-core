@@ -65,13 +65,6 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
         });
     },
 
-    doClick: function(){
-        BI.RelationViewRegion.superclass.doClick.apply(this, arguments);
-        if(this.isValid()) {
-            this.fireEvent(BI.RelationViewRegion.EVENT_CHANGE, this.options.value, this);
-        }
-    },
-
     doRedMark: function(){
         this.title.doRedMark.apply(this.title, arguments);
     },

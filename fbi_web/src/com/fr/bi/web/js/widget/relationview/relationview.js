@@ -144,9 +144,6 @@ BI.RelationView = BI.inherit(BI.Widget, {
                 views[i][j].on(BI.RelationViewRegion.EVENT_HOVER_OUT, function (v) {
                     self._hoverOut(v);
                 });
-                views[i][j].on(BI.RelationViewRegion.EVENT_CHANGE, function (v){
-                    self.fireEvent(BI.RelationView.EVENT_CHANGE, v);
-                });
                 indexes[region] = {i: i, j: j};
                 horizontal.push(views[i][j]);
             });

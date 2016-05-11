@@ -7,47 +7,36 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
     _init: function () {
         BI.PackageTableRelationsPaneModel.superclass._init.apply(this, arguments);
         this.tableIds = [];
+        this.originalTableNames = {};
         this.tableData = {};
         this.relations = {};
         this.translations = {};
         this.all_fields = {};
     },
 
-    createItemsByTableIdsAndRelations: function () {
-        var self = this;
-        var items = [];
-        BI.each(this.relations.connectionSet, function(idx, relation){
-            var primaryId = relation.primaryKey.field_id, foreignId = relation.foreignKey.field_id;
-            if(BI.contains(self.tableIds, BI.Utils.getTableIdByFieldId4Conf(primaryId)) || BI.contains(self.tableIds, BI.Utils.getTableIdByFieldId4Conf(foreignId))){
-                items.push({
-                    primary: {
-                        region: self._getTableTranName(self.all_fields[primaryId].table_id),
-                        value: primaryId,
-                        text: self._getFieldTranName(primaryId)
-                    },
-                    foreign: {
-                        region: self._getTableTranName(self.all_fields[foreignId].table_id),
-                        value: foreignId,
-                        text: self._getFieldTranName(foreignId)
-                    }
-                });
-            }
-        });
-        return items;
+    getRelations: function(){
+        return this.relations;
     },
 
-    _getTableTranName: function (tId) {
-        var tableData = this.tableData[tId];
-        var tableNameText = tableData.table_name;
-        if (tableData.connection_name === BICst.CONNECTION.ETL_CONNECTION) {
+    getAllFields: function(){
+        return this.all_fields;
+    },
+
+    getTableIds: function(){
+        return this.tableIds;
+    },
+
+    getTableTranName: function (tId) {
+        var tableNameText = "";
+        if (BI.isNull(this.originalTableNames[tId])) {
             tableNameText = this.translations[tId];
         } else if (BI.isNotNull(this.translations[tId]) && this.translations[tId] !== tableNameText) {
-            tableNameText = this.translations[tId] + "(" + tableNameText + ")";
+            tableNameText = this.translations[tId] + "(" + this.originalTableNames[tId] + ")";
         }
         return tableNameText;
     },
 
-    _getFieldTranName: function (fieldId) {
+    getFieldTranName: function (fieldId) {
         var fieldData = this.all_fields[fieldId];
         var fieldNameText = fieldData.field_name;
         var fId = fieldData.table_id + fieldNameText;
@@ -55,6 +44,20 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
             fieldNameText = this.translations[fId] + "(" + fieldNameText + ")";
         }
         return fieldNameText;
+    },
+
+    getTableNamesOfAllPackages: function(callback){
+        var self = this;
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: BICst.BODY_ELEMENT,
+            text: BI.i18nText("BI-Loading")
+        });
+        BI.Utils.getTableNamesOfAllPackages(function(res){
+            self.originalTableNames = res;
+            callback();
+            mask.destroy();
+        });
     },
 
     populate: function (items) {

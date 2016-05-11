@@ -266,5 +266,11 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "get_all_business_packages", {}, function(res) {
             callback(res);
         });
+    },
+
+    getTableNamesOfAllPackages: function(callback) {
+        BI.requestAsync("fr_bi_configure", "get_table_names_of_all_packages", {}, function(res) {
+            callback(res);
+        });
     }
     };
