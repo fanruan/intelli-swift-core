@@ -16,7 +16,12 @@ import java.util.Arrays;
 
 public abstract class GeneralFilter extends AbstractTargetFilter {
     private static String XML_TAG = "GeneralFilter";
+
     protected TargetFilter[] childs;
+
+    public void setChilds(TargetFilter[] childs) {
+        this.childs = childs;
+    }
 
     /**
      * 重写code

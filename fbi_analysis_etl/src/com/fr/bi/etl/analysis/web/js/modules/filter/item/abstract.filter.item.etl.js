@@ -104,6 +104,7 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
+            field_name : this.options.field_name,
             filter_type : this.filter_type,
             filter_value : this.filterWidget.getValue()
         }

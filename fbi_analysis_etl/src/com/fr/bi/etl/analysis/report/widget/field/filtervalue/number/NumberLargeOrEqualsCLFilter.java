@@ -17,7 +17,7 @@ public class NumberLargeOrEqualsCLFilter extends NumberCalculateLineFilter {
 	/**
 	 * @param t
 	 */
-	NumberLargeOrEqualsCLFilter() {
+	public NumberLargeOrEqualsCLFilter() {
 		super(LargeOrEquals.INSTANCE);
 	}
 
