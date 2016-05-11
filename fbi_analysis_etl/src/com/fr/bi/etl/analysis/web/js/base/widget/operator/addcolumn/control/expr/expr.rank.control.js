@@ -34,9 +34,9 @@ BI.AnalysisETLOperatorAddColumnExprRankController = BI.inherit(BI.AnalysisETLOpe
         widget.rule.populate(ETLCst.ANALYSIS_ADD_COLUMN_EXPR_RANK_TYPE_ITEMS);
         var rule = BI.find(ETLCst.ANALYSIS_ADD_COLUMN_EXPR_RANK_TYPE_ITEMS, function (i, item) {
             return item.sortType === model.get('sortType') && item.groupType === model.get('rule');
-        })
-        model.set('rule', model.get('rule') || BICst.TARGET_TYPE.SUM_OF_ALL);
-        model.set('sortType', model.get('rule') || BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC);
+        }) || ETLCst.ANALYSIS_ADD_COLUMN_EXPR_RANK_TYPE_ITEMS[0];
+        model.set('rule', model.get('rule') || rule.groupType);
+        model.set('sortType', model.get('sortType') || rule.sortType);
         if (BI.isNotNull(rule)){
             widget.rule.setValue(rule.value);
         }

@@ -17,7 +17,7 @@ public class NumberSmallCLFilter extends NumberCalculateLineFilter {
 	/**
 	 * @param t
 	 */
-	NumberSmallCLFilter() {
+	public NumberSmallCLFilter() {
 		super(Small.INSTANCE);
 	}
 

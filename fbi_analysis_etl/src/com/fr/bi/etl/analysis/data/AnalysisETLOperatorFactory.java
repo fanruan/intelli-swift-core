@@ -14,6 +14,7 @@ import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.Correspon
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondMonthPeriodPercentRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondPeriodPercentRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.rank.RankRowCalculatorOperator;
+import com.fr.bi.conf.data.source.operator.create.TableColumnFieldsFilterOperator;
 import com.fr.bi.conf.data.source.operator.create.TableColumnFilterOperator;
 import com.fr.bi.conf.data.source.operator.create.TableFilterOperator;
 import com.fr.bi.conf.data.source.operator.create.TableSumByGroupOperator;
@@ -56,7 +57,7 @@ public class AnalysisETLOperatorFactory {
                 break;
             }
             case Constants.ETL_TYPE.FILTER :{
-                IETLOperator op = new TableColumnFilterOperator();
+                IETLOperator op = new TableColumnFieldsFilterOperator(userId);
                 op.parseJSON(jo.getJSONObject("operator"));
                 list.add(op);
                 break;
