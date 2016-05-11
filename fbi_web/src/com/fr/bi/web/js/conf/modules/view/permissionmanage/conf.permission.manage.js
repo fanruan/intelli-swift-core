@@ -46,10 +46,10 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             switch (self.packageTree.getSelectType()) {
                 case BI.PackageTree.SelectType.SingleSelect:
                     self.tab.populate(JSON.parse(self.packageTree.getValue())[0]);
-                    self._setHeadTitle(JSON.parse(self.packageTree.getValue()));
+                    self._setHeadTitle(JSON.parse(self.packageTree.getValue()),self.packageTree.getSelectType());
                     break;
                 case BI.PackageTree.SelectType.MultiSelect:
-                    self._setHeadTitle()
+                    self._setHeadTitle('',self.packageTree.getSelectType())
                     self.tab.populate();
                     break;
             }
@@ -76,7 +76,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         })
     },
 
-    
+
     _showTitle: function () {
         this.title = BI.createWidget({
             type: "bi.label",
@@ -85,18 +85,24 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         return this.title;
     },
     //设置标题
-    _setHeadTitle: function (packageId) {
-        if (typeof packageId=='undefined'){
-            return;
-        }
+    _setHeadTitle: function (packageId,selectType) {
         var self = this;
         var packStructure = Data.SharingPool.get("packStructure");
-        BI.each(packStructure, function (key) {
-            if (packageId == packStructure[key].id) {
-                self.title.setText((packStructure[key].text) + '  ' + BI.i18nText('BI-Permissions_Setting'));
-                return;
-            }
-        });
+        switch (selectType){
+            case BI.PackageTree.SelectType.SingleSelect:
+                BI.each(packStructure, function (key) {
+                    if (packageId == packStructure[key].id) {
+                        self.title.setText((packStructure[key].text) + '  ' + BI.i18nText('BI-Permissions_Setting'));
+                        return;
+                    }
+                })
+                break;
+            case BI.PackageTree.SelectType.MultiSelect:
+                self.title.setText('配置'+ packageId.length()+BI.i18nText('BI-Permissions_Setting'));
+                break;
+        }
+
+;
     },
     _buildAuthorityTabs: function () {
         var self = this;
