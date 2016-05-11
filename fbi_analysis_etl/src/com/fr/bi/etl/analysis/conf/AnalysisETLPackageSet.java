@@ -68,7 +68,9 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
         JSONObject jo = new JSONObject();
         JSONObject pack = getPack().createJSON();
         pack.put("name", Inter.getLocText(PACK_NAME, locale));
-        jo.put(PACK_ID, pack);
+        if (pack.getJSONArray("tables").length() > 0){
+            jo.put(PACK_ID, pack);
+        }
         return jo;
     }
 

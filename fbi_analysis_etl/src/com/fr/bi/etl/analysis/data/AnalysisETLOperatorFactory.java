@@ -14,10 +14,7 @@ import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.PeriodRow
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondMonthPeriodPercentRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.PeriodPercentRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.rank.RankRowCalculatorOperator;
-import com.fr.bi.conf.data.source.operator.create.TableColumnFieldsFilterOperator;
-import com.fr.bi.conf.data.source.operator.create.TableColumnFilterOperator;
-import com.fr.bi.conf.data.source.operator.create.TableFilterOperator;
-import com.fr.bi.conf.data.source.operator.create.TableSumByGroupOperator;
+import com.fr.bi.conf.data.source.operator.create.*;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.general.ComparatorUtils;
@@ -63,7 +60,7 @@ public class AnalysisETLOperatorFactory {
                 break;
             }
             case Constants.ETL_TYPE.MERGE_SHEET :{
-                IETLOperator op = new TableColumnFilterOperator();
+                IETLOperator op = new TableMergeOperator();
                 op.parseJSON(jo.getJSONObject("operator"));
                 list.add(op);
                 break;
