@@ -11,7 +11,6 @@ import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
 import com.fr.json.JSONObject;
