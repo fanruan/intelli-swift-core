@@ -29,7 +29,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         BI.each(view,function(region, id){
             widget.regions[region].setCommentVisible(BI.isEmpty(id));
         });
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isValid())
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isFieldValid())
     },
 
     _check : function (widget, model) {
@@ -64,9 +64,13 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
                 }
             })
         }
+        model.setValid(!found);
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
+        } else {
+            model.set(ETLCst.FIELDS, model.createFields());
         }
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !found);
     },
 
 
@@ -128,7 +132,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
     },
     
     _refreshPreview : function (widget, model) {
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
     }
 
 

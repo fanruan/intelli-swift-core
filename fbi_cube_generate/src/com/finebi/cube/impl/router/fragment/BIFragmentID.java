@@ -13,5 +13,9 @@ public class BIFragmentID extends BIIdentity<String> implements IFragmentID {
     public BIFragmentID(String id) {
         super(id);
     }
+    @Override
+    public String toString() {
+        return identity;
 
+    }
 }

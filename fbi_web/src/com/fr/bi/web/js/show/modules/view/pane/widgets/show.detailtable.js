@@ -85,7 +85,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
                         break;
                     case BICst.DASHBOARD_WIDGET_SHRINK :
                         break;
-                    case BICst.DASHBOARD_WIDGET_DRILL :
+                    case BICst.DASHBOARD_WIDGET_LINKAGE :
                         break;
                     case BICst.DASHBOARD_DETAIL_WIDGET_DRILL :
                         break;

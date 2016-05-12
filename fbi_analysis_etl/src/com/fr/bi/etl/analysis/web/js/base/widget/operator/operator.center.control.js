@@ -125,7 +125,8 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
     },
 
     doPreviewChange : function (m, type, widget, model) {
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, m, this._editing ? type : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
+        var type = (this._editing || type === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR ) ? type : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, m, type)
     },
 
     _getOperatorPane : function (widget){

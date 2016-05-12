@@ -6,6 +6,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,8 +15,8 @@ import java.util.Set;
 public class UserBaseTableSource extends AnalysisBaseTableSource implements UserTableSource{
     private GroupValueIndex filter;
     private long userId;
-    public UserBaseTableSource(BIWidget widget, int etlType, long userId) {
-        super(new UserWidget(widget, userId), etlType);
+    public UserBaseTableSource(BIWidget widget, int etlType, long userId, String id, List<AnalysisETLSourceField> fieldList) {
+        super(new UserWidget(widget, userId), etlType, id, fieldList);
         this.userId = userId;
     }
 

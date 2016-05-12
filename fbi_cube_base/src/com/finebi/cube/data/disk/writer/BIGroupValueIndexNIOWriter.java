@@ -51,4 +51,14 @@ public class BIGroupValueIndexNIOWriter implements ICubeGroupValueIndexWriter {
             bytesArray = null;
         }
     }
+
+    @Override
+    public void forceRelease() {
+        bytesArray.forceRelease();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return bytesArray.isForceReleased();
+    }
 }

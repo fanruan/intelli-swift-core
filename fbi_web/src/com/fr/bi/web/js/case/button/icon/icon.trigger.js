@@ -11,7 +11,6 @@ BI.TriggerIconButton = BI.inherit(BI.IconButton, {
         var conf = BI.TriggerIconButton.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
             baseCls: (conf.baseCls || "") + " bi-trigger-icon-button",
-            width: 30,
             extraCls: "pull-down-font"
         });
     },
@@ -22,7 +21,7 @@ BI.TriggerIconButton = BI.inherit(BI.IconButton, {
 
     doClick: function () {
         BI.TriggerIconButton.superclass.doClick.apply(this, arguments);
-        if(this.isValid()){
+        if (this.isValid()) {
             this.fireEvent(BI.TriggerIconButton.EVENT_CHANGE, this);
         }
     }

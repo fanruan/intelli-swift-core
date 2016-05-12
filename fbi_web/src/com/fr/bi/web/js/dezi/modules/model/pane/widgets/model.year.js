@@ -6,7 +6,8 @@ BIDezi.YearWidgetModel = BI.inherit(BI.Model, {
             type: BICst.Widget.YEAR,
             dimensions: {},
             view: {},
-            value: null
+            value: null,
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 

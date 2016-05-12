@@ -6,7 +6,7 @@ package com.fr.bi.etl.analysis;
 public class Constants {
 
     public final static String PARENTS ="parents";
-    public final static String FIELDS ="fields";
+    public final static String FIELDS ="etl_fields";
     public final static String ITEMS ="items";
 
     public final static class BUSINESS_TABLE_TYPE {

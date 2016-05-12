@@ -108,6 +108,10 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         return pos;
     },
 
+    isModelValid : function () {
+        return this.getValue('invalidIndex') >= this.get(ETLCst.ITEMS).length
+    },
+
     createHistoryModel : function () {
         var items = this.get(ETLCst.ITEMS);
         return    {
@@ -143,12 +147,16 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
 
     update : function () {
         var items = this.get(ETLCst.ITEMS);
-        return BI.extend(BI.extend({
+        var res =  BI.extend(BI.extend({
         }, items[items.length - 1]), {
             value:this.getValue("value"),
             table_name:this.getValue("table_name"),
             allHistory:this.getValue("allHistory"),
             invalidIndex : this.getValue('invalidIndex')
         });
+        if(!this.isModelValid()){
+            res[ETLCst.FIELDS] = []
+        }
+        return res;
     }
 })
