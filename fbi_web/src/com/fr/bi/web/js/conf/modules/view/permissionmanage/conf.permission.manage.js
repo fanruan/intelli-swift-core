@@ -47,6 +47,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         this.packageTree.on(BI.PackageANdAuthorityTree.EVENT_CHANGE, function () {
             if (0 == self.packageTree.getSelectType() && JSON.parse(self.packageTree.getPackageIds()).length == 1) {
                 self.authorityTabs.setSelect(1);
+                self.authorityPaneEdit.populate(JSON.parse(self.packageTree.getPackageIds()));
             } else {
             self.authorityPaneInitMain.populate(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
             self.authorityTabs.setSelect(0);
@@ -118,6 +119,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
                 });
                 this.authorityPaneInitMain.on(BI.AuthorityPaneInitMain.EVENT_CHANGE, function () {
                 self.authorityTabs.setSelect(1);
+                    self.authorityTabs.populate(JSON.parse(self.packageTree.getPackageIds()));
                 });
                 return this.authorityPaneInitMain;
             case 1:

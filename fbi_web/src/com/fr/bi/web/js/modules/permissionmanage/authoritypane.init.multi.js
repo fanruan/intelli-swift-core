@@ -14,7 +14,7 @@ BI.AuthorityPaneMulti = BI.inherit(BI.LoadingPane, {
     _init: function () {
         BI.AuthorityPaneMulti.superclass._init.apply(this, arguments);
         var self=this;
-        this.packageids=[];
+        this.packageIds=[];
         return BI.createWidget({
             type: "bi.htape",
             element: this.element,
@@ -26,7 +26,7 @@ BI.AuthorityPaneMulti = BI.inherit(BI.LoadingPane, {
                     height: 20,
                     width: 200,
                     handler: function () {
-                        if (this.packageids.length==0){
+                        if (self.packageIds.length==0){
                             return;
                         }
                         self.fireEvent(BI.AuthorityPaneMulti.EVENT_CHANGE);
@@ -60,7 +60,7 @@ BI.AuthorityPaneMulti = BI.inherit(BI.LoadingPane, {
 
     populate: function (items) {
         var self = this;
-        this.packageids=items;
+        this.packageIds=items;
         self.saveButton.setText('权限配置(' + items.length + '个业务包)')
     }
 });
