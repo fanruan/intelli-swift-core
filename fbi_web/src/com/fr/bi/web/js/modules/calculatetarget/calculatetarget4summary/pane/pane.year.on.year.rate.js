@@ -36,7 +36,7 @@ BI.CalculateTargetYearOnYearRatePane = BI.inherit(BI.CalculateTargetAbstractPeri
             textHeight: 30,
             textAlign: "left"
         });
-        firstLabel.setValue(BI.i18nText("BI-Calculate_Target_Each_Value_Get", BI.Utils.getDimensionNameByID(lastDimensionID) || "", BI.Utils.getDimensionNameByID(this.valueCombo.getValue()[0])));
+        firstLabel.setValue(BI.i18nText("BI-Calculate_Target_Each_Value", BI.Utils.getDimensionNameByID(lastDimensionID) || "", BI.Utils.getDimensionNameByID(this.valueCombo.getValue()[0])));
         this.logicValuePane.addItem(firstLabel);
         BI.each(dimDimensionIDs, function (i, dId) {
             var dimensionName = BI.Utils.getDimensionNameByID(dId);

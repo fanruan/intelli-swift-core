@@ -983,7 +983,6 @@ public class ResourceHelper {
                 //业务包分组
                 "com/fr/bi/web/js/modules/businesspackagegroup/buttons/button.businesspackage.mange.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/buttons/button.businesspackage.add.js",
-                "com/fr/bi/web/js/modules/businesspackagegroup/editor.label.covered.businesspackage.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/expander.businesspackage.group.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/pane.businesspackage.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/pane.ungroup.and.group.businesspackage.js",
