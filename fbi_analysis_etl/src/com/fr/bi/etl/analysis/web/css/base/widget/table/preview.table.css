@@ -35,6 +35,9 @@
   font-size: 16px;
   zoom: 2;
 }
+.bi-analysis-etl-preview-table .warning {
+  color: #e85050;
+}
 .bi-analysis-etl-preview-table .bi-table .bi-adaptive-layout > table {
   border-right: 1px solid #eaeaea;
 }

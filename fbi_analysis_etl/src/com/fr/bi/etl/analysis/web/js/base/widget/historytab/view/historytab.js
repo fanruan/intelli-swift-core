@@ -100,10 +100,12 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
 
         tab.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function(fields){
             self.controller.refreshValidFields(v, fields);
+            self.fireEvent(BI.HistoryTab.VALID_CHANGE)
         });
 
         tab.on(BI.TopPointerSavePane.EVENT_INVALID, function(title){
             self.controller.setInvalid(v, title);
+            self.fireEvent(BI.HistoryTab.VALID_CHANGE)
         });
 
         tab.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(){
@@ -126,4 +128,5 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
     }
 
 })
+BI.HistoryTab.VALID_CHANGE = "valid_change"
 $.shortcut("bi.history_tab",BI.HistoryTab)

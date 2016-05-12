@@ -1,11 +1,12 @@
 package com.finebi.cube.impl.pubsub;
 
-import com.finebi.cube.exception.BITagDuplicateException;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
+import com.finebi.cube.exception.BITagDuplicateException;
 import com.finebi.cube.exception.BIThresholdIsOffException;
 import com.finebi.cube.message.IMessage;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -142,5 +143,15 @@ public abstract class BIBasicThreshold<T> {
      */
     protected boolean isTriggered() {
         return registerTag.isEmpty();
+    }
+
+    public String leftCondition(String tag) {
+        Iterator<T> it = registerTag.iterator();
+        StringBuffer sb = new StringBuffer(tag + ":").append("\n");
+        while (it.hasNext()) {
+            T condition = it.next();
+            sb.append(condition.toString()).append("\n");
+        }
+        return sb.toString();
     }
 }

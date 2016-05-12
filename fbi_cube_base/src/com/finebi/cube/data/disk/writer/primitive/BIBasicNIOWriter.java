@@ -23,6 +23,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     private long currentIndex = -1L;
     private ICubeSourceReleaseManager releaseManager;
     private long file_index = -1L;
+    private boolean isReleased = false;
 
     public BIBasicNIOWriter(File cacheFile) {
         this.baseFile = cacheFile;
@@ -55,9 +56,22 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     }
 
     public void releaseSource() {
-        clearBuffer();
-        currentIndex = -1L;
-        file_index = -1L;
+        if (!isReleased) {
+            clearBuffer();
+            currentIndex = -1L;
+            file_index = -1L;
+            isReleased = true;
+        }
+    }
+
+    @Override
+    public void forceRelease() {
+        releaseSource();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return isReleased;
     }
 
     private boolean useReleaseManager() {

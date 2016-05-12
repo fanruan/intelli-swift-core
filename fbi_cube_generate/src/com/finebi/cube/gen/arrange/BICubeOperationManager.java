@@ -96,7 +96,7 @@ public class BICubeOperationManager {
                 if (!isGenerated(tableSource)) {
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
-                            getDataTransportBuilder(cube, tableSource, originalTableSet));
+                            getDataTransportBuilder(cube, tableSource, originalTableSet,parentTables));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource));
                     try {
@@ -127,7 +127,7 @@ public class BICubeOperationManager {
     private BIOperation buildTableWatcher(ITableSource tableSource) {
         BIOperation<Object> operation = new BIOperation<Object>(
                 tableSource.getSourceID(),
-                getTableWatcherBuilder((ICubeTableEntityService) cube.getCubeTable(new BITableKey(tableSource))));
+                getTableWatcherBuilder(cube.getCubeTableWriter(new BITableKey(tableSource))));
         ITopicTag topicTag = BICubeBuildTopicTag.DATA_SOURCE_TOPIC;
         operation.setOperationTopicTag(topicTag);
         operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(topicTag, tableSource));
@@ -359,8 +359,8 @@ public class BICubeOperationManager {
         return new BITableSourceBuildWatcher(tableEntityService);
     }
 
-    protected BISourceDataTransport getDataTransportBuilder(ICube cube, ITableSource tableSource, Set<ITableSource> allSources) {
-        return new BISourceDataTransport(cube, tableSource, allSources);
+    protected BISourceDataTransport getDataTransportBuilder(ICube cube, ITableSource tableSource, Set<ITableSource> allSources, Set<ITableSource> parent) {
+        return new BISourceDataTransport(cube, tableSource, allSources, parent);
     }
 
     protected BITablePathIndexBuilder getTablePathBuilder(ICube cube, BITableSourceRelationPath tablePath) {

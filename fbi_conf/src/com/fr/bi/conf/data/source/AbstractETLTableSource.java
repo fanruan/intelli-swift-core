@@ -187,6 +187,15 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
+    public DBField[] getFieldsArray(Set<ITableSource> sources) {
+        if (hasTableFilterOprator()) {
+            return new DBField[0];
+        } else {
+            return super.getFieldsArray(sources);
+        }
+    }
+
+    @Override
     public Set<String> getUsedFields(ITableSource source) {
         Set<String> useableFields = new HashSet<String>();
         boolean contains = false;

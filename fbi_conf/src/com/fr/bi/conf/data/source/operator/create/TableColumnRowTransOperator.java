@@ -100,7 +100,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
         initBaseTable(parents);
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         return write(travel, ti);

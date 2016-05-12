@@ -24,7 +24,10 @@ public class BIRelationIndexBuilder4Test extends BIRelationIndexGenerator {
 //        }
         return null;
     }
+    @Override
+    public void release() {
 
+    }
     public BIRelationIndexBuilder4Test(ICube cube, BICubeRelation relation) {
         super(cube, relation);
     }

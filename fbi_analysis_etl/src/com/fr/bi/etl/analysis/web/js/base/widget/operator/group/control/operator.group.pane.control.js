@@ -29,10 +29,10 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         BI.each(view,function(region, id){
             widget.regions[region].setCommentVisible(BI.isEmpty(id));
         });
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isValid())
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isFieldValid())
     },
 
-    _check : function (widget, model) {
+    _doModelCheck : function (widget, model) {
         var parent = model.get(ETLCst.PARENTS)[0];
         var view = model.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
         var dimensions = model.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
@@ -64,9 +64,18 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
                 }
             })
         }
+        model.setValid(!found);
+        return found;
+    },
+
+    _check : function (widget, model) {
+        var found = this._doModelCheck(widget, model)
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
+        } else {
+            model.set(ETLCst.FIELDS, model.createFields());
         }
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !found);
     },
 
 
@@ -102,6 +111,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
 
     setDimensionGroupById : function (id, group, widget, model) {
         model.setDimensionGroupById(id, group)
+        this._doModelCheck(widget, model)
         this._refreshPreview(widget, model);
     },
 
@@ -124,11 +134,12 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
     deleteDimension: function (dId,  widget, model) {
         model.deleteDimension(dId);
         this.doCheck(widget, model)
+        this._doModelCheck(widget, model)
         this._refreshPreview(widget, model);
     },
     
     _refreshPreview : function (widget, model) {
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
     }
 
 

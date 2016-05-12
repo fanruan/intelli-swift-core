@@ -72,6 +72,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
     }
 
+
     protected boolean isFieldReaderAvailable() {
         return fieldInfoReader != null;
     }
@@ -325,9 +326,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     private void initialParentsTable() {
-        if (getFieldInfoReader().canRead() && !isParentTableInit()) {
+        if (getParentsReader().canRead() && !isParentTableInit()) {
             parentTable = new ArrayList<ITableKey>();
-            ICubeStringReader parentReader = getFieldInfoReader();
+            ICubeStringReader parentReader = getParentsReader();
             try {
                 int columnSize = Integer.parseInt(parentReader.getSpecificValue(0));
                 for (int pos = 1; pos <= columnSize; pos++) {
@@ -345,6 +346,12 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     @Override
     public void recordTableStructure(List<DBField> fields) {
+        /**
+         * 即便是空，也要记录是空数组0的长度。
+         */
+        if (fields == null) {
+            fields = new ArrayList<DBField>();
+        }
         Iterator<DBField> fieldIterator = fields.iterator();
         int position = 0;
         getFieldInfoWriter().recordSpecificValue(position, String.valueOf(fields.size()));//First position records size of columns.
@@ -441,6 +448,11 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         return getFieldInfoReader().canRead();
     }
 
+    @Override
+    public Boolean isRowCountAvailable() {
+        return getRowCountReader().canRead();
+    }
+
     protected void resetFieldReader() {
         if (isFieldReaderAvailable()) {
             fieldInfoReader.clear();
@@ -486,7 +498,21 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetTimeStampReader() {
         if (isTimeStampReaderAvailable()) {
             timeStampReader.clear();
-            timeStampWriter = null;
+            timeStampReader = null;
+        }
+    }
+
+    protected void resetParentWriter() {
+        if (isParentWriterAvailable()) {
+            parentsWriter.clear();
+            parentsWriter = null;
+        }
+    }
+
+    protected void resetParentReader() {
+        if (isParentReaderAvailable()) {
+            parentsReader.clear();
+            parentsReader = null;
         }
     }
 
@@ -500,6 +526,42 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         resetRowCountReader();
         resetTimeStampWriter();
         resetTimeStampReader();
+        resetParentReader();
+        resetParentWriter();
+    }
+
+    public void forceRelease() {
+        if (isFieldWriterAvailable()) {
+            fieldInfoWriter.forceRelease();
+        }
+        if (isFieldReaderAvailable()) {
+            fieldInfoReader.forceRelease();
+        }
+        if (isVersionReaderAvailable()) {
+            versionReader.forceRelease();
+        }
+        if (isVersionWriterAvailable()) {
+            versionWriter.forceRelease();
+        }
+        if (isRowCountReaderAvailable()) {
+            rowCountReader.forceRelease();
+        }
+        if (isRowCountWriterAvailable()) {
+            rowCountWriter.forceRelease();
+        }
+        if (isTimeStampWriterAvailable()) {
+            timeStampWriter.forceRelease();
+        }
+        if (isTimeStampReaderAvailable()) {
+            timeStampReader.forceRelease();
+        }
+        if (isParentWriterAvailable()) {
+            parentsWriter.forceRelease();
+        }
+        if (isParentReaderAvailable()) {
+            parentsReader.forceRelease();
+        }
+        clear();
     }
 }
 

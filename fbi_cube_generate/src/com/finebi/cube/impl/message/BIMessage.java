@@ -69,10 +69,10 @@ public class BIMessage implements IMessage {
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("BIMessage{");
-        sb.append("topicTag=").append(topicTag);
-        sb.append(", fragmentTag=").append(fragmentTag);
-        sb.append(", statusTag=").append(statusTag);
-        sb.append(", body=").append(body);
+        sb.append("T:").append(topicTag);
+        sb.append(", F:").append(fragmentTag);
+        sb.append(", S:").append(statusTag);
+        sb.append(", B:").append(body);
         sb.append('}');
         return sb.toString();
     }

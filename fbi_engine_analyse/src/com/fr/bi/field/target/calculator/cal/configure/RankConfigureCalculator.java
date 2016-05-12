@@ -37,7 +37,9 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
-            tempNode = tempNode.getFirstChild();
+            if (tempNode.getFirstChild().getFirstChild() != null) {
+                tempNode = tempNode.getFirstChild();
+            }
         }
         List nodeList = new ArrayList();
         LightNode cursor_node = tempNode;

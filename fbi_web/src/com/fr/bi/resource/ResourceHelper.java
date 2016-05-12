@@ -985,7 +985,6 @@ public class ResourceHelper {
                 //业务包分组
                 "com/fr/bi/web/js/modules/businesspackagegroup/buttons/button.businesspackage.mange.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/buttons/button.businesspackage.add.js",
-                "com/fr/bi/web/js/modules/businesspackagegroup/editor.label.covered.businesspackage.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/expander.businesspackage.group.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/pane.businesspackage.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/pane.ungroup.and.group.businesspackage.js",
@@ -1491,6 +1490,7 @@ public class ResourceHelper {
 
                 //时间区间
                 "com/fr/bi/web/css/widget/timeinterval/timeinterval.css",
+
                 //选择字段树
                 "com/fr/bi/web/css/widget/selectdata/tree/node/node.level0.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/node/node.level1.css",
@@ -2077,6 +2077,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/selectdata/searchpane/result.search.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/searcher/searcher.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/tab/tab.selectdata.js",
+
+                //简单的一个搜索功能
+                "com/fr/bi/web/js/widget/simplesearcher/searcher.simple.js",
 
                 //简单的选择字段树，主要用于过滤、cube配置内的选择字段
                 "com/fr/bi/web/js/widget/simpleselectdata/searchpane/segment.search.simpleselectdata.js",

@@ -49,7 +49,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
     protected abstract GroupValueIndex createFilterIndex(List<? extends ITableSource> parents, ICubeDataLoader loader);
 
     @Override
-    public int writeSimpleIndex(final Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(final Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
         final ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         DBTable ptable = parents.get(0).getDbTable();
         final BIColumn[] columns = ptable.getColumnArray();

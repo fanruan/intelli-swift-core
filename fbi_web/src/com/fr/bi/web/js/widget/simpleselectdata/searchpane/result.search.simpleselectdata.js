@@ -87,10 +87,6 @@ BI.SimpleSelectDataSearchResultPane = BI.inherit(BI.Widget, {
         this.resultPane.populate.apply(this.resultPane, arguments);
     },
 
-    setPackageName: function (name) {
-        this.segment.setPackageName(name);
-    },
-
     setValue: function (v) {
 
     },

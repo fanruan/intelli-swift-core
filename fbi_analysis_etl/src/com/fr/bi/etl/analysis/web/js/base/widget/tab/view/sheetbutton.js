@@ -36,8 +36,8 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             isNeedAdjustWidth: false,
             el: {
                 type: "bi.icon_trigger",
-                extraCls: "icon-analysis-table-set  icon-anamate",
-                width: o.height,
+                extraCls: "icon-analysis-table-set  icon-animate",
+                width: o.width,
                 height: o.height
             },
             popup: {
@@ -67,13 +67,28 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             element:this.element,
             type:"bi.inline",
             scrollable : false,
-            items: [this.text, this.combo]
+            items: [this.text, {
+                type:"bi.center_adapt",
+                height: o.height,
+                width : o.height,
+                items:[this.combo]
+            }]
         })
+    },
+
+    setValid : function (isValid) {
+        this.noError = isValid
+        this._refreshRedMark();
+    },
+
+    _refreshRedMark : function () {
+        this.noError === true ? this.text.unRedMark("") : this.text.doRedMark(this.options.text);
     },
 
     setText : function(text) {
         BI.SheetButton.superclass.setText.apply(this, arguments);
         this.text.setText(text);
+        this._refreshRedMark();
     },
 
     _createItemList : function (){

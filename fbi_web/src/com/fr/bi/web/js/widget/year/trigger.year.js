@@ -81,7 +81,8 @@ BI.YearTrigger = BI.inherit(BI.Trigger, {
                     width: c.triggerWidth
                 }, {
                     el: {
-                        type: "bi.trigger_icon_button"
+                        type: "bi.trigger_icon_button",
+                        width: c.triggerWidth
                     },
                     width: c.triggerWidth
                 }
