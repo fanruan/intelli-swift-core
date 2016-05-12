@@ -36,7 +36,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             isNeedAdjustWidth: false,
             el: {
                 type: "bi.icon_trigger",
-                extraCls: "icon-analysis-table-set  icon-anamate",
+                extraCls: "icon-analysis-table-set  icon-animate",
                 width: o.width,
                 height: o.height
             },
@@ -67,7 +67,12 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             element:this.element,
             type:"bi.inline",
             scrollable : false,
-            items: [this.text, this.combo]
+            items: [this.text, {
+                type:"bi.center_adapt",
+                height: o.height,
+                width : o.height,
+                items:[this.combo]
+            }]
         })
     },
 
