@@ -11,17 +11,14 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     _init: function () {
         BIConf.PermissionManageView.superclass._init.apply(this, arguments);
         var self = this;
-        this.authorityPane.setVisible(false);
         BI.Utils.getAllGroupedPackagesTreeAsync(function (items) {
             self.packageTree.populate(items);
             self.packStructure = items;
             }
         )
-        self.authorityPane.populate([], BI.PackageTree.SelectType);
     },
 
     _render: function (vessel) {
-        var self=this;
         this.main = BI.createWidget({
             type: "bi.border",
             element: vessel,
@@ -30,7 +27,6 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
                 center: {el: this._buildAuthorityPane(), height: 500, width: 40}
             }
         });
-
     },
     load: function () {
     },
@@ -48,8 +44,6 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             type: "bi.package_tree"
         });
         this.packageTree.on(BI.PackageTree.EVENT_CHANGE, function () {
-            self.authorityPane.setVisible(true);
-            /*根据是否为批量修改确定添加方式*/
             self.authorityPane.populate(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
             self._setHeadTitle(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
         });
@@ -94,7 +88,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
                 })
                 break;
             case BI.PackageTree.SelectType.MultiSelect:
-                self.title.setText(BI.i18nText('BI-Permissions_Setting') + '配置' + packageId.length + '个业务包');
+                self.title.setText(BI.i18nText('BI-Permissions_Setting') + '配置   ' + packageId.length + '个业务包');
                 break;
         }
 
@@ -102,9 +96,9 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     },
     _buildAuthorityTabs: function () {
         var self = this;
-        self.authorityPane = BI.createWidget({
-            type: "bi.authority_pane",
+        self.authorityPaneInitMain = BI.createWidget({
+            type: "bi.authority_pane_init_main",
         });
-        return this.authorityPane;
+        return this.authorityPaneInitMain;
     }
 })
