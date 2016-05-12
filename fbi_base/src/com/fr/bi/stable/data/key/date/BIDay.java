@@ -14,10 +14,17 @@ public class BIDay {
 
     private int day;
 
+    public long getTime() {
+        return time;
+    }
+
+    private long time;
+
     public BIDay() {
     }
 
     public BIDay(long t){
+        this.time = t;
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(t);
         day =  c.get(Calendar.DAY_OF_MONTH);

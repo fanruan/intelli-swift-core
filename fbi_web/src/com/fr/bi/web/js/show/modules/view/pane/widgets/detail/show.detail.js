@@ -17,22 +17,12 @@ BIShow.DetailView = BI.inherit(BI.BarFloatSection, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BIShow.DetailView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-select-data-preview-section",
-        });
+        return BI.extend(BIShow.DetailView.superclass._defaultConfig.apply(this, arguments), {});
     },
 
     _init: function () {
         BIShow.DetailView.superclass._init.apply(this, arguments);
     },
-
-    refresh: function () {
-        var self = this;
-        BI.defer(function () {
-            self.dimensionsManager.populate();
-        });
-    },
-
 
     rebuildCenter: function (center) {
         var o = this.options;
@@ -69,5 +59,9 @@ BIShow.DetailView = BI.inherit(BI.BarFloatSection, {
             this.populate();
         });
         return this.dimensionsManager;
+    },
+
+    refresh: function () {
+        this.dimensionsManager.populate();
     }
 });

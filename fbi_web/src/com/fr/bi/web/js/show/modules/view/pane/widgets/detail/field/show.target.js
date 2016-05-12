@@ -129,7 +129,7 @@ BIShow.TargetView = BI.inherit(BI.View, {
             type: "bi.count_target_combo",
             dId: this.model.get("id")
         });
-        this.combo.on(BI.CountTargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.TARGET_COMBO.DEPEND_TYPE:
                     self.model.set("_src", {

@@ -13,7 +13,6 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
             name: "",
             type: BICst.Widget.DETAIL,
             settings: {},
-            target_relation: {},
             filter_value: {}
         })
     },

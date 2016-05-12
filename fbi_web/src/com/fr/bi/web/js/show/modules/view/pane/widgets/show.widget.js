@@ -164,19 +164,13 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
     },
     listenEnd: function () {
-
+        return false;
     },
 
     change: function (changed) {
-        //阻断实时刷新
-        // if (BI.has(changed, "dimensions") ||
-        //     BI.has(changed, "sort") ||
-        //     BI.has(changed, "linkages")) {
-        //     this.tableChartPopupulate();
-        // }
-        // if(BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
-        //     this._refreshTableAndFilter();
-        // }
+         if(BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+             this._refreshTableAndFilter();
+         }
     },
 
     local: function () {

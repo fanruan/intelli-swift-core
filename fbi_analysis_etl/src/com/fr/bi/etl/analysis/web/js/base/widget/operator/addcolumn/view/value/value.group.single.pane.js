@@ -19,7 +19,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
             },
             field_type:BICst.COLUMN.NUMBER,
             value : {
-                range : null,
+                filter_value : null,
                 value : null
             }
         })
@@ -30,7 +30,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var field = o.field;
         this.range = self._createFieldRangeItem(field);
-        this.range.setValue(o.value.range || {})
+        this.range.setValue(o.value.filter_value || {})
         this.editor = this._createEditor(o.field_type, o.value.value || "")
 
         var deleteIcon = BI.createWidget({
@@ -195,7 +195,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
     update : function () {
         return {
             field : this.options.field.value,
-            range : this.range.getValue(),
+            filter_value : this.range.getValue(),
             value : this.editor.getValue(),
             field_type : this.options.field_type
         }

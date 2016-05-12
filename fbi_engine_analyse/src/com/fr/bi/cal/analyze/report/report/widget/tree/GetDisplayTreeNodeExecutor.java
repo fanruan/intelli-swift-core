@@ -97,7 +97,7 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
             return 0;
         }
         if (selectedValues.length() == 0) {
-            return 1;
+            return createData(parents, -1).size();
         }
         return selectedValues.names().length();
     }

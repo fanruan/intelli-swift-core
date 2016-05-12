@@ -1,7 +1,8 @@
 package com.fr.bi.conf.provider;
 
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.json.JSONObject;
+import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
+import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
+import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 
 import java.util.Set;
 
@@ -10,22 +11,45 @@ import java.util.Set;
  */
 public interface BISystemPackAndAuthConfigurationProvider {
     String XML_TAG = "BIPackAndAuthManager";
-//    String XML_TAG = "BIBusiPackManager";
 
 
     /**
-     * 创建业务包的Json数据
-     *
-     * @param userId 用户ID
-     * @return json数据
-     * @throws Exception
-     */
-    JSONObject createPackageJSON(long userId) throws Exception;
-    /**
-     * 获取当前最新版本的业务包用于数据更新
      *
      * @return
      */
-    Set<BIBusinessPackage> getAllPackages(long userId);
+    Set<BIPackAndAuthority> getAllPackages(long userId);
+
+
+    /**
+     * 根据ID获得相应的业务包
+     *
+     * @param userId    用户ID
+     * @param packageID 业务包ID
+     * @return 业务包
+     * @throws BIPackageAbsentException 业务包不存在
+     */
+    BIPackAndAuthority getPackageByID(long userId, String packageID) throws BIPackageAbsentException;
+
+    /**
+     * 添加一个业务包
+     *
+     * @param userId            用户ID
+     * @param biPackAndAuthority 业务包
+     * @throws BIPackageDuplicateException
+     */
+    void addPackage(long userId, BIPackAndAuthority biPackAndAuthority) throws BIPackageDuplicateException, Exception;
+
+    /**
+     * 持久化数据
+     * TODO 应该按照规则自动调用
+     *
+     * @param userId 用户ID
+     */
+    @Deprecated
+    void persistData(long userId);
+
+    void updateAuthority(long userId, BIPackAndAuthority biPackAndAuthority) throws Exception;
+
+    boolean containPackage(long userId,BIPackAndAuthority biPackAndAuthority);
 
 }

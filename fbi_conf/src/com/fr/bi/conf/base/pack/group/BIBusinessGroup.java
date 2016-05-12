@@ -20,6 +20,7 @@ import java.util.Set;
 public class BIBusinessGroup implements BIBusinessGroupGetterService {
     private BIGroupTagName name;
     private BIPackagesManagerService packageManager;
+    private long position;
 
     public BIBusinessGroup(BIGroupTagName groupName) {
         this.name = groupName;
@@ -101,6 +102,16 @@ public class BIBusinessGroup implements BIBusinessGroupGetterService {
         } catch (BIPackageAbsentException ignore) {
             return false;
         }
+    }
+
+    @Override
+    public long getPosition() {
+        return this.position;
+    }
+
+    @Override
+    public void setPosition(long position) {
+        this.position = position;
     }
 
     @Override

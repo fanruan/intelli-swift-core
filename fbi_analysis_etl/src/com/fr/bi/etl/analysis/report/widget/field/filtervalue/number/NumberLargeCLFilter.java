@@ -21,7 +21,7 @@ public class NumberLargeCLFilter extends NumberCalculateLineFilter {
 	/**
 	 * @param t
 	 */
-	NumberLargeCLFilter() {
+    public NumberLargeCLFilter() {
 		super(Large.INSTANCE);
 	}
 

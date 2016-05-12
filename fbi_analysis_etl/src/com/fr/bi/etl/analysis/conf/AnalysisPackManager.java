@@ -2,13 +2,14 @@ package com.fr.bi.etl.analysis.conf;
 
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
+
+import java.util.Locale;
 
 /**
  * Created by 小灰灰 on 2015/12/15.
  */
-public class AnalysisPackManager implements JSONCreator{
+public class AnalysisPackManager{
     private static final String XML_TAG = "AnalysisPackManager";
     private AnalysisETLPackageSet set;
 
@@ -33,7 +34,7 @@ public class AnalysisPackManager implements JSONCreator{
         return set.getTable(tableId);
     }
 
-    public JSONObject createJSON() throws Exception {
-        return set.createJSON();
+    public JSONObject createJSON(Locale locale) throws Exception {
+        return set.createJSON(locale);
     }
 }

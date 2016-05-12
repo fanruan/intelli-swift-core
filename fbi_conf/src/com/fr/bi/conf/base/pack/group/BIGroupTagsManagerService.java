@@ -16,7 +16,7 @@ import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 
 public interface BIGroupTagsManagerService extends Release, BIGroupTagsManagerGetterService {
 
-    void createEmptyGroup(BIGroupTagName groupName) throws BIGroupDuplicateException;
+    void createEmptyGroup(BIGroupTagName groupName,long position) throws BIGroupDuplicateException;
 
     void addPackage(BIGroupTagName groupName, BIBusinessPackage pack) throws BIGroupAbsentException, BIPackageDuplicateException;
 
