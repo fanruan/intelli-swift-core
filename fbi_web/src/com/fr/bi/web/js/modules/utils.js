@@ -681,6 +681,7 @@
             });
         },
 
+        //某维度或指标是否被其他维度或指标（计算指标）使用
         isDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
             var self = this;
             if (this.isDimensionByDimensionID(dId)) {
@@ -694,6 +695,24 @@
                     return true;
                 }
             });
+        },
+
+        //获取某维度或指标是否被其他维度或指标（计算指标）使用的指标
+        getDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
+            var self = this;
+            if (this.isDimensionByDimensionID(dId)) {
+                return [];
+            }
+            var wId = this.getWidgetIDByDimensionID(dId);
+            var ids = this.getAllTargetDimensionIDs(wId);
+            var result = [];
+            BI.each(ids, function (i, id) {
+                var tids = self.getExpressionValuesByDimensionID(id);
+                if (tids.contains(dId)) {
+                    result.push(dId);
+                }
+            });
+            return result;
         },
 
 

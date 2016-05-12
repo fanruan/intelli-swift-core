@@ -17,7 +17,7 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
             type: "bi.icon_trigger",
             el:{extraCls: "filter-font"},
             width: self._constant.BUTTON_WIDTH,
-            height: self._constant.BUTTON_WIDTH
+            height: self._constant.BUTTON_HEIGHT
         });
         this.popup = BI.createWidget({
             type: "bi.filter_popup_etl",
