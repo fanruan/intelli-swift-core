@@ -194,7 +194,7 @@
             var views = Pool.excel_views;
             return views[tableId];
         },
-        
+
         getPreviewTableDataByTableId: function (tableId, callback) {
             Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
         },
@@ -1267,6 +1267,9 @@
             });
         },
 
+        /**
+         * 组件与表的关系
+         */
         broadcastAllWidgets2Refresh: function (force) {
             var self = this;
             var allWidgetIds = this.getAllWidgetIDs();
@@ -1278,10 +1281,7 @@
                 });
             }
         },
-
-        /**
-         * 组件与表的关系
-         */
+        
         isTableUsableByWidgetID: function (tableId, wId) {
             var self = this;
             var dIds = this.getAllDimensionIDs(wId);
