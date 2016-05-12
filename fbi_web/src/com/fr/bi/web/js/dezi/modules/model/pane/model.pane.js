@@ -23,7 +23,19 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
 
     _init: function () {
         BIDezi.PaneModel.superclass._init.apply(this, arguments);
+        var self = this;
         this.operatorIndex = 0;
+        this.saveDebounce = BI.debounce(function(widgets, dims, layoutType){
+            var records = Data.SharingPool.get("records") || [];
+            records.splice(self.operatorIndex + 1);
+            records.push({
+                dimensions: dims,
+                widgets: widgets,
+                layoutType: layoutType
+            });
+            Data.SharingPool.put("records", records);
+            self.operatorIndex = records.length - 1;
+        }, 100);
     },
 
     _generateWidgetName: function (widgetName) {
@@ -146,15 +158,6 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("layoutType", this.get("layoutType"));
 
         //用于undo redo
-        var records = Data.SharingPool.get("records") || [];
-        records.splice(this.operatorIndex + 1);
-        records.push({
-            dimensions: dims,
-            widgets: widgets,
-            layoutType: this.get("layoutType")
-        });
-        Data.SharingPool.put("records", records);
-        this.operatorIndex = records.length - 1;
-
+        this.saveDebounce(widgets, dims, this.get("layoutType"));
     }
 });

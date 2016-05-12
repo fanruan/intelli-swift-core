@@ -291,7 +291,7 @@
             }
         },
 
-        getWidgetNamePostionByID: function(wid) {
+        getWidgetNamePositionByID: function(wid) {
             var widget = Data.SharingPool.get("widgets", wid);
             if (BI.isNotNull(widget)) {
                 var settings = widget.settings;
@@ -309,6 +309,20 @@
                 fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
             });
             return fromIds;
+        },
+
+        checkWidgetNameByID: function(name, wId){
+            var allWIds = this.getAllWidgetIDs();
+            var self = this, isValid = true;
+            BI.some(allWIds, function(i, id){
+                if(self.isControlWidgetByWidgetId(id) === self.isControlWidgetByWidgetId(wId) 
+                    && self.getWidgetNameByID(id) === name
+                    && wId !== id) {
+                    isValid = false;
+                    return true;
+                }
+            });
+            return isValid;
         },
 
         isControlWidgetByWidgetId: function (wid) {
