@@ -873,18 +873,17 @@
         },
 
         getNoGroupedDataByDimensionID: function (dId, callback) {
-            var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
             dimension.group = {type: BICst.GROUP.ID_GROUP};
-            var widget = Data.SharingPool.get("widgets", wid);
-            widget.page = -1;
-            widget.dimensions = {};
-            widget.dimensions[dId] = dimension;
-            widget.view = {};
-            widget.view[BICst.REGION.DIMENSION1] = [dId];
-            Data.Req.reqWidgetSettingByData({widget: widget}, function (data) {
+            dimension.filter_value = {};
+            var dimensions = {};
+            dimensions[dId] = dimension;
+            var view = {};
+            view[BICst.REGION.DIMENSION1] = [dId];
+            this.getWidgetDataByWidgetInfo(dimensions, view, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             });
+
         },
 
         getDataByDimensionID: function (dId, callback) {
