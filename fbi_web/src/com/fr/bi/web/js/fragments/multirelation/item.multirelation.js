@@ -64,7 +64,8 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
                 items.push(BI.deepClone(widgetItem));
                 items.push({
                     type: "bi.label",
-                    value: "->"
+                    value: "->",
+                    textAlign: "center"
                 });
                 widgetItem.type = "bi.multi_relation_table_field_item";
                 widgetItem.fieldName = BI.Utils.getFieldNameByFieldId4Conf(primaryFieldId);
@@ -78,7 +79,8 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
             items.push(BI.deepClone(widgetItem));
             items.push({
                 type: "bi.label",
-                value: "->"
+                value: "->",
+                textAlign: "center"
             });
 
         });
