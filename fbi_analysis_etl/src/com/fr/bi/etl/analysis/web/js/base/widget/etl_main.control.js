@@ -37,7 +37,7 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
 
     _doSave : function (widget, model) {
         BI.ETLReq.reqSaveTable(model.update(), function () {
-            //widget.setVisible(false);
+            widget.setVisible(false);
         });
     },
 
