@@ -6,7 +6,8 @@ BIDezi.ImageWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.ImageWidgetModel.superclass._defaultConfig.apply(this,arguments), {
             href: "",
             size: "original",
-            src: ""
+            src: "",
+            settings: BICst.DEFAULT_CONTROL_SETTING
         });
     },
 
