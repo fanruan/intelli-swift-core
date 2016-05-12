@@ -88,7 +88,12 @@ BI.SwitchTree = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.options.items = items;
-        this.tab.populate(items);
+        if (BI.isNotNull(this.levelTree)) {
+            this.levelTree.populate(items);
+        }
+        if (BI.isNotNull(this.tree)) {
+            this.tree.populate(items);
+        }
     }
 });
 BI.SwitchTree.EVENT_CHANGE = "SwitchTree.EVENT_CHANGE";

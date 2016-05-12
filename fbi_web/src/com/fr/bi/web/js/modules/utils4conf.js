@@ -77,6 +77,7 @@ BI.extend(BI.Utils, {
         }
         return packStructure;
     },
+    
     /**
      * 获取所有业务包分组信息树结构
      * 用于业务包权限管理功能
@@ -84,8 +85,7 @@ BI.extend(BI.Utils, {
      * @returns {Array}
      */
     getAllGroupedPackagesTreeSync: function () {
-        var data = Data.Req.reqPakageAndGroupSync();
-        var groups = data.groups, packages = data.packages;
+        var groups = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
         var packStructure = [], groupedPacks = [];
         BI.each(groups, function (id, group) {
             packStructure.push({
@@ -147,12 +147,11 @@ BI.extend(BI.Utils, {
      * 异步
      * @returns {Array}
      */
-    
     getAllGroupedPackagesTreeAsync: function (callback) {
         Data.Req.reqPakageAndGroup(function (data) {
-                var groups = data.groups, packages = data.packages;
-                var packStructure = [], groupedPacks = [];
-                BI.each(groups, function (id, group) {
+            var groups = data.groups, packages = data.packages;
+            var packStructure = [], groupedPacks = [];
+            BI.each(groups, function (id, group) {
                 packStructure.push({
                     id: id,
                     text: group.name,
@@ -161,51 +160,50 @@ BI.extend(BI.Utils, {
                     open: true
                 });
 
-                    BI.each(group.children, function (i, item) {
-                        packStructure.push({
-                            id: item.id,
-                            text: packages[item.id].name,
-                            value: item.id,
-                            pId: id,
-                            open: true
-                        });
-                        groupedPacks.push(item.id);
-                    })
-                });
-
-                var isGroupedExisted = false;
-                BI.each(packages, function (id, pack) {
-                    var isGrouped = false;
-                    BI.any(groupedPacks, function (i, pId) {
-                        if (pId === id) {
-                            isGrouped = true;
-                            return false;
-                        }
-                    });
-                    //未分组
-                    if (!isGrouped) {
-                        isGroupedExisted = true;
-                        packStructure.push({
-                            text: pack.name,
-                            value: pack.id,
-                            pId: 1,
-                            id: id,
-                            open: true
-                        })
-                    }
-                });
-                if (isGroupedExisted === true) {
+                BI.each(group.children, function (i, item) {
                     packStructure.push({
-                        text: BI.i18nText('BI-Ungrouped'),
-                        value: BI.i18nText('BI-Ungrouped'),
-                        id: 1,
-                        pId: 0,
+                        id: item.id,
+                        text: packages[item.id].name,
+                        value: item.id,
+                        pId: id,
                         open: true
                     });
+                    groupedPacks.push(item.id);
+                })
+            });
+
+            var isGroupedExisted = false;
+            BI.each(packages, function (id, pack) {
+                var isGrouped = false;
+                BI.any(groupedPacks, function (i, pId) {
+                    if (pId === id) {
+                        isGrouped = true;
+                        return false;
+                    }
+                });
+                //未分组
+                if (!isGrouped) {
+                    isGroupedExisted = true;
+                    packStructure.push({
+                        text: pack.name,
+                        value: pack.id,
+                        pId: 1,
+                        id: id,
+                        open: true
+                    })
                 }
-            callback(packageStructure);
+            });
+            if (isGroupedExisted === true) {
+                packStructure.push({
+                    text: BI.i18nText('BI-Ungrouped'),
+                    value: BI.i18nText('BI-Ungrouped'),
+                    id: 1,
+                    pId: 0,
+                    open: true
+                });
             }
-        );
+            callback(packStructure);
+        })
     },
     /**业务包权限
      * 选择多个业务包时,默认没有角色被选中*/
