@@ -2,6 +2,7 @@ package com.fr.bi.conf.data.source.operator.add;
 
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.finebi.cube.api.ICubeTableService;
@@ -42,6 +43,7 @@ public class SingleValueOperator extends AbstractAddColumnOperator {
         JSONObject item = new JSONObject();
         item.put("v", value);
         jo.put("item", item);
+        jo.put("add_column_type", BIJSONConstant.ETL_ADD_COLUMN_TYPE.SINGLE_VALUE);
         return jo;
     }
 

@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.add;
 
+import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
@@ -17,6 +18,7 @@ public class ETLFormularOperator extends FieldFormulaOperator{
         JSONObject item = new JSONObject();
         item.put("formula", expression);
         jo.put("item", item);
+        jo.put("add_column_type", BIJSONConstant.ETL_ADD_COLUMN_TYPE.FORMULA);
         return jo;
     }
 
