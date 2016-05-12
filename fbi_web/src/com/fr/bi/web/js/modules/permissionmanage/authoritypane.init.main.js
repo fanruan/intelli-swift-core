@@ -33,8 +33,7 @@ BI.AuthorityPaneInitMain = BI.inherit(BI.Widget, {
                     type: "bi.authority_pane_multi"
                 });
                 this.paneMultiShow.on(BI.AuthorityPaneMulti.EVENT_CHANGE, function () {
-                    // self.fireEvent(BI.AuthorityPaneInitMain.EVENT_CHANGE);
-                    self._switchPane(BI.AuthorityPaneInitMain.SelectPane.authorityPaneShow);
+                    self.fireEvent(BI.AuthorityPaneInitMain.EVENT_CHANGE);
                 });
                 return this.paneMultiShow;
         }
@@ -43,6 +42,7 @@ BI.AuthorityPaneInitMain = BI.inherit(BI.Widget, {
         this.packageIDs=packageIds;
         this._switchPane(selectType);
     },
+    /*批量设置的情况下,点击'批量设置'按钮进入权限管理页面*/
     _switchPane: function (v) {
         this.tab.setSelect(v);
         switch (v) {
@@ -51,9 +51,6 @@ BI.AuthorityPaneInitMain = BI.inherit(BI.Widget, {
                 break;
             case BI.AuthorityPaneInitMain.SelectPane.paneMultiShow:
                 this.paneMultiShow.populate(this.packageIDs);
-                break;
-            case BI.AuthorityPaneInitMain.SelectPane.authorityPaneShow:
-                this.authorityPaneShow.populate(this.packageIDs);
                 break;
         }
     }

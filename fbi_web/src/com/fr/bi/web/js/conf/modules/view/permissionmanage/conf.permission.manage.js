@@ -41,10 +41,16 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     _builtPackageTree: function () {
         var self = this;
         this.packageTree = BI.createWidget({
-            type: "bi.package_tree"
+            type: "bi.package_authority_tree"
         });
-        this.packageTree.on(BI.PackageTree.EVENT_CHANGE, function () {
-            self.authorityPane.populate(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
+        /*单选模式下,直接点击某个业务包,在右侧权限管理页面,否则显示初始页面,初始页面分批量和单选两种*/
+        this.packageTree.on(BI.PackageANdAuthorityTree.EVENT_CHANGE, function () {
+            if (0 == self.packageTree.getSelectType() && JSON.parse(self.packageTree.getPackageIds()).length == 1) {
+                self.authorityTabs.setSelect(1);
+            } else {
+            self.authorityPaneInitMain.populate(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
+            self.authorityTabs.setSelect(0);
+        }
             self._setHeadTitle(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
         });
         return this.packageTree;
@@ -79,7 +85,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     _setHeadTitle: function (packageId,selectType) {
         var self = this;
         switch (selectType){
-            case BI.PackageTree.SelectType.SingleSelect:
+            case BI.PackageANdAuthorityTree.SelectType.SingleSelect:
                 BI.each(self.packStructure, function (key) {
                     if (packageId[0] == self.packStructure[key].id) {
                         self.title.setText((self.packStructure[key].text) + '  ' + BI.i18nText('BI-Permissions_Setting'));
@@ -87,18 +93,38 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
                     }
                 })
                 break;
-            case BI.PackageTree.SelectType.MultiSelect:
+            case BI.PackageANdAuthorityTree.SelectType.MultiSelect:
                 self.title.setText(BI.i18nText('BI-Permissions_Setting') + '配置   ' + packageId.length + '个业务包');
                 break;
         }
-
-;
     },
     _buildAuthorityTabs: function () {
         var self = this;
-        self.authorityPaneInitMain = BI.createWidget({
-            type: "bi.authority_pane_init_main",
+        self.authorityTabs = BI.createWidget({
+            type: "bi.tab",
+            tab: null,
+            defaultShowIndex: 0,
+            cardCreator: BI.bind(this._createTabs, this)
         });
-        return this.authorityPaneInitMain;
+        return this.authorityTabs;
+    },
+    /*case 0 进入初始页面(分单选和批量),case 1:进入权限管理页面*/
+    _createTabs: function (type) {
+        var self =this;
+        switch (type) {
+            case 0:
+                this.authorityPaneInitMain = BI.createWidget({
+                    type: "bi.authority_pane_init_main"
+                });
+                this.authorityPaneInitMain.on(BI.AuthorityPaneInitMain.EVENT_CHANGE, function () {
+                self.authorityTabs.setSelect(1);
+                });
+                return this.authorityPaneInitMain;
+            case 1:
+                this.authorityPaneEdit = BI.createWidget({
+                    type: "bi.authority_pane_edit_selected"
+                });
+                return this.authorityPaneEdit;
+        }
     }
-})
+});
