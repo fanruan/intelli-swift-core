@@ -26,6 +26,7 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
                 });
                 BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
             }
+            this.set("value", {});
         }
     },
 

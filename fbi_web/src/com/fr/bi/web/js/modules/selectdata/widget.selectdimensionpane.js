@@ -81,18 +81,13 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         this.templateItems = [];
         this.widgetItems = {};
         this.searcher = BI.createWidget({
-            type: "bi.simple_select_data_searcher",
-            element: this.element,
-            adapter: {
+            type: "bi.select_data_tree",
+            el: {
                 el: {
-                    el: {
-                        chooseType: BI.ButtonGroup.CHOOSE_TYPE_MULTI
-                    }
+                    chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
                 }
             },
-            popup: {
-                segment: {}
-            },
+            element: this.element,
             itemsCreator: function (op, populate) {
                 if (BI.isNotNull(op.keyword) && BI.isNotNull(op.searchType)) {
                     //var result = self._getSearchResult(op.searchType, op.keyword);

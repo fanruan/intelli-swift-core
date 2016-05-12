@@ -82,7 +82,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _init: function(){
         BI.CountTargetCombo.superclass._init.apply(this, arguments);
-        this.field_id = BI.Utils.getFieldIDByDimensionID(o.dId);
+        this.field_id = BI.Utils.getFieldIDByDimensionID(this.options.dId);
     },
 
     _rebuildItems: function(){
@@ -118,6 +118,15 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
         dependItem.el.text = BI.i18nText("BI-Count_Depend") + "(" + selectedValue +")";
         dependItem.children = children;
+
+        switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
+            case BICst.Widget.TABLE:
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+                break;
+            default:
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                break;
+        }
 
         return items;
     },

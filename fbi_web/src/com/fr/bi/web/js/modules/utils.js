@@ -537,6 +537,12 @@
 
         },
 
+        getDimensionHyperLinkByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "hyperlink");
+            }
+        },
+
         getFieldTypeByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 return this.getFieldTypeByID(this.getFieldIDByDimensionID(did));
