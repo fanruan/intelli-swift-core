@@ -23,7 +23,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
     },
 
-    _check : function (widget, model) {
+    _doModelCheck : function (widget, model) {
         var parent = model.get(ETLCst.PARENTS)[0];
         var self = this;
         var columns = model.get(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY);
@@ -64,6 +64,11 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
             }
         })
         model.setValid(!found)
+        return found;
+    },
+
+    _check : function (widget, model) {
+        var found = this._doModelCheck(widget, model)
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
         } else {
@@ -119,7 +124,8 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     deleteColumnByName : function (name, widget, model) {
         model.deleteColumnByName(name);
         this._cancelEditColumn(widget, model);
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        this._doModelCheck(widget, model)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.getAddColumns().length !== 0)
     },
 
@@ -173,7 +179,8 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         } else {
             model.addColumn(column);
         }
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        this._doModelCheck(widget, model)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
         this._cancelEditColumn(widget, model);
     },
 
