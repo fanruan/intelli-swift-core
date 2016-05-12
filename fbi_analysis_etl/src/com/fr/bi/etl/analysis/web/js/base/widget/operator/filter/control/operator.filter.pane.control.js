@@ -93,10 +93,10 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
             }
         });
         operator.items = newItems;
-
         if (!invalid){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, BI.deepClone(parent[ETLCst.FIELDS]))
         }
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !invalid);
     },
 
     _checkItem : function (widget, item, fields) {
@@ -127,7 +127,7 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
         var v =  model.update();
         v.etlType = ETLCst.ETL_TYPE.FILTER;
         var parent = model.get(ETLCst.PARENTS)[0];
-        v.fields = BI.deepClone(parent[ETLCst.FIELDS])
+        v[ETLCst.FIELDS] = BI.deepClone(parent[ETLCst.FIELDS])
         return v;
     }
 

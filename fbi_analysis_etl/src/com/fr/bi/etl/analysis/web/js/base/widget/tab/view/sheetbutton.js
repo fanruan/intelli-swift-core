@@ -37,7 +37,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             el: {
                 type: "bi.icon_trigger",
                 extraCls: "icon-analysis-table-set  icon-anamate",
-                width: o.height,
+                width: o.width,
                 height: o.height
             },
             popup: {
@@ -71,9 +71,19 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
         })
     },
 
+    setValid : function (isValid) {
+        this.noError = isValid
+        this._refreshRedMark();
+    },
+
+    _refreshRedMark : function () {
+        this.noError === true ? this.text.unRedMark("") : this.text.doRedMark(this.options.text);
+    },
+
     setText : function(text) {
         BI.SheetButton.superclass.setText.apply(this, arguments);
         this.text.setText(text);
+        this._refreshRedMark();
     },
 
     _createItemList : function (){

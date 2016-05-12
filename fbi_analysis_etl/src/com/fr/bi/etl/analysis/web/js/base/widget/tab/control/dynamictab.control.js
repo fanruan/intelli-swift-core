@@ -182,6 +182,12 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
 
     },
 
+    setTabValid : function (v, widget, model) {
+        var isValid = model.get(v).isModelValid();
+        var button = widget.tabButton.getButton(v);
+        button.setValid(isValid)
+    },
+
     saveMergeSheet : function (v, widget, model) {
         var sheets = v["sheets"];
         var self = this;
@@ -209,15 +215,31 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
 
         var self = this;
 
+        var getTablesBySheetId = function (sheets) {
+            var tables = [];
+            var self = this;
+            BI.each(sheets, function (idx, item) {
+                tables.push(getTableById(item))
+            })
+            return tables;
+        }
+
+        var getTableById = function (id) {
+            return BI.find(tables, function (idx, item) {
+                return item.value === id;
+            })
+        }
+
         var func = function (v) {
+            var m = {
+                name: model.createNewName(BI.i18nText("BI-Merge_Table")),
+                tables: tables
+            }
+            m[ETLCst.PARENTS] = getTablesBySheetId(v);
             BI.createWidget({
                 type : "bi.analysis_etl_merge_sheet",
                 element:BI.Layers.create(BICst.ANALYSIS_MERGE_LAYER, "body"),
-                model : {
-                    sheets: v,
-                    name: model.createNewName(BI.i18nText("BI-Merge_Table")),
-                    tables : tables
-                },
+                model :m,
                 controller : {
                     saveHandler : function(v) {
                         self.saveMergeSheet(v, widget, model)

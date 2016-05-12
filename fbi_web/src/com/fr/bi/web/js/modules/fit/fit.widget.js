@@ -26,7 +26,6 @@ BI.FitWidget = BI.inherit(BI.BasicButton, {
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
-            scrollable: false,
             items: [{
                 el: this.widget,
                 top: 5,
