@@ -30,7 +30,7 @@ public interface IETLOperator extends XMLable, JSONTransform, BICoreService {
 
     boolean isAddColumnOprator();
 
-    int writeSimpleIndex(Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader);
+    int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader);
 
     int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end);
 }

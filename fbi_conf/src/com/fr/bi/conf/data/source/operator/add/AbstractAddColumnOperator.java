@@ -89,7 +89,7 @@ public abstract class AbstractAddColumnOperator extends AbstractETLOperator {
         return true;
     }
 
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader){
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader){
         return write(travel, loader.getTableIndex(getSingleParentMD5(parents)), 0);
     }
 

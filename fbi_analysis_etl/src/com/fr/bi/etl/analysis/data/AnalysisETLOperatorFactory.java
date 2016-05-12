@@ -14,10 +14,7 @@ import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.PeriodRow
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondMonthPeriodPercentRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.PeriodPercentRowCalculatorOperator;
 import com.fr.bi.conf.data.source.operator.add.rowcal.rank.RankRowCalculatorOperator;
-import com.fr.bi.conf.data.source.operator.create.TableColumnFieldsFilterOperator;
-import com.fr.bi.conf.data.source.operator.create.TableColumnFilterOperator;
-import com.fr.bi.conf.data.source.operator.create.TableFilterOperator;
-import com.fr.bi.conf.data.source.operator.create.TableSumByGroupOperator;
+import com.fr.bi.conf.data.source.operator.create.*;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.general.ComparatorUtils;
@@ -37,7 +34,7 @@ public class AnalysisETLOperatorFactory {
         int etlType = jo.getInt("etlType");
         switch (etlType){
             case Constants.ETL_TYPE.USE_PART_FIELDS :{
-                IETLOperator op = new TableFilterOperator();
+                IETLOperator op = new UsePartOperator();
                 op.parseJSON(jo.getJSONObject("operator"));
                 list.add(op);
                 break;
@@ -63,7 +60,7 @@ public class AnalysisETLOperatorFactory {
                 break;
             }
             case Constants.ETL_TYPE.MERGE_SHEET :{
-                IETLOperator op = new TableColumnFilterOperator();
+                IETLOperator op = new TableMergeOperator();
                 op.parseJSON(jo.getJSONObject("operator"));
                 list.add(op);
                 break;
@@ -108,4 +105,28 @@ public class AnalysisETLOperatorFactory {
         return op;
     }
 
+    public static void createJSONByOperators(JSONObject jo, List<IETLOperator> operators) throws Exception {
+        if (operators.get(0).isAddColumnOprator()){
+            jo.put("etlType", Constants.ETL_TYPE.ADD_COLUMN);
+            JSONObject operator = new JSONObject();
+            JSONArray columns = new JSONArray();
+            for (IETLOperator op : operators){
+                columns.put(op.createJSON());
+            }
+            operator.put("columns", columns);
+            jo.put("operator", operator);
+        } else {
+            IETLOperator operator = operators.get(0);
+            if (ComparatorUtils.equals(operator.xmlTag(), TableMergeOperator.XML_TAG)){
+                jo.put("etlType", Constants.ETL_TYPE.MERGE_SHEET);
+            } else if(ComparatorUtils.equals(operator.xmlTag(), TableColumnFieldsFilterOperator.XML_TAG)){
+                jo.put("etlType", Constants.ETL_TYPE.FILTER);
+            } else if(ComparatorUtils.equals(operator.xmlTag(), TableSumByGroupOperator.XML_TAG)){
+                jo.put("etlType", Constants.ETL_TYPE.GROUP_SUMMARY);
+            } else if(ComparatorUtils.equals(operator.xmlTag(), UsePartOperator.XML_TAG)){
+                jo.put("etlType", Constants.ETL_TYPE.USE_PART_FIELDS);
+            }
+            jo.put("operator", operator.createJSON());
+        }
+    }
 }
