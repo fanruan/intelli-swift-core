@@ -93,4 +93,9 @@ public class BITrigger implements ITrigger {
             triggerOne();
         }
     }
+
+    @Override
+    public String leftCondition() {
+        return threshold.leftCondition();
+    }
 }
