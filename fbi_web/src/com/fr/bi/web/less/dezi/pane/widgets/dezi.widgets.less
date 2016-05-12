@@ -22,31 +22,17 @@
 
 .bi-dashboard-widget{
   background: @color-bi-background-default;
-  & .dashboard-title {
-    & .dashboard-title-text {
-      cursor: url('@{dragCursor}'), -moz-zoom-out;
-      font-size: @font-size-16;
-    }
-    & .dashboard-title-filter{
-      font-size: @font-size-16;
-      &:hover, &:active{
-        background-color: @color-bi-background-normal;
-      }
-    }
-    & .dashboard-title-detail{
-      font-size: @font-size-16;
-    }
-    & .operator-region{
-      z-index: @zIndex-layer;
-    }
+  & .dashboard-title-left > a > div {
+      text-align: left !important;
+      font-size: @font-size-16 !important;
   }
-  & .dashboard-title:active, & .dashboard-title.active {
-    cursor: url('@{dragCursor}'), -moz-zoom-out;
+  & .dashboard-title-center > a > div {
+      text-align: center !important;
+      font-size: @font-size-16 !important;
   }
-  & .bi-dashboard-block {
-
+  & .operator-region{
+    z-index: @zIndex-layer;
   }
-
   & .ui-resizable-s{
     bottom: 0;
   }

@@ -20,7 +20,7 @@ BI.FitWidget = BI.inherit(BI.BasicButton, {
         this.draggable = BI.createWidget({
             type: "bi.layout",
             cls: "fit-widget-draggable",
-            height: 40
+            height: 12
         });
         this.widget = o.widgetCreator();
         BI.createWidget({
