@@ -1947,8 +1947,8 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     getHelper: function () {
         var helper = BI.createWidget({
             type: "bi.layout",
-            width: 8,
-            height: 8,
+            width: 18,
+            height: 18,
             cls: "arrangement-helper"
         });
         BI.createWidget({

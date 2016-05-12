@@ -626,9 +626,9 @@ BI.Table = BI.inherit(BI.Widget, {
                             self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE);
                         },
                         resize: function (e, ui) {
-                            o.columnSize[start + j] = ui.size.width;
-                            self.setColumnSize(o.columnSize);
-                            self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE);
+                            //o.columnSize[start + j] = ui.size.width;
+                            //self.setColumnSize(o.columnSize);
+                            //self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE);
                             e.stopPropagation();
                             return false;
                         },
