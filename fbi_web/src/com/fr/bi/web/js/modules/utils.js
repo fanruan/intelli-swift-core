@@ -1281,7 +1281,7 @@
                 });
             }
         },
-        
+
         isTableUsableByWidgetID: function (tableId, wId) {
             var self = this;
             var dIds = this.getAllDimensionIDs(wId);
