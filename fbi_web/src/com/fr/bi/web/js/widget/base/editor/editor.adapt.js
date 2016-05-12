@@ -101,6 +101,14 @@ BI.AdaptiveEditor = BI.inherit(BI.Single, {
         this.element.width(BI.DOM.getTextSizeWidth(this.getValue(), 14) + 2 * o.hgap + o.lgap + o.rgap);
     },
 
+    focus: function () {
+        this.editor.focus();
+    },
+
+    blur: function () {
+        this.editor.blur();
+    },
+
     isValid: function () {
         return this.editor.isValid();
     },

@@ -24,7 +24,7 @@ BI.AnalysisETLOperatorAddColumnExprAccController = BI.inherit(BI.MVCController, 
     },
 
     _isGroupWillShow: function (model) {
-        return model.get('rule') === BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP;
+        return model.get('rule') === BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP;
     },
 
     _refreshLabel : function (widget, model) {
@@ -109,7 +109,7 @@ BI.AnalysisETLOperatorAddColumnExprAccController = BI.inherit(BI.MVCController, 
             text: BI.i18nText("BI-Cumulative_Value_In_Group"),
             value: BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP
         }]);
-        model.set('rule', model.get('rule') ||BICst.TARGET_TYPE.SUM_OF_ALL);
+        model.set('rule', model.get('rule') ||BICst.TARGET_TYPE.SUM_OF_ABOVE);
         widget.rule.setValue(model.get('rule'));
         this._afterValueSetted(widget, model);
     }

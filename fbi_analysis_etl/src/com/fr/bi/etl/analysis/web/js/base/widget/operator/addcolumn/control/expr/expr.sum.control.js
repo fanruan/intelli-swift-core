@@ -11,7 +11,7 @@ BI.AnalysisETLOperatorAddColumnExprSumController = BI.inherit(BI.AnalysisETLOper
     },
 
     _isGroupWillShow: function (model) {
-        return model.get('rule') ===  BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP;
+        return model.get('rule') ===  BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP;
     },
 
     _getLabelLastText : function (model) {
@@ -48,7 +48,7 @@ BI.AnalysisETLOperatorAddColumnExprSumController = BI.inherit(BI.AnalysisETLOper
             text: BI.i18nText("BI-All_Values_In_Group"),
             value: BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP
         }]);
-        model.set('rule', model.get('rule') || BICst.TARGET_TYPE.SUM_OF_ABOVE);
+        model.set('rule', model.get('rule') || BICst.TARGET_TYPE.SUM_OF_ALL);
         widget.rule.setValue(model.get('rule'));
         widget.sumType.populate(BICst.CAL_TARGET_SUM_TYPE);
         model.set('sum_type',model.get('sum_type') || BICst.CAL_TARGET_SUM_TYPE[0].value)

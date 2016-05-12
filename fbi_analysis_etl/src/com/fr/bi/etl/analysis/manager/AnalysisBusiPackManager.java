@@ -19,6 +19,7 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -179,7 +180,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject createPackageJSON(long userId) throws Exception {
-        return getUserAnalysisBusiPackManager(userId).createJSON();
+        return getUserAnalysisBusiPackManager(userId).createJSON(Locale.CHINA);
+    }
+
+    @Override
+    public JSONObject createPackageJSON(long userId, Locale locale) throws Exception {
+        return getUserAnalysisBusiPackManager(userId).createJSON(locale);
     }
 
     @Override

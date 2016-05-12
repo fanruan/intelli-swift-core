@@ -30,12 +30,20 @@ BI.MultiSelectEditor = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
-        this.editor.on(BI.StateEditor.EVENT_PAUSE, function(){
+        this.editor.on(BI.StateEditor.EVENT_PAUSE, function () {
             self.fireEvent(BI.MultiSelectEditor.EVENT_PAUSE);
-        })
+        });
         this.editor.on(BI.StateEditor.EVENT_CLICK_LABEL, function () {
 
         });
+    },
+
+    focus: function () {
+        this.editor.focus();
+    },
+
+    blur: function () {
+        this.editor.blur();
     },
 
     setState: function (state) {

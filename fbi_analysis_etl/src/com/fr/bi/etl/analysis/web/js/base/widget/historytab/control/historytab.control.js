@@ -224,7 +224,11 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
                 }
             })
         })
-        button.setValid(model.isValid(button.getValue()))
+        var invalidIndex = model.get('invalidIndex');
+        if(invalidIndex <= index) {
+            button.setValid(false);
+            button.setTitle(model.get("invalidTitle"))
+        }
         this._getTabButtonGroup(widget).addItemFromIndex(button, index);
     },
 

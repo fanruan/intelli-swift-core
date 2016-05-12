@@ -62,7 +62,7 @@ public class ResourceHelper {
         JSONObject excelViews = new JSONObject();
         try {
             groups = BIConfigureManagerCenter.getPackageManager().createGroupJSON(userId);
-            packages = BIModuleUtils.createPackJSON(userId);
+            packages = BIModuleUtils.createPackJSON(userId, req.getLocale());
             translations = BIConfigureManagerCenter.getAliasManager().getTransManager(userId).createJSON();
             relations = BIConfigureManagerCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
@@ -695,15 +695,16 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/base/buttons/button.databasetable.js",
                 "com/fr/bi/web/js/modules/base/combos/widget.combo.js",
                 "com/fr/bi/web/js/modules/selectdatacombo/widget.selectdatacombo.js",
-                "com/fr/bi/web/js/modules/base/combos/abstract.dimension.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/abstract.dimensiontarget.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/dimension/abstract.dimension.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/widget.controldimension.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.stringdimension.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/dimension/widget.stringdimension.combo.js",
 
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.numberdimension.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.datedimension.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.target.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.count.target.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.calculate.target.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/dimension/widget.numberdimension.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/dimension/widget.datedimension.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/target/widget.target.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/target/widget.count.target.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/target/widget.calculate.target.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detailstring.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detailnumber.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detaildate.combo.js",
@@ -897,8 +898,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/target/widget.selectdata4targetcombo.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.numberfield.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.notypefield.js",
-                "com/fr/bi/web/js/modules/filter/filteritems/formula/item.formula.js",
-                "com/fr/bi/web/js/modules/filter/filteritems/formula/item.emptyformula.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.formula.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/target/item.formula.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.emptyformula.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/target/item.emptyformula.js",
 
                 "com/fr/bi/web/js/modules/filter/filteritems/generalquery/item.generalquery.notypefilter.js",
 
