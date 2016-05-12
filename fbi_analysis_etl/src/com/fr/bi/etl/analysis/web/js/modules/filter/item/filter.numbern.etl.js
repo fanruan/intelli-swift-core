@@ -82,16 +82,17 @@ BI.ETLNumberNFilterPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         self.groupContainer.empty();
         if (self.combo.getValue() == BICst.ETL_FILTER_NUMBER_N_TYPE.INNER_GROUP){
-            self.group = BI.createWidget({
+            var op ={
                 type :'bi.filter_etl_group_setting',
-                fields : o.fields,
                 field_name : o.field_name,
                 filterType : o.filterType,
                 value : BI.deepClone(self.storedValue.group),
                 nValueGetter : function (){
                     return self.storedValue.value
                 }
-            })
+            }
+            op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+            self.group = BI.createWidget(op)
             self.group.on(BI.ETLGroupSettingPane.EVENT_VALUE_CHANGED, function () {
                 self.storedValue.group = self.group.getValue();
                 self.fireEvent(BI.ETLNumberNFilterPane.EVENT_CONFIRM)

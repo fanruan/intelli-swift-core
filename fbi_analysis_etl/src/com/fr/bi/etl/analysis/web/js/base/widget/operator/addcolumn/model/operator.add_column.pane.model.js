@@ -79,7 +79,7 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
     update : function () {
         var v = BI.AnalysisETLOperatorAddColumnPaneModel.superclass.update.apply(this, arguments);
         v.etlType = ETLCst.ETL_TYPE.ADD_COLUMN;
-        v.fields = this.createFields();
+        v[ETLCst.FIELDS] = this.createFields();
         v.operator = {};
         v.operator[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY] = v[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY];
         delete v[BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY];

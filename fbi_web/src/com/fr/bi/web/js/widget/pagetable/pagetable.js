@@ -203,7 +203,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.PageTable.EVENT_COLUMN_RESIZE);
+            self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
         this.pager = BI.createWidget(o.pager, {
             type: "bi.number_pager",
@@ -351,6 +351,6 @@ BI.PageTable = BI.inherit(BI.Widget, {
     }
 });
 BI.PageTable.EVENT_CHANGE = "PageTable.EVENT_CHANGE";
-BI.PageTable.EVENT_COLUMN_RESIZE = "PageTable.EVENT_COLUMN_RESIZE";
+BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE = "PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE";
 BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE = "PageTable.EVENT_TABLE_AFTER_REGION_RESIZE";
 $.shortcut('bi.page_table', BI.PageTable);

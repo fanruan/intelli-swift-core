@@ -20,10 +20,11 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
     _initView: function () {
         var o = this.options;
         var self = this;
-        this.items_group = BI.createWidget({
-            type:"bi.group_select_fields_item_group",
-            fields: []
-        })
+        var group = {
+            type:"bi.group_select_fields_item_group"
+        };
+        group[ETLCst.FIELDS] = [];
+        this.items_group = BI.createWidget(group)
         this.items_group.on(BI.SelectSingleTableField.EVENT_CHANGE, function () {
 
         });

@@ -61,7 +61,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             var columnSize = this.getCalculateRegionColumnSize();
             self.model.setStoredRegionColumnSize(columnSize[0]);
         });
-        this.table.on(BI.PageTable.EVENT_COLUMN_RESIZE, function () {
+        this.table.on(BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: this.getColumnSize()})});
         });
         if (this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_NEXT || this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_PRE) {
