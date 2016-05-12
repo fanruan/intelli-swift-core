@@ -195,6 +195,10 @@
             return views[tableId];
         },
 
+        getPreviewTableDataByTableId: function (tableId, callback) {
+            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
+        },
+
         /**
          * 字段相关
          */
@@ -275,6 +279,16 @@
             if (BI.isNotNull(widget)) {
                 return Data.SharingPool.get("widgets", wid, "value");
             }
+        },
+
+        getAllLinkageFromIdsByID: function (wid) {
+            var self = this, fromIds = [];
+            var linkages = this.getWidgetLinkageByID(wid);
+            BI.each(linkages, function (i, link) {
+                fromIds.push(link.from);
+                fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
+            });
+            return fromIds;
         },
 
         isControlWidgetByWidgetId: function (wid) {
@@ -873,18 +887,17 @@
         },
 
         getNoGroupedDataByDimensionID: function (dId, callback) {
-            var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
             dimension.group = {type: BICst.GROUP.ID_GROUP};
-            var widget = Data.SharingPool.get("widgets", wid);
-            widget.page = -1;
-            widget.dimensions = {};
-            widget.dimensions[dId] = dimension;
-            widget.view = {};
-            widget.view[BICst.REGION.DIMENSION1] = [dId];
-            Data.Req.reqWidgetSettingByData({widget: widget}, function (data) {
+            dimension.filter_value = {};
+            var dimensions = {};
+            dimensions[dId] = dimension;
+            var view = {};
+            view[BICst.REGION.DIMENSION1] = [dId];
+            this.getWidgetDataByWidgetInfo(dimensions, view, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             });
+
         },
 
         getDataByDimensionID: function (dId, callback) {
@@ -899,16 +912,6 @@
             Data.Req.reqWidgetSettingByData({widget: widget}, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             });
-        },
-
-        getAllLinkageFromIdsByID: function (wid) {
-            var self = this, fromIds = [];
-            var linkages = this.getWidgetLinkageByID(wid);
-            BI.each(linkages, function (i, link) {
-                fromIds.push(link.from);
-                fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
-            });
-            return fromIds;
         },
 
         getWidgetDataByDimensionInfo: function (src, options) {
@@ -1263,10 +1266,9 @@
             });
         },
 
-        getPreviewTableDataByTableId: function (tableId, callback) {
-            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
-        },
-
+        /**
+         * 组件与表的关系
+         */
         broadcastAllWidgets2Refresh: function (force) {
             var self = this;
             var allWidgetIds = this.getAllWidgetIDs();
@@ -1279,9 +1281,6 @@
             }
         },
 
-        /**
-         * 组件与表的关系
-         */
         isTableUsableByWidgetID: function (tableId, wId) {
             var self = this;
             var dIds = this.getAllDimensionIDs(wId);
