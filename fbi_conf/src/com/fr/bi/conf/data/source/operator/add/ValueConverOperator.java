@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -44,6 +45,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         item.put("field", field);
         item.put("field_type", columnType);
         jo.put("item", item);
+        jo.put("add_column_type", BIJSONConstant.ETL_ADD_COLUMN_TYPE.VALUE_CONVERT);
         return jo;
     }
 

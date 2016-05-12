@@ -67,8 +67,10 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
     public JSONObject createJSON(Locale locale) throws Exception {
         JSONObject jo = new JSONObject();
         JSONObject pack = getPack().createJSON();
-        pack.put("name", Inter.getLocText(PACK_NAME, locale));
-        jo.put(PACK_ID, pack);
+        if (pack.getJSONArray("tables").length() > 0){
+            pack.put("name", Inter.getLocText(PACK_NAME, locale));
+            jo.put(PACK_ID, pack);
+        }
         return jo;
     }
 

@@ -10,6 +10,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -20,8 +21,8 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     private long userId;
 
 
-    public UserETLTableSource(List<IETLOperator> oprators, List<UserTableSource> parents, long userId) {
-        super(oprators, parents);
+    public UserETLTableSource(List<IETLOperator> operators, List<UserTableSource> parents, long userId) {
+        super(operators, parents);
         this.userId = userId;
     }
 
@@ -40,7 +41,13 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
      */
     @Override
     public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
-        return 0;
+        Iterator<IETLOperator> it = oprators.iterator();
+        long index = 0;
+        while (it.hasNext()) {
+            IETLOperator op = it.next();
+            index = op.writeSimpleIndex(travel, parents, loader);
+        }
+        return index;
     }
 
     /**

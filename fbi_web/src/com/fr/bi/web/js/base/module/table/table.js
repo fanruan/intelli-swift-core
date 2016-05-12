@@ -315,6 +315,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     },
                     stop: function (e, ui) {
                         self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
+                        return false;
                     }
                 };
                 self.bottomRight.element.resizable(options);
@@ -340,6 +341,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     },
                     stop: function (e, ui) {
                         self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
+                        return false;
                     }
                 };
                 self.bottomLeft.element.resizable(options);
@@ -619,6 +621,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     td.resizable({
                         handles: "e",
                         minWidth: 15,
+                        helper: "bi-resizer",
                         start: function (event, ui) {
                             self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE);
                         },
@@ -630,7 +633,11 @@ BI.Table = BI.inherit(BI.Widget, {
                             return false;
                         },
                         stop: function (e, ui) {
+                            o.columnSize[start + j] = ui.size.width;
+                            self.setColumnSize(o.columnSize);
+                            e.stopPropagation();
                             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
+                            return false;
                         }
                     })
                 }

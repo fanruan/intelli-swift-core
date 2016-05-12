@@ -130,7 +130,7 @@ BI.extend(BI.Utils, {
                 field_type:item.field_type,
                 field_id:item.field_id,
                 filterValueGetter : filterValueGetter,
-                fields : model["fields"]
+                fields : model[ETLCst.FIELDS]
             });
             BI.each(BI.range(0 ,10), function(i){
                 if(BI.isNull(items[i])){

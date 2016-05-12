@@ -134,7 +134,7 @@ public class TableFilterOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         return ti.getRowCount();
     }
