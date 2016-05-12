@@ -76,13 +76,15 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-            self._resizeHeader();
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
+            self._resizeHeader(function () {
+                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
+            });
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-            self._resizeHeader();
             self._resizeRegion();
-            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
+            self._resizeHeader(function () {
+                self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
+            });
         });
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
@@ -91,11 +93,16 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_REGION_RESIZE, function () {
-            self._resizeHeader();
+            //important:在冻结并自适应列宽的情况下要随时变更表头宽度
+            if (o.isNeedResize === true && self._isAdaptiveColumn()) {
+                self._resizeHeader();
+            }
             self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
+            self._resizeHeader(function () {
+                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
+            });
         });
 
         this.table.on(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE, function () {
@@ -107,8 +114,9 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self._resizeRegion();
-            self._resizeHeader();
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
+            self._resizeHeader(function () {
+                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
+            });
         });
 
         if (o.isNeedFreeze === true) {
@@ -167,13 +175,15 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         return !(BI.last(columnSize || this.table.getColumnSize()) > 1.05);
     },
 
-    _resizeHeader: function () {
-        var o = this.options;
+    _resizeHeader: function (callback) {
+        callback || (callback = BI.emptyFn);
+        var self = this, o = this.options;
         if (o.isNeedFreeze === true) {
             //若是当前处于自适应调节阶段
             if (this._isAdaptiveColumn()) {
                 var columnSize = this.table.getCalculateColumnSize();
                 this.table.setHeaderColumnSize(columnSize);
+                callback();
             } else {
                 var regionColumnSize = this.table.getClientRegionColumnSize();
                 var block = this._getBlockSize();
@@ -186,16 +196,19 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
                 newLeft[newLeft.length - 1] = "";
                 newRight[newRight.length - 1] = "";
                 this.setColumnSize(newLeft.concat(newRight));
-                block = this._getBlockSize();
 
-                if (columnSizeLeft[columnSizeLeft.length - 1] < block.left[block.left.length - 1]) {
-                    columnSizeLeft[columnSizeLeft.length - 1] = block.left[block.left.length - 1]
-                }
-                if (columnSizeRight[columnSizeRight.length - 1] < block.right[block.right.length - 1]) {
-                    columnSizeRight[columnSizeRight.length - 1] = block.right[block.right.length - 1]
-                }
+                BI.delay(function () {
+                    block = self._getBlockSize();
+                    if (columnSizeLeft[columnSizeLeft.length - 1] < block.left[block.left.length - 1]) {
+                        columnSizeLeft[columnSizeLeft.length - 1] = block.left[block.left.length - 1]
+                    }
+                    if (columnSizeRight[columnSizeRight.length - 1] < block.right[block.right.length - 1]) {
+                        columnSizeRight[columnSizeRight.length - 1] = block.right[block.right.length - 1]
+                    }
 
-                this.setColumnSize(columnSizeLeft.concat(columnSizeRight));
+                    self.setColumnSize(columnSizeLeft.concat(columnSizeRight));
+                    callback();
+                }, 100);
             }
         } else {
             if (!this._isAdaptiveColumn()) {
@@ -215,6 +228,9 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
                     size[size.length - 1] = block.size[block.size.length - 1]
                 }
                 this.setColumnSize(size);
+                callback();
+            } else {
+                callback();
             }
         }
     },
