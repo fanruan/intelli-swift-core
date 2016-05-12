@@ -32,7 +32,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isFieldValid())
     },
 
-    _check : function (widget, model) {
+    _doModelCheck : function (widget, model) {
         var parent = model.get(ETLCst.PARENTS)[0];
         var view = model.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
         var dimensions = model.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
@@ -65,6 +65,11 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
             })
         }
         model.setValid(!found);
+        return found;
+    },
+
+    _check : function (widget, model) {
+        var found = this._doModelCheck(widget, model)
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
         } else {
@@ -106,6 +111,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
 
     setDimensionGroupById : function (id, group, widget, model) {
         model.setDimensionGroupById(id, group)
+        this._doModelCheck(widget, model)
         this._refreshPreview(widget, model);
     },
 
@@ -128,6 +134,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
     deleteDimension: function (dId,  widget, model) {
         model.deleteDimension(dId);
         this.doCheck(widget, model)
+        this._doModelCheck(widget, model)
         this._refreshPreview(widget, model);
     },
     
