@@ -14,7 +14,8 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
 
     _selectLastTab : function(widget, model) {
         var items = model.getValue(ETLCst.ITEMS)
-        this._selectTabByIndex(items.length - 1, widget, model)
+        var validIndex = model.get('invalidIndex');
+        this._selectTabByIndex(Math.min(validIndex, items.length - 1), widget, model)
     },
 
     _selectTabByIndex : function (index, widget, model) {
@@ -124,8 +125,13 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             var items = model.get(ETLCst.ITEMS);
             for(var i = index; i < items.length; i++) {
                 var btn = widget.tabButton.getButton(items[i].value);
+                model.setFields(items[i].value, []);
                 btn.setValid(false);
                 btn.setTitle(title);
+                btn.setWarningTitle(title);
+                if(i > index) {
+                    btn.setEnable(false);
+                }
             }
         }
     },
@@ -138,6 +144,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             for(var i = index; i < items.length; i++) {
                 var btn = widget.tabButton.getButton(items[i].value);
                 btn.setValid(true);
+                btn.setEnable(true);
                 btn.setTitle(btn.getText());
             }
             model.set('invalidIndex', Number.MAX_VALUE);
@@ -187,6 +194,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         var deletePos = model.removeItemFromValue(id);
         this._getTabButtonGroup(widget).deleteFromPosition(deletePos)
         this._selectLastTab(widget, model);
+        widget.fireEvent(BI.HistoryTab.VALID_CHANGE)
     },
 
     _addNewButtonAfterPos : function(item, index, widget, model) {
@@ -208,8 +216,8 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
                 }
                 return;
             }
-            BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), BI.i18nText("BI-Confirm_Delete_Etl_History"), function (v) {
-                if(v === true) {
+            BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), BI.i18nText("BI-Confirm_Delete_Etl_History"), function (res) {
+                if(res === true) {
                     self._removeSheet(v, widget, model)
                 }
             })

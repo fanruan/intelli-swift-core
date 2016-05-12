@@ -182,6 +182,12 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
 
     },
 
+    setTabValid : function (v, widget, model) {
+        var isValid = model.get(v).isModelValid();
+        var button = widget.tabButton.getButton(v);
+        button.setValid(isValid)
+    },
+
     saveMergeSheet : function (v, widget, model) {
         var sheets = v["sheets"];
         var self = this;
