@@ -194,6 +194,10 @@
             var views = Pool.excel_views;
             return views[tableId];
         },
+        
+        getPreviewTableDataByTableId: function (tableId, callback) {
+            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
+        },
 
         /**
          * 字段相关
@@ -275,6 +279,16 @@
             if (BI.isNotNull(widget)) {
                 return Data.SharingPool.get("widgets", wid, "value");
             }
+        },
+
+        getAllLinkageFromIdsByID: function (wid) {
+            var self = this, fromIds = [];
+            var linkages = this.getWidgetLinkageByID(wid);
+            BI.each(linkages, function (i, link) {
+                fromIds.push(link.from);
+                fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
+            });
+            return fromIds;
         },
 
         isControlWidgetByWidgetId: function (wid) {
@@ -901,16 +915,6 @@
             });
         },
 
-        getAllLinkageFromIdsByID: function (wid) {
-            var self = this, fromIds = [];
-            var linkages = this.getWidgetLinkageByID(wid);
-            BI.each(linkages, function (i, link) {
-                fromIds.push(link.from);
-                fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
-            });
-            return fromIds;
-        },
-
         getWidgetDataByDimensionInfo: function (src, options) {
             var name = "__StatisticWidget__" + BI.UUID();
             var data = {
@@ -1261,10 +1265,6 @@
             Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
                 callback(data);
             });
-        },
-
-        getPreviewTableDataByTableId: function (tableId, callback) {
-            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
         },
 
         broadcastAllWidgets2Refresh: function (force) {
