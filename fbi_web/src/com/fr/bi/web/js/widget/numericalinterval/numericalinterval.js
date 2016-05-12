@@ -342,6 +342,8 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
             })
         },
 
+        
+
         _setEditorValueChangedEvent: function (w) {
             var self = this, c = this.constants;
             w.on(BI.Editor.EVENT_CHANGE, function () {
