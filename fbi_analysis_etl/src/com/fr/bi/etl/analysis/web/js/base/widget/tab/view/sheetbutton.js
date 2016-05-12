@@ -37,7 +37,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             el: {
                 type: "bi.icon_trigger",
                 extraCls: "icon-analysis-table-set  icon-anamate",
-                width: o.height,
+                width: o.width,
                 height: o.height
             },
             popup: {
