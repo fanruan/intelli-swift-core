@@ -21,8 +21,9 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
 
     _render: function (vessel) {
         var self = this;
-        this.title = this._buildWidgetTitle();
-
+        this._buildWidgetTitle();
+        this._createTools();
+        
         this.combo = BI.createWidget({
             type: "bi.select_data_combo",
             wId: this.model.get("id")
@@ -33,76 +34,132 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         });
 
         this.widget = BI.createWidget({
-            type: "bi.vtape",
+            type: "bi.absolute",
             element: vessel,
             items: [{
-                el: this.title,
-                height: 32
+                el: this.tools,
+                top: 10
             }, {
-                type: "bi.vertical",
-                items: [this.combo]
+                el: this.title,
+                top: 10,
+                left: 10
+            }, {
+                el: this.combo,
+                top: 10,
+                right: 10
             }]
-        })
+        });
+        this.widget.element.hover(function(){
+            self.tools.setVisible(true);
+        }, function(){
+            self.tools.setVisible(false);
+        });
+        
     },
 
     _buildWidgetTitle: function () {
-        var self = this, o = this.options;
+        var self = this;
+        var id = this.model.get("id");
         if (!this.title) {
-            var text = this.title = BI.createWidget({
-                type: "bi.label",
-                cls: "dashboard-title-text",
-                text: BI.Utils.getWidgetNameByID(this.model.get("id")),
+            this.title = BI.createWidget({
+                type: "bi.shelter_editor",
+                cls: "dashboard-title-left",
+                value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 32
-            });
-
-            var combo = BI.createWidget({
-                type: "bi.widget_combo",
-                wId: this.model.get("id")
-            });
-            combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
-                switch (type) {
-                    case BICst.DASHBOARD_WIDGET_EXPAND:
-                        self._expandWidget();
-                        break;
-                    case BICst.DASHBOARD_CONTROL_RANG_ASC:
-                        self.model.set("changeSort", {type: BICst.SORT.ASC});
-                        break;
-                    case BICst.DASHBOARD_CONTROL_RANG_DESC:
-                        self.model.set("changeSort", {type: BICst.SORT.DESC});
-                        break;
-                    case BICst.DASHBOARD_CONTROL_CLEAR:
-                        self._resetValue();
-                        break;
-                    case BICst.DASHBOARD_WIDGET_RENAME:
-                        break;
-                    case BICst.DASHBOARD_WIDGET_COPY:
-                        self.model.copy();
-                        break;
-                    case BICst.DASHBOARD_WIDGET_DELETE:
-                        self.model.destroy();
-                        break;
+                height: 30,
+                allowBlank: false,
+                errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
+                validationChecker: function(v){
+                    return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
-
-            return BI.createWidget({
-                type: "bi.border",
-                cls: "dashboard-title",
-                items: {
-                    center: text,
-                    east: {
-                        el: BI.createWidget({
-                            type: "bi.center_adapt",
-                            cls: "operator-region",
-                            items: [combo]
-                        }),
-                        width: 32
-                    }
-                }
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function(){
+                self.model.set("name", this.getValue());
             });
         } else {
             this.title.setValue(BI.Utils.getWidgetNameByID(this.model.get("id")));
         }
+    },
+
+    _createTools: function(){
+        this.tools = BI.createWidget({
+            type: "bi.widget_combo",
+            cls: "operator-region",
+            wId: this.model.get("id")
+        });
+        this.tools.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
+            switch (type) {
+                case BICst.DASHBOARD_WIDGET_EXPAND:
+                    self._expandWidget();
+                    break;
+                case BICst.DASHBOARD_CONTROL_RANG_ASC:
+                    self.model.set("changeSort", {type: BICst.SORT.ASC});
+                    break;
+                case BICst.DASHBOARD_CONTROL_RANG_DESC:
+                    self.model.set("changeSort", {type: BICst.SORT.DESC});
+                    break;
+                case BICst.DASHBOARD_CONTROL_CLEAR:
+                    self._resetValue();
+                    break;
+                case BICst.DASHBOARD_WIDGET_RENAME:
+                    break;
+                case BICst.DASHBOARD_WIDGET_COPY:
+                    self.model.copy();
+                    break;
+                case BICst.DASHBOARD_WIDGET_DELETE:
+                    self.model.destroy();
+                    break;
+            }
+        });
+        this.tools.setVisible(false);
+    },
+
+    _refreshLayout: function(){
+        var self = this;
+        var bounds = this.model.get("bounds");
+        var height = bounds.height, width = bounds.width;
+        var widgetName = this.model.get("name");
+        // var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
+        var minComboWidth = 70;     //默认combo的最小宽度
+        var minNameWidth = 30;      //默认editor的最小宽度
+
+        var label = BI.createWidget({
+            type: "bi.label",
+            cls: "temp-label",
+            text: widgetName
+        });
+        BI.createWidget({
+            type: "bi.left",
+            element: this.element,
+            items: [label]
+        });
+        BI.defer(function(){
+            var nameWidth = label.element.width();
+            label.destroy();
+            if(height < 90) {
+                self.widget.attr("items")[0].left = 10;
+                self.widget.attr("items")[0].right = "";
+                self.widget.attr("items")[2].top = 10;
+                if(width < minComboWidth + minNameWidth) {
+                    self.combo.setVisible(false);
+                } else if(width < nameWidth) {
+                    self.combo.setVisible(true);
+                    self.widget.attr("items")[1].right = minComboWidth + 10;
+                    self.widget.attr("items")[2].left = width - 10 - minComboWidth;
+                } else {
+                    self.combo.setVisible(true);
+                    self.widget.attr("items")[1].right = width - 30 - nameWidth;
+                    self.widget.attr("items")[2].left = 30 + nameWidth;
+                }
+            } else {
+                self.widget.attr("items")[0].left = "";
+                self.widget.attr("items")[0].right = 10;
+                self.widget.attr("items")[1].right = 10;
+                self.widget.attr("items")[2].top = 50;
+                self.widget.attr("items")[2].left = 10;
+            }
+            self.widget.resize();
+        });
     },
 
     _expandWidget: function () {
@@ -130,7 +187,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
 
     change: function (changed) {
         if(BI.has(changed, "bounds")) {
-
+            this._refreshLayout();
         }
         if(BI.has(changed, "value")) {
             BI.Utils.broadcastAllWidgets2Refresh();
@@ -142,6 +199,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
+        this._refreshLayout();
         this._buildWidgetTitle();
         this.combo.setValue(this.model.get("value"));
     }

@@ -55,7 +55,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this._createTools();
         this.widget = BI.createWidget({
             type: "bi.absolute",
-            element: this.element,
+            element: vessel,
             items: [{
                 el: this.tools,
                 top: 0,
@@ -73,7 +73,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 bottom: 10
             }]
         });
-        this.element.hover(function(){
+        this.widget.element.hover(function(){
             self.tools.setVisible(true);
         }, function(){
             self.tools.setVisible(false);
