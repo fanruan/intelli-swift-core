@@ -66,6 +66,7 @@ BI.each(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP, function(idx, item){
     ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[item["value"]] = item;
 });
 ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL = null;
+ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR = "error";
 
 ETLCst.ANALYSIS_ADD_COLUMN_TYPE = [[{
     text:BI.i18nText("BI-Formula"),

@@ -16,7 +16,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         widget.allColumnsPane.populate(model.getAddColumns())
         widget.card.showCardByName(cardName);
         this.doCheck(widget);
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
     },
     
     doCheck : function (widget) {
@@ -63,9 +63,13 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
                     })
             }
         })
+        model.setValid(!found)
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
+        } else {
+            model.set(ETLCst.FIELDS, [])
         }
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !found);
     },
 
     _checkField : function (widget, dates, fields, columnName, type) {
