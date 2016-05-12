@@ -43,9 +43,8 @@ public class BITopicTag implements ITopicTag {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("BITopicTag{");
-        sb.append("topicID=").append(topicID);
-        sb.append('}');
+        final StringBuffer sb = new StringBuffer();
+        sb.append(topicID);
         return sb.toString();
     }
 }

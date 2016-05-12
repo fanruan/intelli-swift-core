@@ -39,7 +39,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
             groupValueSearchAssistance = new GroupValueSearchAssistance();
 
         } catch (Exception e) {
-            BINonValueUtils.beyondControl(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 

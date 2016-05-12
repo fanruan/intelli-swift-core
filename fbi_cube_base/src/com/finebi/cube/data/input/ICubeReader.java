@@ -16,4 +16,8 @@ public interface ICubeReader<T> extends Release {
     long getLastPosition(long rowCount);
 
     boolean canRead();
+
+    void forceRelease();
+
+    boolean isForceReleased();
 }

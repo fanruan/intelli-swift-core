@@ -9,7 +9,8 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
             type: BICst.Widget.TREE,
             dimensions: {},
             view: {},
-            value: {}
+            value: {},
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 
@@ -55,6 +56,16 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
         });
     },
     local: function () {
+        if(this.has("changeSort")){
+            var dimensions = this.get("dimensions");
+            var key = BI.keys(dimensions)[0];
+            if(BI.isNotNull(key)){
+                var sort = this.get("changeSort");
+                dimensions[key].sort = {type: sort.type, target_id: key};
+                this.set("dimensions", dimensions);
+            }
+            return true;
+        }
         return false;
-    },
+    }
 });

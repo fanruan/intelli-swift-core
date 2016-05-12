@@ -24,9 +24,8 @@ public class BIMessageTopic implements IMessageTopic {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("BIMessageTopic{");
-        sb.append("topicTag=").append(topicTag);
-        sb.append('}');
+        final StringBuffer sb = new StringBuffer();
+        sb.append(topicTag);
         return sb.toString();
     }
 }

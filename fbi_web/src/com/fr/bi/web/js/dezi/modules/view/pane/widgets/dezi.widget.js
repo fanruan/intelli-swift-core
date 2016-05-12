@@ -73,43 +73,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 height: 32
             });
 
-            var filter = BI.createWidget({
-                type: "bi.icon_button",
-                cls: "filter-font dashboard-title-filter",
-                width: 32,
-                height: 32
-            });
-            filter.on(BI.IconButton.EVENT_CHANGE, function () {
-                if (BI.isNull(self.filterPane)) {
-                    self.filterPane = BI.createWidget({
-                        type: "bi.widget_filter",
-                        wId: self.model.get("id")
-                    });
-                    self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
-                        self.model.set(widget);
-                    });
-                    BI.createWidget({
-                        type: "bi.absolute",
-                        element: self.$vessel,
-                        items: [{
-                            el: self.filterPane,
-                            top: 32,
-                            left: 0,
-                            right: 0,
-                            bottom: 0
-                        }]
-                    });
-                    return;
-                }
-                self.filterPane.setVisible(!self.filterPane.isVisible());
-            });
-
-
             var expand = BI.createWidget({
                 type: "bi.icon_button",
                 width: 32,
                 height: 32,
-                cls: "dashboard-widget-combo-detail-set-font dashboard-title-detail"
+                cls: "widget-combo-detail-font dashboard-title-detail"
             });
             expand.on(BI.IconButton.EVENT_CHANGE, function () {
                 self._expandWidget();
@@ -117,17 +85,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
             var combo = BI.createWidget({
                 type: "bi.widget_combo",
-                widgetType: BICst.Widget.TABLE
+                wId: this.model.get("id")
             });
             combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
                 switch (type) {
-                    case BICst.DASHBOARD_WIDGET_DELETE:
-                        self.model.destroy();
-                        break;
-                    case BICst.DASHBOARD_WIDGET_EXPAND:
-                        self._expandWidget();
-                        break;
-                    case BICst.DASHBOARD_WIDGET_DRILL:
+                    case BICst.DASHBOARD_WIDGET_LINKAGE:
                         var layer = BI.Layers.make(self.getName(), "body");
                         var linkage = BI.createWidget({
                             type: "bi.linkage",
@@ -145,12 +107,52 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                         linkage.populate();
                         BI.Layers.show(self.getName());
                         break;
-                    case BICst.DASHBOARD_DETAIL_WIDGET_DRILL:
+                    case BICst.DASHBOARD_WIDGET_SHOW_NAME:
+                        var settings = self.model.get("settings");
+                        settings.show_name = !settings.show_name;
+                        self.model.set("settings", settings);
+                        break;
+                    case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
+                        var settings = self.model.get("settings");
+                        settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
+                        self.model.set("settings", settings);
+                        break;
+                    case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
+                        var settings = self.model.get("settings");
+                        settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
+                        self.model.set("settings", settings);
+                        break;
+                    case BICst.DASHBOARD_WIDGET_FILTER:
+                        if (BI.isNull(self.filterPane)) {
+                            self.filterPane = BI.createWidget({
+                                type: "bi.widget_filter",
+                                wId: self.model.get("id")
+                            });
+                            self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
+                                self.model.set(widget);
+                            });
+                            BI.createWidget({
+                                type: "bi.absolute",
+                                element: self.$vessel,
+                                items: [{
+                                    el: self.filterPane,
+                                    top: 32,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0
+                                }]
+                            });
+                            return;
+                        }
+                        self.filterPane.setVisible(!self.filterPane.isVisible());
                         break;
                     case BICst.DASHBOARD_WIDGET_EXCEL:
                         break;
                     case BICst.DASHBOARD_WIDGET_COPY:
                         self.model.copy();
+                        break;
+                    case BICst.DASHBOARD_WIDGET_DELETE:
+                        self.model.destroy();
                         break;
                 }
             });
@@ -164,9 +166,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                         el: BI.createWidget({
                             type: "bi.center_adapt",
                             cls: "operator-region",
-                            items: [filter, expand, combo]
+                            items: [expand, combo]
                         }),
-                        width: 96
+                        width: 64
                     }
                 }
             });

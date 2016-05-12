@@ -6,7 +6,8 @@ BIDezi.DateWidgetModel = BI.inherit(BI.Model, {
             type: BICst.Widget.YMD,
             dimensions: {},
             view: {},
-            value: {}
+            value: {},
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 
