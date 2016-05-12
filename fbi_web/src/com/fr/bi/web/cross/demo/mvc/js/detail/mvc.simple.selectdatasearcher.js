@@ -10,7 +10,7 @@ SimpleSelectDataSearcherView = BI.inherit(BI.View, {
     },
 
     _createSearcher: function () {
-        return BI.createWidget({
+        var seacher = BI.createWidget({
             type: "bi.simple_select_data_searcher",
             width: 200,
             height: 600,
@@ -29,15 +29,13 @@ SimpleSelectDataSearcherView = BI.inherit(BI.View, {
                             type: "bi.select_data_level0_node",
                             text: "合同回款信息--" + packageName,
                             value: 1,
-                            isParent: true,
-                            open: true
+                            isParent: true
                         }, {
                             id: 2,
                             type: "bi.select_data_level0_node",
                             text: "合同信息--" + packageName,
                             value: 2,
-                            isParent: true,
-                            open: true
+                            isParent: true
                         }
                     ]);
                     return;
@@ -141,6 +139,8 @@ SimpleSelectDataSearcherView = BI.inherit(BI.View, {
                 }
             }
         });
+        seacher.populate();
+        return seacher;
     },
 
     _render: function (vessel) {

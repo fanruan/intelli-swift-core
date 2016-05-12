@@ -195,6 +195,10 @@
             return views[tableId];
         },
 
+        getPreviewTableDataByTableId: function (tableId, callback) {
+            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
+        },
+
         /**
          * 字段相关
          */
@@ -289,12 +293,22 @@
 
         getWidgetNamePostionByID: function(wid) {
             var widget = Data.SharingPool.get("widgets", wid);
-            if(BI.isNotNull(widget)) {
+            if (BI.isNotNull(widget)) {
                 var settings = widget.settings;
-                if(BI.isNotNull(settings)) {
+                if (BI.isNotNull(settings)) {
                     return settings.name_pos
                 }
             }
+        },
+
+        getAllLinkageFromIdsByID: function (wid) {
+            var self = this, fromIds = [];
+            var linkages = this.getWidgetLinkageByID(wid);
+            BI.each(linkages, function (i, link) {
+                fromIds.push(link.from);
+                fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
+            });
+            return fromIds;
         },
 
         isControlWidgetByWidgetId: function (wid) {
@@ -920,16 +934,6 @@
             });
         },
 
-        getAllLinkageFromIdsByID: function (wid) {
-            var self = this, fromIds = [];
-            var linkages = this.getWidgetLinkageByID(wid);
-            BI.each(linkages, function (i, link) {
-                fromIds.push(link.from);
-                fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
-            });
-            return fromIds;
-        },
-
         getWidgetDataByDimensionInfo: function (src, options) {
             var name = "__StatisticWidget__" + BI.UUID();
             var data = {
@@ -1316,10 +1320,9 @@
             });
         },
 
-        getPreviewTableDataByTableId: function (tableId, callback) {
-            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
-        },
-
+        /**
+         * 组件与表的关系
+         */
         broadcastAllWidgets2Refresh: function (force) {
             var self = this;
             var allWidgetIds = this.getAllWidgetIDs();
@@ -1332,9 +1335,6 @@
             }
         },
 
-        /**
-         * 组件与表的关系
-         */
         isTableUsableByWidgetID: function (tableId, wId) {
             var self = this;
             var dIds = this.getAllDimensionIDs(wId);
