@@ -36,4 +36,14 @@ public class BICubePrimitiveReaderWrapper<T> implements ICubeReader<T> {
     public boolean canRead() {
         return reader.canReader();
     }
+
+    @Override
+    public void forceRelease() {
+        reader.forceRelease();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return reader.isForceReleased();
+    }
 }

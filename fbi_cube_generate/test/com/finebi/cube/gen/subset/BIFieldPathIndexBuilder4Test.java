@@ -26,5 +26,8 @@ public class BIFieldPathIndexBuilder4Test extends BIFieldPathIndexBuilder {
 //            e.printStackTrace();
 //        }
         return null;
+    }    @Override
+    public void release() {
+
     }
 }
