@@ -82,7 +82,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _init: function(){
         BI.CountTargetCombo.superclass._init.apply(this, arguments);
-        this.field_id = BI.Utils.getFieldIDByDimensionID(o.dId);
+        this.field_id = BI.Utils.getFieldIDByDimensionID(this.options.dId);
     },
 
     _rebuildItems: function(){
