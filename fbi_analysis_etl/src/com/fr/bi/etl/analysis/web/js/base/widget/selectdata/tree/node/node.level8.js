@@ -58,7 +58,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
         })
 
         this.settingIcon.on(BI.DownListCombo.EVENT_CHANGE, function(v){
-            self.controller.afterClickList(v);
+            self.controller.afterClickList(v, o);
         });
 
         this.settingIcon.element.click(function(e){
