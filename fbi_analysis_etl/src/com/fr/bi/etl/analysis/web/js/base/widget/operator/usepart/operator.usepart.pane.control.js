@@ -39,14 +39,14 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
     update : function (widget, model) {
         var newFields = [];
         var value = widget.fieldList.getValue();
-        BI.each(model.get(ETLCst.PARENTS)[0].fields, function (i, item) {
+        BI.each(model.get(ETLCst.PARENTS)[0][ETLCst.FIELDS], function (i, item) {
             if (BI.indexOf(value.assist, item.field_name) > -1){
                 newFields.push(item);
             }
         })
         var table = model.update();
         table.etlType = ETLCst.ETL_TYPE.USE_PART_FIELDS;
-        table.fields = newFields;
+        table[ETLCst.FIELDS] = newFields;
         table.operator = value;
         return table;
     },

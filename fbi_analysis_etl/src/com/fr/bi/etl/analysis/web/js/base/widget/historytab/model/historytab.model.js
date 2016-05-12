@@ -92,7 +92,7 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
 
     setFields : function(v, fields){
         var item = this.findItem(v);
-        item.fields = fields;
+        item[ETLCst.FIELDS] = fields;
     },
 
     getOperatorType : function (v) {
