@@ -2,7 +2,7 @@ BI.AnalysisETLOperatorMergeSheetPaneController = BI.inherit(BI.MVCController, {
     
     
     populate : function (widget, model) {
-        var tables = model.getTablesBySheetId();
+        var tables = model.get(ETLCst.PARENTS);
         widget.table.empty();
         widget.table.populate(widget.createTable(tables));
         widget.mergeFields.populate(widget.createCell(model.getMergeFieldsName(), "cell"), widget.createCell([[tables[0].table_name,tables[1].table_name]], "header"))
@@ -29,7 +29,7 @@ BI.AnalysisETLOperatorMergeSheetPaneController = BI.inherit(BI.MVCController, {
             }),
             controller : {
                 saveHandler : function(v) {
-                    var oldSheets = model.getValue("sheets");
+                    var oldSheets = model.getSheets();
                     if(BI.isFunction(self.options.setSheetName)){
                         self.options.setSheetName(v["name"])
                     };
