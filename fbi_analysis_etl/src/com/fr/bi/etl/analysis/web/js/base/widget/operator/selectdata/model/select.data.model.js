@@ -22,7 +22,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
                     "field_type" : field_type,
                     "id": dim["_src"]["field_id"],
                     "uid" : item,
-                    "group" : group
+                    "group" : BI.isNull(group) ? null : group["type"]
                 })
             })
         }
