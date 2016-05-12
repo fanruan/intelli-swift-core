@@ -132,6 +132,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             });
         });
         this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
+            //important:关闭弹出时又可能没有退出编辑状态
             self.trigger.stopEditing();
             self.fireEvent(BI.MultiSelectCombo.EVENT_CONFIRM);
         });

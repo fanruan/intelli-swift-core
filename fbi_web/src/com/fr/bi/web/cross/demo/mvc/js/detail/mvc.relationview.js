@@ -51,6 +51,9 @@ RelationviewView = BI.inherit(BI.View, {
                 {
                     primary: {region: "X", value: "x2", text: "x2字段"},
                     foreign: {region: "B", value: "b1", text: "b1字段"}
+                },
+                {
+                    primary: {region: "X33", value: "x233", text: "x233字段"},
                 }
             ]
         });

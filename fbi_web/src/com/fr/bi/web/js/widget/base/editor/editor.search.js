@@ -117,7 +117,7 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         })
         this.editor.on(BI.Editor.EVENT_STOP, function () {
             self.fireEvent(BI.SearchEditor.EVENT_STOP);
-        })
+        });
 
         this.clear.invisible();
     },
@@ -130,6 +130,14 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         }
     },
 
+    focus: function () {
+        this.editor.focus();
+    },
+
+    blur: function () {
+        this.editor.blur();
+    },
+
     getValue: function () {
         if (this.isValid()) {
             var res = this.editor.getValue().match(/[\S]+/g);
@@ -137,18 +145,27 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         }
     },
 
-
     setValue: function (v) {
         this.editor.setValue(v);
         if (BI.isKey(v)) {
             this.clear.visible();
         }
     },
+
+    setValid: function (b) {
+        this.editor.setValue(b);
+    },
+
     isValid: function () {
         return this.editor.isValid();
-    }
+    },
 
-})
+    setEnable: function (b) {
+        BI.Editor.superclass.setEnable.apply(this, arguments);
+        this.editor && this.editor.setEnable(b);
+        this.clear.setEnable(b);
+    }
+});
 BI.SearchEditor.EVENT_CHANGE = "EVENT_CHANGE";
 BI.SearchEditor.EVENT_FOCUS = "EVENT_FOCUS";
 BI.SearchEditor.EVENT_BLUR = "EVENT_BLUR";

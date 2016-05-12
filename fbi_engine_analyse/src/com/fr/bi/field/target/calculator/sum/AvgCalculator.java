@@ -23,7 +23,7 @@ public class AvgCalculator extends FormulaCalculator {
 
     public AvgCalculator(BISummaryTarget target) {
         this.sum = new SumCalculator(target);
-        this.count = new CountCalculator(target, target.getValue());
+        this.count = new CountCalculator(target, target.getStatisticElement().getFieldName());
     }
 
 
@@ -56,7 +56,7 @@ public class AvgCalculator extends FormulaCalculator {
             double s = sum.doubleValue();
             double c = count.doubleValue();
             value = new Double(s / c);
-            node.setSummaryValue(createTargetKey(), value);
+            node.setSummaryValue(createTargetGettingKey(), value);
         }
         for (int i = 0, len = node.getChildLength(); i < len; i++) {
             calCalculateTarget(node.getChild(i));

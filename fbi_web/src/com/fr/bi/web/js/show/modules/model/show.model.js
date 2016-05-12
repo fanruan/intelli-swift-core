@@ -18,7 +18,21 @@ BIShow.Model = BI.inherit(BI.Model, {
         Data.SharingPool.put("reportName", this.get('reportName'));
         Data.SharingPool.put("reportId", this.get('reportId'));
         Data.SharingPool.put("sessionID", this.get('sessionID'));
-    }
 
-
+        this._initSessionBeater();
+    },
+    _initSessionBeater: function () {
+        setInterval(function () {
+            BI.requestAsync("fr_bi_dezi", "update_session", {
+                sessionID: Data.SharingPool.get("sessionID"),
+                _t: new Date()
+            }, BI.emptyFn);
+        }, 30000);
+        window.onbeforeunload = function () {
+            BI.requestSync("closesessionid", "", {
+                sessionID: Data.SharingPool.get("sessionID"),
+                _t: new Date()
+            })
+        };
+    },
 });

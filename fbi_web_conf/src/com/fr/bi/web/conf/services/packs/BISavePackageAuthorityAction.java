@@ -1,7 +1,8 @@
 package com.fr.bi.web.conf.services.packs;
 
-import com.fr.bi.cal.generate.CheckTask;
+import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -34,9 +35,36 @@ public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
      * @throws Exception
      */
     public void savePackageAuthority(String packageId, String roles, long userId) throws Exception {
-        JSONArray packIdjo = new JSONArray(packageId);
         JSONArray roleInfojo=new JSONArray(roles);
+        JSONArray packageIdjo=new JSONArray(packageId);
 
-        BIConfigureManagerCenter.getCubeManager().addTask(new CheckTask(userId), userId);
+        String[] rolesArray=new String[roleInfojo.length()];
+        for (int i = 0; i < roleInfojo.length(); i++) {
+            rolesArray[i]= String.valueOf(roleInfojo.getString(i));
+        }
+
+        BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
+
+
+        for (int i = 0; i < packageIdjo.length(); i++) {
+            BIPackAndAuthority biPackAndAuthority=new BIPackAndAuthority();
+            biPackAndAuthority.setBiPackageID( String.valueOf(packageIdjo.getString(i)));
+            biPackAndAuthority.setRoleIdArray(rolesArray);
+
+
+            boolean isExisted=packageAndAuthorityManager.containPackage(userId,biPackAndAuthority);
+            if(isExisted){
+            packageAndAuthorityManager.updateAuthority(userId,biPackAndAuthority);
+            }else {
+            packageAndAuthorityManager.addPackage(userId,biPackAndAuthority);
+            }
+
+
+        }
+
+
+        packageAndAuthorityManager.persistData(userId);
+
+
     }
 }

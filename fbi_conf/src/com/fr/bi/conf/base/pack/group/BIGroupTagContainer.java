@@ -101,11 +101,13 @@ public class BIGroupTagContainer extends BITreeMapContainer<BIGroupTagName, BIBu
     }
 
     @Override
-    public void createEmptyGroup(BIGroupTagName groupName) throws BIGroupDuplicateException {
+    public void createEmptyGroup(BIGroupTagName groupName, long position) throws BIGroupDuplicateException {
         synchronized (container) {
             BINonValueUtils.checkNull(groupName);
             if (!container.containsKey(groupName)) {
-                container.put(groupName, new BIBusinessGroup(groupName));
+                BIBusinessGroup group = new BIBusinessGroup(groupName);
+                group.setPosition(position);
+                container.put(groupName, group);
             } else {
                 throw new BIGroupDuplicateException("there have been same groupName in container.If want to add package,please use addPackage method to add package");
             }

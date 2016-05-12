@@ -62,7 +62,7 @@ public class ResourceHelper {
         JSONObject excelViews = new JSONObject();
         try {
             groups = BIConfigureManagerCenter.getPackageManager().createGroupJSON(userId);
-            packages = BIModuleUtils.createPackJSON(userId);
+            packages = BIModuleUtils.createPackJSON(userId, req.getLocale());
             translations = BIConfigureManagerCenter.getAliasManager().getTransManager(userId).createJSON();
             relations = BIConfigureManagerCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
@@ -276,6 +276,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.yearquarter.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.generalquery.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.string.detail.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.tree.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.year.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.yearmonth.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.yearquarter.detail.js",
@@ -291,6 +292,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.detail.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.string.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.tree.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.number.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.date.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.tree.dimension.js",
@@ -332,6 +334,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.detail.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.string.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.tree.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.number.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.date.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.tree.dimension.js",
@@ -426,6 +429,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/fieldrelationsetting/item.commontable.set.detailtable.css",
                 "com/fr/bi/web/css/modules/fieldrelationsetting/tab.path.setting.detailtable.css",
                 "com/fr/bi/web/css/modules/fieldrelationsetting/fieldrelationsettingpopup.css",
+
+                //下拉树控件字段关联设置
+                "com/fr/bi/web/css/modules/fieldrelationsettingwithpreviewpopup/fieldrelationsettingwithpreviewpopup.css",
 
                 "com/fr/bi/web/css/modules/relation/button.relationtable.field.css",
                 "com/fr/bi/web/css/modules/relation/widget.relationset.group.css",
@@ -610,6 +616,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/cubelog/nodes/node.wronginfo.cubelog.css",
                 "com/fr/bi/web/css/modules/cubelog/nodes/node.cubelog.css",
                 "com/fr/bi/web/css/modules/cubelog/tree.cubelog.css",
+                "com/fr/bi/web/css/modules/cubelog/cubelog.css",
 
                 //excel
                 "com/fr/bi/web/css/extend/excel/excel.upload.css",
@@ -638,6 +645,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
 
+                "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
+
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
                 "com/fr/bi/web/css/extend/excelview/excelview.css",
@@ -650,6 +659,22 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/excelviewsetting/excel/excelviewsetting.cell.css",
                 "com/fr/bi/web/css/extend/excelviewsetting/excel/excel.excelviewsetting.css",
                 "com/fr/bi/web/css/extend/excelviewsetting/excelviewsetting.css",
+
+
+
+                //详细设置相关模块(预览)
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/charttype.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.dimension.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.target.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regionsmanager.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/dimensionsmanager.css",
+
+                //更新设置
+                "com/fr/bi/web/css/extend/update/update.tabledata.css",
+                "com/fr/bi/web/css/extend/update/singletable/update.singletable.setting.css",
+                "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
+
         };
     }
 
@@ -670,15 +695,16 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/base/buttons/button.databasetable.js",
                 "com/fr/bi/web/js/modules/base/combos/widget.combo.js",
                 "com/fr/bi/web/js/modules/selectdatacombo/widget.selectdatacombo.js",
-                "com/fr/bi/web/js/modules/base/combos/abstract.dimension.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/abstract.dimensiontarget.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/dimension/abstract.dimension.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/widget.controldimension.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.stringdimension.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/dimension/widget.stringdimension.combo.js",
 
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.numberdimension.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.datedimension.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.target.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.count.target.combo.js",
-                "com/fr/bi/web/js/modules/base/combos/widget/widget.calculate.target.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/dimension/widget.numberdimension.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/dimension/widget.datedimension.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/target/widget.target.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/target/widget.count.target.combo.js",
+                "com/fr/bi/web/js/modules/base/combos/dimension/target/widget.calculate.target.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detailstring.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detailnumber.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detaildate.combo.js",
@@ -851,6 +877,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/fieldrelationsetting/fieldrelationsettingpopup.js",
                 "com/fr/bi/web/js/modules/fieldrelationsetting/model.fieldrelationsettingpopup.js",
 
+                //下拉树控件字段关联设置
+                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/fieldrelationsettingwithpreviewpopup.js",
+                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/model.fieldrelationsettingwithpreviewpopup.js",
+
                 //过滤条件
                 "com/fr/bi/web/js/modules/filter/filterpopup/targetfilterpopup.js",
                 "com/fr/bi/web/js/modules/filter/filterpopup/dimensionfilterpopup.js",
@@ -868,8 +898,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/target/widget.selectdata4targetcombo.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.numberfield.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.notypefield.js",
-                "com/fr/bi/web/js/modules/filter/filteritems/formula/item.formula.js",
-                "com/fr/bi/web/js/modules/filter/filteritems/formula/item.emptyformula.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.formula.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/target/item.formula.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.emptyformula.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/target/item.emptyformula.js",
 
                 "com/fr/bi/web/js/modules/filter/filteritems/generalquery/item.generalquery.notypefilter.js",
 
@@ -1138,6 +1170,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagetables.pane.js",
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagesearcher.resultpane.js",
 
+                //表关联视图
+                "com/fr/bi/web/js/modules/onepackage/onepackagerelationspane/tablerelations.pane.js",
+                "com/fr/bi/web/js/modules/onepackage/onepackagerelationspane/tablerelations.pane.model.js",
+
                 //自适应布局
                 //选组件
                 "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/pane.reuse.js",
@@ -1249,6 +1285,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.numberdimension.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.stringdimension.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.target.combo.show.js",
+
+                //实时报表进度条
+                "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",
+                //实时报表指示器
+                "com/fr/bi/web/js/modules4show/cubeprogressindicator/cubeprogressindicator.js",
 
                 //实时报表选择字段
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/abstract.node.level.js",
@@ -1566,6 +1607,10 @@ public class ResourceHelper {
                 //布局
                 "com/fr/bi/web/css/widget/arrangement/arrangement.droppable.css",
                 "com/fr/bi/web/css/widget/arrangement/arrangement.css",
+
+                "com/fr/bi/web/css/widget/timesetting/timesetting.day.css",
+                "com/fr/bi/web/css/widget/timesetting/timesetting.hour.css",
+
                 /**
                  * components
                  */

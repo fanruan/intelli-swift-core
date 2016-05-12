@@ -395,8 +395,7 @@
         //是否所有数据存在（配置部分将数据修改的情况）
         isAllFieldsExistByWidgetID: function (wid) {
             var allDimIds = this.getAllDimensionIDs(wid);
-            var allExist = true;
-            BI.some(allDimIds, function (i, dId) {
+            return !BI.some(allDimIds, function (i, dId) {
                 var dType = BI.Utils.getDimensionTypeByID(dId);
                 if (dType === BICst.TARGET_TYPE.STRING ||
                     dType === BICst.TARGET_TYPE.NUMBER ||
@@ -404,25 +403,23 @@
                     dType === BICst.TARGET_TYPE.COUNTER) {
                     var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
                     if (BI.isNull(Pool.fields[fieldId])) {
-                        allExist = false;
                         return true;
                     }
                 } else {
                     //计算指标
                     var expression = BI.Utils.getExpressionByDimensionID(dId);
                     var fIds = expression.ids;
-                    BI.each(fIds, function (j, fId) {
+                    return BI.some(fIds, function (j, fId) {
                         var dId = fId;
                         // if (dType === BICst.TARGET_TYPE.FORMULA) {
                         //     dId = fId.substr(BI.size(BICst.FIELD_ID.HEAD), fId.length - BI.size(BICst.FIELD_ID.HEAD))
                         // }
                         if (BI.isNull(Pool.fields[BI.Utils.getFieldIDByDimensionID(dId)])) {
-                            allExist = false;
+                            return true;
                         }
                     });
                 }
             });
-            return allExist;
         },
 
         //获取某组件下所有的维度
@@ -896,18 +893,17 @@
         },
 
         getNoGroupedDataByDimensionID: function (dId, callback) {
-            var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
             dimension.group = {type: BICst.GROUP.ID_GROUP};
-            var widget = Data.SharingPool.get("widgets", wid);
-            widget.page = -1;
-            widget.dimensions = {};
-            widget.dimensions[dId] = dimension;
-            widget.view = {};
-            widget.view[BICst.REGION.DIMENSION1] = [dId];
-            Data.Req.reqWidgetSettingByData({widget: widget}, function (data) {
+            dimension.filter_value = {};
+            var dimensions = {};
+            dimensions[dId] = dimension;
+            var view = {};
+            view[BICst.REGION.DIMENSION1] = [dId];
+            this.getWidgetDataByWidgetInfo(dimensions, view, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             });
+
         },
 
         getDataByDimensionID: function (dId, callback) {
@@ -1171,6 +1167,21 @@
                 }
             });
             return filterValues;
+            function createTreeFilterValue(result, v, dId, floor) {
+                if (floor === 0) {
+                    if (BI.isNull(result.value)) {
+                        result.value = [];
+                    }
+                    BI.isNull(result.type) && (result.type = 1);
+                    BI.each(v, function (value, child) {
+                        result.value.push(value);
+                    })
+                }
+                BI.each(v, function (value, child) {
+                        createTreeFilterValue(result, child, dId, floor - 1);
+                    }
+                );
+            }
         },
 
         getWidgetCalculationByID: function (wid) {
@@ -1339,91 +1350,79 @@
 
     });
 
-
     //获取复杂日期的值
     function parseComplexDate(v) {
-        var type = v.type, value = v.value;
-        var date = new Date();
-        var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
-        var tool = new BI.MultiDateParamTrigger();
-        if (BI.isNull(type) && BI.isNotNull(v.year)) {
-            return new Date(v.year, v.month, v.day).getTime();
+        if (v.type === BICst.MULTI_DATE_PARAM) {
+            return parseComplexDateForParam(v.value);
+        } else {
+            return parseComplexDateCommon(v);
         }
-        switch (type) {
-            case BICst.MULTI_DATE_YEAR_PREV:
-                return new Date(currY - 1 * value, currM, currD).getTime();
-            case BICst.MULTI_DATE_YEAR_AFTER:
-                return new Date(currY + 1 * value, currM, currD).getTime();
-            case BICst.MULTI_DATE_YEAR_BEGIN:
-                return new Date(currY, 1, 1).getTime();
-            case BICst.MULTI_DATE_YEAR_END:
-                return new Date(currY, 11, 31).getTime();
-
-            case BICst.MULTI_DATE_MONTH_PREV:
-                return tool._getBeforeMultiMonth(value).getTime();
-            case BICst.MULTI_DATE_MONTH_AFTER:
-                return tool._getAfterMultiMonth(value).getTime();
-            case BICst.MULTI_DATE_MONTH_BEGIN:
-                return new Date(currY, currM, 1).getTime();
-            case BICst.MULTI_DATE_MONTH_END:
-                return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
-
-            case BICst.MULTI_DATE_QUARTER_PREV:
-                return tool._getBeforeMulQuarter(value).getTime();
-            case BICst.MULTI_DATE_QUARTER_AFTER:
-                return tool._getAfterMulQuarter(value).getTime();
-            case BICst.MULTI_DATE_QUARTER_BEGIN:
-                return tool._getQuarterStartDate().getTime();
-            case BICst.MULTI_DATE_QUARTER_END:
-                return tool._getQuarterEndDate().getTime();
-
-            case BICst.MULTI_DATE_WEEK_PREV:
-                return date.getOffsetDate(-7 * value).getTime();
-            case BICst.MULTI_DATE_WEEK_AFTER:
-                return date.getOffsetDate(7 * value).getTime();
-
-            case BICst.MULTI_DATE_DAY_PREV:
-                return date.getOffsetDate(-1 * value).getTime();
-            case BICst.MULTI_DATE_DAY_AFTER:
-                return date.getOffsetDate(1 * value).getTime();
-            case BICst.MULTI_DATE_DAY_TODAY:
-                return date.getTime();
-
-            case BICst.MULTI_DATE_PARAM:
-                var wWid = value.wId, se = value.startOrEnd;
-                if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
-                    var wWValue = BI.Utils.getWidgetValueByID(wWid);
-                    if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
-                        return new Date(wWValue.start.year, wWValue.start.month, wWValue.start.day).getTime();
-                    } else {
-                        return new Date(wWValue.end.year, wWValue.end.month, wWValue.end.day).getTime();
-                    }
+        function parseComplexDateForParam(value) {
+            var wWid = value.wId, se = value.startOrEnd;
+            if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
+                var wWValue = BI.Utils.getWidgetValueByID(wWid);
+                if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
+                    return parseComplexDateCommon(wWValue.start);
                 } else {
-                    if (BI.isNotNull(value.year) && BI.isNotNull(value.month) && BI.isNotNull(value.day)) {
-                        return new Date(value.year, value.month, value.day).getTime();
-                    }
+                    return parseComplexDateCommon(wWValue.end);
                 }
-                break;
-            case BICst.MULTI_DATE_CALENDAR:
-                return new Date(value.year, value.month, value.day).getTime();
-
-        }
-    }
-
-    function createTreeFilterValue(result, v, dId, floor) {
-        if (floor === 0) {
-            if (BI.isNull(result.value)) {
-                result.value = [];
+            } else {
+                return parseComplexDateCommon(BI.Utils.getWidgetValueByID(value));
             }
-            BI.isNull(result.type) && (result.type = 1);
-            BI.each(v, function (value, child) {
-                result.value.push(value);
-            })
         }
-        BI.each(v, function (value, child) {
-                createTreeFilterValue(result, child, dId, floor - 1);
+
+        function parseComplexDateCommon(v) {
+            var type = v.type, value = v.value;
+            var date = new Date();
+            var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
+            var tool = new BI.MultiDateParamTrigger();
+            if (BI.isNull(type) && BI.isNotNull(v.year)) {
+                return new Date(v.year, v.month, v.day).getTime();
             }
-        );
+            switch (type) {
+                case BICst.MULTI_DATE_YEAR_PREV:
+                    return new Date(currY - 1 * value, currM, currD).getTime();
+                case BICst.MULTI_DATE_YEAR_AFTER:
+                    return new Date(currY + 1 * value, currM, currD).getTime();
+                case BICst.MULTI_DATE_YEAR_BEGIN:
+                    return new Date(currY, 1, 1).getTime();
+                case BICst.MULTI_DATE_YEAR_END:
+                    return new Date(currY, 11, 31).getTime();
+
+                case BICst.MULTI_DATE_MONTH_PREV:
+                    return tool._getBeforeMultiMonth(value).getTime();
+                case BICst.MULTI_DATE_MONTH_AFTER:
+                    return tool._getAfterMultiMonth(value).getTime();
+                case BICst.MULTI_DATE_MONTH_BEGIN:
+                    return new Date(currY, currM, 1).getTime();
+                case BICst.MULTI_DATE_MONTH_END:
+                    return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
+
+                case BICst.MULTI_DATE_QUARTER_PREV:
+                    return tool._getBeforeMulQuarter(value).getTime();
+                case BICst.MULTI_DATE_QUARTER_AFTER:
+                    return tool._getAfterMulQuarter(value).getTime();
+                case BICst.MULTI_DATE_QUARTER_BEGIN:
+                    return tool._getQuarterStartDate().getTime();
+                case BICst.MULTI_DATE_QUARTER_END:
+                    return tool._getQuarterEndDate().getTime();
+
+                case BICst.MULTI_DATE_WEEK_PREV:
+                    return date.getOffsetDate(-7 * value).getTime();
+                case BICst.MULTI_DATE_WEEK_AFTER:
+                    return date.getOffsetDate(7 * value).getTime();
+
+                case BICst.MULTI_DATE_DAY_PREV:
+                    return date.getOffsetDate(-1 * value).getTime();
+                case BICst.MULTI_DATE_DAY_AFTER:
+                    return date.getOffsetDate(1 * value).getTime();
+                case BICst.MULTI_DATE_DAY_TODAY:
+                    return date.getTime();
+                case BICst.MULTI_DATE_CALENDAR:
+                    return new Date(value.year, value.month, value.day).getTime();
+
+            }
+        }
     }
 
     //format date type filter
@@ -1507,86 +1506,86 @@
             filterValue.value = parseComplexDate(filterValue);
             filterValue.type = BICst.GROUP.YMD;
         }
-    }
-
-    //日期偏移值
-    function getOffSetDateByDateAndValue(date, value) {
-        var tool = new BI.ParamPopupView();
-        var type = value.type, value = value.value;
-        var fPrevOrAfter = value.foffset === 0 ? -1 : 1;
-        var sPrevOrAfter = value.soffset === 0 ? -1 : 1;
-        var start, end;
-        start = end = date;
-        var ydate = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), date.getMonth(), date.getDate());
-        switch (type) {
-            case BICst.YEAR:
-                start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
-                end = new Date(start.getFullYear(), 11, 31);
-                break;
-            case BICst.YEAR_QUARTER:
-                ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
-                start = tool._getQuarterStartDate(ydate);
-                end = tool._getQuarterEndDate(ydate);
-                break;
-            case BICst.YEAR_MONTH:
-                ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
-                start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
-                end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
-                break;
-            case BICst.YEAR_WEEK:
-                start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                end = start.getOffsetDate(7);
-                break;
-            case BICst.YEAR_DAY:
-                start = ydate.getOffsetDate(sPrevOrAfter * value.svalue);
-                end = start.getOffsetDate(1);
-                break;
-            case BICst.MONTH_WEEK:
-                var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
-                start = mdate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                end = start.getOffsetDate(7);
-                break;
-            case BICst.MONTH_DAY:
-                var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
-                start = mdate.getOffsetDate(sPrevOrAfter * value.svalue);
-                end = start.getOffsetDate(1);
-                break;
+        return filterValue;
+        //日期偏移值
+        function getOffSetDateByDateAndValue(date, value) {
+            var tool = new BI.ParamPopupView();
+            var type = value.type, value = value.value;
+            var fPrevOrAfter = value.foffset === 0 ? -1 : 1;
+            var sPrevOrAfter = value.soffset === 0 ? -1 : 1;
+            var start, end;
+            start = end = date;
+            var ydate = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), date.getMonth(), date.getDate());
+            switch (type) {
+                case BICst.YEAR:
+                    start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
+                    end = new Date(start.getFullYear(), 11, 31);
+                    break;
+                case BICst.YEAR_QUARTER:
+                    ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
+                    start = tool._getQuarterStartDate(ydate);
+                    end = tool._getQuarterEndDate(ydate);
+                    break;
+                case BICst.YEAR_MONTH:
+                    ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
+                    start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
+                    end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
+                    break;
+                case BICst.YEAR_WEEK:
+                    start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
+                    end = start.getOffsetDate(7);
+                    break;
+                case BICst.YEAR_DAY:
+                    start = ydate.getOffsetDate(sPrevOrAfter * value.svalue);
+                    end = start.getOffsetDate(1);
+                    break;
+                case BICst.MONTH_WEEK:
+                    var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
+                    start = mdate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
+                    end = start.getOffsetDate(7);
+                    break;
+                case BICst.MONTH_DAY:
+                    var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
+                    start = mdate.getOffsetDate(sPrevOrAfter * value.svalue);
+                    end = start.getOffsetDate(1);
+                    break;
+            }
+            return {
+                start: start.getTime(),
+                end: end.getTime()
+            }
         }
-        return {
-            start: start.getTime(),
-            end: end.getTime()
-        }
-    }
 
-    //获取日期控件的值
-    function getDateControlValue(wid) {
-        var widgetType = BI.Utils.getWidgetTypeByID(wid);
-        var wValue = BI.Utils.getWidgetValueByID(wid);
-        var date = null;
-        switch (widgetType) {
-            case BICst.Widget.YEAR:
-                if (BI.isNumeric(wValue)) {
-                    date = new Date(wValue, 0, 1);
-                }
-                break;
-            case BICst.Widget.MONTH:
-                if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
-                    date = new Date(wValue.year, BI.isNumeric(wValue.month) ? wValue.month : 0, 1);
-                }
-                break;
-            case BICst.Widget.QUARTER:
-                if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
-                    var quarter = wValue.quarter;
-                    date = new Date(wValue.year, BI.isNumeric(quarter) ? (quarter * 3 - 1) : 0, 1);
-                }
-                break;
-            case BICst.Widget.YMD:
-                if (BI.isNotNull(wValue)) {
-                    date = new Date(parseComplexDate(wValue));
-                }
-                break;
+        //获取日期控件的值
+        function getDateControlValue(wid) {
+            var widgetType = BI.Utils.getWidgetTypeByID(wid);
+            var wValue = BI.Utils.getWidgetValueByID(wid);
+            var date = null;
+            switch (widgetType) {
+                case BICst.Widget.YEAR:
+                    if (BI.isNumeric(wValue)) {
+                        date = new Date(wValue, 0, 1);
+                    }
+                    break;
+                case BICst.Widget.MONTH:
+                    if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
+                        date = new Date(wValue.year, BI.isNumeric(wValue.month) ? wValue.month : 0, 1);
+                    }
+                    break;
+                case BICst.Widget.QUARTER:
+                    if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
+                        var quarter = wValue.quarter;
+                        date = new Date(wValue.year, BI.isNumeric(quarter) ? (quarter * 3 - 1) : 0, 1);
+                    }
+                    break;
+                case BICst.Widget.YMD:
+                    if (BI.isNotNull(wValue)) {
+                        date = new Date(parseComplexDate(wValue));
+                    }
+                    break;
 
+            }
+            return date;
         }
-        return date;
     }
 })();

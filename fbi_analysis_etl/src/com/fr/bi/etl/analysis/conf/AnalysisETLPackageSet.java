@@ -7,14 +7,16 @@ import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.json.JSONCreator;
+import com.fr.general.Inter;
 import com.fr.json.JSONObject;
+
+import java.util.Locale;
 
 /**
  * Created by 小灰灰 on 2015/12/23.
  */
-public class AnalysisETLPackageSet extends BIPackageContainer implements JSONCreator {
-    private static final String PACK_NAME = "MYETL";
+public class AnalysisETLPackageSet extends BIPackageContainer {
+    private static final String PACK_NAME = Inter.getLocText("BI-MYETL");
     private static final String PACK_ID = "myetlidfe62a664c";
     private transient AnalysisETLBusiPack pack;
 
@@ -62,9 +64,11 @@ public class AnalysisETLPackageSet extends BIPackageContainer implements JSONCre
         return getPack().getSpecificTable(new BITableID(tableId));
     }
 
-    public JSONObject createJSON() throws Exception {
+    public JSONObject createJSON(Locale locale) throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put(PACK_ID, getPack().createJSON());
+        JSONObject pack = getPack().createJSON();
+        pack.put("name", Inter.getLocText(PACK_NAME, locale));
+        jo.put(PACK_ID, pack);
         return jo;
     }
 

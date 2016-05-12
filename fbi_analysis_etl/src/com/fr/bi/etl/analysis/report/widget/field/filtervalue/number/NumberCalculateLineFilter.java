@@ -70,15 +70,18 @@ public abstract class NumberCalculateLineFilter implements NumberFilterValue{
 
 	@Override
 	public void parseJSON(JSONObject jo, long userId) throws Exception {
-		if(jo.has("field")){
-			this.key = new IndexKey(jo.getString("field"));
+		if(jo.has("field_name")){
+			this.key = new IndexKey(jo.getString("field_name"));
 		}
-		if(jo.has("dimension")){
-			JSONArray ja = jo.getJSONArray("dimension");
-			this.dimension = new BIKey[ja.length()];
-			for(int i = 0; i < jo.length(); i++){
-				this.dimension[i] = new IndexKey(ja.getString(i));
-			}
+		if(jo.has("filter_value")){
+            JSONObject value = jo.getJSONObject("filter_value");
+            if (value.has("group")){
+                JSONArray ja = value.getJSONArray("group");
+                this.dimension = new BIKey[ja.length()];
+                for(int i = 0; i < jo.length(); i++){
+                    this.dimension[i] = new IndexKey(ja.getString(i));
+                }
+            };
 		}
 	}
 
