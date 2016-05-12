@@ -26,7 +26,6 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
 
         this.renameButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self.packageNameEditor.focus();
-            self.packageNameEditor.selectAll();
         });
 
         this.deleteButton = BI.createWidget({
@@ -60,8 +59,9 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
         });
 
         this.packageNameEditor = BI.createWidget({
-            type: "bi.label_covered_editor",
+            type: "bi.shelter_editor",
             value: o.text,
+            textAlign: "center",
             validationChecker: function (value) {
                 var packages = BI.Utils.getAllPackageIDs4Conf();
                 return !BI.some(packages, function (i, pID) {
@@ -73,7 +73,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
             errorText: BI.i18nText("BI-Busi_Package_Name_Not_Repeat")
         });
 
-        this.packageNameEditor.on(BI.LabelCoveredEditor.EVENT_CONFIRM, function () {
+        this.packageNameEditor.on(BI.ShelterEditor.EVENT_CONFIRM, function () {
             var value = self.packageNameEditor.getValue();
             var id = self.attr("value");
             self.fireEvent(BI.BusinessPackageButton.EVENT_EDITOR_CONFIRM, value, id);
