@@ -114,15 +114,19 @@ BI.HrefEditor = BI.inherit(BI.Widget, {
         }
     },
 
+    focus: function () {
+        this.editor.focus();
+    },
+
+    blur: function () {
+        this.editor.blur();
+    },
+
     getValue: function () {
         if (this.isValid()) {
             var res = this.editor.getValue().match(/[\S]+/g);
             return BI.isNull(res) ? "" : res[res.length - 1];
         }
-    },
-
-    focus: function () {
-        this.editor.focus()
     },
 
     setValue: function (v) {

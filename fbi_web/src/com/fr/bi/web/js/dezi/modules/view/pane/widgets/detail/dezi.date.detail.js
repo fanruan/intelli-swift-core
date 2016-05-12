@@ -87,7 +87,7 @@ BIDezi.DateDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: "bi.select_date",
+                    type: BI.Utils.isRealTime() ? "bi.select_date_4_realtime" : "bi.select_date",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
@@ -196,7 +196,6 @@ BIDezi.DateDetailView = BI.inherit(BI.View, {
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();
-            BI.Broadcasts.send(old._src.id);
         }
     },
 
@@ -210,12 +209,7 @@ BIDezi.DateDetailView = BI.inherit(BI.View, {
 
     change: function (changed, prev) {
         if (BI.has(changed, "dimensions")) {
-            if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
-                    return !BI.has(prev.dimensions, did);
-                });
-                BI.Broadcasts.send(result._src.id, true);
-            }
+
         }
     },
 

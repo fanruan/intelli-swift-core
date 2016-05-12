@@ -235,6 +235,7 @@ public class BIPackageConfigManager implements Release {
                     while (iterator.hasNext()) {
                         names.put(new JSONObject().put("id", iterator.next().getValue().getID().getIdentityValue()));
                     }
+                    t.put("init_time", groupCollectionManager.getReadableGroup(groupName).getPosition());
                     t.put("children", names);
                     String groupID = UUID.randomUUID().toString();
                     t.put("id", groupID);
@@ -312,7 +313,8 @@ public class BIPackageConfigManager implements Release {
                 JSONArray jt = t.optJSONArray("children");
                 BIGroupTagName groupTagName = new BIGroupTagName(name);
                 try {
-                    groupCollectionManager.createEmptyGroup(groupTagName);
+                    long position = t.optLong("init_time");
+                    groupCollectionManager.createEmptyGroup(groupTagName, position);
                     Set<String> list = new HashSet<String>();
                     for (int j = 0; j < jt.length(); j++) {
                         JSONObject g = jt.optJSONObject(j);

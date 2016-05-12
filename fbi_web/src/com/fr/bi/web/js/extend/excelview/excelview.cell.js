@@ -48,7 +48,7 @@ BI.ExcelViewCell = BI.inherit(BI.TextButton, {
         });
         this.element.draggable(o.drag);
         selected.setVisible(BI.Utils.isSrcUsedBySrcID(o.value) === true);
-        BI.Broadcasts.on(o.value, function(v){
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.value, function(v){
             selected.setVisible(v === true);
         });
     }

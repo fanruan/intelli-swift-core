@@ -14,6 +14,7 @@ import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.data.db.DBTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -26,10 +27,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisTableSource {
     private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
+
     @BICoreField
+
     protected BIWidget widget;
 
     private int etlType;
+
+    public BIWidget getWidget() {
+        return widget;
+    }
 
 
     public AnalysisBaseTableSource(BIWidget widget, int etlType) {
@@ -86,5 +93,15 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             }
         }
         return source;
+    }
+
+    @Override
+    public JSONObject createJSON() throws Exception {
+        JSONObject jo =  super.createJSON();
+        JSONObject widget = new JSONObject();
+        widget.put("core", fetchObjectCore().getIDValue());
+        jo.put("etlType", etlType);
+        jo.put("operator", widget);
+        return jo;
     }
 }

@@ -307,6 +307,8 @@ var _JS = [
 
     "detail/mvc.selectdatasearcher.js",
 
+    "detail/mvc.simple.searcher.js",
+
     "detail/mvc.simple.selectdatasearcher.js",
 
     "detail/mvc.numericalinterval.js",
@@ -527,6 +529,7 @@ var _Routes = {
     "/select_data_switcher": "SelectDataSwitcherView",
     "/select_data_search_result": "SelectDataSearchResultView",
     "/select_data_searcher": "SelectDataSearcherView",
+    "/simple_searcher": "SimpleSearcherView",
     "/simple_select_data_searcher": "SimpleSelectDataSearcherView",
     "/multidate_combo": "MultiDateComboView",
     "/time_interval": "TimeIntervalView",
@@ -1018,6 +1021,9 @@ _Models.detail = [{
     id: 17,
     text: "时间区间控件"
 }, {
+    id: 30,
+    text: "简单搜索控件"
+}, {
     id: 18,
     text: "简单选择字段"
 }, {
@@ -1341,6 +1347,10 @@ _Models.detail = [{
         pId: 29,
         text: "bi.adaptive_arrangement",
         value: "adaptive_arrangement"
+    }, {
+        pId: 30,
+        text: "bi.simple_searcher",
+        value: "simple_searcher"
     }];
 _Models.component = [];
 _Models.module = [];

@@ -11,6 +11,7 @@ import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.datasource.BIDataSourceManager;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
+import com.fr.bi.conf.base.pack.BISystemPackAndAuthConfigurationManager;
 import com.fr.bi.conf.base.pack.BISystemPackageConfigurationManager;
 import com.fr.bi.conf.base.relation.BISystemTableRelationManager;
 import com.fr.bi.conf.base.trans.BIAliasManager;

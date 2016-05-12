@@ -19,7 +19,7 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.TargetDateFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-date-field-item",
+            extraCls: "bi-analysis-date-field-item",
             afterValueChange: BI.emptyFn
         })
     },

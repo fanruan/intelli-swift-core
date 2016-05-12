@@ -185,7 +185,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
                 var newLeft = BI.clone(columnSizeLeft), newRight = BI.clone(columnSizeRight);
                 newLeft[newLeft.length - 1] = "";
                 newRight[newRight.length - 1] = "";
-                this.table.setColumnSize(newLeft.concat(newRight));
+                this.setColumnSize(newLeft.concat(newRight));
                 block = this._getBlockSize();
 
                 if (columnSizeLeft[columnSizeLeft.length - 1] < block.left[block.left.length - 1]) {
@@ -208,7 +208,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
                 var newSize = BI.clone(size);
                 newSize[newSize.length - 1] = "";
-                this.table.setColumnSize(newSize);
+                this.setColumnSize(newSize);
                 block = this._getBlockSize();
 
                 if (size[size.length - 1] < block.size[block.size.length - 1]) {

@@ -5,7 +5,7 @@ import com.finebi.cube.location.BICubeConfigurationTest;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.BICubeTableEntity;
+import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;

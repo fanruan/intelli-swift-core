@@ -99,6 +99,10 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
         this.editor.focus();
     },
 
+    blur: function () {
+        this.editor.blur();
+    },
+
     isValid: function () {
         return this.editor.isValid();
     },

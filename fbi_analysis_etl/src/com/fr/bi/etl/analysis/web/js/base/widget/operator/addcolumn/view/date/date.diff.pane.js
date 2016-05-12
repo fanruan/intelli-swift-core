@@ -20,7 +20,7 @@ BI.AnalysisETLOperatorAddColumnDateDiffPane = BI.inherit(BI.MVCWidget, {
             items : ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE_ITEMS
         });
         self.segment.on(BI.Segment.EVENT_CHANGE, function (type) {
-            self.controller.setType(type);
+            self.controller.setType(type[0]);
         });
         self.lcombo = BI.createWidget({
             type: "bi.text_value_combo",
@@ -94,4 +94,4 @@ BI.AnalysisETLOperatorAddColumnDateDiffPane = BI.inherit(BI.MVCWidget, {
         return BI.AnalysisETLOperatorAddColumnDateDiffController;
     }
 })
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.DATE_DIFF, BI.AnalysisETLOperatorAddColumnDateDiffPane);
+$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.DATE_DIFF, BI.AnalysisETLOperatorAddColumnDateDiffPane);

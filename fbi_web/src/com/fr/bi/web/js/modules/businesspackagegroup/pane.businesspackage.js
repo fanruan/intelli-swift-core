@@ -52,7 +52,9 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
                 item.id = group_id;
             }
             group_id = item.id;
-            self.groupMap[group_id] = item.value;
+            BI.isNull(self.groupMap[group_id]) && (self.groupMap[group_id] = {});
+            self.groupMap[group_id].init_time = item.init_time;
+            self.groupMap[group_id].name = item.value;
             self.fieldInGroupMap[group_id] = {};
             BI.each(item.children, function (i_in, item_in) {
                 var field_id;
@@ -76,7 +78,7 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
                 if (!self.groupOfFieldMap[self._getFieldID(field_id)]) {
                     self.groupOfFieldMap[self._getFieldID(field_id)] = {};
                 }
-                self.groupOfFieldMap[self._getFieldID(field_id)][group_id] = self.groupMap[group_id];
+                self.groupOfFieldMap[self._getFieldID(field_id)][group_id] = self.groupMap[group_id].name;
             })
         })
     },
@@ -101,7 +103,7 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
             if (BI.size(fields) === 0) {
                 var groupItem = {};
                 groupItem.id = groupID;
-                groupItem.value = self.groupMap[groupID];
+                groupItem.value = self.groupMap[groupID].name;
                 groupItem.children = [];
                 expanderItems.push(groupItem);
             }
@@ -127,7 +129,7 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
             if (!found) {
                 var groupItem = {};
                 groupItem.id = groupID;
-                groupItem.value = self.groupMap[groupID];
+                groupItem.value = self.groupMap[groupID].name;
                 groupItem.children = [];
                 var fieldItem = {};
                 fieldItem.id = fieldID;
@@ -141,11 +143,12 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
 
     createItemFromGroupMap: function () {
         var self = this, expanderItems = {};
-        BI.each(self.groupMap, function (groupID, groupName) {
+        BI.each(self.groupMap, function (groupID, obj) {
             var groupItem = {};
-            groupItem.name = groupName;
+            groupItem.name = obj.name;
             groupItem.children = [];
             groupItem.id = groupID;
+            groupItem.init_time = obj.init_time;
             BI.each(self.fieldInGroupMap[groupID], function (fieldID, fieldName) {
                 var fieldItem = {};
                 fieldItem.id = fieldName;
@@ -165,14 +168,11 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
             type: "bi.business_package_expander",
             nodeType: o.nodeType,
             validationChecker: function (v) {
-                var result = BI.findKey(self.groupMap, function (groupID, groupName) {
-                    return groupName === v && groupItem.id != groupID
+                return BI.some(self.groupMap, function (groupID, obj) {
+                    if (obj.name != v || groupItem.id === groupID) {
+                        return true
+                    }
                 });
-                if (BI.isNotNull(result)) {
-                    return false
-                } else {
-                    return true
-                }
             },
             title: o.title,
             value: o.value,
@@ -209,12 +209,12 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
         });
 
         groupWidget.on(BI.BusinessPackageExpander.EVENT_NODE_VALUE_CHANGE, function () {
-            self.groupMap[groupWidget.attr("id")] = groupWidget.getNodeValue();
+            self.groupMap[groupWidget.attr("id")].name = groupWidget.getNodeValue();
             self.fireEvent(BI.BusinessPackageGroupPane.EVENT_GROUP_NAME_CHANGE);
         });
 
         groupWidget.on(BI.BusinessPackageExpander.EVENT_NODE_VALUE_CONFIRM, function () {
-            self.groupMap[groupWidget.attr("id")] = groupWidget.getNodeValue();
+            self.groupMap[groupWidget.attr("id")].name = groupWidget.getNodeValue();
             self.fireEvent(BI.BusinessPackageGroupPane.EVENT_GROUP_NAME_CONFIRM);
         });
 
@@ -301,8 +301,8 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
 
     addGroupWidget: function (groupName) {
         var self = this;
-        var findGroup = BI.find(self.groupMap, function (groupID, Name) {
-            if (groupName === Name) {
+        var findGroup = BI.find(self.groupMap, function (groupID, obj) {
+            if (groupName === obj.name) {
                 return true;
             }
         });
@@ -311,7 +311,7 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
             var groupItem = {};
             groupItem.value = groupName;
             groupItem.id = groupID;
-            self.groupMap[groupID] = groupName;
+            self.groupMap[groupID] = {name: groupName, init_time: new Date().getTime()};
             self.fieldInGroupMap[groupID] = {};
             var expander = self.createGroupWidget(groupItem);
             self.fieldPane.addItem(expander);
@@ -321,8 +321,8 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
     addFieldWidget: function (widgetID, fieldName, groupName) {
         var self = this;
         var groupItem = {};
-        var groupID = BI.findKey(self.groupMap, function (id, name) {
-            return name === groupName;
+        var groupID = BI.findKey(self.groupMap, function (id, obj) {
+            return obj.name === groupName;
         });
         if (BI.isNotNull(groupID)) {
             groupItem.id = groupID;
@@ -445,10 +445,10 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
 
     setGroupName: function (newName, oldName) {
         var self = this;
-        var groupID = BI.findKey(self.groupMap, function (groupID, groupName) {
-            return groupName === oldName;
+        var groupID = BI.findKey(self.groupMap, function (groupID, obj) {
+            return obj.name === oldName;
         });
-        self.groupMap[groupID] = newName;
+        self.groupMap[groupID].name = newName;
     }
 
 

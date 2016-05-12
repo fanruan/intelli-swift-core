@@ -203,6 +203,8 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
                             widget.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE);
                         }
                     })
+                } else {
+                    BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'),  BI.i18nText('BI-Cannot-Delete-Last'))
                 }
                 return;
             }
@@ -222,7 +224,11 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
                 }
             })
         })
-        button.setValid(model.isValid(button.getValue()))
+        var invalidIndex = model.get('invalidIndex');
+        if(invalidIndex <= index) {
+            button.setValid(false);
+            button.setTitle(model.get("invalidTitle"))
+        }
         this._getTabButtonGroup(widget).addItemFromIndex(button, index);
     },
 

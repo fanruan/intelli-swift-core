@@ -45,9 +45,14 @@ BI.AbstractDetailDetailSelectDataNode4RealTime = BI.inherit(BI.Widget, {
         if (!check()) {
             this.setEnable(false);
         }
-        BI.Broadcasts.on(BICst.BROADCAST.TABLE_USABLE, function () {
+        //全局维度增删事件
+        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX, function () {
             self.setEnable(check());
-        })
+        });
+        //全局组件增删事件
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGETS_PREFIX, function () {
+            self.setEnable(check());
+        });
     },
 
     doRedMark: function () {

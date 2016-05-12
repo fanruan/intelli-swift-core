@@ -2,15 +2,20 @@ package com.fr.bi.etl.analysis.manager;
 
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
+import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.conf.AnalysisPackManager;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.json.JSONObject;
+
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = SingleUserAnalysisBusiPackManager.class)
-public class SingleUserAnalysisBusiPackManager  {
+public class SingleUserAnalysisBusiPackManager{
 
 
     private long userId;
@@ -34,5 +39,12 @@ public class SingleUserAnalysisBusiPackManager  {
         return pack.getTable(tableId);
     }
 
+    public JSONObject createJSON(Locale locale) throws Exception {
+        return pack.createJSON(locale);
+    }
+
+    public Set<BIBusinessPackage> getAllPacks(){
+        return pack.getAnylysis().getAllPackages();
+    }
 
 }

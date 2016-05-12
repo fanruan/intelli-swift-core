@@ -64,14 +64,23 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
         //找到所有控件的过滤条件
         BI.each(allWidgetIds, function(i, cwid){
             if(BI.Utils.isControlWidgetByWidgetId(cwid)) {
-                var text = self.model.getControlWidgetValueTextByID(cwid);
-                if(BI.isNotNull(text)) {
-                    items.push({
-                        type: "bi.control_filter_item",
-                        wId: cwid,
-                        text: text,
-                        id: BI.UUID()
-                    });
+                //通用查询
+                if(BI.Utils.getWidgetTypeByID(cwid) === BICst.Widget.GENERAL_QUERY) {
+                    var value = BI.Utils.getWidgetValueByID(cwid);
+                    var item = self.model.parseGeneralQueryFilter(value[0]);
+                    if(BI.isNotNull(item)) {
+                        items.push(item);
+                    }
+                } else {
+                    var text = self.model.getControlWidgetValueTextByID(cwid);
+                    if(BI.isNotNull(text)) {
+                        items.push({
+                            type: "bi.control_filter_item",
+                            wId: cwid,
+                            text: text,
+                            id: BI.UUID()
+                        });
+                    }
                 }
             }
         });

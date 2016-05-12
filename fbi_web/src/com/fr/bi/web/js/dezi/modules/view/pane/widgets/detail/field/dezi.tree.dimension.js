@@ -25,7 +25,6 @@ BIDezi.TreeDimensionView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
-        var self = this;
         this.label = BI.createWidget({
             type: "bi.label",
             textAlign: "left",

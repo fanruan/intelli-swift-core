@@ -2,7 +2,6 @@
  * Created by GUY on 2015/7/3.
  */
 BIDezi.TargetView = BI.inherit(BI.View, {
-
     constants: {
         TARGET_BUTTON_HEIGHT: 25,
         COMBO_WIDTH: 25,
@@ -113,10 +112,10 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             type: "bi.target_combo",
             dId: this.model.get("id")
         });
-        this.combo.on(BI.TargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.TARGET_COMBO.SUMMERY_TYPE:
-                    self.model.set("group", {type: v});
+                    self.model.set("group", {type: s});
                     break;
                 case BICst.TARGET_COMBO.CHART_TYPE:
                     self.model.set("style_of_chart", {type: s});
@@ -145,7 +144,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             type: "bi.count_target_combo",
             dId: this.model.get("id")
         });
-        this.combo.on(BI.CountTargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.TARGET_COMBO.DEPEND_TYPE:
                     self.model.set("_src", {
@@ -155,6 +154,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.CHART_TYPE:
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:
+                    self._buildStyleSettingPane();
                     break;
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
@@ -175,7 +175,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         this.combo = BI.createWidget({
             type: "bi.calculate_target_combo"
         });
-        this.combo.on(BI.CalculateTargetCombo.EVENT_CHANGE, function (v) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.CALCULATE_TARGET_COMBO.FORM_SETTING:
                     break;

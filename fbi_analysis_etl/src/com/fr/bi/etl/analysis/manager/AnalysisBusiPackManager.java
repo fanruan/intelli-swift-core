@@ -18,6 +18,8 @@ import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.io.File;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -26,11 +28,6 @@ import java.util.Set;
 public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnalysisBusiPackManager> implements BIAnalysisBusiPackManagerProvider {
 
     private static final String TAG = "AnalysisBusiPackManager";
-
-    @Override
-    public SingleUserAnalysisBusiPackManager constructValue(Long key) {
-        return BIFactoryHelper.getObject(SingleUserAnalysisBusiPackManager.class, key);
-    }
 
     public SingleUserAnalysisBusiPackManager getUserAnalysisBusiPackManager(long userId) {
         try {
@@ -53,12 +50,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public String persistUserDataName(long key) {
-        return managerTag();
+        return "sue" + File.separator + "pack" + key;
     }
 
     @Override
     public Set<BIBusinessPackage> getAllPackages(long userId) {
-        return null;
+        return getUserAnalysisBusiPackManager(userId).getAllPacks();
     }
 
     @Override
@@ -122,7 +119,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
-    public void createEmptyGroup(long userId, BIGroupTagName groupTagName) throws BIGroupDuplicateException {
+    public void createEmptyGroup(long userId, BIGroupTagName groupTagName, long position) throws BIGroupDuplicateException {
 
     }
 
@@ -173,7 +170,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject createGroupJSON(long userId) throws JSONException {
-        return null;
+        return new JSONObject();
     }
 
     @Override
@@ -183,7 +180,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject createPackageJSON(long userId) throws Exception {
-        return null;
+        return getUserAnalysisBusiPackManager(userId).createJSON(Locale.CHINA);
+    }
+
+    @Override
+    public JSONObject createPackageJSON(long userId, Locale locale) throws Exception {
+        return getUserAnalysisBusiPackManager(userId).createJSON(locale);
     }
 
     @Override

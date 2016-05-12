@@ -69,6 +69,22 @@
             return BI.keys(Pool.packages);
         },
 
+        getCurrentSelectPackageID: function () {
+            var id = BI.Cache.getItem(BICst.CACHE.PACKAGE_PREFIX + this.getCurrentTemplateId());
+            var ids = this.getAllPackageIDs();
+            if (ids.contains(id)) {
+                return id;
+            }
+            return ids[0];
+        },
+
+        setCurrentSelectPackageID: function (pId) {
+            if (BI.isNotEmptyString(pId)) {
+                var key = BICst.CACHE.PACKAGE_PREFIX + this.getCurrentTemplateId();
+                BI.Cache.setItem(key, pId);
+            }
+        },
+
         getPackageNameByID: function (packageId) {
             if (BI.isNotNull(Pool.packages[packageId])) {
                 return Pool.packages[packageId].name;
@@ -143,7 +159,7 @@
                     BI.remove(fieldIds, fId);
                 }
             });
-            var countIds = this.getCountFieldIDsOfTableID(tableId);
+            var countIds = this.getCountFieldIDsOfTableID(tableId) || [];
             var tNum = [], tString = [], tDate = [], fNum = [], fString = [], fDate = [];
             BI.each(transIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
@@ -177,6 +193,10 @@
         getExcelViewByTableId: function (tableId) {
             var views = Pool.excel_views;
             return views[tableId];
+        },
+
+        getPreviewTableDataByTableId: function (tableId, callback) {
+            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
         },
 
         /**
@@ -261,6 +281,16 @@
             }
         },
 
+        getAllLinkageFromIdsByID: function (wid) {
+            var self = this, fromIds = [];
+            var linkages = this.getWidgetLinkageByID(wid);
+            BI.each(linkages, function (i, link) {
+                fromIds.push(link.from);
+                fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
+            });
+            return fromIds;
+        },
+
         isControlWidgetByWidgetId: function (wid) {
             var widgetType = this.getWidgetTypeByID(wid);
             return widgetType === BICst.Widget.STRING ||
@@ -270,7 +300,8 @@
                 widgetType === BICst.Widget.QUARTER ||
                 widgetType === BICst.Widget.TREE ||
                 widgetType === BICst.Widget.YEAR ||
-                widgetType === BICst.Widget.YMD;
+                widgetType === BICst.Widget.YMD ||
+                widgetType === BICst.Widget.GENERAL_QUERY;
         },
 
         isQueryControlExist: function () {
@@ -342,6 +373,15 @@
             return BI.keys(Data.SharingPool.get("widgets", wid, "dimensions"));
         },
 
+        getAllUsedFieldIds: function () {
+            var allDIds = this.getAllDimensionIDs();
+            var fields = [];
+            BI.each(allDIds, function (i, dId) {
+                fields.push(BI.Utils.getFieldIDByDimensionID(dId));
+            });
+            return fields;
+        },
+
         isWidgetExistByID: function (wid) {
             return this.getAllWidgetIDs().contains(wid);
         },
@@ -349,8 +389,7 @@
         //是否所有数据存在（配置部分将数据修改的情况）
         isAllFieldsExistByWidgetID: function (wid) {
             var allDimIds = this.getAllDimensionIDs(wid);
-            var allExist = true;
-            BI.some(allDimIds, function (i, dId) {
+            return !BI.some(allDimIds, function (i, dId) {
                 var dType = BI.Utils.getDimensionTypeByID(dId);
                 if (dType === BICst.TARGET_TYPE.STRING ||
                     dType === BICst.TARGET_TYPE.NUMBER ||
@@ -358,25 +397,23 @@
                     dType === BICst.TARGET_TYPE.COUNTER) {
                     var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
                     if (BI.isNull(Pool.fields[fieldId])) {
-                        allExist = false;
                         return true;
                     }
                 } else {
                     //计算指标
                     var expression = BI.Utils.getExpressionByDimensionID(dId);
                     var fIds = expression.ids;
-                    BI.each(fIds, function (j, fId) {
+                    return BI.some(fIds, function (j, fId) {
                         var dId = fId;
                         // if (dType === BICst.TARGET_TYPE.FORMULA) {
                         //     dId = fId.substr(BI.size(BICst.FIELD_ID.HEAD), fId.length - BI.size(BICst.FIELD_ID.HEAD))
                         // }
                         if (BI.isNull(Pool.fields[BI.Utils.getFieldIDByDimensionID(dId)])) {
-                            allExist = false;
+                            return true;
                         }
                     });
                 }
             });
-            return allExist;
         },
 
         //获取某组件下所有的维度
@@ -850,18 +887,17 @@
         },
 
         getNoGroupedDataByDimensionID: function (dId, callback) {
-            var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
             dimension.group = {type: BICst.GROUP.ID_GROUP};
-            var widget = Data.SharingPool.get("widgets", wid);
-            widget.page = -1;
-            widget.dimensions = {};
-            widget.dimensions[dId] = dimension;
-            widget.view = {};
-            widget.view[BICst.REGION.DIMENSION1] = [dId];
-            Data.Req.reqWidgetSettingByData({widget: widget}, function (data) {
+            dimension.filter_value = {};
+            var dimensions = {};
+            dimensions[dId] = dimension;
+            var view = {};
+            view[BICst.REGION.DIMENSION1] = [dId];
+            this.getWidgetDataByWidgetInfo(dimensions, view, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             });
+
         },
 
         getDataByDimensionID: function (dId, callback) {
@@ -876,16 +912,6 @@
             Data.Req.reqWidgetSettingByData({widget: widget}, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             });
-        },
-
-        getAllLinkageFromIdsByID: function (wid) {
-            var self = this, fromIds = [];
-            var linkages = this.getWidgetLinkageByID(wid);
-            BI.each(linkages, function (i, link) {
-                fromIds.push(link.from);
-                fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
-            });
-            return fromIds;
         },
 
         getWidgetDataByDimensionInfo: function (src, options) {
@@ -1003,7 +1029,7 @@
                     return;
                 }
                 var value = self.getWidgetValueByID(id);
-                if (self.isControlWidgetByWidgetId(id) && BI.isNotNull(value)) {
+                if (self.isControlWidgetByWidgetId(id) && self.getWidgetTypeByID(id) !== BICst.Widget.GENERAL_QUERY && BI.isNotNull(value)) {
                     var dimensionIds = self.getAllDimensionIDs(id);
                     BI.each(dimensionIds, function (i, dimId) {
                         var fValue = value, fType = "";
@@ -1081,8 +1107,31 @@
                         });
                     });
                 }
+                //通用查询直接用好了
+                if (self.getWidgetTypeByID(id) === BICst.Widget.GENERAL_QUERY &&
+                    BI.isNotNull(value) && value.length === 1) {
+                    var filter = value[0];
+                    parseFilter(filter);
+                    filterValues.push(filter);
+
+                }
             });
             return filterValues;
+            function createTreeFilterValue(result, v, dId, floor) {
+                if (floor === 0) {
+                    if (BI.isNull(result.value)) {
+                        result.value = [];
+                    }
+                    BI.isNull(result.type) && (result.type = 1);
+                    BI.each(v, function (value, child) {
+                        result.value.push(value);
+                    })
+                }
+                BI.each(v, function (value, child) {
+                        createTreeFilterValue(result, child, dId, floor - 1);
+                    }
+                );
+            }
         },
 
         getWidgetCalculationByID: function (wid) {
@@ -1198,184 +1247,6 @@
                 });
             }
 
-            //日期偏移值
-            function getOffSetDateByDateAndValue(date, value) {
-                var tool = new BI.ParamPopupView();
-                var type = value.type, value = value.value;
-                var fPrevOrAfter = value.foffset === 0 ? -1 : 1;
-                var sPrevOrAfter = value.soffset === 0 ? -1 : 1;
-                var start, end;
-                start = end = date;
-                var ydate = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), date.getMonth(), date.getDate());
-                switch (type) {
-                    case BICst.YEAR:
-                        start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
-                        end = new Date(start.getFullYear(), 11, 31);
-                        break;
-                    case BICst.YEAR_QUARTER:
-                        ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
-                        start = tool._getQuarterStartDate(ydate);
-                        end = tool._getQuarterEndDate(ydate);
-                        break;
-                    case BICst.YEAR_MONTH:
-                        ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
-                        start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
-                        end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
-                        break;
-                    case BICst.YEAR_WEEK:
-                        start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                        end = start.getOffsetDate(7);
-                        break;
-                    case BICst.YEAR_DAY:
-                        start = ydate.getOffsetDate(sPrevOrAfter * value.svalue);
-                        end = start.getOffsetDate(1);
-                        break;
-                    case BICst.MONTH_WEEK:
-                        var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
-                        start = mdate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                        end = start.getOffsetDate(7);
-                        break;
-                    case BICst.MONTH_DAY:
-                        var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
-                        start = mdate.getOffsetDate(sPrevOrAfter * value.svalue);
-                        end = start.getOffsetDate(1);
-                        break;
-                }
-                return {
-                    start: start.getTime(),
-                    end: end.getTime()
-                }
-            }
-
-            //获取日期控件的值
-            function getDateControlValue(wid) {
-                var widgetType = BI.Utils.getWidgetTypeByID(wid);
-                var wValue = BI.Utils.getWidgetValueByID(wid);
-                var date = null;
-                switch (widgetType) {
-                    case BICst.Widget.YEAR:
-                        if (BI.isNumeric(wValue)) {
-                            date = new Date(wValue, 0, 1);
-                        }
-                        break;
-                    case BICst.Widget.MONTH:
-                        if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
-                            date = new Date(wValue.year, BI.isNumeric(wValue.month) ? wValue.month : 0, 1);
-                        }
-                        break;
-                    case BICst.Widget.QUARTER:
-                        if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
-                            var quarter = wValue.quarter;
-                            date = new Date(wValue.year, BI.isNumeric(quarter) ? (quarter * 3 - 1) : 0, 1);
-                        }
-                        break;
-                    case BICst.Widget.YMD:
-                        if (BI.isNotNull(wValue)) {
-                            date = new Date(parseComplexDate(wValue));
-                        }
-                        break;
-
-                }
-                return date;
-            }
-
-            //format date type filter
-            function parseFilter(filter) {
-                var filterType = filter.filter_type, filterValue = filter.filter_value;
-                if (BI.isEmptyObject(filterValue)) {
-                    return;
-                }
-                if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
-                    BI.each(filterValue, function (i, value) {
-                        parseFilter(value);
-                    });
-                }
-                if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
-                    var start = filterValue.start, end = filterValue.end;
-                    if (BI.isNotNull(start)) {
-                        filterValue.start = parseComplexDate(start);
-                    }
-                    if (BI.isNotNull(end)) {
-                        filterValue.end = parseComplexDate(end);
-                    }
-                }
-                if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
-                    var filterWId = filterValue.wId, filterValueType = filterValue.filter_value.type;
-                    var wValue = BI.Utils.getWidgetValueByID(filterWId);
-                    if (!BI.Utils.isWidgetExistByID(filterWId)) {
-                        return;
-                    }
-                    switch (filterValueType) {
-                        case BICst.SAME_PERIOD:
-                            if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                                filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
-                            }
-                            if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                                filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
-                            }
-                            break;
-                        case BICst.LAST_SAME_PERIOD:
-                            if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year) && BI.isNotNull(wValue.end.month) && BI.isNotNull(wValue.end.day)) {
-                                var s = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
-                                var e = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
-                                filterValue.start = new Date(2 * s - e).getTime();
-                            } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                                filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
-                            } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                                filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
-                            }
-                            break;
-                        case BICst.YEAR_QUARTER:
-                        case BICst.YEAR_MONTH:
-                        case BICst.YEAR_WEEK:
-                        case BICst.YEAR_DAY:
-                        case BICst.MONTH_WEEK:
-                        case BICst.MONTH_DAY:
-                        case BICst.YEAR:
-                            var date = getDateControlValue(filterWId);
-                            if (BI.isNotNull(date)) {
-                                var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                                filterValue.start = value.start;
-                                filterValue.end = value.end;
-                            }
-                            break;
-                    }
-                }
-                if (filterType === BICst.FILTER_DATE.EARLY_THAN) {
-                    var date = getDateControlValue(filterValue.wId);
-                    if (BI.isNotNull(date)) {
-                        var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                        filterValue.end = value.start;
-                    }
-                }
-                if (filterType === BICst.FILTER_DATE.LATER_THAN) {
-                    var date = getDateControlValue(filterValue.wId);
-                    if (BI.isNotNull(date)) {
-                        var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                        filterValue.start = value.start;
-                    }
-                }
-                if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
-                    filterValue.value = parseComplexDate(filterValue);
-                    filterValue.type = BICst.GROUP.YMD;
-                }
-            }
-
-            function createTreeFilter(floor, value, result) {
-                if (floor === 0) {
-                    result.type = BI.Selection.Multi;
-                    result.value || (result.value = []);
-                    result.value = result.value.concat(BI.keys(value));
-                    return;
-                }
-                if (floor > 0) {
-                    var valueKeys = BI.keys(value);
-                    BI.each(valueKeys, function (i, key) {
-                        createTreeFilter(floor - 1, value[key] || {}, result);
-                    })
-                }
-            }
-
             //日期类型的过滤条件
             var dimensions = widget.dimensions;
             BI.each(dimensions, function (dId, dimension) {
@@ -1395,25 +1266,21 @@
             });
         },
 
-        getPreviewTableDataByTableId: function (tableId, callback) {
-            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
-        },
-
+        /**
+         * 组件与表的关系
+         */
         broadcastAllWidgets2Refresh: function (force) {
             var self = this;
             var allWidgetIds = this.getAllWidgetIDs();
             if (force === true || this.isQueryControlExist() === false) {
                 BI.each(allWidgetIds, function (i, wId) {
                     if (!self.isControlWidgetByWidgetId(wId)) {
-                        BI.Broadcasts.send(wId);
+                        BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + wId);
                     }
                 });
             }
         },
 
-        /**
-         * 组件与表的关系
-         */
         isTableUsableByWidgetID: function (tableId, wId) {
             var self = this;
             var dIds = this.getAllDimensionIDs(wId);
@@ -1429,90 +1296,242 @@
 
     });
 
-
     //获取复杂日期的值
     function parseComplexDate(v) {
-        var type = v.type, value = v.value;
-        var date = new Date();
-        var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
-        var tool = new BI.MultiDateParamTrigger();
-        if (BI.isNull(type) && BI.isNotNull(v.year)) {
-            return new Date(v.year, v.month, v.day).getTime();
+        if (v.type === BICst.MULTI_DATE_PARAM) {
+            return parseComplexDateForParam(v.value);
+        } else {
+            return parseComplexDateCommon(v);
         }
-        switch (type) {
-            case BICst.MULTI_DATE_YEAR_PREV:
-                return new Date(currY - 1 * value, currM, currD).getTime();
-            case BICst.MULTI_DATE_YEAR_AFTER:
-                return new Date(currY + 1 * value, currM, currD).getTime();
-            case BICst.MULTI_DATE_YEAR_BEGIN:
-                return new Date(currY, 1, 1).getTime();
-            case BICst.MULTI_DATE_YEAR_END:
-                return new Date(currY, 11, 31).getTime();
-
-            case BICst.MULTI_DATE_MONTH_PREV:
-                return tool._getBeforeMultiMonth(value).getTime();
-            case BICst.MULTI_DATE_MONTH_AFTER:
-                return tool._getAfterMultiMonth(value).getTime();
-            case BICst.MULTI_DATE_MONTH_BEGIN:
-                return new Date(currY, currM, 1).getTime();
-            case BICst.MULTI_DATE_MONTH_END:
-                return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
-
-            case BICst.MULTI_DATE_QUARTER_PREV:
-                return tool._getBeforeMulQuarter(value).getTime();
-            case BICst.MULTI_DATE_QUARTER_AFTER:
-                return tool._getAfterMulQuarter(value).getTime();
-            case BICst.MULTI_DATE_QUARTER_BEGIN:
-                return tool._getQuarterStartDate().getTime();
-            case BICst.MULTI_DATE_QUARTER_END:
-                return tool._getQuarterEndDate().getTime();
-
-            case BICst.MULTI_DATE_WEEK_PREV:
-                return date.getOffsetDate(-7 * value).getTime();
-            case BICst.MULTI_DATE_WEEK_AFTER:
-                return date.getOffsetDate(7 * value).getTime();
-
-            case BICst.MULTI_DATE_DAY_PREV:
-                return date.getOffsetDate(-1 * value).getTime();
-            case BICst.MULTI_DATE_DAY_AFTER:
-                return date.getOffsetDate(1 * value).getTime();
-            case BICst.MULTI_DATE_DAY_TODAY:
-                return date.getTime();
-
-            case BICst.MULTI_DATE_PARAM:
-                var wWid = value.wId, se = value.startOrEnd;
-                if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
-                    var wWValue = BI.Utils.getWidgetValueByID(wWid);
-                    if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
-                        return new Date(wWValue.start.year, wWValue.start.month, wWValue.start.day).getTime();
-                    } else {
-                        return new Date(wWValue.end.year, wWValue.end.month, wWValue.end.day).getTime();
-                    }
+        function parseComplexDateForParam(value) {
+            var wWid = value.wId, se = value.startOrEnd;
+            if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
+                var wWValue = BI.Utils.getWidgetValueByID(wWid);
+                if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
+                    return parseComplexDateCommon(wWValue.start);
                 } else {
-                    if (BI.isNotNull(value.year) && BI.isNotNull(value.month) && BI.isNotNull(value.day)) {
-                        return new Date(value.year, value.month, value.day).getTime();
-                    }
+                    return parseComplexDateCommon(wWValue.end);
                 }
-                break;
-            case BICst.MULTI_DATE_CALENDAR:
-                return new Date(value.year, value.month, value.day).getTime();
+            } else {
+                return parseComplexDateCommon(BI.Utils.getWidgetValueByID(value));
+            }
+        }
 
+        function parseComplexDateCommon(v) {
+            var type = v.type, value = v.value;
+            var date = new Date();
+            var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
+            var tool = new BI.MultiDateParamTrigger();
+            if (BI.isNull(type) && BI.isNotNull(v.year)) {
+                return new Date(v.year, v.month, v.day).getTime();
+            }
+            switch (type) {
+                case BICst.MULTI_DATE_YEAR_PREV:
+                    return new Date(currY - 1 * value, currM, currD).getTime();
+                case BICst.MULTI_DATE_YEAR_AFTER:
+                    return new Date(currY + 1 * value, currM, currD).getTime();
+                case BICst.MULTI_DATE_YEAR_BEGIN:
+                    return new Date(currY, 1, 1).getTime();
+                case BICst.MULTI_DATE_YEAR_END:
+                    return new Date(currY, 11, 31).getTime();
+
+                case BICst.MULTI_DATE_MONTH_PREV:
+                    return tool._getBeforeMultiMonth(value).getTime();
+                case BICst.MULTI_DATE_MONTH_AFTER:
+                    return tool._getAfterMultiMonth(value).getTime();
+                case BICst.MULTI_DATE_MONTH_BEGIN:
+                    return new Date(currY, currM, 1).getTime();
+                case BICst.MULTI_DATE_MONTH_END:
+                    return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
+
+                case BICst.MULTI_DATE_QUARTER_PREV:
+                    return tool._getBeforeMulQuarter(value).getTime();
+                case BICst.MULTI_DATE_QUARTER_AFTER:
+                    return tool._getAfterMulQuarter(value).getTime();
+                case BICst.MULTI_DATE_QUARTER_BEGIN:
+                    return tool._getQuarterStartDate().getTime();
+                case BICst.MULTI_DATE_QUARTER_END:
+                    return tool._getQuarterEndDate().getTime();
+
+                case BICst.MULTI_DATE_WEEK_PREV:
+                    return date.getOffsetDate(-7 * value).getTime();
+                case BICst.MULTI_DATE_WEEK_AFTER:
+                    return date.getOffsetDate(7 * value).getTime();
+
+                case BICst.MULTI_DATE_DAY_PREV:
+                    return date.getOffsetDate(-1 * value).getTime();
+                case BICst.MULTI_DATE_DAY_AFTER:
+                    return date.getOffsetDate(1 * value).getTime();
+                case BICst.MULTI_DATE_DAY_TODAY:
+                    return date.getTime();
+                case BICst.MULTI_DATE_CALENDAR:
+                    return new Date(value.year, value.month, value.day).getTime();
+
+            }
         }
     }
 
-    function createTreeFilterValue(result, v, dId, floor) {
-        if (floor === 0) {
-            if (BI.isNull(result.value)) {
-                result.value = [];
-            }
-            BI.isNull(result.type) && (result.type = 1);
-            BI.each(v, function (value, child) {
-                result.value.push(value);
-            })
+    //format date type filter
+    function parseFilter(filter) {
+        var filterType = filter.filter_type, filterValue = filter.filter_value;
+        if (BI.isEmptyObject(filterValue)) {
+            return;
         }
-        BI.each(v, function (value, child) {
-                createTreeFilterValue(result, child, dId, floor - 1);
+        if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+            BI.each(filterValue, function (i, value) {
+                parseFilter(value);
+            });
+        }
+        if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
+            var start = filterValue.start, end = filterValue.end;
+            if (BI.isNotNull(start)) {
+                filterValue.start = parseComplexDate(start);
             }
-        );
+            if (BI.isNotNull(end)) {
+                filterValue.end = parseComplexDate(end);
+            }
+        }
+        if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
+            var filterWId = filterValue.wId, filterValueType = filterValue.filter_value.type;
+            var wValue = BI.Utils.getWidgetValueByID(filterWId);
+            if (!BI.Utils.isWidgetExistByID(filterWId)) {
+                return;
+            }
+            switch (filterValueType) {
+                case BICst.SAME_PERIOD:
+                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
+                        filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
+                    }
+                    if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
+                        filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
+                    }
+                    break;
+                case BICst.LAST_SAME_PERIOD:
+                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year) && BI.isNotNull(wValue.end.month) && BI.isNotNull(wValue.end.day)) {
+                        var s = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
+                        var e = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
+                        filterValue.start = new Date(2 * s - e).getTime();
+                        filterValue.end = s;
+                    } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
+                        filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
+                    } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
+                        filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
+                    }
+                    break;
+                case BICst.YEAR_QUARTER:
+                case BICst.YEAR_MONTH:
+                case BICst.YEAR_WEEK:
+                case BICst.YEAR_DAY:
+                case BICst.MONTH_WEEK:
+                case BICst.MONTH_DAY:
+                case BICst.YEAR:
+                    var date = getDateControlValue(filterWId);
+                    if (BI.isNotNull(date)) {
+                        var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
+                        filterValue.start = value.start;
+                        filterValue.end = value.end;
+                    }
+                    break;
+            }
+        }
+        if (filterType === BICst.FILTER_DATE.EARLY_THAN) {
+            var date = getDateControlValue(filterValue.wId);
+            if (BI.isNotNull(date)) {
+                var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
+                filterValue.end = new Date(value.start).getOffsetDate(-1).getTime();
+            }
+        }
+        if (filterType === BICst.FILTER_DATE.LATER_THAN) {
+            var date = getDateControlValue(filterValue.wId);
+            if (BI.isNotNull(date)) {
+                var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
+                filterValue.start = new Date(value.start).getOffsetDate(1).getTime();
+            }
+        }
+        if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
+            filterValue.value = parseComplexDate(filterValue);
+            filterValue.type = BICst.GROUP.YMD;
+        }
+        return filterValue;
+        //日期偏移值
+        function getOffSetDateByDateAndValue(date, value) {
+            var tool = new BI.ParamPopupView();
+            var type = value.type, value = value.value;
+            var fPrevOrAfter = value.foffset === 0 ? -1 : 1;
+            var sPrevOrAfter = value.soffset === 0 ? -1 : 1;
+            var start, end;
+            start = end = date;
+            var ydate = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), date.getMonth(), date.getDate());
+            switch (type) {
+                case BICst.YEAR:
+                    start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
+                    end = new Date(start.getFullYear(), 11, 31);
+                    break;
+                case BICst.YEAR_QUARTER:
+                    ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
+                    start = tool._getQuarterStartDate(ydate);
+                    end = tool._getQuarterEndDate(ydate);
+                    break;
+                case BICst.YEAR_MONTH:
+                    ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
+                    start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
+                    end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
+                    break;
+                case BICst.YEAR_WEEK:
+                    start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
+                    end = start.getOffsetDate(7);
+                    break;
+                case BICst.YEAR_DAY:
+                    start = ydate.getOffsetDate(sPrevOrAfter * value.svalue);
+                    end = start.getOffsetDate(1);
+                    break;
+                case BICst.MONTH_WEEK:
+                    var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
+                    start = mdate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
+                    end = start.getOffsetDate(7);
+                    break;
+                case BICst.MONTH_DAY:
+                    var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
+                    start = mdate.getOffsetDate(sPrevOrAfter * value.svalue);
+                    end = start.getOffsetDate(1);
+                    break;
+            }
+            return {
+                start: start.getTime(),
+                end: end.getTime()
+            }
+        }
+
+        //获取日期控件的值
+        function getDateControlValue(wid) {
+            var widgetType = BI.Utils.getWidgetTypeByID(wid);
+            var wValue = BI.Utils.getWidgetValueByID(wid);
+            var date = null;
+            switch (widgetType) {
+                case BICst.Widget.YEAR:
+                    if (BI.isNumeric(wValue)) {
+                        date = new Date(wValue, 0, 1);
+                    }
+                    break;
+                case BICst.Widget.MONTH:
+                    if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
+                        date = new Date(wValue.year, BI.isNumeric(wValue.month) ? wValue.month : 0, 1);
+                    }
+                    break;
+                case BICst.Widget.QUARTER:
+                    if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
+                        var quarter = wValue.quarter;
+                        date = new Date(wValue.year, BI.isNumeric(quarter) ? (quarter * 3 - 1) : 0, 1);
+                    }
+                    break;
+                case BICst.Widget.YMD:
+                    if (BI.isNotNull(wValue)) {
+                        date = new Date(parseComplexDate(wValue));
+                    }
+                    break;
+
+            }
+            return date;
+        }
     }
 })();

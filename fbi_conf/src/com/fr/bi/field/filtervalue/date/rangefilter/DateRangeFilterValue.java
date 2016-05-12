@@ -94,7 +94,7 @@ public abstract class DateRangeFilterValue implements DateFilterValue, NullFilte
      */
     @Override
     public JSONObject createJSON() throws Exception {
-		return null;
+		return range.createJSON();
     }
 
     /**

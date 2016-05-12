@@ -17,6 +17,7 @@ import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -133,8 +134,8 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     }
 
     @Override
-    public void createEmptyGroup(long userId, BIGroupTagName groupTagName) throws BIGroupDuplicateException {
-        getUserGroupConfigManager(userId).getPackageConfigManager().getGroupCollectionManager().createEmptyGroup(groupTagName);
+    public void createEmptyGroup(long userId, BIGroupTagName groupTagName, long position) throws BIGroupDuplicateException {
+        getUserGroupConfigManager(userId).getPackageConfigManager().getGroupCollectionManager().createEmptyGroup(groupTagName, position);
     }
 
     @Override
@@ -180,6 +181,11 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
 
     @Override
     public JSONObject createPackageJSON(long userId) throws Exception {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().createPackageJSON();
+    }
+
+    @Override
+    public JSONObject createPackageJSON(long userId, Locale locale) throws Exception {
         return getUserGroupConfigManager(userId).getPackageConfigManager().createPackageJSON();
     }
 

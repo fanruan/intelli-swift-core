@@ -268,7 +268,7 @@ BI.ConfNumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         if(BI.isNull(configs)){
             return;
         }
-        var self = this, o = this.options;;
+        var self = this, o = this.options;
         if(BI.isNotNull(configs.group_value)){
             this.max = BI.parseInt(configs.group_value.max);
             this.min = BI.parseInt(configs.group_value.min);

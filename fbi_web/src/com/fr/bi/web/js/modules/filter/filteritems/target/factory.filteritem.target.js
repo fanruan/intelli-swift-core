@@ -73,10 +73,10 @@ BI.TargetFilterItemFactory = {
                 type = "bi.filter_expander";
                 break;
             case BICst.FILTER_TYPE.FORMULA:
-                type = "bi.formula_filter_item";
+                type = "bi.target_formula_filter_item";
                 break;
             case BICst.FILTER_TYPE.EMPTY_FORMULA:
-                type = "bi.formula_empty_filter_item";
+                type = "bi.target_formula_empty_filter_item";
                 break;
             case BICst.FILTER_TYPE.EMPTY_CONDITION:
                 type = "bi.target_no_type_field_filter_item";

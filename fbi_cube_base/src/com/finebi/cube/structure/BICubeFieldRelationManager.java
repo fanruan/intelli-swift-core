@@ -1,5 +1,6 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
@@ -23,8 +24,8 @@ public class BICubeFieldRelationManager extends BICubeTableRelationEntityManager
     private BIColumnKey currentFieldKey;
 
 
-    public BICubeFieldRelationManager(ICubeResourceRetrievalService resourceRetrievalService, ITableKey tableKey, BIColumnKey currentFieldKey) {
-        super(resourceRetrievalService, tableKey);
+    public BICubeFieldRelationManager(ICubeResourceRetrievalService resourceRetrievalService, ITableKey tableKey, BIColumnKey currentFieldKey, ICubeResourceDiscovery discovery) {
+        super(resourceRetrievalService, tableKey, discovery);
         this.currentFieldKey = currentFieldKey;
     }
 

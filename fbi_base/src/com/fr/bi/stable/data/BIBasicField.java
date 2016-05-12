@@ -118,8 +118,13 @@ public class BIBasicField extends BIField implements JSONTransform, Cloneable, S
     }
     public JSONObject createJSON(ICubeDataLoader loader) throws Exception {
         JSONObject jo = createJSON();
-        ICubeTableService ti = loader.getTableIndex(this);
         if (getFieldType() ==  DBConstant.COLUMN.NUMBER){
+            ICubeTableService ti = null;
+            try{
+                 ti = loader.getTableIndex(this);
+            } catch (Exception e){
+
+            }
             jo.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, ti != null ? ti.getMAXValue(loader.getFieldIndex(this)) : 0);
             jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? ti.getMINValue(loader.getFieldIndex(this)) : 0 );
         }

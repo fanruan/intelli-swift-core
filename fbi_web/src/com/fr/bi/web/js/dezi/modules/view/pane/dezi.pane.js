@@ -59,6 +59,16 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             this._refreshWidgets();
             return true;
         }
+        if(this.model.has("undo")) {
+            this.model.get("undo");
+            this.refresh();
+            return true;
+        } 
+        if(this.model.has("redo")) {
+            this.model.get("redo");
+            this.refresh();
+            return true;
+        }
         return false;
     },
 
@@ -71,13 +81,71 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     change: function (changed) {
-
+        this._refreshButtons();
+        if(this.model.get("isUndoRedoSet")) {
+            this.refresh();
+            this.model.get("setUndoRedoSet", false);
+        }
     },
 
     _createNorth: function () {
+        var self = this;
+        var saveAs = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "toolbar-save-font",
+            text: BI.i18nText("BI-Save_As"),
+            height: 30,
+            width: 70
+        });
+        saveAs.on(BI.IconTextItem.EVENT_CHANGE, function(){
+
+        });
+
+        this.undoButton = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "toolbar-undo-font",
+            text: BI.i18nText("BI-Undo"),
+            height: 30,
+            width: 60
+        });
+        this.undoButton.on(BI.IconTextIconItem.EVENT_CHANGE, function(){
+            self.model.set("undo", true);
+        });
+        this.undoButton.setEnable(false);
+        this.redoButton = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "toolbar-redo-font",
+            text: BI.i18nText("BI-Redo"),
+            height: 30,
+            width: 60
+        });
+        this.redoButton.setEnable(false);
+        this.redoButton.on(BI.IconTextIconItem.EVENT_CHANGE, function(){
+            self.model.set("redo", true);
+        });
         return BI.createWidget({
-            type: "bi.layout"
+            type: "bi.left",
+            cls: "dashboard-toolbar",
+            items: [saveAs, this.undoButton, this.redoButton],
+            lgap: 20
         })
+    },
+
+    _refreshButtons: function(){
+        var operatorIndex = this.model.get("getOperatorIndex");
+        var records = Data.SharingPool.get("records") || [];
+        var recordsSize = records.length;
+        if(operatorIndex === recordsSize - 1) {
+            this.undoButton.setEnable(true);
+            this.redoButton.setEnable(false);
+        }
+        if(operatorIndex < recordsSize - 1) {
+            this.undoButton.setEnable(true);
+            this.redoButton.setEnable(true);
+        }
+        if(operatorIndex === 0) {
+            this.undoButton.setEnable(false);
+        }
     },
 
 
@@ -122,7 +190,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
-        var self = this;
+        this._refreshButtons();
         this.dashboard.populate();
         this._refreshWidgets();
     }

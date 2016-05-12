@@ -1,6 +1,7 @@
 package com.finebi.cube.structure;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.finebi.cube.ICubeConfiguration;

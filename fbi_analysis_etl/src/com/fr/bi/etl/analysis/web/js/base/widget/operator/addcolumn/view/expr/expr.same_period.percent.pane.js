@@ -56,4 +56,4 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodPercentPane  = BI.inherit(BI.Analys
     }
 
 });
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BI.ANALYSIS_ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT, BI.AnalysisETLOperatorAddColumnExprSamePeriodPercentPane);
+$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT, BI.AnalysisETLOperatorAddColumnExprSamePeriodPercentPane);

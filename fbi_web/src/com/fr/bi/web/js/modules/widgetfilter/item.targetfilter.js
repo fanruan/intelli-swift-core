@@ -124,7 +124,7 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 type: "bi.label",
-                text: BI.Utils.getDimensionNameByID(tId),
+                text: BI.Utils.getDimensionNameByID(tId) || BI.Utils.getFieldNameByID(tId),
                 cls: "target-name",
                 height: 30
             }, {
@@ -134,7 +134,7 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
                 cls: ""
             }, {
                 type: "bi.label",
-                text: value.toString(),
+                text: BI.isNotNull(value) ? value.toString() : "",
                 height: 30,
                 cls: ""
             }],

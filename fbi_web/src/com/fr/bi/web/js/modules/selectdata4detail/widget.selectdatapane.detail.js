@@ -41,12 +41,25 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 value = value.field_id;
             }
             var tableId = BI.Utils.getTableIdByFieldID(value);
-            BI.Broadcasts.send(o.wId + "usable", ob.isSelected() ? tableId : "");
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, ob.isSelected() ? tableId : "");
         });
 
-        //TODO 暂时先选中第一个业务包
-        var ids = BI.Utils.getAllPackageIDs();
-        this.searcher.setPackage(ids[0]);
+        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, function () {
+            var pId = this.getPackageId();
+            BI.Utils.setCurrentSelectPackageID(pId);
+        });
+
+        var id = BI.Utils.getCurrentSelectPackageID();
+        this.searcher.setPackage(id);
+
+        var broadcast = function () {
+            packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+            self.searcher.populatePackages(packageStructure);
+        };
+        //当前组件的业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX + o.wId, broadcast);
+        //全局业务包更新
+        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX, broadcast);
     },
 
     /**
@@ -226,7 +239,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 items: items
             });
         }
-        
+
         //count, string, number
         BI.each(BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId), function (i, fid) {
             if (BI.Utils.getFieldIsUsableByID(fid) === false || viewFields.contains(fid)) {
@@ -327,6 +340,9 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                                 break;
                             case BICst.GROUP.YMD:
                                 name = BI.i18nText("BI-Date") + "(" + name + ")";
+                                break;
+                            case BICst.GROUP.YMDHMS:
+                                name = BI.i18nText("BI-Time_ShiKe") + "(" + name + ")";
                                 break;
                         }
                         return {
@@ -433,6 +449,18 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.YMD}
+            },
+            drag: drag
+        }, {
+            id: fieldId + BICst.GROUP.YMDHMS,
+            pId: fieldId,
+            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
+            text: BI.i18nText("BI-Time_ShiKe"),
+            title: BI.i18nText("BI-Time_ShiKe"),
+            value: {
+                field_id: fieldId,
+                group: {type: BICst.GROUP.YMDHMS}
             },
             drag: drag
         }];

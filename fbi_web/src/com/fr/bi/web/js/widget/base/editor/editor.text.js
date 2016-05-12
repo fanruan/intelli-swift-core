@@ -4,9 +4,9 @@
  * @extends BI.Single
  */
 BI.TextEditor = BI.inherit(BI.Single, {
-    _defaultConfig: function() {
+    _defaultConfig: function () {
         var conf = BI.TextEditor.superclass._defaultConfig.apply(this, arguments);
-        return BI.extend(conf , {
+        return BI.extend(conf, {
             extraCls: "bi-text-editor",
             hgap: 4,
             vgap: 2,
@@ -17,21 +17,21 @@ BI.TextEditor = BI.inherit(BI.Single, {
             validationChecker: BI.emptyFn,
             quitChecker: BI.emptyFn,
             mouseOut: false,
-            allowBlank : false,
+            allowBlank: false,
             watermark: "",
             errorText: "",
             height: 30
         })
     },
 
-    _init : function() {
+    _init: function () {
         BI.TextEditor.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        if(BI.isNumber(o.height)){
-            this.element.css({height: o.height-2});
+        if (BI.isNumber(o.height)) {
+            this.element.css({height: o.height - 2});
         }
-        if(BI.isNumber(o.width)){
-            this.element.css({width: o.width-2});
+        if (BI.isNumber(o.width)) {
+            this.element.css({width: o.width - 2});
         }
         this.editor = BI.createWidget({
             type: "bi.editor",
@@ -46,7 +46,7 @@ BI.TextEditor = BI.inherit(BI.Single, {
             validationChecker: o.validationChecker,
             quitChecker: o.quitChecker,
             mouseOut: o.mouseOut,
-            allowBlank : o.allowBlank,
+            allowBlank: o.allowBlank,
             watermark: o.watermark,
             errorText: o.errorText
         });
@@ -54,81 +54,89 @@ BI.TextEditor = BI.inherit(BI.Single, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
-        this.editor.on(BI.Editor.EVENT_FOCUS, function(){
+        this.editor.on(BI.Editor.EVENT_FOCUS, function () {
             self.fireEvent(BI.TextEditor.EVENT_FOCUS);
         });
-        this.editor.on(BI.Editor.EVENT_BLUR, function(){
+        this.editor.on(BI.Editor.EVENT_BLUR, function () {
             self.fireEvent(BI.TextEditor.EVENT_BLUR);
         });
-        this.editor.on(BI.Editor.EVENT_CLICK, function(){
+        this.editor.on(BI.Editor.EVENT_CLICK, function () {
             self.fireEvent(BI.TextEditor.EVENT_CLICK);
         });
-        this.editor.on(BI.Editor.EVENT_CHANGE, function(){
+        this.editor.on(BI.Editor.EVENT_CHANGE, function () {
             self.fireEvent(BI.TextEditor.EVENT_CHANGE);
         });
-        this.editor.on(BI.Editor.EVENT_KEY_DOWN, function(v){
+        this.editor.on(BI.Editor.EVENT_KEY_DOWN, function (v) {
             self.fireEvent(BI.TextEditor.EVENT_KEY_DOWN);
         });
-        this.editor.on(BI.Editor.EVENT_SPACE, function(v){
+        this.editor.on(BI.Editor.EVENT_SPACE, function (v) {
             self.fireEvent(BI.TextEditor.EVENT_SPACE);
         });
-        this.editor.on(BI.Editor.EVENT_BACKSPACE, function(v){
+        this.editor.on(BI.Editor.EVENT_BACKSPACE, function (v) {
             self.fireEvent(BI.TextEditor.EVENT_BACKSPACE);
         });
 
 
-        this.editor.on(BI.Editor.EVENT_VALID, function(){
+        this.editor.on(BI.Editor.EVENT_VALID, function () {
             self.fireEvent(BI.TextEditor.EVENT_VALID);
-        })
-        this.editor.on(BI.Editor.EVENT_CONFIRM, function(){
+        });
+        this.editor.on(BI.Editor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.TextEditor.EVENT_CONFIRM);
-        })
-        this.editor.on(BI.Editor.EVENT_REMOVE, function(v){
+        });
+        this.editor.on(BI.Editor.EVENT_REMOVE, function (v) {
             self.fireEvent(BI.TextEditor.EVENT_REMOVE);
         });
-        this.editor.on(BI.Editor.EVENT_START, function(){
+        this.editor.on(BI.Editor.EVENT_START, function () {
             self.fireEvent(BI.TextEditor.EVENT_START);
-        })
-        this.editor.on(BI.Editor.EVENT_PAUSE, function(){
+        });
+        this.editor.on(BI.Editor.EVENT_PAUSE, function () {
             self.fireEvent(BI.TextEditor.EVENT_PAUSE);
-        })
-        this.editor.on(BI.Editor.EVENT_STOP, function(){
+        });
+        this.editor.on(BI.Editor.EVENT_STOP, function () {
             self.fireEvent(BI.TextEditor.EVENT_STOP);
-        })
-        this.editor.on(BI.Editor.EVENT_ERROR, function(){
+        });
+        this.editor.on(BI.Editor.EVENT_ERROR, function () {
             self.fireEvent(BI.TextEditor.EVENT_ERROR);
-        })
-        this.editor.on(BI.Editor.EVENT_RESTRICT, function(){
+        });
+        this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.TextEditor.EVENT_RESTRICT);
-        })
-        this.editor.on(BI.Editor.EVENT_EMPTY, function(){
+        });
+        this.editor.on(BI.Editor.EVENT_EMPTY, function () {
             self.fireEvent(BI.TextEditor.EVENT_EMPTY);
-        })
+        });
         BI.createWidget({
             type: "bi.vertical",
             scrolly: false,
             element: this.element,
             items: [this.editor]
-        })
+        });
     },
 
-    setErrorText: function(text){
+    focus: function () {
+        this.editor.focus();
+    },
+
+    blur: function () {
+        this.editor.blur();
+    },
+
+    setErrorText: function (text) {
         this.editor.setErrorText(text);
     },
 
-    getErrorText: function(){
+    getErrorText: function () {
         return this.editor.getErrorText();
     },
 
-    isValid : function() {
+    isValid: function () {
         return this.editor.isValid();
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.editor.setValue(v);
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.editor.getValue();
     },
 

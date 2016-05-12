@@ -14,7 +14,17 @@ RelationviewView = BI.inherit(BI.View, {
             type: "bi.relation_view",
             items: [
                 {
-                    primary: {region: "B", value: "b2", text: "b2字段"},
+                    primary: {
+                        region: "B", regionText: "比", regionHandler: function () {
+                            alert("a")
+                        },
+
+
+                        value: "b2", text: "b2字段",
+                        handler: function () {
+                            alert("d")
+                        }
+                    },
                     foreign: {region: "C", value: "c1", text: "c1字段"}
                 },
                 {
@@ -41,6 +51,9 @@ RelationviewView = BI.inherit(BI.View, {
                 {
                     primary: {region: "X", value: "x2", text: "x2字段"},
                     foreign: {region: "B", value: "b1", text: "b1字段"}
+                },
+                {
+                    primary: {region: "X33", value: "x233", text: "x233字段"},
                 }
             ]
         });

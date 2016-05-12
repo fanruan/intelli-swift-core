@@ -32,7 +32,6 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
         this.loading();
         Data.BufferPool.getTablesByConnectionName(connName, function(res){
             self.populate(connName, res);
-            console.log(res);
             self.loaded();
         });
     },

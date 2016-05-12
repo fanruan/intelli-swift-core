@@ -49,7 +49,10 @@ public class Service4BIDezi implements Service {
 
             new BIExcelExportAction(),
 
-            new BIGetPreviewTableDataAction()
+            new BIGetPreviewTableDataAction(),
+
+            new BIStartGenerateTempCubeAction(),
+            new BIGetTempCubeGeneratingStatusAction()
 
     };
 
