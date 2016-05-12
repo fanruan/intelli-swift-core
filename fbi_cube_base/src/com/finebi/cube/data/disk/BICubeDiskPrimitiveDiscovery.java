@@ -56,7 +56,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     @Override
     public ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
         BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
-        if (readerCache.isAvailableResource(resourceLocation)) {
+        if (readerCache.isAvailableResource(resourceLocation) &&! readerCache.getResource(resourceLocation).isForceReleased()) {
             return readerCache.getResource(resourceLocation);
         } else {
             ICubePrimitiveReader reader = readerManager.buildCubeReader(resourceLocation);
@@ -71,7 +71,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     public ICubePrimitiveWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException {
         ResourceLock lock = getLock(resourceLocation);
         synchronized (lock) {
-            if (writerCache.isAvailableResource(resourceLocation)) {
+            if (writerCache.isAvailableResource(resourceLocation) &&! writerCache.getResource(resourceLocation).isForceReleased()) {
                 return writerCache.getResource(resourceLocation);
             } else {
                 BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);

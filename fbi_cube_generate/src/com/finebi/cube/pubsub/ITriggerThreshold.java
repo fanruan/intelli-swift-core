@@ -113,5 +113,7 @@ public interface ITriggerThreshold {
 
     boolean isMeetThreshold();
 
+    String leftCondition();
+
     BITriggerThreshold.ConditionAndSet getMeetCondition() throws BIThresholdUnsatisfiedException;
 }

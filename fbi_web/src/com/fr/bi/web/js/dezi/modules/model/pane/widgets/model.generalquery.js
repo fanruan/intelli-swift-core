@@ -7,7 +7,8 @@ BIDezi.GeneralQueryModel = BI.inherit(BI.Model, {
             name: "",
             bounds: {},
             type: BICst.Widget.GENERAL_QUERY,
-            value: []
+            value: [],
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 

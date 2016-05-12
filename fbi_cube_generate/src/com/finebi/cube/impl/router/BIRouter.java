@@ -30,7 +30,7 @@ import com.fr.bi.common.factory.annotation.BISingletonObject;
 public class BIRouter implements IRouter {
     private ITopicRouterService topicRouterService;
     private BIMessageDispatcher messageDispatcher;
-    private boolean verbose = true;
+    private boolean verbose = false;
 
     public BIRouter() {
         topicRouterService = BIFactoryHelper.getObject(ITopicRouterService.class);

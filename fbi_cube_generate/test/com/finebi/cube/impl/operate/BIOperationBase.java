@@ -9,7 +9,6 @@ import com.finebi.cube.pubsub.IPublish;
 import com.finebi.cube.router.fragment.IFragmentID;
 import com.finebi.cube.router.topic.ITopicTag;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import junit.framework.TestCase;
 
 /**
  * This class created on 2016/3/25.
@@ -17,11 +16,12 @@ import junit.framework.TestCase;
  * @author Connery
  * @since 4.0
  */
-public abstract class BIOperationBase extends TestCase {
+public abstract class BIOperationBase {
     protected IOperation operation;
     protected IPublish publish;
 
     public BIOperationBase(IOperationID operationID, IFragmentID fragmentID) {
+        super();
         operation = BIFactoryHelper.getObject(IOperation.class, operationID, new IProcessor<Integer>() {
             @Override
             public void process(IMessage lastReceiveMessage) {

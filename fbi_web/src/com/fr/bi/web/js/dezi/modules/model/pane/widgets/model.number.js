@@ -6,7 +6,8 @@ BIDezi.NumberWidgetModel = BI.inherit(BI.Model, {
             type: BICst.Widget.NUMBER,
             dimensions: {},
             view: {},
-            value: {}
+            value: {},
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 

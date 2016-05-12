@@ -6,7 +6,8 @@ BIDezi.YearQuarterWidgetModel = BI.inherit(BI.Model, {
             type: BICst.Widget.QUARTER,
             dimensions: {},
             view: {},
-            value: {}
+            value: {},
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 

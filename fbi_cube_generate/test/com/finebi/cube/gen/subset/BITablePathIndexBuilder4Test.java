@@ -28,4 +28,9 @@ public class BITablePathIndexBuilder4Test extends BITablePathIndexBuilder {
 //        }
         return null;
     }
+
+    @Override
+    public void release() {
+
+    }
 }

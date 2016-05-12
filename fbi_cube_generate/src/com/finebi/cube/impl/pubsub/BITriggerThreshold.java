@@ -13,7 +13,9 @@ import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This class created on 2016/3/24.
@@ -28,6 +30,8 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
     protected Map<Integer, ConditionAndSet> initContainer() {
         return new HashMap<Integer, ConditionAndSet>();
     }
+
+    private boolean verbose = true;
 
     @Override
     protected ConditionAndSet generateAbsentValue(Integer key) {
@@ -161,6 +165,10 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
         throw new BIThresholdUnsatisfiedException();
     }
 
+    public String leftCondition() {
+        return container.get(0).leftCondition();
+    }
+
     public class ConditionAndSet {
         private BITopicTagThreshold topicTagThreshold;
         private BIFragmentTagThreshold fragmentTagThreshold;
@@ -258,6 +266,15 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
             } catch (BIThresholdIsOffException e) {
                 return;
             }
+        }
+
+        private String leftCondition() {
+            StringBuffer sb = new StringBuffer();
+            sb.append(topicTagThreshold.leftCondition("topicTagThreshold")).append("\n").append(
+                    fragmentTagThreshold.leftCondition("fragmentTagThreshold")).append("\n").append(
+                    statusTagThreshold.leftCondition("statusTagThreshold")).append("\n");
+
+            return sb.toString();
         }
     }
 }

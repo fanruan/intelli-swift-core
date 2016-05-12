@@ -102,6 +102,11 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
+    public List<ITableKey> getParentsTable() {
+        return tableProperty.getParentsTable();
+    }
+
+    @Override
     public void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
         int columnIndex = originalDataValue.getCol();
         int rowNumber = (int) originalDataValue.getRow();
@@ -202,5 +207,10 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     @Override
     public boolean tableDataAvailable() {
         return tableProperty.isPropertyExist();
+    }
+
+    @Override
+    public boolean isRowCountAvailable() {
+        return tableProperty.isRowCountAvailable();
     }
 }

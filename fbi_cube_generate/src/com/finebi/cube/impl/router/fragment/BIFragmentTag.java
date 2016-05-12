@@ -55,9 +55,8 @@ public class BIFragmentTag implements IFragmentTag {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("BIFragmentTag{");
-        sb.append("fragmentID=").append(fragmentID);
-        sb.append('}');
+        final StringBuffer sb = new StringBuffer();
+        sb.append(fragmentID);
         return sb.toString();
     }
 }
