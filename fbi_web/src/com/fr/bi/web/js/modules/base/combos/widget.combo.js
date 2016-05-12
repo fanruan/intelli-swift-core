@@ -22,12 +22,12 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             el: {
                 type: "bi.icon_button",
                 cls: "widget-combo-pull-down-font pull-down-trigger",
-                width: 32,
-                height: 32
+                width: 26,
+                height: 26
             },
             element: this.element,
-            height: 32,
-            width: 32
+            height: 26,
+            width: 26
         });
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function(v){
             self.fireEvent(BI.WidgetCombo.EVENT_CHANGE, v); 
@@ -83,7 +83,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
     _createWidgetComboItems: function(){
         var wId = this.options.wId;
         var isShowName = BI.Utils.isShowWidgetNameByID(wId);
-        var namePos = BI.Utils.getWidgetNamePostionByID(wId);
+        var namePos = BI.Utils.getWidgetNamePositionByID(wId);
         return [
             [{
                 text: BI.i18nText("BI-Link_To_Dots"),
@@ -143,7 +143,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
     _createDetailWidgetComboItems: function(){
         var wId = this.options.wId;
         var isShowName = BI.Utils.isShowWidgetNameByID(wId);
-        var namePos = BI.Utils.getWidgetNamePostionByID(wId);
+        var namePos = BI.Utils.getWidgetNamePositionByID(wId);
         return [
             [{
                 text: BI.i18nText("BI-Show_Title"),
