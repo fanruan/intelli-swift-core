@@ -4,9 +4,10 @@ import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
-import com.finebi.cube.structure.table.BICubeTableEntity;
+import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -29,12 +30,22 @@ public class BISourceDataTransport extends BIProcessor {
     protected Set<ITableSource> allSources;
     protected ICubeTableEntityService tableEntityService;
     protected ICube cube;
+    protected List<ITableKey> parents = new ArrayList<ITableKey>();
 
-    public BISourceDataTransport(ICube cube, ITableSource tableSource, Set<ITableSource> allSources) {
+    public BISourceDataTransport(ICube cube, ITableSource tableSource, Set<ITableSource> allSources, Set<ITableSource> parentTableSource) {
         this.tableSource = tableSource;
         this.allSources = allSources;
         this.cube = cube;
-        tableEntityService = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableSource));
+        tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+        initialParents(parentTableSource);
+    }
+
+    private void initialParents(Set<ITableSource> parentTableSource) {
+        if (parentTableSource != null) {
+            for (ITableSource tableSource : parentTableSource) {
+                parents.add(new BITableKey(tableSource));
+            }
+        }
     }
 
     @Override
@@ -57,6 +68,7 @@ public class BISourceDataTransport extends BIProcessor {
             columnList.add(convert(col));
         }
         tableEntityService.recordTableStructure(columnList);
+        tableEntityService.recordParentsTable(parents);
     }
 
     private long transport() {

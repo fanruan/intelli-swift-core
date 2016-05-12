@@ -54,4 +54,14 @@ public class BIStringNIOWriter implements ICubeStringWriter {
     @Override
     public void saveStatus() {
     }
+
+    @Override
+    public void forceRelease() {
+        byteWriteMappedList.forceRelease();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return byteWriteMappedList.isForceReleased();
+    }
 }

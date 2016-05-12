@@ -42,6 +42,8 @@ public interface ICube {
      */
     ICubeTableEntityGetterService getCubeTable(ITableKey tableKey);
 
+    ICubeTableEntityService getCubeTableWriter(ITableKey tableKey);
+
     /**
      * 获取列的操作接口
      *

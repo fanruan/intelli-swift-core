@@ -78,7 +78,6 @@ public class ICubeTableServiceTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
-
     public void testTableFieldRelation() {
         try {
 

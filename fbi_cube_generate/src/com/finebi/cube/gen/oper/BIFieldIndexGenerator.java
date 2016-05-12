@@ -4,7 +4,7 @@ import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ICube;
-import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.ICubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.stable.data.db.DBField;
@@ -45,7 +45,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     private void initial() {
         try {
-            ICubeTableEntityService tableEntityService = (ICubeTableEntityService) cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
+            ICubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
             rowCount = tableEntityService.getRowCount();
             tableEntityService.clear();

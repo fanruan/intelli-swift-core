@@ -83,4 +83,18 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
     public boolean canRead() {
         return contentReader.canReader();
     }
+
+    @Override
+    public void forceRelease() {
+        positionReader.forceRelease();
+        lengthReader.forceRelease();
+        contentReader.forceRelease();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return positionReader.isForceReleased() ||
+                lengthReader.isForceReleased() ||
+                contentReader.isForceReleased();
+    }
 }

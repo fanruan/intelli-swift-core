@@ -51,4 +51,5 @@ public interface ICubeTableEntityService extends ICubeTableEntityGetterService {
 
     void recordParentsTable(List<ITableKey> parents);
 
+    List<ITableKey> getParentsTable();
 }

@@ -5,18 +5,21 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
-import com.finebi.cube.structure.*;
+import com.finebi.cube.structure.BICubeTablePath;
+import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * This class created on 2016/5/9.
@@ -29,40 +32,80 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     /**
      * 上次Table对象
      */
-    private Set<ICubeTableEntityService> parents;
+    private ICubeTableEntityService parentTable;
+    protected Map<DBField, ICubeTableEntityService> fieldSource = new HashMap<DBField, ICubeTableEntityService>();
+    private List<DBField> compoundFields = new ArrayList<DBField>();
 
     public CompoundCubeTableReader(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
-//        super(tableKey, resourceRetrievalService, discovery);
+        hostTable = new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
+        if (hostTable.getParentsTable() != null && !hostTable.getParentsTable().isEmpty()) {
+            parentTable = new CompoundCubeTableReaderNode(hostTable.getParentsTable(), resourceRetrievalService, discovery);
+        }
+        initialFields();
+    }
+
+    public ICubeTableEntityService getParentTable() {
+        return parentTable;
+    }
+
+    private void initialFields() {
+        if (hostTable.tableDataAvailable()) {
+            for (DBField field : hostTable.getFieldInfo()) {
+                if (!compoundFields.contains(field)) {
+                    compoundFields.add(field);
+                    fieldSource.put(field, hostTable);
+                }
+            }
+        } else {
+            throw BINonValueUtils.beyondControl("Please generate Cube firstly");
+        }
+        if (isParentAvailable()) {
+            for (DBField field : parentTable.getFieldInfo()) {
+                if (!compoundFields.contains(field)) {
+                    compoundFields.add(field);
+                    fieldSource.put(field, parentTable);
+
+                }
+            }
+        }
+    }
+
+    private boolean isParentAvailable() {
+        return parentTable != null;
     }
 
     @Override
     public void recordTableStructure(List<DBField> fields) {
-        hostTable.recordTableStructure(fields);
+        throw new UnsupportedOperationException();
+
     }
 
     @Override
     public void recordTableGenerateVersion(int version) {
-        hostTable.recordTableGenerateVersion(version);
+        throw new UnsupportedOperationException();
+
     }
 
     @Override
     public void recordRowCount(long rowCount) {
-        hostTable.recordRowCount(rowCount);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void recordLastTime() {
-        hostTable.recordLastTime();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
-        hostTable.recordRemovedLine(removedLine);
+        throw new UnsupportedOperationException();
+
     }
 
     @Override
     public void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
-        hostTable.addDataValue(originalDataValue);
+        throw new UnsupportedOperationException();
+
     }
 
     @Override
@@ -82,7 +125,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     @Override
     public void copyDetailValue(ICubeTableEntityService cube, long rowCount) {
-        hostTable.copyDetailValue(cube, rowCount);
+        throw new UnsupportedOperationException();
+
     }
 
     @Override
@@ -92,56 +136,101 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     @Override
     public List<DBField> getFieldInfo() {
-        return null;
+        return compoundFields;
     }
 
     @Override
     public Set<BIColumnKey> getCubeColumnInfo() {
-        return null;
+        Set<BIColumnKey> result = new HashSet<BIColumnKey>();
+        for (BIColumnKey columnKey : hostTable.getCubeColumnInfo()) {
+            if (!result.contains(columnKey)) {
+                result.add(columnKey);
+            }
+        }
+        if (isParentAvailable()) {
+            for (BIColumnKey columnKey : parentTable.getCubeColumnInfo()) {
+                if (!result.contains(columnKey)) {
+                    result.add(columnKey);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
     public int getRowCount() {
-        return 0;
+        if (hostTable.isRowCountAvailable()) {
+            return hostTable.getRowCount();
+        } else {
+            return parentTable.getRowCount();
+        }
     }
 
     @Override
     public DBField getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        return null;
+        for (DBField field : compoundFields) {
+            if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
+                return field;
+            }
+        }
+        throw new BICubeColumnAbsentException();
     }
 
     @Override
     public Date getCubeLastTime() {
-        return null;
+        return hostTable.getCubeLastTime();
+    }
+
+    private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
+        DBField field = getSpecificColumn(fieldName);
+        return fieldSource.get(field);
     }
 
     @Override
     public ICubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
-        return null;
+        return pickTableService(columnKey.getColumnName()).getColumnDataGetter(columnKey);
     }
 
     @Override
     public ICubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
-        return null;
+        return pickTableService(columnName).getColumnDataGetter(columnName);
     }
 
     @Override
     public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
-        return null;
+        try {
+            return pickTableService(path.getPrimaryField().getColumnName()).getRelationIndexGetter(path);
+        } catch (BITablePathEmptyException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+
     }
 
     @Override
     public boolean tableDataAvailable() {
-        return false;
+        return hostTable.tableDataAvailable() || (isParentAvailable() && parentTable.tableDataAvailable());
     }
 
     @Override
     public void clear() {
-
+        hostTable.clear();
+        if (isParentAvailable()) {
+            parentTable.clear();
+        }
     }
 
     @Override
     public void recordParentsTable(List<ITableKey> parents) {
+        throw new UnsupportedOperationException();
+    }
 
+    @Override
+    public List<ITableKey> getParentsTable() {
+        return hostTable.getParentsTable();
+    }
+
+    @Override
+    public boolean isRowCountAvailable() {
+        return hostTable.isRowCountAvailable() || (isParentAvailable() && parentTable.isRowCountAvailable());
     }
 }

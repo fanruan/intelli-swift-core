@@ -41,5 +41,6 @@ public interface ICubeTablePropertyService extends Release {
 
     Boolean isPropertyExist();
 
+    Boolean isRowCountAvailable();
 
 }

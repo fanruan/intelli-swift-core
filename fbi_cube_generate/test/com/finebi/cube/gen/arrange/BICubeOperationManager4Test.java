@@ -40,8 +40,8 @@ public class BICubeOperationManager4Test extends BICubeOperationManager {
 
 
     @Override
-    protected BISourceDataTransport getDataTransportBuilder(ICube cube, ITableSource tableSource, Set<ITableSource> allSources) {
-        return new BISourceDataTransport4Test(cube, tableSource, allSources);
+    protected BISourceDataTransport getDataTransportBuilder(ICube cube, ITableSource tableSource, Set<ITableSource> allSources, Set<ITableSource> parent) {
+        return new BISourceDataTransport4Test(cube, tableSource, allSources, parent);
     }
 
     @Override
