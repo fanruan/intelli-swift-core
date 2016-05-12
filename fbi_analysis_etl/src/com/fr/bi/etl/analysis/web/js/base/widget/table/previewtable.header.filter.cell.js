@@ -25,15 +25,16 @@ BI.AnalysisETLPreviewTableHeaderFilterCell = BI.inherit(BI.Widget, {
             text: o.text,
             value: o.value
         })
-        var filter =  BI.createWidget({
+        var op = {
             type : 'bi.filter_combo_etl',
             field_type : o.field_type,
             field_name : o.text,
-            fields : o.fields,
             fieldValuesCreator : function(callback){
                 return o.fieldValuesCreator(o.field_id, callback);
             }
-        })
+        }
+        op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+        var filter =  BI.createWidget(op);
         var filterValue = o.filterValueGetter(o.text);
         if (BI.isNotNull(filterValue)){
             filter.setValue(filterValue);

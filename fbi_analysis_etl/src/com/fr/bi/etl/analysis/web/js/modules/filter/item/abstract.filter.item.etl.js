@@ -80,10 +80,11 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
 
     _createFormular: function(){
         var self = this;
-        this.filterWidget = BI.createWidget({
-            type : 'bi.filter_etl_formula_setting',
-            fields : this.options.fields
-        });
+        var op ={
+            type : 'bi.filter_etl_formula_setting'
+        }
+        op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+        this.filterWidget = BI.createWidget(op);
         this.filterWidget.on(BI.ETLFormulaSettingPane.EVENT_CONFIRM, function () {
             self.fireEvent(BI.AbstractETLFilterItem.EVENT_VALUE_CHANGED);
         })
