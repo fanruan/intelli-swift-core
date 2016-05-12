@@ -276,13 +276,13 @@ BICst.TARGET_CHART_STYLE = [{
 }];
 //组件的设置的下拉选项
 BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_WIDGET_DRILL,
-    text: BI.i18nText("BI-Linked_To_Components"),
+    value: BICst.DASHBOARD_WIDGET_LINKAGE,
+    text: BI.i18nText("BI-Link_To_Dots"),
     extraCls: "dashboard-widget-combo-linkage-font"
-}, {
-    value: BICst.DASHBOARD_DETAIL_WIDGET_DRILL,
-    text: BI.i18nText("BI-Linked_To_Detail"),
-    extraCls: "dashboard-widget-combo-linkage-font"
+// }, {
+//     value: BICst.DASHBOARD_DETAIL_WIDGET_DRILL,
+//     text: BI.i18nText("BI-Linked_To_Detail"),
+//     extraCls: "dashboard-widget-combo-linkage-font"
 }, {
     value: BICst.DASHBOARD_WIDGET_EXPAND,
     text: BI.i18nText("BI-Detailed_Setting"),
@@ -351,32 +351,43 @@ BICst.DETIAL_WIDGET_SETCOMBO_ITEMS.VIEW = [{
 }];
 
 //复选框和下拉树控件的下拉选项
-BICst.STRING_TREE_CONTROL_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_WIDGET_EXPAND,
-    text: BI.i18nText("BI-Detailed_Setting"),
-    extraCls: "dashboard-widget-combo-detail-set-font"
-}, {
-    value: BICst.DASHBOARD_CONTROL_RANG_ASC,
-    text: BI.i18nText("BI-Ascend"),
-    list_border_not_show: true,
-    extraCls: "sort-asc-small-icon"
-}, {
-    value: BICst.DASHBOARD_CONTROL_RANG_DESC,
-    text: BI.i18nText("BI-Descend"),
-    extraCls: "sort-desc-small-icon"
-}, {
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "fr-bi-erase-button-small"
-}, {
-    value: BICst.DASHBOARD_WIDGET_COPY,
-    text: BI.i18nText("BI-Copy"),
-    extraCls: "widget-combo-menu-copy-icon"
-}, {
-    value: BICst.DASHBOARD_WIDGET_DELETE,
-    text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-combo-menu-delete-icon"
-}];
+BICst.STRING_TREE_CONTROL_SETCOMBO_ITEMS = [
+    [{
+        value: BICst.DASHBOARD_WIDGET_EXPAND,
+        text: BI.i18nText("BI-Detailed_Setting"),
+        cls: "dashboard-widget-combo-detail-set-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_CONTROL_RANG_ASC,
+        text: BI.i18nText("BI-Ascend"),
+        list_border_not_show: true,
+        cls: "widget-combo-asc"
+    }, {
+        value: BICst.DASHBOARD_CONTROL_RANG_DESC,
+        text: BI.i18nText("BI-Descend"),
+        cls: "widget-combo-des"
+    }],
+    [{
+        value: BICst.DASHBOARD_CONTROL_CLEAR,
+        text: BI.i18nText("BI-Clear_Selected_Value"),
+        cls: "widget-combo-clear"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_RENAME,
+        text: BI.i18nText("BI-Rename"),
+        cls: "widget-combo-rename-edit-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_COPY,
+        text: BI.i18nText("BI-Copy"),
+        cls: "widget-combo-copy"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-combo-delete"
+    }]
+];
 
 BICst.STRING_TREE_CONTROL_SETCOMBO_ITEMS.VIEW = [{
     value: BICst.DASHBOARD_CONTROL_RANG_ASC,
@@ -389,44 +400,64 @@ BICst.STRING_TREE_CONTROL_SETCOMBO_ITEMS.VIEW = [{
 
 
 //时间控件的下拉选项
-BICst.TIME_CONTROL_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_WIDGET_EXPAND,
-    text: BI.i18nText("BI-Detailed_Setting"),
-    extraCls: "dashboard-widget-combo-detail-set-font"
-}, {
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "dashboard-widget-combo-clear-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_COPY,
-    text: BI.i18nText("BI-Copy"),
-    extraCls: "widget-copy-h-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_DELETE,
-    text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-delete-h-font"
-}];
+BICst.TIME_CONTROL_SETCOMBO_ITEMS = [
+    [{
+        value: BICst.DASHBOARD_WIDGET_EXPAND,
+        text: BI.i18nText("BI-Detailed_Setting"),
+        cls: "dashboard-widget-combo-detail-set-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_CONTROL_CLEAR,
+        text: BI.i18nText("BI-Clear_Selected_Value"),
+        cls: "widget-combo-clear"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_RENAME,
+        text: BI.i18nText("BI-Rename"),
+        cls: "widget-combo-rename-edit-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_COPY,
+        text: BI.i18nText("BI-Copy"),
+        cls: "widget-combo-copy"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-combo-delete"
+    }]
+];
 
 BICst.TIME_CONTROL_SETCOMBO_ITEMS.VIEW = [];
 
 //数值控件的下拉选项
-BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_WIDGET_EXPAND,
-    text: BI.i18nText("BI-Detailed_Setting"),
-    extraCls: "widget-combo-menu-detail-icon"
-}, {
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "dashboard-widget-combo-clear-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_COPY,
-    text: BI.i18nText("BI-Copy"),
-    extraCls: "widget-copy-h-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_DELETE,
-    text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-delete-h-font"
-}];
+BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
+    [{
+        value: BICst.DASHBOARD_WIDGET_EXPAND,
+        text: BI.i18nText("BI-Detailed_Setting"),
+        cls: "dashboard-widget-combo-detail-set-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_CONTROL_CLEAR,
+        text: BI.i18nText("BI-Clear_Selected_Value"),
+        cls: "widget-combo-clear"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_RENAME,
+        text: BI.i18nText("BI-Rename"),
+        cls: "widget-combo-rename-edit-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_COPY,
+        text: BI.i18nText("BI-Copy"),
+        cls: "widget-combo-copy"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-combo-delete"
+    }]
+];
 
 BICst.NUMBER_CONTROL_SETCOMBO_ITEMS.VIEW = [{
     value: BICst.DASHBOARD_CONTROL_CLEAR,
@@ -435,19 +466,34 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS.VIEW = [{
 }];
 
 //通用查询的下拉选项
-BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "dashboard-widget-combo-clear-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_COPY, 
-    text: BI.i18nText("BI-Copy"),
-    extraCls: "widget-copy-h-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_DELETE,
-    text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-delete-h-font"
-}];
+BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
+    [{
+        value: BICst.DASHBOARD_CONTROL_CLEAR,
+        text: BI.i18nText("BI-Clear_Selected_Value"),
+        cls: "dashboard-widget-combo-clear-font"
+    }, {
+
+    }, {
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-delete-h-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_RENAME,
+        text: BI.i18nText("BI-Rename"),
+        cls: ""
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_COPY,
+        text: BI.i18nText("BI-Copy"),
+        cls: "widget-copy-h-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-delete-h-font"
+    }]
+];
 
 BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS.VIEW = [{
     value: BICst.DASHBOARD_CONTROL_CLEAR,
@@ -935,7 +981,14 @@ BICst.DEFAULT_CHART_SETTING = {
     max_row: BICst.TABLE_MAX_ROW,
     max_col: BICst.TABLE_MAX_COL,
     freeze_dim: true,
-    transfer_filter: true
+    transfer_filter: true,
+    show_name: true,
+    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
+};
+
+BICst.DEFAULT_CONTROL_SETTING = {
+    show_name: true,
+    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
 };
 
 

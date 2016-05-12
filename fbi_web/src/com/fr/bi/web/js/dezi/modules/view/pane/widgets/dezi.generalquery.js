@@ -10,6 +10,10 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
     
     _init: function(){
         BIDezi.GeneralQueryView.superclass._init.apply(this, arguments);
+        var self = this;
+        BI.Broadcasts.on(this.model.get("id"), function(){
+            self._resetValue();
+        });
     },
     
     _render: function(vessel){
@@ -49,18 +53,20 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
 
             var combo = BI.createWidget({
                 type: "bi.widget_combo",
-                widgetType: BICst.Widget.GENERAL_QUERY
+                wId: this.model.get("id")
             });
             combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
                 switch (type) {
-                    case BICst.DASHBOARD_WIDGET_DELETE:
-                        self.model.destroy();
-                        break;
                     case BICst.DASHBOARD_CONTROL_CLEAR:
-                        self._clearData();
+                        self._resetValue();
+                        break;
+                    case BICst.DASHBOARD_WIDGET_RENAME:
                         break;
                     case BICst.DASHBOARD_WIDGET_COPY:
                         self.model.copy();
+                        break;
+                    case BICst.DASHBOARD_WIDGET_DELETE:
+                        self.model.destroy();
                         break;
                 }
             });
@@ -85,7 +91,7 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
         }
     },
 
-    _clearData: function(){
+    _resetValue: function(){
         this.model.set("value", []);
         this.refresh();
     },

@@ -37,10 +37,6 @@
 .bi-dashboard-widget .dashboard-title .dashboard-title-detail {
   font-size: 16px;
 }
-.bi-dashboard-widget .dashboard-title .dashboard-title-detail:hover,
-.bi-dashboard-widget .dashboard-title .dashboard-title-detail:active {
-  background-color: #f3f3f3;
-}
 .bi-dashboard-widget .dashboard-title .operator-region {
   z-index: 100000;
 }
