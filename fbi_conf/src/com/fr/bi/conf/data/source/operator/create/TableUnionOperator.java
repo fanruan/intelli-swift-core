@@ -29,13 +29,16 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
     public static final String XML_TAG = "TableUnionOperator";
     private static final long serialVersionUID = -7588810240876090654L;
     @BICoreField
-    private ArrayList<ArrayList<String>> lists = new ArrayList<ArrayList<String>>();
+    private List<List<String>> lists = new ArrayList<List<String>>();
 
     public TableUnionOperator(long userId) {
         super(userId);
     }
 
     public TableUnionOperator() {
+    }
+    public TableUnionOperator( List<List<String>> lists) {
+        this.lists = lists;
     }
 
     @Override
@@ -54,7 +57,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();
         for (int i = 0; i < lists.size(); i++) {
-            ArrayList<String> al = lists.get(i);
+            List<String> al = lists.get(i);
             JSONArray value = new JSONArray();
             for (int j = 0; j < al.size(); j++) {
                 value.put(al.get(j));
@@ -94,7 +97,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
         }
 
         for (int i = 0; i < lists.size(); i++) {
-            ArrayList<String> list = lists.get(i);
+            List<String> list = lists.get(i);
             int bitype = 0;
             int columnSize = 0;
             for (int j = 1; j < list.size(); j++) {
@@ -111,7 +114,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
         List<ICubeTableService> tis = new ArrayList<ICubeTableService>();
         for (ITableSource s : parents) {
             tis.add(loader.getTableIndex(s.fetchObjectCore()));

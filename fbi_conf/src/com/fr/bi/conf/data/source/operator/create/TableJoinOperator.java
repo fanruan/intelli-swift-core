@@ -1,5 +1,8 @@
 package com.fr.bi.conf.data.source.operator.create;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -7,22 +10,17 @@ import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBTable;
 import com.fr.bi.stable.data.source.ITableSource;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.json.JSONTransform;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
-import com.fr.stable.xml.XMLable;
 import com.fr.stable.xml.XMLableReader;
 
 import java.util.ArrayList;
@@ -53,6 +51,13 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
     }
 
     public TableJoinOperator() {
+    }
+
+    public TableJoinOperator(int type, List<JoinColumn> columns, List<String> left, List<String> right) {
+        this.type = type;
+        this.columns = columns;
+        this.left = left;
+        this.right = right;
     }
 
     @Override
@@ -93,16 +98,16 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         DBTable leftT = tables[0];
         DBTable rightT = tables[1];
         for (int i = 0; i < columns.size(); i++) {
-            BIColumn column = columns.get(i).isLeft ? leftT.getBIColumn(columns.get(i).columnName) : rightT.getBIColumn(columns.get(i).columnName);
+            BIColumn column = columns.get(i).isLeft() ? leftT.getBIColumn(columns.get(i).getColumnName()) : rightT.getBIColumn(columns.get(i).getColumnName());
             if (column != null) {
-                DBTable.addColumn(new BIColumn(columns.get(i).name, columns.get(i).name, column.getType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
+                DBTable.addColumn(new BIColumn(columns.get(i).getName(), columns.get(i).getName(), column.getType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
             }
         }
         return DBTable;
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
         if (parents == null || parents.size() != 2) {
             throw new RuntimeException("invalid join parents");
         }
@@ -148,7 +153,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             GroupValueIndex gvi = null;
             Object[] rvalues = new Object[rlen];
             for (int j = 0; j < rlen; j++) {
-                rvalues[j] = rti.getRow(new IndexKey(columns.get(j < right.size() ? j : lleftCount + j).columnName), i);
+                rvalues[j] = rti.getRow(new IndexKey(columns.get(j < right.size() ? j : lleftCount + j).getColumnName()), i);
             }
             for (int j = 0; j < right.size(); j++) {
                 Object[] key = getter.get(j).createKey(1);
@@ -196,7 +201,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                     travel.actionPerformed(new BIDataValue(index, j < right.size() ? j : lleftCount + j, rvalues[j]));
                 }
                 for (int j = right.size(); j < lti.getColumns().size(); j++) {
-                    travel.actionPerformed(new BIDataValue(index, j, lti.getRow(new IndexKey(columns.get(j).columnName), rRows.get(k))));
+                    travel.actionPerformed(new BIDataValue(index, j, lti.getRow(new IndexKey(columns.get(j).getColumnName()), rRows.get(k))));
                 }
                 index++;
             }
@@ -218,7 +223,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             GroupValueIndex gvi = null;
             Object[] lvalues = new Object[llen];
             for (int j = 0; j < llen; j++) {
-                lvalues[j] = lti.getRow(new IndexKey(columns.get(j).columnName), i);
+                lvalues[j] = lti.getRow(new IndexKey(columns.get(j).getColumnName()), i);
             }
             for (int j = 0; j < left.size(); j++) {
                 Object[] key = getter.get(j).createKey(1);
@@ -269,7 +274,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                     travel.actionPerformed(new BIDataValue(index, j, lvalues[j]));
                 }
                 for (int j = llen; j < columns.size(); j++) {
-                    travel.actionPerformed(new BIDataValue(index, j, rti.getRow(new IndexKey(columns.get(j).columnName), rRows.get(k))));
+                    travel.actionPerformed(new BIDataValue(index, j, rti.getRow(new IndexKey(columns.get(j).getColumnName()), rRows.get(k))));
                 }
                 index++;
             }
@@ -291,7 +296,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                 travel.actionPerformed(new BIDataValue(index, j, null));
             }
             for (int j = llen; j < columns.size(); j++) {
-                travel.actionPerformed(new BIDataValue(index, j, rti.getRow(new IndexKey(columns.get(j).columnName), rLeftRows.get(k))));
+                travel.actionPerformed(new BIDataValue(index, j, rti.getRow(new IndexKey(columns.get(j).getColumnName()), rLeftRows.get(k))));
             }
             index++;
         }
@@ -328,7 +333,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
     private int getLeftIndex(String name) {
         for (int i = 0; i < columns.size(); i++) {
-            if (columns.get(i).isLeft && ComparatorUtils.equals(columns.get(i).columnName, name)) {
+            if (columns.get(i).isLeft() && ComparatorUtils.equals(columns.get(i).getColumnName(), name)) {
                 return i;
             }
         }
@@ -339,7 +344,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
     private int getRightIndex(String name) {
         for (int i = 0; i < columns.size(); i++) {
-            if (!columns.get(i).isLeft && ComparatorUtils.equals(columns.get(i).columnName, name)) {
+            if (!columns.get(i).isLeft() && ComparatorUtils.equals(columns.get(i).getColumnName(), name)) {
                 return i;
             }
         }
@@ -402,89 +407,5 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         writer.end();
 
-    }
-
-    private class JoinColumn implements XMLable, JSONTransform {
-        public static final String XML_TAG = "JoinColumn";
-        //etl之后的字段名
-        private String name;
-
-        private boolean isLeft;
-
-        //父表字段名
-        private String columnName;
-
-        /**
-         * 将Java对象转换成JSON对象
-         *
-         * @return
-         * @throws Exception
-         */
-        @Override
-        public JSONObject createJSON() throws Exception {
-            JSONObject jo = new JSONObject();
-            jo.put("name", name);
-            jo.put("isLeft", isLeft);
-            jo.put("column_name", columnName);
-            return jo;
-        }
-
-        /**
-         * 将JSON对象转换成java对象
-         *
-         * @param jo
-         * @throws Exception
-         */
-        @Override
-        public void parseJSON(JSONObject jo) throws Exception {
-            columnName = jo.getString("column_name");
-            name = jo.getString("name");
-            isLeft = jo.getBoolean("isLeft");
-        }
-
-        /**
-         * 读取子节点，应该会被XMLableReader.readXMLObject()调用多次
-         *
-         * @param reader XML读取对象
-         * @see com.fr.stable.xml.XMLableReader
-         */
-        @Override
-        public void readXML(XMLableReader reader) {
-            name = reader.getAttrAsString("name", StringUtils.EMPTY);
-            isLeft = reader.getAttrAsBoolean("isLeft", true);
-            columnName = reader.getAttrAsString("columnName", StringUtils.EMPTY);
-        }
-
-        /**
-         * Write XML.<br>
-         * The method will be invoked when save data to XML file.<br>
-         * May override the method to save your own data.
-         * 从性能上面考虑，大家用writer.print(), 而不是writer.println()
-         *
-         * @param writer XML写入对象
-         */
-        @Override
-        public void writeXML(XMLPrintWriter writer) {
-            writer.startTAG(XML_TAG);
-            writer.attr("name", name)
-                    .attr("isLeft", isLeft)
-                    .attr("columnName", columnName);
-            writer.end();
-        }
-
-        @Override
-        public String toString() {
-            final StringBuffer sb = new StringBuffer("JoinColumn{");
-            sb.append("name='").append(name).append('\'');
-            sb.append(", isLeft=").append(isLeft);
-            sb.append(", columnName='").append(columnName).append('\'');
-            sb.append('}');
-            return sb.toString();
-        }
-
-        @Override
-        public Object clone() throws CloneNotSupportedException {
-            return super.clone();
-        }
     }
 }
