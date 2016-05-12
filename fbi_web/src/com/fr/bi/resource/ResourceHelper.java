@@ -1258,10 +1258,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/excelviewsetting/excelviewsetting.js",
 
                 //权限控制
-                "com/fr/bi/web/js/modules/permissionmanage/packagetreemanage.js",
+                "com/fr/bi/web/js/modules/permissionmanage/permission.packagetree.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritypaneshow.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritypaneadd.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.single.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.multi.js",
+                "com/fr/bi/web/js/modules/permissionmanage/permission.authoritypane.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritytabs.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritybutton.js",
 

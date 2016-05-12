@@ -4,13 +4,14 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
 import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
 import com.fr.json.JSONArray;
+import junit.framework.TestCase;
 
 import java.util.Set;
 
 /**
  * Created by wuk on 16/5/8.
  */
-public class BISystemPackAndAuthConfigurationManagerTest {
+public class BISystemPackAndAuthConfigurationManagerTest extends TestCase{
     private BISystemPackAndAuthConfigurationManager manager;
     private BIUser user;
 
@@ -18,8 +19,7 @@ public class BISystemPackAndAuthConfigurationManagerTest {
 
     }
 
-    @org.junit.Test
-    public void getAllPackages() throws Exception {
+    public void testGetAllPackages() throws Exception {
         JSONArray roleInfojo = new JSONArray("[3,5,4]");
 
         String[] rolesArray = new String[roleInfojo.length()];
@@ -47,8 +47,7 @@ public class BISystemPackAndAuthConfigurationManagerTest {
         System.out.println(allPackages);
     }
 
-    @org.junit.Test
-    public void getPackage() throws Exception {
+    public void testGetPackage() throws Exception {
         String roles="[3,5,4]";
         JSONArray roleInfojo=new JSONArray(roles);
         String[] packageIdArray=new String[roleInfojo.length()];
@@ -57,13 +56,11 @@ public class BISystemPackAndAuthConfigurationManagerTest {
         }
     }
 
-    @org.junit.Test
-    public void addPackage() throws Exception {
+    public void TestAddPackage() throws Exception {
 
     }
 
-    @org.junit.Test
-    public void removePackage() throws Exception {
+    public void TestRemovePackage() throws Exception {
 
     }
 

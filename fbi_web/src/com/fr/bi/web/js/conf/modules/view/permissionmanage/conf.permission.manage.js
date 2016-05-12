@@ -10,15 +10,18 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     },
     _init: function () {
         BIConf.PermissionManageView.superclass._init.apply(this, arguments);
-        this.tab.setVisible(false);
+        var self = this;
+        this.authorityPane.setVisible(false);
         BI.Utils.getAllGroupedPackagesTreeAsync(function (items) {
-                this.packageTree.populate(items);
+            self.packageTree.populate(items);
+            self.packStructure = items;
             }
         )
-
+        self.authorityPane.populate([], BI.PackageTree.SelectType);
     },
 
     _render: function (vessel) {
+        var self=this;
         this.main = BI.createWidget({
             type: "bi.border",
             element: vessel,
@@ -27,6 +30,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
                 center: {el: this._buildAuthorityPane(), height: 500, width: 40}
             }
         });
+
     },
     load: function () {
     },
@@ -35,6 +39,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         return true;
     },
     refresh: function () {
+
     },
 
     _builtPackageTree: function () {
@@ -43,22 +48,11 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             type: "bi.package_tree"
         });
         this.packageTree.on(BI.PackageTree.EVENT_CHANGE, function () {
-            Data.SharingPool.put("packageId", JSON.parse(self.packageTree.getPackageIds()));
-            self.tab.setVisible(true);
+            self.authorityPane.setVisible(true);
             /*根据是否为批量修改确定添加方式*/
-            switch (self.packageTree.getSelectType()) {
-                case BI.PackageTree.SelectType.SingleSelect:
-                    self.tab.populate(JSON.parse(self.packageTree.getPackageIds())[0]);
-                    self._setHeadTitle(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
-                    break;
-                case BI.PackageTree.SelectType.MultiSelect:
-                    self._setHeadTitle('',self.packageTree.getSelectType())
-                    self.tab.populate();
-                    break;
-            }
-
+            self.authorityPane.populate(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
+            self._setHeadTitle(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
         });
-        // this.packageTree.populate();
         return this.packageTree;
     },
     _buildAuthorityPane: function () {
@@ -90,18 +84,17 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     //设置标题
     _setHeadTitle: function (packageId,selectType) {
         var self = this;
-        var packStructure = Data.SharingPool.get("packStructure");
         switch (selectType){
             case BI.PackageTree.SelectType.SingleSelect:
-                BI.each(packStructure, function (key) {
-                    if (packageId == packStructure[key].id) {
-                        self.title.setText((packStructure[key].text) + '  ' + BI.i18nText('BI-Permissions_Setting'));
+                BI.each(self.packStructure, function (key) {
+                    if (packageId[0] == self.packStructure[key].id) {
+                        self.title.setText((self.packStructure[key].text) + '  ' + BI.i18nText('BI-Permissions_Setting'));
                         return;
                     }
                 })
                 break;
             case BI.PackageTree.SelectType.MultiSelect:
-                self.title.setText('配置'+ packageId.length()+BI.i18nText('BI-Permissions_Setting'));
+                self.title.setText(BI.i18nText('BI-Permissions_Setting') + '配置' + packageId.length + '个业务包');
                 break;
         }
 
@@ -109,9 +102,9 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     },
     _buildAuthorityTabs: function () {
         var self = this;
-        self.tab = BI.createWidget({
+        self.authorityPane = BI.createWidget({
             type: "bi.authority_pane",
         });
-        return this.tab;
+        return this.authorityPane;
     }
 })
