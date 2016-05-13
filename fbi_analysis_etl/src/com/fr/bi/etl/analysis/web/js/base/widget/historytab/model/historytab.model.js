@@ -8,6 +8,7 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         if (BI.isNull(this.get('invalidIndex'))){
             this.set('invalidIndex', Number.MAX_VALUE);
         }
+        this.set("allHistory", false)
         if (BI.isNull(this.options.etlType)){
             this.addItemAfter(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_FIELD, -1)
         } else {
@@ -25,8 +26,12 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
             op : operator,
             table : table
         }], items)
-        if (BI.isNotNull(table.parents) && table.parents.length !== 2){
-            items = this._initItems(table.parents[0], items);
+        if (BI.isNotNull(table.parents)){
+            if(table.parents.length !== 2) {
+                items = this._initItems(table.parents[0], items);
+            } else {
+                this.set("allHistory", true)
+            }
         };
         return items;
     },
@@ -151,7 +156,6 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         }, items[items.length - 1]), {
             value:this.getValue("value"),
             table_name:this.getValue("table_name"),
-            allHistory:this.getValue("allHistory"),
             invalidIndex : this.getValue('invalidIndex')
         });
         if(!this.isModelValid()){

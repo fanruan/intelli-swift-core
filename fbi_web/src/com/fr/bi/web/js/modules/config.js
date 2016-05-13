@@ -191,6 +191,81 @@ BICst.TABLE_TYPE = [{
     text: BI.i18nText("BI-Complex_Table")
 }];
 
+//坐标轴图类型
+BICst.AXIS_CHART_TYPE = [{
+    text: BI.i18nText("BI-Column_Chart"),
+    value: BICst.Widget.AXIS
+}, {
+    text: BI.i18nText("BI-Stacked_Chart"),
+    value: BICst.Widget.ACCUMULATE_COLUMN
+}, {
+    text: BI.i18nText("BI-Percent_Accumulate_Axis"),
+    value: BICst.Widget.PERCENT_ACCUMULATE_AXIS
+}, {
+    text: BI.i18nText("BI-Compare_Axis"),
+    value: BICst.Widget.COMPARE_AXIS
+}, {
+    text: BI.i18nText("BI-Fall_Axis"),
+    value: BICst.Widget.FALL_AXIS
+}];
+
+//条形图类型
+BICst.BAR_CHART_TYPE = [{
+    text: BI.i18nText("BI-Bar_Chart"),
+    value: BICst.Widget.BAR
+}, {
+    text: BI.i18nText("BI-Stacked_Bar_Chart"),
+    value: BICst.Widget.ACCUMULATE_BAR
+}, {
+    text: BI.i18nText("BI-Compare_Bar"),
+    value: BICst.Widget.COMPARE_BAR
+}];
+
+//面积图类型
+BICst.AREA_CHART_TYPE = [{
+    text: BI.i18nText("BI-Area_Chart"),
+    value: BICst.Widget.AREA
+}, {
+    text: BI.i18nText("BI-Accumulate_Area"),
+    value: BICst.Widget.ACCUMULATE_AREA
+}, {
+    text: BI.i18nText("BI-Percent_Accumulate_Area"),
+    value: BICst.Widget.PERCENT_ACCUMULATE_AREA
+}, {
+    text: BI.i18nText("BI-Compare_Area"),
+    value: BICst.Widget.COMPARE_AREA
+}, {
+    text: BI.i18nText("BI-Compare_Range_Area"),
+    value: BICst.Widget.RANGE_AREA
+}];
+
+//组合图类型
+BICst.COMBINE_CHART_TYPE = [{
+    text: BI.i18nText("BI-Combine_Chart"),
+    value: BICst.Widget.COMBINE_CHART
+}, {
+    text: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
+    value: BICst.Widget.MULTI_AXIS_COMBINE_CHART
+}];
+
+//气泡图类型
+BICst.BUBBLE_CHART_TYPE = [{
+    text: BI.i18nText("BI-Bubble_Chart"),
+    value: BICst.Widget.BUBBLE
+}, {
+    text: BI.i18nText("BI-Niu_Dun_Bubble"),
+    value: BICst.Widget.NIU_DUN_BUBBLE
+}];
+
+//雷达图类型
+BICst.RADAR_CHART_TYPE = [{
+    text: BI.i18nText("BI-Radar"),
+    value: BICst.Widget.RADAR
+}, {
+    text: BI.i18nText("BI-Accumulate_Radar"),
+    value: BICst.Widget.ACCUMULATE_RADAR
+}];
+
 //图表类型
 BICst.CHART_TYPE = [{
     title: BI.i18nText("BI-Cor_Chart"),
