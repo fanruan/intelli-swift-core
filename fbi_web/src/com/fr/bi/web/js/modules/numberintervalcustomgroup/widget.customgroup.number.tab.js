@@ -259,6 +259,9 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         }
 
         function  cutBig(val){
+            if(val[i] === "0"){
+                return BI.parseFloat(val);
+            }
             val = val.substring(0, i);
             var length = val.length - 2;
             while (--length > 0) {
