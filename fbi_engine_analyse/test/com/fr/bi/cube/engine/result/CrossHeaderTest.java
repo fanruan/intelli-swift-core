@@ -1,8 +1,9 @@
 package com.fr.bi.cube.engine.result;
 
-import com.fr.bi.cube.engine.calculator.key.TargetGettingKey;
-import com.fr.bi.cube.engine.index.IDGroupValueIndex;
-import com.fr.bi.cube.engine.store.ColumnKey;
+import com.fr.bi.cal.analyze.cal.result.CrossHeader;
+import com.fr.bi.cal.analyze.cal.result.CrossNode;
+import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import junit.framework.TestCase;
 
 /**
