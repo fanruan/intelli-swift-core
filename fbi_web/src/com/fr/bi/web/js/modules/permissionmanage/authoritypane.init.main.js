@@ -59,7 +59,7 @@ BI.AuthorityPaneInitMain = BI.inherit(BI.Widget, {
 
 BI.AuthorityPaneInitMain.EVENT_CHANGE = "EVENT_CHANGE";
 BI.AuthorityPaneInitMain.SelectPane = {
-    paneSingleShow:0,
-    paneMultiShow: 1
+    paneSingleShow:BI.Selection.Single,
+    paneMultiShow: BI.Selection.Multi
 };
 $.shortcut('bi.authority_pane_init_main', BI.AuthorityPaneInitMain)

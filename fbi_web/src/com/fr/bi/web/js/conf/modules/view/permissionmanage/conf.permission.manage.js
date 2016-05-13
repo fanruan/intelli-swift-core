@@ -10,12 +10,6 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     },
     _init: function () {
         BIConf.PermissionManageView.superclass._init.apply(this, arguments);
-        var self = this;
-        BI.Utils.getAllGroupedPackagesTreeAsync(function (items) {
-            self.packageTree.populate(items);
-            self.packStructure = items;
-            }
-        )
     },
 
     _render: function (vessel) {
@@ -47,7 +41,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         this.packageTree.on(BI.PackageANdAuthorityTree.EVENT_CHANGE, function () {
             if (0 == self.packageTree.getSelectType() && JSON.parse(self.packageTree.getPackageIds()).length == 1) {
                 self.authorityTabs.setSelect(1);
-                self.authorityPaneEdit.populate(JSON.parse(self.packageTree.getPackageIds()));
+                self.authorityPaneEdit.populate(JSON.parse(self.packageTree.getPackageIds()), BI.AuthorityPaneEditSelectedView.EidtType.SingleEdit);
             } else {
             self.authorityPaneInitMain.populate(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
             self.authorityTabs.setSelect(0);
@@ -87,12 +81,13 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         var self = this;
         switch (selectType){
             case BI.PackageANdAuthorityTree.SelectType.SingleSelect:
-                BI.each(self.packStructure, function (key) {
-                    if (packageId[0] == self.packStructure[key].id) {
-                        self.title.setText((self.packStructure[key].text) + '  ' + BI.i18nText('BI-Permissions_Setting'));
-                        return;
-                    }
-                })
+                // BI.each(self.packStructure, function (key) {
+                //     if (packageId[0] == self.packStructure[key].id) {
+                //         self.title.setText((self.packStructure[key].text) + '  ' + BI.i18nText('BI-Permissions_Setting'));
+                //         return;
+                //     }
+                // })
+                self.title.setText(BI.Utils.getPackageNameByID4Conf(packageId[0]) + '  ' + BI.i18nText('BI-Permissions_Setting'));
                 break;
             case BI.PackageANdAuthorityTree.SelectType.MultiSelect:
                 self.title.setText(BI.i18nText('BI-Permissions_Setting') + '配置   ' + packageId.length + '个业务包');
@@ -119,14 +114,24 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
                 });
                 this.authorityPaneInitMain.on(BI.AuthorityPaneInitMain.EVENT_CHANGE, function () {
                 self.authorityTabs.setSelect(1);
-                    self.authorityTabs.populate(JSON.parse(self.packageTree.getPackageIds()));
+                    self.authorityTabs.populate(JSON.parse(self.packageTree.getPackageIds()), BI.AuthorityPaneEditSelectedView.EidtType.MultiEdit);
                 });
                 return this.authorityPaneInitMain;
             case 1:
-                this.authorityPaneEdit = BI.createWidget({
-                    type: "bi.authority_pane_edit_selected"
+
+                // this.authorityPaneEdit = BI.createWidget({
+                //     type: "bi.authority_pane_edit_selected"
+                // });
+                // return this.authorityPaneEdit;
+                var pane = BI.createWidget({
+                    type: "bi.label",
+                    cls: "center-pane",
+                    text: 'default',
+                    height: 200
                 });
-                return this.authorityPaneEdit;
+                this.addSubVessel("pane", pane, {isLayer: true});
+                self.skipTo("show", "pane",'');
+                return pane;
         }
     }
 });
