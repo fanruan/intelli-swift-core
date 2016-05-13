@@ -224,6 +224,12 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             })
 
         })
+        var invalidIndex = model.get('invalidIndex');
+        if(invalidIndex <= index) {
+            button.setValid(false);
+            button.setTitle(model.get("invalidTitle"))
+        }
+        this._getTabButtonGroup(widget).addItemFromIndex(button, index);
         button.on(BI.Controller.EVENT_CHANGE, function () {
             BI.defer(function () {
                 var v = button.getValue();
@@ -233,12 +239,6 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
                 }
             })
         })
-        var invalidIndex = model.get('invalidIndex');
-        if(invalidIndex <= index) {
-            button.setValid(false);
-            button.setTitle(model.get("invalidTitle"))
-        }
-        this._getTabButtonGroup(widget).addItemFromIndex(button, index);
     },
 
     _getTabButtonGroup : function (widget) {
