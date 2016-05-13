@@ -119,15 +119,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         dependItem.el.text = BI.i18nText("BI-Count_Depend") + "(" + selectedValue +")";
         dependItem.children = children;
 
-        switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
-            case BICst.Widget.TABLE:
-                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
-                break;
-            default:
-                item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
-                break;
-        }
-
         return items;
     },
 
