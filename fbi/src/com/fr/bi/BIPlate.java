@@ -22,6 +22,7 @@ import com.fr.fs.base.entity.PlatformManageModule;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
 import com.fr.fs.dao.BIReportEntryDAO;
 import com.fr.fs.dao.EntryDAO;
+import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.Inter;
 import com.fr.plugin.ExtraClassManager;
@@ -31,6 +32,7 @@ import com.fr.stable.ArrayUtils;
 import com.fr.stable.EnvChangedListener;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
+import com.fr.stable.plugin.PluginSimplify;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -110,7 +112,11 @@ public class BIPlate extends AbstractFSPlate {
     }
 
     private void initPlugin() {
-        ExtraClassManager.getInstance().addDialectCreator(DialectCreatorImpl.class.getName());
+        try {
+            ExtraClassManager.getInstance().addDialectCreator(new DialectCreatorImpl(), PluginSimplify.create("bi", "bi.db.ads"));
+        } catch (Exception e) {
+            FRLogger.getLogger().error(e.getMessage(), e);
+        }
     }
 
 

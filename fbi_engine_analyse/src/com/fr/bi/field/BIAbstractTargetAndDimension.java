@@ -83,9 +83,10 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo);
-        this.hyperLinkExpression = jo.optString("hyperlink", StringUtils.EMPTY);
-        if (jo.has("useHyperLink")) {
-            this.useHyperLink = jo.getBoolean("useHyperLink");
+        if(jo.has("hyperlink")){
+            JSONObject hyperlink = jo.getJSONObject("hyperlink");
+            this.hyperLinkExpression = hyperlink.optString("expression", StringUtils.EMPTY);
+            this.useHyperLink = hyperlink.getBoolean("used");
         }
         if (jo.has("used")) {
             this.used = jo.getBoolean("used");

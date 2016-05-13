@@ -76,6 +76,11 @@ BI.TextArea = BI.inherit(BI.Single, {
         }
     },
 
+    setEnable: function (b) {
+        BI.TextArea.superclass.setEnable.apply(this, arguments);
+        this.editor.setOption("readOnly", b === true ? false : "nocursor")
+    },
+
     insertParam: function(param){
         var from = this.editor.getCursor();
         this.editor.replaceSelection(param);

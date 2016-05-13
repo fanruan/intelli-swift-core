@@ -1,6 +1,7 @@
 package com.fr.bi.cluster.zookeeper.lock;
 
-import com.fr.bi.data.BITableKey;
+
+import com.finebi.cube.structure.BITableKey;
 
 import java.util.HashSet;
 

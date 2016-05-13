@@ -1,5 +1,8 @@
 package com.fr.bi.web.services.util;
 
+import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtils;
+import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtils4SQLSever;
+import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtilsFactory;
 import junit.framework.TestCase;
 
 /**
