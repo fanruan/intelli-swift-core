@@ -270,9 +270,7 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
 
         private String leftCondition() {
             StringBuffer sb = new StringBuffer();
-            sb.append(topicTagThreshold.leftCondition("topicTagThreshold")).append("\n").append(
-                    fragmentTagThreshold.leftCondition("fragmentTagThreshold")).append("\n").append(
-                    statusTagThreshold.leftCondition("statusTagThreshold")).append("\n");
+            sb.append(statusTagThreshold.leftCondition("statusTagThreshold")).append("\n");
 
             return sb.toString();
         }

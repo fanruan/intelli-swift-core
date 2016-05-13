@@ -1,11 +1,11 @@
 package com.finebi.cube.impl.router;
 
-import com.finebi.cube.exception.BIDeliverFailureException;
-import com.finebi.cube.exception.BIFragmentDuplicateException;
-import com.finebi.cube.exception.BITopicAbsentException;
-import com.finebi.cube.exception.BITopicDuplicateException;
+import com.finebi.cube.exception.*;
+import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTestTool;
+import com.finebi.cube.impl.message.BIMessageTopic;
 import com.finebi.cube.impl.pubsub.BISubscribTestTool;
+import com.finebi.cube.impl.pubsub.BISubscribe;
 import com.finebi.cube.impl.pubsub.BISubscribeID;
 import com.finebi.cube.impl.router.fragment.BIFragment;
 import com.finebi.cube.impl.router.fragment.BIFragmentTagTestTool;
@@ -13,13 +13,25 @@ import com.finebi.cube.impl.router.status.BIStatusTag;
 import com.finebi.cube.impl.router.topic.BITopicID;
 import com.finebi.cube.impl.router.topic.BITopicTag;
 import com.finebi.cube.impl.router.topic.BITopicTagTestTool;
+import com.finebi.cube.message.IMessage;
+import com.finebi.cube.pubsub.IProcessor;
+import com.finebi.cube.pubsub.IPublish;
+import com.finebi.cube.pubsub.ISubscribe;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.router.fragment.IFragment;
 import com.finebi.cube.router.topic.ITopic;
 import com.finebi.cube.router.topic.ITopicTag;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.stable.utils.algorithem.BIRandomUitils;
 import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * This class created on 2016/3/22.
@@ -233,5 +245,163 @@ public class BIRouterTest extends TestCase {
             BILogger.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
+    }
+
+    private class BIProcessorCount implements IProcessor {
+        public int count;
+
+        @Override
+        public void process(IMessage lastReceiveMessage) {
+            synchronized (this) {
+                count++;
+            }
+        }
+
+        @Override
+        public void setPublish(IPublish publish) {
+
+        }
+
+        @Override
+        public Object getResult() {
+            return null;
+        }
+    }
+
+
+    public void testSubscribeSMultiThread() {
+        IRouter router = BIFactoryHelper.getObject(IRouter.class);
+        router.setMessageDispatcher(new BIOneThreadDispatcher());
+        router.closeVerbose();
+        try {
+            BIProcessorCount processorOne = new BIProcessorCount();
+            BIProcessorCount processorTwo = new BIProcessorCount();
+
+            final ISubscribe subscribeOne = new BISubscribe(new BISubscribeID("one"), processorOne);
+            final ISubscribe subscribeTwo = new BISubscribe(new BISubscribeID("two"), processorTwo);
+            final Collection<ITopicTag> topicTags = generateTopicTag();
+
+            for (ITopicTag topicTag : topicTags) {
+                try {
+                    router.registerTopic(topicTag);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            subscribeOne.subscribeRound(Integer.MAX_VALUE);
+            subscribeTwo.subscribeRound(Integer.MAX_VALUE);
+            subscribeOne.closeVerbose();
+            subscribeTwo.closeVerbose();
+            ExecutorService executorService = Executors.newFixedThreadPool(4);
+            Future<Object> fOne = getSubmit(subscribeOne, topicTags, executorService);
+            Future<Object> fTwo = getSubmit(subscribeTwo, topicTags, executorService);
+            fOne.get();
+            fTwo.get();
+            for (ITopicTag topicTag : topicTags) {
+                router.deliverMessage(new BIMessage(new BIMessageTopic(topicTag), null, null, null));
+            }
+            while (!router.isDelivered()) {
+                Thread.sleep(10);
+            }
+
+            assertEquals(processorOne.count, topicTags.size());
+            assertEquals(processorTwo.count, topicTags.size());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    private Future<Object> getSubmit(final ISubscribe subscribeOne, final Collection<ITopicTag> topicTags, ExecutorService executorService) {
+        return executorService.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                for (ITopicTag topicTag : topicTags) {
+                    try {
+                        subscribeOne.orSubscribe(topicTag);
+                    } catch (BITopicAbsentException e) {
+                        e.printStackTrace();
+                    } catch (BIRegisterIsForbiddenException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return new Object();
+            }
+        });
+    }
+
+    public void testMultiThreadMultiSent() {
+        final IRouter router = BIFactoryHelper.getObject(IRouter.class);
+        router.setMessageDispatcher(new BIOneThreadDispatcher());
+        router.closeVerbose();
+        try {
+            BIProcessorCount processorOne = new BIProcessorCount();
+            BIProcessorCount processorTwo = new BIProcessorCount();
+
+            final ISubscribe subscribeOne = new BISubscribe(new BISubscribeID("one"), processorOne);
+            final ISubscribe subscribeTwo = new BISubscribe(new BISubscribeID("two"), processorTwo);
+            final Collection<ITopicTag> topicTags = generateTopicTag();
+
+            for (ITopicTag topicTag : topicTags) {
+                try {
+                    router.registerTopic(topicTag);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            subscribeOne.subscribeRound(Integer.MAX_VALUE);
+            subscribeTwo.subscribeRound(Integer.MAX_VALUE);
+            subscribeOne.closeVerbose();
+            subscribeTwo.closeVerbose();
+            ExecutorService executorService = Executors.newFixedThreadPool(4);
+            Future<Object> fOne = getSubmit(subscribeOne, topicTags, executorService);
+            Future<Object> fTwo = getSubmit(subscribeTwo, topicTags, executorService);
+            fOne.get();
+            fTwo.get();
+
+            Future<Object> deOne = executorService.submit(new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    for (ITopicTag topicTag : topicTags) {
+                        router.deliverMessage(new BIMessage(new BIMessageTopic(topicTag), null, null, null));
+                    }
+                    return new Object();
+                }
+            });
+            Future<Object> deTwo = executorService.submit(new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    for (ITopicTag topicTag : topicTags) {
+                        router.deliverMessage(new BIMessage(new BIMessageTopic(topicTag), null, null, null));
+                    }
+                    return new Object();
+                }
+            });
+            deOne.get();
+            deTwo.get();
+            while (!router.isDelivered()) {
+                Thread.sleep(10);
+            }
+            assertEquals(processorOne.count, topicTags.size() * 2);
+            assertEquals(processorTwo.count, topicTags.size() * 2);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    private Collection<ITopicTag> generateTopicTag() {
+        Collection<ITopicTag> result = new HashSet<ITopicTag>();
+        int time = Math.abs(BIRandomUitils.getRandomInteger() % 5000);
+        for (int i = 0; i < time; i++) {
+            String topicID = BIRandomUitils.getRandomCharacterString(10);
+            ITopicTag topicTag = new BITopicTag(new BITopicID(topicID));
+            if (!result.contains(topicTag)) {
+                result.add(topicTag);
+            }
+        }
+        return result;
     }
 }
