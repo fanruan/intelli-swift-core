@@ -8,4 +8,6 @@ import com.fr.bi.etl.analysis.data.AnalysisTableSource;
  */
 public interface BIAnalysisDataSourceManagerProvider extends BIDataSourceManagerProvider<AnalysisTableSource>{
     String XML_TAG = "BIAnalysisDataSourceManager";
+
+    void addSource(AnalysisTableSource source, long userId);
 }

@@ -17,4 +17,5 @@ ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE = 8;
 ETLCst.PARENTS = "parents";
 ETLCst.FIELDS = "etl_fields";
 ETLCst.ITEMS = "items";
+ETLCst.PACK_ID = "myetlidbuxudonga";
 

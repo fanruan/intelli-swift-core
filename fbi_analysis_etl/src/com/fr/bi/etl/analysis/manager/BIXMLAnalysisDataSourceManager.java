@@ -139,4 +139,12 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     public DBField findDBField(BIField biField) throws BIFieldAbsentException {
         return null;
     }
+
+    @Override
+    public void addCoreSource(AnalysisTableSource source) {
+        synchronized (this) {
+            BICore bimd5Core =  source.fetchObjectCore();
+            md5Tables.put(bimd5Core, source);
+        }
+    }
 }
