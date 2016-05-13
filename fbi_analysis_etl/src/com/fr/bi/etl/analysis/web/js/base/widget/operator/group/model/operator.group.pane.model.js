@@ -20,6 +20,8 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
             BI.each(fields, function (idx, item) {
                 if(item.field_type === BICst.COLUMN.NUMBER) {
                     self.addDimensionByField({fieldInfo: item,regionType: BICst.REGION.TARGET1})
+                } else if(item.field_type === BICst.COLUMN.STRING || item.field_type === BICst.COLUMN.DATE) {
+                    self.addDimensionByField({fieldInfo: item,regionType: BICst.REGION.DIMENSION1})
                 }
             })
         }

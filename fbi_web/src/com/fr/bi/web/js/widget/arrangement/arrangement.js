@@ -1376,12 +1376,12 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 }
             }
         }
-        if (tops.length === 1) {
+        if (tops.length >= 1) {
             result.push({
                 type: "top-gap"
             });
         }
-        if (bottoms.length === 1) {
+        if (bottoms.length >= 1) {
             result.push({
                 type: "bottom-gap"
             });

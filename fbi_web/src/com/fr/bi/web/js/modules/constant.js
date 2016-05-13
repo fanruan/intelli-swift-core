@@ -25,6 +25,7 @@ BICst.Widget.Widths[BICst.Widget.QUARTER] = 250;
 BICst.Widget.Widths[BICst.Widget.MONTH] = 250;
 BICst.Widget.Widths[BICst.Widget.YMD] = 250;
 BICst.Widget.Widths[BICst.Widget.TREE] = 250;
+BICst.Widget.Widths[BICst.Widget.GENERAL_QUERY] = 450;
 BICst.Widget.Widths[BICst.Widget.QUERY] = 250;
 BICst.Widget.Widths[BICst.Widget.RESET] = 250;
 
@@ -45,16 +46,17 @@ BICst.Widget.Heights[BICst.Widget.CONTENT] = 250;
 BICst.Widget.Heights[BICst.Widget.IMAGE] = 250;
 BICst.Widget.Heights[BICst.Widget.WEB] = 250;
 
-BICst.Widget.Heights[BICst.Widget.STRING] = 105;
-BICst.Widget.Heights[BICst.Widget.NUMBER] = 105;
-BICst.Widget.Heights[BICst.Widget.DATE] = 120;
-BICst.Widget.Heights[BICst.Widget.YEAR] = 120;
-BICst.Widget.Heights[BICst.Widget.QUARTER] = 120;
-BICst.Widget.Heights[BICst.Widget.MONTH] = 120;
-BICst.Widget.Heights[BICst.Widget.YMD] = 120;
-BICst.Widget.Heights[BICst.Widget.TREE] = 80;
-BICst.Widget.Heights[BICst.Widget.QUERY] = 70;
-BICst.Widget.Heights[BICst.Widget.RESET] = 70;
+BICst.Widget.Heights[BICst.Widget.STRING] = 110;
+BICst.Widget.Heights[BICst.Widget.NUMBER] = 110;
+BICst.Widget.Heights[BICst.Widget.DATE] = 110;
+BICst.Widget.Heights[BICst.Widget.YEAR] = 110;
+BICst.Widget.Heights[BICst.Widget.QUARTER] = 110;
+BICst.Widget.Heights[BICst.Widget.MONTH] = 110;
+BICst.Widget.Heights[BICst.Widget.YMD] = 110;
+BICst.Widget.Heights[BICst.Widget.TREE] = 110;
+BICst.Widget.Heights[BICst.Widget.GENERAL_QUERY] = 250;
+BICst.Widget.Heights[BICst.Widget.QUERY] = 60;
+BICst.Widget.Heights[BICst.Widget.RESET] = 60;
 
 //布局方式
 BICst.DASHBOARD_LAYOUT_ARRAY = [{

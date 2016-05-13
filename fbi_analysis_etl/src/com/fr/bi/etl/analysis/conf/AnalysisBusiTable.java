@@ -7,13 +7,23 @@ import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.stable.bridge.StableFactory;
 
+import java.util.List;
+
 /**
  * Created by 小灰灰 on 2015/12/11.
  */
 public class AnalysisBusiTable extends BIBusinessTable {
+    private List<String> sheets;
 
     public AnalysisBusiTable(String id, long userId) {
         super(id, userId);
+    }
+    public List<String> getSheets() {
+        return sheets;
+    }
+
+    public void setSheets(List<String> sheets) {
+        this.sheets = sheets;
     }
 
     @Override

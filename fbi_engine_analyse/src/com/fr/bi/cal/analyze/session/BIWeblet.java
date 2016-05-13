@@ -102,7 +102,7 @@ public class BIWeblet implements Weblet {
             String format = WebUtils.getHTTPRequestParameter(req, "format");
 
             if (ComparatorUtils.equals(format, "pdfprint")) {
-                PDFPrintPrintAction.dealWidthPrint(req, res);
+                new PDFPrintPrintAction().doAction(req, res);
             } else {
                 String embedParameter = WebUtils.getHTTPRequestParameter(req, ParameterConsts.EXPORT_PDF_EMBED);
                 boolean embed = "true".equals(embedParameter); // 当且仅当参数值是true时,才嵌入

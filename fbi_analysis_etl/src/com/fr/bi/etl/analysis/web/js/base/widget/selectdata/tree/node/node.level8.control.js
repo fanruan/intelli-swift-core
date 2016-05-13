@@ -29,7 +29,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
                     BI.createWidget({
                         type : "bi.analysis_etl_main",
                         element:BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body"),
-                        data:res
+                        model:res
                     })  
                 })
                 return;

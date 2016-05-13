@@ -1,6 +1,20 @@
 BI.Utils = BI.Utils || {};
 
 BI.extend(BI.Utils, {
+    afterSaveTable : function(res){
+        BI.each(res, function(i, item){
+            BI.extend(Pool[i], item);
+        })
+    },
+
+    afterReNameTable : function (id, name) {
+        Pool["translations"][id] = name;
+    },
+
+    afterDeleteTable : function (id) {
+        delete Pool["tables"][id];
+    },
+
     getTableTypeByID :function (tableId){
         var source = Pool.tables;
         var table = source[tableId];
@@ -120,7 +134,7 @@ BI.extend(BI.Utils, {
         return fields;
     },
 
-    _buildData : function(model, filterValueGetter) {
+    buildData : function(model, filterValueGetter) {
         //测试数据
         var header = [];
         var items = [];
@@ -151,16 +165,16 @@ BI.extend(BI.Utils, {
                     widget.setPreviewOperator(operatorType);
                     var model = {};
                     model[ ETLCst.FIELDS] = previewModel.getTempFields();
-                    widget.populatePreview.apply(widget, BI.Utils._buildData(model, widget.controller.getFilterValue))
+                    widget.populatePreview.apply(widget, BI.Utils.buildData(model, widget.controller.getFilterValue))
                     return;
                 }
                 case ETLCst.PREVIEW.MERGE : {
-                    widget.populate.apply(widget, BI.concat(BI.Utils._buildData(previewModel), operatorType));
+                    widget.populate.apply(widget, BI.concat(BI.Utils.buildData(previewModel), operatorType));
                     return;
                 }
                 default : {
                     widget.setPreviewOperator(operatorType);
-                    widget.populatePreview.apply(widget, BI.Utils._buildData(previewModel.update(), widget.controller.getFilterValue));
+                    widget.populatePreview.apply(widget, BI.Utils.buildData(previewModel.update(), widget.controller.getFilterValue));
                     return
                 }
             }
