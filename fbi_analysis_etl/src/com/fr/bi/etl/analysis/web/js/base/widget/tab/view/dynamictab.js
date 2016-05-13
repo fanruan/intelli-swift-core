@@ -54,11 +54,10 @@ BI.DynamicTab = FR.extend(BI.MVCWidget, {
     },
 
     _createTabs : function(v) {
-        var item = this.controller.getTabItem(v);
         var tab = BI.createWidget({
             type: "bi.history_tab",
             cls : "bi-animate-right-in",
-            allHistory:item.allHistory
+            allHistory: this.controller.hasMergeHistory(v)
         });
         var self = this;
         BI.defer(function () {
