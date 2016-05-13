@@ -737,6 +737,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/numberintervalcustomgroup/widget.customgroup.number.panel.js",
 
                 //详细设置相关模块
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.abstracttype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.areatype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.axistype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.bartype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.maptype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.combinetype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.radartype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.bubbletype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.tabletype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/charttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.js",
