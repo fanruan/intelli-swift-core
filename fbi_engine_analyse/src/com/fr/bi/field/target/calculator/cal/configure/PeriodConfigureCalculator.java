@@ -136,20 +136,14 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 }
                 Object value = getValueFromLast(way);
                 if (value != null) {
-                    cursor_node.setSummaryValue(createTargetGettingKey(), value);
-                }
-                Number siblingValue = cursor_node.getSummaryValue(getCalKey());
-                cursor_node = cursor_node.getSibling();
-                Number currentValue = cursor_node != null ? cursor_node.getSummaryValue(getCalKey()) : null;
-                if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                    Iterator<Map.Entry> it = cursor_node.getSummaryValueMap().entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry entry = it.next();
-                        if (!ComparatorUtils.equals(entry.getKey(), getCalKey())) {
-                            cursor_node.setSummaryValue(entry.getKey(), currentValue.doubleValue() / siblingValue.doubleValue());
-                        }
+                    if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
+                        cursor_node.setSummaryValue(createTargetGettingKey(), current_node.getSummaryValue(getCalKey()).doubleValue() / (Double) value);
+                    } else {
+                        cursor_node.setSummaryValue(createTargetGettingKey(), value);
                     }
+
                 }
+                cursor_node = cursor_node.getSibling();
             }
             return null;
         }
