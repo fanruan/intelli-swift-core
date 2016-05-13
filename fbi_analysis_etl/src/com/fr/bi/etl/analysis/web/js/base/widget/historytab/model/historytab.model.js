@@ -92,7 +92,7 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
 
     setFields : function(v, fields){
         var item = this.findItem(v);
-        item.fields = fields;
+        item[ETLCst.FIELDS] = fields;
     },
 
     getOperatorType : function (v) {
@@ -106,6 +106,10 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         items = items.slice(0, pos);
         this.set(ETLCst.ITEMS, items)
         return pos;
+    },
+
+    isModelValid : function () {
+        return this.getValue('invalidIndex') >= this.get(ETLCst.ITEMS).length
     },
 
     createHistoryModel : function () {
@@ -143,12 +147,16 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
 
     update : function () {
         var items = this.get(ETLCst.ITEMS);
-        return BI.extend(BI.extend({
+        var res =  BI.extend(BI.extend({
         }, items[items.length - 1]), {
             value:this.getValue("value"),
             table_name:this.getValue("table_name"),
             allHistory:this.getValue("allHistory"),
             invalidIndex : this.getValue('invalidIndex')
         });
+        if(!this.isModelValid()){
+            res[ETLCst.FIELDS] = []
+        }
+        return res;
     }
 })

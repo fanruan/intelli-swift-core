@@ -53,7 +53,8 @@ BI.EditorTrigger = BI.inherit(BI.Trigger, {
                     el: this.editor
                 }, {
                     el: {
-                        type: "bi.trigger_icon_button"
+                        type: "bi.trigger_icon_button",
+                        width: o.triggerWidth
                     },
                     width: o.triggerWidth
                 }

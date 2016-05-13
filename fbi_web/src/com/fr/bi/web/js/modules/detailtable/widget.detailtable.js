@@ -36,6 +36,8 @@ BI.DetailTable = BI.inherit(BI.Widget, {
         var self = this;
         var widgetId = this.options.wId;
         this.data = [];
+        var hyperLinkExpressions = [];
+        var isUseHyperLinkDimension = [];
         var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
         if (BI.isEmpty(dimensions)) {
             this.tabler.populate({
@@ -71,6 +73,9 @@ BI.DetailTable = BI.inherit(BI.Widget, {
             }
             var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
             BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
+                var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId) || {};
+                isUseHyperLinkDimension.push(hyperlink.used || false);
+                hyperLinkExpressions.push(hyperlink.expression || "");
                 BI.isNotNull(dId) &&
                 BI.Utils.isDimensionUsable(dId) === true &&
                 header.push({
@@ -88,6 +93,13 @@ BI.DetailTable = BI.inherit(BI.Widget, {
                 var rowItems = [];
                 BI.each(row, function (j, v) {
                     var item = {};
+                    if(isUseHyperLinkDimension[j] === true){
+                        item.type = "bi.a";
+                        item.cls = "hyper-link-item";
+                        item.lgap = 5;
+                        item.textAlign = "left";
+                        item.href = hyperLinkExpressions[j].replaceAll("\\$\\{.*\\}", v);
+                    }
                     item.text = v;
                     rowItems.push(item);
                 });

@@ -2047,21 +2047,6 @@
   content: "\e640";
   color: #009de3;
 }
-.dashboard-widget-combo-linkage-font .b-font:before {
-  content: "\e63c";
-  color: #808080;
-}
-.dashboard-widget-combo-linkage-font:hover .b-font:before,
-.dashboard-widget-combo-linkage-font:focus .b-font:before,
-.dashboard-widget-combo-linkage-font.hover .b-font:before {
-  content: "\e63c";
-  color: #808080;
-}
-.dashboard-widget-combo-linkage-font.native .b-font:before,
-.dashboard-widget-combo-linkage-font.disabled .b-font:before {
-  content: "\e63c";
-  color: #808080;
-}
 .dashboard-widget-combo-detail-set-font .b-font:before {
   content: "\e634";
   color: #808080;
@@ -2075,21 +2060,6 @@
 .dashboard-widget-combo-detail-set-font.native .b-font:before,
 .dashboard-widget-combo-detail-set-font.disabled .b-font:before {
   content: "\e634";
-  color: #808080;
-}
-.dashboard-widget-combo-export-excel-font .b-font:before {
-  content: "\e635";
-  color: #808080;
-}
-.dashboard-widget-combo-export-excel-font:hover .b-font:before,
-.dashboard-widget-combo-export-excel-font:focus .b-font:before,
-.dashboard-widget-combo-export-excel-font.hover .b-font:before {
-  content: "\e635";
-  color: #808080;
-}
-.dashboard-widget-combo-export-excel-font.native .b-font:before,
-.dashboard-widget-combo-export-excel-font.disabled .b-font:before {
-  content: "\e635";
   color: #808080;
 }
 .group-add-font .b-font:before {
@@ -2108,21 +2078,6 @@
 .sortable-font.native .b-font:before,
 .sortable-font.disabled .b-font:before {
   content: "\e63b";
-  color: #808080;
-}
-.dashboard-widget-combo-clear-font .b-font:before {
-  content: "\e63d";
-  color: #808080;
-}
-.dashboard-widget-combo-clear-font:hover .b-font:before,
-.dashboard-widget-combo-clear-font:focus .b-font:before,
-.dashboard-widget-combo-clear-font.hover .b-font:before {
-  content: "\e63d";
-  color: #808080;
-}
-.dashboard-widget-combo-clear-font.native .b-font:before,
-.dashboard-widget-combo-clear-font.disabled .b-font:before {
-  content: "\e63d";
   color: #808080;
 }
 .text-bold-font .b-font:before {
@@ -2934,4 +2889,130 @@
 .task-list-font.disabled .b-font:before {
   content: "\e694";
   color: #009de3;
+}
+.widget-combo-detail-font .b-font:before {
+  content: "\e631";
+  color: #009de3;
+}
+.widget-combo-detail-font.native .b-font:before,
+.widget-combo-detail-font.disabled .b-font:before {
+  content: "\e631";
+  color: #009de3;
+}
+.widget-combo-pull-down-font .b-font:before {
+  content: "\e6ab";
+  color: #009de3;
+}
+.widget-combo-pull-down-font.native .b-font:before,
+.widget-combo-pull-down-font.disabled .b-font:before {
+  content: "\e6ab";
+  color: #009de3;
+}
+.widget-combo-linkage-font .b-font:before {
+  content: "\e63c";
+  color: #808080;
+}
+.widget-combo-linkage-font.native .b-font:before,
+.widget-combo-linkage-font.disabled .b-font:before {
+  content: "\e63c";
+  color: #808080;
+}
+.widget-combo-rename-edit-font .b-font:before {
+  content: "\e670";
+  color: #808080;
+}
+.widget-combo-rename-edit-font.native .b-font:before,
+.widget-combo-rename-edit-font.disabled .b-font:before {
+  content: "\e670";
+  color: #808080;
+}
+.widget-combo-show-title-font .b-font:before {
+  content: "\e64c";
+  color: #808080;
+}
+.widget-combo-show-title-font.native .b-font:before,
+.widget-combo-show-title-font.disabled .b-font:before {
+  content: "\e64c";
+  color: #808080;
+}
+.widget-combo-title-left-font .b-font:before {
+  content: "\e654";
+  color: #808080;
+}
+.widget-combo-title-left-font.native .b-font:before,
+.widget-combo-title-left-font.disabled .b-font:before {
+  content: "\e654";
+  color: #808080;
+}
+.widget-combo-title-center-font .b-font:before {
+  content: "\e64f";
+  color: #808080;
+}
+.widget-combo-title-center-font.native .b-font:before,
+.widget-combo-title-center-font.disabled .b-font:before {
+  content: "\e64f";
+  color: #808080;
+}
+.widget-combo-show-filter-font .b-font:before {
+  content: "\e60f";
+  color: #808080;
+}
+.widget-combo-show-filter-font.native .b-font:before,
+.widget-combo-show-filter-font.disabled .b-font:before {
+  content: "\e60f";
+  color: #808080;
+}
+.widget-combo-export-excel-font .b-font:before {
+  content: "\e635";
+  color: #808080;
+}
+.widget-combo-export-excel-font.native .b-font:before,
+.widget-combo-export-excel-font.disabled .b-font:before {
+  content: "\e635";
+  color: #808080;
+}
+.widget-combo-copy .b-font:before {
+  content: "\e610";
+  color: #808080;
+}
+.widget-combo-copy.native .b-font:before,
+.widget-combo-copy.disabled .b-font:before {
+  content: "\e610";
+  color: #808080;
+}
+.widget-combo-delete .b-font:before {
+  content: "\e605";
+  color: #808080;
+}
+.widget-combo-delete.native .b-font:before,
+.widget-combo-delete.disabled .b-font:before {
+  content: "\e605";
+  color: #808080;
+}
+.widget-combo-asc .b-font:before {
+  content: "\e63f";
+  color: #808080;
+}
+.widget-combo-asc.native .b-font:before,
+.widget-combo-asc.disabled .b-font:before {
+  content: "\e63f";
+  color: #808080;
+}
+.widget-combo-des .b-font:before {
+  content: "\e63a";
+  color: #808080;
+}
+.widget-combo-des.native .b-font:before,
+.widget-combo-des.disabled .b-font:before {
+  content: "\e63a";
+  color: #808080;
+}
+.widget-combo-clear .b-font:before {
+  content: "\e63d";
+  color: #808080;
+}
+.widget-combo-clear.native .b-font:before,
+.widget-combo-clear.disabled .b-font:before {
+  content: "\e63d";
+  color: #808080;
 }

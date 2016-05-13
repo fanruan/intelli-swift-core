@@ -70,8 +70,20 @@ BI.DynamictabModel = BI.inherit(BI.MVCModel, {
                     return true;
                 }
             }
+            var parents = self._getChildParents(item);
+            BI.some(parents, function (idx, item) {
+                if(item["table_name"] === name){
+                    hasSameName = true;
+                    return true;
+                }
+            })
         })
         return hasSameName;
+    },
+
+    _getChildParents : function (id) {
+        var childModel = this.get(id);
+        return BI.isNotNull(childModel) ? (childModel.get(ETLCst.PARENTS) || [] ): []
     },
 
     reName : function (id, newName) {

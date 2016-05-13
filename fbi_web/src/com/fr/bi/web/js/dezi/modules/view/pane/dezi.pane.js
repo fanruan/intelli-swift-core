@@ -23,7 +23,6 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var north = this._createNorth();
         this.dashboard = this._createDashBoard();
-        var south = this._createSouth();
         BI.createWidget({
             type: "bi.vtape",
             element: vessel,
@@ -32,9 +31,6 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 height: this._const.toolbarHeight
             }, {
                 el: this.dashboard
-            }, {
-                el: south,
-                height: this._const.tabHeight
             }]
         })
     },
@@ -179,14 +175,6 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         });
 
         return this.dashboard;
-    },
-
-    _createSouth: function () {
-        var widget = BI.createWidget({
-            type: "bi.layout",
-            cls: "dashboard-south"
-        });
-        return widget;
     },
 
     refresh: function () {

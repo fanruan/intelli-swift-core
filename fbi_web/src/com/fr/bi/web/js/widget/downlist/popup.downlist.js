@@ -107,7 +107,7 @@ BI.DownListPopup = BI.inherit(BI.Widget, {
                         var childValue = BI.deepClone(child.value);
                         self.singleValues.push(child.value);
                         child.type = "bi.down_list_item";
-                        child.cls = (child.cls || "") + " child-down-list-item";
+                        child.extraCls = " child-down-list-item";
                         child.title = child.text;
                         child.textRgap = 10;
                         child.isNeedAdjustWidth = false;

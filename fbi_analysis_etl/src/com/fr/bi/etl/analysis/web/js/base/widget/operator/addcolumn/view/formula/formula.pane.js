@@ -34,6 +34,7 @@ BI.AnalysisETLOperatorAddColumnFormulaPane = BI.inherit(BI.MVCWidget, {
         })
         BI.createWidget(    {
             type : 'bi.vertical',
+            scrolly:false,
             element : self.element,
             rgap : self._constants.RGAP,
             items : [

@@ -38,7 +38,7 @@ BI.AnalysisETLMergeSheetFieldsModel = BI.inherit(BI.MVCModel, {
         var tables = this.getValue("tables")
         return BI.map(tables, function (idx, item) {
             return BI.extend(item, {
-                fields:[item.fields || [],[],[]]
+                fields:[item[ETLCst.FIELDS] || [],[],[]]
             })
         })
     },

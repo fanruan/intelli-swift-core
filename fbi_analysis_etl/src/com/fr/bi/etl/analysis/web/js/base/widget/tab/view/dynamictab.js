@@ -79,6 +79,10 @@ BI.DynamicTab = FR.extend(BI.MVCWidget, {
             self.controller.changeMergeSheet(data, oldSheets, v)
         });
 
+        tab.on(BI.HistoryTab.VALID_CHANGE, function () {
+            self.controller.setTabValid(v)
+        })
+
         tab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE, function () {
             self.controller.deleteMergeSheet(v)
         });

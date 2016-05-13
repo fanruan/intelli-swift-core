@@ -596,7 +596,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
 
-
                 //自适应布局
                 "com/fr/bi/web/css/modules/fit/widgetchooser/widget.dragicongroup.css",
                 "com/fr/bi/web/css/modules/fit/fit.widget.css",
@@ -604,6 +603,9 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 
+                //明细表超级链接
+                "com/fr/bi/web/css/modules/hyperlink/hyperlink.insert.css",
+                "com/fr/bi/web/css/modules/detailtable/widget.detailtable.css",
 
                 //联动
                 "com/fr/bi/web/css/modules/linkage/linkage.target.css",
@@ -983,7 +985,6 @@ public class ResourceHelper {
                 //业务包分组
                 "com/fr/bi/web/js/modules/businesspackagegroup/buttons/button.businesspackage.mange.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/buttons/button.businesspackage.add.js",
-                "com/fr/bi/web/js/modules/businesspackagegroup/editor.label.covered.businesspackage.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/expander.businesspackage.group.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/pane.businesspackage.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/pane.ungroup.and.group.businesspackage.js",
@@ -1240,6 +1241,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/globalupdate/widget.globalupdate.setting.js",
                 "com/fr/bi/web/js/modules/globalupdate/item/item.timesetting.js",
 
+                //明细表超级链接
+                "com/fr/bi/web/js/modules/hyperlink/hyperlink.insert.js",
+                "com/fr/bi/web/js/modules/hyperlink/hyperlink.popup.js",
 
                 //etl plugin
                 "com/fr/bi/web/js/extend/excel/etl.excel.plugin.js",

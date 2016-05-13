@@ -281,6 +281,26 @@
             }
         },
 
+        isShowWidgetNameByID: function(wid) {
+            var widget = Data.SharingPool.get("widgets", wid);
+            if(BI.isNotNull(widget)) {
+                var settings = widget.settings;
+                if(BI.isNotNull(settings)) {
+                    return settings.show_name
+                }
+            }
+        },
+
+        getWidgetNamePositionByID: function(wid) {
+            var widget = Data.SharingPool.get("widgets", wid);
+            if (BI.isNotNull(widget)) {
+                var settings = widget.settings;
+                if (BI.isNotNull(settings)) {
+                    return settings.name_pos
+                }
+            }
+        },
+
         getAllLinkageFromIdsByID: function (wid) {
             var self = this, fromIds = [];
             var linkages = this.getWidgetLinkageByID(wid);
@@ -289,6 +309,20 @@
                 fromIds = fromIds.concat(self.getAllLinkageFromIdsByID(link.to));
             });
             return fromIds;
+        },
+
+        checkWidgetNameByID: function(name, wId){
+            var allWIds = this.getAllWidgetIDs();
+            var self = this, isValid = true;
+            BI.some(allWIds, function(i, id){
+                if(self.isControlWidgetByWidgetId(id) === self.isControlWidgetByWidgetId(wId) 
+                    && self.getWidgetNameByID(id) === name
+                    && wId !== id) {
+                    isValid = false;
+                    return true;
+                }
+            });
+            return isValid;
         },
 
         isControlWidgetByWidgetId: function (wid) {
@@ -551,6 +585,12 @@
 
         },
 
+        getDimensionHyperLinkByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "hyperlink");
+            }
+        },
+
         getFieldTypeByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 return this.getFieldTypeByID(this.getFieldIDByDimensionID(did));
@@ -681,6 +721,7 @@
             });
         },
 
+        //某维度或指标是否被其他维度或指标（计算指标）使用
         isDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
             var self = this;
             if (this.isDimensionByDimensionID(dId)) {
@@ -694,6 +735,24 @@
                     return true;
                 }
             });
+        },
+
+        //获取某维度或指标是否被其他维度或指标（计算指标）使用的指标
+        getDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
+            var self = this;
+            if (this.isDimensionByDimensionID(dId)) {
+                return [];
+            }
+            var wId = this.getWidgetIDByDimensionID(dId);
+            var ids = this.getAllTargetDimensionIDs(wId);
+            var result = [];
+            BI.each(ids, function (i, id) {
+                var tids = self.getExpressionValuesByDimensionID(id);
+                if (tids.contains(dId)) {
+                    result.push(dId);
+                }
+            });
+            return result;
         },
 
 
@@ -1029,19 +1088,30 @@
                     return;
                 }
                 var value = self.getWidgetValueByID(id);
-                if (self.isControlWidgetByWidgetId(id) && self.getWidgetTypeByID(id) !== BICst.Widget.GENERAL_QUERY && BI.isNotNull(value)) {
+                if (self.isControlWidgetByWidgetId(id) && BI.isNotNull(value)) {
                     var dimensionIds = self.getAllDimensionIDs(id);
                     BI.each(dimensionIds, function (i, dimId) {
                         var fValue = value, fType = "";
                         if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value)) {
                             return;
                         }
+                        var filter = null;
                         switch (self.getWidgetTypeByID(id)) {
                             case BICst.Widget.STRING:
                                 fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
+                                filter = {
+                                    filter_type: fType,
+                                    filter_value: fValue,
+                                    _src: {field_id: self.getFieldIDByDimensionID(dimId)}
+                                };
                                 break;
                             case BICst.Widget.NUMBER:
                                 fType = BICst.TARGET_FILTER_NUMBER.BELONG_VALUE;
+                                filter = {
+                                    filter_type: fType,
+                                    filter_value: fValue,
+                                    _src: {field_id: self.getFieldIDByDimensionID(dimId)}
+                                };
                                 break;
                             case BICst.Widget.DATE:
                                 fType = BICst.FILTER_DATE.BELONG_DATE_RANGE;
@@ -1054,6 +1124,11 @@
                                     return;
                                 }
                                 fValue = {start: start, end: end};
+                                filter = {
+                                    filter_type: fType,
+                                    filter_value: fValue,
+                                    _src: {field_id: self.getFieldIDByDimensionID(dimId)}
+                                };
                                 break;
                             case BICst.Widget.MONTH:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
@@ -1069,6 +1144,11 @@
                                     return;
                                 }
                                 fValue = {type: BICst.GROUP.M, value: month};
+                                filter = {
+                                    filter_type: fType,
+                                    filter_value: fValue,
+                                    _src: {field_id: self.getFieldIDByDimensionID(dimId)}
+                                };
                                 break;
                             case BICst.Widget.QUARTER:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
@@ -1084,36 +1164,49 @@
                                     return;
                                 }
                                 fValue = {type: BICst.GROUP.S, value: quarter};
+                                filter = {
+                                    filter_type: fType,
+                                    filter_value: fValue,
+                                    _src: {field_id: self.getFieldIDByDimensionID(dimId)}
+                                };
                                 break;
                             case BICst.Widget.YEAR:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
                                 fValue = {type: BICst.GROUP.Y, value: fValue};
+                                filter = {
+                                    filter_type: fType,
+                                    filter_value: fValue,
+                                    _src: {field_id: self.getFieldIDByDimensionID(dimId)}
+                                };
                                 break;
                             case BICst.Widget.YMD:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
                                 fValue = {type: BICst.GROUP.YMD, value: parseComplexDate(fValue)};
+                                filter = {
+                                    filter_type: fType,
+                                    filter_value: fValue,
+                                    _src: {field_id: self.getFieldIDByDimensionID(dimId)}
+                                };
                                 break;
                             case BICst.Widget.TREE:
                                 fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
                                 var treeValue = {};
                                 createTreeFilterValue(treeValue, fValue, dimId, i);
                                 fValue = treeValue;
+                                filter = {
+                                    filter_type: fType,
+                                    filter_value: fValue,
+                                    _src: {field_id: self.getFieldIDByDimensionID(dimId)}
+                                };
                                 break;
+                            case BICst.Widget.GENERAL_QUERY:
+                                if(BI.isNotNull(value) && value.length === 1) {
+                                    filter = value[0];
+                                    parseFilter(filter);
+                                }
                         }
-                        filterValues.push({
-                            filter_type: fType,
-                            filter_value: fValue,
-                            _src: {field_id: self.getFieldIDByDimensionID(dimId)}
-                        });
+                        filterValues.push(filter);
                     });
-                }
-                //通用查询直接用好了
-                if (self.getWidgetTypeByID(id) === BICst.Widget.GENERAL_QUERY &&
-                    BI.isNotNull(value) && value.length === 1) {
-                    var filter = value[0];
-                    parseFilter(filter);
-                    filterValues.push(filter);
-
                 }
             });
             return filterValues;

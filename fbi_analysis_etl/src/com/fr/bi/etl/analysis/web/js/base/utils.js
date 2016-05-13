@@ -38,7 +38,7 @@ BI.extend(BI.Utils, {
 
     getFieldArrayFromTable : function (table) {
         var fields = [];
-        BI.each(table.fields, function (idx, item) {
+        BI.each(table[ETLCst.FIELDS], function (idx, item) {
             fields = BI.concat(fields, item);
         })
         return fields;
@@ -120,18 +120,19 @@ BI.extend(BI.Utils, {
         return fields;
     },
 
-    _buildData : function(model, filterValueGetter) {
+    buildData : function(model, filterValueGetter) {
         //测试数据
         var header = [];
         var items = [];
         BI.each(model[ETLCst.FIELDS], function(idx, item){
-            header.push({
+            var head = {
                 text:item.field_name,
                 field_type:item.field_type,
                 field_id:item.field_id,
-                filterValueGetter : filterValueGetter,
-                fields : model["fields"]
-            });
+                filterValueGetter : filterValueGetter
+            }
+            head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
+            header.push(head);
             BI.each(BI.range(0 ,10), function(i){
                 if(BI.isNull(items[i])){
                     items[i] = [];
@@ -150,16 +151,16 @@ BI.extend(BI.Utils, {
                     widget.setPreviewOperator(operatorType);
                     var model = {};
                     model[ ETLCst.FIELDS] = previewModel.getTempFields();
-                    widget.populatePreview.apply(widget, BI.Utils._buildData(model, widget.controller.getFilterValue))
+                    widget.populatePreview.apply(widget, BI.Utils.buildData(model, widget.controller.getFilterValue))
                     return;
                 }
                 case ETLCst.PREVIEW.MERGE : {
-                    widget.populate.apply(widget, BI.concat(BI.Utils._buildData(previewModel), operatorType));
+                    widget.populate.apply(widget, BI.concat(BI.Utils.buildData(previewModel), operatorType));
                     return;
                 }
                 default : {
                     widget.setPreviewOperator(operatorType);
-                    widget.populatePreview.apply(widget, BI.Utils._buildData(previewModel.update(), widget.controller.getFilterValue));
+                    widget.populatePreview.apply(widget, BI.Utils.buildData(previewModel.update(), widget.controller.getFilterValue));
                     return
                 }
             }

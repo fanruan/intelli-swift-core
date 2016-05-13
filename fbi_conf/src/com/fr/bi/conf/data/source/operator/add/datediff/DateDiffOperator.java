@@ -52,6 +52,7 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
         item.put("firstField", field1);
         item.put("secondField", field2);
         item.put("type", unit);
+        jo.put("add_column_type", BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_DIFF);
         return jo;
     }
 

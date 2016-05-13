@@ -91,6 +91,10 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
             self.fireEvent(BI.AnalysisETLOperatorCenter.DATA_CHANGE, arguments);
         })
 
+        this.contentItemWidget.on(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, function () {
+            self.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, arguments);
+        })
+
         this.pointerPane = BI.createWidget({
             element:this.element,
             type:"bi.top_pointer_pane",
