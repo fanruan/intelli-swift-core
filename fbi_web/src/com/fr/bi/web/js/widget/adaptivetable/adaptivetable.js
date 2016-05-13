@@ -258,12 +258,8 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
     },
 
     setColumnSize: function (columnSize) {
-        if (this._isAdaptiveColumn(columnSize)) {
-            this.element.removeClass("fixed");
-        } else {
-            this.element.addClass("fixed");
-        }
         this.table.setColumnSize(columnSize);
+        this._resizeHeader();
     },
 
     getColumnSize: function () {

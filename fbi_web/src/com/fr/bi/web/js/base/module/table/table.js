@@ -350,8 +350,9 @@ BI.Table = BI.inherit(BI.Widget, {
                         }
                         self._resize();
                         ui.element.css("left", "");
-                        self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
-                        return false;
+                        BI.delay(function () {
+                            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
+                        }, 300);
                     }
                 };
                 self.bottomRight.element.resizable(options);
@@ -380,8 +381,9 @@ BI.Table = BI.inherit(BI.Widget, {
                             self.setRegionColumnSize([ui.size.width, "fill"]);
                         }
                         self._resize();
-                        self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
-                        return false;
+                        BI.delay(function () {
+                            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
+                        }, 300);
                     }
                 };
                 self.bottomLeft.element.resizable(options);
@@ -714,8 +716,6 @@ BI.Table = BI.inherit(BI.Widget, {
                             BI.delay(function () {
                                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
                             }, 300);
-                            e.stopPropagation();
-                            return false;
                         }
                     })
                 }
