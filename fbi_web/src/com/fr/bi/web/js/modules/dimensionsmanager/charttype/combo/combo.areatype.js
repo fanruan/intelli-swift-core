@@ -34,4 +34,4 @@ BI.AreaTypeCombo = BI.inherit(BI.AbstractTypeCombo, {
         }
     }
 });
-$.shortcut("bi.table_type_combo", BI.AreaTypeCombo);
+$.shortcut("bi.area_type_combo", BI.AreaTypeCombo);

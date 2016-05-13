@@ -26,4 +26,4 @@ BI.MapTypeCombo = BI.inherit(BI.AbstractTypeCombo, {
         }
     }
 });
-$.shortcut("bi.combine_chart_type_combo", BI.MapTypeCombo);
+$.shortcut("bi.map_chart_type_combo", BI.MapTypeCombo);

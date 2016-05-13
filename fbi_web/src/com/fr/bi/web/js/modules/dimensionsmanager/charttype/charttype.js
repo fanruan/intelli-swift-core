@@ -60,25 +60,37 @@ BI.ChartType = BI.inherit(BI.Widget, {
             type: "bi.axis_type_combo",
             width: 40,
             height: 34,
-            items: [BICst.TABLE_TYPE]
+            items: [BICst.AXIS_CHART_TYPE]
         });
         this.bar = BI.createWidget({
-            type: "bi.axis_type_combo",
+            type: "bi.bar_type_combo",
             width: 40,
             height: 34,
-            items: [BICst.TABLE_TYPE]
+            items: [BICst.BAR_CHART_TYPE]
         });
         this.area = BI.createWidget({
-            type: "bi.axis_type_combo",
+            type: "bi.area_type_combo",
             width: 40,
             height: 34,
-            items: [BICst.TABLE_TYPE]
+            items: [BICst.AREA_CHART_TYPE]
         });
         this.radar = BI.createWidget({
-            type: "bi.axis_type_combo",
+            type: "bi.radar_type_combo",
             width: 40,
             height: 34,
-            items: [BICst.TABLE_TYPE]
+            items: [BICst.RADAR_CHART_TYPE]
+        });
+        this.bubble = BI.createWidget({
+            type: "bi.bubble_type_combo",
+            width: 40,
+            height: 34,
+            items: [BICst.BUBBLE_CHART_TYPE]
+        });
+        this.combine = BI.createWidget({
+            type: "bi.combine_chart_type_combo",
+            width: 40,
+            height: 34,
+            items: [BICst.COMBINE_CHART_TYPE]
         });
     },
 
