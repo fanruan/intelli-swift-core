@@ -19,9 +19,8 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
     },
 
     _initItems : function (table, items) {
-        var operator = BI.findWhere(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP, {
-            value: table.etlType
-        })
+        var operator = ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[table.etlType];
+        var self = this;
         items = BI.concat([{
             op : operator,
             table : table
@@ -30,10 +29,26 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
             if(table.parents.length !== 2) {
                 items = this._initItems(table.parents[0], items);
             } else {
+                self._initId(table.parents)
                 this.set("allHistory", true)
             }
         };
         return items;
+    },
+
+    _initId : function (tables) {
+        var self = this;
+        if(BI.isNotNull(tables)) {
+            BI.each(tables, function (idx, item) {
+                item.value = item.value || BI.UUID();
+                var operator = ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[item.etlType]
+                BI.extend(item, {
+                    operatorType : operator["operatorType"],
+                    text:operator["text"]
+                })
+                self._initId(item[ETLCst.PARENTS])
+            })
+        }
     },
 
 
