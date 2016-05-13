@@ -351,6 +351,34 @@ public class BIReportConstant {
         public static final int STRING = 13;
 
         public static final int TREE = 20;
+
+        public static final int ACCUMULATE_AXIS = 33;
+
+        public static final int PERCENT_ACCUMULATE_AXIS = 34;
+
+        public static final int COMPARE_AXIS = 35;
+
+        public static final int FALL_AXIS = 36;
+
+        public static final int COMPARE_BAR = 37;
+
+        public static final int ACCUMULATE_AREA = 34;
+
+        public static final int PERCENT_ACCUMULATE_AREA = 35;
+
+        public static final int COMPARE_AREA = 36;
+
+        public static final int RANGE_AREA = 37;
+
+        public static final int COMBINE_CHART = 38;
+
+        public static final int MULTI_AXIS_COMBINE_CHART = 39;
+
+        public static final int NIU_DUN_BUBBLE = 40;
+
+        public static final int ACCUMULATE_RADAR = 41;
+
+
     }
 
     public static final class REGION {
