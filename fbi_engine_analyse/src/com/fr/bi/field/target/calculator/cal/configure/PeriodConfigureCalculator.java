@@ -39,7 +39,9 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
             return;
         }
         LightNode tempNode = node;
-        for (int i = 0; i < deep - 1 + start_group; i++) {
+        //从第几个纬度开始计算
+        int calDeep = start_group == 0 ? deep - 1 : deep;
+        for (int i = 0; i < calDeep; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
@@ -52,6 +54,9 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
             nodeList.add(new RankDealWith(last_node, cursor_node));
             last_node = cursor_node;
             cursor_node = cursor_node.getSibling();
+            if (cursor_node != null && start_group == 0 && !ComparatorUtils.equals(last_node.getParent(), cursor_node.getParent())) {
+                last_node = null;
+            }
         }
         for (int i = 0; i < nodeList.size(); i++) {
             try {
@@ -135,7 +140,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 }
                 Number siblingValue = cursor_node.getSummaryValue(getCalKey());
                 cursor_node = cursor_node.getSibling();
-                Number currentValue = cursor_node.getSummaryValue(getCalKey());
+                Number currentValue = cursor_node != null ? cursor_node.getSummaryValue(getCalKey()) : null;
                 if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
                     Iterator<Map.Entry> it = cursor_node.getSummaryValueMap().entrySet().iterator();
                     while (it.hasNext()) {
