@@ -34,11 +34,12 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
     @Override
     public void calCalculateTarget(LightNode node) {
         Object key = getCalKey();
+        int deep = getCalDeep(node);
         if (key == null) {
             return;
         }
         LightNode tempNode = node;
-        for (int i = 0; i < start_group + 1; i++) {
+        for (int i = 0; i < deep - 1 + start_group; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
