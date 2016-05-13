@@ -1,6 +1,20 @@
 BI.Utils = BI.Utils || {};
 
 BI.extend(BI.Utils, {
+    afterSaveTable : function(res){
+        BI.each(res, function(i, item){
+            BI.extend(Pool[i], item);
+        })
+    },
+
+    afterReNameTable : function (id, name) {
+        Pool["translations"][id] = name;
+    },
+
+    afterDeleteTable : function (id) {
+        delete Pool["tables"][id];
+    },
+
     getTableTypeByID :function (tableId){
         var source = Pool.tables;
         var table = source[tableId];

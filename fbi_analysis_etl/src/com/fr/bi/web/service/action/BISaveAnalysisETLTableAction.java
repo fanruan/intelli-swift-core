@@ -10,11 +10,14 @@ import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
 import com.fr.bi.etl.analysis.manager.AnalysisDataSourceManager;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 小灰灰 on 2016/4/7.
@@ -31,7 +34,13 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         FRContext.getCurrentEnv().writeResource(BIConfigureManagerCenter.getAliasManager().getTransManager(userId));
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
         JSONObject jo = new JSONObject(tableJSON);
-        BIAnalysisETLManagerCenter.getDataSourceManager().addCore2SourceRelation(table.getID(), AnalysisETLSourceFactory.createTableSource(jo.getJSONArray(Constants.ITEMS), userId), new BIUser(userId));
+        JSONArray items = jo.getJSONArray(Constants.ITEMS);
+        List<String> sheets = new ArrayList<String>();
+        for (int i = 0; i < items.length(); i++){
+            sheets.add(items.getJSONObject(i).getString("table_name"));
+        }
+        table.setSheets(sheets);
+        BIAnalysisETLManagerCenter.getDataSourceManager().addCore2SourceRelation(table.getID(), AnalysisETLSourceFactory.createTableSource(items, userId), new BIUser(userId));
         BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
         ((AnalysisDataSourceManager)BIAnalysisETLManagerCenter.getDataSourceManager()).persistUserData(userId);
         JSONObject result = new JSONObject();
