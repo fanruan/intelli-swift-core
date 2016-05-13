@@ -96,9 +96,11 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
                 table_name:v
             })]
             var res = {};
-            res[ETLCst.ITEMS] = sheets;
-            res[id] = BI.UUID();
-            res["table_name"] = v;
+            var table = {};
+            table[ETLCst.ITEMS] = sheets;
+            res["table"] = table;
+            res["id"] = BI.UUID();
+            res["name"] = v;
             BI.ETLReq.reqSaveTable(res, BI.emptyFn);
         });
         BI.Popovers.remove("etlTableName");
