@@ -18,7 +18,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             element: vessel,
             items: {
                 west: {el: this._builtPackageTree(), width: 400},
-                center: {el: this._buildAuthorityPane(), height: 500, width: 40}
+                center: {el: this._buildAuthorityPane()}
             }
         });
     },
@@ -39,11 +39,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         });
         /*单选模式下,直接点击某个业务包,在右侧权限管理页面,否则显示初始页面,初始页面分批量和单选两种*/
         this.packageTree.on(BI.PackageANdAuthorityTree.EVENT_CHANGE, function () {
-            if (0 == self.packageTree.getSelectType() && JSON.parse(self.packageTree.getPackageIds()).length == 1) {
-                self.authorityPaneInitMain.populate(JSON.parse(self.packageTree.getPackageIds()), i);
-            } else {
-            self.authorityPaneInitMain.populate(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
-        }
+                self.AuthorityPaneInitMain.populate(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
             /*修改标题*/
             self._setHeadTitle(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
         });
@@ -53,15 +49,12 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         return this.pane = BI.createWidget({
             type: "bi.border",
             items: {
-                north: {el: this._showTitle(), width: 40, height: 40},
+                north: {el: this._showTitle(),  height: 40},
                 center: {
                     el: this._buildAuthorityTabs(),
                     top: 0,
                     left: 0,
-                    right: 0,
-                    bottom: -40,
-                    height: 500,
-                    width: 400
+                    right: 0
                 }
             }
         })
@@ -80,7 +73,9 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         var self = this;
         switch (selectType){
             case BI.PackageANdAuthorityTree.SelectType.SingleSelect:
-                self.title.setText(BI.Utils.getPackageNameByID4Conf(packageId[0]) + '  ' + BI.i18nText('BI-Permissions_Setting'));
+                if (packageId.length!=0) {
+                    self.title.setText(BI.Utils.getPackageNameByID4Conf(packageId[0]) + '  ' + BI.i18nText('BI-Permissions_Setting'));
+                }
                 break;
             case BI.PackageANdAuthorityTree.SelectType.MultiSelect:
                 self.title.setText(BI.i18nText('BI-Permissions_Setting') + '配置   ' + packageId.length + '个业务包');
@@ -88,29 +83,30 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         }
     },
     _buildAuthorityTabs: function () {
-
-        this.tabs= BI.createWidget({
-            type: "bi.vertical",
-            element: this.element,
-            items: [{
-                el:this.authorityPaneInitMain
-            }, {
-                el: this.authorityPaneRoleMain
-            }],
+        var self = this;
+        self.authorityTabs = BI.createWidget({
+            type: "bi.tab",
+            tab: null,
+            defaultShowIndex: 0,
+            cardCreator: BI.bind(this._createTabs, this)
         });
-        this.authorityPaneInitMain = BI.createWidget({
-            type: "bi.authority_pane_init_main"
+        return this.authorityTabs;
+    },
+    _createTabs: function (type) {
+        switch (type) {
+            case 0:
+                this.AuthorityPaneInitMain = BI.createWidget({
+                    type: "bi.authority_pane_init_main"
         });
-        this.authorityPaneInitMain.on(BI.AuthorityPaneInitMain.EVENT_CHANGE, function () {
-            self.authorityPaneInitMain.setSelect(1);
-            self.authorityPaneInitMain.populate(JSON.parse(self.packageTree.getPackageIds()), BI.AuthorityPaneEditSelectedView.EidtType.MultiEdit);
+                this.AuthorityPaneInitMain.on(BI.AuthorityPaneInitMain.EVENT_CHANGE, function () {
+                    alert('BI.AuthorityPaneInitMain.EVENT_CHANGE');
         });
-        this.authorityPaneRoleMain = BI.createWidget({
-            type: "bi.authority_pane_role_main"
+                return this.AuthorityPaneInitMain;
+            case 1:
+                this.AuthorityPaneRoleMain = BI.createWidget({
+                    type: "bi.authority_pane_role_selected"
         });
-        this.authorityPaneInitMain.on(BI.AuthorityPaneInitMain.EVENT_CHANGE, function () {
-            self.authorityPaneInitMain.populate(JSON.parse(self.packageTree.getPackageIds()), BI.AuthorityPaneEditSelectedView.EidtType.MultiEdit);
-        });
-        return this.tabs;
+                return this.AuthorityPaneRoleMain;
+        }
     }
 });

@@ -32,19 +32,6 @@ BI.AuthorityPaneMulti = BI.inherit(BI.LoadingPane, {
                         self.fireEvent(BI.AuthorityPaneMulti.EVENT_CHANGE);
                     }
                 }),
-                // {
-                //     el: {
-                //         type: "bi.button",
-                //         text: BI.i18nText("BI-Save"),
-                //         height: 20,
-                //         width:50,
-                //         handler: function () {
-                //         }
-                //     },
-                //     top: 0,
-                //     left: 300,
-                //     right: 0
-                // },
                 {
                     el: {
                         type: "bi.label",
