@@ -120,7 +120,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         dependItem.children = children;
 
         switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
-            case BICst.Widget.TABLE:
+            case BICst.WIDGET.TABLE:
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
                 break;
             default:
@@ -134,7 +134,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     _assertChartType: function (val) {
         val || (val = {});
         if(BI.isNull(val.type)){
-            val.type = BICst.Widget.COLUMN;
+            val.type = BICst.WIDGET.COLUMN;
         }
         return val;
     },

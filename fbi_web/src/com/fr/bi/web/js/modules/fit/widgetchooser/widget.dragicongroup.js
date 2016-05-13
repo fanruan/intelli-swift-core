@@ -9,7 +9,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
         valueReuse: -1,
         iconWidth: 36,
         iconHeight: 30,
-        showMoreCount: 8
+        showMoreCount: 14
     },
 
     _defaultConfig: function () {
@@ -155,10 +155,11 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             items: icons,
             layouts: [{
-                type: "bi.vertical"
+                type: "bi.left"
             }, {
                 type: "bi.center_adapt",
-                height: 40
+                height: 40,
+                width: 40
             }]
         })
     },
@@ -180,7 +181,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                     items: [{
                         type: "bi.label",
                         height: 1,
-                        width: 36,
+                        width: 60,
                         cls: "widget-generator-gap"
                     }]
                 }));
@@ -195,7 +196,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 type: "bi.vertical",
-                width: 38,
+                width: 80,
                 items: gps
             }]
         });

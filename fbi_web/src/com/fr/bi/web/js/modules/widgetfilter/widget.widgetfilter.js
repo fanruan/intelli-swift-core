@@ -86,7 +86,7 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
         BI.each(allWidgetIds, function(i, cwid){
             if(BI.Utils.isControlWidgetByWidgetId(cwid)) {
                 //通用查询
-                if(BI.Utils.getWidgetTypeByID(cwid) === BICst.Widget.GENERAL_QUERY) {
+                if(BI.Utils.getWidgetTypeByID(cwid) === BICst.WIDGET.GENERAL_QUERY) {
                     var value = BI.Utils.getWidgetValueByID(cwid);
                     var item = self.model.parseGeneralQueryFilter(value[0]);
                     if(BI.isNotNull(item)) {

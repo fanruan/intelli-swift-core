@@ -51,9 +51,9 @@ BI.AbstractTypeCombo = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        if (v === BICst.Widget.TABLE ||
-            v === BICst.Widget.CROSS_TABLE ||
-            v === BICst.Widget.COMPLEX_TABLE) {
+        if (v === BICst.WIDGET.TABLE ||
+            v === BICst.WIDGET.CROSS_TABLE ||
+            v === BICst.WIDGET.COMPLEX_TABLE) {
             this.setSelected(true);
         } else {
             this.setSelected(false);

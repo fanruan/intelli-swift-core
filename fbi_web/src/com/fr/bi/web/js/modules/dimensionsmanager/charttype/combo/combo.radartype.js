@@ -18,9 +18,9 @@ BI.RadarTypeCombo = BI.inherit(BI.AbstractTypeCombo, {
 
     _switchIcon: function(v){
         switch (v) {
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.RADAR:
                 break;
-            case BICst.Widget.ACCUMULATE_RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
                 break;
             default:
                 this.trigger.setIcon("detail-chart-radar-font");

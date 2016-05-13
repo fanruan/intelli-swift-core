@@ -3,7 +3,7 @@ BIShow.YearMonthWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIShow.YearMonthWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.MONTH,
+            type: BICst.WIDGET.MONTH,
             dimensions: {},
             view: {},
             filter_value: {}
