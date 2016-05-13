@@ -93,8 +93,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v) {
             var sheets = [BI.extend(BI.deepClone(item), {
                 value:model.getValue("value"),
-                table_name:v,
-                allHistory:model.getValue("allHistory")
+                table_name:v
             })]
             var res = {};
             res[ETLCst.ITEMS] = sheets;
