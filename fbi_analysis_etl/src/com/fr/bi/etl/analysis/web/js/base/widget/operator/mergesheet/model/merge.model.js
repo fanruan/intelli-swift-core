@@ -178,14 +178,14 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
             } else if(item[0] > -1) {
                 leftColumns.push(idx)
                 newFields = BI.deepClone(table1Fields[item[0]]);
-                newFields._src = BI.extend(BI.deepClone(table1Fields[item[0]]), {
+                newFields._src = [BI.extend(BI.deepClone(table1Fields[item[0]]), {
                     table_index: 0
-                });
+                })];
             } else {
                 newFields = BI.deepClone(table2Fields[item[1]]);
-                newFields._src = BI.extend(BI.deepClone(table2Fields[item[1]]), {
+                newFields._src = [BI.extend(BI.deepClone(table2Fields[item[1]]), {
                     table_index: 1
-                });
+                })];
             }
 
             newFields.field_name = BI.Utils.createDistinctName(getNameArray(columns), newFields.field_name)
