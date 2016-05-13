@@ -200,7 +200,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     update : function () {
         var v  = BI.AnalysisETLOperatorGroupPaneModel.superclass.update.apply(this, arguments);
         v.etlType = ETLCst.ETL_TYPE.GROUP_SUMMARY;
-        v.fields = this.createFields();
+        v[ETLCst.FIELDS] = this.createFields();
         v.operator = {};
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY];
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY];

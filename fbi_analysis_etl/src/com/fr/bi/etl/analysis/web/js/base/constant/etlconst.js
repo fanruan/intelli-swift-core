@@ -15,6 +15,6 @@ ETLCst.TABLE_TYPE.USER_ETL = 5;
 ETLCst.BUSINESS_TABLE_TYPE = {};
 ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE = 8;
 ETLCst.PARENTS = "parents";
-ETLCst.FIELDS = "fields";
+ETLCst.FIELDS = "etl_fields";
 ETLCst.ITEMS = "items";
 
