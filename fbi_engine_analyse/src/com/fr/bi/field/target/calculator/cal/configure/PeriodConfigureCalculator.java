@@ -34,11 +34,14 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
     @Override
     public void calCalculateTarget(LightNode node) {
         Object key = getCalKey();
+        int deep = getCalDeep(node);
         if (key == null) {
             return;
         }
         LightNode tempNode = node;
-        for (int i = 0; i < start_group + 1; i++) {
+        //从第几个纬度开始计算
+        int calDeep = start_group == 0 ? deep - 1 : deep;
+        for (int i = 0; i < calDeep; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
@@ -51,6 +54,9 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
             nodeList.add(new RankDealWith(last_node, cursor_node));
             last_node = cursor_node;
             cursor_node = cursor_node.getSibling();
+            if (cursor_node != null && start_group == 0 && !ComparatorUtils.equals(last_node.getParent(), cursor_node.getParent())) {
+                last_node = null;
+            }
         }
         for (int i = 0; i < nodeList.size(); i++) {
             try {
@@ -130,20 +136,14 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 }
                 Object value = getValueFromLast(way);
                 if (value != null) {
-                    cursor_node.setSummaryValue(createTargetGettingKey(), value);
-                }
-                Number siblingValue = cursor_node.getSummaryValue(getCalKey());
-                cursor_node = cursor_node.getSibling();
-                Number currentValue = cursor_node.getSummaryValue(getCalKey());
-                if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                    Iterator<Map.Entry> it = cursor_node.getSummaryValueMap().entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry entry = it.next();
-                        if (!ComparatorUtils.equals(entry.getKey(), getCalKey())) {
-                            cursor_node.setSummaryValue(entry.getKey(), currentValue.doubleValue() / siblingValue.doubleValue());
-                        }
+                    if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
+                        cursor_node.setSummaryValue(createTargetGettingKey(), current_node.getSummaryValue(getCalKey()).doubleValue() / (Double) value);
+                    } else {
+                        cursor_node.setSummaryValue(createTargetGettingKey(), value);
                     }
+
                 }
+                cursor_node = cursor_node.getSibling();
             }
             return null;
         }
