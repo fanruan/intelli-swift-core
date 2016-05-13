@@ -743,7 +743,7 @@
             BI.each(ids, function (i, id) {
                 var tids = self.getExpressionValuesByDimensionID(id);
                 if (tids.contains(dId)) {
-                    result.push(dId);
+                    result.push(id);
                 }
             });
             return result;
