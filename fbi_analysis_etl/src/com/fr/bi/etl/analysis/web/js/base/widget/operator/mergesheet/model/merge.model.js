@@ -22,6 +22,8 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         this.set(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS, new BI.AnalysisETLMergeSheetFieldsModel(m))
     },
 
+
+
     createPreviewData : function () {
         var tables = this.get(ETLCst.PARENTS);
         var merge = this.update();
