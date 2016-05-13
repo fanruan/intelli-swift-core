@@ -53,14 +53,14 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         });
         o.resizable && item.element.resizable({
             handles: "e, s, se",
-            minWidth: 21,
-            minHeight: 21,
+            minWidth: 100,
+            minHeight: 60,
             helper: "bi-resizer",
             start: function () {
                 item.element.css("zIndex", ++self.zIndex);
             },
             resize: function (e, ui) {
-                self._resize(item.attr("id"), ui.size);
+                // self._resize(item.attr("id"), ui.size);
             },
             stop: function (e, ui) {
                 self._resize(item.attr("id"), ui.size);
