@@ -13,15 +13,7 @@ BI.ETLReq = {
     reqRenameTable: function(data, callback){
         data.sessionID = Data.SharingPool.get("sessionID");
         BI.requestAsync("fr_bi_analysis_etl", "rename_table", data, function(){
-            BI.Utils.afterReNameTable();
-            callback();
-        })
-    },
-
-    reqCopyTable: function(data, callback){
-        data.sessionID = Data.SharingPool.get("sessionID");
-        BI.requestAsync("fr_bi_analysis_etl", "copy_table", data, function(res){
-            BI.Utils.afterSaveTable(res);
+            BI.Utils.afterReNameTable(data.id, data.name);
             callback();
         })
     },
@@ -29,7 +21,7 @@ BI.ETLReq = {
     reqDeleteTable: function(data, callback){
         data.sessionID = Data.SharingPool.get("sessionID");
         BI.requestAsync("fr_bi_analysis_etl", "delete_table", data, function(){
-            BI.Utils.afterDeleteTable();
+            BI.Utils.afterDeleteTable(data.id);
             callback();
         })
     },

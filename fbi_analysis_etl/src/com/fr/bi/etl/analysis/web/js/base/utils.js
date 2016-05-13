@@ -5,14 +5,20 @@ BI.extend(BI.Utils, {
         BI.each(res, function(i, item){
             BI.extend(Pool[i], item);
         })
+        BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
 
     afterReNameTable : function (id, name) {
         Pool["translations"][id] = name;
+        BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
 
     afterDeleteTable : function (id) {
         delete Pool["tables"][id];
+        BI.remove(Pool["packages"][ETLCst.PACK_DI]['tables'], function(i, item){
+            return item.id === id
+        })
+        BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
 
     getTableTypeByID :function (tableId){

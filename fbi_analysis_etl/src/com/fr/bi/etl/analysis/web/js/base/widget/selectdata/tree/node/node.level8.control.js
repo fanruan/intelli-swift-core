@@ -35,14 +35,14 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.RENAME :
                 self.renameController.showPopover(option.text, self._renameChecker, function (value) {
-                    BI.ETLReq.reqRenameTable({id: option.id, name : value}, BI.emptyFn());
+                    BI.ETLReq.reqRenameTable({id: option.id, name : value}, BI.emptyFn);
                 });
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.DELETE :
-                BI.ETLReq.reqDeleteTable({id: option.id}, BI.emptyFn());
+                BI.ETLReq.reqDeleteTable({id: option.id}, BI.emptyFn);
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.COPY :
-                BI.ETLReq.reqCopyTable({id: option.id}, BI.emptyFn());
+                BI.ETLReq.reqSaveTable({id: option.id,new_id : BI.UUID(),name : option.text +'copy'}, BI.emptyFn);
                 return;
         }
 

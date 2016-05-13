@@ -94,9 +94,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     public JSONObject createJSON() throws Exception {
         JSONObject jo =  super.createJSON();
         JSONObject widget = new JSONObject();
-        if (etlType == Constants.ETL_TYPE.SELECT_DATA){
-            widget = ((SimpleDetailWidget)this.widget).createJSON();
-        } else {
+        if (etlType == Constants.ETL_TYPE.SELECT_NONE_DATA){
             widget.put("core", fetchObjectCore().getIDValue());
         }
         if (fieldList != null){
