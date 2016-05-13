@@ -38,7 +38,7 @@ BI.extend(BI.Utils, {
 
     getFieldArrayFromTable : function (table) {
         var fields = [];
-        BI.each(table.fields, function (idx, item) {
+        BI.each(table[ETLCst.FIELDS], function (idx, item) {
             fields = BI.concat(fields, item);
         })
         return fields;
@@ -125,13 +125,14 @@ BI.extend(BI.Utils, {
         var header = [];
         var items = [];
         BI.each(model[ETLCst.FIELDS], function(idx, item){
-            header.push({
+            var head = {
                 text:item.field_name,
                 field_type:item.field_type,
                 field_id:item.field_id,
-                filterValueGetter : filterValueGetter,
-                fields : model[ETLCst.FIELDS]
-            });
+                filterValueGetter : filterValueGetter
+            }
+            head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
+            header.push(head);
             BI.each(BI.range(0 ,10), function(i){
                 if(BI.isNull(items[i])){
                     items[i] = [];

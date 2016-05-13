@@ -174,13 +174,14 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         self.groupContainer.empty();
         if (self.editor.getValue() == BICst.ETL_FILTER_NUMBER_AVG_TYPE.INNER_GROUP){
-            self.group = BI.createWidget({
+            var op ={
                 type :'bi.filter_etl_group_setting',
-                fields : o.fields,
                 field_name : o.field_name,
                 filterType : o.filterType,
                 value : self.storedValue.value.group
-            })
+            }
+            op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+            self.group = BI.createWidget(op)
             self.group.on(BI.ETLGroupSettingPane.EVENT_VALUE_CHANGED, function () {
                 self.storedValue.value.group = self.group.getValue();
                 self.fireEvent(BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM);

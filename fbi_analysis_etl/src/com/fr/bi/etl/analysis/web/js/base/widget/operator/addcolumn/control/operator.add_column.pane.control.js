@@ -196,7 +196,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     _getAllColumnNames : function (model, name) {
         var columnNames = [];
         var parent = model.get(ETLCst.PARENTS)[0];
-        BI.each(BI.concat(parent.fields, model.getAddColumns()), function (idx, item) {
+        BI.each(BI.concat(parent[ETLCst.FIELDS], model.getAddColumns()), function (idx, item) {
             if(item.field_name !== name) {
                 columnNames.push(item.field_name)
             }
@@ -217,9 +217,9 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         });
         widget.oneConditionPane.populate([widget.currentEditPane]);
         var column = widget.title.update();
-        widget.currentEditPane.populate(BI.extend({
-                fields:parent[ETLCst.FIELDS]
-        }, value), {
+        var fields = {}
+        fields[ETLCst.FIELDS] = parent[ETLCst.FIELDS];
+        widget.currentEditPane.populate(BI.extend(fields, value), {
             field_type : column.field_type
         })
     },

@@ -26,7 +26,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
             text : BI.i18nText('BI-Edit') + BI.i18nText('BI-Formula')
         });
         self.fieldItems = [];
-        BI.each(o.fields, function (i, item) {
+        BI.each(o[ETLCst.FIELDS], function (i, item) {
             self.fieldItems.push({
                 text : item.field_name,
                 value : item.field_name,

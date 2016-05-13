@@ -17,7 +17,7 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
         var self = this, o = this.options;
         self.storedValue = [];
         BI.each(o.value, function (i ,item) {
-            if (BI.find(o.fields, function (i, field) {
+            if (BI.find(o[ETLCst.FIELDS], function (i, field) {
                     if (field.field_name === item){
                         return true;
                     }
@@ -33,7 +33,7 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
                 selected : true
             });
         })
-        BI.each(o.fields, function (i, item) {
+        BI.each(o[ETLCst.FIELDS], function (i, item) {
             if (BI.indexOf(self.storedValue, item.field_name) === -1 && item.field_name !== o.field){
                 items.push({text : item.field_name, value : item.field_name});
             }

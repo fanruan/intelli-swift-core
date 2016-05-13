@@ -2,9 +2,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
 
     _defaultConfig: function () {
         var v =  {
-            mergeType:BICst.ETL_JOIN_STYLE.LEFT_JOIN,
-            fields:null,
-            tables:null
+            mergeType:BICst.ETL_JOIN_STYLE.LEFT_JOIN
         }
         return v;
     },
@@ -19,22 +17,22 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         this.set("tables", baseTable)
         this.set("sheets", this._getSheets())
         var tables = this.get(ETLCst.PARENTS)
-        this.set(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS, new BI.AnalysisETLMergeSheetFieldsModel({
-            fields: this._createMergeFields(),
-            tables:tables
-        }))
+        var m = {tables:tables};
+        m[ETLCst.FIELDS] = this._createMergeFields();
+        this.set(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS, new BI.AnalysisETLMergeSheetFieldsModel(m))
     },
 
     createPreviewData : function () {
         var tables = this.get(ETLCst.PARENTS);
+        var merge = {  
+            mergeColumns: this._createMergeColumns(),
+            leftColumns : this._createLeftColumns()
+        };
+        merge[ETLCst.FIELDS] = [this.getValue("columns")];
         return {
             left :tables[0],
             right:tables[1],
-            merge : {
-                fields:[this.getValue("columns")],
-                mergeColumns: this._createMergeColumns(),
-                leftColumns : this._createLeftColumns()
-            }
+            merge : merge
         }
     },
 
@@ -146,7 +144,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
     },
 
     _getFieldIndex : function (idx, field_name) {
-        return BI.findIndex(this.get(ETLCst.PARENTS)[idx].fields, function (idx, item) {
+        return BI.findIndex(this.get(ETLCst.PARENTS)[idx][ETLCst.FIELDS], function (idx, item) {
              return item.field_name === field_name;
         })
     },
