@@ -713,7 +713,7 @@ BI.Table = BI.inherit(BI.Widget, {
                             self.setColumnSize(o.columnSize);
                             BI.delay(function () {
                                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
-                            }, 150);
+                            }, 300);
                             e.stopPropagation();
                             return false;
                         }
