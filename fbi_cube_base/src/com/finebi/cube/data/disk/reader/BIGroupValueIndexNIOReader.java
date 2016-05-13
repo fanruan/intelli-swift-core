@@ -43,4 +43,14 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
     public boolean canRead() {
         return byteArray.canRead();
     }
+
+    @Override
+    public void forceRelease() {
+        byteArray.forceRelease();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return byteArray.isForceReleased();
+    }
 }

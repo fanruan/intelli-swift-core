@@ -78,13 +78,14 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
             })
         }
         if (hasUsed === true){
-            items.push({
+            var table = {
                 value : BI.UUID(),
                 table_name : widget.name,
-                fields : fields,
                 operator : widget,
                 etlType : ETLCst.ETL_TYPE.SELECT_NONE_DATA
-            });
+            }
+            table[ETLCst.FIELDS] = fields;
+            items.push(table);
         }
         model[BI.AnalysisETLMainModel.TAB] = items;
         return model;

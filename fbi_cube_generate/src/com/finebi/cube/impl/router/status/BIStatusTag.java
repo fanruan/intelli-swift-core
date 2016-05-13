@@ -72,9 +72,8 @@ public class BIStatusTag implements IStatusTag {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("BIStatusTag{");
-        sb.append("statusID=").append(statusID);
-        sb.append('}');
+        final StringBuffer sb = new StringBuffer();
+        sb.append(statusID);
         return sb.toString();
     }
 }

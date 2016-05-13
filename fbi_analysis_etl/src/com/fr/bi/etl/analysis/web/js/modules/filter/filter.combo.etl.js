@@ -17,15 +17,16 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
             type: "bi.icon_trigger",
             el:{extraCls: "filter-font"},
             width: self._constant.BUTTON_WIDTH,
-            height: self._constant.BUTTON_WIDTH
+            height: self._constant.BUTTON_HEIGHT
         });
-        this.popup = BI.createWidget({
+        var op = {
             type: "bi.filter_popup_etl",
             field_type : o.field_type,
             field_name : o.field_name,
-            fields : o.fields,
             fieldValuesCreator : o.fieldValuesCreator
-        });
+        }
+        op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+        this.popup = BI.createWidget(op);
         this.combo = BI.createWidget({
             type: "bi.combo",
             element: this.element,

@@ -44,8 +44,8 @@ public class AvgOfAllCalculator extends SummaryOfAllCalculator {
         @Override
         public Object call() throws Exception {
             Object key = getCalKey();
-            int deep = getCalDeep();
-            LightNode temp_node = getFirstCalNode(rank_node);
+            int deep = getCalDeep(rank_node);
+            LightNode temp_node = getDeepCalNode(rank_node);
             LightNode cursor_node = temp_node;
             double sum = 0;
             int count = 0;
@@ -92,7 +92,7 @@ public class AvgOfAllCalculator extends SummaryOfAllCalculator {
         @Override
         public Object call() throws Exception {
             Object key = getCalKey();
-            int deep = getCalDeep();
+            int deep = getCalDeep(rank_node);
             BICrossNode temp_node = getFirstCalCrossNode(rank_node);
             BICrossNode cursor_node = temp_node;
             double sum = 0;

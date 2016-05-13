@@ -46,7 +46,7 @@ public class BIThreadEnvTest extends TestCase {
         int sum = 0;
         for (int i = 1; i < disk.size(); i++) {
             int temp = disk.get(i) - disk.get(i - 1) != 0 ? 1 : 0;
-            System.out.println(disk.get(i));
+//            System.out.println(disk.get(i));
             sum += temp;
         }
         System.out.println(sum);

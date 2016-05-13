@@ -155,18 +155,20 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
 
     createFields : function () {
         var fields = [];
-        var view = this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
-        var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
-        var self = this;
-        BI.each(view, function (idx, item) {
-            BI.each(item, function (i, v) {
-                var  dimension = dimensions[v];
-                fields.push({
-                    field_name : dimension["name"],
-                    field_type: self._getFieldType(dimension, idx),
-                });
+        if(this.valid === true) {
+            var view = this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
+            var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
+            var self = this;
+            BI.each(view, function (idx, item) {
+                BI.each(item, function (i, v) {
+                    var  dimension = dimensions[v];
+                    fields.push({
+                        field_name : dimension["name"],
+                        field_type: self._getFieldType(dimension, idx),
+                    });
+                })
             })
-        })
+        }
         return fields;
     },
 
@@ -198,7 +200,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     update : function () {
         var v  = BI.AnalysisETLOperatorGroupPaneModel.superclass.update.apply(this, arguments);
         v.etlType = ETLCst.ETL_TYPE.GROUP_SUMMARY;
-        v.fields = this.createFields();
+        v[ETLCst.FIELDS] = this.createFields();
         v.operator = {};
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY];
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY];
@@ -218,7 +220,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         this.changed = true;
     },
 
-    isValid : function () {
+    isFieldValid : function () {
         return !BI.isEmptyObject(this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY))
     },
 
@@ -255,6 +257,14 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         });
         result = result || {};
         return result.text;
+    },
+
+    isValid : function () {
+       return this.valid;
+    },
+
+    setValid : function (valid) {
+        this.valid = valid;
     },
     
     isDefaultValue : function () {

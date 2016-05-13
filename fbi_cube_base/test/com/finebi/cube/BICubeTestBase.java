@@ -30,7 +30,7 @@ public class BICubeTestBase extends TestCase {
         cubeConfiguration = new BICubeConfigurationTest();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        tableEntity = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()));
+        tableEntity = (BICubeTableEntity) cube.getCubeTableWriter(BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()));
     }
 
     public void testVoid() {

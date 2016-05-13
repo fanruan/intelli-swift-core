@@ -342,16 +342,32 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
             })
         },
 
+
+
         _setEditorValueChangedEvent: function (w) {
             var self = this, c = this.constants;
             w.on(BI.Editor.EVENT_CHANGE, function () {
-                self._checkValidation();
+                switch (self._checkValidation()) {
+                    case c.typeError:
+                        BI.Bubbles.show(c.typeError, BI.i18nText("BI-Numerical_Interval_Input_Data"), self, {
+                            offsetStyle: "center"
+                        });
+                        break;
+                    case c.numberError:
+                        BI.Bubbles.show(c.numberError, BI.i18nText("BI-Numerical_Interval_Number_Value"), self, {
+                            offsetStyle: "center"
+                        });
+                        break;
+                    case c.signalError:
+                        BI.Bubbles.show(c.signalError, BI.i18nText("BI-Numerical_Interval_Signal_Value"), self, {
+                            offsetStyle: "center"
+                        });
+                        break;
+                    default :
+                        return
+                }
                 self.fireEvent(BI.NumericalInterval.EVENT_CHANGE);
             });
-            w.on(BI.Editor.EVENT_STOP, function () {
-                self.fireEvent(BI.NumericalInterval.EVENT_CHANGE);
-            })
-
         },
 
         _setComboValueChangedEvent: function (w) {

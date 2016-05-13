@@ -44,6 +44,8 @@ public class BISubscribe implements ISubscribe {
     public void handleMessage(IMessage message) {
         try {
             trigger.handleMessage(message);
+            System.out.println("Sub:" + subscribeID.getIdentityValue() + "\n receive:" + message);
+            System.out.println("Left condition:\n" + trigger.leftCondition());
         } catch (BIThresholdIsOffException e) {
             BILogger.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl();

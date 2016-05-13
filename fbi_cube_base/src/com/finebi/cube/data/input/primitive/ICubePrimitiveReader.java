@@ -26,4 +26,7 @@ public interface ICubePrimitiveReader<T> extends Release {
 
     void releaseSource();
 
+    void forceRelease();
+
+    boolean isForceReleased();
 }

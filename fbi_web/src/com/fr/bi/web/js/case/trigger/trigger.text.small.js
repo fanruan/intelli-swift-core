@@ -29,7 +29,8 @@ BI.SmallTextTrigger = BI.inherit(BI.Trigger, {
             hgap: c.hgap
         });
         this.trigerButton = BI.createWidget({
-            type: "bi.trigger_icon_button"
+            type: "bi.trigger_icon_button",
+            width: c.triggerWidth
         });
 
         BI.createWidget({

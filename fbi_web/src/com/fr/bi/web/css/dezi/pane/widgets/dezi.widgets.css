@@ -23,30 +23,16 @@
 .bi-dashboard-widget {
   background: #ffffff;
 }
-.bi-dashboard-widget .dashboard-title .dashboard-title-text {
-  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
-  font-size: 16px;
+.bi-dashboard-widget .dashboard-title-left > a > div {
+  text-align: left !important;
+  font-size: 16px !important;
 }
-.bi-dashboard-widget .dashboard-title .dashboard-title-filter {
-  font-size: 16px;
+.bi-dashboard-widget .dashboard-title-center > a > div {
+  text-align: center !important;
+  font-size: 16px !important;
 }
-.bi-dashboard-widget .dashboard-title .dashboard-title-filter:hover,
-.bi-dashboard-widget .dashboard-title .dashboard-title-filter:active {
-  background-color: #f3f3f3;
-}
-.bi-dashboard-widget .dashboard-title .dashboard-title-detail {
-  font-size: 16px;
-}
-.bi-dashboard-widget .dashboard-title .dashboard-title-detail:hover,
-.bi-dashboard-widget .dashboard-title .dashboard-title-detail:active {
-  background-color: #f3f3f3;
-}
-.bi-dashboard-widget .dashboard-title .operator-region {
+.bi-dashboard-widget .operator-region {
   z-index: 100000;
-}
-.bi-dashboard-widget .dashboard-title:active,
-.bi-dashboard-widget .dashboard-title.active {
-  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
 }
 .bi-dashboard-widget .ui-resizable-s {
   bottom: 0;

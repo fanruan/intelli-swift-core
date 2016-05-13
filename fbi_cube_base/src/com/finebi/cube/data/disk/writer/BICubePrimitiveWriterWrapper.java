@@ -41,4 +41,14 @@ public class BICubePrimitiveWriterWrapper<T> implements ICubeWriter<T> {
     public void flush() {
         writer.flush();
     }
+
+    @Override
+    public void forceRelease() {
+        writer.forceRelease();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return writer.isForceReleased();
+    }
 }

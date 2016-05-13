@@ -55,32 +55,25 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
                 height: 32
             });
 
-            var expand = BI.createWidget({
-                type: "bi.icon_button",
-                width: 32,
-                height: 32,
-                cls: "dashboard-widget-combo-detail-set-font dashboard-title-detail"
-            });
-            expand.on(BI.IconButton.EVENT_CHANGE, function () {
-                self._expandWidget();
-            });
-
             var combo = BI.createWidget({
                 type: "bi.widget_combo",
-                widgetType: BICst.Widget.YMD
+                wId: this.model.get("id")
             });
             combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
                 switch (type) {
-                    case BICst.DASHBOARD_WIDGET_DELETE:
-                        self.model.destroy();
-                        break;
                     case BICst.DASHBOARD_WIDGET_EXPAND:
                         self._expandWidget();
                         break;
                     case BICst.DASHBOARD_CONTROL_CLEAR:
+                        self._resetValue();
+                        break;
+                    case BICst.DASHBOARD_WIDGET_RENAME:
                         break;
                     case BICst.DASHBOARD_WIDGET_COPY:
                         self.model.copy();
+                        break;
+                    case BICst.DASHBOARD_WIDGET_DELETE:
+                        self.model.destroy();
                         break;
                 }
             });
@@ -94,9 +87,9 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
                         el: BI.createWidget({
                             type: "bi.center_adapt",
                             cls: "operator-region",
-                            items: [expand, combo]
+                            items: [combo]
                         }),
-                        width: 64
+                        width: 32
                     }
                 }
             });
@@ -116,8 +109,8 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
     },
     
     _resetValue: function(){
-        this.combo.setValue();
-        this.model.set({value: this.combo.getValue(), silent: true});
+        this.model.set("value");
+        this.refresh();
     },
 
     splice: function(){
@@ -129,7 +122,9 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
     },
 
     change: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+        if(BI.has(changed, "value")) {
+            BI.Utils.broadcastAllWidgets2Refresh();
+        }
     },
 
     local: function () {

@@ -1,7 +1,7 @@
 BI.AnalysisETLMergeSheetFieldsController = BI.inherit(BI.MVCController, {
 
     populate : function (widget, model) {
-        widget.joinTableFields.populate(model.getAllTables(), model.getValue("fields"));
+        widget.joinTableFields.populate(model.getAllTables(), model.getValue(ETLCst.FIELDS));
     },
 
 

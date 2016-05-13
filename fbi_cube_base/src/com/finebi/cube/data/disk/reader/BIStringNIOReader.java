@@ -57,4 +57,14 @@ public class BIStringNIOReader implements ICubeStringReader {
     public boolean canRead() {
         return byteArrayReader.canRead();
     }
+
+    @Override
+    public void forceRelease() {
+        byteArrayReader.forceRelease();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return byteArrayReader.isForceReleased();
+    }
 }

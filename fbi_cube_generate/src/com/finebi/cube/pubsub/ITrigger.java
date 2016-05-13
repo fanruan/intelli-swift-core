@@ -69,4 +69,5 @@ public interface ITrigger {
      */
     void handleMessage(IMessage message) throws BIThresholdIsOffException;
 
+    String leftCondition();
 }

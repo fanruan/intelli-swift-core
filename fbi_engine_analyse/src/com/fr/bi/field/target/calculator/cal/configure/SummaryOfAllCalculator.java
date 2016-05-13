@@ -82,8 +82,25 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
      *
      * @return
      */
-    protected int getCalDeep() {
-        return 1;
+    protected int getCalDeep(Object rank_node) {
+        int deep = 0;
+        if (rank_node instanceof LightNode) {
+            LightNode node = (LightNode)rank_node;
+            while (node.getFirstChild() != null) {
+                deep++;
+                node = node.getFirstChild();
+            }
+        } else if (rank_node instanceof BICrossNode) {
+            BICrossNode node = (BICrossNode) rank_node;
+            while (node.getLeftFirstChild() != null) {
+                deep++;
+                node = node.getLeftFirstChild();
+            }
+        }else{
+            return 1;
+        }
+
+        return deep;
     }
 
     protected LightNode getFirstCalNode(LightNode rank_node) {
@@ -98,6 +115,16 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
         BICrossNode temp_node = rank_node;
         if (temp_node.getLeftFirstChild() != null) {
             temp_node = temp_node.getLeftFirstChild();
+        }
+        return temp_node;
+    }
+
+    protected LightNode getDeepCalNode(LightNode rank_node) {
+        LightNode temp_node = rank_node;
+        for (int i = 0; i < getCalDeep(rank_node); i++) {
+            if (temp_node.getFirstChild() != null) {
+                temp_node = temp_node.getFirstChild();
+            }
         }
         return temp_node;
     }

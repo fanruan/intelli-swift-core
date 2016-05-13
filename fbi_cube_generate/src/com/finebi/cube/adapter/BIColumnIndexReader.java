@@ -30,17 +30,21 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     public BIColumnIndexReader(ICubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
         this.columnReaderService = columnReaderService;
-        if (relationList!=null) {
+        if (isRelationIndex(relationList)) {
             path = BICubePathUtils.convert(relationList);
             try {
                 indexDataGetterService = columnReaderService.getRelationIndexGetter(path);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl(e);
             }
+        } else {
+            indexDataGetterService = columnReaderService;
         }
-        indexDataGetterService = columnReaderService;
     }
 
+    private boolean isRelationIndex(List<BITableSourceRelation> relationList) {
+        return relationList != null && !relationList.isEmpty();
+    }
 
     @Override
     public GroupValueIndex[] getGroupIndex(T[] groupValues) {
