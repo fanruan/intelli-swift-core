@@ -350,9 +350,7 @@ BI.Table = BI.inherit(BI.Widget, {
                         }
                         self._resize();
                         ui.element.css("left", "");
-                        BI.delay(function () {
-                            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
-                        }, 300);
+                        self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                     }
                 };
                 self.bottomRight.element.resizable(options);
@@ -381,9 +379,7 @@ BI.Table = BI.inherit(BI.Widget, {
                             self.setRegionColumnSize([ui.size.width, "fill"]);
                         }
                         self._resize();
-                        BI.delay(function () {
-                            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
-                        }, 300);
+                        self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                     }
                 };
                 self.bottomLeft.element.resizable(options);

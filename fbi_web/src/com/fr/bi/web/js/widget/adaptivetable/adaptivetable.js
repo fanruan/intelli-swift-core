@@ -195,7 +195,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
                 var newLeft = BI.clone(columnSizeLeft), newRight = BI.clone(columnSizeRight);
                 newLeft[newLeft.length - 1] = "";
                 newRight[newRight.length - 1] = "";
-                this.setColumnSize(newLeft.concat(newRight));
+                this.table.setColumnSize(newLeft.concat(newRight));
 
                 BI.delay(function () {
                     block = self._getBlockSize();
@@ -206,7 +206,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
                         columnSizeRight[columnSizeRight.length - 1] = block.right[block.right.length - 1]
                     }
 
-                    self.setColumnSize(columnSizeLeft.concat(columnSizeRight));
+                    self.table.setColumnSize(columnSizeLeft.concat(columnSizeRight));
                     callback();
                 }, 100);
             }
@@ -221,13 +221,13 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
                 var newSize = BI.clone(size);
                 newSize[newSize.length - 1] = "";
-                this.setColumnSize(newSize);
+                this.table.setColumnSize(newSize);
                 block = this._getBlockSize();
 
                 if (size[size.length - 1] < block.size[block.size.length - 1]) {
                     size[size.length - 1] = block.size[block.size.length - 1]
                 }
-                this.setColumnSize(size);
+                this.table.setColumnSize(size);
                 callback();
             } else {
                 callback();
@@ -236,8 +236,10 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
     },
 
     _resizeBody: function () {
-        var columnSize = this.table.getCalculateColumnSize();
-        this.setColumnSize(columnSize);
+        if (this._isAdaptiveColumn()) {
+            var columnSize = this.table.getCalculateColumnSize();
+            this.setColumnSize(columnSize);
+        }
     },
 
     _resizeRegion: function () {
