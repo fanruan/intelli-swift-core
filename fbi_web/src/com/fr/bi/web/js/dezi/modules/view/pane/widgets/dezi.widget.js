@@ -110,8 +110,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         var self = this;
         var expand = BI.createWidget({
             type: "bi.icon_button",
-            width: 26,
-            height: 26,
+            width: 16,
+            height: 16,
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -201,7 +201,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [expand, combo]
+            items: [expand, combo],
+            hgap: 3
         });
         this.tools.setVisible(false);
     },
@@ -227,8 +228,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     
     _refreshTitlePosition: function(){
         var pos = BI.Utils.getWidgetNamePositionByID(this.model.get("id"));
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
-                            "dashboard-title-left" : "dashboard-title-center";
+        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
+                            "dashboard-title-center" : "dashboard-title-left";
         this.title.element.removeClass("dashboard-title-left")
                             .removeClass("dashboard-title-center").addClass(cls);
     },

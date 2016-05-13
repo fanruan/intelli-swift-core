@@ -38,7 +38,8 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
             element: vessel,
             items: [{
                 el: this.tools,
-                top: 10
+                top: 0,
+                right: 10
             }, {
                 el: this.title,
                 top: 10,
@@ -82,6 +83,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
     },
 
     _createTools: function(){
+        var self = this;
         this.tools = BI.createWidget({
             type: "bi.widget_combo",
             cls: "operator-region",
@@ -102,6 +104,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
                     self._resetValue();
                     break;
                 case BICst.DASHBOARD_WIDGET_RENAME:
+                    self.title.focus();
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY:
                     self.model.copy();
@@ -115,51 +118,37 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
     },
 
     _refreshLayout: function(){
-        var self = this;
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
         var widgetName = this.model.get("name");
-        // var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
         var minComboWidth = 70;     //默认combo的最小宽度
         var minNameWidth = 30;      //默认editor的最小宽度
-
-        var label = BI.createWidget({
-            type: "bi.label",
-            cls: "temp-label",
-            text: widgetName
-        });
-        BI.createWidget({
-            type: "bi.left",
-            element: this.element,
-            items: [label]
-        });
-        BI.defer(function(){
-            var nameWidth = label.element.width();
-            label.destroy();
-            if(height < 90) {
-                self.widget.attr("items")[0].left = 10;
-                self.widget.attr("items")[0].right = "";
-                self.widget.attr("items")[2].top = 10;
-                if(width < minComboWidth + minNameWidth) {
-                    self.combo.setVisible(false);
-                } else if(width < nameWidth) {
-                    self.combo.setVisible(true);
-                    self.widget.attr("items")[1].right = minComboWidth + 10;
-                    self.widget.attr("items")[2].left = width - 10 - minComboWidth;
-                } else {
-                    self.combo.setVisible(true);
-                    self.widget.attr("items")[1].right = width - 30 - nameWidth;
-                    self.widget.attr("items")[2].left = 30 + nameWidth;
-                }
+        var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
+        // width =  5 + 10 + (4 + nameWidth + 4) + 10 + comboWidth + 10 + 5
+        if(height < 100) {
+            // this.widget.attr("items")[0].left = 10;
+            // this.widget.attr("items")[0].right = "";
+            this.widget.attr("items")[2].top = 10;
+            if(width < minComboWidth + minNameWidth + 48) {
+                this.combo.setVisible(false);
+                this.widget.attr("items")[1].right = 10;
+            } else if(width < nameWidth + minComboWidth + 48) {
+                this.combo.setVisible(true);
+                this.widget.attr("items")[1].right = minComboWidth + 25;
+                this.widget.attr("items")[2].left = width - 15 - minComboWidth;
             } else {
-                self.widget.attr("items")[0].left = "";
-                self.widget.attr("items")[0].right = 10;
-                self.widget.attr("items")[1].right = 10;
-                self.widget.attr("items")[2].top = 50;
-                self.widget.attr("items")[2].left = 10;
+                this.combo.setVisible(true);
+                this.widget.attr("items")[1].right = width - 33 - nameWidth;
+                this.widget.attr("items")[2].left = 33 + nameWidth;
             }
-            self.widget.resize();
-        });
+        } else {
+            // this.widget.attr("items")[0].left = "";
+            // this.widget.attr("items")[0].right = 10;
+            this.widget.attr("items")[1].right = 10;
+            this.widget.attr("items")[2].top = 50;
+            this.widget.attr("items")[2].left = 10;
+        }
+        this.widget.resize();
     },
 
     _expandWidget: function () {

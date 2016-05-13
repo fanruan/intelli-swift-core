@@ -470,28 +470,22 @@ BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
         text: BI.i18nText("BI-Clear_Selected_Value"),
-        cls: "dashboard-widget-combo-clear-font"
-    }, {
-
-    }, {
-        value: BICst.DASHBOARD_WIDGET_DELETE,
-        text: BI.i18nText("BI-Delete_Control"),
-        cls: "widget-delete-h-font"
+        cls: "widget-combo-clear"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
         text: BI.i18nText("BI-Rename"),
-        cls: ""
+        cls: "widget-combo-rename-edit-font"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_COPY,
         text: BI.i18nText("BI-Copy"),
-        cls: "widget-copy-h-font"
+        cls: "widget-combo-copy"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_DELETE,
         text: BI.i18nText("BI-Delete_Control"),
-        cls: "widget-delete-h-font"
+        cls: "widget-combo-delete"
     }]
 ];
 
