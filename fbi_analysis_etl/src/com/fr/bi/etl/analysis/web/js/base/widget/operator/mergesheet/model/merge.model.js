@@ -24,11 +24,9 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
 
     createPreviewData : function () {
         var tables = this.get(ETLCst.PARENTS);
-        var merge = {  
-            mergeColumns: this._createMergeColumns(),
-            leftColumns : this._createLeftColumns()
-        };
-        merge[ETLCst.FIELDS] = [this.getValue("columns")];
+        var merge = this.update();
+        merge["mergeColumns"] = this._createMergeColumns();
+        merge["leftColumns"] = this._createLeftColumns();
         return {
             left :tables[0],
             right:tables[1],

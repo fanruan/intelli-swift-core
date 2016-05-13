@@ -658,19 +658,34 @@ BI.Table = BI.inherit(BI.Widget, {
             BI.each(tds, function (j, td) {
                 j = j | 0;
                 var resizer;
+                var getHeight = function (size, position) {
+                    var rowSize = self.getCalculateRegionRowSize();
+                    if (o.isNeedFreeze === true) {
+                        var tableHeight = self.bottomRightContainer.element.outerHeight();
+                        return size.height + Math.min(rowSize[1], tableHeight);
+                    } else {
+                        var tableHeight = self.tableContainer.element.outerHeight();
+                        var offset = self.tableContainer.element.offset();
+                        var offsetTop = position.top - offset.top;
+                        var height = tableHeight - offsetTop;
+                        height = Math.min(height, rowSize[0] - offsetTop);
+                        return height;
+                    }
+                };
                 if (j < BI.size(tds) - 1) {
                     td.resizable({
                         handles: "e",
                         minWidth: 15,
                         helper: "clone",
                         start: function (event, ui) {
-                            var rowSize = self.getCalculateRegionRowSize();
+                            var height = getHeight(ui.size, ui.position);
                             resizer = BI.createWidget({
                                 type: "bi.layout",
                                 cls: "bi-resizer",
                                 width: ui.size.width,
-                                height: rowSize[1] ? (ui.size.height + rowSize[1]) : rowSize[0]
+                                height: height
                             });
+
                             BI.createWidget({
                                 type: "bi.absolute",
                                 element: "body",
@@ -683,8 +698,7 @@ BI.Table = BI.inherit(BI.Widget, {
                             self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE);
                         },
                         resize: function (e, ui) {
-                            var rowSize = self.getCalculateRegionRowSize();
-                            var height = rowSize[1] ? (ui.size.height + rowSize[1]) : rowSize[0];
+                            var height = getHeight(ui.size, ui.position);
                             resizer.element.css({"width": ui.size.width + "px", "height": height + "px"});
                             //o.columnSize[start + j] = ui.size.width;
                             //self.setColumnSize(o.columnSize);
@@ -695,11 +709,11 @@ BI.Table = BI.inherit(BI.Widget, {
                         stop: function (e, ui) {
                             resizer.destroy();
                             resizer = null;
-                            o.columnSize[start + j] = ui.size.width;
+                            o.columnSize[start + j] = ui.size.width - 1;
                             self.setColumnSize(o.columnSize);
                             BI.delay(function () {
                                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
-                            }, 150);
+                            }, 300);
                             e.stopPropagation();
                             return false;
                         }

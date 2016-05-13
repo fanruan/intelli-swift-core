@@ -90,12 +90,17 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.MVCWidget, {
                         center : {
                             el : {
                                 type:"bi.vtape",
+                                scrollx:true,
                                 cls : "bi-analysis-etl-operator-add-column-single-pane",
-                                items: [{
-                                    el: this.title,
-                                    height:45
-                                },{
-                                    el : self.oneConditionPane
+                                items:[{
+                                    type:"bi.vtape",
+                                    cls:"add-column-min-width",
+                                    items: [{
+                                        el: this.title,
+                                        height:45
+                                    },{
+                                        el : self.oneConditionPane
+                                    }]
                                 }]
                             }
                         }

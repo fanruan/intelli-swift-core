@@ -1,5 +1,6 @@
 package com.fr.bi.web.services.util;
 
+import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtils4SQLSever;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import junit.framework.TestCase;
 

@@ -34,11 +34,16 @@ BI.FitWidget = BI.inherit(BI.BasicButton, {
                 bottom: 5
             }, {
                 el: this.draggable,
-                left: 0,
+                left: 5,
                 top: 0,
-                right: 0
+                right: 5
             }]
-        })
+        });
+        this.element.hover(function(){
+            self.draggable.element.addClass("fit-widget-drag-bar");
+        }, function(){
+            self.draggable.element.removeClass("fit-widget-drag-bar");
+        });
     },
 
     getDraggable: function () {
