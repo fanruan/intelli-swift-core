@@ -40,9 +40,11 @@ public class AnalysisETLSourceFactory {
         }
         switch (type){
             case Constants.ETL_TYPE.SELECT_DATA :
-                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId, type), type, fieldList);
+                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList);
             case Constants.ETL_TYPE.SELECT_NONE_DATA :
-                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId, type), type, fieldList);
+                AnalysisBaseTableSource baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList);
+                BIAnalysisETLManagerCenter.getDataSourceManager().addSource(baseSource, userId);
+                return baseSource;
             default :
                 AnalysisETLTableSource source = new AnalysisETLTableSource(jo.getString("value"), fieldList);
                 JSONArray parents = jo.getJSONArray("parents");
@@ -59,17 +61,12 @@ public class AnalysisETLSourceFactory {
         }
     }
 
-    private static BIWidget createWidget(JSONObject jo, long userId, int type) throws Exception {
+    private static BIWidget createWidget(JSONObject jo, long userId) throws Exception {
         if (jo.has("core")){
             AnalysisTableSource source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByCore(BIBasicCore.generateValueCore(jo.getString("core")), new BIUser(userId));
             if (source.getType() == Constants.TABLE_TYPE.BASE){
                 return ((AnalysisBaseTableSource)source).getWidget();
             }
-        }
-        if (type == Constants.ETL_TYPE.SELECT_DATA){
-            BIWidget widget = new SimpleDetailWidget();
-            widget.parseJSON(jo, userId);
-            return widget;
         }
         return BIWidgetFactory.parseWidget(jo, userId);
     }
