@@ -4,9 +4,7 @@
 BI.AnalysisETLMainModel = BI.inherit(BI.MVCModel, {
     _init : function () {
         BI.AnalysisETLMainModel.superclass._init.apply(this, arguments);
-        this.set(BI.AnalysisETLMainModel.TAB, new BI.DynamictabModel({
-            items:this.getValue(BI.AnalysisETLMainModel.TAB)
-        }));
+        this.set(BI.AnalysisETLMainModel.TAB, new BI.DynamictabModel(this.get(BI.AnalysisETLMainModel.TAB)));
     },
 
     getSheetLength : function () {

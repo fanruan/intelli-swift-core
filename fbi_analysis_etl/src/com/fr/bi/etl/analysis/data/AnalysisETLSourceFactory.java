@@ -40,9 +40,9 @@ public class AnalysisETLSourceFactory {
         }
         switch (type){
             case Constants.ETL_TYPE.SELECT_DATA :
-                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId, type), type, jo.getString("value"),fieldList);
+                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId, type), type, fieldList);
             case Constants.ETL_TYPE.SELECT_NONE_DATA :
-                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId, type), type, jo.getString("value"),fieldList);
+                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId, type), type, fieldList);
             default :
                 AnalysisETLTableSource source = new AnalysisETLTableSource(jo.getString("value"), fieldList);
                 JSONArray parents = jo.getJSONArray("parents");

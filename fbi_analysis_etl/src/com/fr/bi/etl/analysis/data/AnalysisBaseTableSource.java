@@ -30,7 +30,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     @BICoreField
     protected BIWidget widget;
     private int etlType;
-    private  String id;
     private List<AnalysisETLSourceField> fieldList;
 
     public BIWidget getWidget() {
@@ -38,10 +37,9 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
 
-    public AnalysisBaseTableSource(BIWidget widget, int etlType, String id, List<AnalysisETLSourceField> fieldList) {
+    public AnalysisBaseTableSource(BIWidget widget, int etlType, List<AnalysisETLSourceField> fieldList) {
         this.widget = widget;
         this.etlType = etlType;
-        this.id = id;
         this.fieldList = fieldList;
     }
 
@@ -82,7 +80,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             synchronized (userBaseTableMap){
                 UserTableSource tmp = userBaseTableMap.get(userId);
                 if (tmp == null){
-                    source = new UserBaseTableSource(widget, etlType, userId, id, fieldList);
+                    source = new UserBaseTableSource(widget, etlType, userId, fieldList);
                     userBaseTableMap.put(userId, source);
                 } else {
                     source = tmp;
@@ -110,7 +108,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         }
         jo.put("etlType", etlType);
         jo.put("operator", widget);
-        jo.put("value", id);
         return jo;
     }
 }

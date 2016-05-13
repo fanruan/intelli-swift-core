@@ -55,7 +55,6 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
         for (int i = 0; i < parents.size(); i++) {
             tables.put(parents.get(i).createJSON());
         }
-
         jo.put(Constants.PARENTS, tables);
         AnalysisETLOperatorFactory.createJSONByOperators(jo,oprators);
         return jo;
