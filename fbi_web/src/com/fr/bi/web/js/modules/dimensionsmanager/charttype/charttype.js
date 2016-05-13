@@ -19,7 +19,7 @@ BI.ChartType = BI.inherit(BI.Widget, {
             height: 34,
             items: [BICst.TABLE_TYPE]
         });
-        this.tableCombo.on(BI.TableTypeCombo.EVENT_CHANGE, function (v) {
+        this.tableCombo.on(BI.AbstractTypeCombo.EVENT_CHANGE, function (v) {
             self.setValue(v);
             self.fireEvent(BI.ChartType.EVENT_CHANGE, arguments);
         });
@@ -53,6 +53,33 @@ BI.ChartType = BI.inherit(BI.Widget, {
             vgap: 3,
             hgap: 3
         })
+    },
+
+    _createChartItem: function () {
+        this.axis = BI.createWidget({
+            type: "bi.axis_type_combo",
+            width: 40,
+            height: 34,
+            items: [BICst.TABLE_TYPE]
+        });
+        this.bar = BI.createWidget({
+            type: "bi.axis_type_combo",
+            width: 40,
+            height: 34,
+            items: [BICst.TABLE_TYPE]
+        });
+        this.area = BI.createWidget({
+            type: "bi.axis_type_combo",
+            width: 40,
+            height: 34,
+            items: [BICst.TABLE_TYPE]
+        });
+        this.radar = BI.createWidget({
+            type: "bi.axis_type_combo",
+            width: 40,
+            height: 34,
+            items: [BICst.TABLE_TYPE]
+        });
     },
 
     getValue: function () {
