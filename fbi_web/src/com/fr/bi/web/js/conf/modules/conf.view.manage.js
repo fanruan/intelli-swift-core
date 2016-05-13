@@ -10,15 +10,6 @@ BIConf.Views = new (BI.inherit( BI.WRouter, {
         "/BI-Multi_Path_Man" : "BIConf.MultiRelationView",
         "/BI-Cube_Updates_Setting" : "BIConf.UpdateCubePaneView",
         "/BI-Packages_Man/packageManagePane" : "BIConf.BusinessPackageGroupView",
-        "/BI-Permissions_Man" : "BIConf.PermissionManageView",
-        "/BI-Permissions_Man/:type":"getEditPane"
-    },
-    getEditPane: function(type) {
-        console.log(type);
-        if (type == 'show') {
-            alert("getEditPane" + type);
-            return "BI.AuthorityPaneEditSelectedView"
-        } else
-            return "BI.AuthorityPaneEditAddView";
+        "/BI-Permissions_Man" : "BIConf.PermissionManageView"
     }
 }));

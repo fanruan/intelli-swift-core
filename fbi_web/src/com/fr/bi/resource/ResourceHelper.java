@@ -1267,6 +1267,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.single.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.multi.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.main.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.main.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritytabs.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritybutton.js",
 
