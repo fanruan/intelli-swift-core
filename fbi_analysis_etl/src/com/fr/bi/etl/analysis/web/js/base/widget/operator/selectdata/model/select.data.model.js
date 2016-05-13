@@ -4,28 +4,30 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
 
     _init : function () {
         BI.AnalysisETLOperatorSelectDataModel.superclass._init.apply(this, arguments);
-        var operator = this.get("operator");
-        var fields = [];
-        if(BI.isNotNull(operator)) {
-            var dimensions = operator["dimensions"];
-            var self = this;
-            BI.each(operator["view"][BICst.REGION.DIMENSION1], function (idx, item) {
-                var dim = dimensions[item];
-                var field_type = dim["type"];
-                var group = dim["group"]
-                if(field_type !== BICst.TARGET_TYPE.DATE) {
-                    group = null;
-                }
-                field_type = self._getTypeFromTargetType(field_type, group)
-                fields.push({
-                    "field_name":dim["name"],
-                    "field_type" : field_type,
-                    "id": dim["_src"]["field_id"],
-                    "uid" : item,
-                    "group" : BI.isNull(group) ? null : group["type"]
-                })
-            })
-        }
+        //BI.AnalysisETLOperatorSelectDataModel.KEY后台已存这里暂时注释不需要
+        // var operator = this.get("operator");
+        // var fields = [];
+        // if(BI.isNotNull(operator)) {
+        //     var dimensions = operator["dimensions"];
+        //     var self = this;
+        //     BI.each(operator["view"][BICst.REGION.DIMENSION1], function (idx, item) {
+        //         var dim = dimensions[item];
+        //         var field_type = dim["type"];
+        //         var group = dim["group"]
+        //         if(field_type !== BICst.TARGET_TYPE.DATE) {
+        //             group = null;
+        //         }
+        //         field_type = self._getTypeFromTargetType(field_type, group)
+        //         fields.push({
+        //             "field_name":dim["name"],
+        //             "field_type" : field_type,
+        //             "id": dim["_src"]["field_id"],
+        //             "uid" : item,
+        //             "group" : BI.isNull(group) ? null : group["type"]
+        //         })
+        //     })
+        // }
+        var fields = this.get(BI.AnalysisETLOperatorSelectDataModel.KEY) || []
         this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, fields);
         this.save();
     },
