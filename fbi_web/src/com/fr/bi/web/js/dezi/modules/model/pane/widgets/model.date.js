@@ -3,7 +3,7 @@ BIDezi.DateWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.DateWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.YMD,
+            type: BICst.WIDGET.YMD,
             dimensions: {},
             view: {},
             value: {},

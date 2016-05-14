@@ -35,7 +35,7 @@ BI.Fit = BI.inherit(BI.Widget, {
             type: "bi.border",
             element: this.element,
             items: {
-                "west": {el: nav, width: 90, right: 1},
+                "west": {el: nav, width: 140, right: 1},
                 "center": {el: this.arrangement}
             }
         });

@@ -18,9 +18,9 @@ BI.CombineChartTypeCombo = BI.inherit(BI.AbstractTypeCombo, {
 
     _switchIcon: function(v){
         switch (v) {
-            case BICst.Widget.COMBINE_CHART:
+            case BICst.WIDGET.COMBINE_CHART:
                 break;
-            case BICst.Widget.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 break;
             default:
                 this.trigger.setIcon("detail-chart-axis-font");

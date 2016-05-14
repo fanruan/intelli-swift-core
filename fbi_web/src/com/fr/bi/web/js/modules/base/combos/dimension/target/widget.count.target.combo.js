@@ -118,14 +118,13 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
         dependItem.el.text = BI.i18nText("BI-Count_Depend") + "(" + selectedValue +")";
         dependItem.children = children;
-
         return items;
     },
 
     _assertChartType: function (val) {
         val || (val = {});
         if(BI.isNull(val.type)){
-            val.type = BICst.Widget.COLUMN;
+            val.type = BICst.WIDGET.COLUMN;
         }
         return val;
     },

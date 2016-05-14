@@ -64,7 +64,7 @@ BIShow.StringWidgetView = BI.inherit(BI.View, {
 
             var combo = BI.createWidget({
                 type: "bi.widget_combo",
-                widgetType: BICst.Widget.STRING
+                widgetType: BICst.WIDGET.STRING
             });
             combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
                 switch (type) {

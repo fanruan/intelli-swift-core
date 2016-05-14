@@ -5,7 +5,7 @@ BIDezi.YearQuarterDetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.QUARTER,
+            type: BICst.WIDGET.QUARTER,
             value: {}
         });
     },

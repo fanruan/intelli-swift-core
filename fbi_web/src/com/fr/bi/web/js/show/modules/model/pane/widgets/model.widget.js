@@ -4,7 +4,7 @@ BIShow.WidgetModel = BI.inherit(BI.Model, {
             name: "",
             bounds: {},
             linkages: [],
-            type: BICst.Widget.TABLE,
+            type: BICst.WIDGET.TABLE,
             dimensions: {},
             view: {},
             settings: BICst.DEFAULT_CHART_SETTING

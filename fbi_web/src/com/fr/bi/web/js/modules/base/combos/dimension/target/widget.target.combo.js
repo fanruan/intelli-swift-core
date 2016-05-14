@@ -41,16 +41,16 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Column_Chart"),
-                    value: BICst.Widget.COLUMN
+                    value: BICst.WIDGET.COLUMN
                 }, {
                     text: BI.i18nText("BI-Stacked_Chart"),
-                    value: BICst.Widget.ACCUMULATE_COLUMN
+                    value: BICst.WIDGET.ACCUMULATE_COLUMN
                 }, {
                     text: BI.i18nText("BI-Line_Chart"),
-                    value: BICst.Widget.LINE
+                    value: BICst.WIDGET.LINE
                 }, {
                     text: BI.i18nText("BI-Area_Chart"),
-                    value: BICst.Widget.AREA
+                    value: BICst.WIDGET.AREA
                 }]
             }],
             [{
@@ -101,7 +101,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _assertChartType:function(val){
         val || (val = {});
-        val.type || (val.type = BICst.Widget.COLUMN);
+        val.type || (val.type = BICst.WIDGET.COLUMN);
         return val;
     },
 
@@ -109,7 +109,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var item = this.defaultItems();
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
         switch (wType) {
-            case BICst.Widget.TABLE:
+            case BICst.WIDGET.TABLE:
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
                 break;
             default:

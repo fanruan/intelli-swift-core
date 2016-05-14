@@ -18,11 +18,11 @@ BI.TableTypeCombo = BI.inherit(BI.AbstractTypeCombo, {
 
     _switchIcon: function(v){
         switch (v) {
-            case BICst.Widget.TABLE:
+            case BICst.WIDGET.TABLE:
                 break;
-            case BICst.Widget.CROSS_TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
                 break;
-            case BICst.Widget.COMPLEX_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
                 break;
             default:
                 this.trigger.setIcon("detail-chart-summary-table-font");

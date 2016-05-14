@@ -174,29 +174,29 @@ BI.LinkageModel = BI.inherit(FR.OB, {
     getWidgetIconClsByWidgetId: function(wId) {
         var widgetType = BI.Utils.getWidgetTypeByID(wId);
         switch (widgetType) {
-            case BICst.Widget.TABLE:
+            case BICst.WIDGET.TABLE:
                 return "chart-table-font";
-            case BICst.Widget.AXIS:
+            case BICst.WIDGET.AXIS:
                 return "chart-axis-font";
-            case BICst.Widget.BAR:
+            case BICst.WIDGET.BAR:
                 return "chart-bar-font";
-            case BICst.Widget.ACCUMULATE_BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
                 return "chart-accumulate-bar-font";
-            case BICst.Widget.PIE:
+            case BICst.WIDGET.PIE:
                 return "chart-pie-font";
-            case BICst.Widget.MAP:
+            case BICst.WIDGET.MAP:
                 return "chart-map-font";
-            case BICst.Widget.DASHBOARD:
+            case BICst.WIDGET.DASHBOARD:
                 return "chart-dashboard-font";
-            case BICst.Widget.DOUGHNUT:
+            case BICst.WIDGET.DONUT:
                 return "chart-doughnut-font";
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return "chart-detail-font";
-            case BICst.Widget.BUBBLE:
+            case BICst.WIDGET.BUBBLE:
                 return "chart-bubble-font";
-            case BICst.Widget.SCATTER:
+            case BICst.WIDGET.SCATTER:
                 return "chart-scatter-font";
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.RADAR:
                 return "chart-radar-font";
         }
     }

@@ -18,9 +18,9 @@ BI.BubbleTypeCombo = BI.inherit(BI.AbstractTypeCombo, {
 
     _switchIcon: function(v){
         switch (v) {
-            case BICst.Widget.BUBBLE:
+            case BICst.WIDGET.BUBBLE:
                 break;
-            case BICst.Widget.NIU_DUN_BUBBLE:
+            case BICst.WIDGET.NIU_DUN_BUBBLE:
                 break;
             default:
                 this.trigger.setIcon("detail-chart-bubble-font");

@@ -3,7 +3,7 @@ BIShow.DetailTableModel = BI.inherit(BI.Model, {
         return BI.extend(BIShow.DetailTableModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.DETAIL,
+            type: BICst.WIDGET.DETAIL,
             dimensions: {},
             view: {},
             page: 0,

@@ -27,7 +27,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
             this.chartSetting.destroy();
         }
         switch (chartType){
-            case BICst.Widget.TABLE:
+            case BICst.WIDGET.TABLE:
                 this.chartSetting = BI.createWidget({
                     type: "bi.group_table_setting",
                     settings: settings
@@ -36,7 +36,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.Widget.CROSS_TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
                 this.chartSetting = BI.createWidget({
                     type: "bi.cross_table_setting",
                     settings: settings
@@ -45,7 +45,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.Widget.COMPLEX_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
                 break;
         }
         this.chartSetting.setValue(settings);

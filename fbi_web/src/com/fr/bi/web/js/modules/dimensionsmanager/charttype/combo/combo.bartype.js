@@ -18,11 +18,11 @@ BI.BarTypeCombo = BI.inherit(BI.AbstractTypeCombo, {
 
     _switchIcon: function(v){
         switch (v) {
-            case BICst.Widget.BAR:
+            case BICst.WIDGET.BAR:
                 break;
-            case BICst.Widget.ACCUMULATE_BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
                 break;
-            case BICst.Widget.COMPARE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
                 break;
             default:
                 this.trigger.setIcon("detail-chart-bar-font");
