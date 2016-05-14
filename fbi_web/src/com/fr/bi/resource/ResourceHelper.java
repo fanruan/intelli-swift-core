@@ -145,7 +145,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/show/pane/show.pane.css",
                 "com/fr/bi/web/css/show/pane/widgets/show.widgets.css",
                 "com/fr/bi/web/css/show/pane/widgets/detail/show.detail.css",
-                "com/fr/bi/web/css/show/pane/widgets/detail/show.detail.detail.css",
                 "com/fr/bi/web/css/show/pane/widgets/detail/region/show.region.css",
                 "com/fr/bi/web/css/show/pane/widgets/detail/region/field/show.dimension.css",
                 "com/fr/bi/web/css/show/pane/widgets/detail/region/field/show.target.css"
@@ -244,7 +243,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/dezi/pane/dezi.pane.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/dezi.widgets.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/detail/dezi.detail.css",
-                "com/fr/bi/web/css/dezi/pane/widgets/detail/dezi.detail.detail.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/detail/region/dezi.region.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/detail/region/field/dezi.dimension.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/detail/region/field/dezi.target.css"
@@ -565,6 +563,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/fragments/multirelation/item.tablefield.multirelation.css",
                 "com/fr/bi/web/css/fragments/multirelation/view.searcher.multirelation.css",
 
+                //查看真实数据
+                "com/fr/bi/web/css/fragments/base/items/widget.realdatacheckbox.css",
 
                 "com/fr/bi/web/css/fragments/datalink/widget.testlink.loading.css",
 
@@ -1187,7 +1187,7 @@ public class ResourceHelper {
                 //选组件
                 "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/pane.reuse.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/dragiconbutton.js",
-                "com/fr/bi/web/js/modules/fit/widgetchooser/dragwidgetitem.js",
+                "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/dragwidgetitem.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/widget.dragicongroup.js",
                 "com/fr/bi/web/js/modules/fit/fit.widget.js",
                 "com/fr/bi/web/js/modules/fit/fit.js",
