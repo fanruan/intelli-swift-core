@@ -149,7 +149,7 @@ DownListView = BI.inherit(BI.View, {
                 type: "bi.button",
                 text: "setValue",
                 handler: function () {
-                    self.down.setValue([{value: 11, childValue: 24}, {value: 18}])
+                    self.down.setValue()
                 }
             },
                 {

@@ -179,91 +179,147 @@ BICst.DASHBOARD_WIDGET_ICON = [[{
 //三种表格类型
 BICst.TABLE_TYPE = [{
     title: BI.i18nText("BI-Group_Table"),
-    value: BICst.Widget.TABLE,
-    text: BI.i18nText("BI-Group_Table")
+    value: BICst.WIDGET.TABLE,
+    text: BI.i18nText("BI-Group_Table"),
+    cls: "detail-chart-summary-table-font"
 }, {
     title: BI.i18nText("BI-Cross_Table"),
-    value: BICst.Widget.CROSS_TABLE,
-    text: BI.i18nText("BI-Cross_Table")
+    value: BICst.WIDGET.CROSS_TABLE,
+    text: BI.i18nText("BI-Cross_Table"),
+    cls: "detail-chart-summary-table-font"
 }, {
     title: BI.i18nText("BI-Complex_Table"),
-    value: BICst.Widget.COMPLEX_TABLE,
-    text: BI.i18nText("BI-Complex_Table")
+    value: BICst.WIDGET.COMPLEX_TABLE,
+    text: BI.i18nText("BI-Complex_Table"),
+    cls: "detail-chart-summary-table-font"
 }];
 
 //坐标轴图类型
 BICst.AXIS_CHART_TYPE = [{
     text: BI.i18nText("BI-Column_Chart"),
-    value: BICst.Widget.AXIS
+    value: BICst.WIDGET.AXIS,
+    cls: "detail-chart-axis-font"
 }, {
     text: BI.i18nText("BI-Stacked_Chart"),
-    value: BICst.Widget.ACCUMULATE_COLUMN
+    value: BICst.WIDGET.ACCUMULATE_AXIS,
+    cls: "detail-chart-axis-font"
 }, {
     text: BI.i18nText("BI-Percent_Accumulate_Axis"),
-    value: BICst.Widget.PERCENT_ACCUMULATE_AXIS
+    value: BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
+    cls: "detail-chart-axis-font"
 }, {
     text: BI.i18nText("BI-Compare_Axis"),
-    value: BICst.Widget.COMPARE_AXIS
+    value: BICst.WIDGET.COMPARE_AXIS,
+    cls: "detail-chart-axis-font"
 }, {
     text: BI.i18nText("BI-Fall_Axis"),
-    value: BICst.Widget.FALL_AXIS
+    value: BICst.WIDGET.FALL_AXIS,
+    cls: "detail-chart-axis-font"
 }];
 
 //条形图类型
 BICst.BAR_CHART_TYPE = [{
     text: BI.i18nText("BI-Bar_Chart"),
-    value: BICst.Widget.BAR
+    value: BICst.WIDGET.BAR,
+    cls: "detail-chart-bar-font"
 }, {
     text: BI.i18nText("BI-Stacked_Bar_Chart"),
-    value: BICst.Widget.ACCUMULATE_BAR
+    value: BICst.WIDGET.ACCUMULATE_BAR,
+    cls: "detail-chart-bar-font"
 }, {
     text: BI.i18nText("BI-Compare_Bar"),
-    value: BICst.Widget.COMPARE_BAR
+    value: BICst.WIDGET.COMPARE_BAR,
+    cls: "detail-chart-bar-font"
 }];
 
 //面积图类型
 BICst.AREA_CHART_TYPE = [{
     text: BI.i18nText("BI-Area_Chart"),
-    value: BICst.Widget.AREA
+    value: BICst.WIDGET.AREA,
+    cls: ""
 }, {
     text: BI.i18nText("BI-Accumulate_Area"),
-    value: BICst.Widget.ACCUMULATE_AREA
+    value: BICst.WIDGET.ACCUMULATE_AREA,
+    cls: ""
 }, {
     text: BI.i18nText("BI-Percent_Accumulate_Area"),
-    value: BICst.Widget.PERCENT_ACCUMULATE_AREA
+    value: BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+    cls: ""
 }, {
     text: BI.i18nText("BI-Compare_Area"),
-    value: BICst.Widget.COMPARE_AREA
+    value: BICst.WIDGET.COMPARE_AREA,
+    cls: ""
 }, {
     text: BI.i18nText("BI-Compare_Range_Area"),
-    value: BICst.Widget.RANGE_AREA
+    value: BICst.WIDGET.RANGE_AREA,
+    cls: ""
 }];
 
 //组合图类型
 BICst.COMBINE_CHART_TYPE = [{
     text: BI.i18nText("BI-Combine_Chart"),
-    value: BICst.Widget.COMBINE_CHART
+    value: BICst.WIDGET.COMBINE_CHART,
+    cls: ""
 }, {
     text: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
-    value: BICst.Widget.MULTI_AXIS_COMBINE_CHART
+    value: BICst.WIDGET.MULTI_AXIS_COMBINE_CHART,
+    cls: ""
 }];
 
 //气泡图类型
 BICst.BUBBLE_CHART_TYPE = [{
     text: BI.i18nText("BI-Bubble_Chart"),
-    value: BICst.Widget.BUBBLE
+    value: BICst.WIDGET.BUBBLE,
+    cls: "detail-chart-bubble-font"
 }, {
     text: BI.i18nText("BI-Niu_Dun_Bubble"),
-    value: BICst.Widget.NIU_DUN_BUBBLE
+    value: BICst.WIDGET.NIU_DUN_BUBBLE,
+    cls: "detail-chart-bubble-font"
 }];
 
 //雷达图类型
 BICst.RADAR_CHART_TYPE = [{
     text: BI.i18nText("BI-Radar"),
-    value: BICst.Widget.RADAR
+    value: BICst.WIDGET.RADAR,
+    cls: "detail-chart-radar-font"
 }, {
     text: BI.i18nText("BI-Accumulate_Radar"),
-    value: BICst.Widget.ACCUMULATE_RADAR
+    value: BICst.WIDGET.ACCUMULATE_RADAR,
+    cls: "detail-chart-radar-font"
+}];
+
+BICst.SINGLE_TYPE_CHART = [{
+    title: BI.i18nText("BI-LINE_Chart"),
+    value: BICst.WIDGET.LINE,
+    cls: "detail-chart-line-font"
+}, {
+    title: BI.i18nText("BI-Pie_Chart"),
+    value: BICst.WIDGET.PIE,
+    cls: "detail-chart-pie-font"
+}, {
+    title: BI.i18nText("BI-Donut_Chart"),
+    value: BICst.Widget.DOUGHNUT,
+    cls: "detail-chart-doughnut-font"
+}, {
+    title: BI.i18nText("BI-Map"),
+    value: BICst.WIDGET.MAP,
+    cls: "detail-chart-map-font"
+}, {
+    title: BI.i18nText("BI-GIS_Map"),
+    value: BICst.WIDGET.GIS_MAP,
+    cls: "detail-chart-gis-map-font"
+}, {
+    title: BI.i18nText("BI-Dashboard_Chart"),
+    value: BICst.WIDGET.DASHBOARD,
+    cls: "detail-chart-dashboard-font"
+}, {
+    title: BI.i18nText("BI-Scatter"),
+    value: BICst.WIDGET.SCATTER,
+    cls: "detail-chart-scatter-font"
+}, {
+    title: BI.i18nText("BI-Funnel"),
+    value: BICst.WIDGET.FUNNEL,
+    cls: "detail-chart-funnel-font"
 }];
 
 //图表类型

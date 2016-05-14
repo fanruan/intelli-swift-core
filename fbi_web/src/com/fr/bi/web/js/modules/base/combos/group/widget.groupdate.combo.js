@@ -42,6 +42,7 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
         this.combo = BI.createWidget({
             type: "bi.down_list_combo",
             element: this.element,
+            stopPropagation: true,
             height: 25,
             iconCls: "detail-dimension-set-font",
             items:this._defaultItems()
