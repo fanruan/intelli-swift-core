@@ -71,20 +71,22 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
         });
         var value = {
             type: o.value,
-            name: this._getDefaultWidgetNameByWidgetType(o.value),
-            bounds: {
-                height:BICst.WIDGET.Heights[o.value],
-                width: BICst.WIDGET.Widths[o.value]
-            }
+            name: this._getDefaultWidgetNameByWidgetType(o.value)
         };
         this.button.element.draggable({
             cursor: BICst.cursorUrl,
             cursorAt: {left: 0, top: 0},
-            drag: function(e, ui){
-                o.drag.apply(self, [value, ui.position]);
+            drag: function (e, ui) {
+                o.drag.apply(self, [{
+                    height: BICst.WIDGET.Heights[o.value],
+                    width: BICst.WIDGET.Widths[o.value]
+                }, ui.position, value]);
             },
-            stop: function(e, ui){
-                o.stop.apply(self, [value, ui.position]);
+            stop: function (e, ui) {
+                o.stop.apply(self, [{
+                    height:BICst.WIDGET.Heights[o.value],
+                    width: BICst.WIDGET.Widths[o.value]
+                }, ui.position, value]);
             },
             helper: o.helper
         });

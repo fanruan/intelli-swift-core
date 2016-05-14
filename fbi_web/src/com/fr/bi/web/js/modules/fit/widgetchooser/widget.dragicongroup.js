@@ -90,13 +90,13 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                             },
                             el: {
                                 type: "bi.reuse_pane",
-                                drag: function(info, position){
+                                drag: function (size, position, opt) {
                                     dragIcon.hideView();
-                                    o.drag.apply(self, [info, position]);
+                                    o.drag.apply(self, arguments);
                                 },
-                                stop: function(info, position){
+                                stop: function (size, position, opt) {
                                     dragIcon.showView();
-                                    o.stop.apply(self, [info, position]);
+                                    o.stop.apply(self, arguments);
                                 },
                                 helper: o.helper
                             }

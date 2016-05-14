@@ -1187,7 +1187,7 @@ public class ResourceHelper {
                 //选组件
                 "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/pane.reuse.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/dragiconbutton.js",
-                "com/fr/bi/web/js/modules/fit/widgetchooser/dragwidgetitem.js",
+                "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/dragwidgetitem.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/widget.dragicongroup.js",
                 "com/fr/bi/web/js/modules/fit/fit.widget.js",
                 "com/fr/bi/web/js/modules/fit/fit.js",
