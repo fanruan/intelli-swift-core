@@ -18,15 +18,15 @@ BI.AxisTypeCombo = BI.inherit(BI.AbstractTypeCombo, {
 
     _switchIcon: function(v){
         switch (v) {
-            case BICst.Widget.AXIS:
+            case BICst.WIDGET.AXIS:
                 break;
-            case BICst.Widget.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
                 break;
-            case BICst.Widget.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
                 break;
-            case BICst.Widget.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
                 break;
-            case BICst.Widget.FALL_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
                 break;
             default:
                 this.trigger.setIcon("detail-chart-axis-font");

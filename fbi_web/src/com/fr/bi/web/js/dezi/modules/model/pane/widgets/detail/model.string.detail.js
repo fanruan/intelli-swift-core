@@ -5,7 +5,7 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.STRING,
+            type: BICst.WIDGET.STRING,
             value: {}
         });
     },

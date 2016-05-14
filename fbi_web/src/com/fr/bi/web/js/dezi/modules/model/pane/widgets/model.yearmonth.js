@@ -3,7 +3,7 @@ BIDezi.YearMonthWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.YearMonthWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.MONTH,
+            type: BICst.WIDGET.MONTH,
             dimensions: {},
             view: {},
             value: {},

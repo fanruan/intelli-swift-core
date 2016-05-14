@@ -18,7 +18,7 @@ BI.MapTypeCombo = BI.inherit(BI.AbstractTypeCombo, {
 
     _switchIcon: function(v){
         switch (v) {
-            case BICst.Widget.MAP:
+            case BICst.WIDGET.MAP:
                 break;
             default:
                 this.trigger.setIcon("detail-chart-map-font");

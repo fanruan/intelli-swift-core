@@ -3,7 +3,7 @@ BIShow.YearQuarterWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIShow.YearQuarterWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.QUARTER,
+            type: BICst.WIDGET.QUARTER,
             dimensions: {},
             view: {},
             filter_value: {}

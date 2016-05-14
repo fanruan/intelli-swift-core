@@ -77,7 +77,7 @@ BICst.Widget = {
     AXIS: 6,
     MAP: 7,
     DETAIL: 8,
-    DOUGHNUT: 9,
+    DONUT: 9,
     BUBBLE: 10,
     SCATTER: 11,
     RADAR: 12,
