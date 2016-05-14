@@ -43,7 +43,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
     _render: function (vessel) {
         var self = this;
-        this.title = this._buildWidgetTitle();
+        this._buildWidgetTitle();
+        this._createTools();
 
         this.table = BI.createWidget({
             type: "bi.detail_table",
@@ -52,116 +53,166 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);
         });
+
         this.widget = BI.createWidget({
-            type: "bi.vtape",
+            type: "bi.absolute",
             element: vessel,
             items: [{
+                el: this.tools,
+                top: 0,
+                right: 10
+            }, {
                 el: this.title,
-                height: 32
-            }, this.table]
-        })
+                left: 10,
+                top: 10,
+                right: 10
+            }, {
+                el: this.table,
+                left: 10,
+                right: 10,
+                top: 50,
+                bottom: 10
+            }]
+        });
+        this.widget.element.hover(function(){
+            self.tools.setVisible(true);
+        }, function(){
+            self.tools.setVisible(false);
+        });
     },
 
     _buildWidgetTitle: function () {
-        var self = this, o = this.options;
+        var self = this;
+        var id = this.model.get("id");
         if (!this.title) {
-            var text = this.title = BI.createWidget({
-                type: "bi.label",
-                cls: "dashboard-title-text",
-                text: BI.Utils.getWidgetNameByID(this.model.get("id")),
+            this.title = BI.createWidget({
+                type: "bi.shelter_editor",
+                cls: BI.Utils.getWidgetNamePositionByID(id) === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
+                    "dashboard-title-center" : "dashboard-title-left",
+                value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 32
-            });
-
-            var expand = BI.createWidget({
-                type: "bi.icon_button",
-                width: 32,
-                height: 32,
-                cls: "widget-combo-detail-font dashboard-title-detail"
-            });
-            expand.on(BI.IconButton.EVENT_CHANGE, function () {
-                self._expandWidget();
-            });
-
-            var combo = BI.createWidget({
-                type: "bi.widget_combo",
-                wId: this.model.get("id")
-            });
-            combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
-                switch (type) {
-                    case BICst.DASHBOARD_WIDGET_SHOW_NAME:
-                        var settings = self.model.get("settings");
-                        settings.show_name = !settings.show_name;
-                        self.model.set("settings", settings);
-                        break;
-                    case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
-                        var settings = self.model.get("settings");
-                        settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
-                        self.model.set("settings", settings);
-                        break;
-                    case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
-                        var settings = self.model.get("settings");
-                        settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
-                        self.model.set("settings", settings);
-                        break;
-                    case BICst.DASHBOARD_WIDGET_FILTER:
-                        if (BI.isNull(self.filterPane)) {
-                            self.filterPane = BI.createWidget({
-                                type: "bi.widget_filter",
-                                wId: self.model.get("id")
-                            });
-                            self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
-                                self.model.set(widget);
-                            });
-                            BI.createWidget({
-                                type: "bi.absolute",
-                                element: self.element,
-                                items: [{
-                                    el: self.filterPane,
-                                    top: 32,
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0
-                                }]
-                            });
-                            return;
-                        }
-                        self.filterPane.setVisible(!self.filterPane.isVisible());
-                        break;
-                    case BICst.DASHBOARD_WIDGET_EXCEL:
-                        break;
-                    case BICst.DASHBOARD_WIDGET_COPY :
-                        self.model.copy();
-                        break;
-                    case BICst.DASHBOARD_WIDGET_DELETE :
-                        self.model.destroy();
-                        break;
+                height: 30,
+                allowBlank: false,
+                errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
+                validationChecker: function(v){
+                    return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
-
-            return BI.createWidget({
-                type: "bi.border",
-                cls: "dashboard-title",
-                items: {
-                    center: text,
-                    east: {
-                        el: BI.createWidget({
-                            type: "bi.center_adapt",
-                            cls: "operator-region",
-                            items: [expand, combo]
-                        }),
-                        width: 64
-                    }
-                }
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function(){
+                self.model.set("name", this.getValue());
             });
         } else {
-            this.title.setValue(BI.Utils.getWidgetNameByID(this.model.get("id")));
+            this.title.setValue(BI.Utils.getWidgetNameByID(id));
         }
+    },
+
+    _createTools: function() {
+        var self = this;
+        var expand = BI.createWidget({
+            type: "bi.icon_button",
+            width: 16,
+            height: 16,
+            cls: "widget-combo-detail-font dashboard-title-detail"
+        });
+        expand.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._expandWidget();
+        });
+
+        var combo = BI.createWidget({
+            type: "bi.widget_combo",
+            wId: this.model.get("id")
+        });
+        combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
+            switch (type) {
+                case BICst.DASHBOARD_WIDGET_SHOW_NAME:
+                    var settings = self.model.get("settings");
+                    settings.show_name = !settings.show_name;
+                    self.model.set("settings", settings);
+                    break;
+                case BICst.DASHBOARD_WIDGET_RENAME:
+                    self.title.focus();
+                    break;
+                case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
+                    var settings = self.model.get("settings");
+                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
+                    self.model.set("settings", settings);
+                    self._refreshLayout();
+                    break;
+                case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
+                    var settings = self.model.get("settings");
+                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
+                    self.model.set("settings", settings);
+                    self._refreshLayout();
+                    break;
+                case BICst.DASHBOARD_WIDGET_FILTER:
+                    if (BI.isNull(self.filterPane)) {
+                        self.filterPane = BI.createWidget({
+                            type: "bi.widget_filter",
+                            wId: self.model.get("id")
+                        });
+                        self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
+                            self.model.set(widget);
+                        });
+                        BI.createWidget({
+                            type: "bi.absolute",
+                            element: self.element,
+                            items: [{
+                                el: self.filterPane,
+                                top: 32,
+                                left: 0,
+                                right: 0,
+                                bottom: 0
+                            }]
+                        });
+                        return;
+                    }
+                    self.filterPane.setVisible(!self.filterPane.isVisible());
+                    break;
+                case BICst.DASHBOARD_WIDGET_EXCEL:
+                    break;
+                case BICst.DASHBOARD_WIDGET_COPY :
+                    self.model.copy();
+                    break;
+                case BICst.DASHBOARD_WIDGET_DELETE :
+                    self.model.destroy();
+                    break;
+            }
+        });
+
+        this.tools = BI.createWidget({
+            type: "bi.left",
+            cls: "operator-region",
+            items: [expand, combo],
+            hgap: 3
+        });
+        this.tools.setVisible(false);
     },
 
     _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.table.populate();
+    },
+
+    _refreshLayout: function() {
+        var showTitle = BI.Utils.isShowWidgetNameByID(this.model.get("id"));
+        if(showTitle === false) {
+            this.title.setVisible(false);
+            this.widget.attr("items")[0].top = 0;
+            this.widget.attr("items")[2].top = 20;
+        } else {
+            this.title.setVisible(true);
+            this.widget.attr("items")[0].top = 10;
+            this.widget.attr("items")[2].top = 50;
+        }
+        this.widget.resize();
+    },
+
+    _refreshTitlePosition: function(){
+        var pos = BI.Utils.getWidgetNamePositionByID(this.model.get("id"));
+        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
+            "dashboard-title-center" : "dashboard-title-left";
+        this.title.element.removeClass("dashboard-title-left")
+            .removeClass("dashboard-title-center").addClass(cls);
     },
 
     _expandWidget: function () {
@@ -196,5 +247,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     refresh: function () {
         this._buildWidgetTitle();
         this.table.populate();
+        this._refreshLayout();
+        this._refreshTitlePosition();
     }
 });
