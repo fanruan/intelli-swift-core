@@ -6,7 +6,7 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.TreeWidgetModel.superclass._defaultConfig.apply(this, arguments), {
             name: "",
             bounds: {},
-            type: BICst.Widget.TREE,
+            type: BICst.WIDGET.TREE,
             dimensions: {},
             view: {},
             value: {},

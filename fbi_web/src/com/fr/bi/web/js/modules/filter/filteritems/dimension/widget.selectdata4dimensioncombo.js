@@ -76,7 +76,7 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
                 hasNext: data.hasNext
             });
         }, {
-            type: BICst.Widget.STRING,
+            type: BICst.WIDGET.STRING,
             page: -1,
             text_options: options
         });

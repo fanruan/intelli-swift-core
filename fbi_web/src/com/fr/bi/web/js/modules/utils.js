@@ -327,21 +327,21 @@
 
         isControlWidgetByWidgetId: function (wid) {
             var widgetType = this.getWidgetTypeByID(wid);
-            return widgetType === BICst.Widget.STRING ||
-                widgetType === BICst.Widget.NUMBER ||
-                widgetType === BICst.Widget.DATE ||
-                widgetType === BICst.Widget.MONTH ||
-                widgetType === BICst.Widget.QUARTER ||
-                widgetType === BICst.Widget.TREE ||
-                widgetType === BICst.Widget.YEAR ||
-                widgetType === BICst.Widget.YMD ||
-                widgetType === BICst.Widget.GENERAL_QUERY;
+            return widgetType === BICst.WIDGET.STRING ||
+                widgetType === BICst.WIDGET.NUMBER ||
+                widgetType === BICst.WIDGET.DATE ||
+                widgetType === BICst.WIDGET.MONTH ||
+                widgetType === BICst.WIDGET.QUARTER ||
+                widgetType === BICst.WIDGET.TREE ||
+                widgetType === BICst.WIDGET.YEAR ||
+                widgetType === BICst.WIDGET.YMD ||
+                widgetType === BICst.WIDGET.GENERAL_QUERY;
         },
 
         isQueryControlExist: function () {
             var self = this, isQueryExist = false;
             BI.some(this.getAllWidgetIDs(), function (i, wId) {
-                if (self.getWidgetTypeByID(wId) === BICst.Widget.QUERY) {
+                if (self.getWidgetTypeByID(wId) === BICst.WIDGET.QUERY) {
                     return isQueryExist = true;
                 }
             });
@@ -749,7 +749,7 @@
             BI.each(ids, function (i, id) {
                 var tids = self.getExpressionValuesByDimensionID(id);
                 if (tids.contains(dId)) {
-                    result.push(dId);
+                    result.push(id);
                 }
             });
             return result;
@@ -918,7 +918,7 @@
          */
         getDataByFieldID: function (fid, callback) {
             var d = {
-                type: BICst.Widget.TABLE,
+                type: BICst.WIDGET.TABLE,
                 bounds: {
                     height: 0,
                     width: 0,
@@ -976,7 +976,7 @@
         getWidgetDataByDimensionInfo: function (src, options) {
             var name = "__StatisticWidget__" + BI.UUID();
             var data = {
-                type: BICst.Widget.STRING,
+                type: BICst.WIDGET.STRING,
                 bounds: {
                     height: 0,
                     width: 0,
@@ -1097,7 +1097,7 @@
                         }
                         var filter = null;
                         switch (self.getWidgetTypeByID(id)) {
-                            case BICst.Widget.STRING:
+                            case BICst.WIDGET.STRING:
                                 fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
                                 filter = {
                                     filter_type: fType,
@@ -1105,7 +1105,7 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.Widget.NUMBER:
+                            case BICst.WIDGET.NUMBER:
                                 fType = BICst.TARGET_FILTER_NUMBER.BELONG_VALUE;
                                 filter = {
                                     filter_type: fType,
@@ -1113,7 +1113,7 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.Widget.DATE:
+                            case BICst.WIDGET.DATE:
                                 fType = BICst.FILTER_DATE.BELONG_DATE_RANGE;
                                 var start = fValue.start, end = fValue.end;
                                 if (BI.isNotNull(start) && BI.isNotEmptyString(start)) {
@@ -1130,7 +1130,7 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.Widget.MONTH:
+                            case BICst.WIDGET.MONTH:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
                                 var year = fValue.year, month = fValue.month;
                                 if (BI.isNumeric(year)) {
@@ -1150,7 +1150,7 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.Widget.QUARTER:
+                            case BICst.WIDGET.QUARTER:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
                                 var quarter = fValue.quarter, year = fValue.year;
                                 if (BI.isNumeric(year)) {
@@ -1170,7 +1170,7 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.Widget.YEAR:
+                            case BICst.WIDGET.YEAR:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
                                 fValue = {type: BICst.GROUP.Y, value: fValue};
                                 filter = {
@@ -1179,7 +1179,7 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.Widget.YMD:
+                            case BICst.WIDGET.YMD:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
                                 fValue = {type: BICst.GROUP.YMD, value: parseComplexDate(fValue)};
                                 filter = {
@@ -1188,7 +1188,7 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.Widget.TREE:
+                            case BICst.WIDGET.TREE:
                                 fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
                                 var treeValue = {};
                                 createTreeFilterValue(treeValue, fValue, dimId, i);
@@ -1199,7 +1199,7 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.Widget.GENERAL_QUERY:
+                            case BICst.WIDGET.GENERAL_QUERY:
                                 if(BI.isNotNull(value) && value.length === 1) {
                                     filter = value[0];
                                     parseFilter(filter);
@@ -1601,23 +1601,23 @@
             var wValue = BI.Utils.getWidgetValueByID(wid);
             var date = null;
             switch (widgetType) {
-                case BICst.Widget.YEAR:
+                case BICst.WIDGET.YEAR:
                     if (BI.isNumeric(wValue)) {
                         date = new Date(wValue, 0, 1);
                     }
                     break;
-                case BICst.Widget.MONTH:
+                case BICst.WIDGET.MONTH:
                     if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
                         date = new Date(wValue.year, BI.isNumeric(wValue.month) ? wValue.month : 0, 1);
                     }
                     break;
-                case BICst.Widget.QUARTER:
+                case BICst.WIDGET.QUARTER:
                     if (BI.isNotNull(wValue) && BI.isNumeric(wValue.year)) {
                         var quarter = wValue.quarter;
                         date = new Date(wValue.year, BI.isNumeric(quarter) ? (quarter * 3 - 1) : 0, 1);
                     }
                     break;
-                case BICst.Widget.YMD:
+                case BICst.WIDGET.YMD:
                     if (BI.isNotNull(wValue)) {
                         date = new Date(parseComplexDate(wValue));
                     }

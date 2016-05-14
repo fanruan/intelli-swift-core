@@ -6,7 +6,7 @@ BIDezi.GeneralQueryModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.NumberWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.GENERAL_QUERY,
+            type: BICst.WIDGET.GENERAL_QUERY,
             value: [],
             settings: BICst.DEFAULT_CONTROL_SETTING
         })

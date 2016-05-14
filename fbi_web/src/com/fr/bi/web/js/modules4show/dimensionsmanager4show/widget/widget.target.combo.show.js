@@ -111,7 +111,7 @@ BI.TargetComboShow = BI.inherit(BI.Widget, {
 
     _assertChartType:function(val){
         val || (val = {});
-        val.type || (val.type = BICst.Widget.AXIS);
+        val.type || (val.type = BICst.WIDGET.AXIS);
         return val;
     },
 

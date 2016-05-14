@@ -20,154 +20,279 @@ BICst.DASHBOARD_TOOLBAR = [{
 
 
 BICst.DASHBOARD_WIDGET_ICON = [[{
-    text: BI.i18nText("BI-Summary_Table"),
-    title: BI.i18nText("BI-Summary_Table"),
-    value: BICst.Widget.TABLE,
-    cls: "chart-table-font"
+    text: BI.i18nText("BI-Group_Table"),
+    title: BI.i18nText("BI-Group_Table"),
+    value: BICst.WIDGET.TABLE,
+    cls: "chart-table-font",
+    children: [{
+        text: BI.i18nText("BI-Group_Table"),
+        title: BI.i18nText("BI-Group_Table"),
+        value: BICst.WIDGET.TABLE,
+        cls: "chart-table-font"
+    }, {
+        text: BI.i18nText("BI-Cross_Table"),
+        title: BI.i18nText("BI-Cross_Table"),
+        value: BICst.WIDGET.CROSS_TABLE,
+        cls: "chart-table-font"
+    // }, {
+    //     text: BI.i18nText("BI-Complex_Table"),
+    //     title: BI.i18nText("BI-Complex_Table"),
+    //     value: BICst.WIDGET.COMPLEX_TABLE,
+    //     cls: "chart-table-font"
+    }]
 }, {
-    text: BI.i18nText("BI-Cor_Chart"),
-    title: BI.i18nText("BI-Cor_Chart"),
-    value: BICst.Widget.AXIS,
+    text: BI.i18nText("BI-Column_Chart"),
+    title: BI.i18nText("BI-Column_Chart"),
+    value: BICst.WIDGET.AXIS,
     cls: "chart-axis-font",
     children: [{
-        text: BI.i18nText("BI-Cor_Chart"),
-        title: BI.i18nText("BI-Cor_Chart"),
-        value: BICst.Widget.AXIS,
+        text: BI.i18nText("BI-Column_Chart"),
+        title: BI.i18nText("BI-Column_Chart"),
+        value: BICst.WIDGET.AXIS,
         cls: "chart-axis-font"
     }, {
+        text: BI.i18nText("BI-Stacked_Chart"),
+        title: BI.i18nText("BI-Stacked_Chart"),
+        value: BICst.WIDGET.ACCUMULATE_AXIS,
+        cls: "chart-bar-font"
+    }, {
+        text: BI.i18nText("BI-Percent_Accumulate_Axis"),
+        title: BI.i18nText("BI-Percent_Accumulate_Axis"),
+        value: BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
+        cls: "chart-accumulate-bar-font"
+    }, {
+        text: BI.i18nText("BI-Compare_Axis"),
+        title: BI.i18nText("BI-Compare_Axis"),
+        value: BICst.WIDGET.COMPARE_AXIS,
+        cls: "chart-accumulate-bar-font"
+    }, {
+        text: BI.i18nText("BI-Fall_Axis"),
+        title: BI.i18nText("BI-Fall_Axis"),
+        value: BICst.WIDGET.FALL_AXIS,
+        cls: "chart-accumulate-bar-font"
+    }]
+}, {
+    text: BI.i18nText("BI-Bar_Chart"),
+    title: BI.i18nText("BI-Bar_Chart"),
+    value: BICst.WIDGET.BAR,
+    cls: "chart-bar-font",
+    children: [{
         text: BI.i18nText("BI-Bar_Chart"),
         title: BI.i18nText("BI-Bar_Chart"),
-        value: BICst.Widget.BAR,
+        value: BICst.WIDGET.BAR,
         cls: "chart-bar-font"
     }, {
         text: BI.i18nText("BI-Stacked_Bar_Chart"),
         title: BI.i18nText("BI-Stacked_Bar_Chart"),
-        value: BICst.Widget.ACCUMULATE_BAR,
-        cls: "chart-accumulate-bar-font"
+        value: BICst.WIDGET.ACCUMULATED_BAR,
+        cls: "chart-bar-font"
+    }, {
+        text: BI.i18nText("BI-Compare_Bar"),
+        title: BI.i18nText("BI-Compare_Bar"),
+        value: BICst.WIDGET.COMPARE_BAR,
+        cls: "chart-bar-font"
+    }]
+}, {
+    text: BI.i18nText("BI-Line_Chart"),
+    title: BI.i18nText("BI-Line_Chart"),
+    value: BICst.WIDGET.LINE,
+    cls: "excel-upload-tip-font"
+}, {
+    text: BI.i18nText("BI-Area_Chart"),
+    title: BI.i18nText("BI-Area_Chart"),
+    value: BICst.WIDGET.AREA,
+    cls: "excel-upload-tip-font",
+    children: [{
+        text: BI.i18nText("BI-Area_Chart"),
+        title: BI.i18nText("BI-Area_Chart"),
+        value: BICst.WIDGET.AREA,
+        cls: "excel-upload-tip-font"
+    }, {
+        text: BI.i18nText("BI-Accumulate_Area"),
+        title: BI.i18nText("BI-Accumulate_Area"),
+        value: BICst.WIDGET.ACCUMULATE_AREA,
+        cls: "excel-upload-tip-font"
+    }, {
+        text: BI.i18nText("BI-Percent_Accumulate_Area"),
+        title: BI.i18nText("BI-Percent_Accumulate_Area"),
+        value: BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+        cls: "excel-upload-tip-font"
+    }, {
+        text: BI.i18nText("BI-Compare_Area"),
+        title: BI.i18nText("BI-Compare_Area"),
+        value: BICst.WIDGET.COMPARE_AREA,
+        cls: "excel-upload-tip-font"
+    }, {
+        text: BI.i18nText("BI-Compare_Range_Area"),
+        title: BI.i18nText("BI-Compare_Range_Area"),
+        value: BICst.WIDGET.RANGE_AREA,
+        cls: "excel-upload-tip-font"
+    }]
+}, {
+    text: BI.i18nText("BI-Combine_Chart"),
+    title: BI.i18nText("BI-Combine_Chart"),
+    value: BICst.WIDGET.COMBINE_CHART,
+    cls: "excel-upload-tip-font",
+    children: [{
+        text: BI.i18nText("BI-Combine_Chart"),
+        title: BI.i18nText("BI-Combine_Chart"),
+        value: BICst.WIDGET.COMBINE_CHART,
+        cls: "excel-upload-tip-font"
+    }, {
+        text: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
+        title: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
+        value: BICst.WIDGET.COMBINE_CHART,
+        cls: "excel-upload-tip-font"
     }]
 }, {
     text: BI.i18nText("BI-Pie_Chart"),
     title: BI.i18nText("BI-Pie_Chart"),
-    value: BICst.Widget.PIE,
+    value: BICst.WIDGET.PIE,
     cls: "chart-pie-font"
-}, {
-    text: BI.i18nText("BI-Map"),
-    title: BI.i18nText("BI-Map"),
-    value: BICst.Widget.MAP,
-    cls: "chart-map-font"
-}, {
-    text: BI.i18nText("BI-Dashboard_Chart"),
-    title: BI.i18nText("BI-Dashboard_Chart"),
-    value: BICst.Widget.DASHBOARD,
-    cls: "chart-dashboard-font"
 }, {
     text: BI.i18nText("BI-Donut_Chart"),
     title: BI.i18nText("BI-Donut_Chart"),
-    value: BICst.Widget.DOUGHNUT,
+    value: BICst.WIDGET.DONUT,
     cls: "chart-doughnut-font"
+}, {
+    text: BI.i18nText("BI-Map"),
+    title: BI.i18nText("BI-Map"),
+    value: BICst.WIDGET.MAP,
+    cls: "chart-map-font"
+}, {
+    text: BI.i18nText("BI-GIS_Map"),
+    title: BI.i18nText("BI-GIS_Map"),
+    value: BICst.WIDGET.GIS_MAP,
+    cls: "excel-upload-tip-font"
+}, {
+    text: BI.i18nText("BI-Dashboard_Chart"),
+    title: BI.i18nText("BI-Dashboard_Chart"),
+    value: BICst.WIDGET.DASHBOARD,
+    cls: "chart-dashboard-font"
+}, {
+    text: BI.i18nText("BI-Radar"),
+    title: BI.i18nText("BI-Radar"),
+    value: BICst.WIDGET.RADAR,
+    cls: "chart-radar-font",
+    children: [{
+        text: BI.i18nText("BI-Radar"),
+        title: BI.i18nText("BI-Radar"),
+        value: BICst.WIDGET.RADAR,
+        cls: "chart-radar-font"
+    }, {
+        text: BI.i18nText("BI-Accumulate_Radar"),
+        title: BI.i18nText("BI-Accumulate_Radar"),
+        value: BICst.WIDGET.ACCUMULATE_RADAR,
+        cls: "chart-radar-font"
+    }]
 }, {
     text: BI.i18nText("BI-Detail_Table"),
     title: BI.i18nText("BI-Detail_Table"),
-    value: BICst.Widget.DETAIL,
+    value: BICst.WIDGET.DETAIL,
     cls: "chart-detail-font"
 }, {
     text: BI.i18nText("BI-More"),
     title: BI.i18nText("BI-More"),
-    value: BICst.Widget.CONTENT,
+    value: BICst.WIDGET.CONTENT,
     cls: "chart-more-font",
     children: [{
+        text: BI.i18nText("BI-Scatter"),
+        title: BI.i18nText("BI-Scatter"),
+        value: BICst.WIDGET.SCATTER,
+        cls: "chart-scatter-font"
+    }, {
+        text: BI.i18nText("BI-Bubble_Chart"),
+        title: BI.i18nText("BI-Bubble_Chart"),
+        value: BICst.WIDGET.BUBBLE,
+        cls: "chart-bubble-font"
+    }, {
+        text: BI.i18nText("BI-Force_Bubble"),
+        title: BI.i18nText("BI-Force_Bubble"),
+        value: BICst.WIDGET.WEB,
+        cls: "excel-upload-tip-font"
+    }, {
+        text: BI.i18nText("BI-Funnel_Chart"),
+        title: BI.i18nText("BI-Force_Bubble"),
+        value: BICst.WIDGET.FUNNEL,
+        cls: "excel-upload-tip-font"
+    }, {
         text: BI.i18nText("BI-Text_Widget"),
         title: BI.i18nText("BI-Text_Widget"),
-        value: BICst.Widget.CONTENT,
+        value: BICst.WIDGET.CONTENT,
         cls: "chart-content-font"
     }, {
         text: BI.i18nText("BI-Image_Widget"),
         title: BI.i18nText("BI-Image_Widget"),
-        value: BICst.Widget.IMAGE,
+        value: BICst.WIDGET.IMAGE,
         cls: "chart-image-font"
     }, {
         text: BI.i18nText("BI-Web_Widget"),
         title: BI.i18nText("BI-Web_Widget"),
-        value: BICst.Widget.WEB,
+        value: BICst.WIDGET.WEB,
         cls: "chart-web-font"
     }]
-}, {
-    text: BI.i18nText("BI-Bubble_Chart"),
-    title: BI.i18nText("BI-Bubble_Chart"),
-    value: BICst.Widget.BUBBLE,
-    cls: "chart-bubble-font"
-}, {
-    text: BI.i18nText("BI-Scatter"),
-    title: BI.i18nText("BI-Scatter"),
-    value: BICst.Widget.SCATTER,
-    cls: "chart-scatter-font"
-}, {
-    text: BI.i18nText("BI-Radar"),
-    title: BI.i18nText("BI-Radar"),
-    value: BICst.Widget.RADAR,
-    cls: "chart-radar-font"
 }
 ], [{//以下是控件
     text: BI.i18nText("BI-Text_Control"),
     title: BI.i18nText("BI-Text_Control"),
-    value: BICst.Widget.STRING,
+    value: BICst.WIDGET.STRING,
     cls: "chart-string-font"
 }, {
     text: BI.i18nText("BI-Numeric_Control"),
     title: BI.i18nText("BI-Numeric_Control"),
-    value: BICst.Widget.NUMBER,
+    value: BICst.WIDGET.NUMBER,
     cls: "chart-number-font"
 }, {
     text: BI.i18nText("BI-Tree_Control"),
     title: BI.i18nText("BI-Tree_Control"),
-    value: BICst.Widget.TREE,
+    value: BICst.WIDGET.TREE,
     cls: "chart-tree-font"
 }, {
     text: BI.i18nText("BI-Date_Control"),
     title: BI.i18nText("BI-Date_Control"),
-    value: BICst.Widget.DATE,
+    value: BICst.WIDGET.DATE,
     cls: "chart-date-font",
     children: [
         {
             text: BI.i18nText("BI-Year_Control"),
             title: BI.i18nText("BI-Year_Control"),
-            value: BICst.Widget.YEAR,
+            value: BICst.WIDGET.YEAR,
             cls: "chart-year-font"
         }, {
             text: BI.i18nText("BI-Year_Month_Con"),
             title: BI.i18nText("BI-Year_Month_Con"),
-            value: BICst.Widget.MONTH,
+            value: BICst.WIDGET.MONTH,
             cls: "chart-month-font"
         }, {
             text: BI.i18nText("BI-Year_Quarter_Con"),
             title: BI.i18nText("BI-Year_Quarter_Con"),
-            value: BICst.Widget.QUARTER,
+            value: BICst.WIDGET.QUARTER,
             cls: "chart-quarter-font"
         }, {
             text: BI.i18nText("BI-Date_Control"),
             title: BI.i18nText("BI-Date_Control"),
-            value: BICst.Widget.YMD,
+            value: BICst.WIDGET.YMD,
             cls: "chart-ymd-font"
         }, {
             text: BI.i18nText("BI-Date_Range_Control"),
             title: BI.i18nText("BI-Date_Range_Control"),
-            value: BICst.Widget.DATE,
+            value: BICst.WIDGET.DATE,
             cls: "chart-date-range-font"
         }]
 }, {
     text: BI.i18nText("BI-General_Query"),
     title: BI.i18nText("BI-General_Query"),
-    value: BICst.Widget.GENERAL_QUERY,
+    value: BICst.WIDGET.GENERAL_QUERY,
     cls: "chart-general-query-font"
 }, {
     text: BI.i18nText("BI-Query_Button"),
     title: BI.i18nText("BI-Query_Button"),
-    value: BICst.Widget.QUERY,
+    value: BICst.WIDGET.QUERY,
     cls: "chart-query-font"
 }, {
     text: BI.i18nText("BI-Reset_Button"),
     title: BI.i18nText("BI-Reset_Button"),
-    value: BICst.Widget.RESET,
+    value: BICst.WIDGET.RESET,
     cls: "chart-reset-font"
 }], [{
     text: BI.i18nText("BI-Reuse"),
@@ -180,188 +305,132 @@ BICst.DASHBOARD_WIDGET_ICON = [[{
 BICst.TABLE_TYPE = [{
     title: BI.i18nText("BI-Group_Table"),
     value: BICst.WIDGET.TABLE,
-    text: BI.i18nText("BI-Group_Table"),
-    cls: "detail-chart-summary-table-font"
+    text: BI.i18nText("BI-Group_Table")
 }, {
     title: BI.i18nText("BI-Cross_Table"),
     value: BICst.WIDGET.CROSS_TABLE,
-    text: BI.i18nText("BI-Cross_Table"),
-    cls: "detail-chart-summary-table-font"
+    text: BI.i18nText("BI-Cross_Table")
 }, {
     title: BI.i18nText("BI-Complex_Table"),
     value: BICst.WIDGET.COMPLEX_TABLE,
-    text: BI.i18nText("BI-Complex_Table"),
-    cls: "detail-chart-summary-table-font"
+    text: BI.i18nText("BI-Complex_Table")
 }];
 
 //坐标轴图类型
 BICst.AXIS_CHART_TYPE = [{
     text: BI.i18nText("BI-Column_Chart"),
-    value: BICst.WIDGET.AXIS,
-    cls: "detail-chart-axis-font"
+    value: BICst.WIDGET.AXIS
 }, {
     text: BI.i18nText("BI-Stacked_Chart"),
-    value: BICst.WIDGET.ACCUMULATE_AXIS,
-    cls: "detail-chart-axis-font"
+    value: BICst.WIDGET.ACCUMULATE_COLUMN
 }, {
     text: BI.i18nText("BI-Percent_Accumulate_Axis"),
-    value: BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
-    cls: "detail-chart-axis-font"
+    value: BICst.WIDGET.PERCENT_ACCUMULATE_AXIS
 }, {
     text: BI.i18nText("BI-Compare_Axis"),
-    value: BICst.WIDGET.COMPARE_AXIS,
-    cls: "detail-chart-axis-font"
+    value: BICst.WIDGET.COMPARE_AXIS
 }, {
     text: BI.i18nText("BI-Fall_Axis"),
-    value: BICst.WIDGET.FALL_AXIS,
-    cls: "detail-chart-axis-font"
+    value: BICst.WIDGET.FALL_AXIS
 }];
 
 //条形图类型
 BICst.BAR_CHART_TYPE = [{
     text: BI.i18nText("BI-Bar_Chart"),
-    value: BICst.WIDGET.BAR,
-    cls: "detail-chart-bar-font"
+    value: BICst.WIDGET.BAR
 }, {
     text: BI.i18nText("BI-Stacked_Bar_Chart"),
-    value: BICst.WIDGET.ACCUMULATE_BAR,
-    cls: "detail-chart-bar-font"
+    value: BICst.WIDGET.ACCUMULATE_BAR
 }, {
     text: BI.i18nText("BI-Compare_Bar"),
-    value: BICst.WIDGET.COMPARE_BAR,
-    cls: "detail-chart-bar-font"
+    value: BICst.WIDGET.COMPARE_BAR
 }];
 
 //面积图类型
 BICst.AREA_CHART_TYPE = [{
     text: BI.i18nText("BI-Area_Chart"),
-    value: BICst.WIDGET.AREA,
-    cls: ""
+    value: BICst.WIDGET.AREA
 }, {
     text: BI.i18nText("BI-Accumulate_Area"),
-    value: BICst.WIDGET.ACCUMULATE_AREA,
-    cls: ""
+    value: BICst.WIDGET.ACCUMULATE_AREA
 }, {
     text: BI.i18nText("BI-Percent_Accumulate_Area"),
-    value: BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
-    cls: ""
+    value: BICst.WIDGET.PERCENT_ACCUMULATE_AREA
 }, {
     text: BI.i18nText("BI-Compare_Area"),
-    value: BICst.WIDGET.COMPARE_AREA,
-    cls: ""
+    value: BICst.WIDGET.COMPARE_AREA
 }, {
     text: BI.i18nText("BI-Compare_Range_Area"),
-    value: BICst.WIDGET.RANGE_AREA,
-    cls: ""
+    value: BICst.WIDGET.RANGE_AREA
 }];
 
 //组合图类型
 BICst.COMBINE_CHART_TYPE = [{
     text: BI.i18nText("BI-Combine_Chart"),
-    value: BICst.WIDGET.COMBINE_CHART,
-    cls: ""
+    value: BICst.WIDGET.COMBINE_CHART
 }, {
     text: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
-    value: BICst.WIDGET.MULTI_AXIS_COMBINE_CHART,
-    cls: ""
+    value: BICst.WIDGET.MULTI_AXIS_COMBINE_CHART
 }];
 
 //气泡图类型
 BICst.BUBBLE_CHART_TYPE = [{
     text: BI.i18nText("BI-Bubble_Chart"),
-    value: BICst.WIDGET.BUBBLE,
-    cls: "detail-chart-bubble-font"
+    value: BICst.WIDGET.BUBBLE
 }, {
-    text: BI.i18nText("BI-Niu_Dun_Bubble"),
-    value: BICst.WIDGET.NIU_DUN_BUBBLE,
-    cls: "detail-chart-bubble-font"
+    text: BI.i18nText("BI-Force_Bubble"),
+    value: BICst.WIDGET.FORCE_BUBBLE
 }];
 
 //雷达图类型
 BICst.RADAR_CHART_TYPE = [{
     text: BI.i18nText("BI-Radar"),
-    value: BICst.WIDGET.RADAR,
-    cls: "detail-chart-radar-font"
+    value: BICst.WIDGET.RADAR
 }, {
     text: BI.i18nText("BI-Accumulate_Radar"),
-    value: BICst.WIDGET.ACCUMULATE_RADAR,
-    cls: "detail-chart-radar-font"
-}];
-
-BICst.SINGLE_TYPE_CHART = [{
-    title: BI.i18nText("BI-LINE_Chart"),
-    value: BICst.WIDGET.LINE,
-    cls: "detail-chart-line-font"
-}, {
-    title: BI.i18nText("BI-Pie_Chart"),
-    value: BICst.WIDGET.PIE,
-    cls: "detail-chart-pie-font"
-}, {
-    title: BI.i18nText("BI-Donut_Chart"),
-    value: BICst.Widget.DOUGHNUT,
-    cls: "detail-chart-doughnut-font"
-}, {
-    title: BI.i18nText("BI-Map"),
-    value: BICst.WIDGET.MAP,
-    cls: "detail-chart-map-font"
-}, {
-    title: BI.i18nText("BI-GIS_Map"),
-    value: BICst.WIDGET.GIS_MAP,
-    cls: "detail-chart-gis-map-font"
-}, {
-    title: BI.i18nText("BI-Dashboard_Chart"),
-    value: BICst.WIDGET.DASHBOARD,
-    cls: "detail-chart-dashboard-font"
-}, {
-    title: BI.i18nText("BI-Scatter"),
-    value: BICst.WIDGET.SCATTER,
-    cls: "detail-chart-scatter-font"
-}, {
-    title: BI.i18nText("BI-Funnel"),
-    value: BICst.WIDGET.FUNNEL,
-    cls: "detail-chart-funnel-font"
+    value: BICst.WIDGET.ACCUMULATE_RADAR
 }];
 
 //图表类型
 BICst.CHART_TYPE = [{
     title: BI.i18nText("BI-Cor_Chart"),
-    value: BICst.Widget.AXIS,
+    value: BICst.WIDGET.AXIS,
     cls: "detail-chart-axis-font"
 }, {
     title: BI.i18nText("BI-Bar_Chart"),
-    value: BICst.Widget.BAR,
+    value: BICst.WIDGET.BAR,
     cls: "detail-chart-bar-font"
 }, {
     title: BI.i18nText("BI-Stacked_Bar_Chart"),
-    value: BICst.Widget.ACCUMULATE_BAR,
+    value: BICst.WIDGET.ACCUMULATE_BAR,
     cls: "detail-char-accumulate-bar-font"
 }, {
     title: BI.i18nText("BI-Pie_Chart"),
-    value: BICst.Widget.PIE,
+    value: BICst.WIDGET.PIE,
     cls: "detail-chart-pie-font"
 }, {
     title: BI.i18nText("BI-Map"),
-    value: BICst.Widget.MAP,
+    value: BICst.WIDGET.MAP,
     cls: "detail-chart-map-font"
 }, {
     title: BI.i18nText("BI-Dashboard_Chart"),
-    value: BICst.Widget.DASHBOARD,
+    value: BICst.WIDGET.DASHBOARD,
     cls: "detail-chart-dashboard-font"
 }, {
     title: BI.i18nText("BI-Donut_Chart"),
-    value: BICst.Widget.DOUGHNUT,
+    value: BICst.WIDGET.DONUT,
     cls: "detail-chart-doughnut-font"
 }, {
     title: BI.i18nText("BI-Bubble_Chart"),
-    value: BICst.Widget.BUBBLE,
+    value: BICst.WIDGET.BUBBLE,
     cls: "detail-chart-bubble-font"
 }, {
     title: BI.i18nText("BI-Scatter"),
-    value: BICst.Widget.SCATTER,
+    value: BICst.WIDGET.SCATTER,
     cls: "detail-chart-scatter-font"
 }, {
     title: BI.i18nText("BI-Radar"),
-    value: BICst.Widget.RADAR,
+    value: BICst.WIDGET.RADAR,
     cls: "detail-chart-radar-font"
 }];
 

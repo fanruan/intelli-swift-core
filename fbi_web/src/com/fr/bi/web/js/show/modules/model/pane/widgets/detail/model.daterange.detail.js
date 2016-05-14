@@ -5,7 +5,7 @@ BIShow.DateRangeDetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.DATE,
+            type: BICst.WIDGET.DATE,
             filter_value: {}
         });
     },

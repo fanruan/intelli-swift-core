@@ -5,7 +5,7 @@ BIShow.YearMonthDetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.MONTH,
+            type: BICst.WIDGET.MONTH,
             filter_value: {}
         });
     },
