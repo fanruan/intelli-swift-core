@@ -56,7 +56,7 @@ BI.SortFilterTargetCombo = BI.inherit(BI.Widget, {
         var targetFilters = BI.Utils.getWidgetFilterValueByID(BI.Utils.getWidgetIDByDimensionID(dId));
         var widgetType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(dId));
         var sort = BI.Utils.getWidgetSortByID(BI.Utils.getWidgetIDByDimensionID(dId)), filter = BI.isNotNull(targetFilters) ? targetFilters[dId] : null;
-        if(widgetType === BICst.Widget.DETAIL) {
+        if(widgetType === BICst.WIDGET.DETAIL) {
             sort = BI.Utils.getDimensionSortByID(dId);
         }
         var value = [], triggerIcon = this.constant.icon_asc;

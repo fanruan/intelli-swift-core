@@ -31,7 +31,8 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 height: this._const.toolbarHeight
             }, {
                 el: this.dashboard
-            }]
+            }],
+            vgap: 5
         })
     },
 

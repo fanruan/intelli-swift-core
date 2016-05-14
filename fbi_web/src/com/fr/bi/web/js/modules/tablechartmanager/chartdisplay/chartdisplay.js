@@ -29,14 +29,14 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             var dId = [], clicked = [];
             BI.Msg.toast("category: " + obj.category + " seriesName: " + obj.seriesName + " value: " + obj.value + " size: " + obj.size);
             switch (BI.Utils.getWidgetTypeByID(o.wId)) {
-                case BICst.Widget.BUBBLE:
+                case BICst.WIDGET.BUBBLE:
                     dId = [self.tarIdMap[obj.value], self.tarIdMap[obj.category], self.tarIdMap[obj.size]];
                     clicked = [{
                         dId: self.seriesDid,
                         value: [obj.seriesName]
                     }];
                     break;
-                case BICst.Widget.SCATTER:
+                case BICst.WIDGET.SCATTER:
                     dId = [self.tarIdMap[obj.value], self.tarIdMap[obj.category]];
                     clicked = [{
                         dId: self.seriesDid,
@@ -95,12 +95,12 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 type = chartType.type;
             }
             switch (type) {
-                case BICst.Widget.COLUMN:
-                case BICst.Widget.ACCUMULATE_COLUMN:
+                case BICst.WIDGET.COLUMN:
+                case BICst.WIDGET.ACCUMULATE_COLUMN:
                     return "column";
-                case BICst.Widget.AREA:
+                case BICst.WIDGET.AREA:
                     return "area";
-                case BICst.Widget.LINE:
+                case BICst.WIDGET.LINE:
                     return "line";
                 default:
                     return "column";
@@ -109,23 +109,23 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
 
         var type = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(tId));
         switch (type) {
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
                 return "bar";
-            case BICst.Widget.PIE:
-            case BICst.Widget.DOUGHNUT:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DONUT:
                 return "pie";
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.RADAR:
                 return "radar";
-            case BICst.Widget.MAP:
+            case BICst.WIDGET.MAP:
                 return "map";
-            case BICst.Widget.DASHBOARD:
+            case BICst.WIDGET.DASHBOARD:
                 return "gauge";
-            case BICst.Widget.BUBBLE:
+            case BICst.WIDGET.BUBBLE:
                 return "bubble";
-            case BICst.Widget.SCATTER:
+            case BICst.WIDGET.SCATTER:
                 return "scatter";
-            case BICst.Widget.AXIS:
+            case BICst.WIDGET.AXIS:
                 return forAxis();
         }
     },
@@ -139,7 +139,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 var data = BI.map(left.c, function (idx, obj) {
                     self.tarIdMap[obj.s.c[id].s] = targetIds[0];
                     var wType = BI.Utils.getWidgetTypeByID(o.wId);
-                    if (wType === BICst.Widget.ACCUMULATE_BAR || wType === BICst.Widget.BAR) {
+                    if (wType === BICst.WIDGET.ACCUMULATE_BAR || wType === BICst.WIDGET.BAR) {
                         return {
                             "y": obj.n,
                             "x": obj.s.c[id].s
@@ -164,7 +164,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 var wType = BI.Utils.getWidgetTypeByID(o.wId);
                 var adjustData = BI.map(data.c, function (id, item) {
                     self.tarIdMap[item.s[idx]] = targetIds[idx];
-                    if (wType === BICst.Widget.ACCUMULATE_BAR || wType === BICst.Widget.BAR) {
+                    if (wType === BICst.WIDGET.ACCUMULATE_BAR || wType === BICst.WIDGET.BAR) {
                         return {
                             y: item.n,
                             x: item.s[idx]
@@ -181,7 +181,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     name: BI.Utils.getDimensionNameByID(targetIds[idx])
                 };
                 var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[idx]);
-                if (BI.has(chart, "type") && chart.type === BICst.Widget.ACCUMULATE_COLUMN) {
+                if (BI.has(chart, "type") && chart.type === BICst.WIDGET.ACCUMULATE_COLUMN) {
                     res.stack = "stackChart";
                 }
                 return res;
@@ -258,19 +258,19 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
     _createDataByData: function (data) {
         var self = this, o = this.options;
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
-            case BICst.Widget.BUBBLE:
+            case BICst.WIDGET.BUBBLE:
                 return self._formatDataForBubble(data);
-            case BICst.Widget.SCATTER:
+            case BICst.WIDGET.SCATTER:
                 return self._formatDataForScatter(data);
-            case BICst.Widget.AXIS:
+            case BICst.WIDGET.AXIS:
                 return self._formatDataForAxis(data);
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.RADAR:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DASHBOARD:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.DASHBOARD:
                 return self._formatDataForCommon(data);
 
         }
@@ -285,7 +285,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             var view = BI.Utils.getWidgetViewByID(o.wId);
             if (BI.has(view, BICst.REGION.TARGET2)
                 && BI.isNotEmptyArray(view[BICst.REGION.TARGET2])
-                && BI.Utils.getWidgetTypeByID(o.wId) === BICst.Widget.AXIS) {
+                && BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.AXIS) {
                 self.chartDisplay.showTheOtherYAxis();
             } else {
                 self.chartDisplay.hideTheOtherYAxis();

@@ -95,7 +95,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
-            cls: "widget-attr-north",
             items: {
                 left: [input],
                 right: [shrink]
@@ -130,6 +129,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         var self = this;
         this.tableChartTab = BI.createWidget({
             type: "bi.table_chart_manager",
+            cls: "widget-center-wrapper",
             wId: this.model.get("id")
         });
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChartTab.populate, this.tableChartTab), 0);
@@ -159,7 +159,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.border",
-                    cls: "widget-show-data-pane",
                     items: {
                         north: {
                             el: top,

@@ -189,7 +189,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         });
 
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-
+            self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_INIT);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
 
@@ -329,6 +329,10 @@ BI.PageTable = BI.inherit(BI.Widget, {
         return this.table.getColumnSize();
     },
 
+    getCalculateColumnSize: function(){
+        return this.table.getCalculateColumnSize();
+    },
+
     getCalculateRegionColumnSize: function () {
         return this.table.getCalculateRegionColumnSize();
     },
@@ -351,6 +355,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
     }
 });
 BI.PageTable.EVENT_CHANGE = "PageTable.EVENT_CHANGE";
+BI.PageTable.EVENT_TABLE_AFTER_INIT = "EVENT_TABLE_AFTER_INIT";
 BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE = "PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE";
 BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE = "PageTable.EVENT_TABLE_AFTER_REGION_RESIZE";
 $.shortcut('bi.page_table', BI.PageTable);
