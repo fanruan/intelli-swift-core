@@ -17,7 +17,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
 
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailTableDetailView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-detail-view"
+            baseCls: "bi-widget-attribute-setter"
         })
     },
 
@@ -62,7 +62,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
-            cls: "widget-attr-north",
             items: {
                 left: [input],
                 right: [shrink]
@@ -95,7 +94,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         var table = this._createTable();
         this.center = BI.createWidget({
             type: "bi.default",
-            cls: "widget-attr-chart"
+            cls: "widget-center-wrapper"
         });
 
         var tab = BI.createWidget({
@@ -110,7 +109,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.border",
-                    cls: "widget-show-data-pane",
                     items: {
                         north: {
                             el: tab,
@@ -199,7 +197,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         var self = this;
         this.table = BI.createWidget({
             type: "bi.detail_table",
-            cls: "widget-attr-chart",
+            cls: "widget-center-wrapper",
             wId: this.model.get("id")
         });
         this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
