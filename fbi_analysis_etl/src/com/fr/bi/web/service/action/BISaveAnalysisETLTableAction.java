@@ -2,6 +2,7 @@ package com.fr.bi.web.service.action;
 
 import com.finebi.cube.api.BICubeManager;
 import com.fr.base.FRContext;
+import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
@@ -18,8 +19,8 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by 小灰灰 on 2016/4/7.
@@ -38,18 +39,15 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
             String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
             JSONObject jo = new JSONObject(tableJSON);
             JSONArray items = jo.getJSONArray(Constants.ITEMS);
-            List<String> sheets = new ArrayList<String>();
-            for (int i = 0; i < items.length(); i++){
-                sheets.add(items.getJSONObject(i).getString("table_name"));
-            }
-            table.setSheets(sheets);
+            Map<BICore, String> sheets = new HashMap<BICore, String>();
             BIConfigureManagerCenter.getAliasManager().setAliasName(tableId, tableName, userId);
             source = AnalysisETLSourceFactory.createTableSource(items, userId);
+            table.setSource(source);
         } else {
             table  = new AnalysisBusiTable(newId, userId);
             BIConfigureManagerCenter.getAliasManager().setAliasName(newId, tableName, userId);
             AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
-            table.setSheets(oldTable.getSheets());
+            table.setSource(oldTable.getSource());
             source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByID(oldTable.getID(), new BIUser(userId));
         }
         FRContext.getCurrentEnv().writeResource(BIConfigureManagerCenter.getAliasManager().getTransManager(userId));
@@ -60,11 +58,11 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         JSONObject result = new JSONObject();
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
         JSONObject translations = new JSONObject();
-        translations.put(tableId, tableName);
+        translations.put(table.getID().getIdentity(), tableName);
         JSONObject tableJSONWithFieldsInfo = table.createJSONWithFieldsInfo(BICubeManager.getInstance().fetchCubeLoader(userId));
         JSONObject tableFields = tableJSONWithFieldsInfo.getJSONObject("tableFields");
         JSONObject tables = new JSONObject();
-        tables.put(tableId, tableFields);
+        tables.put(table.getID().getIdentity(), tableFields);
         JSONObject fields = tableJSONWithFieldsInfo.getJSONObject("fieldsInfo");
         result.put("packages", packages);
         result.put("translations", translations);
