@@ -152,8 +152,6 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
     refreshColumnName : function () {
         var allFields = this.get(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS).getAllFields();
         var columns = [];
-        var mergeColumns = [];
-        var leftColumns = [];
         var tables = this.get(ETLCst.PARENTS);
         var table1Fields = BI.Utils.getFieldArrayFromTable(tables[0]);
         var table2Fields = BI.Utils.getFieldArrayFromTable(tables[1]);
@@ -167,10 +165,6 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         BI.each(allFields, function (idx, item) {
             var newFields;
             if(item[0] > -1 && item[1] > -1) {
-                mergeColumns.push({
-                    index:idx,
-                    mergeBy:[table1Fields[item[0]].field_name, table2Fields[item[1]].field_name]
-                })
                 newFields = BI.deepClone(table1Fields[item[0]]);
                 newFields._src = [BI.extend(BI.deepClone(table1Fields[item[0]]),{
                     table_index: 0
@@ -178,7 +172,6 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
                     table_index : 1
                 })];
             } else if(item[0] > -1) {
-                leftColumns.push(idx)
                 newFields = BI.deepClone(table1Fields[item[0]]);
                 newFields._src = [BI.extend(BI.deepClone(table1Fields[item[0]]), {
                     table_index: 0
