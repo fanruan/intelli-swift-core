@@ -31,7 +31,11 @@ BIDezi.TargetModel = BI.inherit(BI.Model, {
         if (dIds.length > 0) {
             var str = "";
             BI.each(dIds, function (i, dId) {
-                str += BI.Utils.getDimensionNameByID(dId);
+                if (i === 0) {
+                    str = BI.Utils.getDimensionNameByID(dId);
+                } else {
+                    str += "," + BI.Utils.getDimensionNameByID(dId);
+                }
             });
             BI.Msg.alert(BI.i18nText("BI-Failure_Toast"), BI.i18nText("BI-Target_Used_In_Calculate_Cannot_Delete", str));
         } else {
