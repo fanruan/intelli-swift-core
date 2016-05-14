@@ -179,6 +179,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.CALCULATE_TARGET_COMBO.FORM_SETTING:
+                    self._buildStyleSettingPane();
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET:
                     self._updateTarget();
