@@ -66,7 +66,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     },
     _buildAuthorityPane: function () {
         var self=this;
-        this.authorityPaneRoleMain.createWidget({
+        this.AuthorityPaneRoleMain=BI.createWidget({
             type:'bi.authority_pane_role_main'
         });
         return BI.createWidget({
@@ -74,7 +74,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             items: {
                 north: {el: this._showTitle(), height: 40},
                 center: {
-                    el: BI.Layers.create("layer",self.authorityPaneRoleMain),
+                    el: BI.Layers.create("layer",self.AuthorityPaneRoleMain),
                     top: 0,
                     left: 0,
                     right: 0,
