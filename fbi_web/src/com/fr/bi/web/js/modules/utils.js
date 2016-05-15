@@ -338,6 +338,18 @@
                 widgetType === BICst.WIDGET.GENERAL_QUERY;
         },
 
+        isControlWidgetByWidgetType: function (widgetType) {
+            return widgetType === BICst.WIDGET.STRING ||
+                widgetType === BICst.WIDGET.NUMBER ||
+                widgetType === BICst.WIDGET.DATE ||
+                widgetType === BICst.WIDGET.MONTH ||
+                widgetType === BICst.WIDGET.QUARTER ||
+                widgetType === BICst.WIDGET.TREE ||
+                widgetType === BICst.WIDGET.YEAR ||
+                widgetType === BICst.WIDGET.YMD ||
+                widgetType === BICst.WIDGET.GENERAL_QUERY;
+        },
+        
         isQueryControlExist: function () {
             var self = this, isQueryExist = false;
             BI.some(this.getAllWidgetIDs(), function (i, wId) {
@@ -1116,10 +1128,10 @@
                             case BICst.WIDGET.DATE:
                                 fType = BICst.FILTER_DATE.BELONG_DATE_RANGE;
                                 var start = fValue.start, end = fValue.end;
-                                if (BI.isNotNull(start) && BI.isNotEmptyString(start)) {
-                                    start = new Date(start).getTime();
-                                } else if (BI.isNotNull(end) && BI.isNotEmptyString(end)) {
-                                    end = new Date(end).getTime();
+                                if (BI.isNotNull(start)) {
+                                    start = parseComplexDate(start);
+                                } else if (BI.isNotNull(end)) {
+                                    end = parseComplexDate(end);
                                 } else {
                                     return;
                                 }

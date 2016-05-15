@@ -16,7 +16,8 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var text = o.text;
         var iconCls = "", color = "";
         if(BI.isNotNull(styleSettings)){
-            var format = styleSettings.format;
+            var format = styleSettings.format, numLevel = styleSettings.num_level;
+            text = this._parseNumLevel(text, numLevel);
             text = this._parseFloatByDot(text, format);
             var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
             iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
@@ -30,7 +31,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 }
             });
         }
-        var textLabel = this._createTargetText();
+        var textLabel = this._createTargetText(text);
         if(BI.isNotEmptyString(color)){
             textLabel.element.css("color", color);
         }
@@ -52,7 +53,28 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         })
     },
 
+    _parseNumLevel: function(text, numLevel) {
+        if(text === Infinity || text !== text) {
+            return text;
+        }
+        switch (numLevel) {
+            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                return text;
+            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                return text / 10000;
+            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                return text / 1000000;
+            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                return text / 100000000;
+            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                return text * 100;
+        }
+    },
+
     _parseFloatByDot: function(text, dot){
+        if(text === Infinity || text !== text) {
+            return text;
+        }
         var num = BI.parseFloat(text);
         switch (dot){
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
@@ -102,11 +124,11 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         }
     },
 
-    _createTargetText: function(){
+    _createTargetText: function(text){
         //联动
         var self = this;
         var o = this.options;
-        var dId = o.dId, text = o.text, clicked = o.clicked;
+        var dId = o.dId, clicked = o.clicked;
         var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
         var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
         var linkedWidgets = [];
@@ -115,6 +137,12 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 linkedWidgets.push(link.to);
             }
         });
+        if(text === Infinity) {
+            text = "N/0";
+        }
+        if(text !== text) {
+            text = "0/0";
+        }
         if(BI.isEmptyArray(linkedWidgets)) {
             return BI.createWidget({
                 type: "bi.label",

@@ -41,6 +41,9 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         if (key1 === "widgets") {
             this.dashboard.deleteRegion(key2);
         }
+        if(BI.Utils.isControlWidgetByWidgetType(old.type)) {
+            BI.Utils.broadcastAllWidgets2Refresh();
+        }
     },
 
     duplicate: function (copy, key1, key2) {
@@ -131,6 +134,12 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     _refreshButtons: function(){
         var operatorIndex = this.model.get("getOperatorIndex");
         var records = Data.SharingPool.get("records") || [];
+        //模拟一下change的时候发生的事（坑爹的回调里做的事，没办法这边实时拿到）
+        if(!this.model.get("isUndoRedoSet")) {
+            records.splice(operatorIndex + 1);
+            records.push({});
+            operatorIndex = records.length - 1;
+        }
         var recordsSize = records.length;
         if(operatorIndex === recordsSize - 1) {
             this.undoButton.setEnable(true);

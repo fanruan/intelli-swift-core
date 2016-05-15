@@ -13,7 +13,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.StringWidgetView.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(this.model.get("id"), function(){
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function(){
             self._resetValue();
         });
     },

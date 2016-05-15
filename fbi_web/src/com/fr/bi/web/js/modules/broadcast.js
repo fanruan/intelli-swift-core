@@ -9,6 +9,7 @@ BICst.BROADCAST = {
     DIMENSIONS_PREFIX: "dimensions_",//维度增删事件 + wId || ""
     REFRESH_PREFIX: "refresh_",//刷新事件 + wId
     LINKAGE_PREFIX: "linkage_",//联动事件 + wId
+    RESET_PREFIX: "reset_",//重置事件 + wId
 
     SRC_PREFIX: "src_", //数据源(字段)增删事件 + srcId
 
