@@ -65,13 +65,13 @@ SkipToModel = BI.inherit(BI.Model, {
     _defaultConfig: function(){
         return BI.extend(SkipToModel.superclass._defaultConfig.apply(this, arguments),{
             "red": {
-                text: "model:hotpink"
+                text: "hotpink"
             },"blue": {
-                text: "model:cornflowerblue"
+                text: "cornflowerblue"
             },"green": {
-                text: "model:darkcyan"
+                text: "darkcyan"
             },"yellow": {
-                text: "model:darkgoldenrod"
+                text: "darkgoldenrod"
             }
         })
     },

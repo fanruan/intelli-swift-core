@@ -254,11 +254,9 @@ Data.Req = BIReq = {
     reqAuthorityByPackageId: function (packageId) {
          return BI.requestSync("fr_bi_configure", "get_package_authority", {packageId:packageId});;
     },
-    reqAllAuthority: function (callback) {
-        BI.requestAsync("fs_set", "auth_getAllRole_withDeptAll", {}, function(res) {
-        callback(res);
-        });
-    
+    reqAllAuthority: function () {
+        var rolesFromServer = BI.requestSync("fs_set", "auth_getAllRole_withDeptAll", {});
+        return rolesFromServer;
     },
     reqUpdatePackageAuthority: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "save_package_authority", data, function (res) {

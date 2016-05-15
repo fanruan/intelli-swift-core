@@ -3,28 +3,27 @@
  */
 BIConf.PermissionManageModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
-        return _.extend(BIConf.PermissionManageModel.superclass._defaultConfig.apply(this, arguments), {})
+        return _.extend(BIConf.PermissionManageModel.superclass._defaultConfig.apply(this, arguments), {
+            packageIds:'',
+            allRoles:''
+        })
     },
-    _init: function () {
-        BIConf.PermissionManageModel.superclass._init.apply(this, arguments);
+    change: function (changed) {
     },
     load: function () {
-       
     },
 
     local: function () {
-        if (this.has('allRoles')){
-            return true;
-        }
         return false;
     },
-    change: function () {
-    },
+
     refresh: function () {
-        var self=this;
+        var self = this;
         BI.Utils.getAllAuthority(function (data) {
             self.set("allRoles", data);
+            self.set('packageIds', []);
         });
+
     }
 
 });

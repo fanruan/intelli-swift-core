@@ -5,6 +5,7 @@
 BIConf.Views = new (BI.inherit( BI.WRouter, {
     routes: {
         "" : "BIConf.View",
+        "/BI-Permissions_Man" : "BIConf.PermissionManageView",
         "/BI-Packages_Man" : "BIConf.AllBusinessPackagesPaneView",
         "/BI-Data_Connection_Man" : "BIConf.DataLinkPaneView",
         "/BI-Multi_Path_Man" : "BIConf.MultiRelationView",
