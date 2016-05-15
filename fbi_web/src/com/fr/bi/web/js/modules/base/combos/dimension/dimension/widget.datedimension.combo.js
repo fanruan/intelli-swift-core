@@ -19,37 +19,32 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
         return [
             [{
                 text: BI.i18nText("BI-Date"),
-                value: BICst.DIMENSION_DATE_COMBO.DATE,
-                iconCls1: ""
+                value: BICst.DIMENSION_DATE_COMBO.DATE
             }, {
                 text: BI.i18nText("BI-Year_Fen"),
-                value: BICst.DIMENSION_DATE_COMBO.YEAR,
-                iconCls1: ""
+                value: BICst.DIMENSION_DATE_COMBO.YEAR
             }, {
                 text: BI.i18nText("BI-Quarter"),
-                value: BICst.DIMENSION_DATE_COMBO.QUARTER,
-                cls: ""
+                value: BICst.DIMENSION_DATE_COMBO.QUARTER
             }, {
                 text: BI.i18nText("BI-Month_Fen"),
-                value: BICst.DIMENSION_DATE_COMBO.MONTH,
-                cls: ""
+                value: BICst.DIMENSION_DATE_COMBO.MONTH
             }, {
                 text: BI.i18nText("BI-Week_XingQi"),
-                value: BICst.DIMENSION_DATE_COMBO.WEEK,
-                cls: ""
+                value: BICst.DIMENSION_DATE_COMBO.WEEK
             }],
             [{
                 el:{
                     text: BI.i18nText("BI-Ascend"),
                     value: BICst.DIMENSION_DATE_COMBO.ASCEND,
-                    cls: ""
+                    iconCls1: ""
                 },
                 children:[]
             }, {
                 el:{
                     text: BI.i18nText("BI-Descend"),
                     value: BICst.DIMENSION_DATE_COMBO.DESCEND,
-                    cls: ""
+                    iconCls1: ""
                 },
                 children:[]
             }],

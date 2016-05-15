@@ -64,7 +64,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                     hgap: 10
                 },
                 right: 0,
-                top: -30
+                top: -40
             }]
         });
     },

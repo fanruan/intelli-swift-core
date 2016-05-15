@@ -388,9 +388,13 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             BI.Layers.remove(self._constant.SQL_LAYER);
             var tableId = BI.UUID();
             var usedFields = [];
+            var allFields = self.model.getAllFields();
             BI.each(data.fields, function(i, fs){
                 BI.each(fs, function(j, field){
+                    field.table_id = tableId;
+                    field.id = tableId + field.field_name;
                     usedFields.push(field.field_name);
+                    allFields[field.id] = field;
                 });
             });
             var translations = self.model.getTranslations();
@@ -406,7 +410,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 used_fields: usedFields,
                 relations: self.model.getRelations(),
                 translations: translations,
-                all_fields: self.model.getAllFields(),
+                all_fields: allFields,
                 excel_view: self.model.getExcelViews()[tableId],
                 update_settings: self.model.getUpdateSettings()
             });

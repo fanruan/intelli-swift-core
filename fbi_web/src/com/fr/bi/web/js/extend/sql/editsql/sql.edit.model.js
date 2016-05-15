@@ -19,6 +19,10 @@ BI.EditSQLModel = BI.inherit(FR.OB, {
     },
 
     getSQL: function(){
+        //去掉最后加的“;”
+        if(this.sql.endWith(";")){
+            return this.sql.slice(0, this.sql.length - 1);
+        }
         return this.sql;
     },
 
