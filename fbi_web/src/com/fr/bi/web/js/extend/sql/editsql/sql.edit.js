@@ -67,7 +67,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             self.model.setDataLinkName(this.getValue()[0]);
         });
         this.sqlEditor = BI.createWidget({
-            type: "bi.textarea",
+            type: "bi.code_editor",
             watermark: BI.i18nText("BI-Please_Enter_SQL"),
             cls: "sql-editor"
         });

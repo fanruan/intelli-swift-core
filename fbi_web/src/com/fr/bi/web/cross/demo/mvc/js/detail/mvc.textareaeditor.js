@@ -17,7 +17,7 @@ TextAreaEditorView = FR.extend(BI.View,{
         var self = this, o = this.options;
 
         var textarea = BI.createWidget({
-            type: "bi.text_area_editor",
+            type: "bi.text_area",
             cls: "mvc-border",
             width: 300,
             height: 60
