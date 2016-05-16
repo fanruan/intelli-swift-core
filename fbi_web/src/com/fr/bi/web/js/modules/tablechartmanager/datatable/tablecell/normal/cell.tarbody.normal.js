@@ -53,40 +53,57 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         });
 
         if (BI.Utils.isTargetByDimensionID(dId)) {
+            this.element.hover(function () {
+                var button = self._createPopupButton();
+                button.setVisible(true);
+            }, function () {
+                if (self.popup_button) {
+                    self.popup_button.setVisible(false);
+                }
+            });
+
+        }
+    },
+
+    _createPopupButton: function () {
+        var self = this, o = this.options;
+        if (BI.isNull(this.popup_button)) {
+            this.popup_button = BI.createWidget({
+                type: "bi.icon_button",
+                cls: "detail-table-popup-font cell-detail-table-popup-button",
+                width: 13,
+                height: 13,
+                handler: function () {
+                    var layer = BI.Layers.make("detail_table_popup", "body", {
+                        left: 20,
+                        right: 20,
+                        top: 20,
+                        bottom: 20
+                    });
+                    layer.empty();
+                    var popup = BI.createWidget({
+                        type: "bi.detail_table_popup",
+                        element: layer,
+                        dId: o.dId
+                    });
+                    popup.on(BI.DetailTablePopup.EVENT_COMPLETE, function () {
+                        this.destroy();
+                        BI.Layers.remove("detail_table_popup");
+                    });
+                    BI.Layers.show("detail_table_popup");
+                }
+            });
             BI.createWidget({
                 type: "bi.absolute",
                 element: this.element,
                 items: [{
-                    el: {
-                        type: "bi.button",
-                        text: "弹出",
-                        width: 30,
-                        height: 20,
-                        handler: function () {
-                            var layer = BI.Layers.make("detail_table_popup", "body", {
-                                left: 20,
-                                right: 20,
-                                top: 20,
-                                bottom: 20
-                            });
-                            layer.empty();
-                            var popup = BI.createWidget({
-                                type: "bi.detail_table_popup",
-                                element: layer,
-                                dId: dId
-                            });
-                            popup.on(BI.DetailTablePopup.EVENT_COMPLETE, function () {
-                                this.destroy();
-                                BI.Layers.remove("detail_table_popup");
-                            });
-                            BI.Layers.show("detail_table_popup");
-                        }
-                    },
-                    right: 0,
-                    top: 0
+                    el: this.popup_button,
+                    right: 3,
+                    bottom: 3
                 }]
             })
         }
+        return this.popup_button;
     },
 
     _parseNumLevel: function (text, numLevel) {
