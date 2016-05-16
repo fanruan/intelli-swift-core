@@ -1,4 +1,4 @@
-(function () {
+;!(function () {
      window.FormulaCollections = ${formula};
-     window.FormulaJSONs = ${formulaJSONs}
+     window.FormulaJSONs = ${formulaJSONs};
 })(jQuery);
