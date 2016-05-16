@@ -11,7 +11,7 @@ BI.DetailTablePopup = BI.inherit(BI.Widget, {
         DETAIL_NORTH_HEIGHT: 40,
         DETAIL_TAB_HEIGHT: 40,
         DETAIL_WEST_WIDTH: 280,
-        DETAIL_DATA_STYLE_HEIGHT: 240,
+        DETAIL_DATA_STYLE_HEIGHT: 200,
         DETAIL_GAP_NORMAL: 10,
         DETAIL_PANE_HORIZONTAL_GAP: 20
     },
@@ -26,6 +26,9 @@ BI.DetailTablePopup = BI.inherit(BI.Widget, {
     _init: function () {
         BI.DetailTablePopup.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        this.model = new BI.DetailTablePopupModel({
+            dId: o.dId
+        });
         BI.createWidget({
             type: "bi.border",
             element: this.element,
@@ -46,7 +49,7 @@ BI.DetailTablePopup = BI.inherit(BI.Widget, {
             text: BI.i18nText('BI-Detail_Set_Complete')
         });
         shrink.on(BI.Button.EVENT_CHANGE, function () {
-            self.fireEvent(BI.DetailTablePopup.EVENT_CHANGE);
+            self.fireEvent(BI.DetailTablePopup.EVENT_COMPLETE);
         });
         return BI.createWidget({
             type: "bi.right_vertical_adapt",
@@ -56,34 +59,33 @@ BI.DetailTablePopup = BI.inherit(BI.Widget, {
     },
 
     _buildWest: function () {
+        //TODO 实时报表
         return BI.createWidget({
             type: "bi.absolute",
+            cls: "widget-attr-west",
             items: [{
                 el: {
-                    type: BI.Utils.isRealTime() ? "bi.detail_select_data_4_realtime" : "bi.detail_detail_table_select_data",
-                    cls: "widget-select-data-pane"
+                    type: "bi.detail_table_popup_select_data",
+                    cls: "widget-select-data-pane",
+                    model: this.model
                 },
                 left: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
                 top: this.constants.DETAIL_GAP_NORMAL,
                 bottom: this.constants.DETAIL_GAP_NORMAL,
                 right: this.constants.DETAIL_PANE_HORIZONTAL_GAP
-            }],
-            cls: "widget-attr-west"
+            }]
         });
     },
 
     _buildCenter: function () {
         var self = this;
         var table = this._createTable();
-        this.center = BI.createWidget({
-            type: "bi.default",
-            cls: "widget-center-wrapper"
-        });
-
-        var tab = BI.createWidget({
-            type: "bi.data_style_tab",
-            cardCreator: BI.bind(self._createTabs, this)
-        });
+        //var tab = BI.createWidget({
+        //    type: "bi.data_style_tab",
+        //    cls: "widget-top-wrapper",
+        //    cardCreator: BI.bind(self._createTabs, this)
+        //});
+        var tab = this._createTypeAndData();
 
         return BI.createWidget({
             type: "bi.absolute",
@@ -91,7 +93,6 @@ BI.DetailTablePopup = BI.inherit(BI.Widget, {
             items: [{
                 el: {
                     type: "bi.border",
-                    cls: "widget-show-data-pane",
                     items: {
                         north: {
                             el: tab,
@@ -114,79 +115,55 @@ BI.DetailTablePopup = BI.inherit(BI.Widget, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager",
-            wId: this.model.get("id"),
+            type: "bi.detail_table_popup_dimensions_manager",
+            cls: "widget-top-wrapper",
+            model: this.model,
             dimensionCreator: function (dId, regionType, op) {
-                var relationItem = op.relationItem;
-                if (BI.isNotNull(relationItem)) {
-                    self.model.set("setRelation", {
-                        dId: dId,
-                        relationItem: op.relationItem
-                    });
-                }
 
                 if (!dimensionsVessel[dId]) {
                     dimensionsVessel[dId] = BI.createWidget({
                         type: "bi.layout"
                     });
-                    var dimensions = self.model.cat("dimensions");
-                    if (!BI.has(dimensions, dId)) {
-                        self.model.set("addDimension", {
-                            dId: dId,
-                            regionType: regionType,
-                            src: op
-                        });
-                    }
+                    //var dimensions = self.model.cat("dimensions");
+                    //if (!BI.has(dimensions, dId)) {
+                    //    self.model.set("addDimension", {
+                    //        dId: dId,
+                    //        regionType: regionType,
+                    //        src: op
+                    //    });
+                    //}
                 }
-                self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
                 return dimensionsVessel[dId];
 
             }
         });
 
-        this.dimensionsManager.on(BI.DimensionsManager.EVENT_CHANGE, function () {
+        this.dimensionsManager.on(BI.DetailTablePopupDimensionsManager.EVENT_CHANGE, function () {
             var values = this.getValue();
-            self.model.set(values);
-            this.populate();
+            BI.Msg.toast(JSON.stringify(values));
         });
 
 
         return this.dimensionsManager;
     },
 
-    _createStyle: function () {
-        return BI.createWidget({
-            type: "bi.label",
-            text: "Style"
-        });
-    },
-
-    _createTabs: function (v) {
-        switch (v) {
-            case BICst.DETAIL_TAB_TYPE_DATA:
-                return this._createTypeAndData();
-            case BICst.DETAIL_TAB_STYLE:
-                return this._createStyle();
-        }
-    },
-
     _createTable: function () {
-        var self = this;
-        this.table = BI.createWidget({
-            type: "bi.detail_table",
-            cls: "widget-center-wrapper",
-            wId: this.model.get("id")
+        return BI.createWidget({
+            type: "bi.layout",
+            cls: "widget-center-wrapper"
         });
-        this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
-
-        });
-        return this.table;
-    },
-
-    populate: function () {
-        var self = this, o = this.options;
+        //var self = this;
+        //this.table = BI.createWidget({
+        //    type: "bi.detail_table",
+        //    cls: "widget-center-wrapper",
+        //    wId: this.model.get("id")
+        //});
+        //this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
+        //
+        //});
+        //return this.table;
     }
 });
 
-BI.DetailTablePopup.EVENT_CHANGE = "DetailTablePopup.EVENT_CHANGE";
+BI.DetailTablePopup.EVENT_COMPLETE = "DetailTablePopup.EVENT_COMPLETE";
 $.shortcut('bi.detail_table_popup', BI.DetailTablePopup);

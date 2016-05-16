@@ -3,16 +3,16 @@
  *
  * Created by GameJian on 2016/1/24.
  */
-BI.TextAreaEditor = BI.inherit(BI.Widget, {
+BI.TextArea = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.TextAreaEditor.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.TextArea.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-text-area-editor",
             height: 20
         });
     },
 
     _init: function () {
-        BI.TextAreaEditor.superclass._init.apply(this, arguments);
+        BI.TextArea.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.textarea = BI.createWidget({
             type: "bi.text_area_trigger",
@@ -20,7 +20,7 @@ BI.TextAreaEditor = BI.inherit(BI.Widget, {
         });
 
         this.textarea.on(BI.TextAreaTrigger.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TextAreaEditor.EVENT_DESTROY)
+            self.fireEvent(BI.TextArea.EVENT_DESTROY)
         });
 
         this.toolbar = BI.createWidget({
@@ -73,7 +73,7 @@ BI.TextAreaEditor = BI.inherit(BI.Widget, {
 
         this.toolbar.on(BI.TextToolbar.EVENT_CHANGE, function () {
             self.setValue(self.getValue());
-            self.fireEvent(BI.TextAreaEditor.EVENT_VALUE_CHANGE, arguments);
+            self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments);
         });
 
         this.textarea.on(BI.TextAreaTrigger.EVENT_BLUR, function () {
@@ -81,16 +81,18 @@ BI.TextAreaEditor = BI.inherit(BI.Widget, {
             if (BI.isNotEmptyString(this.getValue())) {
                 self._showInput()
             }
-            self.fireEvent(BI.TextAreaEditor.EVENT_VALUE_CHANGE, arguments)
+            self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments)
         });
     },
 
     _showInput: function () {
-        this.label.invisible();
+        this.textarea.setVisible(true);
+        this.label.setVisible(false);
     },
 
     _showLabel: function () {
-        this.label.visible();
+        this.textarea.setVisible(false);
+        this.label.setVisible(true);
     },
 
     setValue: function (v) {
@@ -107,6 +109,6 @@ BI.TextAreaEditor = BI.inherit(BI.Widget, {
         return {style: this.toolbar.getValue(), content: this.textarea.getValue()};
     }
 });
-BI.TextAreaEditor.EVENT_VALUE_CHANGE = "EVENT_VALUE_CHANGE";
-BI.TextAreaEditor.EVENT_DESTROY = "EVENT_DESTROY";
-$.shortcut("bi.text_area_editor", BI.TextAreaEditor);
+BI.TextArea.EVENT_VALUE_CHANGE = "EVENT_VALUE_CHANGE";
+BI.TextArea.EVENT_DESTROY = "EVENT_DESTROY";
+$.shortcut("bi.text_area", BI.TextArea);

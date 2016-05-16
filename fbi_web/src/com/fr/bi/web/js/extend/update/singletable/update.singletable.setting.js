@@ -239,7 +239,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         switch (v) {
             case this._constants.PART_ADD:
                 this.partAddSql = BI.createWidget({
-                    type: "bi.textarea",
+                    type: "bi.code_editor",
                     cls: "sql-container"
                 });
                 this.partAddSql.setValue(this.model.getAddSql());
@@ -255,7 +255,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 });
             case this._constants.PART_DELETE:
                 this.partDeleteSql = BI.createWidget({
-                    type: "bi.textarea",
+                    type: "bi.code_editor",
                     cls: "sql-container"
                 });
                 this.partDeleteSql.setValue(this.model.getDeleteSql());
@@ -271,7 +271,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 });
             case this._constants.PART_MODIFY:
                 this.partModifySql = BI.createWidget({
-                    type: "bi.textarea",
+                    type: "bi.code_editor",
                     cls: "sql-container"
                 });
                 this.partModifySql.setValue(this.model.getModifySql());

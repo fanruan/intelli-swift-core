@@ -19,7 +19,7 @@ BIShow.ContentWidgetView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var self = this;
         this.textarea = BI.createWidget({
-            type: "bi.text_area_editor",
+            type: "bi.text_area",
             wId: this.model.get("id"),
             element: vessel,
             height: '100%'

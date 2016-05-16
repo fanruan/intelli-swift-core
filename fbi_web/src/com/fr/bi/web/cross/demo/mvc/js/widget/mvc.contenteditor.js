@@ -11,7 +11,7 @@ ContentEditorView = BI.inherit(BI.View, {
 
     _render: function (vessel) {
         var editor = BI.createWidget({
-            type: "bi.content_editor",
+            type: "bi.textarea_editor",
             cls: "mvc-border",
             width: 600,
             height: 400
