@@ -19,7 +19,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         return BI.extend(conf, {
             baseCls: 'bi-region',
             titleName: "",
-            wid: ""
+            wId: ""
         })
     },
 

@@ -92,13 +92,9 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
     _buildCenter: function () {
         var self = this;
         var table = this._createTable();
-        this.center = BI.createWidget({
-            type: "bi.default",
-            cls: "widget-center-wrapper"
-        });
-
         var tab = BI.createWidget({
             type: "bi.data_style_tab",
+            cls: "widget-top-wrapper",
             wId: this.model.get("id"),
             cardCreator: BI.bind(self._createTabs, this)
         });
@@ -115,7 +111,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                             height: this.constants.DETAIL_DATA_STYLE_HEIGHT,
                             bottom: this.constants.DETAIL_GAP_NORMAL
                         },
-                        center: this.table
+                        center: table
                     }
                 },
                 left: 0,

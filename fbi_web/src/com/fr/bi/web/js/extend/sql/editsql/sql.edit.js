@@ -67,11 +67,11 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             self.model.setDataLinkName(this.getValue()[0]);
         });
         this.sqlEditor = BI.createWidget({
-            type: "bi.textarea",
+            type: "bi.code_editor",
             watermark: BI.i18nText("BI-Please_Enter_SQL"),
             cls: "sql-editor"
         });
-        this.sqlEditor.on(BI.TextArea.EVENT_CHANGE, function(){
+        this.sqlEditor.on(BI.CodeEditor.EVENT_CHANGE, function(){
             var sql = this.getValue();
             self.model.setSQL(sql);
             if(self.previewTab.getSelect() === self.constants.PREVIEW_PANE){

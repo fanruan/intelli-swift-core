@@ -15,7 +15,6 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.bridge.Transmitter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -677,6 +676,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/update/singletable/update.singletable.setting.css",
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
+                //指标弹出明细表
+                "com/fr/bi/web/css/modules/detailtablepopup/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
         };
     }
 
@@ -1274,10 +1276,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/excelviewsetting/excelviewsetting.js",
 
                 //权限控制
-                "com/fr/bi/web/js/modules/permissionmanage/packagetreemanage.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypaneshow.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypaneadd.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/packageandauthoritytree.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.show.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.add.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.single.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.multi.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.main.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.main.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritytabs.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritybutton.js",
 
@@ -1322,6 +1327,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.model.js",
+
+                //指标弹出明细表
+                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/node.level1.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/selectdata.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/model.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/detailtablepopup.js",
         };
     }
 
@@ -1346,7 +1360,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/editor/editor.record.css",
                 "com/fr/bi/web/css/base/single/editor/editor.sign.css",
                 "com/fr/bi/web/css/base/single/editor/editor.shelter.css",
-                "com/fr/bi/web/css/base/single/editor/editor.content.css",
+                "com/fr/bi/web/css/base/single/editor/editor.textarea.css",
                 "com/fr/bi/web/css/base/single/editor/editor.multifile.css",
                 "com/fr/bi/web/css/base/single/tip/tip.css",
                 "com/fr/bi/web/css/base/single/tip/tip.bubble.css",
@@ -1741,8 +1755,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/single/input/radio.js",
                 "com/fr/bi/web/js/base/module/single/bar/bar.loading.js",
                 "com/fr/bi/web/js/base/module/single/editor/editor.js",
-                "com/fr/bi/web/js/base/module/single/editor/textarea.js",
-                "com/fr/bi/web/js/base/module/single/editor/editor.content.js",
+                "com/fr/bi/web/js/base/module/single/editor/editor.code.js",
+                "com/fr/bi/web/js/base/module/single/editor/editor.textarea.js",
                 "com/fr/bi/web/js/base/module/single/editor/editor.multifile.js",
                 "com/fr/bi/web/js/base/module/single/label/label.js",
                 "com/fr/bi/web/js/base/module/single/link/link.js",
