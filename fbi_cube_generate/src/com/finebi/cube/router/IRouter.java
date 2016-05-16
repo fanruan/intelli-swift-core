@@ -1,6 +1,7 @@
 package com.finebi.cube.router;
 
 import com.finebi.cube.exception.*;
+import com.finebi.cube.impl.router.BIMessageDispatcher;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.pubsub.ISubscribe;
 import com.finebi.cube.router.fragment.IFragment;
@@ -34,6 +35,13 @@ public interface IRouter {
      * @param message 消息
      */
     void deliverMessage(IMessage message) throws BIDeliverFailureException;
+
+    /**
+     * 更换Dispatcher，原来的会被停止。
+     *
+     * @param messageDispatcher 最新的dispatch
+     */
+    void setMessageDispatcher(BIMessageDispatcher messageDispatcher);
 
     /**
      * 在路由中注册一个主题。
@@ -112,4 +120,8 @@ public interface IRouter {
     boolean isRegistered(IStatusTag statusTag);
 
     void reset();
+
+    boolean isDelivered();
+
+    void closeVerbose();
 }

@@ -155,11 +155,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     @Override
     public int getRowCount() {
-        if (currentLevelTables.size() == 1) {
-            return masterTable.getRowCount();
-        } else {
-            throw BINonValueUtils.beyondControl("Current level can read row count value only when it contain one table");
-        }
+        return masterTable.getRowCount();
     }
 
     @Override

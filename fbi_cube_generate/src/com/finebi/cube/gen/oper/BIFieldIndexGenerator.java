@@ -45,6 +45,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     private void initial() {
         try {
+            if (hostDBField.getFieldName().equals("badd")) {
+                System.out.println("find");
+            }
             ICubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
             rowCount = tableEntityService.getRowCount();
@@ -67,6 +70,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     public void buildTableIndex() {
+        if (hostDBField.getFieldName().equals("badd")) {
+            System.out.println("find");
+        }
         IntList nullRowNumbers = new IntList();
         Map<T, IntList> group2rowNumber = createTreeMap(nullRowNumbers);
         Iterator<Map.Entry<T, IntList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();

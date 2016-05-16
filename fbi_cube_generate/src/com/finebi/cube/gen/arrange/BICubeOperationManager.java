@@ -96,7 +96,7 @@ public class BICubeOperationManager {
                 if (!isGenerated(tableSource)) {
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
-                            getDataTransportBuilder(cube, tableSource, originalTableSet,parentTables));
+                            getDataTransportBuilder(cube, tableSource, originalTableSet, parentTables));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource));
                     try {
@@ -238,7 +238,7 @@ public class BICubeOperationManager {
         try {
             IStatusTag statusTag = BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_FINISH_TOPIC,
                     BICubeBuildFragmentTag.getCubeOccupiedFragment(BICubeBuildTopicTag.PATH_FINISH_TOPIC).getFragmentID().getIdentityValue());
-            if (pathBuildFinishWatcher.isSubscribed(statusTag))
+            if (!pathBuildFinishWatcher.isSubscribed(statusTag))
                 pathBuildFinishWatcher.subscribe(statusTag);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);

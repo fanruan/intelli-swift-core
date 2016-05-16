@@ -52,7 +52,9 @@ public class BISourceDataTransport extends BIProcessor {
     public Object mainTask(IMessage lastReceiveMessage) {
         recordTableInfo();
         long count = transport();
-        tableEntityService.recordRowCount(count);
+        if (count > 0) {
+            tableEntityService.recordRowCount(count);
+        }
         return null;
     }
 
@@ -62,13 +64,18 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     private void recordTableInfo() {
+        if (tableSource.getSourceID().equals("93f9e3cb")) {
+            System.out.println("find");
+        }
         DBField[] columns = getFieldsArray();
         List<DBField> columnList = new ArrayList<DBField>();
         for (DBField col : columns) {
             columnList.add(convert(col));
         }
         tableEntityService.recordTableStructure(columnList);
-        tableEntityService.recordParentsTable(parents);
+        if (!tableSource.isIndependent()) {
+            tableEntityService.recordParentsTable(parents);
+        }
     }
 
     private long transport() {
