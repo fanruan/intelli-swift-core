@@ -13,7 +13,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
-        var self=this;
+        ;
         this.main = BI.createWidget({
             type: "bi.border",
             element: vessel,
@@ -22,11 +22,8 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
                 center: {el: this._buildAuthorityPane()}
             }
         });
-        self.set('isShow','0');
     },
     change: function (changed) {
-        var self = this;
-        alert(self.get('isShow'));
         if (changed.isShow){
         }
     },
@@ -45,43 +42,50 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             type: "bi.package_authority_tree"
         });
         /*单选模式下,直接点击某个业务包,在右侧权限管理页面,否则显示初始页面,初始页面分批量和单选两种*/
-        // this.packageTree.on(BI.PackageAndAuthorityTree.EVENT_TYPE_CHANGE, function () {
-        //     self._setHeadTitle(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
-        //     // self.skipTo("init/show", "pane", '');
-        // self.set('allRoles','111');
-        // });
-        // this.packageTree.on(BI.PackageAndAuthorityTree.EVENT_SELECT_CHANGE, function () {
-        //     self.model.set('packageIds', JSON.parse(self.packageTree.getPackageIds()));
-        //     self._setHeadTitle(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
-        // })
         this.packageTree.on(BI.PackageAndAuthorityTree.EVENT_CHANGE, function () {
             self.model.set('packageIds', JSON.parse(self.packageTree.getPackageIds()));
             self.model.set('selectType',self.packageTree.getSelectType());
-            alert(self.model.get('isShow'));
-            self.model.set('isShow','1');
-            BI.Layers.show("layer");
+            if (self.packageTree.getSelectType() == 0 && JSON.parse(self.packageTree.getPackageIds()).length == 1) {
+                // self.authorityInitPane.setVisible(false);
+                // self.authorityRolePane.setVisible(true);
+            } if(self.packageTree.getSelectType() == 1) {
+                // self.authorityInitPane.setVisible(false);
+                // self.authorityRolePane.setVisible(true);
+            }
+
             self._setHeadTitle(JSON.parse(self.packageTree.getPackageIds()), self.packageTree.getSelectType());
         })
         return this.packageTree;
     },
     _buildAuthorityPane: function () {
         var self=this;
-        this.AuthorityPaneRoleMain=BI.createWidget({
-            type:'bi.authority_pane_role_main'
+        this.authorityInitPane = BI.createWidget({
+            type: 'bi.authority_pane_init_main'
         });
-        return BI.createWidget({
+        this.authorityRolePane = BI.createWidget({
+            type: 'bi.authority_pane_role_main'
+        });
+        this.authorityPane = BI.createWidget({
             type: "bi.border",
             items: {
                 north: {el: this._showTitle(), height: 40},
                 center: {
-                    el: BI.Layers.create("layer",self.AuthorityPaneRoleMain),
+                    // el: BI.createWidget({
+                    //     type: "bi.adaptive",
+                    //     items: [self.authorityInitPane, self.authorityRolePane]
+                    // }),
+                    el:this.authorityInitPane,
                     top: 0,
                     left: 0,
                     right: 0,
                     bottom: -40
                 }
             }
-        })
+        });
+        // self.authorityInitPane.setVisible(true);
+        // self.authorityRolePane.setVisible(false);
+
+        return this.authorityPane;
     },
 
 
