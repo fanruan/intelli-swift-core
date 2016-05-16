@@ -14,7 +14,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
     },
 
     _renameChecker : function (v) {
-        return !(['a', '1', 'pony'].contains(v));
+        return !BI.Utils.getAllETLTableNames().contains(v);
     },
 
     setWidget : function( widget) {
@@ -29,20 +29,20 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
                     BI.createWidget({
                         type : "bi.analysis_etl_main",
                         element:BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body"),
-                        data:res
+                        model:res
                     })  
                 })
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.RENAME :
                 self.renameController.showPopover(option.text, self._renameChecker, function (value) {
-                    BI.ETLReq.reqRenameTable({id: option.id, name : value}, BI.emptyFn());
+                    BI.ETLReq.reqRenameTable({id: option.id, name : value}, BI.emptyFn);
                 });
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.DELETE :
-                BI.ETLReq.reqDeleteTable({id: option.id}, BI.emptyFn());
+                BI.ETLReq.reqDeleteTable({id: option.id}, BI.emptyFn);
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.COPY :
-                BI.ETLReq.reqCopyTable({id: option.id}, BI.emptyFn());
+                BI.ETLReq.reqSaveTable({id: option.id,new_id : BI.UUID(),name : option.text +'copy'}, BI.emptyFn);
                 return;
         }
 

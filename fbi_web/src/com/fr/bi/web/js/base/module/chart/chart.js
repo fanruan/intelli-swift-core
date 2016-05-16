@@ -10,7 +10,7 @@ BI.Chart = BI.inherit(BI.Pane, {
             baseCls: "bi-chart",
             items: [],
             config: {},
-            chartType: BICst.Widget.AXIS
+            chartType: BICst.WIDGET.AXIS
         })
     },
 
@@ -335,20 +335,20 @@ BI.Chart = BI.inherit(BI.Pane, {
             "plotBorderRadius": 0
         };
         switch (this.options.chartType) {
-            case BICst.Widget.AXIS:
-            case BICst.Widget.COLUMN:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.COLUMN:
                 defaultConfig = columnConfig;
                 break;
-            case BICst.Widget.BAR:
+            case BICst.WIDGET.BAR:
                 defaultConfig = columnConfig;
                 delete defaultConfig.xAxis;
                 delete defaultConfig.yAxis;
                 defaultConfig.chartType = "bar";
                 break;
-            case BICst.Widget.PIE:
+            case BICst.WIDGET.PIE:
                 defaultConfig = pieConfig;
                 break;
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.RADAR:
                 defaultConfig = {
                     "plotOptions": {
                         click: function () {
@@ -491,15 +491,15 @@ BI.Chart = BI.inherit(BI.Pane, {
                     "plotBorderRadius": 0
                 };
                 break;
-            case BICst.Widget.ACCUMULATE_BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
                 defaultConfig = columnConfig;
                 defaultConfig.plotOptions.stack = "stackedBar";
                 delete defaultConfig.xAxis;
                 delete defaultConfig.yAxis;
                 defaultConfig.chartType = "bar";
                 break;
-            case BICst.Widget.MAP:
-            case BICst.Widget.DASHBOARD:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.DASHBOARD:
                 defaultConfig = {
                     "plotOptions": {
                         click: function () {
@@ -596,12 +596,12 @@ BI.Chart = BI.inherit(BI.Pane, {
                     "plotBorderRadius": 0
                 };
                 break;
-            case BICst.Widget.DOUGHNUT:
+            case BICst.WIDGET.DONUT:
                 defaultConfig = pieConfig;
                 defaultConfig.plotOptions.innerRadius = "50.0%";
                 defaultConfig.plotOptions.borderWidth = 10;
                 break;
-            case BICst.Widget.BUBBLE:
+            case BICst.WIDGET.BUBBLE:
                 defaultConfig = {
                     "plotOptions": {
                         click: function () {
@@ -760,7 +760,7 @@ BI.Chart = BI.inherit(BI.Pane, {
                     "plotBorderRadius": 0
                 };
                 break;
-            case BICst.Widget.SCATTER:
+            case BICst.WIDGET.SCATTER:
                 defaultConfig = {
                     "plotOptions": {
                         click: function () {
@@ -914,7 +914,7 @@ BI.Chart = BI.inherit(BI.Pane, {
                     "plotBorderRadius": 0
                 };
                 break;
-            case BICst.Widget.LINE:
+            case BICst.WIDGET.LINE:
                 defaultConfig = {
                     "plotOptions": {
                         click: function () {
@@ -1063,7 +1063,7 @@ BI.Chart = BI.inherit(BI.Pane, {
                     "plotBorderRadius": 0
                 };
                 break;
-            case BICst.Widget.AREA:
+            case BICst.WIDGET.AREA:
                 defaultConfig = {
                     "plotOptions": {
                         click: function () {

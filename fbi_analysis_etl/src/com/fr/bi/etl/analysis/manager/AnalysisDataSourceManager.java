@@ -110,4 +110,9 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
     public DBField findDBField(BIUser user, BIField biField) throws BIFieldAbsentException {
         return null;
     }
+
+    @Override
+    public void addSource(AnalysisTableSource source, long userId) {
+        getInstance(new BIUser(userId)).addCoreSource(source);
+    }
 }

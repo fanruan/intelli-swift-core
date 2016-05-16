@@ -61,6 +61,10 @@ BI.Copy2GroupBar = BI.inherit(BI.Widget, {
         this.button.invisible();
     },
 
+    blur: function(){
+        this.search.blur();
+    },
+
     setButtonVisible: function (b) {
         this.button.setVisible(b);
     },

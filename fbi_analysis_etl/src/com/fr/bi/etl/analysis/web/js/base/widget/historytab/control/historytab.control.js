@@ -93,13 +93,14 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v) {
             var sheets = [BI.extend(BI.deepClone(item), {
                 value:model.getValue("value"),
-                table_name:v,
-                allHistory:model.getValue("allHistory")
+                table_name:v
             })]
             var res = {};
-            res[ETLCst.ITEMS] = sheets;
-            res[id] = BI.UUID();
-            res["table_name"] = v;
+            var table = {};
+            table[ETLCst.ITEMS] = sheets;
+            res["table"] = table;
+            res["id"] = BI.UUID();
+            res["name"] = v;
             BI.ETLReq.reqSaveTable(res, BI.emptyFn);
         });
         BI.Popovers.remove("etlTableName");
@@ -223,6 +224,12 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             })
 
         })
+        var invalidIndex = model.get('invalidIndex');
+        if(invalidIndex <= index) {
+            button.setValid(false);
+            button.setTitle(model.get("invalidTitle"))
+        }
+        this._getTabButtonGroup(widget).addItemFromIndex(button, index);
         button.on(BI.Controller.EVENT_CHANGE, function () {
             BI.defer(function () {
                 var v = button.getValue();
@@ -232,12 +239,6 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
                 }
             })
         })
-        var invalidIndex = model.get('invalidIndex');
-        if(invalidIndex <= index) {
-            button.setValid(false);
-            button.setTitle(model.get("invalidTitle"))
-        }
-        this._getTabButtonGroup(widget).addItemFromIndex(button, index);
     },
 
     _getTabButtonGroup : function (widget) {

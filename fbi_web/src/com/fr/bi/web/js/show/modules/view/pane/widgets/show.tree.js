@@ -60,7 +60,7 @@ BIShow.TreeWidgetView = BI.inherit(BI.View, {
 
             var combo = BI.createWidget({
                 type: "bi.widget_combo",
-                widgetType: BICst.Widget.TREE
+                widgetType: BICst.WIDGET.TREE
             });
             combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
                 switch (type) {

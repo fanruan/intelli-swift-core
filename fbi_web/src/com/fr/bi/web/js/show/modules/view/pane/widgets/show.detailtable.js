@@ -72,7 +72,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
 
             var combo = BI.createWidget({
                 type: "bi.widget_combo",
-                widgetType: BICst.Widget.TABLE
+                widgetType: BICst.WIDGET.TABLE
             });
             combo.on(BI.WidgetCombo.EVENT_CHANGE, function () {
                 var type = this.getValue()[0];

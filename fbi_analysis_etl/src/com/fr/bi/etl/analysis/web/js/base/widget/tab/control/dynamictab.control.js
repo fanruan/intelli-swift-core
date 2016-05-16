@@ -133,10 +133,10 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
     },
 
 
-    getTabItem : function (v, widget, model) {
-        return model.getSheetData(v);
+    hasMergeHistory : function (v, widget, model) {
+        return model.hasMergeHistory(v);
     },
-
+    
     resize : function (widget) {
       this._resize(widget);
     },

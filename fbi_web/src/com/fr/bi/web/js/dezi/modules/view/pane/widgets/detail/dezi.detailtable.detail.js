@@ -17,7 +17,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
 
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailTableDetailView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-detail-view"
+            baseCls: "bi-widget-attribute-setter"
         })
     },
 
@@ -62,7 +62,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
-            cls: "widget-attr-north",
             items: {
                 left: [input],
                 right: [shrink]
@@ -93,13 +92,9 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
     _buildCenter: function () {
         var self = this;
         var table = this._createTable();
-        this.center = BI.createWidget({
-            type: "bi.default",
-            cls: "widget-attr-chart"
-        });
-
         var tab = BI.createWidget({
             type: "bi.data_style_tab",
+            cls: "widget-top-wrapper",
             wId: this.model.get("id"),
             cardCreator: BI.bind(self._createTabs, this)
         });
@@ -110,14 +105,13 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.border",
-                    cls: "widget-show-data-pane",
                     items: {
                         north: {
                             el: tab,
                             height: this.constants.DETAIL_DATA_STYLE_HEIGHT,
                             bottom: this.constants.DETAIL_GAP_NORMAL
                         },
-                        center: this.table
+                        center: table
                     }
                 },
                 left: 0,
@@ -199,7 +193,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         var self = this;
         this.table = BI.createWidget({
             type: "bi.detail_table",
-            cls: "widget-attr-chart",
+            cls: "widget-center-wrapper",
             wId: this.model.get("id")
         });
         this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {

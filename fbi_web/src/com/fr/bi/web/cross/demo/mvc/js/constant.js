@@ -96,9 +96,9 @@ var _JS = [
 
     "widget/mvc.sheltereditor.js",
 
-    "widget/mvc.textarea.js",
+    "widget/mvc.codeeditor.js",
 
-    "widget/mvc.contenteditor.js",
+    "widget/mvc.textareaeditor.js",
 
     "widget/mvc.simpletree.js",
 
@@ -425,8 +425,8 @@ var _Routes = {
     "/record_editor": "RecordEditorView",
     "/sign_editor": "SignEditorView",
     "/shelter_editor": "ShelterEditorView",
-    "/textarea": "TextAreaView",
-    "/contenteditor": "ContentEditorView",
+    "/code_editor": "CodeEditorView",
+    "/textareaeditor": "TextAreaEditorView",
     "/simpletree": "SimpleTreeView",
     "/leveltree": "LevelTreeView",
     "/branch_tree": "BranchTreeView",
@@ -560,7 +560,7 @@ var _Routes = {
     "/filter": "FilterView",
     "/color_chooser": "ColorChooserView",
     "/text_toolbar": "TextToolbarView",
-    "/text_area_editor": "TextAreaEditorView",
+    "/text_area": "TextAreaEditorView",
     "/path_chooser": "PathChooserView",
     "/direction_path_chooser": "DirectionPathChooserView",
     "/file_manager": "FileManagerView",
@@ -727,12 +727,12 @@ _Models.widget = [{
     value: "shelter_editor"
 }, {
     pId: 2,
-    text: "bi.textarea",
-    value: "textarea"
+    text: "bi.code_editor",
+    value: "code_editor"
 }, {
     pId: 2,
-    text: "bi.contenteditor",
-    value: "contenteditor"
+    text: "bi.textareaeditor",
+    value: "textareaeditor"
 }, {
     pId: 6,
     text: "bi.combo",
@@ -1277,8 +1277,8 @@ _Models.detail = [{
         value: "text_toolbar"
     }, {
         pId: 21,
-        text: "bi.text_area_editor",
-        value: "text_area_editor"
+        text: "bi.text_area",
+        value: "text_area"
     }, {
         pId: 22,
         text: "bi.path_chooser",

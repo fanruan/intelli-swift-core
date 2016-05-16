@@ -9,7 +9,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.TABLE,
+            type: BICst.WIDGET.TABLE,
             settings: {},
             filter_value: {}
         });

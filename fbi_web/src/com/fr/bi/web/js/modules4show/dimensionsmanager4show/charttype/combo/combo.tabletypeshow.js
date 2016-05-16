@@ -32,11 +32,11 @@ BI.TableTypeComboShow = BI.inherit(BI.Widget, {
         this.combo.setValue();
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             switch (v) {
-                case BICst.Widget.TABLE:
+                case BICst.WIDGET.TABLE:
                     break;
-                case BICst.Widget.CROSS_TABLE:
+                case BICst.WIDGET.CROSS_TABLE:
                     break;
-                case BICst.Widget.COMPLEX_TABLE:
+                case BICst.WIDGET.COMPLEX_TABLE:
                     break;
             }
             self.fireEvent(BI.TableTypeComboShow.EVENT_CHANGE, arguments);
@@ -55,9 +55,9 @@ BI.TableTypeComboShow = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        if (v === BICst.Widget.TABLE ||
-            v === BICst.Widget.CROSS_TABLE ||
-            v === BICst.Widget.COMPLEX_TABLE) {
+        if (v === BICst.WIDGET.TABLE ||
+            v === BICst.WIDGET.CROSS_TABLE ||
+            v === BICst.WIDGET.COMPLEX_TABLE) {
             this.setSelected(true);
         } else {
             this.setSelected(false);

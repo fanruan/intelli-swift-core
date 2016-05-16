@@ -24,9 +24,9 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
 
     private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
 
-    private int invalidIndex;
+    private int invalidIndex = -1;
 
-    private String id;
+    private String name;
 
     private List<AnalysisETLSourceField> fieldList;
 
@@ -44,18 +44,21 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
-        if (fieldList != null){
+        if (fieldList != null && !fieldList.isEmpty()){
             JSONArray ja = new JSONArray();
             for (AnalysisETLSourceField f : fieldList){
                 ja.put(f.createJSON());
             }
             jo.put(Constants.FIELDS, ja);
         }
+        jo.put("table_name", name);
+        if (invalidIndex != -1){
+            jo.put("invalidIndex", invalidIndex);
+        }
         JSONArray tables = new JSONArray();
         for (int i = 0; i < parents.size(); i++) {
             tables.put(parents.get(i).createJSON());
         }
-
         jo.put(Constants.PARENTS, tables);
         AnalysisETLOperatorFactory.createJSONByOperators(jo,oprators);
         return jo;
@@ -83,9 +86,9 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
         throw new RuntimeException("Only UserTableSource can read");
     }
 
-    public AnalysisETLTableSource(String id, List<AnalysisETLSourceField> fieldList) {
-        this.id = id;
+    public AnalysisETLTableSource(List<AnalysisETLSourceField> fieldList, String name) {
         this.fieldList = fieldList;
+        this.name = name;
     }
 
     @Override

@@ -22,12 +22,12 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             el: {
                 type: "bi.icon_button",
                 cls: "widget-combo-pull-down-font pull-down-trigger",
-                width: 26,
-                height: 26
+                width: 16,
+                height: 16
             },
             element: this.element,
-            height: 26,
-            width: 26
+            height: 16,
+            width: 16
         });
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function(v){
             self.fireEvent(BI.WidgetCombo.EVENT_CHANGE, v); 
@@ -43,39 +43,41 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
     _rebuildItems: function(){
         var wId = this.options.wId;
         switch (BI.Utils.getWidgetTypeByID(wId)) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.AXIS:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE :
-            case BICst.Widget.SCATTER:
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.BUBBLE :
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
                 return this._createWidgetComboItems();
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return this._createDetailWidgetComboItems();
 
-            case BICst.Widget.TABLE_SHOW:
+            case BICst.WIDGET.TABLE_SHOW:
                 return BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS_SHOW;
             
-            case BICst.Widget.DATE:
-            case BICst.Widget.YEAR :
-            case BICst.Widget.QUARTER :
-            case BICst.Widget.MONTH:
-            case BICst.Widget.YMD :
+            case BICst.WIDGET.DATE:
+            case BICst.WIDGET.YEAR :
+            case BICst.WIDGET.QUARTER :
+            case BICst.WIDGET.MONTH:
+            case BICst.WIDGET.YMD :
                 return BICst.TIME_CONTROL_SETCOMBO_ITEMS;
 
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return this._createStringTreeComboItems();
-            case BICst.Widget.TREE :
+            case BICst.WIDGET.TREE :
                 return this._createStringTreeComboItems();
-            case BICst.Widget.NUMBER :
+            case BICst.WIDGET.NUMBER :
                 return BICst.NUMBER_CONTROL_SETCOMBO_ITEMS;
             
-            case BICst.Widget.GENERAL_QUERY:
+            case BICst.WIDGET.GENERAL_QUERY:
                 return BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS;
         }
     },

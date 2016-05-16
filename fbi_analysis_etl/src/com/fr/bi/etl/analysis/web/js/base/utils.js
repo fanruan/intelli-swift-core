@@ -1,6 +1,32 @@
 BI.Utils = BI.Utils || {};
 
 BI.extend(BI.Utils, {
+    afterSaveTable : function(res){
+        BI.each(res, function(i, item){
+            BI.extend(Pool[i], item);
+        })
+        BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
+    },
+
+    afterReNameTable : function (id, name) {
+        Pool["translations"][id] = name;
+        BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
+    },
+
+    afterDeleteTable : function (id) {
+        delete Pool["tables"][id];
+        BI.remove(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+            return item.id === id
+        })
+        BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
+    },
+    getAllETLTableNames : function () {
+        var names = [];
+        BI.each(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+            names.push(Pool["translations"][item.id])
+        })
+        return names;
+    },
     getTableTypeByID :function (tableId){
         var source = Pool.tables;
         var table = source[tableId];
