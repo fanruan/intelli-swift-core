@@ -102,7 +102,6 @@ BI.MultiLayerSingleLevelTree = BI.inherit(BI.Widget, {
     },
 
     populate: function (nodes) {
-        alert(nodes);
         this.tree.populate(this._formatItems(BI.Tree.transformToTreeFormat(nodes), 0));
     },
 
