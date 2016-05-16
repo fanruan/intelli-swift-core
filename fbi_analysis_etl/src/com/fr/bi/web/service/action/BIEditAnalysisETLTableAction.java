@@ -25,7 +25,7 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
         JSONObject source = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId).getSource().createJSON();
         JSONObject table;
         JSONArray items ;
-        if (!source.has(Constants.ITEMS)){
+        if (source.has(Constants.ITEMS)){
             table = source;
         } else {
             table = new JSONObject();

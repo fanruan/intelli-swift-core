@@ -39,9 +39,27 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
         namePopover.setTemplateNameFocus();
     },
 
+    doCancel : function (widget, model) {
+        var self = this;
+        BI.Msg.confirm(BI.i18nText("BI-Cancel"), BI.i18nText("BI-Etl_Cancel_Warning"), function (v) {
+            if(v === true) {
+                self._hideView(widget)
+            }
+        })
+    },
+
+    _hideView : function (widget) {
+        widget.setVisible(false);
+    },
+
+    _showView : function (widget) {
+        widget.setVisible(true);
+    },
+
     _doSave : function (widget, model) {
+        var self = this;
         BI.ETLReq.reqSaveTable(model.update(), function () {
-            widget.setVisible(false);
+            self._hideView(widget)
         });
     },
 
@@ -56,6 +74,6 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
     },
     
     populate : function (widget, model) {
-        widget.setVisible(true);
+        this._showView(widget)
     }
 })

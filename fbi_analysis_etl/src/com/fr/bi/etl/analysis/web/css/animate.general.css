@@ -15,6 +15,24 @@
   -moz-transition: background 0.1s ease;
   -o-transition: background 0.1s ease;
 }
+.base-disabled {
+  transition: background 0.1s ease;
+  -webkit-transition: background 0.1s ease;
+  -moz-transition: background 0.1s ease;
+  -o-transition: background 0.1s ease;
+}
+.list-group-item-text {
+  transition: background 0.1s ease;
+  -webkit-transition: background 0.1s ease;
+  -moz-transition: background 0.1s ease;
+  -o-transition: background 0.1s ease;
+}
+.list-item-text {
+  transition: background 0.1s ease;
+  -webkit-transition: background 0.1s ease;
+  -moz-transition: background 0.1s ease;
+  -o-transition: background 0.1s ease;
+}
 .bi-shake-icon {
   transition: transform 0.5s ease;
   -webkit-transition: -webkit-transform 0.5s ease;
@@ -182,16 +200,16 @@
   animation: background-change 0.5s ease;
 }
 @keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-webkit-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-moz-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-o-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 .bi-message-mask {
   -webkit-animation: background-change 0.5s ease;
@@ -200,14 +218,14 @@
   animation: background-change 0.5s ease;
 }
 @keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-webkit-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-moz-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-o-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
