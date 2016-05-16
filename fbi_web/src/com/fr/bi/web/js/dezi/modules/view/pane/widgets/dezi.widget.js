@@ -43,6 +43,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var self = this;
         this._buildWidgetTitle();
+        this._createTools();
+        
         this.tableChart = BI.createWidget({
             type: "bi.table_chart_manager",
             wId: self.model.get("id")
@@ -52,7 +54,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             self.model.set(widget);
         });
 
-        this._createTools();
         this.widget = BI.createWidget({
             type: "bi.absolute",
             element: vessel,

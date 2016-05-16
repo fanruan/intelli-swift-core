@@ -15,8 +15,8 @@ import java.util.Set;
 public class UserBaseTableSource extends AnalysisBaseTableSource implements UserTableSource{
     private GroupValueIndex filter;
     private long userId;
-    public UserBaseTableSource(BIWidget widget, int etlType, long userId, List<AnalysisETLSourceField> fieldList) {
-        super(new UserWidget(widget, userId), etlType,  fieldList);
+    public UserBaseTableSource(BIWidget widget, int etlType, long userId, List<AnalysisETLSourceField> fieldList, String name) {
+        super(new UserWidget(widget, userId), etlType,  fieldList, name);
         this.userId = userId;
     }
 

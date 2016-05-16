@@ -31,16 +31,18 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     protected BIWidget widget;
     private int etlType;
     private List<AnalysisETLSourceField> fieldList;
+    private String name;
 
     public BIWidget getWidget() {
         return widget;
     }
 
 
-    public AnalysisBaseTableSource(BIWidget widget, int etlType, List<AnalysisETLSourceField> fieldList) {
+    public AnalysisBaseTableSource(BIWidget widget, int etlType, List<AnalysisETLSourceField> fieldList, String name) {
         this.widget = widget;
         this.etlType = etlType;
         this.fieldList = fieldList;
+        this.name = name;
     }
 
 
@@ -80,7 +82,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             synchronized (userBaseTableMap){
                 UserTableSource tmp = userBaseTableMap.get(userId);
                 if (tmp == null){
-                    source = new UserBaseTableSource(widget, etlType, userId, fieldList);
+                    source = new UserBaseTableSource(widget, etlType, userId, fieldList, name);
                     userBaseTableMap.put(userId, source);
                 } else {
                     source = tmp;
@@ -97,13 +99,14 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         if (etlType == Constants.ETL_TYPE.SELECT_NONE_DATA){
             widget.put("core", fetchObjectCore().getIDValue());
         }
-        if (fieldList != null){
+        if (fieldList != null && !fieldList.isEmpty()){
             JSONArray ja = new JSONArray();
             for (AnalysisETLSourceField f : fieldList){
                 ja.put(f.createJSON());
             }
             jo.put(Constants.FIELDS, ja);
         }
+        jo.put("table_name", name);
         jo.put("etlType", etlType);
         jo.put("operator", widget);
         return jo;

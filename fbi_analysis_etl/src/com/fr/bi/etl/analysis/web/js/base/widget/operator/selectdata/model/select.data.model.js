@@ -48,13 +48,16 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
             fieldId = fieldId.field_id
         }
         var fieldName =  this.createDistinctName(name);
-        this._addField({
+        var field = {
             "field_name":fieldName,
             "field_type" : fieldType,
             "id":fieldId,
-            "group" : group,
             "uid":BI.UUID()
-        })
+        }
+        if(BI.isNotNull(group)) {
+            field["group"] = group;
+        }
+        this._addField(field)
     },
 
 

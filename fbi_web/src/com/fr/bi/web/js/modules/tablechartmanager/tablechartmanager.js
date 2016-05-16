@@ -84,7 +84,6 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         var self = this, o =  this.options;
         this.table = BI.createWidget({
             type: "bi.summary_table",
-            cls: "widget-attr-chart",
             wId: o.wId
         });
         this.table.on(BI.SummaryTable.EVENT_CHANGE, function(obs){

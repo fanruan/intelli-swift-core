@@ -122,7 +122,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
                             targetType = BICst.TARGET_TYPE.DATE;
                             break;
                     }
-                    return {
+                    var data = {
                         id: fId,
                         name: BI.Utils.getFieldNameByID(fId),
                         _src: {
@@ -131,6 +131,11 @@ BI.ExcelView = BI.inherit(BI.Single, {
                         },
                         type: targetType
                     };
+                    if(targetType === BICst.TARGET_TYPE.DATE) {
+                        data.group = {type: BICst.GROUP.M};
+                        data.name = BI.i18nText("BI-Month_Fen") + "(" + BI.Utils.getFieldNameByID(fId) + ")";
+                    }
+                    return data;
                 });
                 var help = BI.createWidget({
                     type: "bi.helper",

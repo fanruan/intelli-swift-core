@@ -70,7 +70,6 @@ BIShow.TreeDetailView = BI.inherit(BI.View, {
 
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
-            cls: "widget-attr-north",
             items: {
                 left: [widgetNameEditor],
                 right: [complete]
@@ -120,14 +119,13 @@ BIShow.TreeDetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.vtape",
-                    cls: "widget-show-data-pane",
                     items: [{
                         el: top,
                         height: this.constants.DETAIL_DATA_STYLE_HEIGHT - this.constants.DETAIL_NORTH_HEIGHT
                     }, {
                         el: {
                             type: "bi.absolute",
-                            cls: "widget-attr-chart",
+                            cls: "widget-center-wrapper",
                             items: [{
                                 el: combo,
                                 left: 10,

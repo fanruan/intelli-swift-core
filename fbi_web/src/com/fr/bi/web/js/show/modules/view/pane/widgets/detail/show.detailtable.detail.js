@@ -17,7 +17,7 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
 
     _defaultConfig: function () {
         return BI.extend(BIShow.DetailTableDetailView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-detail-view"
+            baseCls: "bi-widget-attribute-setter"
         })
     },
 
@@ -62,7 +62,6 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
-            cls: "widget-attr-north",
             items: {
                 left: [input],
                 right: [shrink]
@@ -94,7 +93,7 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
         var table = this._createTable();
         this.center = BI.createWidget({
             type: "bi.default",
-            cls: "widget-attr-chart"
+            cls: "widget-center-wrapper"
         });
         this.region = BI.createWidget({
             type: "bi.detail_region"
@@ -183,7 +182,7 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
     _createTable: function () {
         this.table = BI.createWidget({
             type: "bi.detail_table",
-            cls: "widget-attr-chart",
+            cls: "widget-center-wrapper",
             wId: this.model.get("id")
         });
         return this.table;
