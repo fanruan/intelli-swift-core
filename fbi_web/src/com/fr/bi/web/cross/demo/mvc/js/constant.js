@@ -96,9 +96,9 @@ var _JS = [
 
     "widget/mvc.sheltereditor.js",
 
-    "widget/mvc.textarea.js",
+    "widget/mvc.codeeditor.js",
 
-    "widget/mvc.contenteditor.js",
+    "widget/mvc.textareaeditor.js",
 
     "widget/mvc.simpletree.js",
 
@@ -425,8 +425,8 @@ var _Routes = {
     "/record_editor": "RecordEditorView",
     "/sign_editor": "SignEditorView",
     "/shelter_editor": "ShelterEditorView",
-    "/textarea": "TextAreaView",
-    "/contenteditor": "ContentEditorView",
+    "/code_editor": "CodeEditorView",
+    "/textareaeditor": "TextAreaEditorView",
     "/simpletree": "SimpleTreeView",
     "/leveltree": "LevelTreeView",
     "/branch_tree": "BranchTreeView",
@@ -731,8 +731,8 @@ _Models.widget = [{
     value: "code_editor"
 }, {
     pId: 2,
-    text: "bi.contenteditor",
-    value: "contenteditor"
+    text: "bi.textareaeditor",
+    value: "textareaeditor"
 }, {
     pId: 6,
     text: "bi.combo",

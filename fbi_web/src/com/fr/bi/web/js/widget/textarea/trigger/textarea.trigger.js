@@ -20,11 +20,11 @@ BI.TextAreaTrigger = BI.inherit(BI.Trigger, {
             type: "bi.textarea_editor"
         });
 
-        this.editor.on(BI.ContentEditor.EVENT_FOCUS, function () {
+        this.editor.on(BI.TextAreaEditor.EVENT_FOCUS, function () {
             self.fireEvent(BI.TextAreaTrigger.EVENT_FOCUS);
         });
 
-        this.editor.on(BI.ContentEditor.EVENT_BLUR, function(){
+        this.editor.on(BI.TextAreaEditor.EVENT_BLUR, function(){
             self.fireEvent(BI.TextAreaTrigger.EVENT_BLUR);
         });
 

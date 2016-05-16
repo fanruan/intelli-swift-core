@@ -15,7 +15,6 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.bridge.Transmitter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -1277,10 +1276,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/excelviewsetting/excelviewsetting.js",
 
                 //权限控制
-                "com/fr/bi/web/js/modules/permissionmanage/packagetreemanage.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypaneshow.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypaneadd.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/packageandauthoritytree.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.show.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.add.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.single.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.multi.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.main.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.main.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritytabs.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritybutton.js",
 
