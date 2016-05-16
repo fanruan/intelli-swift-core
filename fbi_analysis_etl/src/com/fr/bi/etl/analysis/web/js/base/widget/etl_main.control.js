@@ -42,7 +42,7 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
     doCancel : function (widget, model) {
         var self = this;
         var r = false;
-        BI.Msg.confirm(BI.i18nText("BI-Cancel"),"当前分析表还未保存，是否确定强制关闭？", function (v) {
+        BI.Msg.confirm(BI.i18nText("BI-Cancel"), BI.i18nText("BI-Etl_Cancel_Warning"), function (v) {
             if(v === true) {
                 r = true;
                 self._hideView(widget)
