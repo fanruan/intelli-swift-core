@@ -21,29 +21,42 @@ BI.AbstractDetailTablePopupSelectDataNode = BI.inherit(BI.Widget, {
         this.node.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        //this._initBroadcast();
+        this._initBroadcast();
     },
 
     _createNode: function () {
 
     },
 
+    _isTableUsable: function (currentTableId) {
+        var self = this;
+        var dIds = this.model.getAllDimensionIDs();
+        if (dIds.length < 1) {
+            return true;
+        }
+        var tIds = [];
+        BI.each(dIds, function (id, dId) {
+            tIds.push(self.model.getTableIDByDimensionID(dId));
+        });
+        return BI.Utils.isTableInRelativeTables(tIds, currentTableId);
+    },
+
     _initBroadcast: function () {
         var self = this, o = this.options;
-        if (!BI.Utils.isTableUsableByWidgetID(o.value, o.wId)) {
+        if (!this._isTableUsable(o.value)) {
             this.setEnable(false);
         }
-        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function (tableId) {
-            var enable = BI.Utils.isTableUsableByWidgetID(o.value, o.wId);
+        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + this.model.getId(), function (tableId) {
+            var enable = self._isTableUsable(o.value);
             if (enable === false) {
                 self.setEnable(false);
                 return;
             }
             if (BI.isNotEmptyString(tableId)) {
-                var dIds = BI.Utils.getAllDimensionIDs(o.wId);
+                var dIds = self.model.getAllDimensionIDs();
                 var tIds = [];
                 BI.each(dIds, function (id, dId) {
-                    tIds.push(BI.Utils.getTableIDByDimensionID(dId));
+                    tIds.push(self.model.getTableIDByDimensionID(dId));
                 });
                 tIds.push(tableId);
                 enable = BI.Utils.isTableInRelativeTables(tIds, tableId);
