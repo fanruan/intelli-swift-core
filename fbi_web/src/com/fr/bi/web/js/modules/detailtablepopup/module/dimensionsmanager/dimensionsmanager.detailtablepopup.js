@@ -82,6 +82,12 @@ BI.DetailTablePopupDimensionsManager = BI.inherit(BI.Widget, {
             type: BICst.WIDGET.DETAIL,
             view: views
         }
+    },
+
+    populate: function () {
+        var widget = Data.SharingPool.get("detailtablepopupwidget");
+        var view = widget.view;
+        this.regions[BICst.REGION.DIMENSION1].populate(view[BICst.REGION.DIMENSION1]);
     }
 });
 BI.DetailTablePopupDimensionsManager.EVENT_CHANGE = "DetailTablePopupDimensionsManager.EVENT_CHANGE";
