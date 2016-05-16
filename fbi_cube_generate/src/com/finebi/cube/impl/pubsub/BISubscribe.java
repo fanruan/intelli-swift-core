@@ -26,6 +26,7 @@ public class BISubscribe implements ISubscribe {
     private ISubscribeID subscribeID;
     private IRouter router;
     private ITrigger trigger;
+    private boolean verbose = true;
 
     public BISubscribe(ISubscribeID subscribeID, IProcessor processor) {
         BINonValueUtils.checkNull(subscribeID);
@@ -34,18 +35,27 @@ public class BISubscribe implements ISubscribe {
         trigger = BIFactoryHelper.getObject(ITrigger.class, processor);
     }
 
+    public void subscribeRound(int round) {
+        trigger.setTriggerCount(round);
+    }
 
     @Override
     public ISubscribeID getSubscribeID() {
         return subscribeID;
     }
 
+    public void closeVerbose() {
+        this.verbose = false;
+    }
+
     @Override
     public void handleMessage(IMessage message) {
         try {
+            if (verbose) {
+                System.out.println("Sub:" + subscribeID.getIdentityValue() + "\nSub receive:" + message);
+                System.out.println("Left condition:\n" + trigger.leftCondition());
+            }
             trigger.handleMessage(message);
-            System.out.println("Sub:" + subscribeID.getIdentityValue() + "\n receive:" + message);
-            System.out.println("Left condition:\n" + trigger.leftCondition());
         } catch (BIThresholdIsOffException e) {
             BILogger.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl();

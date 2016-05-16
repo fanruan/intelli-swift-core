@@ -13,9 +13,9 @@ import java.util.concurrent.*;
  * @since 4.0
  */
 public class BIMessageDispatcher implements Runnable {
-    private BlockingQueue<IMessage> messageQueue = new ArrayBlockingQueue<IMessage>(10240);
-    private ITopicRouterService topicRouterService;
-    private ExecutorService executorService = Executors.newFixedThreadPool(2);
+    protected BlockingQueue<IMessage> messageQueue = new ArrayBlockingQueue<IMessage>(10240);
+    protected ITopicRouterService topicRouterService;
+    protected ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     public void setTopicRouterService(ITopicRouterService topicRouterService) {
         this.topicRouterService = topicRouterService;
@@ -29,6 +29,10 @@ public class BIMessageDispatcher implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean isDispatched() {
+        return messageQueue.isEmpty();
     }
 
     @Override

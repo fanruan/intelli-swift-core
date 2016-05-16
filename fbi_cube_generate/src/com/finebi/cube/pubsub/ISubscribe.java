@@ -25,6 +25,8 @@ public interface ISubscribe {
 
     ISubscribeID getSubscribeID();
 
+    void closeVerbose();
+
     /**
      * 订阅相应主题下的分片
      *
@@ -101,4 +103,10 @@ public interface ISubscribe {
     boolean isSubscribed(IFragmentTag fragmentTag)
             throws BITopicAbsentException, BIFragmentAbsentException;
 
+    /**
+     * 订阅消息监听的次数
+     *
+     * @param round
+     */
+    void subscribeRound(int round);
 }
