@@ -22,5 +22,13 @@ BI.DetailTablePopupModel = BI.inherit(FR.OB, {
 
     getId: function () {
         return this.id;
+    },
+
+    getAllDimensionIDs: function(){
+
+    },
+
+    getTableIDByDimensionID: function(){
+
     }
 });

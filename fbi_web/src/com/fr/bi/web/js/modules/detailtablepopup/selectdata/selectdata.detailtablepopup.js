@@ -454,6 +454,11 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
             },
             drag: drag
         }];
+    },
+
+    destroy: function () {
+        BI.Broadcasts.remove(BICst.BROADCAST.DIMENSIONS_PREFIX + this.options.model.getId());
+        BI.DetailTablePopupSelectData.superclass.destroy.apply(this, arguments);
     }
 });
 BI.extend(BI.DetailTablePopupSelectData, {
