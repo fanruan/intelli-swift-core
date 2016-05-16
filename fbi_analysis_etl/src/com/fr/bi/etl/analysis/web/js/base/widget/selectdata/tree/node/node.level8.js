@@ -36,7 +36,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             items : [BI.createWidget ({
                 type : "bi.icon",
                 width: o.iconWidth,
-                height: o.iconHeight
+                height: 14
             })]
         })
         this.text = BI.createWidget({
