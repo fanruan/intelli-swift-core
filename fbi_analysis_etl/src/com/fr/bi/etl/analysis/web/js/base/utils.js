@@ -15,12 +15,18 @@ BI.extend(BI.Utils, {
 
     afterDeleteTable : function (id) {
         delete Pool["tables"][id];
-        BI.remove(Pool["packages"][ETLCst.PACK_DI]['tables'], function(i, item){
+        BI.remove(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
             return item.id === id
         })
         BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
-
+    getAllETLTableNames : function () {
+        var names = [];
+        BI.each(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+            names.push(Pool["translations"][item.id])
+        })
+        return names;
+    },
     getTableTypeByID :function (tableId){
         var source = Pool.tables;
         var table = source[tableId];

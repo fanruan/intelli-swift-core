@@ -14,7 +14,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
     },
 
     _renameChecker : function (v) {
-        return !(['a', '1', 'pony'].contains(v));
+        return !BI.Utils.getAllETLTableNames().contains(v);
     },
 
     setWidget : function( widget) {
