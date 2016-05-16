@@ -10,6 +10,7 @@ BIConf.Views = new (BI.inherit( BI.WRouter, {
         "/BI-Data_Connection_Man" : "BIConf.DataLinkPaneView",
         "/BI-Multi_Path_Man" : "BIConf.MultiRelationView",
         "/BI-Cube_Updates_Setting" : "BIConf.UpdateCubePaneView",
-        "/BI-Packages_Man/packageManagePane" : "BIConf.BusinessPackageGroupView"
+        "/BI-Packages_Man/packageManagePane" : "BIConf.BusinessPackageGroupView",
+        "/BI-Permissions_Man" : "BIConf.PermissionManageView"
     }
 }));
