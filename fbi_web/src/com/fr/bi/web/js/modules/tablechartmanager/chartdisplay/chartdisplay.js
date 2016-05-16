@@ -30,6 +30,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             BI.Msg.toast("category: " + obj.category + " seriesName: " + obj.seriesName + " value: " + obj.value + " size: " + obj.size);
             switch (BI.Utils.getWidgetTypeByID(o.wId)) {
                 case BICst.WIDGET.BUBBLE:
+                case BICst.WIDGET.FORCE_BUBBLE:
                     dId = [self.tarIdMap[obj.value], self.tarIdMap[obj.category], self.tarIdMap[obj.size]];
                     clicked = [{
                         dId: self.seriesDid,
@@ -88,6 +89,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
 
     },
 
+    //todo 为组合图服务，以前这套不对了
     _getChartTypeByTargetId: function (tId) {
         var forAxis = function () {
             var chartType = BI.Utils.getDimensionStyleOfChartByID(tId);
@@ -152,7 +154,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 });
                 return {
                     name: tObj.n,
-                    type: self._getChartTypeByTargetId(targetIds[0]),
+                    //type: self._getChartTypeByTargetId(targetIds[0]),
                     data: data
                 }
             });
@@ -177,7 +179,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 });
                 var res = {
                     data: adjustData,
-                    type: self._getChartTypeByTargetId(targetIds[idx]),
+                    //type: self._getChartTypeByTargetId(targetIds[idx]),
                     name: BI.Utils.getDimensionNameByID(targetIds[idx])
                 };
                 var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[idx]);
@@ -263,14 +265,29 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             case BICst.WIDGET.SCATTER:
                 return self._formatDataForScatter(data);
             case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
                 return self._formatDataForAxis(data);
-            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.PIE:
             case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
                 return self._formatDataForCommon(data);
 
         }

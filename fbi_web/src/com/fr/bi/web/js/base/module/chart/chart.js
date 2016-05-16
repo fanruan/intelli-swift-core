@@ -241,6 +241,457 @@ BI.Chart = BI.inherit(BI.Pane, {
             "plotShadow": false,
             "plotBorderRadius": 0
         };
+        var lineConfig = {
+            "plotOptions": {
+                click: function () {
+                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
+                        category: this.category,
+                        seriesName: this.seriesName,
+                        value: this.value
+                    });
+                },
+                "large": false,
+                "connectNulls": true,
+                "curve": false,
+                "marker": {
+                    "symbol": "null_marker",
+                    "radius": 4.5,
+                    "enabled": true
+                },
+                "tooltip": {
+                    "formatter": {
+                        "identifier": "${CATEGORY}${SERIES}${VALUE}",
+                        "valueFormat": "#.##",
+                        "percentFormat": "#.##%"
+                    },
+                    "shared": false,
+                    "padding": 5,
+                    "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
+                    "borderColor": "rgb(0,0,0)",
+                    "shadow": false,
+                    "borderRadius": 2,
+                    "borderWidth": 0,
+                    "follow": false,
+                    "enabled": true,
+                    "animation": true
+                },
+                "step": false,
+                "lineWidth": 2,
+                "animation": true
+            },
+            "borderColor": "rgb(238,238,238)",
+            "xAxis": [
+                {
+                    "enableMinorTick": false,
+                    "minorTickColor": "rgb(176,176,176)",
+                    "tickColor": "rgb(176,176,176)",
+                    "showArrow": false,
+                    "lineColor": "rgb(176,176,176)",
+                    "plotLines": [],
+                    "type": "category",
+                    "lineWidth": 1,
+                    "showLabel": true,
+                    "formatter": {},
+                    "gridLineWidth": 0,
+                    "enableTick": true,
+                    "labelStyle": {
+                        "fontFamily": "Verdana",
+                        "color": "rgba(102,102,102,1.0)",
+                        "fontSize": "11pt",
+                        "fontWeight": ""
+                    },
+                    "plotBands": [],
+                    "position": "bottom",
+                    "labelRotation": 0,
+                    "reversed": false
+                }
+            ],
+            "shadow": false,
+            "legend": {
+                "borderColor": "rgb(204,204,204)",
+                "borderRadius": 0,
+                "shadow": false,
+                "borderWidth": 0,
+                "style": {
+                    "fontFamily": "Dialog",
+                    "color": "rgba(102,102,102,1.0)",
+                    "fontSize": "11pt",
+                    "fontWeight": ""
+                },
+                "position": "right",
+                "enabled": true
+            },
+            "zoom": {
+                "zoomType": "xy",
+                "zoomTool": {
+                    "visible": false,
+                    "resize": true,
+                    "from": "",
+                    "to": ""
+                }
+            },
+            "plotBorderColor": "blue",
+            "tools": {
+                "hidden": true,
+                "toImage": {
+                    "enabled": true
+                },
+                "sort": {
+                    "enabled": true
+                },
+                "enabled": true,
+                "fullScreen": {
+                    "enabled": true
+                }
+            },
+            "plotBorderWidth": 2,
+            "colors": [
+                "rgb(14,114,204)",
+                "rgb(108,163,15)",
+                "rgb(245,147,17)",
+                "rgb(250,67,67)",
+                "rgb(22,175,204)"
+            ],
+            "yAxis": [
+                {
+                    "enableMinorTick": false,
+                    "gridLineColor": "rgb(196,196,196)",
+                    "minorTickColor": "rgb(176,176,176)",
+                    "tickColor": "rgb(176,176,176)",
+                    "showArrow": false,
+                    "lineColor": "rgb(176,176,176)",
+                    "plotLines": [],
+                    "type": "value",
+                    "lineWidth": 0,
+                    "showLabel": true,
+                    "formatter": {
+                        "format": "#.##"
+                    },
+                    "gridLineWidth": 1,
+                    "enableTick": false,
+                    "labelStyle": {
+                        "fontFamily": "Verdana",
+                        "color": "rgba(102,102,102,1.0)",
+                        "fontSize": "11pt",
+                        "fontWeight": ""
+                    },
+                    "plotBands": [],
+                    "position": "left",
+                    "labelRotation": 0,
+                    "reversed": false
+                }
+            ],
+            "borderRadius": 0,
+            "borderWidth": 0,
+            "chartType": "line",
+            "style": "gradual",
+            "plotShadow": false,
+            "plotBorderRadius": 0
+        };
+        var areaConfig = {
+            "plotOptions": {
+                click: function () {
+                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
+                        category: this.category,
+                        seriesName: this.seriesName,
+                        value: this.value
+                    });
+                },
+                "large": false,
+                "connectNulls": false,
+                "curve": false,
+                "marker": {
+                    "symbol": "null_marker",
+                    "radius": 4.5,
+                    "enabled": true
+                },
+                "tooltip": {
+                    "formatter": {
+                        "identifier": "${CATEGORY}${SERIES}${VALUE}",
+                        "valueFormat": "#.##",
+                        "percentFormat": "#.##%"
+                    },
+                    "shared": false,
+                    "padding": 5,
+                    "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
+                    "borderColor": "rgb(0,0,0)",
+                    "shadow": false,
+                    "borderRadius": 2,
+                    "borderWidth": 0,
+                    "follow": false,
+                    "enabled": true,
+                    "animation": true
+                },
+                "step": false,
+                "lineWidth": 2,
+                "animation": true
+            },
+            "borderColor": "rgb(238,238,238)",
+            "xAxis": [
+                {
+                    "enableMinorTick": false,
+                    "minorTickColor": "rgb(176,176,176)",
+                    "tickColor": "rgb(176,176,176)",
+                    "showArrow": false,
+                    "lineColor": "rgb(176,176,176)",
+                    "plotLines": [],
+                    "type": "category",
+                    "lineWidth": 1,
+                    "showLabel": true,
+                    "formatter": {},
+                    "gridLineWidth": 0,
+                    "enableTick": true,
+                    "labelStyle": {
+                        "fontFamily": "Verdana",
+                        "color": "rgba(102,102,102,1.0)",
+                        "fontSize": "11pt",
+                        "fontWeight": ""
+                    },
+                    "plotBands": [],
+                    "position": "bottom",
+                    "labelRotation": 0,
+                    "reversed": false
+                }
+            ],
+            "shadow": false,
+            "legend": {
+                "borderColor": "rgb(204,204,204)",
+                "borderRadius": 0,
+                "shadow": false,
+                "borderWidth": 0,
+                "style": {
+                    "fontFamily": "Dialog",
+                    "color": "rgba(102,102,102,1.0)",
+                    "fontSize": "11pt",
+                    "fontWeight": ""
+                },
+                "position": "right",
+                "enabled": true
+            },
+            "zoom": {
+                "zoomType": "xy",
+                "zoomTool": {
+                    "visible": false,
+                    "resize": true,
+                    "from": "",
+                    "to": ""
+                }
+            },
+            "plotBorderColor": "rgba(255,255,255,0)",
+            "tools": {
+                "hidden": true,
+                "toImage": {
+                    "enabled": true
+                },
+                "sort": {
+                    "enabled": true
+                },
+                "enabled": true,
+                "fullScreen": {
+                    "enabled": true
+                }
+            },
+            "plotBorderWidth": 0,
+            "colors": [
+                "rgb(14,114,204)",
+                "rgb(108,163,15)",
+                "rgb(245,147,17)",
+                "rgb(250,67,67)",
+                "rgb(22,175,204)"
+            ],
+            "yAxis": [
+                {
+                    "enableMinorTick": false,
+                    "gridLineColor": "rgb(196,196,196)",
+                    "minorTickColor": "rgb(176,176,176)",
+                    "tickColor": "rgb(176,176,176)",
+                    "showArrow": false,
+                    "lineColor": "rgb(176,176,176)",
+                    "plotLines": [],
+                    "type": "value",
+                    "lineWidth": 0,
+                    "showLabel": true,
+                    "formatter": {
+                        "format": "#.##"
+                    },
+                    "gridLineWidth": 1,
+                    "enableTick": false,
+                    "labelStyle": {
+                        "fontFamily": "Verdana",
+                        "color": "rgba(102,102,102,1.0)",
+                        "fontSize": "11pt",
+                        "fontWeight": ""
+                    },
+                    "plotBands": [],
+                    "position": "left",
+                    "labelRotation": 0,
+                    "reversed": false
+                }
+            ],
+            "borderRadius": 0,
+            "borderWidth": 0,
+            "chartType": "area",
+            "style": "gradual",
+            "plotShadow": false,
+            "plotBorderRadius": 0
+        };
+        var bubbleConfig = {
+            "plotOptions": {
+                click: function () {
+                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
+                        category: this.category,
+                        seriesName: this.seriesName,
+                        value: this.value,
+                        size: this.size
+                    });
+                },
+                "large": false,
+                "connectNulls": false,
+                "shadow": true,
+                "curve": false,
+                "sizeBy": "area",
+                "tooltip": {
+                    "formatter": {
+                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "identifier": "${X}${Y}${SIZE}",
+                        "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                    },
+                    "shared": false,
+                    "padding": 5,
+                    "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
+                    "borderColor": "rgb(0,0,0)",
+                    "shadow": false,
+                    "borderRadius": 2,
+                    "borderWidth": 0,
+                    "style": {},
+                    "follow": false,
+                    "enabled": true,
+                    "animation": false
+                },
+                "maxSize": 60,
+                "lineWidth": 0,
+                "animation": true,
+                "dataLabels": {
+                    "formatter": {
+                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "identifier": "${X}${Y}${SIZE}",
+                        "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                    },
+                    "align": "inside",
+                    "enabled": true
+                },
+                "fillColorOpacity": 0.699999988079071,
+                "marker": {
+                    "symbol": "circle",
+                    "radius": 28.39695010101295,
+                    "enabled": true
+                },
+                "step": false,
+                "force": false,
+                "minSize": 12,
+                "displayNegative": true
+            },
+            "borderColor": "rgb(196,196,196)",
+            "xAxis": [
+                {
+                    "enableMinorTick": false,
+                    "minorTickColor": "rgb(176,176,176)",
+                    "tickColor": "rgb(176,176,176)",
+                    "showArrow": false,
+                    "lineColor": "rgb(176,176,176)",
+                    "plotLines": [],
+                    "type": "value",
+                    "lineWidth": 1,
+                    "showLabel": true,
+                    "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                    "gridLineWidth": 0,
+                    "enableTick": true,
+                    "labelStyle": {
+                        "fontFamily": "Verdana",
+                        "color": "rgba(102,102,102,1.0)",
+                        "fontSize": "11pt",
+                        "fontWeight": ""
+                    },
+                    "plotBands": [],
+                    "position": "bottom",
+                    "labelRotation": 0,
+                    "reversed": false
+                }
+            ],
+            "shadow": false,
+            "zoom": {
+                "zoomType": "xy",
+                "zoomTool": {
+                    "visible": false,
+                    "resize": true,
+                    "from": "",
+                    "to": ""
+                }
+            },
+            "plotBorderColor": "rgba(255,255,255,0)",
+            "plotBorderWidth": 0,
+            "colors": [
+                "rgb(99,178,238)",
+                "rgb(118,218,145)",
+                "rgb(248,203,127)",
+                "rgb(248,149,136)",
+                "rgb(124,214,207)",
+                "rgb(145,146,171)",
+                "rgb(120,152,225)",
+                "rgb(239,166,102)"
+            ],
+            "yAxis": [
+                {
+                    "enableMinorTick": false,
+                    "gridLineColor": "rgb(196,196,196)",
+                    "minorTickColor": "rgb(176,176,176)",
+                    "tickColor": "rgb(176,176,176)",
+                    "showArrow": false,
+                    "lineColor": "rgb(176,176,176)",
+                    "plotLines": [],
+                    "type": "value",
+                    "lineWidth": 0,
+                    "showLabel": true,
+                    "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                    "gridLineWidth": 1,
+                    "enableTick": false,
+                    "labelStyle": {
+                        "fontFamily": "Verdana",
+                        "color": "rgba(102,102,102,1.0)",
+                        "fontSize": "11pt",
+                        "fontWeight": ""
+                    },
+                    "plotBands": [],
+                    "position": "left",
+                    "labelRotation": 0,
+                    "reversed": false
+                }
+            ],
+            "borderRadius": 0,
+            "borderWidth": 0,
+            "chartType": "bubble",
+            "style": "gradual",
+            "legend": {
+                "borderColor": "rgb(204,204,204)",
+                "borderRadius": 0,
+                "shadow": false,
+                "borderWidth": 0,
+                "style": {
+                    "fontFamily": "Dialog",
+                    "color": "rgba(102,102,102,1.0)",
+                    "fontSize": "11pt",
+                    "fontWeight": ""
+                },
+                "position": "right",
+                "enabled": false
+            },
+            "plotShadow": false,
+            "plotBorderRadius": 0
+        };
         var pieConfig = {
             "plotOptions": {
                 click: function () {
@@ -334,9 +785,161 @@ BI.Chart = BI.inherit(BI.Pane, {
             "plotShadow": false,
             "plotBorderRadius": 0
         };
+
+        var redarConfig = {
+            "plotOptions": {
+                click: function () {
+                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
+                        category: this.category,
+                        seriesName: this.seriesName,
+                        value: this.value
+                    });
+                },
+                "fillColor": true,
+                "fillColorOpacity": 0,
+                "columnType": false,
+                "connectNulls": false,
+                "curve": false,
+                "marker": {
+                    "symbol": "null_marker",
+                    "radius": 4.5,
+                    "enabled": true
+                },
+                "tooltip": {
+                    "formatter": {
+                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "identifier": "${CATEGORY}${X}${SERIES}${VALUE}${Y}${SIZE}",
+                        "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
+                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                    },
+                    "shared": false,
+                    "padding": 5,
+                    "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
+                    "borderColor": "rgb(0,0,0)",
+                    "shadow": false,
+                    "borderRadius": 2,
+                    "borderWidth": 0,
+                    "follow": false,
+                    "enabled": true,
+                    "animation": true
+                },
+                "step": false,
+                "type": "circle",
+                "lineWidth": 2,
+                "animation": true
+            },
+            "borderColor": "rgb(238,238,238)",
+            "xAxis": [
+                {
+                    "enableMinorTick": false,
+                    "minorTickColor": "rgb(176,176,176)",
+                    "tickColor": "rgb(176,176,176)",
+                    "showArrow": false,
+                    "lineColor": "rgb(176,176,176)",
+                    "plotLines": [],
+                    "type": "category",
+                    "lineWidth": 1,
+                    "showLabel": true,
+                    "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                    "gridLineWidth": 0,
+                    "enableTick": true,
+                    "labelStyle": {
+                        "fontFamily": "Verdana",
+                        "color": "rgba(102,102,102,1.0)",
+                        "fontSize": "9pt",
+                        "fontWeight": ""
+                    },
+                    "plotBands": [],
+                    "position": "bottom",
+                    "labelRotation": 0,
+                    "reversed": false
+                }
+            ],
+            "shadow": false,
+            "legend": {
+                "borderColor": "rgb(204,204,204)",
+                "borderRadius": 0,
+                "shadow": false,
+                "borderWidth": 0,
+                "style": {
+                    "fontFamily": "Dialog",
+                    "color": "rgba(102,102,102,1.0)",
+                    "fontSize": "11pt",
+                    "fontWeight": ""
+                },
+                "position": "right",
+                "enabled": true
+            },
+            "plotBorderColor": "rgba(255,255,255,0)",
+            "tools": {
+                "hidden": true,
+                "toImage": {
+                    "enabled": true
+                },
+                "sort": {
+                    "enabled": true
+                },
+                "enabled": true,
+                "fullScreen": {
+                    "enabled": true
+                }
+            },
+            "plotBorderWidth": 0,
+            "colors": [
+                "rgb(99,178,238)",
+                "rgb(118,218,145)"
+            ],
+            "yAxis": [
+                {
+                    "enableMinorTick": false,
+                    "gridLineColor": "rgb(196,196,196)",
+                    "minorTickColor": "rgb(176,176,176)",
+                    "tickColor": "rgb(176,176,176)",
+                    "showArrow": false,
+                    "lineColor": "rgb(176,176,176)",
+                    "plotLines": [],
+                    "type": "value",
+                    "lineWidth": 1,
+                    "showLabel": true,
+                    "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                    "gridLineWidth": 1,
+                    "enableTick": true,
+                    "labelStyle": {
+                        "fontFamily": "Verdana",
+                        "color": "rgba(102,102,102,1.0)",
+                        "fontSize": "9pt",
+                        "fontWeight": ""
+                    },
+                    "plotBands": [],
+                    "position": "left",
+                    "labelRotation": 0,
+                    "reversed": false
+                }
+            ],
+            "borderRadius": 0,
+            "borderWidth": 0,
+            "chartType": "radar",
+            "style": "gradual",
+            "plotShadow": false,
+            "plotBorderRadius": 0
+        }
         switch (this.options.chartType) {
             case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.COLUMN:
+                defaultConfig = columnConfig;
+                break;
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+                defaultConfig.plotOptions.stack = "stackedColumn";
+                break;
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                defaultConfig.plotOptions.stack = "stackedColumn";
+                defaultConfig.plotOptions.stackByPercent = true;
+                break;
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
                 defaultConfig = columnConfig;
                 break;
             case BICst.WIDGET.BAR:
@@ -345,152 +948,6 @@ BI.Chart = BI.inherit(BI.Pane, {
                 delete defaultConfig.yAxis;
                 defaultConfig.chartType = "bar";
                 break;
-            case BICst.WIDGET.PIE:
-                defaultConfig = pieConfig;
-                break;
-            case BICst.WIDGET.RADAR:
-                defaultConfig = {
-                    "plotOptions": {
-                        click: function () {
-                            self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                                category: this.category,
-                                seriesName: this.seriesName,
-                                value: this.value
-                            });
-                        },
-                        "fillColor": true,
-                        "fillColorOpacity": 0,
-                        "columnType": false,
-                        "connectNulls": false,
-                        "curve": false,
-                        "marker": {
-                            "symbol": "null_marker",
-                            "radius": 4.5,
-                            "enabled": true
-                        },
-                        "tooltip": {
-                            "formatter": {
-                                "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "identifier": "${CATEGORY}${X}${SERIES}${VALUE}${Y}${SIZE}",
-                                "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                                "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
-                            },
-                            "shared": false,
-                            "padding": 5,
-                            "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
-                            "borderColor": "rgb(0,0,0)",
-                            "shadow": false,
-                            "borderRadius": 2,
-                            "borderWidth": 0,
-                            "follow": false,
-                            "enabled": true,
-                            "animation": true
-                        },
-                        "step": false,
-                        "type": "circle",
-                        "lineWidth": 2,
-                        "animation": true
-                    },
-                    "borderColor": "rgb(238,238,238)",
-                    "xAxis": [
-                        {
-                            "enableMinorTick": false,
-                            "minorTickColor": "rgb(176,176,176)",
-                            "tickColor": "rgb(176,176,176)",
-                            "showArrow": false,
-                            "lineColor": "rgb(176,176,176)",
-                            "plotLines": [],
-                            "type": "category",
-                            "lineWidth": 1,
-                            "showLabel": true,
-                            "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                            "gridLineWidth": 0,
-                            "enableTick": true,
-                            "labelStyle": {
-                                "fontFamily": "Verdana",
-                                "color": "rgba(102,102,102,1.0)",
-                                "fontSize": "9pt",
-                                "fontWeight": ""
-                            },
-                            "plotBands": [],
-                            "position": "bottom",
-                            "labelRotation": 0,
-                            "reversed": false
-                        }
-                    ],
-                    "shadow": false,
-                    "legend": {
-                        "borderColor": "rgb(204,204,204)",
-                        "borderRadius": 0,
-                        "shadow": false,
-                        "borderWidth": 0,
-                        "style": {
-                            "fontFamily": "Dialog",
-                            "color": "rgba(102,102,102,1.0)",
-                            "fontSize": "11pt",
-                            "fontWeight": ""
-                        },
-                        "position": "right",
-                        "enabled": true
-                    },
-                    "plotBorderColor": "rgba(255,255,255,0)",
-                    "tools": {
-                        "hidden": true,
-                        "toImage": {
-                            "enabled": true
-                        },
-                        "sort": {
-                            "enabled": true
-                        },
-                        "enabled": true,
-                        "fullScreen": {
-                            "enabled": true
-                        }
-                    },
-                    "plotBorderWidth": 0,
-                    "colors": [
-                        "rgb(99,178,238)",
-                        "rgb(118,218,145)"
-                    ],
-                    "yAxis": [
-                        {
-                            "enableMinorTick": false,
-                            "gridLineColor": "rgb(196,196,196)",
-                            "minorTickColor": "rgb(176,176,176)",
-                            "tickColor": "rgb(176,176,176)",
-                            "showArrow": false,
-                            "lineColor": "rgb(176,176,176)",
-                            "plotLines": [],
-                            "type": "value",
-                            "lineWidth": 1,
-                            "showLabel": true,
-                            "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "gridLineWidth": 1,
-                            "enableTick": true,
-                            "labelStyle": {
-                                "fontFamily": "Verdana",
-                                "color": "rgba(102,102,102,1.0)",
-                                "fontSize": "9pt",
-                                "fontWeight": ""
-                            },
-                            "plotBands": [],
-                            "position": "left",
-                            "labelRotation": 0,
-                            "reversed": false
-                        }
-                    ],
-                    "borderRadius": 0,
-                    "borderWidth": 0,
-                    "chartType": "radar",
-                    "style": "gradual",
-                    "plotShadow": false,
-                    "plotBorderRadius": 0
-                };
-                break;
             case BICst.WIDGET.ACCUMULATE_BAR:
                 defaultConfig = columnConfig;
                 defaultConfig.plotOptions.stack = "stackedBar";
@@ -498,7 +955,38 @@ BI.Chart = BI.inherit(BI.Pane, {
                 delete defaultConfig.yAxis;
                 defaultConfig.chartType = "bar";
                 break;
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.LINE:
+                defaultConfig = lineConfig;
+                break;
+            case BICst.WIDGET.AREA:
+                defaultConfig = areaConfig;
+                break;
+            case BICst.WIDGET.ACCUMULATE_AREA:
+                defaultConfig = areaConfig;
+                defaultConfig.plotOptions.stack = "stackedArea";
+                break;
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                defaultConfig = areaConfig;
+                defaultConfig.plotOptions.stack = "stackedArea";
+                defaultConfig.plotOptions.stackByPercent = true;
+                break;
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+                break;
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                break;
+            case BICst.WIDGET.PIE:
+                defaultConfig = pieConfig;
+                break;
+            case BICst.WIDGET.DONUT:
+                defaultConfig = pieConfig;
+                defaultConfig.plotOptions.innerRadius = "50.0%";
+                defaultConfig.plotOptions.borderWidth = 10;
+                break;
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
                 defaultConfig = {
                     "plotOptions": {
@@ -596,169 +1084,12 @@ BI.Chart = BI.inherit(BI.Pane, {
                     "plotBorderRadius": 0
                 };
                 break;
-            case BICst.WIDGET.DONUT:
-                defaultConfig = pieConfig;
-                defaultConfig.plotOptions.innerRadius = "50.0%";
-                defaultConfig.plotOptions.borderWidth = 10;
-                break;
             case BICst.WIDGET.BUBBLE:
-                defaultConfig = {
-                    "plotOptions": {
-                        click: function () {
-                            self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                                category: this.category,
-                                seriesName: this.seriesName,
-                                value: this.value,
-                                size: this.size
-                            });
-                        },
-                        "large": false,
-                        "connectNulls": false,
-                        "shadow": true,
-                        "curve": false,
-                        "sizeBy": "area",
-                        "tooltip": {
-                            "formatter": {
-                                "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "identifier": "${X}${Y}${SIZE}",
-                                "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
-                            },
-                            "shared": false,
-                            "padding": 5,
-                            "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
-                            "borderColor": "rgb(0,0,0)",
-                            "shadow": false,
-                            "borderRadius": 2,
-                            "borderWidth": 0,
-                            "style": {},
-                            "follow": false,
-                            "enabled": true,
-                            "animation": false
-                        },
-                        "maxSize": 60,
-                        "lineWidth": 0,
-                        "animation": true,
-                        "dataLabels": {
-                            "formatter": {
-                                "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "identifier": "${X}${Y}${SIZE}",
-                                "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
-                            },
-                            "align": "inside",
-                            "enabled": true
-                        },
-                        "fillColorOpacity": 0.699999988079071,
-                        "marker": {
-                            "symbol": "circle",
-                            "radius": 28.39695010101295,
-                            "enabled": true
-                        },
-                        "step": false,
-                        "force": false,
-                        "minSize": 12,
-                        "displayNegative": true
-                    },
-                    "borderColor": "rgb(196,196,196)",
-                    "xAxis": [
-                        {
-                            "enableMinorTick": false,
-                            "minorTickColor": "rgb(176,176,176)",
-                            "tickColor": "rgb(176,176,176)",
-                            "showArrow": false,
-                            "lineColor": "rgb(176,176,176)",
-                            "plotLines": [],
-                            "type": "value",
-                            "lineWidth": 1,
-                            "showLabel": true,
-                            "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "gridLineWidth": 0,
-                            "enableTick": true,
-                            "labelStyle": {
-                                "fontFamily": "Verdana",
-                                "color": "rgba(102,102,102,1.0)",
-                                "fontSize": "11pt",
-                                "fontWeight": ""
-                            },
-                            "plotBands": [],
-                            "position": "bottom",
-                            "labelRotation": 0,
-                            "reversed": false
-                        }
-                    ],
-                    "shadow": false,
-                    "zoom": {
-                        "zoomType": "xy",
-                        "zoomTool": {
-                            "visible": false,
-                            "resize": true,
-                            "from": "",
-                            "to": ""
-                        }
-                    },
-                    "plotBorderColor": "rgba(255,255,255,0)",
-                    "plotBorderWidth": 0,
-                    "colors": [
-                        "rgb(99,178,238)",
-                        "rgb(118,218,145)",
-                        "rgb(248,203,127)",
-                        "rgb(248,149,136)",
-                        "rgb(124,214,207)",
-                        "rgb(145,146,171)",
-                        "rgb(120,152,225)",
-                        "rgb(239,166,102)"
-                    ],
-                    "yAxis": [
-                        {
-                            "enableMinorTick": false,
-                            "gridLineColor": "rgb(196,196,196)",
-                            "minorTickColor": "rgb(176,176,176)",
-                            "tickColor": "rgb(176,176,176)",
-                            "showArrow": false,
-                            "lineColor": "rgb(176,176,176)",
-                            "plotLines": [],
-                            "type": "value",
-                            "lineWidth": 0,
-                            "showLabel": true,
-                            "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "gridLineWidth": 1,
-                            "enableTick": false,
-                            "labelStyle": {
-                                "fontFamily": "Verdana",
-                                "color": "rgba(102,102,102,1.0)",
-                                "fontSize": "11pt",
-                                "fontWeight": ""
-                            },
-                            "plotBands": [],
-                            "position": "left",
-                            "labelRotation": 0,
-                            "reversed": false
-                        }
-                    ],
-                    "borderRadius": 0,
-                    "borderWidth": 0,
-                    "chartType": "bubble",
-                    "style": "gradual",
-                    "legend": {
-                        "borderColor": "rgb(204,204,204)",
-                        "borderRadius": 0,
-                        "shadow": false,
-                        "borderWidth": 0,
-                        "style": {
-                            "fontFamily": "Dialog",
-                            "color": "rgba(102,102,102,1.0)",
-                            "fontSize": "11pt",
-                            "fontWeight": ""
-                        },
-                        "position": "right",
-                        "enabled": false
-                    },
-                    "plotShadow": false,
-                    "plotBorderRadius": 0
-                };
+                defaultConfig = bubbleConfig;
+                break;
+            case BICst.WIDGET.FORCE_BUBBLE:
+                defaultConfig = bubbleConfig;
+                defaultConfig.plotOptions.force = true;
                 break;
             case BICst.WIDGET.SCATTER:
                 defaultConfig = {
@@ -914,304 +1245,15 @@ BI.Chart = BI.inherit(BI.Pane, {
                     "plotBorderRadius": 0
                 };
                 break;
-            case BICst.WIDGET.LINE:
-                defaultConfig = {
-                    "plotOptions": {
-                        click: function () {
-                            self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                                category: this.category,
-                                seriesName: this.seriesName,
-                                value: this.value
-                            });
-                        },
-                        "large": false,
-                        "connectNulls": true,
-                        "curve": false,
-                        "marker": {
-                            "symbol": "null_marker",
-                            "radius": 4.5,
-                            "enabled": true
-                        },
-                        "tooltip": {
-                            "formatter": {
-                                "identifier": "${CATEGORY}${SERIES}${VALUE}",
-                                "valueFormat": "#.##",
-                                "percentFormat": "#.##%"
-                            },
-                            "shared": false,
-                            "padding": 5,
-                            "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
-                            "borderColor": "rgb(0,0,0)",
-                            "shadow": false,
-                            "borderRadius": 2,
-                            "borderWidth": 0,
-                            "follow": false,
-                            "enabled": true,
-                            "animation": true
-                        },
-                        "step": false,
-                        "lineWidth": 2,
-                        "animation": true
-                    },
-                    "borderColor": "rgb(238,238,238)",
-                    "xAxis": [
-                        {
-                            "enableMinorTick": false,
-                            "minorTickColor": "rgb(176,176,176)",
-                            "tickColor": "rgb(176,176,176)",
-                            "showArrow": false,
-                            "lineColor": "rgb(176,176,176)",
-                            "plotLines": [],
-                            "type": "category",
-                            "lineWidth": 1,
-                            "showLabel": true,
-                            "formatter": {},
-                            "gridLineWidth": 0,
-                            "enableTick": true,
-                            "labelStyle": {
-                                "fontFamily": "Verdana",
-                                "color": "rgba(102,102,102,1.0)",
-                                "fontSize": "11pt",
-                                "fontWeight": ""
-                            },
-                            "plotBands": [],
-                            "position": "bottom",
-                            "labelRotation": 0,
-                            "reversed": false
-                        }
-                    ],
-                    "shadow": false,
-                    "legend": {
-                        "borderColor": "rgb(204,204,204)",
-                        "borderRadius": 0,
-                        "shadow": false,
-                        "borderWidth": 0,
-                        "style": {
-                            "fontFamily": "Dialog",
-                            "color": "rgba(102,102,102,1.0)",
-                            "fontSize": "11pt",
-                            "fontWeight": ""
-                        },
-                        "position": "right",
-                        "enabled": true
-                    },
-                    "zoom": {
-                        "zoomType": "xy",
-                        "zoomTool": {
-                            "visible": false,
-                            "resize": true,
-                            "from": "",
-                            "to": ""
-                        }
-                    },
-                    "plotBorderColor": "blue",
-                    "tools": {
-                        "hidden": true,
-                        "toImage": {
-                            "enabled": true
-                        },
-                        "sort": {
-                            "enabled": true
-                        },
-                        "enabled": true,
-                        "fullScreen": {
-                            "enabled": true
-                        }
-                    },
-                    "plotBorderWidth": 2,
-                    "colors": [
-                        "rgb(14,114,204)",
-                        "rgb(108,163,15)",
-                        "rgb(245,147,17)",
-                        "rgb(250,67,67)",
-                        "rgb(22,175,204)"
-                    ],
-                    "yAxis": [
-                        {
-                            "enableMinorTick": false,
-                            "gridLineColor": "rgb(196,196,196)",
-                            "minorTickColor": "rgb(176,176,176)",
-                            "tickColor": "rgb(176,176,176)",
-                            "showArrow": false,
-                            "lineColor": "rgb(176,176,176)",
-                            "plotLines": [],
-                            "type": "value",
-                            "lineWidth": 0,
-                            "showLabel": true,
-                            "formatter": {
-                                "format": "#.##"
-                            },
-                            "gridLineWidth": 1,
-                            "enableTick": false,
-                            "labelStyle": {
-                                "fontFamily": "Verdana",
-                                "color": "rgba(102,102,102,1.0)",
-                                "fontSize": "11pt",
-                                "fontWeight": ""
-                            },
-                            "plotBands": [],
-                            "position": "left",
-                            "labelRotation": 0,
-                            "reversed": false
-                        }
-                    ],
-                    "borderRadius": 0,
-                    "borderWidth": 0,
-                    "chartType": "line",
-                    "style": "gradual",
-                    "plotShadow": false,
-                    "plotBorderRadius": 0
-                };
+            case BICst.WIDGET.RADAR:
+                defaultConfig = redarConfig;
                 break;
-            case BICst.WIDGET.AREA:
-                defaultConfig = {
-                    "plotOptions": {
-                        click: function () {
-                            self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                                category: this.category,
-                                seriesName: this.seriesName,
-                                value: this.value
-                            });
-                        },
-                        "large": false,
-                        "connectNulls": false,
-                        "curve": false,
-                        "marker": {
-                            "symbol": "null_marker",
-                            "radius": 4.5,
-                            "enabled": true
-                        },
-                        "tooltip": {
-                            "formatter": {
-                                "identifier": "${CATEGORY}${SERIES}${VALUE}",
-                                "valueFormat": "#.##",
-                                "percentFormat": "#.##%"
-                            },
-                            "shared": false,
-                            "padding": 5,
-                            "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
-                            "borderColor": "rgb(0,0,0)",
-                            "shadow": false,
-                            "borderRadius": 2,
-                            "borderWidth": 0,
-                            "follow": false,
-                            "enabled": true,
-                            "animation": true
-                        },
-                        "step": false,
-                        "lineWidth": 2,
-                        "animation": true
-                    },
-                    "borderColor": "rgb(238,238,238)",
-                    "xAxis": [
-                        {
-                            "enableMinorTick": false,
-                            "minorTickColor": "rgb(176,176,176)",
-                            "tickColor": "rgb(176,176,176)",
-                            "showArrow": false,
-                            "lineColor": "rgb(176,176,176)",
-                            "plotLines": [],
-                            "type": "category",
-                            "lineWidth": 1,
-                            "showLabel": true,
-                            "formatter": {},
-                            "gridLineWidth": 0,
-                            "enableTick": true,
-                            "labelStyle": {
-                                "fontFamily": "Verdana",
-                                "color": "rgba(102,102,102,1.0)",
-                                "fontSize": "11pt",
-                                "fontWeight": ""
-                            },
-                            "plotBands": [],
-                            "position": "bottom",
-                            "labelRotation": 0,
-                            "reversed": false
-                        }
-                    ],
-                    "shadow": false,
-                    "legend": {
-                        "borderColor": "rgb(204,204,204)",
-                        "borderRadius": 0,
-                        "shadow": false,
-                        "borderWidth": 0,
-                        "style": {
-                            "fontFamily": "Dialog",
-                            "color": "rgba(102,102,102,1.0)",
-                            "fontSize": "11pt",
-                            "fontWeight": ""
-                        },
-                        "position": "right",
-                        "enabled": true
-                    },
-                    "zoom": {
-                        "zoomType": "xy",
-                        "zoomTool": {
-                            "visible": false,
-                            "resize": true,
-                            "from": "",
-                            "to": ""
-                        }
-                    },
-                    "plotBorderColor": "rgba(255,255,255,0)",
-                    "tools": {
-                        "hidden": true,
-                        "toImage": {
-                            "enabled": true
-                        },
-                        "sort": {
-                            "enabled": true
-                        },
-                        "enabled": true,
-                        "fullScreen": {
-                            "enabled": true
-                        }
-                    },
-                    "plotBorderWidth": 0,
-                    "colors": [
-                        "rgb(14,114,204)",
-                        "rgb(108,163,15)",
-                        "rgb(245,147,17)",
-                        "rgb(250,67,67)",
-                        "rgb(22,175,204)"
-                    ],
-                    "yAxis": [
-                        {
-                            "enableMinorTick": false,
-                            "gridLineColor": "rgb(196,196,196)",
-                            "minorTickColor": "rgb(176,176,176)",
-                            "tickColor": "rgb(176,176,176)",
-                            "showArrow": false,
-                            "lineColor": "rgb(176,176,176)",
-                            "plotLines": [],
-                            "type": "value",
-                            "lineWidth": 0,
-                            "showLabel": true,
-                            "formatter": {
-                                "format": "#.##"
-                            },
-                            "gridLineWidth": 1,
-                            "enableTick": false,
-                            "labelStyle": {
-                                "fontFamily": "Verdana",
-                                "color": "rgba(102,102,102,1.0)",
-                                "fontSize": "11pt",
-                                "fontWeight": ""
-                            },
-                            "plotBands": [],
-                            "position": "left",
-                            "labelRotation": 0,
-                            "reversed": false
-                        }
-                    ],
-                    "borderRadius": 0,
-                    "borderWidth": 0,
-                    "chartType": "area",
-                    "style": "gradual",
-                    "plotShadow": false,
-                    "plotBorderRadius": 0
-                };
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                defaultConfig = redarConfig;
+                defaultConfig.plotOptions.stack = "stackRadar";
                 break;
+            case BICst.WIDGET.FUNNEL:
+                break
         }
         //todo 将options中的config与defaultConfig校验起来
         return defaultConfig;

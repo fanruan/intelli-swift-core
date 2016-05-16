@@ -45,7 +45,7 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.AXIS: {
                 return new MultiChartWidget();
             }
-            case BIReportConstant.WIDGET.ACCUMULATED_BAR: {
+            case BIReportConstant.WIDGET.ACCUMULATE_BAR: {
                 return new TableWidget();
             }
             case BIReportConstant.WIDGET.PIE: {
