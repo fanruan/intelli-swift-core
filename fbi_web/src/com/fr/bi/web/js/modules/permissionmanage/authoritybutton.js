@@ -2,8 +2,6 @@
  * Created by wuk on 16/4/25.
  */
 BI.AuthorityButton = BI.inherit(BI.BasicButton, {
-
-
     _defaultConfig: function(){
         var conf = BI.AuthorityButton.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
