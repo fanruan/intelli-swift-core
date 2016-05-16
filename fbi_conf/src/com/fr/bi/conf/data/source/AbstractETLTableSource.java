@@ -17,7 +17,7 @@ import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.utils.BIMapUtils;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 
@@ -136,9 +136,47 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         generateTable.put(getLevel(), createSourceSet());
         Iterator<S> it = parents.iterator();
         while (it.hasNext()) {
-            BIMapUtils.mergeSetValueMap(generateTable, it.next().createGenerateTablesMap());
+            BICollectionUtils.mergeSetValueMap(generateTable, it.next().createGenerateTablesMap());
         }
         return generateTable;
+    }
+
+    @Override
+    public boolean isIndependent() {
+        return !(hasTableFilterOprator()||isAllAddColumnOprator());
+    }
+
+    @Override
+    public List<Set<ITableSource>> createGenerateTablesList() {
+        List<Set<ITableSource>> generateTable = new ArrayList<Set<ITableSource>>();
+        Set<ITableSource> operators = createSourceSet();
+        generateTable.add(operators);
+        if (operators.size() > 1) {
+            Set<ITableSource> self = new HashSet<ITableSource>();
+            BIOccupiedTableSource tableSource = new BIOccupiedTableSource(this.getSourceID());
+            self.add(tableSource);
+            generateTable.add(self);
+        }
+        Iterator<S> it = parents.iterator();
+        while (it.hasNext()) {
+            List<Set<ITableSource>> parent = it.next().createGenerateTablesList();
+            if (!parent.isEmpty()) {
+                for (int i = 0; i < parent.size(); i++) {
+                    generateTable.add(i, parent.get(i));
+                }
+            }
+        }
+        return generateTable;
+    }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
+
+    @Override
+    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+        return 0;
     }
 
     protected Set<ITableSource> createSourceSet() {

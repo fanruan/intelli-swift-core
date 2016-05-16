@@ -84,6 +84,7 @@ public interface ITopicRouterService extends IMessageDeliver {
 
     boolean isSubscribed(ISubscribe subscribe, ITopicTag topicTag, IFragmentTag fragmentTag)
             throws BITopicAbsentException, BIFragmentAbsentException;
+
     boolean isRegistered(ITopicTag topicTag);
 
     boolean isRegistered(IFragmentTag fragmentTag);
@@ -92,4 +93,6 @@ public interface ITopicRouterService extends IMessageDeliver {
 
 
     void reset();
+
+    void closeVerbose();
 }

@@ -1,10 +1,8 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
-
+import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
+import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.NormalIteratorManager;
 import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.cal.sssecret.GroupConnectionValue;
-import com.fr.bi.cal.analyze.cal.sssecret.GroupUtils;
-import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
-import com.fr.bi.cal.analyze.cal.sssecret.NoneDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTree;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTreeBuilder;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
@@ -28,7 +26,6 @@ import com.fr.general.NameObject;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * This class created on 2016/3/9.
  *
@@ -676,16 +673,37 @@ public class DimensionGroupFilter {
         return child;
     }
 
+    private RootDimensionGroup[] mergerRootDimensionGroup = null;
     private GroupConnectionValue[] next() {
         checkInRuntime();
-        GroupConnectionValue[] groupConnectionValues = new GroupConnectionValue[mergerInfoList.size()];
-        for (int i = 0; i < mergerInfoList.size(); i++) {
-            NodeDimensionIterator treeIterator = mergerInfoList.get(i).getRootDimensionGroup().moveNext();
-            GroupConnectionValue next = treeIterator.next();
-            groupConnectionValues[i] = next;
-        }
+        getIteratorManager().moveNext();
+        GroupConnectionValue[] groupConnectionValues = getIteratorManager().getNextGroupConnectionValues();
         return getAllMinChildGroups(groupConnectionValues);
     }
+
+    private IteratorManager iteratorManager = null;
+    private IteratorManager getIteratorManager(){
+        if (iteratorManager == null) {
+            iteratorManager = new NormalIteratorManager(getRootDimensionGroups());
+        }
+        return iteratorManager;
+    }
+
+    private RootDimensionGroup[] getRootDimensionGroups() {
+        if (mergerRootDimensionGroup == null) {
+            mergerRootDimensionGroup = getRootDimensionGroups0();
+        }
+        return mergerRootDimensionGroup;
+    }
+
+    private RootDimensionGroup[] getRootDimensionGroups0() {
+        RootDimensionGroup[] rootDimensionGroups = new RootDimensionGroup[mergerInfoList.size()];
+        for (int i = 0; i < rootDimensionGroups.length; i++) {
+            rootDimensionGroups[i] = mergerInfoList.get(i).getRootDimensionGroup();
+        }
+        return rootDimensionGroups;
+    }
+
 
     private void checkInRuntime() {
         checkTimeout();
