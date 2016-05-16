@@ -20,6 +20,8 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
             allowBlank: true,
             watermark: "",
             errorText: "",
+            value: "",
+            text: "",
             height: 30
         })
     },
@@ -116,14 +118,14 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
     },
 
     setValue: function (v) {
-        this.editor.setValue(v.state);
-        this.setState(v.state);
+        this.editor.setValue(v.value);
+        this.setState(v.value);
     },
 
     getValue: function () {
         return {
-            state: this.editor.getValue(),
-            default: this.options.value
+            value: this.editor.getValue(),
+            state: this.options.text
         }
     },
 
@@ -134,9 +136,9 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
     setState: function (v) {
         var o = this.options;
         if (BI.isEmpty(v)) {
-            this.editor.setValue(o.value);
+            this.editor.setValue(o.text);
         }
-        v = (BI.isEmpty(v) || v == o.value) ? o.value : v + "(" + o.value + ")";
+        v = (BI.isEmpty(v) || v == o.text) ? o.text : v + "(" + o.text + ")";
         this.editor.setState(v);
     }
 });
