@@ -73,6 +73,7 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
 
         var triggerBtn = BI.createWidget({
             type: "bi.trigger_icon_button",
+            width: this.constants.iconSize,
             stopPropagation: true,
             cls: "multi-select-trigger-icon-button"
         });

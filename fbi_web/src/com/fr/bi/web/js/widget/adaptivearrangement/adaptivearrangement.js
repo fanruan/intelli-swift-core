@@ -53,14 +53,14 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         });
         o.resizable && item.element.resizable({
             handles: "e, s, se",
-            minWidth: 21,
-            minHeight: 21,
-            helper: "bi-arrangement-droppable",
+            minWidth: 100,
+            minHeight: 60,
+            helper: "bi-resizer",
             start: function () {
                 item.element.css("zIndex", ++self.zIndex);
             },
             resize: function (e, ui) {
-                self._resize(item.attr("id"), ui.size);
+                // self._resize(item.attr("id"), ui.size);
             },
             stop: function (e, ui) {
                 self._resize(item.attr("id"), ui.size);
@@ -185,15 +185,15 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                                 bottomRegions.push(region);
                             }
                         });
-                        clone[id] = BI.extend({}, region, {
-                            left: current.left,
-                            width: current.width,
-                            top: current.top + current.height,
-                            height: insert.height
-                        });
                         var bs = this.arrangement._getInDirectRelativeRegions(current.id, ["bottom"]).bottom;
                         var seen = [current.id];
                         var bottoms = bs.bottom;
+                        clone[id] = BI.extend({}, region, {
+                            left: current.left,
+                            width: this.arrangement._getRegionOccupied(bottoms).width,
+                            top: current.top + current.height,
+                            height: insert.height
+                        });
                         while (bottoms.length > 0) {
                             BI.each(bottoms, function (i, bottom) {
                                 seen.push(bottom.id);

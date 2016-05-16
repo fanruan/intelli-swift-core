@@ -24,4 +24,8 @@ public class BITestSub4Operation extends BIOperationBase {
     protected ITopicTag generateTopicTag() {
         return null;
     }
+
+    public void testVoid() {
+
+    }
 }

@@ -11,7 +11,7 @@ TextAreaView = BI.inherit(BI.View, {
 
     _render: function (vessel) {
         var editor = BI.createWidget({
-            type: "bi.textarea",
+            type: "bi.code_editor",
             cls: "mvc-border",
             width: 600,
             height: 400

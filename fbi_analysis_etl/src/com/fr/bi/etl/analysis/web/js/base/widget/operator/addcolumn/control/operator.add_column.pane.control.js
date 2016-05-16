@@ -16,14 +16,14 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         widget.allColumnsPane.populate(model.getAddColumns())
         widget.card.showCardByName(cardName);
         this.doCheck(widget);
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
     },
     
     doCheck : function (widget) {
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
     },
 
-    _check : function (widget, model) {
+    _doModelCheck : function (widget, model) {
         var parent = model.get(ETLCst.PARENTS)[0];
         var self = this;
         var columns = model.get(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY);
@@ -63,9 +63,18 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
                     })
             }
         })
+        model.setValid(!found)
+        return found;
+    },
+
+    _check : function (widget, model) {
+        var found = this._doModelCheck(widget, model)
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
+        } else {
+            model.set(ETLCst.FIELDS, [])
         }
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !found);
     },
 
     _checkField : function (widget, dates, fields, columnName, type) {
@@ -115,7 +124,8 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     deleteColumnByName : function (name, widget, model) {
         model.deleteColumnByName(name);
         this._cancelEditColumn(widget, model);
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        this._doModelCheck(widget, model)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.getAddColumns().length !== 0)
     },
 
@@ -169,7 +179,8 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         } else {
             model.addColumn(column);
         }
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        this._doModelCheck(widget, model)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
         this._cancelEditColumn(widget, model);
     },
 
@@ -185,7 +196,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     _getAllColumnNames : function (model, name) {
         var columnNames = [];
         var parent = model.get(ETLCst.PARENTS)[0];
-        BI.each(BI.concat(parent.fields, model.getAddColumns()), function (idx, item) {
+        BI.each(BI.concat(parent[ETLCst.FIELDS], model.getAddColumns()), function (idx, item) {
             if(item.field_name !== name) {
                 columnNames.push(item.field_name)
             }
@@ -206,9 +217,9 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         });
         widget.oneConditionPane.populate([widget.currentEditPane]);
         var column = widget.title.update();
-        widget.currentEditPane.populate(BI.extend({
-                fields:parent[ETLCst.FIELDS]
-        }, value), {
+        var fields = {}
+        fields[ETLCst.FIELDS] = parent[ETLCst.FIELDS];
+        widget.currentEditPane.populate(BI.extend(fields, value), {
             field_type : column.field_type
         })
     },

@@ -106,6 +106,16 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         }
     }
 
+    @Override
+    public void forceRelease() {
+        releaseSource();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return !isValid;
+    }
+
     public void releaseSource() {
         readWriteLock.writeLock().lock();
         if (!isValid) {

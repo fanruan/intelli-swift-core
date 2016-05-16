@@ -31,13 +31,25 @@ public class AnalysisETLSourceFactory {
 
     private static AnalysisTableSource createOneTableSource(JSONObject jo, long userId) throws Exception {
         int type = jo.getInt("etlType");
+        List<AnalysisETLSourceField> fieldList = new ArrayList<AnalysisETLSourceField>();
+        if (jo.has(Constants.FIELDS)){
+            JSONArray ja = jo.getJSONArray(Constants.FIELDS);
+            for (int i = 0; i < ja.length(); i++){
+                AnalysisETLSourceField field = new AnalysisETLSourceField();
+                field.parseJSON(ja.getJSONObject(i));
+                fieldList.add(field);
+            }
+        }
+        String name = jo.getString("table_name");
         switch (type){
             case Constants.ETL_TYPE.SELECT_DATA :
-                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type);
+                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name);
             case Constants.ETL_TYPE.SELECT_NONE_DATA :
-                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type);
+                AnalysisBaseTableSource baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name);
+                BIAnalysisETLManagerCenter.getDataSourceManager().addSource(baseSource, userId);
+                return baseSource;
             default :
-                AnalysisETLTableSource source = new AnalysisETLTableSource();
+                AnalysisETLTableSource source = new AnalysisETLTableSource(fieldList, name);
                 JSONArray parents = jo.getJSONArray("parents");
                 List<AnalysisTableSource> ps = new ArrayList<AnalysisTableSource>();
                 for (int i = 0; i < parents.length(); i ++){

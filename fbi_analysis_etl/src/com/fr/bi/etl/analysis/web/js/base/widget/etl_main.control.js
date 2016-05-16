@@ -9,7 +9,11 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
             type: "bi.etl_table_name_warning_popover",
         });
         warningPopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function () {
-            self._showNamePop(widget, model);
+            if (BI.isNull(model.get('id'))){
+                this._showNamePop(widget, model);
+            } else {
+                this._doSave(widget, model);
+            }
         });
         BI.Popovers.remove("etlTableWarning");
         BI.Popovers.create("etlTableWarning", warningPopover, {width : 400, height : 320, container:widget.element}).open("etlTableWarning");
@@ -37,7 +41,7 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
 
     _doSave : function (widget, model) {
         BI.ETLReq.reqSaveTable(model.update(), function () {
-            //widget.setVisible(false);
+            widget.setVisible(false);
         });
     },
 

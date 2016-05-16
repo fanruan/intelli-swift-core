@@ -23,9 +23,8 @@ public class BIMessageStatus implements IMessageStatus {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("BIMessageStatus{");
-        sb.append("statusTag=").append(statusTag);
-        sb.append('}');
+        final StringBuffer sb = new StringBuffer();
+        sb.append(statusTag);
         return sb.toString();
     }
 }

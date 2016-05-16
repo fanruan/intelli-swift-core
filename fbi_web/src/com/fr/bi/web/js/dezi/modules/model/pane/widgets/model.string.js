@@ -3,10 +3,11 @@ BIDezi.StringWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.StringWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.STRING,
+            type: BICst.WIDGET.STRING,
             dimensions: {},
             view: {},
-            value: {}
+            value: {},
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 

@@ -79,12 +79,13 @@ BI.NumberETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
 
     _createNumberOneSidePane: function(filterType){
         var self = this, o = this.options;
-        this.filterWidget = BI.createWidget({
+        var op ={
             type: "bi.filter_number_oneside_etl",
             filter_type : filterType,
             field_name : o.field_name,
-            fields : o.fields
-        });
+        }
+        op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+        this.filterWidget = BI.createWidget(op);
         this.filterWidget.on(BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM, function () {
             self.fireEvent(BI.AbstractETLFilterItem.EVENT_VALUE_CHANGED);
         })
@@ -93,12 +94,13 @@ BI.NumberETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
 
     _createNumberNInput: function(filterType){
         var self = this, o = this.options;
-        this.filterWidget = BI.createWidget({
+        var op ={
             type: 'bi.filter_number_n_etl',
-            fields : o.fields,
             field_name : o.field_name,
             filterType : filterType
-        });
+        }
+        op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+        this.filterWidget = BI.createWidget(op);
         this.filterWidget.on(BI.ETLNumberNFilterPane.EVENT_CONFIRM, function () {
             self.fireEvent(BI.AbstractETLFilterItem.EVENT_VALUE_CHANGED);
         })

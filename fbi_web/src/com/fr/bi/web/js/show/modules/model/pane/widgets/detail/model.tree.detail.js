@@ -7,7 +7,7 @@ BIShow.TreeDetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.TREE,
+            type: BICst.WIDGET.TREE,
             value: {}
         })
     },

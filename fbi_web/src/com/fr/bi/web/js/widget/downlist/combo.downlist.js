@@ -2,15 +2,13 @@
  * Created by roy on 15/8/14.
  */
 BI.DownListCombo = BI.inherit(BI.Widget, {
-    constants: {
-        height: 25
-    },
     _defaultConfig: function () {
         return BI.extend(BI.DownListCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-down-list-combo",
             invalid: false,
+            height: 25,
             items: [],
-            el:{}
+            el: {}
         })
     },
 
@@ -42,15 +40,17 @@ BI.DownListCombo = BI.inherit(BI.Widget, {
             el: BI.createWidget(o.el, {
                 type: "bi.icon_trigger",
                 extraCls: o.iconCls ? o.iconCls : "pull-down-font",
-                height: this.constants.height
+                width: o.width,
+                height: o.height
             }),
             popup: {
                 el: this.popupview,
+                stopPropagation: true,
                 maxHeight: 400
             }
-        })
+        });
 
-        this.downlistcombo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW,function(){
+        this.downlistcombo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
             self.fireEvent(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW);
         });
     },

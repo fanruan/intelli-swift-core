@@ -17,4 +17,8 @@ public interface ICubeWriter<T> extends Release {
     void setPosition(BICubeLongTypePosition position);
 
     void flush();
+
+    void forceRelease();
+
+    boolean isForceReleased();
 }

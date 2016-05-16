@@ -14,4 +14,9 @@ public class BITopicID extends BIIdentity<String> implements ITopicID {
         super(id);
     }
 
+    @Override
+    public String toString() {
+        return identity;
+
+    }
 }

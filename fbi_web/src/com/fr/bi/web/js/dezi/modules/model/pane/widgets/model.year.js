@@ -3,10 +3,11 @@ BIDezi.YearWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.YearWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.YEAR,
+            type: BICst.WIDGET.YEAR,
             dimensions: {},
             view: {},
-            value: null
+            value: null,
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 

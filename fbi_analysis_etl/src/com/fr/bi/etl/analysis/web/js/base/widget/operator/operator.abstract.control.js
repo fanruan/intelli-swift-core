@@ -33,3 +33,4 @@ BI.AnalysisETLOperatorAbstractController = BI.inherit(BI.MVCController, {
     
 })
 BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE="preview_change";
+BI.AnalysisETLOperatorAbstractController.VALID_CHANGE = "valid_change"

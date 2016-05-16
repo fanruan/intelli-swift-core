@@ -19,12 +19,13 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeTableEntityGetterService extends Release{
+public interface ICubeTableEntityGetterService extends Release {
 
     int getTableVersion();
 
     /**
      * 获得CubeTable对应的数据源表的字段信息
+     *
      * @return 按照顺序的字段信息
      */
     List<DBField> getFieldInfo();
@@ -32,6 +33,7 @@ public interface ICubeTableEntityGetterService extends Release{
     /**
      * Cube中保存的字段信息。
      * 包括子类型的处理
+     *
      * @return cube的字段信息。
      */
     Set<BIColumnKey> getCubeColumnInfo();
@@ -69,4 +71,6 @@ public interface ICubeTableEntityGetterService extends Release{
             throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException;
 
     boolean tableDataAvailable();
+
+    boolean isRowCountAvailable();
 }

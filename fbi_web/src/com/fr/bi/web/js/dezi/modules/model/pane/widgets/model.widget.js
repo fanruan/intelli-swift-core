@@ -4,7 +4,7 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             name: "",
             bounds: {},
             linkages: [],
-            type: BICst.Widget.TABLE,
+            type: BICst.WIDGET.TABLE,
             dimensions: {},
             view: {},
             settings: BI.deepClone(BICst.DEFAULT_CHART_SETTING)

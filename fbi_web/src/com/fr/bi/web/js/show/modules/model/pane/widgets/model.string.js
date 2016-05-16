@@ -3,7 +3,7 @@ BIShow.StringWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIShow.StringWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.STRING,
+            type: BICst.WIDGET.STRING,
             dimensions: {},
             view: {},
             filter_value: {}

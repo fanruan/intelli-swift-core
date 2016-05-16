@@ -6,6 +6,9 @@
 .bi-analysis-etl-operator-add-column-single-pane {
   border: 1px solid #eaeaea;
 }
+.bi-analysis-etl-operator-add-column-single-pane .add-column-min-width {
+  min-width: 890px;
+}
 .bi-analysis-etl-operator-add-column-single-pane .label-name {
   font-size: 14px;
   color: #7f7f7f;

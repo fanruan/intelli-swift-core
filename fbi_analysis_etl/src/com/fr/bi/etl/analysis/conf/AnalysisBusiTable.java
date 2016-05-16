@@ -16,6 +16,10 @@ public class AnalysisBusiTable extends BIBusinessTable {
         super(id, userId);
     }
 
+    public void setSource(ITableSource source){
+        this.source = source;
+    }
+
     @Override
     public ITableSource getSource() {
         if (source == null) {

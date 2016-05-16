@@ -6,6 +6,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.stable.report.result.LightNode;
 
 import java.util.Collection;
 import java.util.Set;
@@ -88,5 +89,31 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
             }
         }
         return null;
+    }
+
+    /**
+     * 在第几个维度上汇总，暂时写死为1
+     *
+     * @return
+     */
+    protected int getCalDeep(Object rank_node) {
+        int deep = 0;
+        if (rank_node instanceof LightNode) {
+            LightNode node = (LightNode)rank_node;
+            while (node.getFirstChild() != null) {
+                deep++;
+                node = node.getFirstChild();
+            }
+        } else if (rank_node instanceof BICrossNode) {
+            BICrossNode node = (BICrossNode) rank_node;
+            while (node.getLeftFirstChild() != null) {
+                deep++;
+                node = node.getLeftFirstChild();
+            }
+        }else{
+            return 1;
+        }
+
+        return deep;
     }
 }

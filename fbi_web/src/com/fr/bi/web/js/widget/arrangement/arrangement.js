@@ -1376,12 +1376,12 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 }
             }
         }
-        if (tops.length === 1) {
+        if (tops.length >= 1) {
             result.push({
                 type: "top-gap"
             });
         }
-        if (bottoms.length === 1) {
+        if (bottoms.length >= 1) {
             result.push({
                 type: "bottom-gap"
             });
@@ -1947,8 +1947,8 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     getHelper: function () {
         var helper = BI.createWidget({
             type: "bi.layout",
-            width: 8,
-            height: 8,
+            width: 18,
+            height: 18,
             cls: "arrangement-helper"
         });
         BI.createWidget({

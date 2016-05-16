@@ -8,6 +8,7 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         if (BI.isNull(this.get('invalidIndex'))){
             this.set('invalidIndex', Number.MAX_VALUE);
         }
+        this.set("allHistory", false)
         if (BI.isNull(this.options.etlType)){
             this.addItemAfter(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_FIELD, -1)
         } else {
@@ -18,17 +19,36 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
     },
 
     _initItems : function (table, items) {
-        var operator = BI.findWhere(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP, {
-            value: table.etlType
-        })
+        var operator = ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[table.etlType];
+        var self = this;
         items = BI.concat([{
             op : operator,
             table : table
         }], items)
-        if (BI.isNotNull(table.parents) && table.parents.length !== 2){
-            items = this._initItems(table.parents[0], items);
+        if (BI.isNotNull(table.parents)){
+            if(table.parents.length !== 2) {
+                items = this._initItems(table.parents[0], items);
+            } else {
+                self._initId(table.parents)
+                this.set("allHistory", true)
+            }
         };
         return items;
+    },
+
+    _initId : function (tables) {
+        var self = this;
+        if(BI.isNotNull(tables)) {
+            BI.each(tables, function (idx, item) {
+                item.value = item.value || BI.UUID();
+                var operator = ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[item.etlType]
+                BI.extend(item, {
+                    operatorType : operator["operatorType"],
+                    text:operator["text"]
+                })
+                self._initId(item[ETLCst.PARENTS])
+            })
+        }
     },
 
 
@@ -92,7 +112,7 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
 
     setFields : function(v, fields){
         var item = this.findItem(v);
-        item.fields = fields;
+        item[ETLCst.FIELDS] = fields;
     },
 
     getOperatorType : function (v) {
@@ -106,6 +126,10 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         items = items.slice(0, pos);
         this.set(ETLCst.ITEMS, items)
         return pos;
+    },
+
+    isModelValid : function () {
+        return this.getValue('invalidIndex') >= this.get(ETLCst.ITEMS).length
     },
 
     createHistoryModel : function () {
@@ -143,12 +167,15 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
 
     update : function () {
         var items = this.get(ETLCst.ITEMS);
-        return BI.extend(BI.extend({
+        var res =  BI.extend(BI.extend({
         }, items[items.length - 1]), {
             value:this.getValue("value"),
             table_name:this.getValue("table_name"),
-            allHistory:this.getValue("allHistory"),
             invalidIndex : this.getValue('invalidIndex')
         });
+        if(!this.isModelValid()){
+            res[ETLCst.FIELDS] = []
+        }
+        return res;
     }
 })

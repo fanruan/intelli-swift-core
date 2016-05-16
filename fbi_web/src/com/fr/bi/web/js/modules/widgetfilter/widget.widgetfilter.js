@@ -20,7 +20,6 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
         this.model = new BI.WidgetFilterModel();
         this.tab = BI.createWidget({
             type: "bi.tab",
-            element: this.element,
             cardCreator: function(v){
                 switch (v) {
                     case self._constants.SHOW_FILTER:
@@ -53,6 +52,28 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
             }
         });
         this.populate();
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.tab,
+                top: 0,
+                left: 0,
+                bottom: 40,
+                right: 0
+            }, {
+                el: {
+                    type: "bi.button",
+                    text: BI.i18nText("BI-Close_Filter"),
+                    height: 26,
+                    handler: function(){
+                        self.setVisible(false);
+                    }
+                },
+                right: 10,
+                bottom: 10
+            }]
+        })
     },
 
     populate: function(){
@@ -65,7 +86,7 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
         BI.each(allWidgetIds, function(i, cwid){
             if(BI.Utils.isControlWidgetByWidgetId(cwid)) {
                 //通用查询
-                if(BI.Utils.getWidgetTypeByID(cwid) === BICst.Widget.GENERAL_QUERY) {
+                if(BI.Utils.getWidgetTypeByID(cwid) === BICst.WIDGET.GENERAL_QUERY) {
                     var value = BI.Utils.getWidgetValueByID(cwid);
                     var item = self.model.parseGeneralQueryFilter(value[0]);
                     if(BI.isNotNull(item)) {
@@ -136,4 +157,5 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
     }
 });
 BI.WidgetFilter.EVENT_REMOVE_FILTER = "EVENT_REMOVE_FILTER";
+BI.WidgetFilter.EVENT_CLOSE_FILTER = "EVENT_CLOSE_FILTER";
 $.shortcut("bi.widget_filter", BI.WidgetFilter);

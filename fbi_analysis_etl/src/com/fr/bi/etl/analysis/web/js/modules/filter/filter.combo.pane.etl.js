@@ -73,13 +73,14 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
     _createConditionItem : function (index){
         var self = this, o = self.options;
         var value = self.storeValue.value;
-        var condition =  BI.createWidget({
+        var op = {
             type : self._createOneConditionType(),
-            fields : o.fields,
             field_name : o.field_name,
             value : value[index],
             fieldValuesCreator : o.fieldValuesCreator
-        });
+        }
+        op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+        var condition =  BI.createWidget(op);
         condition.on(BI.AbstractETLFilterItem.EVENT_VALUE_CHANGED, function(){
             value[index] = condition.getValue();
         })

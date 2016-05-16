@@ -11,6 +11,7 @@ import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import junit.framework.TestCase;
 
@@ -64,7 +65,7 @@ public class BICubeTablePropertyTest extends TestCase {
             } catch (Exception e) {
                 assertTrue(false);
             } finally {
-                property.clear();
+                property.forceRelease();
 
                 File file = new File(location.getAbsolutePath());
                 if (file.exists()) {
@@ -75,7 +76,7 @@ public class BICubeTablePropertyTest extends TestCase {
 
     }
 
-    public void testRowCountReadAvailable() {
+    public void rowCountReadAvailable() {
         synchronized (this.getClass()) {
             try {
                 assertFalse(property.isRowCountReaderAvailable());
@@ -90,7 +91,7 @@ public class BICubeTablePropertyTest extends TestCase {
             } catch (Exception e) {
                 assertFalse(true);
             } finally {
-                property.clear();
+                property.forceRelease();
 
                 File file = new File(location.getAbsolutePath());
                 if (file.exists()) {
@@ -101,7 +102,7 @@ public class BICubeTablePropertyTest extends TestCase {
 
     }
 
-    public void testVersionAvailable() {
+    public void versionAvailable() {
         synchronized (this.getClass()) {
 
             try {
@@ -123,7 +124,7 @@ public class BICubeTablePropertyTest extends TestCase {
             } catch (Exception e) {
                 assertFalse(true);
             } finally {
-                property.clear();
+                property.forceRelease();
 
                 File file = new File(location.getAbsolutePath());
                 if (file.exists()) {
@@ -133,7 +134,27 @@ public class BICubeTablePropertyTest extends TestCase {
         }
     }
 
-    public void testLastTimeAvailable() {
+    public void testPropertyAvailable() {
+        try {
+            propertyAvailable();
+            setUp();
+            fieldInfoAvailable();
+            setUp();
+
+            lastTimeAvailable();
+            setUp();
+
+            versionAvailable();
+            setUp();
+
+            rowCountReadAvailable();
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
+
+    public void lastTimeAvailable() {
         try {
             synchronized (this.getClass()) {
                 assertFalse(property.isRowCountReaderAvailable());
@@ -165,7 +186,7 @@ public class BICubeTablePropertyTest extends TestCase {
         } catch (Exception e) {
             assertTrue(false);
         } finally {
-            property.clear();
+            property.forceRelease();
 
             File file = new File(location.getAbsolutePath());
             if (file.exists()) {
@@ -174,7 +195,7 @@ public class BICubeTablePropertyTest extends TestCase {
         }
     }
 
-    public void testFieldInfoAvailable() {
+    public void fieldInfoAvailable() {
         try {
             synchronized (this.getClass()) {
 
@@ -218,8 +239,50 @@ public class BICubeTablePropertyTest extends TestCase {
         } catch (Exception e) {
             assertTrue(false);
         } finally {
-            property.clear();
+            property.forceRelease();
 
+            File file = new File(location.getAbsolutePath());
+            if (file.exists()) {
+                BIFileUtils.delete(file);
+            }
+        }
+        propertyAvailable();
+    }
+
+    public void testAddNullFieldsPropertyAvailable() {
+        try {
+            synchronized (this.getClass()) {
+                setUp();
+                assertFalse(property.isRowCountReaderAvailable());
+                assertFalse(property.isRowCountWriterAvailable());
+                assertFalse(property.isVersionReaderAvailable());
+                assertFalse(property.isVersionWriterAvailable());
+                assertFalse(property.isTimeStampReaderAvailable());
+                assertFalse(property.isTimeStampWriterAvailable());
+                assertFalse(property.isFieldWriterAvailable());
+                assertFalse(property.isFieldReaderAvailable());
+
+                assertFalse(property.isPropertyExist());
+                assertTrue(property.isFieldReaderAvailable());
+
+                property.recordTableStructure(null);
+
+                assertFalse(property.isRowCountReaderAvailable());
+                assertFalse(property.isRowCountWriterAvailable());
+                assertFalse(property.isVersionReaderAvailable());
+                assertFalse(property.isVersionWriterAvailable());
+                assertFalse(property.isTimeStampReaderAvailable());
+                assertFalse(property.isTimeStampWriterAvailable());
+                assertTrue(property.isFieldReaderAvailable());
+                assertTrue(property.isFieldWriterAvailable());
+                property.recordLastTime();
+                assertTrue(property.isPropertyExist());
+            }
+
+        } catch (Exception e) {
+            assertTrue(false);
+        } finally {
+            property.forceRelease();
             File file = new File(location.getAbsolutePath());
             if (file.exists()) {
                 BIFileUtils.delete(file);
@@ -227,10 +290,10 @@ public class BICubeTablePropertyTest extends TestCase {
         }
     }
 
-
-    public void testPropertyAvailable() {
+    public void propertyAvailable() {
         try {
             synchronized (this.getClass()) {
+                setUp();
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
                 assertFalse(property.isVersionReaderAvailable());
@@ -254,13 +317,44 @@ public class BICubeTablePropertyTest extends TestCase {
                 assertFalse(property.isTimeStampWriterAvailable());
                 assertTrue(property.isFieldReaderAvailable());
                 assertTrue(property.isFieldWriterAvailable());
+                property.recordLastTime();
                 assertTrue(property.isPropertyExist());
             }
 
         } catch (Exception e) {
             assertTrue(false);
         } finally {
-            property.clear();
+            property.forceRelease();
+            File file = new File(location.getAbsolutePath());
+            if (file.exists()) {
+                BIFileUtils.delete(file);
+            }
+        }
+    }
+
+    public void testPropertyParentTables() {
+        try {
+            synchronized (this.getClass()) {
+                assertFalse(property.isParentReaderAvailable());
+                assertFalse(property.isParentWriterAvailable());
+                ITableKey tableKey = new BITableKey("abc");
+                ITableKey tableKey2 = new BITableKey("dfg");
+                List<ITableKey> parents = new ArrayList<ITableKey>();
+                parents.add(tableKey);
+                parents.add(tableKey2);
+                property.recordParentsTable(parents);
+                assertFalse(property.isParentReaderAvailable());
+                assertTrue(property.isParentWriterAvailable());
+                List<ITableKey> parentsTable = property.getParentsTable();
+                assertEquals(tableKey, parentsTable.get(0));
+                assertEquals(tableKey2, parentsTable.get(1));
+            }
+
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        } finally {
+            property.forceRelease();
             File file = new File(location.getAbsolutePath());
             if (file.exists()) {
                 BIFileUtils.delete(file);
