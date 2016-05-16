@@ -41,14 +41,11 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
 
     doCancel : function (widget, model) {
         var self = this;
-        var r = false;
         BI.Msg.confirm(BI.i18nText("BI-Cancel"), BI.i18nText("BI-Etl_Cancel_Warning"), function (v) {
             if(v === true) {
-                r = true;
                 self._hideView(widget)
             }
         })
-        return r;
     },
 
     _hideView : function (widget) {
