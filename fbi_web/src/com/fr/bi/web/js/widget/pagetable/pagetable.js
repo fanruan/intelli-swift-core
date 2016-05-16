@@ -263,38 +263,41 @@ BI.PageTable = BI.inherit(BI.Widget, {
     _showCurrentColumn: function () {
         var self = this, o = this.options;
         this._hideCurrentColumn();
-        this._currentColumn = BI.createWidget({
-            type: "bi.text_button",
-            cls: "page-table-current-column",
-            text: BI.i18nText("BI-Di_A_Col", ((this.hpage - 1) * 20 + 1)),
-            hgap: 15,
-            height: 20,
-            handler: function () {
-                self._hideCurrentColumn();
-            }
-        });
-        if (BI.isNotNull(o.isNeedFreeze)) {
-            var regionSize = this.table.getRegionColumnSize();
-            BI.createWidget({
-                type: "bi.absolute",
-                element: this.element,
-                items: [{
-                    el: this._currentColumn,
-                    left: regionSize[0] + 2,
-                    bottom: this._const.scrollWidth + 2
-                }]
-            })
-        } else {
-            BI.createWidget({
-                type: "bi.absolute",
-                element: this.element,
-                items: [{
-                    el: this._currentColumn,
-                    left: 2,
-                    bottom: this._const.scrollWidth + 2
-                }]
-            })
-        }
+        /**
+         * 暂时不用显示分页信息
+         */
+        //this._currentColumn = BI.createWidget({
+        //    type: "bi.text_button",
+        //    cls: "page-table-current-column",
+        //    text: BI.i18nText("BI-Di_A_Col", ((this.hpage - 1) * 20 + 1)),
+        //    hgap: 15,
+        //    height: 20,
+        //    handler: function () {
+        //        self._hideCurrentColumn();
+        //    }
+        //});
+        //if (BI.isNotNull(o.isNeedFreeze)) {
+        //    var regionSize = this.table.getRegionColumnSize();
+        //    BI.createWidget({
+        //        type: "bi.absolute",
+        //        element: this.element,
+        //        items: [{
+        //            el: this._currentColumn,
+        //            left: regionSize[0] + 2,
+        //            bottom: this._const.scrollWidth + 2
+        //        }]
+        //    })
+        //} else {
+        //    BI.createWidget({
+        //        type: "bi.absolute",
+        //        element: this.element,
+        //        items: [{
+        //            el: this._currentColumn,
+        //            left: 2,
+        //            bottom: this._const.scrollWidth + 2
+        //        }]
+        //    })
+        //}
     },
 
     _hideCurrentColumn: function () {
@@ -329,7 +332,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         return this.table.getColumnSize();
     },
 
-    getCalculateColumnSize: function(){
+    getCalculateColumnSize: function () {
         return this.table.getCalculateColumnSize();
     },
 

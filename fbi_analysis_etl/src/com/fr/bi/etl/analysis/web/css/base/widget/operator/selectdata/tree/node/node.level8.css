@@ -3,16 +3,3 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.icon-analysis-table-set .x-icon {
-  transition: transform 0.5s ease;
-  -webkit-transition: -webkit-transform 0.5s ease;
-  -moz-transition: -moz-transform 0.5s ease;
-  -o-transition: -o-transform 0.5s ease;
-}
-.icon-analysis-table-set .x-icon:hover,
-.icon-analysis-table-set .x-icon.hover {
-  transform: rotate(90deg) scale(1.2);
-  -webkit-transform: rotate(90deg) scale(1.2);
-  -moz-transform: rotate(90deg) scale(1.2);
-  -o-transform: rotate(90deg) scale(1.2);
-}
