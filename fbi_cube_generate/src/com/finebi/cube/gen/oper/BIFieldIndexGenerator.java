@@ -45,9 +45,6 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     private void initial() {
         try {
-            if (hostDBField.getFieldName().equals("badd")) {
-                System.out.println("find");
-            }
             ICubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
             rowCount = tableEntityService.getRowCount();
