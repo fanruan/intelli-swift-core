@@ -24,11 +24,15 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
     @Override
     public void calCalculateTarget(LightNode node) {
         Object key = getCalKey();
+        //获得当前node的纬度数
+        int deep = getCalDeep(node);
         if (key == null) {
             return;
         }
         LightNode tempNode = node;
-        for (int i = 0; i < start_group; i++) {
+        //从第几个纬度开始计算
+        int calDeep = start_group == 0 ? 0 : deep - start_group;
+        for (int i = 0; i < calDeep; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
@@ -77,31 +81,6 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
 
     public abstract Callable createNodeDealWith(BICrossNode node);
 
-    /**
-     * 在第几个维度上汇总，暂时写死为1
-     *
-     * @return
-     */
-    protected int getCalDeep(Object rank_node) {
-        int deep = 0;
-        if (rank_node instanceof LightNode) {
-            LightNode node = (LightNode)rank_node;
-            while (node.getFirstChild() != null) {
-                deep++;
-                node = node.getFirstChild();
-            }
-        } else if (rank_node instanceof BICrossNode) {
-            BICrossNode node = (BICrossNode) rank_node;
-            while (node.getLeftFirstChild() != null) {
-                deep++;
-                node = node.getLeftFirstChild();
-            }
-        }else{
-            return 1;
-        }
-
-        return deep;
-    }
 
     protected LightNode getFirstCalNode(LightNode rank_node) {
         LightNode temp_node = rank_node;

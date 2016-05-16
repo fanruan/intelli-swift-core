@@ -43,6 +43,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var self = this;
         this._buildWidgetTitle();
+        this._createTools();
+        
         this.tableChart = BI.createWidget({
             type: "bi.table_chart_manager",
             wId: self.model.get("id")
@@ -52,10 +54,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             self.model.set(widget);
         });
 
-        this._createTools();
         this.widget = BI.createWidget({
             type: "bi.absolute",
-            element: this.element,
+            element: vessel,
             items: [{
                 el: this.tools,
                 top: 0,
@@ -73,7 +74,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 bottom: 10
             }]
         });
-        this.element.hover(function(){
+        this.widget.element.hover(function(){
             self.tools.setVisible(true);
         }, function(){
             self.tools.setVisible(false);
@@ -110,8 +111,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         var self = this;
         var expand = BI.createWidget({
             type: "bi.icon_button",
-            width: 26,
-            height: 26,
+            width: 16,
+            height: 16,
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -201,7 +202,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [expand, combo]
+            items: [expand, combo],
+            hgap: 3
         });
         this.tools.setVisible(false);
     },
@@ -227,8 +229,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     
     _refreshTitlePosition: function(){
         var pos = BI.Utils.getWidgetNamePositionByID(this.model.get("id"));
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
-                            "dashboard-title-left" : "dashboard-title-center";
+        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
+                            "dashboard-title-center" : "dashboard-title-left";
         this.title.element.removeClass("dashboard-title-left")
                             .removeClass("dashboard-title-center").addClass(cls);
     },

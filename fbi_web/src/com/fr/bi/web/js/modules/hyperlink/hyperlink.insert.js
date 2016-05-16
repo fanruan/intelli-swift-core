@@ -43,7 +43,7 @@ BI.HyperLinkInsert = BI.inherit(BI.Widget, {
 
 
         this.textArea = BI.createWidget({
-            type: "bi.textarea",
+            type: "bi.code_editor",
             cls: "hyper-link-text-area"
         });
 

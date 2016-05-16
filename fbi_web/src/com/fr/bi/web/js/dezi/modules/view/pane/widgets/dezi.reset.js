@@ -56,9 +56,7 @@ BIDezi.ResetView = BI.inherit(BI.View, {
 
     _resetAllControlValues: function(){
         BI.each(BI.Utils.getAllWidgetIDs(), function(i, wid){
-             if(BI.Utils.isControlWidgetByWidgetId(wid)) {
-                 BI.Broadcasts.send(wid);
-             }
+             BI.Broadcasts.send(BICst.BROADCAST.RESET_PREFIX + wid);
         });
         BI.Utils.broadcastAllWidgets2Refresh(true);
     }

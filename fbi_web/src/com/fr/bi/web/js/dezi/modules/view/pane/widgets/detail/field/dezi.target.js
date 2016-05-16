@@ -173,26 +173,39 @@ BIDezi.TargetView = BI.inherit(BI.View, {
     createCalculateCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.calculate_target_combo"
+            type: "bi.calculate_target_combo",
+            dId: this.model.get("id")
         });
         this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.CALCULATE_TARGET_COMBO.FORM_SETTING:
+                    self._buildStyleSettingPane();
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET:
                     self._updateTarget();
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.HIDDEN:
+                    self.model.set("used", false);
+                    break;
+                case BICst.CALCULATE_TARGET_COMBO.DISPLAY:
+                    self.model.set("used", true);
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.DELETE:
                     self._deleteTarget();
                     break;
+                case BICst.CALCULATE_TARGET_COMBO.RENAME:
+                    self.editor.focus();
+                    break;
+                case BICst.CALCULATE_TARGET_COMBO.COPY:
+                    self._copyTarget();
+                    break;
+
             }
         });
 
         this.calculateTargetButton = BI.createWidget({
             type: "bi.icon_button",
-            cls:"calculate-target-font",
+            cls: "calculate-target-font",
             height: this.constants.DIMENSION_BUTTON_HEIGHT
 
         });

@@ -116,7 +116,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
             var combo = BI.createWidget({
                 type: "bi.widget_combo",
-                widgetType: BICst.Widget.TABLE_SHOW
+                widgetType: BICst.WIDGET.TABLE_SHOW
             });
             combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
                 switch (type) {

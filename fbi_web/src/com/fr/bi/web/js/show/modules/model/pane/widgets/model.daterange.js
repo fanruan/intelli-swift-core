@@ -3,7 +3,7 @@ BIShow.DateRangeModel = BI.inherit(BI.Model, {
         return BI.extend(BIShow.DateRangeModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.DATE,
+            type: BICst.WIDGET.DATE,
             dimensions: {},
             view: {},
             filter_value: {}

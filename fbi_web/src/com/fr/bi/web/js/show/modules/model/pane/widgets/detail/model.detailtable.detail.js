@@ -11,7 +11,7 @@ BIShow.DetailTableDetailModel = BI.inherit(BI.Model, {
             },
             dimensions: {},
             name: "",
-            type: BICst.Widget.DETAIL,
+            type: BICst.WIDGET.DETAIL,
             settings: {},
             target_relation: {},
             page: 0

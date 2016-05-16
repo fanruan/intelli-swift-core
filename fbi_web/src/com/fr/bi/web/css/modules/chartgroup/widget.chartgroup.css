@@ -6,11 +6,11 @@
   border: 1px solid #eaeaea;
   font-size: 22px;
 }
-.bi-chart-type-group .bi-table-type-combo:hover,
-.bi-chart-type-group .bi-table-type-combo.active {
+.bi-chart-type-group .bi-abstract-type-combo:hover,
+.bi-chart-type-group .bi-abstract-type-combo.active {
   background: #d4dadd;
 }
-.bi-chart-type-group .bi-table-type-combo .table-type {
+.bi-chart-type-group .bi-abstract-type-combo .table-type {
   font-size: 12px;
 }
 .bi-chart-type-group .detail-chart-type:hover,

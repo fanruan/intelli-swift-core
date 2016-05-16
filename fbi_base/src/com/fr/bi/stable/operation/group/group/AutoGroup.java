@@ -85,6 +85,9 @@ public class AutoGroup extends AbstractGroup {
     }
 
     private double cutBig(String val, int cutPosition){
+        if(val.charAt(cutPosition) == '0'){
+            return Double.parseDouble(val);
+        }
         val = val.substring(0, cutPosition);
         int length = val.length() - 2;
         StringBuilder add = new StringBuilder("0.");

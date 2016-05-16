@@ -3,7 +3,7 @@ BIDezi.YearQuarterWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.YearQuarterWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.QUARTER,
+            type: BICst.WIDGET.QUARTER,
             dimensions: {},
             view: {},
             value: {},

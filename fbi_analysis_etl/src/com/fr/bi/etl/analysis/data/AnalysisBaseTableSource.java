@@ -30,19 +30,19 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     @BICoreField
     protected BIWidget widget;
     private int etlType;
-    private  String id;
     private List<AnalysisETLSourceField> fieldList;
+    private String name;
 
     public BIWidget getWidget() {
         return widget;
     }
 
 
-    public AnalysisBaseTableSource(BIWidget widget, int etlType, String id, List<AnalysisETLSourceField> fieldList) {
+    public AnalysisBaseTableSource(BIWidget widget, int etlType, List<AnalysisETLSourceField> fieldList, String name) {
         this.widget = widget;
         this.etlType = etlType;
-        this.id = id;
         this.fieldList = fieldList;
+        this.name = name;
     }
 
 
@@ -82,7 +82,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             synchronized (userBaseTableMap){
                 UserTableSource tmp = userBaseTableMap.get(userId);
                 if (tmp == null){
-                    source = new UserBaseTableSource(widget, etlType, userId, id, fieldList);
+                    source = new UserBaseTableSource(widget, etlType, userId, fieldList, name);
                     userBaseTableMap.put(userId, source);
                 } else {
                     source = tmp;
@@ -96,21 +96,19 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     public JSONObject createJSON() throws Exception {
         JSONObject jo =  super.createJSON();
         JSONObject widget = new JSONObject();
-        if (etlType == Constants.ETL_TYPE.SELECT_DATA){
-            widget = ((SimpleDetailWidget)this.widget).createJSON();
-        } else {
+        if (etlType == Constants.ETL_TYPE.SELECT_NONE_DATA){
             widget.put("core", fetchObjectCore().getIDValue());
         }
-        if (fieldList != null){
+        if (fieldList != null && !fieldList.isEmpty()){
             JSONArray ja = new JSONArray();
             for (AnalysisETLSourceField f : fieldList){
                 ja.put(f.createJSON());
             }
             jo.put(Constants.FIELDS, ja);
         }
+        jo.put("table_name", name);
         jo.put("etlType", etlType);
         jo.put("operator", widget);
-        jo.put("value", id);
         return jo;
     }
 }

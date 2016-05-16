@@ -43,6 +43,11 @@ BI.DynamictabModel = BI.inherit(BI.MVCModel, {
         return this.get(v).update();
     },
 
+
+    hasMergeHistory : function (v) {
+        return this.get(v).get("allHistory")
+    },
+
     removeItem : function (id) {
         var items = this.get(ETLCst.ITEMS);
         var newItem = [];

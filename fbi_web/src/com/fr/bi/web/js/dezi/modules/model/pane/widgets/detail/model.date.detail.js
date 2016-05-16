@@ -5,7 +5,7 @@ BIDezi.DateDetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.YMD,
+            type: BICst.WIDGET.YMD,
             value: {}
         });
     },

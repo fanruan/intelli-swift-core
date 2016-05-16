@@ -87,7 +87,7 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
             table[ETLCst.FIELDS] = fields;
             items.push(table);
         }
-        model[BI.AnalysisETLMainModel.TAB] = items;
+        model[BI.AnalysisETLMainModel.TAB] = {items:items};
         return model;
     }
 })
