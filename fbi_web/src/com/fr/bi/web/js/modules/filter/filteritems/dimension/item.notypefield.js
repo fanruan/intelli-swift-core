@@ -70,6 +70,7 @@ BI.DimensionNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         var self = this, o = this.options;
         var selectFieldPane = BI.createWidget({
             type: "bi.dimension_filter_select_field",
+            height: this._constant.MAX_HEIGHT,
             dId: o.dId
         });
 
