@@ -24,7 +24,7 @@ BI.WebPage = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Not_Add_Url")
         });
 
-        this.delete = BI.createWidget({
+        this.del = BI.createWidget({
             type: "bi.icon_button",
             cls: "web-page-button bi-list-item-hover img-shutdown-font",
             title: BI.i18nText("BI-Delete"),
@@ -32,7 +32,7 @@ BI.WebPage = BI.inherit(BI.Widget, {
             width: 32
         });
 
-        this.delete.on(BI.IconButton.EVENT_CHANGE, function () {
+        this.del.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.WebPage.EVENT_DESTROY)
         });
 
@@ -52,7 +52,7 @@ BI.WebPage = BI.inherit(BI.Widget, {
             items: [{
                 el: this.iframe
             }, {
-                el: this.delete,
+                el: this.del,
                 right: 4,
                 top: 4
             }, {
