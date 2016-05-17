@@ -298,16 +298,13 @@ public class TreeWidget extends BIAbstractWidget {
             Iterator it = dimensionMap.keys();
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
             Map<Table, BITableRelation> relationMap = new HashMap<Table, BITableRelation>();
-//            List<BITableRelation> relationList = new ArrayList<BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
                 BISimpleRelation viewRelation = new BISimpleRelation();
                 viewRelation.parseJSON(relationJa.getJSONObject(j));
                 BITableRelation tableRelation = new BITableRelation();
                 tableRelation.parseJSON(viewRelation.createJSON());
-//                relationList.add(tableRelation);
                 relationMap.put(tableRelation.getForeignTable(), tableRelation);
             }
-//            this.dimensionMap.put(this.dimensions[i], relationList);
             this.dimensionMap.put(this.dimensions[i], relationMap);
         }
     }

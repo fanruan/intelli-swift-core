@@ -34,7 +34,6 @@ public class BIDetailWidget extends BIAbstractWidget {
     private BIDetailTarget[] dimensions = new BIDetailTarget[0];
     private Map<String, TargetFilter> targetFilterMap = new HashMap<String, TargetFilter>();
     private Table target;//目标表
-    private List<String> parent_widget = new ArrayList<String>();
 
     private String[] sortTargets = new String[0];
 
