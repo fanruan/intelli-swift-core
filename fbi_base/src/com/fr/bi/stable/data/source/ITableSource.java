@@ -51,6 +51,8 @@ public interface ITableSource extends XMLable, JSONCreator, BICoreService {
      */
     Map<Integer, Set<ITableSource>> createGenerateTablesMap();
 
+    List<Set<ITableSource>> createGenerateTablesList();
+
     /**
      * 层级
      *
@@ -91,4 +93,6 @@ public interface ITableSource extends XMLable, JSONCreator, BICoreService {
     Set<String> getUsedFields(ITableSource source);
 
     void refresh();
+
+    boolean isIndependent();
 }

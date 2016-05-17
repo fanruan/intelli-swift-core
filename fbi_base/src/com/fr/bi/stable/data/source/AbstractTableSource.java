@@ -11,6 +11,7 @@ import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIBasicField;
+import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
@@ -112,6 +113,55 @@ public abstract class AbstractTableSource implements ITableSource {
         set.add(this);
         generateTable.put(0, set);
         return generateTable;
+    }
+
+    @Override
+    public DBTable getDbTable() {
+        return null;
+    }
+
+    @Override
+    public Set<Table> createTableKeys() {
+        return null;
+    }
+
+    @Override
+    public List<Set<ITableSource>> createGenerateTablesList() {
+        List<Set<ITableSource>> generateTable = new ArrayList<Set<ITableSource>>();
+        Set<ITableSource> set = new HashSet<ITableSource>();
+        set.add(this);
+        generateTable.add(set);
+        return generateTable;
+    }
+
+    @Override
+    public boolean isIndependent() {
+        return true;
+    }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
+
+    @Override
+    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+        return 0;
+    }
+
+    @Override
+    public Set getFieldDistinctNewestValues(String fieldName, ICubeDataLoader loader, long userId) {
+        return null;
+    }
+
+    @Override
+    public JSONObject createPreviewJSON(ArrayList<String> fields, ICubeDataLoader loader, long userId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public TableData createTableData(List<String> fields, ICubeDataLoader loader, long userId) throws Exception {
+        return null;
     }
 
     @Override

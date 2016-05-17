@@ -26,11 +26,11 @@ BIShow.ContentWidgetView = BI.inherit(BI.View, {
         });
 
 
-        this.textarea.on(BI.TextAreaEditor.EVENT_DESTROY, function () {
+        this.textarea.on(BI.TextArea.EVENT_DESTROY, function () {
             self.model.destroy()
         });
 
-        this.textarea.on(BI.TextAreaEditor.EVENT_VALUE_CHANGE, function () {
+        this.textarea.on(BI.TextArea.EVENT_VALUE_CHANGE, function () {
             self.model.set(self.textarea.getValue())
         });
     },

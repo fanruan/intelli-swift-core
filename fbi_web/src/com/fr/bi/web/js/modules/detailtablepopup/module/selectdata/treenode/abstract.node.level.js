@@ -9,7 +9,6 @@ BI.AbstractDetailTablePopupSelectDataNode = BI.inherit(BI.Widget, {
             id: "",
             pId: "",
             open: false,
-            model: null,
             height: 25
         })
     },
@@ -21,29 +20,59 @@ BI.AbstractDetailTablePopupSelectDataNode = BI.inherit(BI.Widget, {
         this.node.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        //this._initBroadcast();
+        this._initBroadcast();
     },
 
     _createNode: function () {
 
     },
 
+    _getId: function () {
+        var widget = Data.SharingPool.cat(BI.DetailTablePopup.SHARING_POOL_KEY);
+        return widget.id;
+    },
+
+    _getAllDimensionIDs: function () {
+        var widget = Data.SharingPool.cat(BI.DetailTablePopup.SHARING_POOL_KEY);
+        return BI.keys(widget.dimensions);
+    },
+
+    _getTableIDByDimensionID: function (dId) {
+        var widget = Data.SharingPool.cat(BI.DetailTablePopup.SHARING_POOL_KEY);
+        var dimension = widget.dimensions[dId];
+        var field_id = dimension._src.field_id;
+        return BI.Utils.getTableIdByFieldID(field_id);
+    },
+
+    _isTableUsable: function (currentTableId) {
+        var self = this;
+        var dIds = this._getAllDimensionIDs();
+        if (dIds.length < 1) {
+            return true;
+        }
+        var tIds = [];
+        BI.each(dIds, function (id, dId) {
+            tIds.push(self._getTableIDByDimensionID(dId));
+        });
+        return BI.Utils.isTableInRelativeTables(tIds, currentTableId);
+    },
+
     _initBroadcast: function () {
         var self = this, o = this.options;
-        if (!BI.Utils.isTableUsableByWidgetID(o.value, o.wId)) {
+        if (!this._isTableUsable(o.value)) {
             this.setEnable(false);
         }
-        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function (tableId) {
-            var enable = BI.Utils.isTableUsableByWidgetID(o.value, o.wId);
+        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + this._getId(), function (tableId) {
+            var enable = self._isTableUsable(o.value);
             if (enable === false) {
                 self.setEnable(false);
                 return;
             }
             if (BI.isNotEmptyString(tableId)) {
-                var dIds = BI.Utils.getAllDimensionIDs(o.wId);
+                var dIds = self._getAllDimensionIDs();
                 var tIds = [];
                 BI.each(dIds, function (id, dId) {
-                    tIds.push(BI.Utils.getTableIDByDimensionID(dId));
+                    tIds.push(self._getTableIDByDimensionID(dId));
                 });
                 tIds.push(tableId);
                 enable = BI.Utils.isTableInRelativeTables(tIds, tableId);

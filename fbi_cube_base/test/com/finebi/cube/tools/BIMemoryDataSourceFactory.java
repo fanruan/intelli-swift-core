@@ -1,8 +1,8 @@
 package com.finebi.cube.tools;
 
-import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.utils.DateUtils;
 
 import java.text.ParseException;
@@ -180,6 +180,7 @@ public class BIMemoryDataSourceFactory {
         lover.add("Dick");
         lover.add("Bush");
         lover.add("Abel");
+
 
         List<Long> id = new ArrayList<Long>();
         id.add(1L);

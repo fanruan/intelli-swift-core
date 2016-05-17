@@ -15,7 +15,6 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.bridge.Transmitter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -678,8 +677,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
                 //指标弹出明细表
-                "com/fr/bi/web/css/modules/detailtablepopup/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
+
         };
     }
 
@@ -1277,10 +1278,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/excelviewsetting/excelviewsetting.js",
 
                 //权限控制
-                "com/fr/bi/web/js/modules/permissionmanage/packagetreemanage.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypaneshow.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypaneadd.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/packageandauthoritytree.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.show.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.add.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.single.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.multi.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.main.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.main.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritytabs.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authoritybutton.js",
 
@@ -1327,12 +1331,16 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.model.js",
 
                 //指标弹出明细表
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/abstract.node.level.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/node.level0.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/node.level1.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/selectdata.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/model.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level1.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/selectdata.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
+
+                "com/fr/bi/web/js/modules/detailtablepopup/module/model/field/model.detailtablepopup.detail.dimension.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/model/model.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/view/field/view.detailtablepopup.detail.dimension.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/view/view.detailtablepopup.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/detailtablepopup.js",
         };
     }

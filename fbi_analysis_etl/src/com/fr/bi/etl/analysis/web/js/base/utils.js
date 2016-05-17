@@ -190,5 +190,3 @@ BI.extend(BI.Utils, {
 
 })
 
-window.confirm = BI.Msg.confirm;
-
