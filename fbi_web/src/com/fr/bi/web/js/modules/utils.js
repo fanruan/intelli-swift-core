@@ -1240,20 +1240,26 @@
                 }
             });
             return filterValues;
+
             function createTreeFilterValue(result, v, dId, floor) {
                 if (floor === 0) {
                     if (BI.isNull(result.value)) {
                         result.value = [];
                     }
-                    BI.isNull(result.type) && (result.type = 1);
                     BI.each(v, function (value, child) {
                         result.value.push(value);
-                    })
+                    });
+                    BI.isNull(result.type) && (result.type = result.value.length === 0 ? BI.Selection.All : BI.Selection.Multi);
                 }
-                BI.each(v, function (value, child) {
-                        createTreeFilterValue(result, child, dId, floor - 1);
-                    }
-                );
+                if (floor > 0) {
+                    BI.each(v, function (value, child) {
+                            createTreeFilterValue(result, child, dId, floor - 1);
+                        }
+                    );
+
+                }
+
+
             }
         },
 

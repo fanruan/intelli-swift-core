@@ -10,6 +10,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONException;
@@ -68,8 +69,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     Map.Entry e = it.next();
                     Object[] groupValue = new Object[1];
                     groupValue[0] = e.getKey();
-                    GroupValueIndex gvi = targetDataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
-                    if (!gvi.AND((GroupValueIndex) e.getValue()).isAllEmpty()) {
+                    if (!filterGvi.AND((GroupValueIndex) e.getValue()).isAllEmpty()) {
                         dataList.add(e.getKey().toString());
                     }
                 }
@@ -79,8 +79,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                 for (int i = start; i < dataReader.sizeOfGroup(); i++) {
                     Object[] rowValue = new Object[1];
                     rowValue[0] = dataReader.getGroupValue(i);
-                    GroupValueIndex gvi = targetDataReader.getGroupIndex(rowValue)[0].AND(filterGvi);
-                    if (!gvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
+                    if (!filterGvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
                         dataList.add(dataReader.getGroupValue(i).toString());
                     }
                 }
@@ -93,13 +92,21 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
             groupValue[0] = parentValues[floors];
             BIDimension dimension = widget.getViewDimensions()[floors];
             ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable());
-            ICubeColumnIndexReader targetDataReader = targetTi.loadGroup(new IndexKey(getTargetFiledName(dimension)));
-            GroupValueIndex targetGvi = targetDataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey());
-            ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
-            GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(targetGvi);
+            final ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
+            GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
+            final String[] targetGroupValue = new String[1];
+            gvi.Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int rowIndex) {
+                    targetGroupValue[0] = (String) dataReader.getGroupValue(rowIndex);
+                }
+            });
+            ICubeColumnIndexReader resultDataReader = targetTi.loadGroup(new IndexKey(getTargetFiledName(dimension)), widget.getTableSourceRelationList(widget.getViewDimensions()[floors + 1], session.getUserId()));
+            GroupValueIndex resultGvi = resultDataReader.getGroupIndex(targetGroupValue)[0];
+            targetTi.clear();
             ti.clear();
-            createGroupValueWithParentValues(dataList, parentValues, gvi, floors + 1, times);
+            createGroupValueWithParentValues(dataList, parentValues, resultGvi, floors + 1, times);
         }
     }
 

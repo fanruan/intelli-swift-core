@@ -112,7 +112,7 @@ DownListView = BI.inherit(BI.View, {
 
                         text: "column 9",
                         value: 19,
-                        selected: false
+                        disabled:true
 
                     }
                 ]
