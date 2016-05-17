@@ -57,24 +57,6 @@ BI.Chart = BI.inherit(BI.Pane, {
         });
     },
 
-    showTheOtherYAxis: function () {
-        this.config.yAxis = BI.makeArray(2, this.config.yAxis[0]);
-        this.config.yAxis[1].position = "right";
-        switch (this.options.chartType){
-            case BICst.WIDGET.COMPARE_AXIS:
-                this.config.yAxis[1].reversed = true;
-                break;
-            default:
-                return;
-        }
-    },
-
-    hideTheOtherYAxis: function () {
-        if (BI.has(this.config, "yAxis")) {
-            this.config.yAxis = BI.makeArray(1, this.config.yAxis[0]);
-        }
-    },
-
     setChartType: function (type) {
         var self = this;
         this.options.chartType = type;
@@ -250,26 +232,17 @@ BI.Chart = BI.inherit(BI.Pane, {
         };
         var lineConfig = {
             "plotOptions": {
-                click: function () {
-                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                        category: this.category,
-                        seriesName: this.seriesName,
-                        value: this.value
-                    });
-                },
                 "large": false,
-                "connectNulls": true,
+                "connectNulls": false,
                 "curve": false,
-                "marker": {
-                    "symbol": "null_marker",
-                    "radius": 4.5,
-                    "enabled": true
-                },
+                "marker": {"symbol": "null_marker", "radius": 4.5, "enabled": true},
                 "tooltip": {
                     "formatter": {
                         "identifier": "${CATEGORY}${SERIES}${VALUE}",
-                        "valueFormat": "#.##",
-                        "percentFormat": "#.##%"
+                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
+                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
                     },
                     "shared": false,
                     "padding": 5,
@@ -287,107 +260,58 @@ BI.Chart = BI.inherit(BI.Pane, {
                 "animation": true
             },
             "borderColor": "rgb(238,238,238)",
-            "xAxis": [
-                {
-                    "enableMinorTick": false,
-                    "minorTickColor": "rgb(176,176,176)",
-                    "tickColor": "rgb(176,176,176)",
-                    "showArrow": false,
-                    "lineColor": "rgb(176,176,176)",
-                    "plotLines": [],
-                    "type": "category",
-                    "lineWidth": 1,
-                    "showLabel": true,
-                    "formatter": {},
-                    "gridLineWidth": 0,
-                    "enableTick": true,
-                    "labelStyle": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(102,102,102,1.0)",
-                        "fontSize": "11pt",
-                        "fontWeight": ""
-                    },
-                    "plotBands": [],
-                    "position": "bottom",
-                    "labelRotation": 0,
-                    "reversed": false
-                }
-            ],
+            "xAxis": [{
+                "enableMinorTick": false,
+                "minorTickColor": "rgb(176,176,176)",
+                "tickColor": "rgb(176,176,176)",
+                "showArrow": false,
+                "lineColor": "rgb(176,176,176)",
+                "plotLines": [],
+                "type": "category",
+                "lineWidth": 2,
+                "showLabel": true,
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], 'Ddd') : arguments[0]}",
+                "gridLineWidth": 0,
+                "enableTick": false,
+                "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                "plotBands": [],
+                "position": "bottom",
+                "labelRotation": 0,
+                "reversed": false
+            }],
             "shadow": false,
-            "legend": {
-                "borderColor": "rgb(204,204,204)",
-                "borderRadius": 0,
-                "shadow": false,
-                "borderWidth": 0,
-                "style": {
-                    "fontFamily": "Dialog",
-                    "color": "rgba(102,102,102,1.0)",
-                    "fontSize": "11pt",
-                    "fontWeight": ""
-                },
-                "position": "right",
-                "enabled": true
-            },
-            "zoom": {
-                "zoomType": "xy",
-                "zoomTool": {
-                    "visible": false,
-                    "resize": true,
-                    "from": "",
-                    "to": ""
-                }
-            },
-            "plotBorderColor": "blue",
+            "legend": {"enabled": false},
+            "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
+            "plotBorderColor": "rgba(255,255,255,0)",
             "tools": {
                 "hidden": true,
-                "toImage": {
-                    "enabled": true
-                },
-                "sort": {
-                    "enabled": true
-                },
+                "toImage": {"enabled": true},
+                "sort": {"enabled": true},
                 "enabled": true,
-                "fullScreen": {
-                    "enabled": true
-                }
+                "fullScreen": {"enabled": true}
             },
-            "plotBorderWidth": 2,
-            "colors": [
-                "rgb(14,114,204)",
-                "rgb(108,163,15)",
-                "rgb(245,147,17)",
-                "rgb(250,67,67)",
-                "rgb(22,175,204)"
-            ],
-            "yAxis": [
-                {
-                    "enableMinorTick": false,
-                    "gridLineColor": "rgb(196,196,196)",
-                    "minorTickColor": "rgb(176,176,176)",
-                    "tickColor": "rgb(176,176,176)",
-                    "showArrow": false,
-                    "lineColor": "rgb(176,176,176)",
-                    "plotLines": [],
-                    "type": "value",
-                    "lineWidth": 0,
-                    "showLabel": true,
-                    "formatter": {
-                        "format": "#.##"
-                    },
-                    "gridLineWidth": 1,
-                    "enableTick": false,
-                    "labelStyle": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(102,102,102,1.0)",
-                        "fontSize": "11pt",
-                        "fontWeight": ""
-                    },
-                    "plotBands": [],
-                    "position": "left",
-                    "labelRotation": 0,
-                    "reversed": false
-                }
-            ],
+            "plotBorderWidth": 0,
+            "colors": ["rgb(99,178,238)"],
+            "yAxis": [{
+                "enableMinorTick": false,
+                "gridLineColor": "rgb(222,222,222)",
+                "minorTickColor": "rgb(176,176,176)",
+                "tickColor": "rgb(176,176,176)",
+                "showArrow": false,
+                "lineColor": "rgb(176,176,176)",
+                "plotLines": [],
+                "type": "value",
+                "lineWidth": 0,
+                "showLabel": true,
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                "gridLineWidth": 1,
+                "enableTick": false,
+                "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                "plotBands": [],
+                "position": "left",
+                "labelRotation": 0,
+                "reversed": false
+            }],
             "borderRadius": 0,
             "borderWidth": 0,
             "chartType": "line",
@@ -395,6 +319,7 @@ BI.Chart = BI.inherit(BI.Pane, {
             "plotShadow": false,
             "plotBorderRadius": 0
         };
+
         var areaConfig = {
 
             "plotOptions": {
