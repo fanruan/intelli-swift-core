@@ -52,6 +52,11 @@ public class BIMemDataSourceTestTool implements ITableSource {
         }
     }
 
+    @Override
+    public boolean isIndependent() {
+        return false;
+    }
+
     private void initialStatic() {
         stringData.add("玖二");
         stringData.add("七玖");
@@ -662,6 +667,11 @@ public class BIMemDataSourceTestTool implements ITableSource {
     }
 
     @Override
+    public List<Set<ITableSource>> createGenerateTablesList() {
+        return null;
+    }
+
+    @Override
     public int getLevel() {
         return 0;
     }
@@ -711,11 +721,6 @@ public class BIMemDataSourceTestTool implements ITableSource {
 
     @Override
     public JSONObject createPreviewJSONFromCube(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
-        return null;
-    }
-
-    @Override
-    public JSONObject createPreviewJSONFromMemory(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
         return null;
     }
 

@@ -145,7 +145,11 @@ public class BIDateUtils {
                 GroupValueIndex endMonth = monthMap.getGroupIndex(new Integer[]{end.getMonth()})[0];
                 if (endMonth != null){
                     endMonth = endMonth.and(createRangeIndex(dayMap,0, end.getDay() + 1));
-                    gvi = gvi.or(endYear.and(endMonth.or(createRangeIndex(monthMap, 0, end.getMonth()))));
+                    if(start.getYear() == end.getYear()){
+                        gvi = gvi.and(endYear.and(endMonth.or(createRangeIndex(monthMap, 0, end.getMonth()))));
+                    }else{
+                        gvi = gvi.or(endYear.and(endMonth.or(createRangeIndex(monthMap, 0, end.getMonth()))));
+                    }
                 }
             }
         }

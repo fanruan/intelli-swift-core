@@ -8,6 +8,7 @@ import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.stable.StringUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -69,5 +70,13 @@ public class BIDateDimension extends BIAbstractDimension {
             return "0" + time;
         }
         return "" + time;
+    }
+
+    @Override
+    public Object getValueByType(Object data) {
+        if (group.getType() == BIReportConstant.GROUP.YMD){
+            return data == null ? null : Long.parseLong(data.toString());
+        }
+        return data == null ? StringUtils.EMPTY : Integer.parseInt(data.toString());
     }
 }

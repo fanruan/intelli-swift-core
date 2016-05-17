@@ -57,7 +57,7 @@ BI.Calendar = BI.inherit(BI.Widget, {
                 MM = MM === 12 ? 1 : MM + 1;
             }
             if (Date.checkVoid(YY, MM, DD, mins, maxs)[0]) {
-                td.void = true;
+                td.disabled = true;
             }
             td.text = DD;
             items.push(td);
@@ -100,7 +100,7 @@ BI.Calendar = BI.inherit(BI.Widget, {
                     forceSelected: true,
                     height: 25,
                     value: o.year + "-" + o.month + "-" + td.text,
-                    disabled: td.lastMonth || td.nextMonth || td.void
+                    disabled: td.lastMonth || td.nextMonth || td.disabled
                     //selected: td.currentDay
                 });
             });

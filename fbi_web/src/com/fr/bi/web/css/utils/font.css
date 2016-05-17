@@ -2989,30 +2989,45 @@
   content: "\e605";
   color: #808080;
 }
-.widget-combo-asc .b-font:before {
+.widget-combo-asc-font .b-font:before {
   content: "\e63f";
   color: #808080;
 }
-.widget-combo-asc.native .b-font:before,
-.widget-combo-asc.disabled .b-font:before {
+.widget-combo-asc-font.native .b-font:before,
+.widget-combo-asc-font.disabled .b-font:before {
   content: "\e63f";
   color: #808080;
 }
-.widget-combo-des .b-font:before {
+.widget-combo-des-font .b-font:before {
   content: "\e63a";
   color: #808080;
 }
-.widget-combo-des.native .b-font:before,
-.widget-combo-des.disabled .b-font:before {
+.widget-combo-des-font.native .b-font:before,
+.widget-combo-des-font.disabled .b-font:before {
   content: "\e63a";
   color: #808080;
 }
-.widget-combo-clear .b-font:before {
+.widget-combo-clear-font .b-font:before {
   content: "\e63d";
   color: #808080;
 }
-.widget-combo-clear.native .b-font:before,
-.widget-combo-clear.disabled .b-font:before {
+.widget-combo-clear-font.native .b-font:before,
+.widget-combo-clear-font.disabled .b-font:before {
   content: "\e63d";
+  color: #808080;
+}
+.detail-table-popup-font .b-font:before {
+  content: "\e6ac";
+  color: #808080;
+}
+.detail-table-popup-font:hover .b-font:before,
+.detail-table-popup-font:focus .b-font:before,
+.detail-table-popup-font.hover .b-font:before {
+  content: "\e6ac";
+  color: #009de3;
+}
+.detail-table-popup-font.native .b-font:before,
+.detail-table-popup-font.disabled .b-font:before {
+  content: "\e6ac";
   color: #808080;
 }

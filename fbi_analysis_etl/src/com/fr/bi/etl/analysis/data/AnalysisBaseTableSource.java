@@ -4,7 +4,9 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIColumn;
@@ -12,9 +14,12 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.data.db.DBTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
+import com.fr.bi.stable.operation.group.IGroup;
+import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
+import java.sql.Types;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,13 +55,31 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     public DBTable getDbTable() {
         if (dbTable == null) {
             dbTable = new DBTable(null, fetchObjectCore().getID().getIdentityValue(), null);
-            for (AnalysisETLSourceField c : fieldList){
-                dbTable.addColumn(new BIColumn(c.getFieldName(), c.getFieldType()));
+            BIDimension[] dimensions = widget.getViewDimensions();
+            for (int i = 0; i < fieldList.size(); i++){
+                AnalysisETLSourceField c = fieldList.get(i);
+                int sqlType = i < dimensions.length ? getSqlTypeByGroupType(dimensions[i].getGroup()) : BIDBUtils.biTypeToSql(c.getFieldType());
+                dbTable.addColumn(new BIColumn(c.getFieldName(), sqlType));
             }
 
         }
         return dbTable;
     }
+
+    private int getSqlTypeByGroupType(IGroup group) {
+        switch (group.getType()){
+            case BIReportConstant.GROUP.Y:
+            case BIReportConstant.GROUP.M:
+            case BIReportConstant.GROUP.S:
+            case BIReportConstant.GROUP.MD:
+                return Types.INTEGER;
+            case BIReportConstant.GROUP.YMD:
+                return Types.DATE;
+            default:
+                return Types.VARCHAR;
+        }
+    }
+
 
     @Override
     public Set<Table> createTableKeys() {
@@ -90,6 +113,11 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             }
         }
         return source;
+    }
+
+    @Override
+    public List<AnalysisETLSourceField> getFieldsList() {
+        return fieldList;
     }
 
     @Override

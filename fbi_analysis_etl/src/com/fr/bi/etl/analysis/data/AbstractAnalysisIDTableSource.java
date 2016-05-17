@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.Traversal;
@@ -11,8 +12,9 @@ import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.data.db.DBTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.ITableSource;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.utils.code.BILogger;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2015/12/24.
  */
-public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> extends AbstractCubeTableSource implements AnalysisTableSource{
+public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> extends AbstractCubeTableSource implements AnalysisTableSource {
     protected String tableID;
     protected transient T baseTable;
     private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
@@ -31,7 +33,7 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
     public AbstractAnalysisIDTableSource(String tableID, long userId) {
         this.tableID = tableID;
         this.baseTable = getBaseTableByID(new BITableID(tableID), new BIUser(userId));
-        if (baseTable == null){
+        if (baseTable == null) {
             BILogger.getLogger().error("Analysis ETL table id : " + tableID + " create by : " + userId + " missed!");
         }
     }
@@ -39,7 +41,7 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
     protected abstract T getBaseTableByID(BITableID tableID, BIUser user);
 
     @Override
-	public BICore fetchObjectCore() {
+    public BICore fetchObjectCore() {
         return baseTable.fetchObjectCore();
     }
 
@@ -64,6 +66,16 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
     }
 
     /**
+     * key为层次
+     *
+     * @return
+     */
+    @Override
+    public List<Set<ITableSource>> createGenerateTablesList() {
+        return baseTable.createGenerateTablesList();
+    }
+
+    /**
      * 写简单索引
      *
      * @param travel
@@ -78,10 +90,10 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
 
     @Override
     public DBTable getDbTable() {
-        if (dbTable == null){
+        if (dbTable == null) {
             DBTable ptable = baseTable.getDbTable();
             dbTable = createBITable();
-            for (BIColumn column : ptable.getColumnArray()){
+            for (BIColumn column : ptable.getColumnArray()) {
                 dbTable.addColumn(column);
             }
         }
@@ -91,10 +103,10 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
     @Override
     public UserTableSource createUserTableSource(long userId) {
         UserTableSource source = userBaseTableMap.get(userId);
-        if (source == null){
-            synchronized (userBaseTableMap){
+        if (source == null) {
+            synchronized (userBaseTableMap) {
                 UserTableSource tmp = userBaseTableMap.get(userId);
-                if (tmp == null){
+                if (tmp == null) {
                     source = createNewUserSource(userId);
                     userBaseTableMap.put(userId, source);
                 } else {

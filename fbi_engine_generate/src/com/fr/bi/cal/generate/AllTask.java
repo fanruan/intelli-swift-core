@@ -15,7 +15,7 @@ import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.utils.BIMapUtils;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 
 import java.util.HashMap;
@@ -41,7 +41,7 @@ public class AllTask extends AbstractCubeTask {
             for (BIBusinessTable table : busiTable) {
                 ITableSource source = table.getSource();
                 if (source != null) {
-                    BIMapUtils.mergeSetValueMap(generateTable, table.getSource().createGenerateTablesMap());
+                    BICollectionUtils.mergeSetValueMap(generateTable, table.getSource().createGenerateTablesMap());
                 }
             }
         }

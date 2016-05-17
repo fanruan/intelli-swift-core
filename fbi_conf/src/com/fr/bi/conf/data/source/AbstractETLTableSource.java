@@ -1,5 +1,7 @@
 package com.fr.bi.conf.data.source;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
@@ -7,6 +9,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.data.source.operator.create.TableFilterOperator;
+import com.fr.bi.conf.data.source.operator.create.UsePartOperator;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIColumn;
@@ -16,8 +19,8 @@ import com.fr.bi.stable.data.db.DBTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.data.source.SourceFile;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.utils.BIMapUtils;
+import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 
@@ -87,9 +90,15 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     @Override
     public long read4Part(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader, int start, int end) {
         int startCol = 0;
-        if (isAllAddColumnOprator() || hasTableFilterOprator()) {
+        if (isAllAddColumnOperator()) {
             for (ITableSource p : getParents()) {
-                p.read4Part(travel, field, loader, start, end);
+                ICubeTableService ti = loader.getTableIndex(p.fetchObjectCore(), start, end);
+                BIColumn[] fields = p.getDbTable().getColumnArray();
+                for (int i = 0; i < ti.getRowCount(); i ++){
+                    for (int j = 0; j < fields.length; j++){
+                        travel.actionPerformed(new BIDataValue(i, j, ti.getRow(new IndexKey(fields[j].getFieldName()), i)));
+                    }
+                }
                 startCol += p.getDbTable().getBIColumnLength();
             }
         }
@@ -116,12 +125,12 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     @Override
     public Set<Table> createTableKeys() {
         Set set = new HashSet();
-        if (!hasTableFilterOprator()) {
+        if (!hasTableFilterOperator()) {
             for (ITableSource source : createSourceSet()) {
                 set.add(new BITable(source.fetchObjectCore().getID().getIdentityValue()));
             }
         }
-        if (isAllAddColumnOprator() || hasTableFilterOprator()) {
+        if (isAllAddColumnOperator() || hasTableFilterOperator()) {
             Iterator<S> it = parents.iterator();
             while (it.hasNext()) {
                 set.addAll(it.next().createTableKeys());
@@ -136,9 +145,47 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         generateTable.put(getLevel(), createSourceSet());
         Iterator<S> it = parents.iterator();
         while (it.hasNext()) {
-            BIMapUtils.mergeSetValueMap(generateTable, it.next().createGenerateTablesMap());
+            BICollectionUtils.mergeSetValueMap(generateTable, it.next().createGenerateTablesMap());
         }
         return generateTable;
+    }
+
+    @Override
+    public boolean isIndependent() {
+        return !(hasTableFilterOperator()|| isAllAddColumnOperator());
+    }
+
+    @Override
+    public List<Set<ITableSource>> createGenerateTablesList() {
+        List<Set<ITableSource>> generateTable = new ArrayList<Set<ITableSource>>();
+        Set<ITableSource> operators = createSourceSet();
+        generateTable.add(operators);
+        if (operators.size() > 1) {
+            Set<ITableSource> self = new HashSet<ITableSource>();
+            BIOccupiedTableSource tableSource = new BIOccupiedTableSource(this.getSourceID());
+            self.add(tableSource);
+            generateTable.add(self);
+        }
+        Iterator<S> it = parents.iterator();
+        while (it.hasNext()) {
+            List<Set<ITableSource>> parent = it.next().createGenerateTablesList();
+            if (!parent.isEmpty()) {
+                for (int i = 0; i < parent.size(); i++) {
+                    generateTable.add(i, parent.get(i));
+                }
+            }
+        }
+        return generateTable;
+    }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
+
+    @Override
+    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+        return 0;
     }
 
     protected Set<ITableSource> createSourceSet() {
@@ -162,7 +209,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         if (dbTable == null) {
             dbTable = createBITable();
 
-            if (isAllAddColumnOprator()) {
+            if (isAllAddColumnOperator()) {
                 for (S source : parents) {
                     DBTable p = source.getDbTable();
                     for (int i = 0; i < p.getBIColumnLength(); i++) {
@@ -188,7 +235,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
 
     @Override
     public DBField[] getFieldsArray(Set<ITableSource> sources) {
-        if (hasTableFilterOprator()) {
+        if (hasTableFilterOperator()) {
             return new DBField[0];
         } else {
             return super.getFieldsArray(sources);
@@ -206,7 +253,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
             useableFields.addAll(source1.getUsedFields(source));
         }
         if (contains) {
-            if (hasTableFilterOprator()) {
+            if (hasTableFilterOperator()) {
                 DBTable[] ptables = new DBTable[parents.size()];
                 for (int i = 0; i < ptables.length; i++) {
                     ptables[i] = parents.get(i).getDbTable();
@@ -232,16 +279,16 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
 
     @Override
     public boolean needGenerateIndex() {
-        return !hasTableFilterOprator();
+        return !hasTableFilterOperator();
     }
 
     @Override
     public SourceFile getSourceFile() {
         SourceFile sourceFile = new SourceFile(fetchObjectCore().getID().getIdentityValue());
-        if (oprators.isEmpty() || hasTableFilterOprator()) {
+        if (oprators.isEmpty() || hasTableFilterOperator()) {
             return getParentsSourceFile();
         }
-        if (!isAllAddColumnOprator()) {
+        if (!isAllAddColumnOperator()) {
             return sourceFile;
         }
         sourceFile.addChild(getParentsSourceFile());
@@ -256,16 +303,16 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         return sourceFile;
     }
 
-    private boolean hasTableFilterOprator() {
+    public boolean hasTableFilterOperator() {
         for (O operator : getETLOperators()) {
-            if (ComparatorUtils.equals(operator.xmlTag(), TableFilterOperator.XML_TAG)) {
+            if (ComparatorUtils.equals(operator.xmlTag(), TableFilterOperator.XML_TAG) || ComparatorUtils.equals(operator.xmlTag(), UsePartOperator.XML_TAG)) {
                 return true;
             }
         }
         return false;
     }
 
-    protected boolean isAllAddColumnOprator() {
+    protected boolean isAllAddColumnOperator() {
         for (O operator : getETLOperators()) {
             if (!operator.isAddColumnOprator()) {
                 return false;

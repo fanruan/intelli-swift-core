@@ -67,6 +67,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     public void buildTableIndex() {
+        if (hostDBField.getFieldName().equals("badd")) {
+            System.out.println("find");
+        }
         IntList nullRowNumbers = new IntList();
         Map<T, IntList> group2rowNumber = createTreeMap(nullRowNumbers);
         Iterator<Map.Entry<T, IntList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();

@@ -149,7 +149,9 @@ BI.extend(BI.Utils, {
     buildData : function(model, filterValueGetter) {
         //测试数据
         var header = [];
-        var items = [];
+        var table = {};
+        table[ETLCst.ITEMS] = [model];
+        var data = BI.ETLReq.reqPreviewTable(table);
         BI.each(model[ETLCst.FIELDS], function(idx, item){
             var head = {
                 text:item.field_name,
@@ -159,15 +161,8 @@ BI.extend(BI.Utils, {
             }
             head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
             header.push(head);
-            BI.each(BI.range(0 ,10), function(i){
-                if(BI.isNull(items[i])){
-                    items[i] = [];
-                }
-                items[i].push({text:"row:"+i +" column:" +idx})
-            })
-
         })
-        return [items, header];
+        return [data.value, header];
     },
 
     triggerPreview : function () {
@@ -194,6 +189,4 @@ BI.extend(BI.Utils, {
     }
 
 })
-
-window.confirm = BI.Msg.confirm;
 

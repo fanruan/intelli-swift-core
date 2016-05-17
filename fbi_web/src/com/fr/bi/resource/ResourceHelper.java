@@ -684,8 +684,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
                 //指标弹出明细表
-                "com/fr/bi/web/css/modules/detailtablepopup/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
+
         };
     }
 
@@ -746,15 +748,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/numberintervalcustomgroup/widget.customgroup.number.panel.js",
 
                 //详细设置相关模块
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.abstracttype.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.areatype.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.axistype.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.bartype.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.maptype.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.combinetype.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.radartype.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.bubbletype.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.tabletype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.tablecharttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/charttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.dimension.js",
@@ -1333,12 +1327,16 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.model.js",
 
                 //指标弹出明细表
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/abstract.node.level.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/node.level0.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/node.level1.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/selectdata.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/model.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level1.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/selectdata.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
+
+                "com/fr/bi/web/js/modules/detailtablepopup/module/model/field/model.detailtablepopup.detail.dimension.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/model/model.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/view/field/view.detailtablepopup.detail.dimension.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/view/view.detailtablepopup.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/detailtablepopup.js",
         };
     }
@@ -1361,6 +1359,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/bar/bar.css",
                 "com/fr/bi/web/css/base/single/editor/editor.css",
                 "com/fr/bi/web/css/base/single/editor/editor.state.css",
+                "com/fr/bi/web/css/base/single/editor/editor.state.simple.css",
                 "com/fr/bi/web/css/base/single/editor/editor.record.css",
                 "com/fr/bi/web/css/base/single/editor/editor.sign.css",
                 "com/fr/bi/web/css/base/single/editor/editor.shelter.css",
@@ -1908,6 +1907,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/button/icon/icon.half.js",
 
                 "com/fr/bi/web/js/case/editor/editor.state.js",
+                "com/fr/bi/web/js/case/editor/editor.state.simple.js",
                 "com/fr/bi/web/js/case/editor/editor.sign.js",
                 "com/fr/bi/web/js/case/editor/editor.shelter.js",
                 "com/fr/bi/web/js/case/editor/editor.record.js",
@@ -2026,6 +2026,26 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/date/calendar/combo.month.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/popup.calendar.date.js",
                 "com/fr/bi/web/js/widget/date/combo.date.js",
+
+                //图控件
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulatearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulateaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulatebar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulateradar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.area.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.donut.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.forcebubble.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.funnel.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.line.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.percentaccumulateaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.percentaccumulatearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
 
                 //年份控件
                 "com/fr/bi/web/js/widget/year/trigger.year.js",

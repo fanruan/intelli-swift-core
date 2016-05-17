@@ -76,8 +76,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 value: BICst.DIMENSION_NUMBER_COMBO.GROUP_BY_VALUE
             },{
                 text: BI.i18nText("BI-Grouping_Setting"),
-                value: BICst.DIMENSION_NUMBER_COMBO.GROUP_SETTING,
-                cls: ""
+                value: BICst.DIMENSION_NUMBER_COMBO.GROUP_SETTING
             }],
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),

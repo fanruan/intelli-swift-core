@@ -305,90 +305,168 @@ BICst.DASHBOARD_WIDGET_ICON = [[{
 BICst.TABLE_TYPE = [{
     title: BI.i18nText("BI-Group_Table"),
     value: BICst.WIDGET.TABLE,
-    text: BI.i18nText("BI-Group_Table")
+    text: BI.i18nText("BI-Group_Table"),
+    cls: "detail-chart-summary-table-font"
 }, {
     title: BI.i18nText("BI-Cross_Table"),
     value: BICst.WIDGET.CROSS_TABLE,
-    text: BI.i18nText("BI-Cross_Table")
+    text: BI.i18nText("BI-Cross_Table"),
+    cls: "detail-chart-summary-table-font"
 }, {
     title: BI.i18nText("BI-Complex_Table"),
     value: BICst.WIDGET.COMPLEX_TABLE,
-    text: BI.i18nText("BI-Complex_Table")
+    text: BI.i18nText("BI-Complex_Table"),
+    cls: "detail-chart-summary-table-font"
 }];
 
 //坐标轴图类型
 BICst.AXIS_CHART_TYPE = [{
     text: BI.i18nText("BI-Column_Chart"),
-    value: BICst.WIDGET.AXIS
+    value: BICst.WIDGET.AXIS,
+    cls: "detail-chart-axis-font"
 }, {
     text: BI.i18nText("BI-Stacked_Chart"),
-    value: BICst.WIDGET.ACCUMULATE_COLUMN
+    value: BICst.WIDGET.ACCUMULATE_AXIS,
+    cls: "detail-chart-axis-font"
 }, {
     text: BI.i18nText("BI-Percent_Accumulate_Axis"),
-    value: BICst.WIDGET.PERCENT_ACCUMULATE_AXIS
+    value: BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
+    cls: "detail-chart-axis-font"
 }, {
     text: BI.i18nText("BI-Compare_Axis"),
-    value: BICst.WIDGET.COMPARE_AXIS
+    value: BICst.WIDGET.COMPARE_AXIS,
+    cls: "detail-chart-axis-font"
 }, {
     text: BI.i18nText("BI-Fall_Axis"),
-    value: BICst.WIDGET.FALL_AXIS
+    value: BICst.WIDGET.FALL_AXIS,
+    cls: "detail-chart-axis-font"
 }];
 
 //条形图类型
 BICst.BAR_CHART_TYPE = [{
     text: BI.i18nText("BI-Bar_Chart"),
-    value: BICst.WIDGET.BAR
+    value: BICst.WIDGET.BAR,
+    cls: "detail-chart-bar-font"
 }, {
     text: BI.i18nText("BI-Stacked_Bar_Chart"),
-    value: BICst.WIDGET.ACCUMULATE_BAR
+    value: BICst.WIDGET.ACCUMULATE_BAR,
+    cls: "detail-chart-bar-font"
 }, {
     text: BI.i18nText("BI-Compare_Bar"),
-    value: BICst.WIDGET.COMPARE_BAR
+    value: BICst.WIDGET.COMPARE_BAR,
+    cls: "detail-chart-bar-font"
 }];
 
 //面积图类型
 BICst.AREA_CHART_TYPE = [{
+    title: BI.i18nText("BI-Area_Chart"),
     text: BI.i18nText("BI-Area_Chart"),
-    value: BICst.WIDGET.AREA
+    value: BICst.WIDGET.AREA,
+    cls: "excel-upload-tip-font"
 }, {
     text: BI.i18nText("BI-Accumulate_Area"),
-    value: BICst.WIDGET.ACCUMULATE_AREA
+    title: BI.i18nText("BI-Accumulate_Area"),
+    value: BICst.WIDGET.ACCUMULATE_AREA,
+    cls: "excel-upload-tip-font"
 }, {
     text: BI.i18nText("BI-Percent_Accumulate_Area"),
-    value: BICst.WIDGET.PERCENT_ACCUMULATE_AREA
+    title: BI.i18nText("BI-Percent_Accumulate_Area"),
+    value: BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+    cls: "excel-upload-tip-font"
 }, {
     text: BI.i18nText("BI-Compare_Area"),
-    value: BICst.WIDGET.COMPARE_AREA
+    title: BI.i18nText("BI-Compare_Area"),
+    value: BICst.WIDGET.COMPARE_AREA,
+    cls: "excel-upload-tip-font"
 }, {
     text: BI.i18nText("BI-Compare_Range_Area"),
-    value: BICst.WIDGET.RANGE_AREA
+    title: BI.i18nText("BI-Compare_Range_Area"),
+    value: BICst.WIDGET.RANGE_AREA,
+    cls: "excel-upload-tip-font"
 }];
 
 //组合图类型
 BICst.COMBINE_CHART_TYPE = [{
     text: BI.i18nText("BI-Combine_Chart"),
-    value: BICst.WIDGET.COMBINE_CHART
+    title: BI.i18nText("BI-Combine_Chart"),
+    value: BICst.WIDGET.COMBINE_CHART,
+    cls: "excel-upload-tip-font"
 }, {
     text: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
-    value: BICst.WIDGET.MULTI_AXIS_COMBINE_CHART
+    title: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
+    value: BICst.WIDGET.MULTI_AXIS_COMBINE_CHART,
+    cls: "excel-upload-tip-font"
 }];
 
 //气泡图类型
 BICst.BUBBLE_CHART_TYPE = [{
     text: BI.i18nText("BI-Bubble_Chart"),
-    value: BICst.WIDGET.BUBBLE
+    title: BI.i18nText("BI-Bubble_Chart"),
+    value: BICst.WIDGET.BUBBLE,
+    cls: "detail-chart-bubble-font"
 }, {
     text: BI.i18nText("BI-Force_Bubble"),
-    value: BICst.WIDGET.FORCE_BUBBLE
+    title: BI.i18nText("BI-Force_Bubble"),
+    value: BICst.WIDGET.FORCE_BUBBLE,
+    cls: "detail-chart-bubble-font"
 }];
 
 //雷达图类型
 BICst.RADAR_CHART_TYPE = [{
     text: BI.i18nText("BI-Radar"),
-    value: BICst.WIDGET.RADAR
+    title: BI.i18nText("BI-Radar"),
+    value: BICst.WIDGET.RADAR,
+    cls: "detail-chart-radar-font"
 }, {
     text: BI.i18nText("BI-Accumulate_Radar"),
-    value: BICst.WIDGET.ACCUMULATE_RADAR
+    title: BI.i18nText("BI-Accumulate_Radar"),
+    value: BICst.WIDGET.ACCUMULATE_RADAR,
+    cls: "detail-chart-radar-font"
+}];
+
+BICst.SINGLE_TYPE_CHART = [{
+    title: BI.i18nText("BI-Line_Chart"),
+    text: BI.i18nText("BI-Line_Chart"),
+    value: BICst.WIDGET.LINE,
+    cls: "excel-upload-tip-font"
+    //cls: "detail-chart-line-font"
+}, {
+    title: BI.i18nText("BI-Pie_Chart"),
+    text: BI.i18nText("BI-Pie_Chart"),
+    value: BICst.WIDGET.PIE,
+    cls: "detail-chart-pie-font"
+}, {
+    title: BI.i18nText("BI-Donut_Chart"),
+    text: BI.i18nText("BI-Donut_Chart"),
+    value: BICst.WIDGET.DONUT,
+    cls: "detail-chart-doughnut-font"
+}, {
+    title: BI.i18nText("BI-Map"),
+    text: BI.i18nText("BI-Map"),
+    value: BICst.WIDGET.MAP,
+    cls: "detail-chart-map-font"
+}, {
+    title: BI.i18nText("BI-GIS_Map"),
+    text: BI.i18nText("BI-GIS_Map"),
+    value: BICst.WIDGET.GIS_MAP,
+    cls: "excel-upload-tip-font"
+   // cls: "detail-chart-gis-map-font"
+}, {
+    title: BI.i18nText("BI-Dashboard_Chart"),
+    text: BI.i18nText("BI-Dashboard_Chart"),
+    value: BICst.WIDGET.DASHBOARD,
+    cls: "detail-chart-dashboard-font"
+}, {
+    title: BI.i18nText("BI-Scatter"),
+    text: BI.i18nText("BI-Scatter"),
+    value: BICst.WIDGET.SCATTER,
+    cls: "detail-chart-scatter-font"
+}, {
+    title: BI.i18nText("BI-Funnel"),
+    text: BI.i18nText("BI-Funnel"),
+    value: BICst.WIDGET.FUNNEL,
+    cls: "excel-upload-tip-font"
+    //cls: "detail-chart-funnel-font"
 }];
 
 //图表类型
@@ -561,16 +639,16 @@ BICst.STRING_TREE_CONTROL_SETCOMBO_ITEMS = [
         value: BICst.DASHBOARD_CONTROL_RANG_ASC,
         text: BI.i18nText("BI-Ascend"),
         list_border_not_show: true,
-        cls: "widget-combo-asc"
+        cls: "widget-combo-asc-font"
     }, {
         value: BICst.DASHBOARD_CONTROL_RANG_DESC,
         text: BI.i18nText("BI-Descend"),
-        cls: "widget-combo-des"
+        cls: "widget-combo-des-font"
     }],
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
         text: BI.i18nText("BI-Clear_Selected_Value"),
-        cls: "widget-combo-clear"
+        cls: "widget-combo-clear-font"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
@@ -609,7 +687,7 @@ BICst.TIME_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
         text: BI.i18nText("BI-Clear_Selected_Value"),
-        cls: "widget-combo-clear"
+        cls: "widget-combo-clear-font"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
@@ -640,7 +718,7 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
         text: BI.i18nText("BI-Clear_Selected_Value"),
-        cls: "widget-combo-clear"
+        cls: "widget-combo-clear-font"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
@@ -670,7 +748,7 @@ BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
         text: BI.i18nText("BI-Clear_Selected_Value"),
-        cls: "widget-combo-clear"
+        cls: "widget-combo-clear-font"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,

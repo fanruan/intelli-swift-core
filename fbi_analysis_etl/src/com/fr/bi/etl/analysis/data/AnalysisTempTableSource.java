@@ -11,6 +11,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,11 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     @Override
     public UserTableSource createUserTableSource(long userId) {
         throw new RuntimeException(UNSUPPORT);
+    }
+
+    @Override
+    public List<AnalysisETLSourceField> getFieldsList() {
+        return new ArrayList<AnalysisETLSourceField>();
     }
 
     @Override
