@@ -64,7 +64,7 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     private void recordTableInfo() {
-    
+
         DBField[] columns = getFieldsArray();
         List<DBField> columnList = new ArrayList<DBField>();
         for (DBField col : columns) {

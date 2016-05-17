@@ -238,8 +238,8 @@ public class BICubeOperationManager {
         try {
             IStatusTag statusTag = BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_FINISH_TOPIC,
                     BICubeBuildFragmentTag.getCubeOccupiedFragment(BICubeBuildTopicTag.PATH_FINISH_TOPIC).getFragmentID().getIdentityValue());
-            if (!pathBuildFinishWatcher.isSubscribed(statusTag))
-                pathBuildFinishWatcher.subscribe(statusTag);
+            if (!cubeBuildFinishOperation.isSubscribed(statusTag))
+                cubeBuildFinishOperation.subscribe(statusTag);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
