@@ -146,11 +146,20 @@ BI.extend(BI.Utils, {
         return fields;
     },
 
-    buildData : function(model, callback, filterValueGetter) {
+    buildData : function(model, widget, callback, filterValueGetter) {
         //测试数据
         var header = [];
         var table = {};
         table[ETLCst.ITEMS] = [model];
+        var mask;
+        if(widget.element.is(":visible")) {
+            mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: widget.element,
+                container :widget.element,
+                text: BI.i18nText("BI-Loading")
+            });
+        }
 
         BI.ETLReq.reqPreviewTable(table, function (data) {
             BI.each(model[ETLCst.FIELDS], function(idx, item){
@@ -163,6 +172,9 @@ BI.extend(BI.Utils, {
                 head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
                 header.push(head);
             });
+            if(mask != null) {
+                mask.destroy()
+            }
             callback([data.value, header])
         });
 
@@ -170,32 +182,82 @@ BI.extend(BI.Utils, {
 
     triggerPreview : function () {
         return BI.throttle(function (widget, previewModel, operatorType, type) {
-            switch (type) {
-                case ETLCst.PREVIEW.SELECT : {
-                    var model = {};
-                    model[ ETLCst.FIELDS] = previewModel.getTempFields();
-                     BI.Utils.buildData(model, function (data) {
-                         widget.setPreviewOperator(operatorType);
-                         widget.populatePreview.apply(widget, data)
-                    },widget.controller.getFilterValue)
-                    return;
+            var args = {
+                widget:widget,
+                model:previewModel,
+                operatorType:operatorType,
+                type:type
+            }
+            if(BI.isNull(this.runner)){
+                this.runner = new BI.RUN(args)
+                var self = this;
+                var run = function (widget, previewModel, operatorType, type) {
+                    switch (type) {
+                        case ETLCst.PREVIEW.SELECT :
+                        {
+                            BI.Utils.buildData(previewModel.update4Preview(), widget.previewTable, function (data) {
+                                self.runner = self.runner.getNext();
+                                if (self.runner != null) {
+                                    run(self.runner.options.widget, self.runner.options.model, self.runner.options.operatorType, self.runner.options.type)
+                                } else {
+                                    widget.setPreviewOperator(operatorType);
+                                    widget.populatePreview.apply(widget, data)
+                                }
+                            }, widget.controller.getFilterValue)
+                            return
+                        }
+                        case  ETLCst.PREVIEW.MERGE :
+                        {
+                            BI.concat(BI.Utils.buildData(previewModel, widget, function (data) {
+                                self.runner = self.runner.getNext();
+                                if (self.runner != null) {
+                                    run(self.runner.options.widget, self.runner.options.model, self.runner.options.operatorType, self.runner.options.type)
+                                } else {
+                                    widget.populate.apply(widget, data);
+                                }
+                            }), operatorType);
+                            return;
+                        }
+                        default :
+                        {
+                            BI.Utils.buildData(previewModel.update(), widget.previewTable, function (data) {
+                                self.runner = self.runner.getNext();
+                                if (self.runner != null) {
+                                    run(self.runner.options.widget, self.runner.options.model, self.runner.options.operatorType, self.runner.options.type)
+                                } else {
+                                    widget.setPreviewOperator(operatorType);
+                                    widget.populatePreview.apply(widget, data)
+                                }
+                            }, widget.controller.getFilterValue);
+                            return
+                        }
+
+                    }
                 }
-                case ETLCst.PREVIEW.MERGE : {
-                     BI.concat(BI.Utils.buildData(previewModel, function (data) {
-                         widget.populate.apply(widget, data)
-                    }), operatorType);
-                    return;
-                }
-                default : {
-                    BI.Utils.buildData(previewModel.update(), function (data) {
-                        widget.setPreviewOperator(operatorType);
-                        widget.populatePreview.apply(widget, data)
-                    },widget.controller.getFilterValue);
-                    return
-                }
+                run(self.runner.options.widget, self.runner.options.model, self.runner.options.operatorType, self.runner.options.type)
+            } else {
+                this.runner.setNext(args)
             }
         }, 300)
     }
 
+})
+
+BI.RUN = BI.inherit(FR.OB, {
+    _init : function () {
+        BI.RUN.superclass._init.apply(this, arguments);
+    },
+
+    setNext : function (next) {
+        this.next = new BI.RUN(next);
+    },
+
+    hasNext : function () {
+        return BI.isNotNull(this.next);
+    },
+
+    getNext : function () {
+        return this.next
+    }
 })
 
