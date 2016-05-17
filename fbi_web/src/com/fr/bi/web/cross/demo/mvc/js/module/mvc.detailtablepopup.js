@@ -1,12 +1,12 @@
-DetailTablePopupView = BI.inherit(BI.View, {
+TestDetailTablePopupView = BI.inherit(BI.View, {
     _defaultConfig: function () {
-        return BI.extend(DetailTablePopupView.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(TestDetailTablePopupView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "mvc-detail-table-popup"
         })
     },
 
     _init: function () {
-        DetailTablePopupView.superclass._init.apply(this, arguments);
+        TestDetailTablePopupView.superclass._init.apply(this, arguments);
     },
 
     _render: function (vessel) {
@@ -30,4 +30,4 @@ DetailTablePopupView = BI.inherit(BI.View, {
     }
 });
 
-DetailTablePopupModel = BI.inherit(BI.Model, {});
+TestDetailTablePopupModel = BI.inherit(BI.Model, {});

@@ -22,6 +22,10 @@
 
         get: function () {
             return BI.deepClone(this.cat.apply(this, arguments));
+        },
+
+        remove: function (key) {
+            delete _Shared[key];
         }
     };
 })();

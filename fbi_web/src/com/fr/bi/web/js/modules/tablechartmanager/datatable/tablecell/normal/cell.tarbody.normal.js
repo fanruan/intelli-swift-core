@@ -2,37 +2,37 @@
  * Created by Young's on 2016/3/24.
  */
 BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.TargetBodyNormalCell.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-target-body-normal-cell"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.TargetBodyNormalCell.superclass._init.apply(this, arguments);
-        var o = this.options;
+        var self = this, o = this.options;
         var dId = o.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
-        if(BI.isNotNull(styleSettings)){
+        if (BI.isNotNull(styleSettings)) {
             var format = styleSettings.format, numLevel = styleSettings.num_level;
             text = this._parseNumLevel(text, numLevel);
             text = this._parseFloatByDot(text, format);
             var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
             iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
             var conditions = styleSettings.conditions;
-            BI.some(conditions, function(i, co){
+            BI.some(conditions, function (i, co) {
                 var range = co.range;
                 var min = BI.parseFloat(range.min), max = BI.parseFloat(range.max);
-                if((range.closemin === true ? text >= min : text > min) &&
-                    (range.closemax === true ? text <= max : text < max)){
+                if ((range.closemin === true ? text >= min : text > min) &&
+                    (range.closemax === true ? text <= max : text < max)) {
                     color = co.color;
                 }
             });
         }
         var textLabel = this._createTargetText(text);
-        if(BI.isNotEmptyString(color)){
+        if (BI.isNotEmptyString(color)) {
             textLabel.element.css("color", color);
         }
         BI.createWidget({
@@ -50,11 +50,64 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 height: 30
             }],
             columnSize: ["", 30]
-        })
+        });
+
+        if (BI.Utils.isTargetByDimensionID(dId)) {
+            this.element.hover(function () {
+                var button = self._createPopupButton();
+                button.setVisible(true);
+            }, function () {
+                if (self.popup_button) {
+                    self.popup_button.setVisible(false);
+                }
+            });
+
+        }
     },
 
-    _parseNumLevel: function(text, numLevel) {
-        if(text === Infinity || text !== text) {
+    _createPopupButton: function () {
+        var self = this, o = this.options;
+        if (BI.isNull(this.popup_button)) {
+            this.popup_button = BI.createWidget({
+                type: "bi.icon_button",
+                cls: "detail-table-popup-font cell-detail-table-popup-button",
+                width: 13,
+                height: 13,
+                handler: function () {
+                    var layer = BI.Layers.make("detail_table_popup", "body", {
+                        left: 20,
+                        right: 20,
+                        top: 20,
+                        bottom: 20
+                    });
+                    layer.empty();
+                    var popup = BI.createWidget({
+                        type: "bi.detail_table_popup",
+                        element: layer,
+                        dId: o.dId
+                    });
+                    popup.on(BI.DetailTablePopup.EVENT_COMPLETE, function () {
+                        this.destroy();
+                        BI.Layers.remove("detail_table_popup");
+                    });
+                    BI.Layers.show("detail_table_popup");
+                }
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: this.popup_button,
+                    right: 3,
+                    bottom: 3
+                }]
+            })
+        }
+        return this.popup_button;
+    },
+
+    _parseNumLevel: function (text, numLevel) {
+        if (text === Infinity || text !== text) {
             return text;
         }
         switch (numLevel) {
@@ -71,12 +124,12 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         }
     },
 
-    _parseFloatByDot: function(text, dot){
-        if(text === Infinity || text !== text) {
+    _parseFloatByDot: function (text, dot) {
+        if (text === Infinity || text !== text) {
             return text;
         }
         var num = BI.parseFloat(text);
-        switch (dot){
+        switch (dot) {
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
                 return num;
                 break;
@@ -84,39 +137,39 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 return BI.parseInt(num);
                 break;
             case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                var mnum = Math.round(num*10)/10;
+                var mnum = Math.round(num * 10) / 10;
                 var snum = mnum.toString();
-                if(snum.indexOf(".") < 0){
+                if (snum.indexOf(".") < 0) {
                     snum = snum + ".0"
                 }
                 return snum;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                var mnum = Math.round(num*100)/100;
+                var mnum = Math.round(num * 100) / 100;
                 var snum = mnum.toString();
-                if(snum.indexOf(".") < 0){
+                if (snum.indexOf(".") < 0) {
                     snum = snum + ".00"
                 }
                 return snum;
         }
     },
 
-    _getIconByStyleAndMark: function(text, style, mark){
+    _getIconByStyleAndMark: function (text, style, mark) {
         var num = BI.parseFloat(text), nMark = BI.parseFloat(mark);
-        switch (style){
+        switch (style) {
             case BICst.TARGET_STYLE.ICON_STYLE.NONE:
                 return "";
             case BICst.TARGET_STYLE.ICON_STYLE.POINT:
-                if(num > nMark){
+                if (num > nMark) {
                     return "target-style-more-dot-font";
-                } else if(num === nMark){
+                } else if (num === nMark) {
                     return "target-style-equal-dot-font"
                 } else {
                     return "target-style-less-dot-font";
                 }
             case BICst.TARGET_STYLE.ICON_STYLE.ARROW:
-                if(num > nMark){
+                if (num > nMark) {
                     return "target-style-more-arrow-font";
-                } else if(num === nMark){
+                } else if (num === nMark) {
                     return "target-style-equal-arrow-font";
                 } else {
                     return "target-style-less-arrow-font";
@@ -124,7 +177,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         }
     },
 
-    _createTargetText: function(text){
+    _createTargetText: function (text) {
         //联动
         var self = this;
         var o = this.options;
@@ -132,18 +185,18 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
         var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
         var linkedWidgets = [];
-        BI.each(linkage, function(i, link){
-            if(link.from === dId) {
+        BI.each(linkage, function (i, link) {
+            if (link.from === dId) {
                 linkedWidgets.push(link.to);
             }
         });
-        if(text === Infinity) {
+        if (text === Infinity) {
             text = "N/0";
         }
-        if(text !== text) {
+        if (text !== text) {
             text = "0/0";
         }
-        if(BI.isEmptyArray(linkedWidgets)) {
+        if (BI.isEmptyArray(linkedWidgets)) {
             return BI.createWidget({
                 type: "bi.label",
                 text: text,
@@ -162,9 +215,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 cls: "target-linkage-label",
                 lgap: 5
             });
-            textButton.on(BI.TextButton.EVENT_CHANGE, function(){
+            textButton.on(BI.TextButton.EVENT_CHANGE, function () {
                 //这个clicked应该放到子widget中保存起来
-                BI.each(linkedWidgets, function(i, linkWid){
+                BI.each(linkedWidgets, function (i, linkWid) {
                     BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkWid, dId, clicked);
                     self._send2AllChildLinkWidget(linkWid);
                 });
@@ -173,10 +226,10 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         }
     },
 
-    _send2AllChildLinkWidget: function(wid) {
+    _send2AllChildLinkWidget: function (wid) {
         var self = this, dId = this.options.dId, clicked = this.options.clicked;
         var linkage = BI.Utils.getWidgetLinkageByID(wid);
-        BI.each(linkage, function(i, link) {
+        BI.each(linkage, function (i, link) {
             BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, dId, clicked);
             self._send2AllChildLinkWidget(link.to);
         });

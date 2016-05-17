@@ -14,7 +14,6 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -198,11 +197,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     @Override
     public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
-        try {
-            return pickTableService(path.getPrimaryField().getColumnName()).getRelationIndexGetter(path);
-        } catch (BITablePathEmptyException e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
+
+        return hostTable.getRelationIndexGetter(path);
 
     }
 

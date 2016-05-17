@@ -8,7 +8,7 @@ import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BIFormularUtils;
-import com.fr.bi.stable.utils.BIMapUtils;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
@@ -62,7 +62,7 @@ public class FormulaCalculator extends CalCalculator {
     public void calCalculateTarget(LightNode node) {
         String formula = "=" + expression;
         try {
-            Object value = BIFormularUtils.getCalculatorValue(c, formula, BIMapUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValueMap()));
+            Object value = BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValueMap()));
             //抛错就是没有值啦
             node.setSummaryValue(createTargetGettingKey(), value);
         } catch (Throwable e) {
@@ -82,7 +82,7 @@ public class FormulaCalculator extends CalCalculator {
     public void calCalculateTarget(BICrossNode node, TargetGettingKey key) {
         String formula = "=" + expression;
         try {
-            Object value = BIFormularUtils.getCalculatorValue(c, formula, BIMapUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValue()));
+            Object value = BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValue()));
             //抛错就是没有值啦
             node.setSummaryValue(createTargetGettingKey(), value);
         } catch (Throwable e) {

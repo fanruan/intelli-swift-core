@@ -39,8 +39,10 @@ public class BITrigger implements ITrigger {
 
     @Override
     public void setTriggerCount(int count) {
-        if (count > 0) {
-            this.triggerCount = count;
+        synchronized (this) {
+            if (count > 0) {
+                this.triggerCount = count;
+            }
         }
     }
 
@@ -50,8 +52,10 @@ public class BITrigger implements ITrigger {
     }
 
     private void triggerOne() {
-        if (triggerCount != Integer.MAX_VALUE) {
-            triggerCount--;
+        synchronized (this) {
+            if (triggerCount != Integer.MAX_VALUE) {
+                triggerCount--;
+            }
         }
     }
 

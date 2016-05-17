@@ -276,6 +276,7 @@ BI.View = BI.inherit(BI.V, {
      */
     notifyParentEnd: function (force) {
         this.parent && this.parent.trigger("end:" + this.cid);
+        this.trigger("end");
         !force && this.notify();
         return this;
     },

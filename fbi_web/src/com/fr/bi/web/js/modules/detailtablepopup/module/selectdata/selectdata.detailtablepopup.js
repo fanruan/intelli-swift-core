@@ -8,8 +8,7 @@
 BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTablePopupSelectData.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-table-popup-select-data",
-            model: null
+            baseCls: "bi-detail-table-popup-select-data"
         })
     },
 
@@ -40,12 +39,13 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
             }
         });
 
+        var wId = Data.SharingPool.cat(BI.DetailTablePopup.SHARING_POOL_KEY).id;
         this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function (value, ob) {
             if (BI.isObject(value)) {
                 value = value.field_id;
             }
             var tableId = BI.Utils.getTableIdByFieldID(value);
-            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + o.model.getId(), ob.isSelected() ? tableId : "");
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + wId, ob.isSelected() ? tableId : "");
         });
 
         var id = BI.Utils.getCurrentSelectPackageID();
@@ -95,7 +95,6 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
                     if (!map[finded.pId]) {
                         searchResult.push({
                             id: finded.pId,
-                            model: o.model,
                             type: "bi.detail_table_popup_select_data_level0_node",
                             text: BI.Utils.getTableNameByID(finded.pId),
                             title: BI.Utils.getTableNameByID(finded.pId),
@@ -128,7 +127,6 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
         BI.each(currentTables, function (i, tid) {
             tablesStructure.push({
                 id: tid,
-                model: o.model,
                 type: "bi.detail_table_popup_select_data_level0_node",
                 text: BI.Utils.getTableNameByID(tid),
                 title: BI.Utils.getTableNameByID(tid),
@@ -161,7 +159,6 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
                     type: "bi.select_data_expander",
                     el: {
                         type: "bi.detail_table_popup_select_data_level1_node",
-                        model: o.model,
                         text: BI.Utils.getTableNameByID(rtId),
                         title: BI.Utils.getTableNameByID(rtId),
                         value: rtId,
@@ -454,6 +451,11 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
             },
             drag: drag
         }];
+    },
+
+    destroy: function () {
+        //BI.Broadcasts.remove(BICst.BROADCAST.DIMENSIONS_PREFIX + this.options.model.getId());
+        BI.DetailTablePopupSelectData.superclass.destroy.apply(this, arguments);
     }
 });
 BI.extend(BI.DetailTablePopupSelectData, {
