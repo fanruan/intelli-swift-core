@@ -28,29 +28,9 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
         });
     },
 
-    _createDataByData: function (da) {
-        var self = this, o = this.options;
-        var result = BI.find(da.c, function(idx, item){
-            return BI.size(item.s) < self.constants.BUBBLE_ITEM_COUNT || !BI.has(item, "n");
-        });
-        if (BI.isEmptyArray(da.c) || BI.isNotNull(result)) {
-            return [];
-        }
-        return BI.map(da.c, function (idx, item) {
-            return {
-                data: [{
-                    x: item.s[1],
-                    y: item.s[0],
-                    size: item.s[2]
-                }],
-                name: item.n
-            };
-        });
-    },
-
     populate: function (items) {
         this.ForceBubbleChart.resize();
-        this.ForceBubbleChart.populate(this._createDataByData(items));
+        this.ForceBubbleChart.populate(items);
     },
 
     loading: function(){
