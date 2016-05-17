@@ -39,6 +39,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     protected Map<String, Map<String, BIDataColumn>> dimensionsMap = new HashMap<String, Map<String, BIDataColumn>>();
     protected Map<String, Map<String, List<BISimpleRelation>>> relationsMap = new HashMap<String, Map<String, List<BISimpleRelation>>>();
     protected Object[] clickValue;
+
     protected ComplexExpander complexExpander = new ComplexExpander();
     private int maxCol = 7;     //单页最大列数
     private int maxRow = 20;    //单页最大行数

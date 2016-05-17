@@ -7,6 +7,7 @@ import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.List;
 
@@ -44,4 +45,5 @@ public class BIStringDimension extends BIAbstractDimension {
     public DimensionCalculator createCalculator(BIDataColumn column, List<BITableSourceRelation> relations) {
         return new StringDimensionCalculator(this, column, relations);
     }
+
 }

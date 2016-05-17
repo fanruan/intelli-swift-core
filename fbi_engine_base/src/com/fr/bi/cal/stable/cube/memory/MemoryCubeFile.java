@@ -28,6 +28,7 @@ public class MemoryCubeFile extends AbstractCubeFile {
 
     public MemoryCubeFile(DBField[] dbFields) {
         this.dbFields = dbFields;
+        initColumns();
     }
 
 
@@ -114,7 +115,7 @@ public class MemoryCubeFile extends AbstractCubeFile {
 
     @Override
     public Date getCubeLastTime() {
-        throw new UnsupportedOperationException(UNSUPPORT);
+        return new Date();
     }
 
     @Override
@@ -187,6 +188,8 @@ public class MemoryCubeFile extends AbstractCubeFile {
                         case DBConstant.COLUMN.NUMBER:
                             switch (field.getClassType()) {
                                 case DBConstant.CLASS.INTEGER:
+                                    columns[i] = new MemoryIntegerColumn();
+                                    break;
                                 case DBConstant.CLASS.LONG: {
                                     columns[i] = new MemoryLongColumn();
                                     break;

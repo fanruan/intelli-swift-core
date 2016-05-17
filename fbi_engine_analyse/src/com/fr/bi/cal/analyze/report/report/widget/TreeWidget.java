@@ -1,41 +1,26 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.fr.bi.base.BIUser;
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.executor.tree.TreeExecutor;
 import com.fr.bi.cal.analyze.report.report.widget.tree.*;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.report.widget.BIDataColumn;
-import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
-import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.dimension.BIDimensionFactory;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
-import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIExcutorConstant;
-import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.relation.BISimpleRelation;
 import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.fs.base.entity.User;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -317,5 +302,9 @@ public class TreeWidget extends BIAbstractWidget {
         return this.dimensionMap.get(dimension);
     }
 
+    @Override
+    public int getType() {
+        return BIReportConstant.WIDGET.TREE;
+    }
 
 }
