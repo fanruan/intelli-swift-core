@@ -37,15 +37,11 @@ import java.util.*;
  */
 public class BICubeTableAdapter implements ICubeTableService {
     private ICube cube;
-    private Map<BIColumnKey, ICubeTableEntityGetterService> column2Tables;
-    private Set<ICubeTableEntityGetterService> tableEntitySet;
     private ICubeTableEntityGetterService primaryTable;
 
     public BICubeTableAdapter(ICube cube, ITableSource tableSource) {
         this.cube = cube;
         primaryTable = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
-        column2Tables = new HashMap<BIColumnKey, ICubeTableEntityGetterService>();
-        tableEntitySet = new HashSet<ICubeTableEntityGetterService>();
         Iterator<Set<ITableSource>> it = tableSource.createGenerateTablesMap().values().iterator();
         while (it.hasNext()) {
             Iterator<ITableSource> tableSourceIterator = it.next().iterator();
@@ -58,11 +54,6 @@ public class BICubeTableAdapter implements ICubeTableService {
     private void initial(ITableSource tableSource) {
         ICubeTableEntityGetterService tableEntityGetterService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
         Iterator<BIColumnKey> it = tableEntityGetterService.getCubeColumnInfo().iterator();
-        while (it.hasNext()) {
-            BIColumnKey columnKey = it.next();
-            column2Tables.put(columnKey, tableEntityGetterService);
-        }
-        tableEntitySet.add(tableEntityGetterService);
     }
 
     @Override
@@ -121,7 +112,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public ICubeColumnIndexReader loadGroup(BIKey key) {
-        return loadGroup(key,null);
+        return loadGroup(key, null);
     }
 
     @Override
@@ -132,26 +123,20 @@ public class BICubeTableAdapter implements ICubeTableService {
     @Override
     public Map<BIKey, DBField> getColumns() {
         Map<BIKey, DBField> result = new HashMap<BIKey, DBField>();
-        Iterator<ICubeTableEntityGetterService> it = tableEntitySet.iterator();
-        while (it.hasNext()) {
-            List<DBField> list = it.next().getFieldInfo();
-            Iterator<DBField> tableFieldIt = list.iterator();
-            while (tableFieldIt.hasNext()) {
-                DBField field = tableFieldIt.next();
-                result.put(getColumnIndex(field), field);
-            }
+
+        List<DBField> list = primaryTable.getFieldInfo();
+        Iterator<DBField> tableFieldIt = list.iterator();
+        while (tableFieldIt.hasNext()) {
+            DBField field = tableFieldIt.next();
+            result.put(getColumnIndex(field), field);
         }
+
         return result;
     }
 
     @Override
     public int getColumnSize() {
-        Iterator<ICubeTableEntityGetterService> it = tableEntitySet.iterator();
-        int sum = 0;
-        while (it.hasNext()) {
-            sum += it.next().getFieldInfo().size();
-        }
-        return sum;
+        return primaryTable.getFieldInfo().size();
     }
 
     @Override
@@ -247,7 +232,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     @Override
     public ICubeColumnIndexReader loadGroup(BIKey columnIndex, List<BITableSourceRelation> relationList) {
         ICubeColumnReaderService columnReaderService = getColumnReader(columnIndex);
-        if (relationList!=null) {
+        if (relationList != null) {
             try {
                 BICubeTablePath path = BICubePathUtils.convert(relationList);
                 if (path.size() > 0 && !columnReaderService.existRelationPath(path)) {
@@ -271,7 +256,7 @@ public class BICubeTableAdapter implements ICubeTableService {
             } else {
                 columnKey = BIColumnKey.covertColumnKey(field);
             }
-            columnReaderService = column2Tables.get(columnKey).getColumnDataGetter(columnKey);
+            columnReaderService = primaryTable.getColumnDataGetter(columnKey);
 
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -280,19 +265,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     private ICubeTableEntityGetterService getTableReader(BIKey biKey) {
-        try {
-            BIColumnKey columnKey;
-            DBField field = getDBField(biKey);
-            if (biKey instanceof IndexTypeKey) {
-                columnKey = BIColumnKeyAdapter.covert(field, ((IndexTypeKey) biKey).getType());
-            } else {
-                columnKey = BIColumnKey.covertColumnKey(field);
-            }
-            return column2Tables.get(columnKey);
-
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
+        return primaryTable;
     }
 
     private DBField getDBField(BIKey biKey) throws BIKeyAbsentException {
