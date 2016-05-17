@@ -1,5 +1,8 @@
 package com.fr.bi.stable.data.source;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
@@ -14,10 +17,7 @@ import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.data.db.DBTable;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -83,12 +83,6 @@ public abstract class AbstractTableSource implements ITableSource {
     @Override
     public JSONObject createPreviewJSONFromCube(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
         ICubeTableService tableIndex = loader.getTableIndex(fetchObjectCore());
-        return createPreviewJSONFromTableIndex(fields, tableIndex);
-    }
-
-    @Override
-    public JSONObject createPreviewJSONFromMemory(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
-        ICubeTableService tableIndex = loader.getTableIndex(fetchObjectCore(), 0, BIBaseConstant.MEMORY_PREVIEW_COUNT);
         return createPreviewJSONFromTableIndex(fields, tableIndex);
     }
 

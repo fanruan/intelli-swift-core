@@ -33,25 +33,6 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     text: BI.i18nText("BI-Qiu_Min"),
                     value: BICst.SUMMARY_TYPE.MIN
                 }]
-            }, {
-                el: {
-                    text: BI.i18nText("BI-Chart_Type"),
-                    value: BICst.TARGET_COMBO.CHART_TYPE,
-                    iconCls1: ""
-                },
-                children: [{
-                    text: BI.i18nText("BI-Column_Chart"),
-                    value: BICst.WIDGET.COLUMN
-                }, {
-                    text: BI.i18nText("BI-Stacked_Chart"),
-                    value: BICst.WIDGET.ACCUMULATE_COLUMN
-                }, {
-                    text: BI.i18nText("BI-Line_Chart"),
-                    value: BICst.WIDGET.LINE
-                }, {
-                    text: BI.i18nText("BI-Area_Chart"),
-                    value: BICst.WIDGET.AREA
-                }]
             }],
             [{
                 text: BI.i18nText("BI-Style_Setting"),
@@ -99,44 +80,22 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         return val;
     },
 
-    _assertChartType:function(val){
-        val || (val = {});
-        val.type || (val.type = BICst.WIDGET.COLUMN);
-        return val;
-    },
-
     _rebuildItems: function(){
-        var item = this.defaultItems();
-        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
-        switch (wType) {
-            case BICst.WIDGET.TABLE:
-                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
-                break;
-            default:
-                item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
-                break;
-        }
-        return item;
+        return this.defaultItems();
     },
 
     _createValue: function () {
         var o = this.options;
         var group = BI.Utils.getDimensionGroupByID(o.dId);
-        var chartType = BI.Utils.getDimensionStyleOfChartByID(o.dId);
         group = this._assertGroup(group);
-        chartType = this._assertChartType(chartType);
 
         var result = {};
 
-        result.chartType = {
-            value: BICst.TARGET_COMBO.CHART_TYPE,
-            childValue: chartType.type
-        };
         result.group = {
             value: BICst.TARGET_COMBO.SUMMERY_TYPE,
             childValue: group.type
         };
-        return [result.chartType, result.group];
+        return [result.group];
     }
 });
 $.shortcut("bi.target_combo", BI.TargetCombo);

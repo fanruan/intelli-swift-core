@@ -430,6 +430,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
 
                         var sort = dim.sort;
                         var group = dim.group;
+                        var settings = dim.settings;
                         var filter_value = dim.filter_value;
                         if (BI.isNotNull(sort) && sort.type === BICst.SORT.CUSTOM) {
                             dimension.sort = sort;
@@ -442,6 +443,12 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         }
                         if (BI.isNotNull(filter_value)) {
                             dimension.filter_value = filter_value;
+                        }
+                        if (BI.isNotNull(filter_value)) {
+                            dimension.filter_value = filter_value;
+                        }
+                        if(BI.isNotNull(settings)){
+                            dimension.settings = settings;
                         }
                         return dimension;
                     } else {

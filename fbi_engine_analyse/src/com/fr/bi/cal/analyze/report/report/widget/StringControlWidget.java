@@ -7,6 +7,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
@@ -140,6 +141,11 @@ public class StringControlWidget extends BISummaryWidget {
             return match;
         }
         return source;
+    }
+
+    @Override
+    public int getType() {
+        return BIReportConstant.WIDGET.STRING;
     }
 
 }

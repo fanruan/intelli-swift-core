@@ -52,6 +52,7 @@ public class BISourceDataTransport extends BIProcessor {
     public Object mainTask(IMessage lastReceiveMessage) {
         recordTableInfo();
         long count = transport();
+
         if (count >= 0) {
             tableEntityService.recordRowCount(count);
         }
@@ -64,7 +65,7 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     private void recordTableInfo() {
-    
+
         DBField[] columns = getFieldsArray();
         List<DBField> columnList = new ArrayList<DBField>();
         for (DBField col : columns) {
