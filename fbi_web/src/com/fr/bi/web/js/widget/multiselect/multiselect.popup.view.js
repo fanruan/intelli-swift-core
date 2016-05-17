@@ -10,7 +10,7 @@ BI.MultiSelectPopupView = BI.inherit(BI.Widget, {
             baseCls: 'bi-multi-select-popup-view',
             maxWidth: 230,
             minWidth: 135,
-            maxHeight: 200,
+            maxHeight: 400,
 
             itemsCreator: BI.emptyFn,
             onLoaded: BI.emptyFn
