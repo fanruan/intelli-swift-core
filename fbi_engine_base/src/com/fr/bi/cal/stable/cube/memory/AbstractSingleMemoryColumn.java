@@ -35,7 +35,10 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     protected List<T> detail;
 
     public AbstractSingleMemoryColumn() {
+        initDetail();
     }
+
+    protected abstract void initDetail();
 
     @Override
 

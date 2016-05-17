@@ -43,4 +43,6 @@ public interface BIDimension extends BITargetAndDimension {
 
     boolean showNode(BINode node,
                      Map<String, TargetCalculator> targetsMap);
+
+    Object getValueByType(Object data);
 }

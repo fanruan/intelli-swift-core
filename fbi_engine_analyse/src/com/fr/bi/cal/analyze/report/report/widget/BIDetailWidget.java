@@ -203,6 +203,11 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
     @Override
+    public int getType() {
+        return BIReportConstant.WIDGET.DETAIL;
+    }
+
+    @Override
     protected TemplateBlock createBIBlock(BISession session) {
         return new PolyCubeDetailECBlock(this, session, page);
     }

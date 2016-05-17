@@ -45,6 +45,7 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
     _createMainModel : function (wId) {
         var self = this, model = {}, items = [];
         var widget = BI.Utils.getWidgetCalculationByID(wId);
+        widget['page'] = BICst.TABLE_PAGE_OPERATOR.REFRESH;
         var usedDimensions = {}, hasUsed = false;
         var fields = [];
         if(BI.isNotNull(widget.view)) {

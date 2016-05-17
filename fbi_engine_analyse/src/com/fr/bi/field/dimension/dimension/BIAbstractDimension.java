@@ -14,6 +14,7 @@ import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,5 +154,10 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
             return filter.showNode(node, targetsMap, null);
         }
         return true;
+    }
+
+    @Override
+    public Object getValueByType(Object data) {
+        return data == null ? StringUtils.EMPTY : data.toString();
     }
 }
