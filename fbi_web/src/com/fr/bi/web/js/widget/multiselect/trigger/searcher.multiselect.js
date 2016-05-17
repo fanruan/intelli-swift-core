@@ -10,6 +10,7 @@ BI.MultiSelectSearcher = BI.inherit(BI.Widget, {
         return BI.extend(BI.MultiSelectSearcher.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-multi-select-searcher',
             itemsCreator: BI.emptyFn,
+            el: {},
             popup: {},
 
             adapter: null,
@@ -20,7 +21,7 @@ BI.MultiSelectSearcher = BI.inherit(BI.Widget, {
     _init: function () {
         BI.MultiSelectSearcher.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.editor = BI.createWidget({
+        this.editor = BI.createWidget(o.el, {
             type: 'bi.multi_select_editor'
         });
 
