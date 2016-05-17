@@ -29,6 +29,7 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
             logic: opts.logic,
             el: {
                 onLoaded: opts.onLoaded,
+                height: 400,
                 el: {
                     type: "bi.loader",
                     isDefaultInit: false,
