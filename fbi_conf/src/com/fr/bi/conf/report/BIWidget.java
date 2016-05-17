@@ -61,5 +61,7 @@ public interface BIWidget extends ParseJSONWithUID, FCloneable {
      */
     WorkBook createWorkBook(BISessionProvider session);
 
+    int getType();
+
 
 }

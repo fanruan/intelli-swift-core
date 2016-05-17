@@ -8,6 +8,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class AnalysisETLSourceFactory {
                 fieldList.add(field);
             }
         }
-        String name = jo.getString("table_name");
+        String name = jo.optString("table_name", StringUtils.EMPTY);
         switch (type){
             case Constants.ETL_TYPE.SELECT_DATA :
                 return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name);

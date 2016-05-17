@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyChartBlock;
@@ -94,5 +95,10 @@ public class ChartWidget extends BISummaryWidget {
         JSONObject jo = new JSONObject();
         jo.put("data", data.getCubeNode(this, dimensions, targets, (BISession) session).toJSONObject(getDimensions(), getTargetsKey(), -1));
         return jo;
+    }
+
+    @Override
+    public int getType() {
+        return BIReportConstant.WIDGET.NONE;
     }
 }

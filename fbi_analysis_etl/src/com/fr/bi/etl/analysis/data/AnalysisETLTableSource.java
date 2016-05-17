@@ -42,6 +42,11 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     }
 
     @Override
+    public List<AnalysisETLSourceField> getFieldsList() {
+        return fieldList;
+    }
+
+    @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
         if (fieldList != null && !fieldList.isEmpty()){

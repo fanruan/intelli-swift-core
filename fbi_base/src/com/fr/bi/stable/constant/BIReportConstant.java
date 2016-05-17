@@ -336,7 +336,7 @@ public class BIReportConstant {
         public static final int FALL_AXIS = 0x9;         //瀑布图
 
         public static final int BAR = 0xa;                //条形图
-        public static final int ACCUMULATED_BAR = 0xb;    //堆积条形图
+        public static final int ACCUMULATE_BAR = 0xb;    //堆积条形图
         public static final int COMPARE_BAR = 0xc;       //对比条形图
 
         public static final int LINE = 0xd;              //折线图

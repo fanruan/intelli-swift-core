@@ -1,5 +1,7 @@
 package com.fr.bi.conf.data.source;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
@@ -7,6 +9,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.data.source.operator.create.TableFilterOperator;
+import com.fr.bi.conf.data.source.operator.create.UsePartOperator;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIColumn;
@@ -16,7 +19,7 @@ import com.fr.bi.stable.data.db.DBTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.data.source.SourceFile;
-import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -87,9 +90,15 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     @Override
     public long read4Part(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader, int start, int end) {
         int startCol = 0;
-        if (isAllAddColumnOperator() || hasTableFilterOperator()) {
+        if (isAllAddColumnOperator()) {
             for (ITableSource p : getParents()) {
-                p.read4Part(travel, field, loader, start, end);
+                ICubeTableService ti = loader.getTableIndex(p.fetchObjectCore(), start, end);
+                BIColumn[] fields = p.getDbTable().getColumnArray();
+                for (int i = 0; i < ti.getRowCount(); i ++){
+                    for (int j = 0; j < fields.length; j++){
+                        travel.actionPerformed(new BIDataValue(i, j, ti.getRow(new IndexKey(fields[j].getFieldName()), i)));
+                    }
+                }
                 startCol += p.getDbTable().getBIColumnLength();
             }
         }
@@ -294,9 +303,9 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         return sourceFile;
     }
 
-    private boolean hasTableFilterOperator() {
+    public boolean hasTableFilterOperator() {
         for (O operator : getETLOperators()) {
-            if (ComparatorUtils.equals(operator.xmlTag(), TableFilterOperator.XML_TAG)) {
+            if (ComparatorUtils.equals(operator.xmlTag(), TableFilterOperator.XML_TAG) || ComparatorUtils.equals(operator.xmlTag(), UsePartOperator.XML_TAG)) {
                 return true;
             }
         }

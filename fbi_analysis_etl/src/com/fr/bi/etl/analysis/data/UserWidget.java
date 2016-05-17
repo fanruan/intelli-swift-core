@@ -1,21 +1,30 @@
 package com.fr.bi.etl.analysis.data;
 
-import com.fr.bi.cal.analyze.report.report.widget.BIAbstractWidget;
+import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
+import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
+import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
+import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.cal.analyze.session.BIWeblet;
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
-import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
-import com.fr.json.JSONObject;
-import com.fr.report.poly.TemplateBlock;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
+import com.fr.stable.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by 小灰灰 on 2016/4/12.
  */
-public class UserWidget extends BIAbstractWidget {
+public class UserWidget {
 
     private BIWidget widget;
 
@@ -26,53 +35,113 @@ public class UserWidget extends BIAbstractWidget {
         this.userId = userId;
     }
 
-    @Override
-    public long getUserId() {
-        return userId;
+
+    public List<List> createData(int start, int end) {
+        if (widget.getType() == BIReportConstant.WIDGET.DETAIL){
+            return createDetailData(start, end);
+        } else {
+            return createTableData(start, end); 
+        }
     }
 
-    @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-        return null;
+    private List<List> createTableData(int start, int end) {
+        UserSession session = new UserSession();
+        List<List> values = new ArrayList<List>();
+        List<List> v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
+        int rowCount = 0;
+        for (int i = 0; i < v.size(); i++){
+            if (rowCount >= start && rowCount < end){
+                values.add(v.get(i));
+            }
+            rowCount ++;
+        }
+        while (v.size() == PagingFactory.PAGE_PER_GROUP_20 && rowCount < end){
+            v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
+            for (int i = 0; i < v.size(); i++){
+                if (rowCount >= start && rowCount < end){
+                    values.add(v.get(i));
+                }
+                rowCount ++;
+            }
+        }
+        return values;
     }
 
-    @Override
-    public <T extends BITargetAndDimension> T[] getDimensions() {
-        return widget.getDimensions();
+    private List<List> getNextValue(UserSession session, int op){
+        List<List> values = new ArrayList<List>();
+        try {
+            ((TableWidget)widget).setComplexExpander(new ComplexAllExpalder());
+            ((TableWidget)widget).setOperator(op);
+            Node n = (Node) ((TableWidget)widget).getExecutor(session).getCubeNode();
+            while (n.getFirstChild() != null) {
+                n = n.getFirstChild();
+            }
+            BIDimension[] rows = ((TableWidget) widget).getViewDimensions();
+            while (n != null) {
+                List rowList = new ArrayList();
+                Node temp = n;
+                for (TargetGettingKey key : ((TableWidget) widget).getTargetsKey()){
+                    rowList.add(temp.getSummaryValue(key));
+                }
+                int i = rows.length;
+                while (temp.getParent() != null) {
+                    Object data = temp.getData();
+                    BIDimension dim = rows[--i];
+                    Object v = dim.getValueByType(data);
+                    rowList.add(0, v);
+                    temp = temp.getParent();
+                }
+                values.add(rowList);
+                n = n.getSibling();
+            }
+        } catch (JSONException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return values;
     }
 
-    @Override
-    public <T extends BITargetAndDimension> T[] getViewDimensions() {
-        return widget.getViewDimensions();
+    private List<List> createDetailData(int start, int end) {
+        List<List> values = new ArrayList<List>();
+        int step = end - start;
+        Paging paging = PagingFactory.createPaging(step);
+        int page = start / step;
+        paging.setCurrentPage(page);
+        DetailExecutor exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
+        try {
+            JSONArray ja =  exe.getCubeNode().getJSONArray("value");
+            for (int i = start - page * step; i < ja.length(); i++){
+                JSONArray j = ja.getJSONArray(i);
+                List l = new ArrayList();
+                for (int k = 0; k < j.length(); k++){
+                    l.add(j.get(k));
+                }
+                values.add(l);
+            }
+        } catch (JSONException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        paging.setCurrentPage(page + 1);
+        exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
+        try {
+            JSONArray ja =  exe.getCubeNode().getJSONArray("value");
+            for (int i = page * (step + 1); i < ja.length() && i < end; i++){
+                JSONArray j = ja.getJSONArray(i);
+                List l = new ArrayList();
+                for (int k = 0; k < j.length(); k++){
+                    l.add(j.get(k));
+                }
+                values.add(l);
+            }
+        } catch (JSONException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return values;
     }
 
-    @Override
-    public <T extends BITargetAndDimension> T[] getTargets() {
-        return widget.getTargets();
-    }
+    private class UserSession extends BISession{
 
-    @Override
-    public <T extends BITargetAndDimension> T[] getViewTargets() {
-        return widget.getViewTargets();
-    }
-
-    @Override
-    public List<Table> getUsedTableDefine() {
-        return widget.getUsedTableDefine();
-    }
-
-    @Override
-    public List<BIField> getUsedFieldDefine() {
-        return widget.getUsedFieldDefine();
-    }
-
-    @Override
-    public int isOrder() {
-        return widget.isOrder();
-    }
-
-    @Override
-    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
-        return widget.createDataJSON(session);
+        public UserSession() {
+            super(StringUtils.EMPTY, new BIWeblet(), userId);
+        }
     }
 }

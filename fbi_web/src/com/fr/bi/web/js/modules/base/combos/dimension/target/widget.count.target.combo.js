@@ -24,27 +24,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 children: []
             }],
             [{
-                el: {
-                    text: BI.i18nText("BI-Chart_Type"),
-                    value: BICst.TARGET_COMBO.CHART_TYPE,
-                    iconCls1: "",
-                    disabled: true
-                },
-                children: [{
-                    text: BI.i18nText("BI-Column_Chart"),
-                    value: BICst.CHART_VIEW_STYLE_BAR
-                }, {
-                    text: BI.i18nText("BI-Stacked_Chart"),
-                    value: BICst.CHART_VIEW_STYLE_ACCUMULATED_BAR
-                }, {
-                    text: BI.i18nText("BI-Line_Chart"),
-                    value: BICst.CHART_VIEW_STYLE_LINE
-                }, {
-                    text: BI.i18nText("BI-Area_Chart"),
-                    value: BICst.CHART_VIEW_STYLE_SQUARE
-                }]
-            }],
-            [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.TARGET_COMBO.STYLE_SETTING,
                 cls: "style-set-h-font"
@@ -67,6 +46,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: fromText,
                 title: fromText,
+                tipType: "warning",
                 value: BICst.TARGET_COMBO.INFO,
                 cls: "dimension-from-font",
                 disabled: true
@@ -118,33 +98,20 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
         dependItem.el.text = BI.i18nText("BI-Count_Depend") + "(" + selectedValue +")";
         dependItem.children = children;
-        return items;
-    },
 
-    _assertChartType: function (val) {
-        val || (val = {});
-        if(BI.isNull(val.type)){
-            val.type = BICst.WIDGET.COLUMN;
-        }
-        return val;
+        return items;
     },
 
     _createValue: function () {
         var o = this.options;
-        var chartType = BI.Utils.getDimensionStyleOfChartByID(o.dId);
-        chartType = this._assertChartType(chartType);
 
         var result = {};
 
-        result.chartType = {
-            value: BICst.TARGET_COMBO.CHART_TYPE,
-            childValue: chartType.type
-        };
         result.group = {
             value: BICst.TARGET_COMBO.DEPEND_TYPE,
             childValue: BI.Utils.getFieldIDByDimensionID(o.dId)
         };
-        return [result.chartType, result.group];
+        return [result.group];
     }
 });
 $.shortcut("bi.count_target_combo", BI.CountTargetCombo);
