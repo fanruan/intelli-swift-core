@@ -382,7 +382,9 @@ var _JS = [
 
     "detail/mvc.arrangement.js",
 
-    "detail/mvc.adaptivearrangement.js"
+    "detail/mvc.adaptivearrangement.js",
+
+    "detail/mvc.detailcharts.js"
 ];
 
 
@@ -578,7 +580,9 @@ var _Routes = {
 
     "/arrangement_droppable": "ArrangementDroppableView",
     "/arrangement": "ArrangementView",
-    "/adaptive_arrangement": "AdaptiveArrangementView"
+    "/adaptive_arrangement": "AdaptiveArrangementView",
+
+    "/detail_chart": "DetailChartView"
 };
 
 var _Models = {};
@@ -1056,6 +1060,9 @@ _Models.detail = [{
 }, {
     id: 29,
     text: "布局"
+}, {
+    id: 31,
+    text: "详细图表"
 },
 
 
@@ -1351,6 +1358,10 @@ _Models.detail = [{
         pId: 30,
         text: "bi.simple_searcher",
         value: "simple_searcher"
+    }, {
+        pId: 31,
+        text: "bi.detail_chart",
+        value: "detail_chart"
     }];
 _Models.component = [];
 _Models.module = [];
