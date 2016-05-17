@@ -60,6 +60,13 @@ BI.Chart = BI.inherit(BI.Pane, {
     showTheOtherYAxis: function () {
         this.config.yAxis = BI.makeArray(2, this.config.yAxis[0]);
         this.config.yAxis[1].position = "right";
+        switch (this.options.chartType){
+            case BICst.WIDGET.COMPARE_AXIS:
+                this.config.yAxis[1].reversed = true;
+                break;
+            default:
+                return;
+        }
     },
 
     hideTheOtherYAxis: function () {
@@ -79,7 +86,7 @@ BI.Chart = BI.inherit(BI.Pane, {
     },
 
     resize: function () {
-        if (this.element.is(":visible")) {
+        if (this.element.is(":visible") && this.isSetOptions === true) {
             this.vanCharts && this.vanCharts.resize();
         }
     },
@@ -389,27 +396,21 @@ BI.Chart = BI.inherit(BI.Pane, {
             "plotBorderRadius": 0
         };
         var areaConfig = {
+
             "plotOptions": {
-                click: function () {
-                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                        category: this.category,
-                        seriesName: this.seriesName,
-                        value: this.value
-                    });
-                },
+                "fillColor": true,
+                "fillColorOpacity": 0.15,
                 "large": false,
                 "connectNulls": false,
                 "curve": false,
-                "marker": {
-                    "symbol": "null_marker",
-                    "radius": 4.5,
-                    "enabled": true
-                },
+                "marker": {"symbol": "null_marker", "radius": 4.5, "enabled": true},
                 "tooltip": {
                     "formatter": {
                         "identifier": "${CATEGORY}${SERIES}${VALUE}",
-                        "valueFormat": "#.##",
-                        "percentFormat": "#.##%"
+                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
+                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
                     },
                     "shared": false,
                     "padding": 5,
@@ -427,32 +428,25 @@ BI.Chart = BI.inherit(BI.Pane, {
                 "animation": true
             },
             "borderColor": "rgb(238,238,238)",
-            "xAxis": [
-                {
-                    "enableMinorTick": false,
-                    "minorTickColor": "rgb(176,176,176)",
-                    "tickColor": "rgb(176,176,176)",
-                    "showArrow": false,
-                    "lineColor": "rgb(176,176,176)",
-                    "plotLines": [],
-                    "type": "category",
-                    "lineWidth": 1,
-                    "showLabel": true,
-                    "formatter": {},
-                    "gridLineWidth": 0,
-                    "enableTick": true,
-                    "labelStyle": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(102,102,102,1.0)",
-                        "fontSize": "11pt",
-                        "fontWeight": ""
-                    },
-                    "plotBands": [],
-                    "position": "bottom",
-                    "labelRotation": 0,
-                    "reversed": false
-                }
-            ],
+            "xAxis": [{
+                "enableMinorTick": false,
+                "minorTickColor": "rgb(176,176,176)",
+                "tickColor": "rgb(176,176,176)",
+                "showArrow": false,
+                "lineColor": "rgb(176,176,176)",
+                "plotLines": [],
+                "type": "category",
+                "lineWidth": 1,
+                "showLabel": true,
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                "gridLineWidth": 0,
+                "enableTick": false,
+                "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                "plotBands": [{"color": "rgba(255,204,204,0.2980392156862745)", "from": "Friday", "to": "Saturday"}],
+                "position": "bottom",
+                "labelRotation": 0,
+                "reversed": false
+            }],
             "shadow": false,
             "legend": {
                 "borderColor": "rgb(204,204,204)",
@@ -460,74 +454,45 @@ BI.Chart = BI.inherit(BI.Pane, {
                 "shadow": false,
                 "borderWidth": 0,
                 "style": {
-                    "fontFamily": "Dialog",
+                    "fontFamily": "Microsoft YaHei UI",
                     "color": "rgba(102,102,102,1.0)",
-                    "fontSize": "11pt",
+                    "fontSize": "10pt",
                     "fontWeight": ""
                 },
                 "position": "right",
                 "enabled": true
             },
-            "zoom": {
-                "zoomType": "xy",
-                "zoomTool": {
-                    "visible": false,
-                    "resize": true,
-                    "from": "",
-                    "to": ""
-                }
-            },
+            "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
             "plotBorderColor": "rgba(255,255,255,0)",
             "tools": {
                 "hidden": true,
-                "toImage": {
-                    "enabled": true
-                },
-                "sort": {
-                    "enabled": true
-                },
+                "toImage": {"enabled": true},
+                "sort": {"enabled": true},
                 "enabled": true,
-                "fullScreen": {
-                    "enabled": true
-                }
+                "fullScreen": {"enabled": true}
             },
             "plotBorderWidth": 0,
-            "colors": [
-                "rgb(14,114,204)",
-                "rgb(108,163,15)",
-                "rgb(245,147,17)",
-                "rgb(250,67,67)",
-                "rgb(22,175,204)"
-            ],
-            "yAxis": [
-                {
-                    "enableMinorTick": false,
-                    "gridLineColor": "rgb(196,196,196)",
-                    "minorTickColor": "rgb(176,176,176)",
-                    "tickColor": "rgb(176,176,176)",
-                    "showArrow": false,
-                    "lineColor": "rgb(176,176,176)",
-                    "plotLines": [],
-                    "type": "value",
-                    "lineWidth": 0,
-                    "showLabel": true,
-                    "formatter": {
-                        "format": "#.##"
-                    },
-                    "gridLineWidth": 1,
-                    "enableTick": false,
-                    "labelStyle": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(102,102,102,1.0)",
-                        "fontSize": "11pt",
-                        "fontWeight": ""
-                    },
-                    "plotBands": [],
-                    "position": "left",
-                    "labelRotation": 0,
-                    "reversed": false
-                }
-            ],
+            "colors": ["rgb(99,178,238)", "rgb(118,218,145)"],
+            "yAxis": [{
+                "enableMinorTick": false,
+                "gridLineColor": "rgb(242,242,242)",
+                "minorTickColor": "rgb(176,176,176)",
+                "tickColor": "rgb(176,176,176)",
+                "showArrow": false,
+                "lineColor": "rgb(176,176,176)",
+                "plotLines": [],
+                "type": "value",
+                "lineWidth": 0,
+                "showLabel": true,
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                "gridLineWidth": 1,
+                "enableTick": false,
+                "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                "plotBands": [{"color": "rgba(204,255,255,0.2980392156862745)", "from": 7.5, "to": 10}],
+                "position": "left",
+                "labelRotation": 0,
+                "reversed": false
+            }],
             "borderRadius": 0,
             "borderWidth": 0,
             "chartType": "area",
@@ -787,54 +752,46 @@ BI.Chart = BI.inherit(BI.Pane, {
         };
 
         var redarConfig = {
-            "plotOptions": {
-                click: function () {
-                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                        category: this.category,
-                        seriesName: this.seriesName,
-                        value: this.value
-                    });
-                },
-                "fillColor": true,
-                "fillColorOpacity": 0,
-                "columnType": false,
-                "connectNulls": false,
-                "curve": false,
-                "marker": {
-                    "symbol": "null_marker",
-                    "radius": 4.5,
-                    "enabled": true
-                },
-                "tooltip": {
-                    "formatter": {
-                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "identifier": "${CATEGORY}${X}${SERIES}${VALUE}${Y}${SIZE}",
-                        "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                "plotOptions": {
+                    click: function () {
+                        self.fireEvent(BI.Chart.EVENT_CHANGE, {
+                            category: this.category,
+                            seriesName: this.seriesName,
+                            value: this.value
+                        });
                     },
-                    "shared": false,
-                    "padding": 5,
-                    "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
-                    "borderColor": "rgb(0,0,0)",
-                    "shadow": false,
-                    "borderRadius": 2,
-                    "borderWidth": 0,
-                    "follow": false,
-                    "enabled": true,
+                    "fillColor": true,
+                    "fillColorOpacity": 0,
+                    "columnType": false,
+                    "connectNulls": false,
+                    "curve": false,
+                    "marker": {"symbol": "null_marker", "radius": 4.5, "enabled": true},
+                    "tooltip": {
+                        "formatter": {
+                            "identifier": "${CATEGORY}${SERIES}${VALUE}",
+                            "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                            "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                            "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
+                            "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                        },
+                        "shared": false,
+                        "padding": 5,
+                        "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
+                        "borderColor": "rgb(0,0,0)",
+                        "shadow": false,
+                        "borderRadius": 2,
+                        "borderWidth": 0,
+                        "follow": false,
+                        "enabled": true,
+                        "animation": true
+                    },
+                    "step": false,
+                    "type": "circle",
+                    "lineWidth": 2,
                     "animation": true
                 },
-                "step": false,
-                "type": "circle",
-                "lineWidth": 2,
-                "animation": true
-            },
-            "borderColor": "rgb(238,238,238)",
-            "xAxis": [
-                {
+                "borderColor": "rgb(238,238,238)",
+                "xAxis": [{
                     "enableMinorTick": false,
                     "minorTickColor": "rgb(176,176,176)",
                     "tickColor": "rgb(176,176,176)",
@@ -847,54 +804,25 @@ BI.Chart = BI.inherit(BI.Pane, {
                     "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                     "gridLineWidth": 0,
                     "enableTick": true,
-                    "labelStyle": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(102,102,102,1.0)",
-                        "fontSize": "9pt",
-                        "fontWeight": ""
-                    },
+                    "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "9pt", "fontWeight": ""},
                     "plotBands": [],
                     "position": "bottom",
                     "labelRotation": 0,
                     "reversed": false
-                }
-            ],
-            "shadow": false,
-            "legend": {
-                "borderColor": "rgb(204,204,204)",
-                "borderRadius": 0,
+                }],
                 "shadow": false,
-                "borderWidth": 0,
-                "style": {
-                    "fontFamily": "Dialog",
-                    "color": "rgba(102,102,102,1.0)",
-                    "fontSize": "11pt",
-                    "fontWeight": ""
+                "legend": {"enabled": false},
+                "plotBorderColor": "rgba(255,255,255,0)",
+                "tools": {
+                    "hidden": true,
+                    "toImage": {"enabled": true},
+                    "sort": {"enabled": true},
+                    "enabled": true,
+                    "fullScreen": {"enabled": true}
                 },
-                "position": "right",
-                "enabled": true
-            },
-            "plotBorderColor": "rgba(255,255,255,0)",
-            "tools": {
-                "hidden": true,
-                "toImage": {
-                    "enabled": true
-                },
-                "sort": {
-                    "enabled": true
-                },
-                "enabled": true,
-                "fullScreen": {
-                    "enabled": true
-                }
-            },
-            "plotBorderWidth": 0,
-            "colors": [
-                "rgb(99,178,238)",
-                "rgb(118,218,145)"
-            ],
-            "yAxis": [
-                {
+                "plotBorderWidth": 0,
+                "colors": ["rgb(99,178,238)", "rgb(118,218,145)", "rgb(248,203,127)"],
+                "yAxis": [{
                     "enableMinorTick": false,
                     "gridLineColor": "rgb(196,196,196)",
                     "minorTickColor": "rgb(176,176,176)",
@@ -908,39 +836,45 @@ BI.Chart = BI.inherit(BI.Pane, {
                     "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                     "gridLineWidth": 1,
                     "enableTick": true,
-                    "labelStyle": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(102,102,102,1.0)",
-                        "fontSize": "9pt",
-                        "fontWeight": ""
-                    },
+                    "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "9pt", "fontWeight": ""},
                     "plotBands": [],
                     "position": "left",
                     "labelRotation": 0,
                     "reversed": false
-                }
-            ],
-            "borderRadius": 0,
-            "borderWidth": 0,
-            "chartType": "radar",
-            "style": "gradual",
-            "plotShadow": false,
-            "plotBorderRadius": 0
-        }
+                }],
+                "borderRadius": 0,
+                "borderWidth": 0,
+                "series": [{
+                    "data": [{"x": "工作态度", "y": 5}, {"x": "业务能力", "y": 4}, {"x": "沟通能力", "y": 2}],
+                    "name": "Jane"
+                }, {
+                    "data": [{"x": "工作态度", "y": 3}, {"x": "业务能力", "y": 3}, {"x": "沟通能力", "y": 2}],
+                    "name": "Lucy"
+                }, {"data": [{"x": "工作态度", "y": 2}, {"x": "业务能力", "y": 4}, {"x": "沟通能力", "y": 4}], "name": "Jack"}],
+                "chartType": "radar",
+                "style": "gradual",
+                "plotShadow": false,
+                "plotBorderRadius": 0
+        };
         switch (this.options.chartType) {
             case BICst.WIDGET.AXIS:
                 defaultConfig = columnConfig;
                 break;
             case BICst.WIDGET.ACCUMULATE_AXIS:
+                defaultConfig = columnConfig;
                 defaultConfig.plotOptions.stack = "stackedColumn";
                 break;
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                defaultConfig = columnConfig;
                 defaultConfig.plotOptions.stack = "stackedColumn";
                 defaultConfig.plotOptions.stackByPercent = true;
                 break;
             case BICst.WIDGET.COMPARE_AXIS:
+                defaultConfig = columnConfig;
+                break;
             case BICst.WIDGET.FALL_AXIS:
                 defaultConfig = columnConfig;
+                defaultConfig.plotOptions.stack = "stackedFall";
                 break;
             case BICst.WIDGET.BAR:
                 defaultConfig = columnConfig;
@@ -1253,6 +1187,8 @@ BI.Chart = BI.inherit(BI.Pane, {
                 defaultConfig.plotOptions.stack = "stackRadar";
                 break;
             case BICst.WIDGET.FUNNEL:
+                defaultConfig = areaConfig;
+                defaultConfig.chartType = "funnel";
                 break
         }
         //todo 将options中的config与defaultConfig校验起来

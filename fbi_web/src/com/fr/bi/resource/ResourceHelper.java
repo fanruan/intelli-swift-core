@@ -2013,6 +2013,26 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/date/calendar/popup.calendar.date.js",
                 "com/fr/bi/web/js/widget/date/combo.date.js",
 
+                //图控件
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulatearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulateaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulatebar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulateradar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.area.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.donut.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.forcebubble.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.funnel.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.line.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.percentaccumulateaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.percentaccumulatearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
+
                 //年份控件
                 "com/fr/bi/web/js/widget/year/trigger.year.js",
                 "com/fr/bi/web/js/widget/year/popup.year.js",
