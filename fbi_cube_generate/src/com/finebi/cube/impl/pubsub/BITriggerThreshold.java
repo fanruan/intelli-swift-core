@@ -136,7 +136,10 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
     public void handleMessage(IMessage message) throws BIThresholdIsOffException {
         Iterator<ConditionAndSet> it = container.values().iterator();
         while (it.hasNext()) {
-            it.next().handleMessage(message);
+            ConditionAndSet conditionAndSet = it.next();
+            if (conditionAndSet.isUsable()) {
+                conditionAndSet.handleMessage(message);
+            }
         }
     }
 
@@ -264,15 +267,14 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
                     statusTagThreshold.handleMessage(message);
                 }
             } catch (BIThresholdIsOffException e) {
+//                BILogger.getLogger().info(e.getMessage());
                 return;
             }
         }
 
         private String leftCondition() {
             StringBuffer sb = new StringBuffer();
-            sb.append(topicTagThreshold.leftCondition("topicTagThreshold")).append("\n").append(
-                    fragmentTagThreshold.leftCondition("fragmentTagThreshold")).append("\n").append(
-                    statusTagThreshold.leftCondition("statusTagThreshold")).append("\n");
+            sb.append(statusTagThreshold.leftCondition("statusTagThreshold")).append("\n");
 
             return sb.toString();
         }

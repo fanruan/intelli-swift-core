@@ -1,0 +1,1 @@
+package com.fr.bi.cal.analyze.cal.index.loader.nodeiterator;import com.fr.bi.cal.analyze.cal.sssecret.GroupConnectionValue;/** * Created by Hiram on 2016/3/1. */public interface IteratorManager {	public void moveNext();	public GroupConnectionValue[] getNextGroupConnectionValues();}

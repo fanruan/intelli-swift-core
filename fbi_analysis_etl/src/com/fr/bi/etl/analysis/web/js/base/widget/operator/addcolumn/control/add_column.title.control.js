@@ -59,6 +59,7 @@ BI.AnalysisETLOperatorAddColumnPaneTitleController = BI.inherit(BI.MVCController
         var acceptTypes = ETLCst.ANALYSIS_ADD_COLUMN_TYPE_ACCEPT_FIELDS[model.getAddColumnType()];
         widget.fieldTypeSegment.setEnabledValue(acceptTypes);
         widget.fieldTypeSegment.setValue(model.getFieldType());
+        this.changeColumnType(widget, model)
     }
 
 })

@@ -221,7 +221,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             [{
                 value: BICst.DASHBOARD_CONTROL_CLEAR,
                 text: BI.i18nText("BI-Clear_Selected_Value"),
-                cls: "widget-combo-clear"
+                cls: "widget-combo-clear-font"
             }],
             [{
                 value: BICst.DASHBOARD_WIDGET_RENAME,

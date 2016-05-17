@@ -33,7 +33,7 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
             level:"ignore",
             text:BI.i18nText("BI-Cancel"),
             handler : function(e){
-                self.setVisible(false);
+                self.controller.doCancel()
             }
         })
 

@@ -677,8 +677,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
                 //指标弹出明细表
-                "com/fr/bi/web/css/modules/detailtablepopup/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
+
         };
     }
 
@@ -1329,12 +1331,16 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.model.js",
 
                 //指标弹出明细表
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/abstract.node.level.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/node.level0.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/treenode/node.level1.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/selectdata/selectdata.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/model.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level1.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/selectdata.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
+
+                "com/fr/bi/web/js/modules/detailtablepopup/module/model/field/model.detailtablepopup.detail.dimension.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/model/model.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/view/field/view.detailtablepopup.detail.dimension.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/view/view.detailtablepopup.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/detailtablepopup.js",
         };
     }

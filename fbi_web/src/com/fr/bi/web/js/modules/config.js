@@ -561,16 +561,16 @@ BICst.STRING_TREE_CONTROL_SETCOMBO_ITEMS = [
         value: BICst.DASHBOARD_CONTROL_RANG_ASC,
         text: BI.i18nText("BI-Ascend"),
         list_border_not_show: true,
-        cls: "widget-combo-asc"
+        cls: "widget-combo-asc-font"
     }, {
         value: BICst.DASHBOARD_CONTROL_RANG_DESC,
         text: BI.i18nText("BI-Descend"),
-        cls: "widget-combo-des"
+        cls: "widget-combo-des-font"
     }],
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
         text: BI.i18nText("BI-Clear_Selected_Value"),
-        cls: "widget-combo-clear"
+        cls: "widget-combo-clear-font"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
@@ -609,7 +609,7 @@ BICst.TIME_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
         text: BI.i18nText("BI-Clear_Selected_Value"),
-        cls: "widget-combo-clear"
+        cls: "widget-combo-clear-font"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
@@ -640,7 +640,7 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
         text: BI.i18nText("BI-Clear_Selected_Value"),
-        cls: "widget-combo-clear"
+        cls: "widget-combo-clear-font"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
@@ -670,7 +670,7 @@ BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
         text: BI.i18nText("BI-Clear_Selected_Value"),
-        cls: "widget-combo-clear"
+        cls: "widget-combo-clear-font"
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,

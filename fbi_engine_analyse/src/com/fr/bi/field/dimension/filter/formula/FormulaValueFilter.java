@@ -9,7 +9,7 @@ import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.report.result.SummaryValue;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BIFormularUtils;
-import com.fr.bi.stable.utils.BIMapUtils;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
@@ -58,7 +58,7 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
 
     public Object calCalculateTarget(SummaryValue node, Map<String, TargetCalculator> targetsMap) {
         String formula = "=" + expression;
-        return BIFormularUtils.getCalculatorValue(c, formula, BIMapUtils.mergeMapByKeyMapValue(targetsMap, node.getSummaryValueMap()));
+        return BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetsMap, node.getSummaryValueMap()));
     }
 
     @Override

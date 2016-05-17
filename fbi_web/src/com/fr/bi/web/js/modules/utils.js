@@ -281,17 +281,17 @@
             }
         },
 
-        isShowWidgetNameByID: function(wid) {
+        isShowWidgetNameByID: function (wid) {
             var widget = Data.SharingPool.get("widgets", wid);
-            if(BI.isNotNull(widget)) {
+            if (BI.isNotNull(widget)) {
                 var settings = widget.settings;
-                if(BI.isNotNull(settings)) {
+                if (BI.isNotNull(settings)) {
                     return settings.show_name
                 }
             }
         },
 
-        getWidgetNamePositionByID: function(wid) {
+        getWidgetNamePositionByID: function (wid) {
             var widget = Data.SharingPool.get("widgets", wid);
             if (BI.isNotNull(widget)) {
                 var settings = widget.settings;
@@ -311,11 +311,11 @@
             return fromIds;
         },
 
-        checkWidgetNameByID: function(name, wId){
+        checkWidgetNameByID: function (name, wId) {
             var allWIds = this.getAllWidgetIDs();
             var self = this, isValid = true;
-            BI.some(allWIds, function(i, id){
-                if(self.isControlWidgetByWidgetId(id) === self.isControlWidgetByWidgetId(wId) 
+            BI.some(allWIds, function (i, id) {
+                if (self.isControlWidgetByWidgetId(id) === self.isControlWidgetByWidgetId(wId)
                     && self.getWidgetNameByID(id) === name
                     && wId !== id) {
                     isValid = false;
@@ -349,7 +349,7 @@
                 widgetType === BICst.WIDGET.YMD ||
                 widgetType === BICst.WIDGET.GENERAL_QUERY;
         },
-        
+
         isQueryControlExist: function () {
             var self = this, isQueryExist = false;
             BI.some(this.getAllWidgetIDs(), function (i, wId) {
@@ -666,7 +666,7 @@
         isDimensionByDimensionID: function (dId) {
             var wId = this.getWidgetIDByDimensionID(dId);
             var views = this.getWidgetViewByID(wId);
-            var region = BICst.REGION.DIMENSION1;
+            var region = 0;
             BI.some(views, function (reg, view) {
                 if (view.contains(dId)) {
                     region = reg;
@@ -675,6 +675,24 @@
             });
             return BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
                 BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region);
+        },
+
+        isTargetByDimensionID: function (dId) {
+            var wId = this.getWidgetIDByDimensionID(dId);
+            var views = this.getWidgetViewByID(wId);
+            var type = this.getDimensionTypeByID(dId);
+            var _set = [BICst.TARGET_TYPE.STRING = 1,
+                BICst.TARGET_TYPE.NUMBER = 2,
+                BICst.TARGET_TYPE.DATE = 3,
+                BICst.TARGET_TYPE.COUNTER = 4];
+            var region = 0;
+            BI.some(views, function (reg, view) {
+                if (view.contains(dId)) {
+                    region = reg;
+                    return true;
+                }
+            });
+            return BI.parseInt(region) >= BI.parseInt(BICst.REGION.TARGET1) && _set.contains(type);
         },
 
         isSrcUsedBySrcID: function (srcId) {
@@ -1212,7 +1230,7 @@
                                 };
                                 break;
                             case BICst.WIDGET.GENERAL_QUERY:
-                                if(BI.isNotNull(value) && value.length === 1) {
+                                if (BI.isNotNull(value) && value.length === 1) {
                                     filter = value[0];
                                     parseFilter(filter);
                                 }
