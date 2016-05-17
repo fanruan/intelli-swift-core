@@ -1363,6 +1363,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/bar/bar.css",
                 "com/fr/bi/web/css/base/single/editor/editor.css",
                 "com/fr/bi/web/css/base/single/editor/editor.state.css",
+                "com/fr/bi/web/css/base/single/editor/editor.state.simple.css",
                 "com/fr/bi/web/css/base/single/editor/editor.record.css",
                 "com/fr/bi/web/css/base/single/editor/editor.sign.css",
                 "com/fr/bi/web/css/base/single/editor/editor.shelter.css",
@@ -1910,6 +1911,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/button/icon/icon.half.js",
 
                 "com/fr/bi/web/js/case/editor/editor.state.js",
+                "com/fr/bi/web/js/case/editor/editor.state.simple.js",
                 "com/fr/bi/web/js/case/editor/editor.sign.js",
                 "com/fr/bi/web/js/case/editor/editor.shelter.js",
                 "com/fr/bi/web/js/case/editor/editor.record.js",
