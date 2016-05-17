@@ -134,6 +134,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 })
             }
             this.table.setColumnSize(columnSize);
+            this.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(this.model.getWidgetId()), {column_size: columnSize})});
         }
     },
 

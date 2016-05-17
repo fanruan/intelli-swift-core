@@ -363,7 +363,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/join/conf.join.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/circle/conf.circle.css",
                 "com/fr/bi/web/css/conf/multirelation/conf.multirelation.css",
-                "com/fr/bi/web/css/conf/businesspackages/group/conf.packages.group.css"
+                "com/fr/bi/web/css/conf/businesspackages/group/conf.packages.group.css",
+                "com/fr/bi/web/css/conf/permissionmanage/conf.permission.manage.css",
 
 
         };
@@ -647,6 +648,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
+
+                //权限相关
+                "com/fr/bi/web/css/modules/permissionmanage/authoritypackagestree.css",
+                "com/fr/bi/web/css/modules/permissionmanage/logininfo/authority.logininfo.pane.css",
+                "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.batchset.pane.css",
+                "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.singleset.pane.css",
 
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
@@ -1276,15 +1283,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/excelviewsetting/excelviewsetting.js",
 
                 //权限控制
-                "com/fr/bi/web/js/modules/permissionmanage/packageandauthoritytree.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.show.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.add.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.single.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.multi.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.init.main.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.role.main.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritytabs.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritybutton.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypackagestree.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authorityset/authority.singleset.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authorityset/authority.batchset.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.addrole.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.addrole.js",
+                "com/fr/bi/web/js/modules/permissionmanage/logininfo/authority.logininfo.pane.js",
 
 
                 //dimensionmanager4show

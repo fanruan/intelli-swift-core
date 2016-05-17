@@ -1130,10 +1130,9 @@
                                 var start = fValue.start, end = fValue.end;
                                 if (BI.isNotNull(start)) {
                                     start = parseComplexDate(start);
-                                } else if (BI.isNotNull(end)) {
+                                }
+                                if (BI.isNotNull(end)) {
                                     end = parseComplexDate(end);
-                                } else {
-                                    return;
                                 }
                                 fValue = {start: start, end: end};
                                 filter = {

@@ -12,6 +12,7 @@ BICst.PACKAGE = "BI-Package";
 BICst.CURRENT_EDITING_PACKAGE = "__current__editing__package__";
 BICst.SELECT_TABLES_LAYER = "__select_tables_layer__";
 BICst.SELECT_ONE_TABLE_LAYER = "__select_one_table_layer__";
+BICst.LOGIN_INFO_POPOVER = "__login_info_popover__";
 BICst.BODY_ELEMENT = "body";
 BICst.LINKAGE = "__linkage__";
 
