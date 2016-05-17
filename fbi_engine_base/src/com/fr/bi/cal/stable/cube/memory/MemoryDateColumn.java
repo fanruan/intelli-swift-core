@@ -1,16 +1,17 @@
 package com.fr.bi.cal.stable.cube.memory;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
+import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDateDetailGetter;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,10 +23,15 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
     private Map<Integer, ICubeColumnIndexReader> getters = new ConcurrentHashMap<Integer, ICubeColumnIndexReader>();
     private Map<Integer, Object> locks = new ConcurrentHashMap<Integer, Object>();
 
-    public DetailGetter<Long> createDetailGetter(SingleUserNIOReadManager manager) {
-        return new MemoryDetailGetter<Long>(detail);
+    public DetailGetter createDetailGetter(SingleUserNIOReadManager manager) {
+        return new MemoryDateDetailGetter(detail);
     }
 
+
+    @Override
+    protected void initDetail() {
+        detail = new ArrayList<Long>();
+    }
 
     @Override
     public GroupValueIndex getIndexByRow(int row, SingleUserNIOReadManager manager) {
@@ -46,7 +52,7 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
                 Object l = locks.get(type);
                 synchronized (l) {
                     if (getters.get(type) == null) {
-                        getters.put(type, createGroupByType(ValueConverterFactory.createDateValueConverter(type), ComparatorFacotry.createASCComparator()));
+                        getters.put(type, createGroupByType(ValueConverterFactory.createDateValueConverterByGroupType(type), ComparatorFacotry.createASCComparator()));
                     }
                 }
             }

@@ -340,5 +340,9 @@ public class TreeWidget extends BIAbstractWidget {
         return this.dimensionMap.get(dimension);
     }
 
+    @Override
+    public int getType() {
+        return BIReportConstant.WIDGET.TREE;
+    }
 
 }

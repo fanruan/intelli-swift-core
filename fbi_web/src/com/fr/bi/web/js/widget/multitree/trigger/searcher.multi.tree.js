@@ -21,7 +21,10 @@ BI.MultiTreeSearcher = BI.inherit(BI.Widget, {
         BI.MultiTreeSearcher.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.editor = BI.createWidget({
-            type: 'bi.multi_select_editor'
+            type: 'bi.multi_select_editor',
+            el: {
+                type: "bi.simple_state_editor"
+            }
         });
 
         this.searcher = BI.createWidget({

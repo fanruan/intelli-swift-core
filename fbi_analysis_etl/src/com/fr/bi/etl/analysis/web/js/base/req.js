@@ -33,6 +33,13 @@ BI.ETLReq = {
         })
     },
 
+    reqPreviewTable: function(data, callback){
+        data.sessionID = Data.SharingPool.get("sessionID");
+        BI.requestAsync("fr_bi_analysis_etl", "preview_table", data, function (res) {
+            callback(res);
+        })
+    },
+
     reqFieldValues: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
         BI.requestAsync("fr_bi_analysis_etl", "get_field_value", data, function (res) {

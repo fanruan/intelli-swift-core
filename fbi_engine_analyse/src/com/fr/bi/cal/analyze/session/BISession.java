@@ -53,6 +53,10 @@ public class BISession extends BIAbstractSession {
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> partpageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
 
 
+    public BISession(String remoteAddress, BIWeblet let, long userId) {
+        super(remoteAddress, let, userId);
+    }
+
     private BISession(String remoteAddress, BIWeblet let, long userId, BIReportNode node) {
         super(remoteAddress, let, userId);
         this.node = node;

@@ -484,7 +484,7 @@ if (!window.BI) {
         },
 
         isNotEmptyObject: function (obj) {
-            return BI.isObject(obj) && !BI.isEmptyObject(obj);
+            return BI.isPlainObject(obj) && !BI.isEmptyObject(obj);
         },
 
         isEmptyString: function (obj) {

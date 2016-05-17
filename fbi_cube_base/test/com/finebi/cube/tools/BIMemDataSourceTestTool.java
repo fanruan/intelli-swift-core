@@ -725,11 +725,6 @@ public class BIMemDataSourceTestTool implements ITableSource {
     }
 
     @Override
-    public JSONObject createPreviewJSONFromMemory(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
-        return null;
-    }
-
-    @Override
     public boolean needGenerateIndex() {
         return false;
     }

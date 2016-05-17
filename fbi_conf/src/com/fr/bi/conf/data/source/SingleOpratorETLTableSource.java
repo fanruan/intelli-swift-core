@@ -25,7 +25,7 @@ public class SingleOpratorETLTableSource extends ETLTableSource {
     @Override
     public DBTable getDbTable() {
         if (dbTable == null) {
-            if (isAllAddColumnOprator()) {
+            if (isAllAddColumnOperator()) {
                 dbTable = createBITable();
                 DBTable[] ptables = new DBTable[parents.size()];
                 for (int i = 0; i < ptables.length; i ++){

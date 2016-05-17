@@ -146,47 +146,51 @@ BI.extend(BI.Utils, {
         return fields;
     },
 
-    buildData : function(model, filterValueGetter) {
+    buildData : function(model, callback, filterValueGetter) {
         //测试数据
         var header = [];
-        var items = [];
-        BI.each(model[ETLCst.FIELDS], function(idx, item){
-            var head = {
-                text:item.field_name,
-                field_type:item.field_type,
-                field_id:item.field_id,
-                filterValueGetter : filterValueGetter
-            }
-            head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
-            header.push(head);
-            BI.each(BI.range(0 ,10), function(i){
-                if(BI.isNull(items[i])){
-                    items[i] = [];
-                }
-                items[i].push({text:"row:"+i +" column:" +idx})
-            })
+        var table = {};
+        table[ETLCst.ITEMS] = [model];
 
-        })
-        return [items, header];
+        BI.ETLReq.reqPreviewTable(table, function (data) {
+            BI.each(model[ETLCst.FIELDS], function(idx, item){
+                var head = {
+                    text:item.field_name,
+                    field_type:item.field_type,
+                    field_id:item.field_id,
+                    filterValueGetter : filterValueGetter
+                }
+                head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
+                header.push(head);
+            });
+            callback([data.value, header])
+        });
+
     },
 
     triggerPreview : function () {
         return BI.throttle(function (widget, previewModel, operatorType, type) {
             switch (type) {
                 case ETLCst.PREVIEW.SELECT : {
-                    widget.setPreviewOperator(operatorType);
                     var model = {};
                     model[ ETLCst.FIELDS] = previewModel.getTempFields();
-                    widget.populatePreview.apply(widget, BI.Utils.buildData(model, widget.controller.getFilterValue))
+                     BI.Utils.buildData(model, function (data) {
+                         widget.setPreviewOperator(operatorType);
+                         widget.populatePreview.apply(widget, data)
+                    },widget.controller.getFilterValue)
                     return;
                 }
                 case ETLCst.PREVIEW.MERGE : {
-                    widget.populate.apply(widget, BI.concat(BI.Utils.buildData(previewModel), operatorType));
+                     BI.concat(BI.Utils.buildData(previewModel, function (data) {
+                         widget.populate.apply(widget, data)
+                    }), operatorType);
                     return;
                 }
                 default : {
-                    widget.setPreviewOperator(operatorType);
-                    widget.populatePreview.apply(widget, BI.Utils.buildData(previewModel.update(), widget.controller.getFilterValue));
+                    BI.Utils.buildData(previewModel.update(), function (data) {
+                        widget.setPreviewOperator(operatorType);
+                        widget.populatePreview.apply(widget, data)
+                    },widget.controller.getFilterValue);
                     return
                 }
             }

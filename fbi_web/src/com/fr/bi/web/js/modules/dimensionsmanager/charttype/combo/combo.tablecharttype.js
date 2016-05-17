@@ -1,19 +1,19 @@
 /**
- * @class BI.AbstractTypeCombo
+ * @class BI.TableChartCombo
  * @extend BI.Widget
  *
  */
-BI.AbstractTypeCombo = BI.inherit(BI.Widget, {
+BI.TableChartCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.AbstractTypeCombo.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-abstract-type-combo",
+        return BI.extend(BI.TableChartCombo.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-table-chart-combo",
             invalid: false,
             items: []
         })
     },
 
     _init: function () {
-        BI.AbstractTypeCombo.superclass._init.apply(this, arguments);
+        BI.TableChartCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.trigger = BI.createWidget({
             type: "bi.icon_change_button",
@@ -26,12 +26,14 @@ BI.AbstractTypeCombo = BI.inherit(BI.Widget, {
             type: "bi.down_list_combo",
             element: this.element,
             el: this.trigger,
-            items: o.items
+            items: [o.items]
         });
-        this.combo.setValue();
+
+        this.values = BI.pluck(o.items, "value");
+
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self._switchIcon(v);
-            self.fireEvent(BI.AbstractTypeCombo.EVENT_CHANGE, arguments);
+            self.fireEvent(BI.TableChartCombo.EVENT_CHANGE, arguments);
         });
         this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
             if (this.getValue().length > 0) {
@@ -43,17 +45,26 @@ BI.AbstractTypeCombo = BI.inherit(BI.Widget, {
     },
 
     _switchIcon: function(v){
-
+        var o = this.options;
+        var iconClass = o.items[0].cls || "";
+        v = BI.isArray(v) ? v[0] : v;
+        BI.any(o.items, function (i, item) {
+            if (v === item.value) {
+                iconClass = item.cls;
+                return true;
+            }
+        });
+        this.trigger.setIcon(iconClass);
     },
 
     populate: function (items) {
-        this.combo.populate(items);
+        this.combo.populate([items]);
+        this.options.item = items;
+        this.values = BI.pluck(items, "value");
     },
 
     setValue: function (v) {
-        if (v === BICst.WIDGET.TABLE ||
-            v === BICst.WIDGET.CROSS_TABLE ||
-            v === BICst.WIDGET.COMPLEX_TABLE) {
+        if (BI.contains(this.values, v)) {
             this.setSelected(true);
         } else {
             this.setSelected(false);
@@ -73,4 +84,5 @@ BI.AbstractTypeCombo = BI.inherit(BI.Widget, {
         return this.trigger.isSelected();
     }
 });
-BI.AbstractTypeCombo.EVENT_CHANGE = "EVENT_CHANGE";
+BI.TableChartCombo.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.table_chart_combo", BI.TableChartCombo);

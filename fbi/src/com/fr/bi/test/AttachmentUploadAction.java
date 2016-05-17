@@ -18,32 +18,32 @@ import java.io.PrintWriter;
 
 /**
  * @author kunsnat E-mail:kunsnat@gmail.com
- * @version ´´½¨Ê±¼ä£º2011-12-12 ÏÂÎç04:18:35
- *          ÀàËµÃ÷: ÉÏ´«¸½¼ş
+ * @version åˆ›å»ºæ—¶é—´ï¼š2011-12-12 ä¸‹åˆ04:18:35
+ *          ç±»è¯´æ˜: ä¸Šä¼ é™„ä»¶
  */
 public class AttachmentUploadAction extends ActionNoSessionCMD {
 
     /**
-     * ÉÏ´«ÎÄ¼ş
-     * @param req httpÇëÇó
-     * @param res httpÓ¦´ğ
+     * ä¸Šä¼ æ–‡ä»¶
+     * @param req httpè¯·æ±‚
+     * @param res httpåº”ç­”
      * @throws Exception
      */
 	public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ServletContext servletContext = req.getSession().getServletContext();
-		// peter: ¿ªÊ¼´Ó¿Í»§¶Ë»ñµÃÎÄ¼ş.
+		// peter: å¼€å§‹ä»å®¢æˆ·ç«¯è·å¾—æ–‡ä»¶.
 		SmartUpload smartUpload = new SmartUpload();
 		smartUpload.initialize(servletContext, req, res);
 		smartUpload.upload();
 		SmartFiles uploadFiles = smartUpload.getFiles();
 
 
-		//Ã»ÓĞÉÏ´«ÎÄ¼ş,Ö±½Óreturn
+		//æ²¡æœ‰ä¸Šä¼ æ–‡ä»¶,ç›´æ¥return
 		if (uploadFiles.getCount() == 0) {
 			return;
 		}
 
-		//Ö»È¡µÚÒ»¸öÎÄ¼ş,¶à¸öÎÄ¼şµÄÇé¿ö,ÏÈ²»¿¼ÂÇ
+		//åªå–ç¬¬ä¸€ä¸ªæ–‡ä»¶,å¤šä¸ªæ–‡ä»¶çš„æƒ…å†µ,å…ˆä¸è€ƒè™‘
 		SmartFile smartFile = uploadFiles.getFile(0);
 		String fileName = WebUtils.getHTTPRequestParameter(req, "filename");
 
