@@ -34,4 +34,9 @@ public class MultiChartWidget extends TableWidget {
         }
         super.parseJSON(jo, userId);
     }
+
+    @Override
+    public int getType() {
+        return BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART;
+    }
 }

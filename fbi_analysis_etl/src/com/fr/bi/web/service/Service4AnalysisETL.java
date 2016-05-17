@@ -26,7 +26,8 @@ public class Service4AnalysisETL implements Service {
         new BIAnalysisETLGetFieldValueAction(),
         new BIDeleteAnalysisETLTableAction(),
         new BIEditAnalysisETLTableAction(),
-        new BIRenameAnalysisETLTableAction()
+        new BIRenameAnalysisETLTableAction(),
+        new BIPreviewAnalysisETLTableAction()
     };
 
     @Override

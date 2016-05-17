@@ -21,6 +21,9 @@ public class GeneralANDFilter extends GeneralFilter {
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
         GroupValueIndex res = null;
+        if (childs == null){
+            return res;
+        }
         for (int i = 0, len = childs.length; i < len; i++) {
             if(childs[i] == null) {
                 continue;

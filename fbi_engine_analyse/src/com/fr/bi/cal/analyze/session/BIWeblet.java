@@ -38,6 +38,9 @@ public class BIWeblet implements Weblet {
     	this.node = node;
     }
 
+    public BIWeblet() {
+    }
+
     /**
      * 创建Session
      */
