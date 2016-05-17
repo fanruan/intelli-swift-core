@@ -256,8 +256,9 @@ public class BICubeOperationManager {
         try {
             IStatusTag statusTag = BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_FINISH_TOPIC,
                     BICubeBuildFragmentTag.getCubeOccupiedFragment(BICubeBuildTopicTag.PATH_FINISH_TOPIC).getFragmentID().getIdentityValue());
-            if (!cubeBuildFinishOperation.isSubscribed(statusTag))
+            if (!cubeBuildFinishOperation.isSubscribed(statusTag)) {
                 cubeBuildFinishOperation.subscribe(statusTag);
+            }
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
@@ -284,24 +285,26 @@ public class BICubeOperationManager {
     }
 
     public void generateRelationBuilder(Set<BITableSourceRelation> relationSet) {
-        Iterator<BITableSourceRelation> it = relationSet.iterator();
-        while (it.hasNext()) {
-            BITableSourceRelation relation = it.next();
-            try {
-                String sourceID = new BITableSourceRelationPath(relation).getSourceID();
-                BIOperation<Object> operation = new BIOperation<Object>(
-                        sourceID,
-                        getRelationBuilder(cube, relation));
-                operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
-                operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getPrimaryTable().getSourceID()));
-                operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getForeignTable().getSourceID()));
-                pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-            } catch (Exception e) {
-                throw BINonValueUtils.beyondControl(e.getMessage(), e);
+        if (relationSet != null && !relationSet.isEmpty()) {
+            Iterator<BITableSourceRelation> it = relationSet.iterator();
+            while (it.hasNext()) {
+                BITableSourceRelation relation = it.next();
+                try {
+                    String sourceID = new BITableSourceRelationPath(relation).getSourceID();
+                    BIOperation<Object> operation = new BIOperation<Object>(
+                            sourceID,
+                            getRelationBuilder(cube, relation));
+                    operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+                    operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getPrimaryTable().getSourceID()));
+                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getForeignTable().getSourceID()));
+                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                } catch (Exception e) {
+                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
+                }
             }
+            subscribePathFinish();
         }
-        subscribePathFinish();
     }
 
     private void pathFinishSubscribe(IStatusTag partFinish) {
