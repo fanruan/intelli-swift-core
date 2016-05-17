@@ -152,9 +152,15 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             type: "bi.authority_packages_tree"
         });
         this.packageTree.on(BI.AuthorityPackagesTree.EVENT_TYPE_CHANGE, function () {
-            self.model.set("packageIds", this.getValue());
-            self.model.set("selectType", this.getSelectType());
             self.authorityTab.setSelect(this.getSelectType());
+            switch (this.getSelectType()) {
+                case BI.SwitchTree.SelectType.MultiSelect:
+                    self.batchSet.populate([]);
+                    break;
+                case BI.SwitchTree.SelectType.SingleSelect:
+                    self.singleSet.populate([]);
+                    break;
+            }
         });
         this.packageTree.on(BI.AuthorityPackagesTree.EVENT_CHANGE, function(){
              self.authorityTab.setValue(this.getValue());

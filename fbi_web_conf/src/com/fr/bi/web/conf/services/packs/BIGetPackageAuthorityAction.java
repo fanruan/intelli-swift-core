@@ -38,6 +38,7 @@ public class BIGetPackageAuthorityAction extends AbstractBIConfigureAction {
         }
 
         List<CompanyRole> roles = CompanyRoleControl.getInstance().getAllCompanyRole();
+
         JSONArray rolesJA = new JSONArray();
         for(int i = 0; i < roles.size(); i++) {
             CompanyRole role = roles.get(i);

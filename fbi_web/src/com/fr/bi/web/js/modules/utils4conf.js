@@ -226,7 +226,7 @@ BI.extend(BI.Utils, {
     },
 
     getAuthorityRoles: function(){
-        return Data.SharingPool.get("authority_settings", "roles");  
+        return Data.SharingPool.get("authority_settings", "all_roles");
     },
     
     getPackageAuthorityByID: function(pid) {

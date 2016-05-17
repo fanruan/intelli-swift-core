@@ -654,6 +654,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/permissionmanage/logininfo/authority.logininfo.pane.css",
                 "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.batchset.pane.css",
                 "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.singleset.pane.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.addrole.css",
 
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
