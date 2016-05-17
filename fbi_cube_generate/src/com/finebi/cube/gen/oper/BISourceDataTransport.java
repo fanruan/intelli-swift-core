@@ -50,8 +50,13 @@ public class BISourceDataTransport extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
+        if (tableSource.getSourceID().equals("fd8a22bd")) {
+            System.out.println("find");
+        }
         recordTableInfo();
         long count = transport();
+
+        System.out.println("????????????Count:" + count);
         if (count >= 0) {
             tableEntityService.recordRowCount(count);
         }

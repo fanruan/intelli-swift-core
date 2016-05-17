@@ -34,13 +34,16 @@ public class BICubeOperationManager {
     private BIOperation<Object> cubeBuildFinishOperation;
     private BIOperation<Object> pathBuildFinishWatcher;
     private BIDataSourceBuildFinishWatcher dataSourceBuildFinishWatcher;
-    private Set<ITableSource> registeredTable;
+    private Set<ITableSource> registeredTransportTable;
+    private Set<ITableSource> registeredFieldIndex;
+
     private Set<ITableSource> originalTableSet;
     private Map<ITableSource, BIOperation> tableSourceWatchers;
 
     public BICubeOperationManager(ICube cube, Set<ITableSource> originalTableSet) {
         this.cube = cube;
-        registeredTable = new HashSet<ITableSource>();
+        registeredTransportTable = new HashSet<ITableSource>();
+        registeredFieldIndex = new HashSet<ITableSource>();
         this.originalTableSet = originalTableSet;
         tableSourceWatchers = new HashMap<ITableSource, BIOperation>();
     }
@@ -52,7 +55,8 @@ public class BICubeOperationManager {
     }
 
     public void generateDataSource(Set<List<Set<ITableSource>>> tableSourceSet) {
-        registeredTable.clear();
+        registeredTransportTable.clear();
+        registeredFieldIndex.clear();
         tableSourceWatchers.clear();
 
         generateTransportBuilder(tableSourceSet);
@@ -62,14 +66,22 @@ public class BICubeOperationManager {
     }
 
     private boolean isGenerated(ITableSource tableSource) {
-        return registeredTable.contains(tableSource);
+        return registeredTransportTable.contains(tableSource);
+
+    }
+
+    private boolean isFieldIndexGenerated(ITableSource tableSource) {
+        return registeredFieldIndex.contains(tableSource);
 
     }
 
     private void addGeneratedTable(ITableSource tableSource) {
-        registeredTable.add(tableSource);
+        registeredTransportTable.add(tableSource);
     }
 
+    private void addGeneratedFieldIndex(ITableSource tableSource) {
+        registeredFieldIndex.add(tableSource);
+    }
 
     /**
      * TODO 重构ITableSource结构，这种序列关系封装一下都行
@@ -159,27 +171,30 @@ public class BICubeOperationManager {
             Iterator<ITableSource> sameLevelTableIt = sameLevelTable.iterator();
             while (sameLevelTableIt.hasNext()) {
                 ITableSource tableSource = sameLevelTableIt.next();
-                DBField[] fields = tableSource.getFieldsArray(originalTableSet);
-                for (int i = 0; i < fields.length; i++) {
-                    DBField field = fields[i];
-                    Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
-                    while (columnKeyIterator.hasNext()) {
-                        BIColumnKey targetColumnKey = columnKeyIterator.next();
-                        BIOperation<Object> operation = new BIOperation<Object>(
-                                tableSource.getSourceID() + "_" + targetColumnKey.getFullName(),
-                                getFieldIndexBuilder(cube, tableSource, field, targetColumnKey));
-                        ITopicTag topicTag = BITopicUtils.generateTopicTag(tableSource);
-                        operation.setOperationTopicTag(topicTag);
-                        operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(topicTag, targetColumnKey.getFullName()));
-                        try {
-                            operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource.getSourceID()));
-                        } catch (Exception e) {
-                            throw BINonValueUtils.beyondControl(e.getMessage(), e);
+                if (!isFieldIndexGenerated(tableSource)) {
+                    DBField[] fields = tableSource.getFieldsArray(originalTableSet);
+                    for (int i = 0; i < fields.length; i++) {
+                        DBField field = fields[i];
+                        Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
+                        while (columnKeyIterator.hasNext()) {
+                            BIColumnKey targetColumnKey = columnKeyIterator.next();
+                            BIOperation<Object> operation = new BIOperation<Object>(
+                                    tableSource.getSourceID() + "_" + targetColumnKey.getFullName(),
+                                    getFieldIndexBuilder(cube, tableSource, field, targetColumnKey));
+                            ITopicTag topicTag = BITopicUtils.generateTopicTag(tableSource);
+                            operation.setOperationTopicTag(topicTag);
+                            operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(topicTag, targetColumnKey.getFullName()));
+                            try {
+                                operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource.getSourceID()));
+                            } catch (Exception e) {
+                                throw BINonValueUtils.beyondControl(e.getMessage(), e);
+                            }
+                            watchTable(tableSource, BIStatusUtils.generateStatusFinish(topicTag, targetColumnKey.getFullName()));
+                            addGeneratedFieldIndex(tableSource);
                         }
-                        watchTable(tableSource, BIStatusUtils.generateStatusFinish(topicTag, targetColumnKey.getFullName()));
                     }
-                }
 
+                }
             }
         }
     }
@@ -213,8 +228,11 @@ public class BICubeOperationManager {
             while (sameLevelTable.hasNext()) {
                 ITableSource tableSource = sameLevelTable.next();
                 try {
-                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC,
-                            tableSource.getSourceID()));
+                    IStatusTag tag = BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC,
+                            tableSource.getSourceID());
+                    if (!operation.isSubscribed(tag)) {
+                        operation.subscribe(tag);
+                    }
                 } catch (Exception e) {
                     throw BINonValueUtils.beyondControl(e);
                 }
