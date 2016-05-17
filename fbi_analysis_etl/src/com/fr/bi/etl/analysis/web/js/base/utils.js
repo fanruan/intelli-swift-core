@@ -151,15 +151,12 @@ BI.extend(BI.Utils, {
         var header = [];
         var table = {};
         table[ETLCst.ITEMS] = [model];
-        var mask;
-        if(widget.element.is(":visible")) {
-            mask = BI.createWidget({
+        var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: widget.element,
                 container :widget.element,
                 text: BI.i18nText("BI-Loading")
             });
-        }
 
         BI.ETLReq.reqPreviewTable(table, function (data) {
             BI.each(model[ETLCst.FIELDS], function(idx, item){

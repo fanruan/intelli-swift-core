@@ -5,8 +5,8 @@ BI.AnalysisETLMergeSheetPreviewController    = BI.inherit(BI.MVCController, {
         var left = model.get("left")
         if(BI.isNotNull(left)) {
             widget.lefttable.setText(left.table_name)
-            BI.Utils.buildData(left, function (left_data) {
-                left_data.push(BI.range(0, widget.left, left[ETLCst.FIELDS].length))
+            BI.Utils.buildData(left, widget.left, function (left_data) {
+                left_data.push(BI.range(0, left[ETLCst.FIELDS].length))
                 left_data.push([])
                 widget.left.populate.apply(widget.left, left_data);
             });
