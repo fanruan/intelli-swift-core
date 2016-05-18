@@ -76,7 +76,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         for (long row = 0; row < rowCount; row++) {
             Object value = checkValueType(ti.getRow(key, (int)row), fieldType);
             try {
-                travel.actionPerformed(new BIDataValue(row, 0, value));
+                travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
                 BILogger.getLogger().error("incorrect formular");
                 travel.actionPerformed(new BIDataValue(row, startCol, null));

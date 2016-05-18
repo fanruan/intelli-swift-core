@@ -113,7 +113,13 @@ public class UserWidget {
                 JSONArray j = ja.getJSONArray(i);
                 List l = new ArrayList();
                 for (int k = 0; k < j.length(); k++){
-                    l.add(j.get(k));
+                    Object ob = null;
+                    try{
+                        ob = j.get(k);
+                    } catch (Exception e){
+
+                    }
+                    l.add(ob);
                 }
                 values.add(l);
             }
@@ -121,14 +127,21 @@ public class UserWidget {
             BILogger.getLogger().error(e.getMessage(), e);
         }
         paging.setCurrentPage(page + 1);
+        int leftCount = end - values.size();
         exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
         try {
             JSONArray ja =  exe.getCubeNode().getJSONArray("value");
-            for (int i = page * (step + 1); i < ja.length() && i < end; i++){
+            for (int i =0; i < ja.length() && i < leftCount; i++){
                 JSONArray j = ja.getJSONArray(i);
                 List l = new ArrayList();
                 for (int k = 0; k < j.length(); k++){
-                    l.add(j.get(k));
+                    Object ob = null;
+                    try{
+                        ob = j.get(k);
+                    } catch (Exception e){
+
+                    }
+                    l.add(ob);
                 }
                 values.add(l);
             }
