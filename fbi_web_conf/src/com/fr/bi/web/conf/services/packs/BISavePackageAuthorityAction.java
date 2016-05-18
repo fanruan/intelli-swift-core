@@ -21,50 +21,40 @@ public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
-        String packageId = WebUtils.getHTTPRequestParameter(req, "packageId");
+        String packageIds = WebUtils.getHTTPRequestParameter(req, "package_ids");
         String roles = WebUtils.getHTTPRequestParameter(req, "roles");
         long userId = ServiceUtils.getCurrentUserID(req);
-        savePackageAuthority(packageId, roles, userId);
+        savePackageAuthority(packageIds, roles, userId);
     }
 
     /**
      * 保存业务包权限
-     *
-     * @param packageId 业务包名字
-     * @param roles  权限的字符串
+     * @param packageIds 业务包名字
+     * @param roles     权限的字符串
      * @throws Exception
      */
-    public void savePackageAuthority(String packageId, String roles, long userId) throws Exception {
-        JSONArray roleInfojo=new JSONArray(roles);
-        JSONArray packageIdjo=new JSONArray(packageId);
+    private void savePackageAuthority(String packageIds, String roles, long userId) throws Exception {
+        JSONArray rolesJA = new JSONArray(roles);
+        JSONArray pIdsJA = new JSONArray(packageIds);
 
-        String[] rolesArray=new String[roleInfojo.length()];
-        for (int i = 0; i < roleInfojo.length(); i++) {
-            rolesArray[i]= String.valueOf(roleInfojo.getString(i));
+        String[] rolesArray = new String[rolesJA.length()];
+        for (int i = 0; i < rolesJA.length(); i++) {
+            rolesArray[i] = String.valueOf(rolesJA.getString(i));
         }
-
         BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
 
-
-        for (int i = 0; i < packageIdjo.length(); i++) {
-            BIPackAndAuthority biPackAndAuthority=new BIPackAndAuthority();
-            biPackAndAuthority.setBiPackageID( String.valueOf(packageIdjo.getString(i)));
+        for (int i = 0; i < pIdsJA.length(); i++) {
+            BIPackAndAuthority biPackAndAuthority = new BIPackAndAuthority();
+            biPackAndAuthority.setBiPackageID(String.valueOf(pIdsJA.getString(i)));
             biPackAndAuthority.setRoleIdArray(rolesArray);
 
-
-            boolean isExisted=packageAndAuthorityManager.containPackage(userId,biPackAndAuthority);
-            if(isExisted){
-            packageAndAuthorityManager.updateAuthority(userId,biPackAndAuthority);
-            }else {
-            packageAndAuthorityManager.addPackage(userId,biPackAndAuthority);
+            boolean isExisted = packageAndAuthorityManager.containPackage(userId, biPackAndAuthority);
+            if (isExisted) {
+                packageAndAuthorityManager.updateAuthority(userId, biPackAndAuthority);
+            } else {
+                packageAndAuthorityManager.addPackage(userId, biPackAndAuthority);
             }
-
-
         }
-
-
         packageAndAuthorityManager.persistData(userId);
-
-
     }
 }
