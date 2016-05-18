@@ -1851,6 +1851,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/flexbox.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.leftrightvertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.vertical.js",
