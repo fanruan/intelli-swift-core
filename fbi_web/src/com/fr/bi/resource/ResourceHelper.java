@@ -607,7 +607,11 @@ public class ResourceHelper {
 
                 //明细表超级链接
                 "com/fr/bi/web/css/modules/hyperlink/hyperlink.insert.css",
+
+                //明细表表格
                 "com/fr/bi/web/css/modules/detailtable/widget.detailtable.css",
+                "com/fr/bi/web/css/modules/detailtable/cell/header.detailtable.css",
+
 
                 //联动
                 "com/fr/bi/web/css/modules/linkage/linkage.target.css",
