@@ -8,6 +8,7 @@ import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.relation.BISimpleRelation;
 import com.fr.bi.stable.relation.BITableRelation;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -42,17 +43,21 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         return "get_translations_relations_fields_4_conf";
     }
 
-    private JSONObject getAllFields(long userId) throws Exception{
+    private JSONObject getAllFields(long userId) {
         JSONObject fields = new JSONObject();
         Set<BIBusinessPackage> packs = BIConfigureManagerCenter.getPackageManager().getAllPackages(userId);
-        for (BIBusinessPackage p : packs) {
-            for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
-                Iterator<BIBasicField> iterator = t.getFieldsIterator();
-                while (iterator.hasNext()) {
-                    BIBasicField field = iterator.next();
-                    fields.put(field.getTableID().getIdentity() + field.getFieldName(), field.createJSON());
+        try {
+            for (BIBusinessPackage p : packs) {
+                for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
+                    Iterator<BIBasicField> iterator = t.getFieldsIterator();
+                    while (iterator.hasNext()) {
+                        BIBasicField field = iterator.next();
+                        fields.put(field.getTableID().getIdentity() + field.getFieldName(), field.createJSON());
+                    }
                 }
             }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
         }
         return fields;
     }
