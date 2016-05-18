@@ -139,20 +139,13 @@ BI.extend(BI.Utils, {
         return packStructure;
 
     },
-    getAuthorityInfoByPackageId: function (packageId,callback) {
-        var roles = Data.Req.reqAuthorityByPackageId(packageId).roles;
-        callback(roles);
-    },
+    
     getUpdatePreviewSqlResult: function (data, callback) {
         Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
             callback(res);
         })
     },
-    getAllAuthority: function(callback) {
-        Data.Req.reqAllAuthority( function(res) {
-            callback(res);
-        })
-    },
+    
     getConfDataByField: function (table, fieldName, filterConfig, callback) {
         Data.Req.reqFieldsDataByData({
             table: table,
@@ -162,6 +155,7 @@ BI.extend(BI.Utils, {
             callback(data.value, data.hasNext);
         });
     },
+    
     getAllPackageIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("packages"));
     },
@@ -227,6 +221,17 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("update_settings", id);
     },
 
+    getAuthorityLoginInfo: function(){
+        return Data.SharingPool.get("authority_settings", "login_info") || {};
+    },
+
+    getAuthorityRoles: function(){
+        return Data.SharingPool.get("authority_settings", "all_roles");
+    },
+    
+    getPackageAuthorityByID: function(pid) {
+        return Data.SharingPool.get("authority_settings", "packages_auth", pid);  
+    },
 
     //fuck you
     getCircleLayerLevelInfo: function (table, layerInfo, callback) {
@@ -403,6 +408,7 @@ BI.extend(BI.Utils, {
             callback(res);
         });
     },
+    
     updatePackageAuthority: function (data, callback) {
         Data.Req.reqUpdatePackageAuthority(data, function (res) {
             callback(res);

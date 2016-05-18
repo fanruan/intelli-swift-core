@@ -151,13 +151,13 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         return valid;
     },
 
-    _buildDetailTableModel : function () {
+    _buildDetailTableModel : function (key) {
         var res = {
             filter_value:{},
             page : -1,
             type : BICst.WIDGET.DETAIL
         };
-        var fields = this.get(BI.AnalysisETLOperatorSelectDataModel.KEY);
+        var fields = this.get(key);
         var tableIds = this._getTablesFromFields(fields)
         var fTable = tableIds[0];
         BI.each(tableIds, function (idx, item) {
@@ -231,11 +231,21 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         })
     },
 
+    update4Preview : function () {
+        var v  = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
+            etlType:ETLCst.ETL_TYPE.SELECT_DATA
+        })
+        v[BI.AnalysisETLOperatorSelectDataModel.KEY] = v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY];
+        v["operator"] = this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
+        delete v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY]
+        return v;
+    },
+
     update : function () {
         var v  = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
             etlType:ETLCst.ETL_TYPE.SELECT_DATA
         })
-        v["operator"] = this._buildDetailTableModel();
+        v["operator"] = this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY);
         delete v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY]
         return v;
     }
