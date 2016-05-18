@@ -140,13 +140,13 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     private int writeRIndex(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti) {
-        int rlen = rti.getColumnSize();
+        int rlen = getColumnSize(false);
         ArrayList<ICubeColumnIndexReader> getter = new ArrayList<ICubeColumnIndexReader>();
         for (int i = 0; i < left.size(); i++) {
             getter.add(lti.loadGroup(new IndexKey(left.get(i)), new ArrayList<BITableSourceRelation>()));
         }
         int index = 0;
-        int lleftCount = lti.getColumnSize() - left.size();
+        int lleftCount = getColumnSize(true) - left.size();
         GroupValueIndex rTotalGvi = null;
         long row = rti.getRowCount();
         for (int i = 0; i < row; i++) {
@@ -211,7 +211,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     private int writeIndex(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti, boolean nullContinue, boolean writeLeft) {
-        int llen = lti.getColumnSize();
+        int llen = getColumnSize(true);
         ArrayList<ICubeColumnIndexReader> getter = new ArrayList<ICubeColumnIndexReader>();
         for (int i = 0; i < right.size(); i++) {
             getter.add(rti.loadGroup(new IndexKey(right.get(i)), new ArrayList<BITableSourceRelation>()));
@@ -407,5 +407,15 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         writer.end();
 
+    }
+
+    public int getColumnSize(boolean isLeft) {
+        int i = 0;
+        for (JoinColumn c : columns){
+            if (c.isLeft() == isLeft){
+                i++;
+            }
+        }
+        return i;
     }
 }

@@ -46,6 +46,9 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
                     operatorType : operator["operatorType"],
                     text:operator["text"]
                 })
+                if(item.etlType === ETLCst.ETL_TYPE.SELECT_DATA){
+                    item["operator"] = new BI.AnalysisETLOperatorSelectDataModel(item).update()["operator"]
+                }
                 self._initId(item[ETLCst.PARENTS])
             })
         }

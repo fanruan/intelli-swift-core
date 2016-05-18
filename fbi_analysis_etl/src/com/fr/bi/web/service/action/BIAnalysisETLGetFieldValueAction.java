@@ -15,6 +15,8 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/4/19.
@@ -37,8 +39,12 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
         ICubeTableService service = new PartCubeDataLoader(userId, source).getTableIndex(source.fetchObjectCore());
         JSONArray ja = new JSONArray();
         BIKey key = new IndexKey(field);
-        for (int i = 0; i < service.getRowCount(); i ++){
-            ja.put(service.getRow(key, i));
+        Set set = new HashSet();
+        for (int i = 0; i < service.getRowCount() && set.size() < MAX_ROW; i ++){
+            set.add(service.getRow(key, i));
+        }
+        for (Object ob : set){
+            ja.put(ob);
         }
         JSONObject result = new JSONObject();
         result.put(BIJSONConstant.JSON_KEYS.VALUE, ja);

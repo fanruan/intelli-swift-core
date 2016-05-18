@@ -14,7 +14,6 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.stable.StringUtils;
 
@@ -107,33 +106,26 @@ public class UserWidget {
         int page = start / step;
         paging.setCurrentPage(page);
         DetailExecutor exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
-        try {
-            JSONArray ja =  exe.getCubeNode().getJSONArray("value");
-            for (int i = start - page * step; i < ja.length(); i++){
-                JSONArray j = ja.getJSONArray(i);
-                List l = new ArrayList();
-                for (int k = 0; k < j.length(); k++){
-                    l.add(j.get(k));
-                }
-                values.add(l);
+        List<List> data =  exe.getData();
+        for (int i = start - page * step; i < data.size(); i++){
+            List d = data.get(i);
+            List l = new ArrayList();
+            for (int k = 0; k < d.size(); k++){
+                l.add(d.get(k));
             }
-        } catch (JSONException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            values.add(l);
         }
         paging.setCurrentPage(page + 1);
+        int leftCount = end - values.size();
         exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
-        try {
-            JSONArray ja =  exe.getCubeNode().getJSONArray("value");
-            for (int i = page * (step + 1); i < ja.length() && i < end; i++){
-                JSONArray j = ja.getJSONArray(i);
-                List l = new ArrayList();
-                for (int k = 0; k < j.length(); k++){
-                    l.add(j.get(k));
-                }
-                values.add(l);
+        data =  exe.getData();
+        for (int i =0; i < data.size() && i < leftCount; i++){
+            List d = data.get(i);
+            List l = new ArrayList();
+            for (int k = 0; k < d.size(); k++){
+                l.add(d.get(k));
             }
-        } catch (JSONException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            values.add(l);
         }
         return values;
     }

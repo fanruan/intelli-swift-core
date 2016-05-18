@@ -24,7 +24,7 @@ public class ExpressionFilterValueFactory {
             default:
                 filter = new DateInRangeFilterValue();
         }
-        filter.parseJSON(jo.getJSONObject("range"), UserControl.getInstance().getSuperManagerID());
+        filter.parseJSON(jo.getJSONObject("filter_value"), UserControl.getInstance().getSuperManagerID());
         return filter;
     }
 

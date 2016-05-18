@@ -1,10 +1,9 @@
 package com.fr.bi.stable.connection;
 
-import com.fr.bi.base.BIBasicCore;
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 
 import java.util.Iterator;
@@ -62,7 +61,7 @@ public class DirectTableConnectionFactory {
     }
 
     private static BIKey getFieldIndex(ICubeDataLoader loader, BIField foreignKey) {
-        ICubeTableService ti = loader.getTableIndex(BIBasicCore.generateValueCore(foreignKey.getTableBelongTo().getID().getIdentityValue()));
+        ICubeTableService ti = loader.getTableIndex(foreignKey.getTableBelongTo());
         if (ti != null) {
             return ti.getColumnIndex(foreignKey.getFieldName());
         } else {

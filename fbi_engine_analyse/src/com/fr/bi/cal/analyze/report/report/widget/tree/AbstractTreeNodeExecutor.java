@@ -10,15 +10,14 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by roy on 16/4/21.
@@ -55,32 +54,29 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
     }
 
 
-    private void createGroupValueWithParentValues(List<String> dataList, String[] parentValues, GroupValueIndex filterGvi, int floors, int times) {
+    private void createGroupValueWithParentValues(final List<String> dataList, String[] parentValues, GroupValueIndex filterGvi, int floors, int times) {
         if (floors == parentValues.length) {
             BIDimension dimension = widget.getViewDimensions()[floors];
             ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable());
-            ICubeColumnIndexReader targetDataReader = targetTi.loadGroup(new IndexKey(getTargetFiledName(dimension)));
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey());
-            ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
+            final ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
             if (times == -1) {
-                Iterator<Map.Entry> it = dataReader.iterator();
-                while (it.hasNext()) {
-                    Map.Entry e = it.next();
-                    Object[] groupValue = new Object[1];
-                    groupValue[0] = e.getKey();
-                    GroupValueIndex gvi = targetDataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
-                    if (!gvi.AND((GroupValueIndex) e.getValue()).isAllEmpty()) {
-                        dataList.add(e.getKey().toString());
+                filterGvi.Traversal(new SingleRowTraversalAction() {
+                    @Override
+                    public void actionPerformed(int row) {
+                        //这里不该用getGroupValue,用sb给的gvi接口
+                        dataList.add((String) dataReader.getGroupValue(row));
                     }
-                }
+                });
             }
             if (times > 0 && (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE < dataReader.sizeOfGroup()) {
                 int start = (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE;
-                for (int i = start; i < dataReader.sizeOfGroup(); i++) {
+                int end = Math.min(dataReader.sizeOfGroup(), start + 100);
+                for (int i = start; i < end; i++) {
                     Object[] rowValue = new Object[1];
+                    //这里不该用getGroupValue,用sb给的gvi接口
                     rowValue[0] = dataReader.getGroupValue(i);
-                    GroupValueIndex gvi = targetDataReader.getGroupIndex(rowValue)[0].AND(filterGvi);
-                    if (!gvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
+                    if (!filterGvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
                         dataList.add(dataReader.getGroupValue(i).toString());
                     }
                 }
@@ -92,25 +88,12 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
             String[] groupValue = new String[1];
             groupValue[0] = parentValues[floors];
             BIDimension dimension = widget.getViewDimensions()[floors];
-            ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable());
-            ICubeColumnIndexReader targetDataReader = targetTi.loadGroup(new IndexKey(getTargetFiledName(dimension)));
-            GroupValueIndex targetGvi = targetDataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey());
-            ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
-            GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(targetGvi);
-            ti.clear();
+            final ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
+            GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
             createGroupValueWithParentValues(dataList, parentValues, gvi, floors + 1, times);
         }
     }
 
-    private String getTargetFiledName(BIDimension dimension) {
-        String targetFieldName;
-        if (widget.getRelationMap(dimension).isEmpty()) {
-            targetFieldName = dimension.createColumnKey().getFieldName();
-        } else {
-            targetFieldName = widget.getRelationMap(dimension).get(target).getForeignField().getFieldName();
-        }
-        return targetFieldName;
-    }
 
 }

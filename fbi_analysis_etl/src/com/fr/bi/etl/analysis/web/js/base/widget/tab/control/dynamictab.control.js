@@ -194,12 +194,7 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
         BI.each(sheets, function (idx, item) {
             self._removeSheet(item, widget, model);
         })
-        self.addNewSheet(BI.extend(v, {
-            table_name:v["name"],
-            allHistory:true,
-            etlType: ETLCst.ETL_TYPE.MERGE_SHEET,
-            operator: BI.deepClone(v)
-        }),  widget, model)
+        self.addNewSheet(v,  widget, model)
     },
 
     chooseSheetForMerge : function (widget, model) {

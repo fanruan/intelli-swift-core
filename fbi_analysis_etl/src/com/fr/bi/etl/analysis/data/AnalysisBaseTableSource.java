@@ -55,10 +55,9 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     public DBTable getDbTable() {
         if (dbTable == null) {
             dbTable = new DBTable(null, fetchObjectCore().getID().getIdentityValue(), null);
-            BIDimension[] dimensions = widget.getViewDimensions();
             for (int i = 0; i < fieldList.size(); i++){
                 AnalysisETLSourceField c = fieldList.get(i);
-                int sqlType = i < dimensions.length ? getSqlTypeByGroupType(dimensions[i].getGroup()) : BIDBUtils.biTypeToSql(c.getFieldType());
+                int sqlType = (widget.getType() == BIReportConstant.WIDGET.TABLE && i < widget.getViewDimensions().length) ? getSqlTypeByGroupType(((BIDimension)widget.getViewDimensions()[i]).getGroup()) : BIDBUtils.biTypeToSql(c.getFieldType());
                 dbTable.addColumn(new BIColumn(c.getFieldName(), sqlType));
             }
 

@@ -47,7 +47,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
         var items = model.get(ETLCst.ITEMS);
         var self = this;
         BI.each(items, function (idx, item) {
-            var field = model.getFieldByValue(item.field)
+            var field = model.getFieldByValue(item.field.value)
             self._addCondition(field, item, widget, model)
         })
         this.checkValid(widget, model)
