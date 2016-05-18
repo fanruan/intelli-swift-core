@@ -196,6 +196,10 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         this._getTabButtonGroup(widget).deleteFromPosition(deletePos)
         this._selectLastTab(widget, model);
         widget.fireEvent(BI.HistoryTab.VALID_CHANGE)
+        var tab = widget.tab.getSelectedTab();
+        if (BI.isNotNull(tab) && BI.isNotNull(tab.controller.resetPointerPosition)) {
+            tab.controller.resetPointerPosition()
+        }
     },
 
     _addNewButtonAfterPos : function(item, index, widget, model) {

@@ -152,9 +152,8 @@ BI.extend(BI.Utils, {
         var table = {};
         table[ETLCst.ITEMS] = [model];
         var mask = BI.createWidget({
-                type: "bi.loading_mask",
+                type: "bi.etl_loading_mask",
                 masker: widget.element,
-                container :widget.element,
                 text: BI.i18nText("BI-Loading")
             });
 
