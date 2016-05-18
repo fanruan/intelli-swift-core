@@ -44,7 +44,7 @@ public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction{
                 } else if(ComparatorUtils.equals(ob, Double.NEGATIVE_INFINITY)){
                     ob = "-∞";
                 }
-                jo.put("text", ob instanceof Date ? getDateString((Date)ob) :ob.toString());
+                jo.put("text", ob instanceof Date ? getDateString((Date)ob) :ob);
                 ja.put(jo);
             }
             values.put(ja);
