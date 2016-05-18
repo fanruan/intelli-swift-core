@@ -81,7 +81,7 @@ public abstract class AbstractSingleColumnFile<T> extends LinkIndexFile implemen
     }
 
     @Override
-    public void addDataValue(long row, T value) {
+    public void addDataValue(int row, T value) {
         detail.createNIOWriter().add(row, value);
     }
 

@@ -9,6 +9,7 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.group.ICubeGroupDataService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.Comparator;
@@ -112,7 +113,10 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     @Override
     public GroupValueIndex getIndexByGroupValue(T groupValues) throws BIResourceInvalidException, BICubeIndexException {
         int position = getPositionOfGroup(groupValues);
-        return getBitmapIndex(position);
+        if (position >= 0) {
+            return getBitmapIndex(position);
+        }
+        return new RoaringGroupValueIndex();
     }
 
     @Override

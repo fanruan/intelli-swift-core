@@ -607,7 +607,11 @@ public class ResourceHelper {
 
                 //明细表超级链接
                 "com/fr/bi/web/css/modules/hyperlink/hyperlink.insert.css",
+
+                //明细表表格
                 "com/fr/bi/web/css/modules/detailtable/widget.detailtable.css",
+                "com/fr/bi/web/css/modules/detailtable/cell/header.detailtable.css",
+
 
                 //联动
                 "com/fr/bi/web/css/modules/linkage/linkage.target.css",
@@ -1335,6 +1339,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/selectdata.detailtablepopup.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/model.detailtable.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.js",
 
                 "com/fr/bi/web/js/modules/detailtablepopup/module/model/field/model.detailtablepopup.detail.dimension.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/model/model.detailtablepopup.js",
@@ -1843,6 +1851,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/flexbox.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.leftrightvertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.vertical.js",

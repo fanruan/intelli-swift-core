@@ -143,20 +143,15 @@ BI.DetailTablePopupView = BI.inherit(BI.View, {
     },
 
     _createTable: function () {
-        return BI.createWidget({
-            type: "bi.layout",
+        var self = this;
+        this.table = BI.createWidget({
+            type: "bi.detail_table_popup_detail_table",
             cls: "widget-center-wrapper"
         });
-        //var self = this;
-        //this.table = BI.createWidget({
-        //    type: "bi.detail_table",
-        //    cls: "widget-center-wrapper",
-        //    wId: this.model.get("id")
-        //});
-        //this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
-        //
-        //});
-        //return this.table;
+        this.table.on(BI.DetailTablePopupDetailTable.EVENT_CHANGE, function (ob) {
+
+        });
+        return this.table;
     },
 
     splice: function (old, key1, key2) {
@@ -171,10 +166,10 @@ BI.DetailTablePopupView = BI.inherit(BI.View, {
             BI.has(changed, "view") ||
             BI.has(changed, "filter_value") ||
             (BI.has(changed, "target_relation"))) {
-            //this.table.populate();
+            this.table.populate();
         }
         if (BI.has(changed, "settings")) {
-            //this.table.populate();
+            this.table.populate();
         }
     },
 
@@ -198,6 +193,6 @@ BI.DetailTablePopupView = BI.inherit(BI.View, {
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
-        //this.table.populate();
+        this.table.populate();
     }
 });

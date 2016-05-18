@@ -73,10 +73,10 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         int rowCount = ti.getRowCount();
         BIKey key = new IndexKey(field);
         int fieldType = ti.getColumns().get(key).getFieldType();
-        for (long row = 0; row < rowCount; row++) {
-            Object value = checkValueType(ti.getRow(key, (int)row), fieldType);
+        for (int row = 0; row < rowCount; row++) {
+            Object value = checkValueType(ti.getRow(key, row), fieldType);
             try {
-                travel.actionPerformed(new BIDataValue(row, 0, value));
+                travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
                 BILogger.getLogger().error("incorrect formular");
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
@@ -94,7 +94,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         }
         switch (fieldType){
             case DBConstant.COLUMN.NUMBER:{
-               return convertNumber((Long)value);
+               return convertNumber((Number)value);
             }
             case DBConstant.COLUMN.DATE: {
                 return convertDate((Long)value);
@@ -128,13 +128,13 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         return null;
     }
 
-    private Object convertNumber(Long value) {
+    private Object convertNumber(Number value) {
         switch (columnType){
             case DBConstant.COLUMN.STRING:{
                 return value.toString();
             }
             case DBConstant.COLUMN.DATE: {
-                return new Date(value);
+                return new Date(value.longValue());
             }
         }
         return null;

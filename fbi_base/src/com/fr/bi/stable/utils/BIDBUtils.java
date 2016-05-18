@@ -519,12 +519,12 @@ public class BIDBUtils {
     }
 
 
-    private static long dealWithResultSet(ResultSet rs,
+    private static int dealWithResultSet(ResultSet rs,
                                           DBField[] columns,
                                           Traversal<BIDataValue> traversal,
                                           boolean needCharSetConvert,
                                           String originalCharSetName,
-                                          String newCharSetName, long row) throws SQLException {
+                                          String newCharSetName, int row) throws SQLException {
         @SuppressWarnings("rawtypes")
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, columns);
         int ilen = dealers.length;
@@ -539,7 +539,7 @@ public class BIDBUtils {
     }
 
     public static long runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal) {
-        return runSQL(sql, columns, traversal, 0L);
+        return runSQL(sql, columns, traversal, 0);
     }
 
     /**
@@ -547,7 +547,7 @@ public class BIDBUtils {
      *
      * @param traversal
      */
-    public static long runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal, long row) {
+    public static int runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal, int row) {
         com.fr.data.impl.Connection connection = sql.getConn();
         Connection conn = null;
         Statement stmt = null;

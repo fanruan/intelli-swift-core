@@ -849,14 +849,14 @@ if (!window.BI) {
         }
     });
 
-    //浏览器相关方�?
+    //浏览器相关方法
     _.extend(BI, {
         isIE: function () {
-            return ( /msie/i.test(navigator.userAgent) && !/opera/i.test(navigator.userAgent) );
+            return $.browser.msie;
         },
 
         isChrome: function () {
-            return navigator.userAgent.toLowerCase().match(/chrome/) != null;
+            return $.browser.chrome;
         },
 
         isFireFox: function () {
@@ -864,23 +864,39 @@ if (!window.BI) {
         },
 
         isOpera: function () {
-            return /opera/i.test(navigator.userAgent);
+            return $.browser.opera;
+        },
+
+        isSafari: function () {
+            return $.browser.safari;
         },
 
         isKhtml: function () {
             return /Konqueror|Safari|KHTML/i.test(navigator.userAgent);
         },
 
-        isClassicIE: function () {
-            return $.browser.msie && parseInt($.browser.version) < 8;
-        },
+        isSupportCss3: function (style) {
+            var prefix = ['webkit', 'Moz', 'ms', 'o'],
+                i, len,
+                humpString = [],
+                htmlStyle = document.documentElement.style,
+                _toHumb = function (string) {
+                    return string.replace(/-(\w)/g, function ($0, $1) {
+                        return $1.toUpperCase();
+                    });
+                };
 
-        isNoneCanvasIE: function () {
-            return $.browser.msie && parseInt($.browser.version) < 9;
-        },
+            for (i in prefix) {
+                humpString.push(_toHumb(prefix[i] + '-' + style));
+            }
+            humpString.push(_toHumb(style));
 
-        isIE8: function () {
-            return !!window.ActiveXObject && !!document.documentMode;
+            for (i = 0, len = humpString.length; i < len; i++) {
+                if (humpString[i] in htmlStyle) {
+                    return true;
+                }
+            }
+            return false;
         }
     });
     //BI请求

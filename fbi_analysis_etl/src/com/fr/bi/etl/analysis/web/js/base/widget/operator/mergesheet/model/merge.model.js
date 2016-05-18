@@ -9,9 +9,15 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
 
     _init : function () {
         BI.AnalysisETLMergeSheetModel.superclass._init.apply(this, arguments);
+
+        var operator = this.get("operator");
+        if(BI.isNotNull(operator)) {
+            this.set(BI.AnalysisETLMergeSheetModel.MERGE_TYPE, operator[BI.AnalysisETLMergeSheetModel.MERGE_TYPE]);
+            this.set("columns", operator["columns"]);
+        }
         //处理格式转换
         this.set(BI.AnalysisETLMergeSheetModel.MERGE_TYPE, new BI.MVCModel({
-            merge:this.options[BI.AnalysisETLMergeSheetModel.MERGE_TYPE]
+            merge:this.get(BI.AnalysisETLMergeSheetModel.MERGE_TYPE)
         }));
         var baseTable = this.get("tables") || this.get(ETLCst.PARENTS);
         this.set("tables", baseTable)
