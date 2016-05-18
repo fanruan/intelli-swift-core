@@ -80,7 +80,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
         final FinalInt writeRow = new FinalInt();
         DBTable ptable = parents.get(0).getDbTable();
         final BIColumn[] columns = ptable.getColumnArray();
-        while (ti.getRowCount() > 0){
+        do {
             final ICubeTableService tableIndex = ti;
             GroupValueIndex fgvi = createFilterIndex(parents, new CubeTILoaderAdapter() {
                 @Override
@@ -99,27 +99,36 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
                 public ICubeTableService getTableIndex(BITableID id) {
                     return tableIndex;
                 }
+                public ICubeTableService getTableIndex(BICore core, int start, int end) {
+                    return tableIndex;
+                }
+                public long getUserId() {
+                    return user.getUserId();
+                }
             });
-            fgvi.BrokenableTraversal(new BrokenTraversalAction() {
+            if (fgvi.BrokenableTraversal(new BrokenTraversalAction() {
                 @Override
                 public boolean actionPerformed(int row) {
                     currentRow.i ++;
                     if (currentRow.i < start ){
-                        return true;
-                    }
-                    if (currentRow.i > end ){
                         return false;
                     }
+                    if (currentRow.i > end ){
+                        return true;
+                    }
                     for (int i = 0; i < columns.length; i++) {
-                        travel.actionPerformed(new BIDataValue(writeRow.i, i, tableIndex.getRowValue(new IndexKey(columns[i].getFieldName()), row)));
+                        travel.actionPerformed(new BIDataValue(writeRow.i, i, tableIndex.getRow(new IndexKey(columns[i].getFieldName()), row)));
                     }
                     writeRow.i++;
-                    return true;
+                    return false;
                 }
-            });
+            })){
+                break;
+            }
             index++;
             ti = loader.getTableIndex(getSingleParentMD5(parents), (index - 1) * STEP , index * STEP);
         }
+        while (ti.getRowCount() != STEP);
         return writeRow.i;
     }
 

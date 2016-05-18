@@ -1,6 +1,9 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.BIBasicCore;
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.BIWidget;
@@ -16,6 +19,7 @@ import com.fr.bi.stable.data.db.DBTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -50,15 +54,23 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         this.name = name;
     }
 
+    @Override
+    public BICore fetchObjectCore() {
+        try {
+            return new BICoreGenerator(this).fetchObjectCore();
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return BIBasicCore.EMPTY_CORE;
+    }
 
     @Override
     public DBTable getDbTable() {
         if (dbTable == null) {
             dbTable = new DBTable(null, fetchObjectCore().getID().getIdentityValue(), null);
-            BIDimension[] dimensions = widget.getViewDimensions();
             for (int i = 0; i < fieldList.size(); i++){
                 AnalysisETLSourceField c = fieldList.get(i);
-                int sqlType = i < dimensions.length ? getSqlTypeByGroupType(dimensions[i].getGroup()) : BIDBUtils.biTypeToSql(c.getFieldType());
+                int sqlType = (widget.getType() == BIReportConstant.WIDGET.TABLE && i < widget.getViewDimensions().length) ? getSqlTypeByGroupType(((BIDimension)widget.getViewDimensions()[i]).getGroup()) : BIDBUtils.biTypeToSql(c.getFieldType());
                 dbTable.addColumn(new BIColumn(c.getFieldName(), sqlType));
             }
 

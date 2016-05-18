@@ -194,8 +194,11 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         var json = BI.AnalysisETLMergeSheetModel.superclass.update.apply(this, arguments);
         json[BI.AnalysisETLMergeSheetModel.MERGE_TYPE] = json[BI.AnalysisETLMergeSheetModel.MERGE_TYPE]["merge"];
         json[ETLCst.FIELDS] = json["columns"]
+        json["etlType"] = ETLCst.ETL_TYPE.MERGE_SHEET;
         delete json["tables"];
         delete json[BI.AnalysisETLMergeSheetModel.MERGE_FIELDS];
+        json["table_name"] = json["name"]
+        json["operator"] = BI.deepClone(json)
         return json;
     }
 })
