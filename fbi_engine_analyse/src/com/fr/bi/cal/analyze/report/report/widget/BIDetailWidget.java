@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -29,13 +30,16 @@ import com.fr.report.poly.TemplateBlock;
 import java.util.*;
 
 public class BIDetailWidget extends BIAbstractWidget {
-
+    @BICoreField
     private BIDetailSetting data;
+    @BICoreField
     private BIDetailTarget[] dimensions = new BIDetailTarget[0];
-    private Map<String, TargetFilter> targetFilterMap = new HashMap<String, TargetFilter>();
+    @BICoreField
+    private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
+    @BICoreField
     private Table target;//目标表
     private List<String> parent_widget = new ArrayList<String>();
-
+    @BICoreField
     private String[] sortTargets = new String[0];
 
     //page from 1~ max

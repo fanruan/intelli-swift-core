@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
@@ -33,6 +34,7 @@ public class TableWidget extends BISummaryWidget {
     /**
      * 保存列字段等内容
      */
+    @BICoreField
     private BITableReportSetting data = new BITableReportSetting();
 
     private int[] pageSpinner = new int[5];
