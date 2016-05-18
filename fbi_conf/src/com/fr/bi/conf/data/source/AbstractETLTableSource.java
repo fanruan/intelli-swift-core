@@ -152,7 +152,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
 
     @Override
     public boolean isIndependent() {
-        return !(hasTableFilterOperator()||isAllAddColumnOperator());
+        return !(hasTableFilterOperator() || isAllAddColumnOperator());
     }
 
     @Override
