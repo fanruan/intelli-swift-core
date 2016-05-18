@@ -91,18 +91,10 @@ BI.Chart = BI.inherit(BI.Pane, {
         var defaultConfig = {};
         var columnConfig = {
             "plotOptions": {
-                lineWidth: 2,
-                click: function () {
-                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                        category: this.category,
-                        seriesName: this.seriesName,
-                        value: this.value
-                    });
-                },
-                "categoryGap": "20.0%",
-                "borderColor": "rgb(255,255,0)",
+                "categoryGap": "16.0%",
+                "borderColor": "rgb(255,255,255)",
                 "borderWidth": 1,
-                "gap": "20.0%",
+                "gap": "22.0%",
                 "tooltip": {
                     "formatter": {
                         "identifier": "${CATEGORY}${SERIES}${VALUE}",
@@ -125,104 +117,84 @@ BI.Chart = BI.inherit(BI.Pane, {
                 "animation": true
             },
             "borderColor": "rgb(238,238,238)",
-            "xAxis": [
-                {
-                    "enableMinorTick": false,
-                    "minorTickColor": "rgb(0,0,0)",
-                    "tickColor": "rgb(0,0,0)",
-                    "showArrow": false,
-                    "lineColor": "rgb(0,0,0)",
-                    "plotLines": [],
-                    "type": "category",
-                    "lineWidth": 1,
-                    "showLabel": true,
-                    "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                    "gridLineWidth": 0,
-                    "enableTick": true,
-                    "labelStyle": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(102,102,102,1.0)",
-                        "fontSize": "11pt",
-                        "fontWeight": ""
-                    },
-                    "plotBands": [],
-                    "position": "bottom",
-                    "labelRotation": 0,
-                    "reversed": false
-                }
-            ],
+            "xAxis": [{
+                "enableMinorTick": false,
+                "minorTickColor": "rgb(176,176,176)",
+                "tickColor": "rgb(176,176,176)",
+                "showArrow": false,
+                "lineColor": "rgb(176,176,176)",
+                "plotLines": [],
+                "type": "category",
+                "lineWidth": 1,
+                "showLabel": true,
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                "gridLineWidth": 0,
+                "enableTick": true,
+                "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "11pt", "fontWeight": ""},
+                "plotBands": [],
+                "position": "bottom",
+                "labelRotation": 0,
+                "reversed": false
+            }],
             "shadow": false,
             "legend": {
                 "borderColor": "rgb(204,204,204)",
                 "borderRadius": 0,
                 "shadow": false,
                 "borderWidth": 0,
-                "style": {
-                    "fontFamily": "Dialog",
-                    "color": "rgba(102,102,102,1.0)",
-                    "fontSize": "11pt",
-                    "fontWeight": ""
-                },
+                "style": {"fontFamily": "微软雅黑", "color": "rgba(102,102,102,1.0)", "fontSize": "11pt", "fontWeight": ""},
                 "position": "right",
                 "enabled": true
             },
-            "zoom": {
-                "zoomType": "xy",
-                "zoomTool": {
-                    "visible": false,
-                    "resize": true,
-                    "from": "",
-                    "to": ""
-                }
-            },
+            "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
             "plotBorderColor": "rgba(255,255,255,0)",
             "tools": {
                 "hidden": true,
-                "toImage": {
-                    "enabled": true
-                },
-                "sort": {
-                    "enabled": true
-                },
+                "toImage": {"enabled": true},
+                "sort": {"enabled": true},
                 "enabled": true,
-                "fullScreen": {
-                    "enabled": true
-                }
+                "fullScreen": {"enabled": true}
             },
             "plotBorderWidth": 0,
-            "colors": [
-                "rgb(99,178,238)",
-                "rgb(118,218,145)",
-                "rgb(248,203,127)",
-                "rgb(248,149,136)",
-                "rgb(124,214,207)"
-            ],
-            "yAxis": [
-                {
-                    "enableMinorTick": true,
-                    "minorTickColor": "rgb(176,176,176)",
-                    "tickColor": "rgb(176,176,176)",
-                    "showArrow": false,
-                    "lineColor": "rgb(176,176,176)",
-                    "plotLines": [],
-                    "type": "value",
-                    "lineWidth": 2,
-                    "showLabel": true,
-                    "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                    "gridLineWidth": 0,
-                    "enableTick": true,
-                    "labelStyle": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(102,102,102,1.0)",
-                        "fontSize": "11pt",
-                        "fontWeight": ""
-                    },
-                    "plotBands": [],
-                    "position": "left",
-                    "labelRotation": 0,
-                    "reversed": false
-                }
-            ],
+            "colors": ["rgb(99,178,238)", "rgb(118,218,145)"],
+            "yAxis": [{
+                "enableMinorTick": false,
+                "gridLineColor": "rgb(196,196,196)",
+                "minorTickColor": "rgb(176,176,176)",
+                "tickColor": "rgb(176,176,176)",
+                "showArrow": false,
+                "lineColor": "rgb(176,176,176)",
+                "plotLines": [],
+                "type": "value",
+                "lineWidth": 0,
+                "showLabel": true,
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                "gridLineWidth": 1,
+                "enableTick": true,
+                "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "11pt", "fontWeight": ""},
+                "plotBands": [],
+                "position": "left",
+                "labelRotation": 0,
+                "reversed": false
+            }, {
+                "enableMinorTick": false,
+                "minorTickColor": "rgb(176,176,176)",
+                "tickColor": "rgb(176,176,176)",
+                "showArrow": false,
+                "lineColor": "rgb(176,176,176)",
+                "plotLines": [],
+                "type": "value",
+                "lineWidth": 0,
+                "showLabel": true,
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                "gridLineWidth": 0,
+                "enableTick": true,
+                "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "11pt", "fontWeight": ""},
+                "plotBands": [],
+                "position": "right",
+                "labelRotation": 0,
+                "reversed": false
+            }],
             "borderRadius": 0,
             "borderWidth": 0,
             "chartType": "column",

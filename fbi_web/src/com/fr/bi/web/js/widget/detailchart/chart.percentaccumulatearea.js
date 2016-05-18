@@ -26,19 +26,20 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.PercentAccumulateAreaChart.resize();
-        this.PercentAccumulateAreaChart.populate(items);
-    },
-
-    loading: function(){
-        this.PercentAccumulateAreaChart.loading();
-    },
-
-    loaded: function(){
-        this.PercentAccumulateAreaChart.loaded();
+        this.PercentAccumulateAreaChart.populate(BI.PercentAccumulateAreaChart.formatItems(items));
     },
 
     resize: function () {
         this.PercentAccumulateAreaChart.resize();
+    }
+});
+BI.extend(BI.PercentAccumulateAreaChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.PercentAccumulateAreaChart.EVENT_CHANGE = "EVENT_CHANGE";

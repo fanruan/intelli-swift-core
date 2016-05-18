@@ -30,19 +30,20 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.ForceBubbleChart.resize();
-        this.ForceBubbleChart.populate(items);
-    },
-
-    loading: function(){
-        this.ForceBubbleChart.loading();
-    },
-
-    loaded: function(){
-        this.ForceBubbleChart.loaded();
+        this.ForceBubbleChart.populate(BI.ForceBubbleChart.formatItems(items));
     },
 
     resize: function () {
         this.ForceBubbleChart.resize();
+    }
+});
+BI.extend(BI.ForceBubbleChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.ForceBubbleChart.EVENT_CHANGE = "EVENT_CHANGE";

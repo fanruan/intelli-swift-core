@@ -26,19 +26,20 @@ BI.AxisChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.AxisChart.resize();
-        this.AxisChart.populate(items);
-    },
-
-    loading: function(){
-        this.AxisChart.loading();
-    },
-
-    loaded: function(){
-        this.AxisChart.loaded();
+        this.AxisChart.populate(BI.AxisChart.formatItems(items));
     },
 
     resize: function () {
         this.AxisChart.resize();
+    }
+});
+BI.extend(BI.AxisChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.AxisChart.EVENT_CHANGE = "EVENT_CHANGE";

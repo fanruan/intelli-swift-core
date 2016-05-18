@@ -26,19 +26,20 @@ BI.DonutChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.DonutChart.resize();
-        this.DonutChart.populate(items);
-    },
-
-    loading: function(){
-        this.DonutChart.loading();
-    },
-
-    loaded: function(){
-        this.DonutChart.loaded();
+        this.DonutChart.populate(BI.DonutChart.formatItems(items));
     },
 
     resize: function () {
         this.DonutChart.resize();
+    }
+});
+BI.extend(BI.DonutChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.DonutChart.EVENT_CHANGE = "EVENT_CHANGE";

@@ -26,19 +26,20 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.AccumulateRadarChart.resize();
-        this.AccumulateRadarChart.populate(items);
-    },
-
-    loading: function(){
-        this.AccumulateRadarChart.loading();
-    },
-
-    loaded: function(){
-        this.AccumulateRadarChart.loaded();
+        this.AccumulateRadarChart.populate(BI.AccumulateRadarChart.formatItems(items));
     },
 
     resize: function () {
         this.AccumulateRadarChart.resize();
+    }
+});
+BI.extend(BI.AccumulateRadarChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.AccumulateRadarChart.EVENT_CHANGE = "EVENT_CHANGE";

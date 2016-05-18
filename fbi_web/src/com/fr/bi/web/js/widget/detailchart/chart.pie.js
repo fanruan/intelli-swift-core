@@ -26,19 +26,20 @@ BI.PieChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.PieChart.resize();
-        this.PieChart.populate(items);
-    },
-
-    loading: function(){
-        this.PieChart.loading();
-    },
-
-    loaded: function(){
-        this.PieChart.loaded();
+        this.PieChart.populate(BI.PieChart.formatItems(items));
     },
 
     resize: function () {
         this.PieChart.resize();
+    }
+});
+BI.extend(BI.PieChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.PieChart.EVENT_CHANGE = "EVENT_CHANGE";

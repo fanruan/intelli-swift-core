@@ -26,19 +26,25 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.AccumulateBarChart.resize();
-        this.AccumulateBarChart.populate(items);
-    },
-
-    loading: function(){
-        this.AccumulateBarChart.loading();
-    },
-
-    loaded: function(){
-        this.AccumulateBarChart.loaded();
+        this.AccumulateBarChart.populate(BI.AccumulateBarChart.formatItems(items));
     },
 
     resize: function () {
         this.AccumulateBarChart.resize();
+    }
+});
+BI.extend(BI.AccumulateBarChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": BI.map(items[name], function(idx, item){
+                return {
+                    y: item.x,
+                    x: item.y
+                };
+            }),
+            "name": name
+        }
     }
 });
 BI.AccumulateBarChart.EVENT_CHANGE = "EVENT_CHANGE";

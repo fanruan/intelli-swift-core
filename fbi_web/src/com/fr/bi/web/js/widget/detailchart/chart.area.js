@@ -26,19 +26,20 @@ BI.AreaChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.AreaChart.resize();
-        this.AreaChart.populate(items);
-    },
-
-    loading: function(){
-        this.AreaChart.loading();
-    },
-
-    loaded: function(){
-        this.AreaChart.loaded();
+        this.AreaChart.populate(BI.AreaChart.formatItems(items));
     },
 
     resize: function () {
         this.AreaChart.resize();
+    }
+});
+BI.extend(BI.AreaChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.AreaChart.EVENT_CHANGE = "EVENT_CHANGE";

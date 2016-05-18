@@ -26,19 +26,20 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.DashboardChart.resize();
-        this.DashboardChart.populate(items);
-    },
-
-    loading: function(){
-        this.DashboardChart.loading();
-    },
-
-    loaded: function(){
-        this.DashboardChart.loaded();
+        this.DashboardChart.populate(BI.DashboardChart.formatItems(items));
     },
 
     resize: function () {
         this.DashboardChart.resize();
+    }
+});
+BI.extend(BI.DashboardChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.DashboardChart.EVENT_CHANGE = "EVENT_CHANGE";

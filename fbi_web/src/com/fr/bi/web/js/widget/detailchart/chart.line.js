@@ -41,5 +41,14 @@ BI.LineChart = BI.inherit(BI.Widget, {
         this.LineChart.resize();
     }
 });
+BI.extend(BI.LineChart, {
+    formatItems: function(items){
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
+    }
+});
 BI.LineChart.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.line_chart', BI.LineChart);

@@ -30,7 +30,7 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.ScatterChart.resize();
-        this.ScatterChart.populate(items);
+        this.ScatterChart.populate(BI.ScatterChart.formatItems(items));
     },
 
     loading: function(){
@@ -43,6 +43,15 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.ScatterChart.resize();
+    }
+});
+BI.extend(BI.ScatterChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.ScatterChart.EVENT_CHANGE = "EVENT_CHANGE";

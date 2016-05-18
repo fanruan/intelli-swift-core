@@ -26,19 +26,20 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.AccumulateAxisChart.resize();
-        this.AccumulateAxisChart.populate(items);
-    },
-
-    loading: function(){
-        this.AccumulateAxisChart.loading();
-    },
-
-    loaded: function(){
-        this.AccumulateAxisChart.loaded();
+        this.AccumulateAxisChart.populate(BI.AccumulateAxisChart.formatItems(items));
     },
 
     resize: function () {
         this.AccumulateAxisChart.resize();
+    }
+});
+BI.extend(BI.AccumulateAxisChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.AccumulateAxisChart.EVENT_CHANGE = "EVENT_CHANGE";

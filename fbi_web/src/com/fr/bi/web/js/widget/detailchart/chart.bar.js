@@ -26,19 +26,25 @@ BI.BarChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.BarChart.resize();
-        this.BarChart.populate(items);
-    },
-
-    loading: function(){
-        this.BarChart.loading();
-    },
-
-    loaded: function(){
-        this.BarChart.loaded();
+        this.BarChart.populate(BI.BarChart.formatItems(items));
     },
 
     resize: function () {
         this.BarChart.resize();
+    }
+});
+BI.extend(BI.BarChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": BI.map(items[name], function(idx, item){
+                return {
+                    y: item.x,
+                    x: item.y
+                };
+            }),
+            "name": name
+        }
     }
 });
 BI.BarChart.EVENT_CHANGE = "EVENT_CHANGE";

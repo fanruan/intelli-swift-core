@@ -25,20 +25,20 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
-        this.AccumulateAreaChart.resize();
-        this.AccumulateAreaChart.populate(items);
-    },
-
-    loading: function(){
-        this.AccumulateAreaChart.loading();
-    },
-
-    loaded: function(){
-        this.AccumulateAreaChart.loaded();
+        this.AccumulateAreaChart.populate(BI.AccumulateAreaChart.formatItems(items));
     },
 
     resize: function () {
         this.AccumulateAreaChart.resize();
+    }
+});
+BI.extend(BI.AccumulateAreaChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.AccumulateAreaChart.EVENT_CHANGE = "EVENT_CHANGE";

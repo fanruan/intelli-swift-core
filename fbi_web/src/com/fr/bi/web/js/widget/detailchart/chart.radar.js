@@ -26,19 +26,20 @@ BI.RadarChart = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.RadarChart.resize();
-        this.RadarChart.populate(items);
-    },
-
-    loading: function(){
-        this.RadarChart.loading();
-    },
-
-    loaded: function(){
-        this.RadarChart.loaded();
+        this.RadarChart.populate(BI.RadarChart.formatItems(items));
     },
 
     resize: function () {
         this.RadarChart.resize();
+    }
+});
+BI.extend(BI.RadarChart, {
+    formatItems: function (items) {
+        var name = BI.keys(items)[0];
+        return {
+            "data": items[name],
+            "name": name
+        }
     }
 });
 BI.RadarChart.EVENT_CHANGE = "EVENT_CHANGE";
