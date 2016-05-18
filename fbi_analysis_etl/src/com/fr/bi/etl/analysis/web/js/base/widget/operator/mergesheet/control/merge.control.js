@@ -44,6 +44,7 @@ BI.AnalysisETLMergeSheetController = BI.inherit(BI.MVCController, {
         var widget = arguments[arguments.length - 2];
         var model = arguments[arguments.length - 1];
         if(model.setCurrent2Sheet(v) === true) {
+            widget.preview.resetLeftRight()
             widget.refreshView();
         }
     },
