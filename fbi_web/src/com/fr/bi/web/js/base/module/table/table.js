@@ -709,9 +709,9 @@ BI.Table = BI.inherit(BI.Widget, {
                             resizer = null;
                             o.columnSize[start + j] = ui.size.width - 1;
                             self.setColumnSize(o.columnSize);
-                            BI.delay(function () {
+                            //BI.delay(function () {
                                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
-                            }, 300);
+                            //}, 300);
                         }
                     })
                 }

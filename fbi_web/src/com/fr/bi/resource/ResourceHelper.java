@@ -443,6 +443,8 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/css/modules/selectdatamask/widget.selectdata.mask.css",
 
+                //通用查询选字段
+                "com/fr/bi/web/css/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.css",
                 //选择文本
                 "com/fr/bi/web/css/modules/selectstring/tab.selectstring.css",
 
