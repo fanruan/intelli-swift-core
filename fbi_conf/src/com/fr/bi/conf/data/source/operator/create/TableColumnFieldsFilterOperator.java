@@ -43,7 +43,7 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
     }
 
     protected GroupValueIndex createFilterIndex(List<? extends ITableSource> parents, ICubeDataLoader loader){
-        if (filterList == null){
+        if (filterList == null || filterList.isEmpty()){
             return loader.getTableIndex(getSingleParentMD5(parents)).getAllShowIndex();
         }
         GroupValueIndex gvi = null;
