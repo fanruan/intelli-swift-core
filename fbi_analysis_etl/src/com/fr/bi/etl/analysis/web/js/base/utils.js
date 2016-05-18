@@ -178,15 +178,11 @@ BI.extend(BI.Utils, {
     },
 
     triggerPreview : function () {
-        return BI.throttle(function (widget, previewModel, operatorType, type) {
-            var args = {
-                widget:widget,
-                model:previewModel,
-                operatorType:operatorType,
-                type:type
-            }
+        return BI.throttle(function () {
             if(BI.isNull(this.runner)){
-                this.runner = new BI.RUN(args)
+                this.runner = new BI.RUN({
+                    args : arguments
+                })
                 var self = this;
                 var run = function (widget, previewModel, operatorType, type) {
                     switch (type) {
@@ -195,7 +191,7 @@ BI.extend(BI.Utils, {
                             BI.Utils.buildData(previewModel.update4Preview(), widget.previewTable, function (data) {
                                 self.runner = self.runner.getNext();
                                 if (self.runner != null) {
-                                    run(self.runner.options.widget, self.runner.options.model, self.runner.options.operatorType, self.runner.options.type)
+                                    self.runner.submit(run)
                                 } else {
                                     widget.setPreviewOperator(operatorType);
                                     widget.populatePreview.apply(widget, data)
@@ -208,7 +204,7 @@ BI.extend(BI.Utils, {
                             BI.concat(BI.Utils.buildData(previewModel, widget, function (data) {
                                 self.runner = self.runner.getNext();
                                 if (self.runner != null) {
-                                    run(self.runner.options.widget, self.runner.options.model, self.runner.options.operatorType, self.runner.options.type)
+                                    self.runner.submit(run)
                                 } else {
                                     widget.populate.apply(widget, data);
                                 }
@@ -220,7 +216,7 @@ BI.extend(BI.Utils, {
                             BI.Utils.buildData(previewModel.update(), widget.previewTable, function (data) {
                                 self.runner = self.runner.getNext();
                                 if (self.runner != null) {
-                                    run(self.runner.options.widget, self.runner.options.model, self.runner.options.operatorType, self.runner.options.type)
+                                    self.runner.submit(run)
                                 } else {
                                     widget.setPreviewOperator(operatorType);
                                     widget.populatePreview.apply(widget, data)
@@ -231,9 +227,11 @@ BI.extend(BI.Utils, {
 
                     }
                 }
-                run(self.runner.options.widget, self.runner.options.model, self.runner.options.operatorType, self.runner.options.type)
+                self.runner.submit(run)
             } else {
-                this.runner.setNext(args)
+                this.runner.setNext({
+                    args : arguments
+                })
             }
         }, 300)
     }
@@ -251,6 +249,10 @@ BI.RUN = BI.inherit(FR.OB, {
 
     hasNext : function () {
         return BI.isNotNull(this.next);
+    },
+
+    submit : function (runner) {
+        runner.apply(runner, this.options.args)
     },
 
     getNext : function () {
