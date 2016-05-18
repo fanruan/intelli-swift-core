@@ -13,7 +13,7 @@ BI.GeneralQueryUsedFieldsPane = BI.inherit(BI.Widget, {
         var self = this;
 
         var editor = BI.createWidget({
-            type: "bi.search_editor",
+            type: "bi.small_search_editor",
             height: 25
         });
         var searcher = BI.createWidget({
