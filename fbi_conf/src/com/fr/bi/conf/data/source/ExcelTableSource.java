@@ -98,7 +98,7 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
             @Override
             public void actionPerformed(BIDataValue v) {
                 Object resValue = null;
-                long i = v.getRow();
+                int i = v.getRow();
                 int j = v.getCol();
                 Object value = v.getValue();
                 switch (columns[j].getFieldType()) {
