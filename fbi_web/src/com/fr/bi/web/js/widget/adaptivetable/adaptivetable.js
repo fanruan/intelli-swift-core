@@ -197,7 +197,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
                 newRight[newRight.length - 1] = "";
                 this.table.setColumnSize(newLeft.concat(newRight));
 
-                BI.delay(function () {
+                //BI.delay(function () {
                     block = self._getBlockSize();
                     if (columnSizeLeft[columnSizeLeft.length - 1] < block.left[block.left.length - 1]) {
                         columnSizeLeft[columnSizeLeft.length - 1] = block.left[block.left.length - 1]
@@ -208,7 +208,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
                     self.table.setColumnSize(columnSizeLeft.concat(columnSizeRight));
                     callback();
-                }, 100);
+                //}, 100);
             }
         } else {
             if (!this._isAdaptiveColumn()) {
