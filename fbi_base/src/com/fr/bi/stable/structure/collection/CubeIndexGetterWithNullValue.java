@@ -99,6 +99,11 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
     }
 
     @Override
+    public Object getOriginalValue(int rowNumber) {
+        return null;
+    }
+
+    @Override
 	public Object firstKey() {
 		return getter.firstKey();
 	}

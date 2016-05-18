@@ -94,8 +94,8 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
             for (ITableSource p : getParents()) {
                 ICubeTableService ti = loader.getTableIndex(p.fetchObjectCore(), start, end);
                 BIColumn[] fields = p.getDbTable().getColumnArray();
-                for (int i = 0; i < ti.getRowCount(); i ++){
-                    for (int j = 0; j < fields.length; j++){
+                for (int i = 0; i < ti.getRowCount(); i++) {
+                    for (int j = 0; j < fields.length; j++) {
                         travel.actionPerformed(new BIDataValue(i, j, ti.getRow(new IndexKey(fields[j].getFieldName()), i)));
                     }
                 }
@@ -110,6 +110,26 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
             startCol++;
         }
         return index;
+    }
+
+    @Override
+    public Set<DBField> getFacetFields(Set<ITableSource> sources) {
+        Set<DBField> result = new HashSet<DBField>();
+        Iterator<BIColumn> it = getDbTable().getBIColumnIterator();
+        while (it.hasNext()) {
+            BIColumn column = it.next();
+            result.add(column.toDBField(new BITable(this.getSourceID())));
+        }
+        return result;
+    }
+
+    @Override
+    public Set<DBField> getParentFields(Set<ITableSource> sources) {
+        Set<DBField> result = new HashSet<DBField>();
+        for (ITableSource tableSource : parents) {
+            result.addAll(tableSource.getFacetFields(sources));
+        }
+        return result;
     }
 
     @Override
@@ -152,7 +172,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
 
     @Override
     public boolean isIndependent() {
-        return !(hasTableFilterOperator()|| isAllAddColumnOperator());
+        return !(hasTableFilterOperator() || isAllAddColumnOperator());
     }
 
     @Override

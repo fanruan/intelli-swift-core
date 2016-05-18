@@ -85,6 +85,11 @@ public class CubeTreeMap<K> extends TreeMap implements ICubeColumnIndexReader, R
     }
 
     @Override
+    public Object getOriginalValue(int rowNumber) {
+        return null;
+    }
+
+    @Override
     public long nonPrecisionSize() {
         return size();
     }

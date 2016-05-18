@@ -27,7 +27,7 @@ public class BIBasicTable extends BITable {
         super(table);
         if (table instanceof BIBasicTable) {
             if (table != null) {
-                fieldArray = new ArrayList(((BIBasicTable) table).getFieldArray());
+                fieldArray = new ArrayList<BIBasicField>(((BIBasicTable) table).getFieldArray());
             } else {
                 fieldArray = new ArrayList<BIBasicField>();
             }
