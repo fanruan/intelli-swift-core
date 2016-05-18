@@ -1,8 +1,9 @@
 package com.fr.bi.web.conf.services.packs;
 
-import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
+import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
+import com.fr.bi.conf.base.pack.data.BIPackageID;
+import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -10,6 +11,8 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
 
@@ -36,24 +39,16 @@ public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
     private void savePackageAuthority(String packageIds, String roles, long userId) throws Exception {
         JSONArray rolesJA = new JSONArray(roles);
         JSONArray pIdsJA = new JSONArray(packageIds);
-
-        String[] rolesArray = new String[rolesJA.length()];
-        for (int i = 0; i < rolesJA.length(); i++) {
-            rolesArray[i] = String.valueOf(rolesJA.getString(i));
+        List<BIPackageAuthority> authorities = new ArrayList<BIPackageAuthority>();
+        for(int i = 0; i < rolesJA.length(); i++) {
+            BIPackageAuthority authority = new BIPackageAuthority();
+            authority.parseJSON(rolesJA.getJSONObject(i));
+            authorities.add(authority);
         }
-        BISystemPackAndAuthConfigurationProvider packageAndAuthorityManager = BIConfigureManagerCenter.getPackageAndAuthorityManager();
 
+        BIAuthorityManageProvider packageAndAuthorityManager = BIConfigureManagerCenter.getAuthorityManager();
         for (int i = 0; i < pIdsJA.length(); i++) {
-            BIPackAndAuthority biPackAndAuthority = new BIPackAndAuthority();
-            biPackAndAuthority.setBiPackageID(String.valueOf(pIdsJA.getString(i)));
-            biPackAndAuthority.setRoleIdArray(rolesArray);
-
-            boolean isExisted = packageAndAuthorityManager.containPackage(userId, biPackAndAuthority);
-            if (isExisted) {
-                packageAndAuthorityManager.updateAuthority(userId, biPackAndAuthority);
-            } else {
-                packageAndAuthorityManager.addPackage(userId, biPackAndAuthority);
-            }
+            packageAndAuthorityManager.savePackageAuth(new BIPackageID(pIdsJA.getString(i)), authorities, userId);
         }
         packageAndAuthorityManager.persistData(userId);
     }

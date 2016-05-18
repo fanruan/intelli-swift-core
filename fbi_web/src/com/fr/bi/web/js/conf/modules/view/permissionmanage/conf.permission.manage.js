@@ -152,15 +152,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             type: "bi.authority_packages_tree"
         });
         this.packageTree.on(BI.AuthorityPackagesTree.EVENT_TYPE_CHANGE, function () {
-            self.authorityTab.setSelect(this.getSelectType());
-            switch (this.getSelectType()) {
-                case BI.SwitchTree.SelectType.MultiSelect:
-                    self.batchSet.populate([]);
-                    break;
-                case BI.SwitchTree.SelectType.SingleSelect:
-                    self.singleSet.populate([]);
-                    break;
-            }
+            self._onTreeTypeChange();
         });
         this.packageTree.on(BI.AuthorityPackagesTree.EVENT_CHANGE, function(){
              self.authorityTab.setValue(this.getValue());
@@ -180,6 +172,10 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
                         self.batchSet = BI.createWidget({
                             type: "bi.authority_batch_set_pane"
                         });
+                        self.batchSet.on(BI.AuthorityBatchSetPane.EVENT_CHANGE, function(){
+                            self.packageTree.setSelect(BI.SwitchTree.SelectType.SingleSelect);
+                            self._onTreeTypeChange();
+                        });
                         return self.batchSet;
                     case BI.SwitchTree.SelectType.SingleSelect:
                         self.singleSet = BI.createWidget({
@@ -191,5 +187,17 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         });
         this.authorityTab.setSelect(BI.SwitchTree.SelectType.SingleSelect);
         return this.authorityTab;
+    },
+
+    _onTreeTypeChange: function(){
+        this.authorityTab.setSelect(this.packageTree.getSelectType());
+        switch (this.packageTree.getSelectType()) {
+            case BI.SwitchTree.SelectType.MultiSelect:
+                this.batchSet.setValue();
+                break;
+            case BI.SwitchTree.SelectType.SingleSelect:
+                this.singleSet.setValue();
+                break;
+        }
     }
 });

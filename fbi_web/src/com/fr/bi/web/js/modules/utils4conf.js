@@ -233,6 +233,12 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("authority_settings", "packages_auth", pid);  
     },
 
+    savePackageAuthority: function (data, callback) {
+        Data.Req.reqSavePackageAuthority(data, function (res) {
+            callback(res);
+        });
+    },
+
     //fuck you
     getCircleLayerLevelInfo: function (table, layerInfo, callback) {
         Data.Req.reqCircleLayerLevelInfoByTableAndCondition(table, layerInfo,
@@ -409,12 +415,6 @@ BI.extend(BI.Utils, {
         });
     },
     
-    updatePackageAuthority: function (data, callback) {
-        Data.Req.reqUpdatePackageAuthority(data, function (res) {
-            callback(res);
-        })
-    },
-
     getAllPackages: function (callback) {
         Data.Req.reqAllBusinessPackages(function (res) {
             callback(res);
