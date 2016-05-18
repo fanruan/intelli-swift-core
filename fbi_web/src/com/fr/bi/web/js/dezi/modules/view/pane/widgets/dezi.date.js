@@ -101,7 +101,11 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE:
-                    self.model.destroy();
+                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
+                        if (v === true) {
+                            self.model.destroy();
+                        }
+                    });
                     break;
             }
         });

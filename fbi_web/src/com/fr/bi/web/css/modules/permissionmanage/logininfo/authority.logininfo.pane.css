@@ -1,0 +1,30 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-authority-login-info-reselect-table {
+  font-size: 12px !important;
+  color: #1a1a1a;
+}
+.bi-authority-login-info-reselect-table:hover {
+  color: #009de3;
+}
+.bi-authority-login-info .comments-title {
+  font-size: 14px;
+  color: #808080;
+}
+.bi-authority-login-info .fields-group {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  background: #d8f2fd;
+}
+.bi-authority-login-info .fields-group .single-field {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-authority-login-info .fields-group .single-field.active {
+  color: #ffffff;
+  background: #009de3;
+}

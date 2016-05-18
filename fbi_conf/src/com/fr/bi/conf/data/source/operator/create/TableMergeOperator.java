@@ -69,7 +69,7 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
                 JoinColumn joinColumn = new JoinColumn(c.name, c.isLeft(), c.columns[0].name);
                 if (c.columns.length == 2){
                     left.add(c.columns[0].name);
-                    left.add(c.columns[1].name);
+                    right.add(c.columns[1].name);
                 }
                 joinColumns.add(joinColumn);
             }

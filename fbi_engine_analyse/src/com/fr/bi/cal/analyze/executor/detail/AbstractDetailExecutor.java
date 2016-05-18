@@ -20,9 +20,12 @@ import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.relation.BISimpleRelation;
+import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +76,9 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
                 gvi = GVIUtils.AND(gvi, entry.getValue().createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convertToMD5RelationFromSimpleRelation(simpleRelations, new BIUser(this.userId))), this.target, getLoader(), this.userId));
             }
         }
-        gvi = GVIUtils.AND(gvi, widget.getFilter().createFilterIndex(this.target, getLoader(), this.userId));
+        gvi = GVIUtils.AND(gvi,
+                widget.createFilterGVI(new DimensionCalculator[]{new NoneDimensionCalculator(new BIField(this.target, StringUtils.EMPTY),
+                        new ArrayList<BITableSourceRelation>())}, this.target, getLoader(), this.userId));
         return gvi;
     }
 
