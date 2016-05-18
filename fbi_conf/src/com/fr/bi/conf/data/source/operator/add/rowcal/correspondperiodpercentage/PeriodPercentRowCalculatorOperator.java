@@ -12,6 +12,7 @@ import com.fr.bi.stable.engine.cal.ResultDealer;
 
 /**
  * @author Daniel
+ * 环期比
  *
  */
 public class PeriodPercentRowCalculatorOperator extends PeriodRowCalculatorOperator {
@@ -31,7 +32,7 @@ public class PeriodPercentRowCalculatorOperator extends PeriodRowCalculatorOpera
 
 	@Override
 	protected String getAddColumnType() {
-		return BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP;
+		return BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT;
 	}
 	@Override
 	public String xmlTag() {

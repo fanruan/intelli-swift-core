@@ -70,7 +70,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
         });
         return fgvi.getRowsCountWithData();
     }
-    private static final int STEP = 1000;
+    private static final int STEP = 100;
     @Override
     public int writePartIndex(final Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, final int start, final int end) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), 0 , STEP);
@@ -128,7 +128,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
             index++;
             ti = loader.getTableIndex(getSingleParentMD5(parents), (index - 1) * STEP , index * STEP);
         }
-        while (ti.getRowCount() != STEP);
+        while (ti.getRowCount() == STEP);
         return writeRow.i;
     }
 
