@@ -130,10 +130,6 @@ public class BIMemoryDataSource extends AbstractTableSource {
         return null;
     }
 
-    @Override
-    public JSONObject createPreviewJSONFromMemory(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
-        return null;
-    }
 
     @Override
     public boolean needGenerateIndex() {

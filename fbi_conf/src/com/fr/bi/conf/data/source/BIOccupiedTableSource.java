@@ -113,10 +113,6 @@ public class BIOccupiedTableSource implements ITableSource {
         return null;
     }
 
-    @Override
-    public JSONObject createPreviewJSONFromMemory(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
-        return null;
-    }
 
     @Override
     public boolean needGenerateIndex() {

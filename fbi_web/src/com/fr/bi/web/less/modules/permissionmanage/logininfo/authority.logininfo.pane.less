@@ -1,0 +1,26 @@
+@import "../../../bibase";
+.bi-authority-login-info-reselect-table{
+  font-size: @font-size-12 !important;
+  color: @color-bi-text-black;
+  &:hover{
+    color: @color-bi-text-highlight;
+  }
+}
+.bi-authority-login-info{
+  & .comments-title{
+    font-size: @font-size-14;
+    color: @color-bi-text-gray;
+  }
+  & .fields-group{
+    .border-radius(2px);
+    background: @color-login-info-fields-group-background;
+    & .single-field{
+      background: @color-bi-background-default;
+      .border-radius(2px);
+      &.active{
+        color: @color-bi-text;
+        background: @color-bi-background-highlight;
+      }
+    }
+  }
+}

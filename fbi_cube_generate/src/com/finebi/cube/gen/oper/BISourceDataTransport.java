@@ -52,6 +52,7 @@ public class BISourceDataTransport extends BIProcessor {
     public Object mainTask(IMessage lastReceiveMessage) {
         recordTableInfo();
         long count = transport();
+
         if (count >= 0) {
             tableEntityService.recordRowCount(count);
         }

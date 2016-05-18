@@ -64,7 +64,8 @@ BI.GeneralQueryNoTypeFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _buildConditionsNoType: function () {
         var self = this, o = this.options;
         var selectFieldPane = BI.createWidget({
-            type: "bi.general_query_select_data_tab"
+            type: "bi.general_query_select_data_tab",
+            height: this._constant.MAX_HEIGHT
         });
 
         this.addCondition = BI.createWidget({

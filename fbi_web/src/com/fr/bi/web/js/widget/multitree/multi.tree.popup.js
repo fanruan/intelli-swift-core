@@ -10,7 +10,7 @@ BI.MultiTreePopup = BI.inherit(BI.Pane, {
             baseCls: 'bi-multi-tree-popup',
             maxWidth: 230,
             minWidth: 100,
-            maxHeight: 200,
+            maxHeight: 400,
             onLoaded: BI.emptyFn
         });
     },
@@ -24,6 +24,7 @@ BI.MultiTreePopup = BI.inherit(BI.Pane, {
 
         this.tree = BI.createWidget({
             type: "bi.sync_tree",
+            height: 400,
             cls:"popup-view-tree",
             itemsCreator: opts.itemsCreator,
             onLoaded: opts.onLoaded
