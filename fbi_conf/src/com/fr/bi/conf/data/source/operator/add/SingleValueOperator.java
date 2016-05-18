@@ -70,7 +70,7 @@ public class SingleValueOperator extends AbstractAddColumnOperator {
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
         int rowCount = ti.getRowCount();
         Object value = checkValueType();
-        for (long row = 0; row < rowCount; row++) {
+        for (int row = 0; row < rowCount; row++) {
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
