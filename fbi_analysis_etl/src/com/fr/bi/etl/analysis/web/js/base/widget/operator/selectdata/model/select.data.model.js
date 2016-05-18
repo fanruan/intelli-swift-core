@@ -28,6 +28,8 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         //     })
         // }
         var fields = this.get(BI.AnalysisETLOperatorSelectDataModel.KEY) || []
+        this.set(BI.AnalysisETLOperatorSelectDataModel.KEY, fields);
+        //this.set("operator", this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY));
         this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, fields);
         this.save();
     },

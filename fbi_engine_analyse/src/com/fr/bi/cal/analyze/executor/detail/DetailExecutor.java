@@ -9,6 +9,7 @@ import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -17,7 +18,9 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * TODO 分页机制待优化
@@ -79,6 +82,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         final JSONArray ja = new JSONArray();
         JSONObject jo = new JSONObject();
         jo.put("value", ja);
+        final BIDetailTarget[] dimensions = widget.getViewDimensions();
         TableRowTraversal action = new TableRowTraversal() {
             @Override
             public boolean actionPerformed(BIRowValue row) {
@@ -87,8 +91,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     return x;
                 }
                 JSONArray jsonArray = new JSONArray();
-                for (Object ob : row.getValues()){
-                    jsonArray.put(ob);
+                for (int i = 0; i < row.getValues().length; i++){
+                    jsonArray.put(dimensions[i].createShowValue(row.getValues()[i]));
                 }
                 ja.put(jsonArray);
                 return false;
@@ -96,6 +100,29 @@ public class DetailExecutor extends AbstractDetailExecutor {
         };
         travel(action, gvi);
         return jo;
+    }
+
+    public List<List> getData() {
+        GroupValueIndex gvi = createDetailViewGvi();
+        paging.setTotalSize(gvi.getRowsCountWithData());
+        final List<List> data = new ArrayList<List>();
+        TableRowTraversal action = new TableRowTraversal() {
+            @Override
+            public boolean actionPerformed(BIRowValue row) {
+                Boolean x = checkPage(row);
+                if (x != null){
+                    return x;
+                }
+                List list = new ArrayList();
+                for (Object ob : row.getValues()){
+                    list.add(ob);
+                }
+                data.add(list);
+                return false;
+            }
+        };
+        travel(action, gvi);
+        return data;
     }
 
     private Boolean checkPage(BIRowValue row) {

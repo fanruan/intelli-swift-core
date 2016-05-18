@@ -73,8 +73,8 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         int rowCount = ti.getRowCount();
         BIKey key = new IndexKey(field);
         int fieldType = ti.getColumns().get(key).getFieldType();
-        for (long row = 0; row < rowCount; row++) {
-            Object value = checkValueType(ti.getRow(key, (int)row), fieldType);
+        for (int row = 0; row < rowCount; row++) {
+            Object value = checkValueType(ti.getRow(key, row), fieldType);
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
