@@ -247,7 +247,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                             if(scrollTable.parent().length === 0) {
                                 return;
                             }
-                            self.dragHepler.stroke(value[1].outerWidth(), value[2].outerHeight(), 0, value[1][0].offsetLeft - scrollTable[0].scrollLeft);
+                            self.dragHepler.stroke(value[1].outerWidth(), Math.min(self.element.outerHeight(),value[2].outerHeight()), 0, value[1][0].offsetLeft - scrollTable[0].scrollLeft);
                         }
                         e.stopPropagation();
                     }

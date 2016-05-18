@@ -9,6 +9,7 @@ import com.fr.bi.stable.engine.cal.ResultDealer;
 
 /**
  * Created by 小灰灰 on 2016/5/9.
+ * 同期比
  */
 public class CorrespondMonthPeriodPercentRowCalculatorOperator extends CorrespondMonthPeriodRowCalculatorOperator {
     @BICoreField

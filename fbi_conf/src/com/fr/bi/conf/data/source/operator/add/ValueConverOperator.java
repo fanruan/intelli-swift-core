@@ -94,7 +94,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         }
         switch (fieldType){
             case DBConstant.COLUMN.NUMBER:{
-               return convertNumber((Long)value);
+               return convertNumber((Number)value);
             }
             case DBConstant.COLUMN.DATE: {
                 return convertDate((Long)value);
@@ -128,13 +128,13 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         return null;
     }
 
-    private Object convertNumber(Long value) {
+    private Object convertNumber(Number value) {
         switch (columnType){
             case DBConstant.COLUMN.STRING:{
                 return value.toString();
             }
             case DBConstant.COLUMN.DATE: {
-                return new Date(value);
+                return new Date(value.longValue());
             }
         }
         return null;
