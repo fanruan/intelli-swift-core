@@ -1111,14 +1111,19 @@
             //控件
             var widgetIds = this.getAllWidgetIDs();
             BI.each(widgetIds, function (i, id) {
+                if(!self.isControlWidgetByWidgetId(id)){
+                    return;
+                }
+                if(id === notcontain){
+                    return;
+                }
                 //去掉自身和在自身之后创建的控件
-                if (BI.isNotNull(notcontain) &&
-                    (id === notcontain ||
-                    (self.isControlWidgetByWidgetId(notcontain) && self.getWidgetInitTimeByID(id) > self.getWidgetInitTimeByID(notcontain)))) {
+                if (BI.isNotNull(notcontain) && self.isControlWidgetByWidgetId(notcontain)
+                        && self.getWidgetInitTimeByID(id) > self.getWidgetInitTimeByID(notcontain)) {
                     return;
                 }
                 var value = self.getWidgetValueByID(id);
-                if (self.isControlWidgetByWidgetId(id) && BI.isNotNull(value)) {
+                if (BI.isNotNull(value)) {
                     var dimensionIds = self.getAllDimensionIDs(id);
                     BI.each(dimensionIds, function (i, dimId) {
                         var fValue = value, fType = "";
@@ -1148,10 +1153,9 @@
                                 var start = fValue.start, end = fValue.end;
                                 if (BI.isNotNull(start)) {
                                     start = parseComplexDate(start);
-                                } else if (BI.isNotNull(end)) {
+                                }
+                                if (BI.isNotNull(end)) {
                                     end = parseComplexDate(end);
-                                } else {
-                                    return;
                                 }
                                 fValue = {start: start, end: end};
                                 filter = {
@@ -1229,14 +1233,15 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.WIDGET.GENERAL_QUERY:
-                                if (BI.isNotNull(value) && value.length === 1) {
-                                    filter = value[0];
-                                    parseFilter(filter);
-                                }
+
                         }
                         filterValues.push(filter);
                     });
+                    if (value.length === 1) {
+                        var filter = value[0];
+                        parseFilter(filter);
+                        filterValues.push(filter);
+                    }
                 }
             });
             return filterValues;
