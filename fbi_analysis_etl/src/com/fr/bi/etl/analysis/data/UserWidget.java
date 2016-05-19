@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class UserWidget {
 
-    private int maxRow = 10000;
+    private int maxRow = Integer.MAX_VALUE;
 
     private BIWidget widget;
 
@@ -58,6 +58,7 @@ public class UserWidget {
                 }
             }
         }
+        end = Math.min(end, maxRow);
         return getDate(start, end);
     }
 
@@ -86,10 +87,14 @@ public class UserWidget {
         } else {
             v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
         }
-        while (v.size() == PagingFactory.PAGE_PER_GROUP_20 && rowCount < end){
+        while (rowCount < end){
             for (int i = 0; i < v.size(); i++){
                 tempValue.put(rowCount, v.get(i));
                 rowCount ++;
+            }
+            if (v.size() != PagingFactory.PAGE_PER_GROUP_20 ){
+                maxRow = rowCount;
+                break;
             }
             v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
         }
@@ -139,12 +144,18 @@ public class UserWidget {
         for (int i = 0; i < data.size(); i++){
             tempValue.put(i + row, data.get(i));
         }
+        if (data.size() != step ){
+            maxRow = row + data.size();
+        }
         paging.setCurrentPage(page + 1);
         exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
         data =  exe.getData();
         row = (page + 1) * step;
         for (int i =0; i < data.size(); i++){
             tempValue.put(i + row, data.get(i));
+        }
+        if (data.size() != step ){
+            maxRow = row + data.size();
         }
     }
 
