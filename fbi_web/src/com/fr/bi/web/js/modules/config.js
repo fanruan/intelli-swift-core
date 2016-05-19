@@ -889,49 +889,63 @@ BICst.ETL_ADD_FORMULA_FIELD_TYPE = [{
 //target string
 BICst.TARGET_FILTER_STRING_COMBO = [[{
     text: BI.i18nText("BI-In"),
-    value: BICst.TARGET_FILTER_STRING.BELONG_VALUE
+    value: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE
+    value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Contain"),
-    value: BICst.TARGET_FILTER_STRING.CONTAIN
+    value: BICst.TARGET_FILTER_STRING.CONTAIN,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Contain"),
-    value: BICst.TARGET_FILTER_STRING.NOT_CONTAIN
+    value: BICst.TARGET_FILTER_STRING.NOT_CONTAIN,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.TARGET_FILTER_STRING.IS_NULL
+    value: BICst.TARGET_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.TARGET_FILTER_STRING.NOT_NULL
+    value: BICst.TARGET_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Begin_With"),
-    value: BICst.TARGET_FILTER_STRING.BEGIN_WITH
+    value: BICst.TARGET_FILTER_STRING.BEGIN_WITH,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-End_With"),
-    value: BICst.TARGET_FILTER_STRING.END_WITH
+    value: BICst.TARGET_FILTER_STRING.END_WITH,
+    cls: "dot-e-font"
 }]];
 
 //target number
 BICst.TARGET_FILTER_NUMBER_COMBO = [[{
     text: BI.i18nText("BI-Equal"),
-    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Equal_To"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-In"),
-    value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE
+    value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE
+    value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.TARGET_FILTER_NUMBER.IS_NULL
+    value: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_NULL
+    value: BICst.TARGET_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
 }]];
 
 BICst.DATE_WEEK_COMBO = [{
@@ -982,86 +996,112 @@ BICst.BEFORE_AFTER_COMBO = [{
 //dimension string
 BICst.DIMENSION_FILTER_STRING_COMBO = [[{
     text: BI.i18nText("BI-In"),
-    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Contain"),
-    value: BICst.DIMENSION_FILTER_STRING.CONTAIN
+    value: BICst.DIMENSION_FILTER_STRING.CONTAIN,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Contain"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN
+    value: BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.DIMENSION_FILTER_STRING.IS_NULL
+    value: BICst.DIMENSION_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_NULL
+    value: BICst.DIMENSION_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Begin_With"),
-    value: BICst.DIMENSION_FILTER_STRING.BEGIN_WITH
+    value: BICst.DIMENSION_FILTER_STRING.BEGIN_WITH,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-End_With"),
-    value: BICst.DIMENSION_FILTER_STRING.END_WITH
+    value: BICst.DIMENSION_FILTER_STRING.END_WITH,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Top_N"),
-    value: BICst.DIMENSION_FILTER_STRING.TOP_N
+    value: BICst.DIMENSION_FILTER_STRING.TOP_N,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Last_N"),
-    value: BICst.DIMENSION_FILTER_STRING.BOTTOM_N
+    value: BICst.DIMENSION_FILTER_STRING.BOTTOM_N,
+    cls: "dot-e-font"
 }]];
 
 BICst.DIMENSION_TAR_FILTER_NUMBER_COMBO = [[{
     text: BI.i18nText("BI-In"),
-    value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Above_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.MORE_THAN_AVG
+    value: BICst.DIMENSION_FILTER_NUMBER.MORE_THAN_AVG,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Below_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.LESS_THAN_AVG
+    value: BICst.DIMENSION_FILTER_NUMBER.LESS_THAN_AVG,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.DIMENSION_FILTER_NUMBER.IS_NULL
+    value: BICst.DIMENSION_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL
+    value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Top_N"),
-    value: BICst.DIMENSION_FILTER_NUMBER.TOP_N
+    value: BICst.DIMENSION_FILTER_NUMBER.TOP_N,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Last_N"),
-    value: BICst.DIMENSION_FILTER_NUMBER.BOTTOM_N
+    value: BICst.DIMENSION_FILTER_NUMBER.BOTTOM_N,
+    cls: "dot-e-font"
 }]];
 
 BICst.DIMENSION_DIM_FILTER_NUMBER_COMBO = [[{
     text: BI.i18nText("BI-In"),
-    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Above_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.MORE_THAN_AVG
+    value: BICst.DIMENSION_FILTER_NUMBER.MORE_THAN_AVG,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Below_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.LESS_THAN_AVG
+    value: BICst.DIMENSION_FILTER_NUMBER.LESS_THAN_AVG,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.DIMENSION_FILTER_NUMBER.IS_NULL
+    value: BICst.DIMENSION_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL
+    value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Top_N"),
-    value: BICst.DIMENSION_FILTER_NUMBER.TOP_N
+    value: BICst.DIMENSION_FILTER_NUMBER.TOP_N,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Last_N"),
-    value: BICst.DIMENSION_FILTER_NUMBER.BOTTOM_N
+    value: BICst.DIMENSION_FILTER_NUMBER.BOTTOM_N,
+    cls: "dot-e-font"
 }]];
 
 //date
@@ -1072,10 +1112,12 @@ BICst.FILTER_DATE_COMBO = [[{
     },
     children: [{
         text: BI.i18nText("BI-Periods_Time"),
-        value: BICst.FILTER_DATE.BELONG_DATE_RANGE
+        value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
+        cls: "dot-e-font"
     }, {
         text: BI.i18nText("BI-Control_Value"),
-        value: BICst.FILTER_DATE.BELONG_WIDGET_VALUE
+        value: BICst.FILTER_DATE.BELONG_WIDGET_VALUE,
+        cls: "dot-e-font"
     }]
 }, {
     el: {
@@ -1084,43 +1126,63 @@ BICst.FILTER_DATE_COMBO = [[{
     },
     children: [{
         text: BI.i18nText("BI-Periods_Time"),
-        value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE
+        value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE,
+        cls: "dot-e-font"
     }, {
         text: BI.i18nText("BI-Control_Value"),
-        value: BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE
+        value: BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE,
+        cls: "dot-e-font"
     }]
 }], [{
     text: BI.i18nText("BI-More_Than"),
-    value: BICst.FILTER_DATE.LATER_THAN
+    value: BICst.FILTER_DATE.LATER_THAN,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Less_Than"),
-    value: BICst.FILTER_DATE.EARLY_THAN
+    value: BICst.FILTER_DATE.EARLY_THAN,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Equal"),
-    value: BICst.FILTER_DATE.EQUAL_TO
+    value: BICst.FILTER_DATE.EQUAL_TO,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Equal_To"),
-    value: BICst.FILTER_DATE.NOT_EQUAL_TO
+    value: BICst.FILTER_DATE.NOT_EQUAL_TO,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.FILTER_DATE.IS_NULL
+    value: BICst.FILTER_DATE.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.FILTER_DATE.NOT_NULL
+    value: BICst.FILTER_DATE.NOT_NULL,
+    cls: "dot-e-font"
 }]];
 
 BICst.DATA_SETTING_FILTER_DATE_COMBO = [[{
-    text: BI.i18nText("BI-In"), value: BICst.FILTER_DATE.BELONG_DATE_RANGE
+    text: BI.i18nText("BI-In"),
+    value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
+    cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Not_In"), value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE,
+    cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Equal"), value: BICst.FILTER_DATE.EQUAL_TO
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.FILTER_DATE.EQUAL_TO,
+    cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Not_Equal_To"), value: BICst.FILTER_DATE.NOT_EQUAL_TO
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.FILTER_DATE.NOT_EQUAL_TO,
+    cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Is_Null"), value: BICst.FILTER_DATE.IS_NULL
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.FILTER_DATE.IS_NULL,
+    cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Not_Null"), value: BICst.FILTER_DATE.NOT_NULL
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.FILTER_DATE.NOT_NULL,
+    cls: "dot-e-font"
 }]];
 
 BICst.Date_Range_FILTER_COMBO = [{
@@ -1136,6 +1198,108 @@ BICst.FILTER_CONDITION_TYPE = [{
 }, {
     text: BI.i18nText("BI-Or"), value: BICst.FILTER_TYPE.OR
 }];
+
+//auth string
+BICst.AUTHORITY_FILTER_STRING_COMBO = [[{
+   el: {
+       text: BI.i18nText("BI-In"),
+       value: BICst.TARGET_FILTER_STRING.BELONG_VALUE
+   },
+    children: [{
+        text: BI.i18nText("BI-Field_Value"),
+        value: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+        cls: "dot-e-font"
+    }, {
+        text: BI.i18nText("BI-Login_User_Info"),
+        value: BICst.TARGET_FILTER_STRING.BELONG_USER,
+        cls: "dot-e-font"
+    }]
+}, {
+    el: {
+        text: BI.i18nText("BI-Not_In"),
+        value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE
+    },
+    children: [{
+        text: BI.i18nText("BI-Field_Value"),
+        value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
+        cls: "dot-e-font"
+    }, {
+        text: BI.i18nText("BI-Login_User_Info"),
+        value: BICst.TARGET_FILTER_STRING.NOT_BELONG_USER,
+        cls: "dot-e-font"
+    }]
+}], [{
+    text: BI.i18nText("BI-Contain"),
+    value: BICst.TARGET_FILTER_STRING.CONTAIN,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Contain"),
+    value: BICst.TARGET_FILTER_STRING.NOT_CONTAIN,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.TARGET_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.TARGET_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Begin_With"),
+    value: BICst.TARGET_FILTER_STRING.BEGIN_WITH,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-End_With"),
+    value: BICst.TARGET_FILTER_STRING.END_WITH,
+    cls: "dot-e-font"
+}]];
+
+//auth number
+BICst.AUTHORITY_FILTER_NUMBER_COMBO = [[{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
+    cls: "dot-e-font"
+}], [{
+    el: {
+        text: BI.i18nText("BI-In"),
+        value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE
+    },
+    children: [{
+        text: BI.i18nText("BI-Field_Value"),
+        value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+        cls: "dot-e-font"
+    }, {
+        text: BI.i18nText("BI-Login_User_Info"),
+        value: BICst.TARGET_FILTER_NUMBER.BELONG_USER,
+        cls: "dot-e-font"
+    }]
+}, {
+    el: {
+        text: BI.i18nText("BI-Not_In"),
+        value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE
+    },
+    children: [{
+        text: BI.i18nText("BI-Field_Value"),
+        value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+        cls: "dot-e-font"
+    }, {
+        text: BI.i18nText("BI-Login_User_Info"),
+        value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_USER,
+        cls: "dot-e-font"
+    }]
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
+}]];
 
 //添加公式combo
 BICst.FILTER_ADD_FORMULA_COMBO = [{
