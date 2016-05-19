@@ -176,4 +176,14 @@ public class XMLWriterTest extends TestCase {
         }
     }
 
+    public void testInnerClass() {
+        try {
+            InnerClass4Test innerClass4Test = new InnerClass4Test();
+            innerClass4Test.initialInner();
+            checkEquals(innerClass4Test, "Inner");
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertFalse(true);
+        }
+    }
 }
