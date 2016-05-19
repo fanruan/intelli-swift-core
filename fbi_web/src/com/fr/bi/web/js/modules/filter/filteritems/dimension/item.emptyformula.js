@@ -129,6 +129,11 @@ BI.DimensionFormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 fieldType: BI.Utils.getFieldTypeByID(BI.Utils.getFieldIDByDimensionID(tId))
             });
         });
+        fieldItems.push({
+            text: BI.Utils.getDimensionNameByID(dId),
+            value: dId,
+            fieldType: BI.Utils.getFieldTypeByID(BI.Utils.getFieldIDByDimensionID(dId))
+        });
         return fieldItems;
     },
 

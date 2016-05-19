@@ -307,13 +307,13 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     _refreshTablesInPackage: function () {
         this.showCardLayout.showCardByName(this.showCardLayout.getDefaultShowName());
         this.tableList.populate(this._createItemsForTableList());
-        this.relationView.populate({
-            tableIds: this.model.getTables(),
-            translations: this.model.getTranslations(),
-            relations: this.model.getRelations(),
-            all_fields: this.model.getAllFields(),
-            tableData: this.model.getTablesData()
-        });
+        //this.relationView.populate({
+        //    tableIds: this.model.getTables(),
+        //    translations: this.model.getTranslations(),
+        //    relations: this.model.getRelations(),
+        //    all_fields: this.model.getAllFields(),
+        //    tableData: this.model.getTablesData()
+        //});
         this._refreshEmptyTip();
         //避免出现停留在前面的搜索面板
         this.searcher.stopSearch();

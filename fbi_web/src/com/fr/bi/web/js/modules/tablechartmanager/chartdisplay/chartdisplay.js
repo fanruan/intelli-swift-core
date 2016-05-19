@@ -31,84 +31,72 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         var self = this;
         switch (v) {
             case BICst.WIDGET.BAR:
-                return BI.createWidget({
-                    type: "bi.bar_chart"
-                });
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-                return BI.createWidget({
-                    type: "bi.percent_accumulate_area_chart"
-                });
             case BICst.WIDGET.BUBBLE:
-                return BI.createWidget({
-                    type: "bi.bubble_chart"
-                });
+            case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
-                return BI.createWidget({
-                    type: "bi.scatter_chart"
-                });
             case BICst.WIDGET.AXIS:
-                return BI.createWidget({
-                    type: "bi.axis_chart"
-                });
             case BICst.WIDGET.ACCUMULATE_AXIS:
-                return BI.createWidget({
-                    type: "bi.accumulate_axis_chart"
-                });
-            case BICst.WIDGET.COMPARE_BAR:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.COMPARE_AREA:
-            case BICst.WIDGET.RANGE_AREA:
             case BICst.WIDGET.LINE:
-                return BI.createWidget({
-                    type: "bi.line_chart"
-                });
             case BICst.WIDGET.AREA:
-                return BI.createWidget({
-                    type: "bi.area_chart"
-                });
             case BICst.WIDGET.ACCUMULATE_AREA:
-                return BI.createWidget({
-                    type: "bi.accumulate_area_chart"
-                });
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-                return BI.createWidget({
-                    type: "bi.percent_accumulate_axis_chart"
-                });
             case BICst.WIDGET.ACCUMULATE_BAR:
-                return BI.createWidget({
-                    type: "bi.accumulate_bar_chart"
-                });
-            case BICst.WIDGET.FALL_AXIS:
             case BICst.WIDGET.DONUT:
-                return BI.createWidget({
-                    type: "bi.donut_chart"
-                });
             case BICst.WIDGET.RADAR:
-                return BI.createWidget({
-                    type: "bi.radar_chart"
-                });
             case BICst.WIDGET.ACCUMULATE_RADAR:
-                return BI.createWidget({
-                    type: "bi.accumulate_radar_chart"
-                });
             case BICst.WIDGET.PIE:
-                return BI.createWidget({
-                    type: "bi.pie_chart"
-                });
             case BICst.WIDGET.DASHBOARD:
-                return BI.createWidget({
-                    type: "bi.dashboard_chart"
+                var chart = BI.createWidget({
+                    type: "bi.combine_chart"
                 });
-            case BICst.WIDGET.FORCE_BUBBLE:
-                return BI.createWidget({
-                    type: "bi.force_bubble_chart"
+                chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
+
                 });
+                return chart;
+            case BICst.WIDGET.COMPARE_BAR:
+                var chart = BI.createWidget({
+                    type: "bi.compare_bar_chart"
+                });
+                chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
+
+                });
+                return chart;
+            case BICst.WIDGET.COMPARE_AXIS:
+                var chart = BI.createWidget({
+                    type: "bi.combine_axis_chart"
+                });
+                chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
+
+                });
+                return chart;
+            case BICst.WIDGET.COMPARE_AREA:
+                var chart = BI.createWidget({
+                    type: "bi.combine_area_chart"
+                });
+                chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
+
+                });
+                return chart;
+            case BICst.WIDGET.RANGE_AREA:
+                var chart = BI.createWidget({
+                    type: "bi.range_area_chart"
+                });
+                chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
+
+                });
+                return chart;
+            case BICst.WIDGET.FALL_AXIS:
+                var chart = BI.createWidget({
+                    type: "bi.fall_axis_chart"
+                });
+                chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
+
+                });
+                return chart;
             case BICst.WIDGET.FUNNEL:
-                return BI.createWidget({
-                    type: "bi.funnel_chart"
-                });
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
                 return BI.createWidget();
@@ -136,6 +124,26 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
 
     },
 
+    _formatDataForAxis: function (da) {
+        var self = this, o = this.options;
+        var targetIds = this._getShowTarget();
+        var data = this._formatDataForCommon(da);
+        if (BI.isEmptyArray(data)) {
+            return [];
+        }
+        var view = BI.Utils.getWidgetViewByID(o.wId);
+        BI.each(this.targetIds, function (idx, tId) {
+            if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
+                data[idx].yAxis = 1;
+                data[idx].stack = "stackColumnOne";
+            } else {
+                data[idx].yAxis = 0;
+                data[idx].stack = "stackColumnTwo";
+            }
+        });
+        return data;
+    },
+
     _formatDataForBubble: function (data) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
@@ -147,14 +155,13 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             return [];
         }
         return BI.map(data.c, function (idx, item) {
-            return {
-                data: [{
-                    x: item.s[1],
-                    y: item.s[0],
-                    size: item.s[2]
-                }],
-                name: item.n
-            };
+            var obj = {};
+            obj[item.n] = [{
+                x: item.s[1],
+                y: item.s[0],
+                z: item.s[2]
+            }];
+            return obj;
         });
     },
 
@@ -168,13 +175,12 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             return [];
         }
         return BI.map(data.c, function (idx, item) {
-            return {
-                data: [{
-                    x: item.s[1],
-                    y: item.s[0]
-                }],
-                name: item.n
-            };
+            var obj = {};
+            obj[item.n] = [{
+                x: item.s[1],
+                y: item.s[0]
+            }];
+            return obj;
         });
     },
 
@@ -185,45 +191,29 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             var top = data.t, left = data.l;
             return BI.map(top.c, function (id, tObj) {
                 var data = BI.map(left.c, function (idx, obj) {
-                    var wType = BI.Utils.getWidgetTypeByID(o.wId);
-                    if (wType === BICst.WIDGET.ACCUMULATE_BAR || wType === BICst.WIDGET.BAR) {
-                        return {
-                            "y": obj.n,
-                            "x": obj.s.c[id].s
-                        };
-                    }
                     return {
                         "x": obj.n,
                         "y": obj.s.c[id].s
                     };
                 });
-                return {
-                    name: tObj.n,
-                    data: data
-                }
+                var obj = {};
+                obj[tObj.n] = data;
+                return obj;
             });
         }
         if (BI.has(data, "c")) {
             var obj = (data.c)[0];
             var columnSizeArray = BI.makeArray(BI.isNull(obj) ? 0 : BI.size(obj.s), 0);
             return BI.map(columnSizeArray, function (idx, value) {
-                var wType = BI.Utils.getWidgetTypeByID(o.wId);
                 var adjustData = BI.map(data.c, function (id, item) {
-                    if (wType === BICst.WIDGET.ACCUMULATE_BAR || wType === BICst.WIDGET.BAR) {
-                        return {
-                            y: item.n,
-                            x: item.s[idx]
-                        };
-                    }
                     return {
                         x: item.n,
                         y: item.s[idx]
                     };
                 });
-                return {
-                    data: adjustData,
-                    name: BI.Utils.getDimensionNameByID(targetIds[idx])
-                };
+                var obj = {};
+                obj[BI.Utils.getDimensionNameByID(targetIds[idx])] = adjustData;
+                return obj;
             });
         }
         return [];
@@ -261,7 +251,6 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
                 return self._formatDataForCommon(data);
-
         }
     },
 
