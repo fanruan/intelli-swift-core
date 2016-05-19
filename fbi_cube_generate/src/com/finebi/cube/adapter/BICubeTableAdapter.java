@@ -41,7 +41,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     public BICubeTableAdapter(ICube cube, ITableSource tableSource) {
         this.cube = cube;
-        primaryTable = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
+            primaryTable = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
         Iterator<Set<ITableSource>> it = tableSource.createGenerateTablesMap().values().iterator();
         while (it.hasNext()) {
             Iterator<ITableSource> tableSourceIterator = it.next().iterator();

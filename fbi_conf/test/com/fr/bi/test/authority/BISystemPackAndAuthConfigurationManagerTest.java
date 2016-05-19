@@ -1,24 +1,27 @@
-package com.fr.bi.conf.base.pack;
+package fr.bi.test.authority;
 
 import com.fr.bi.base.BIUser;
+import com.fr.bi.conf.base.pack.BISystemPackAndAuthConfigurationManager;
+import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
 import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
 import com.fr.json.JSONArray;
+import junit.framework.TestCase;
 
 import java.util.Set;
 
 /**
  * Created by wuk on 16/5/8.
  */
-public class BISystemPackAndAuthConfigurationManagerTest {
+public class BISystemPackAndAuthConfigurationManagerTest extends TestCase {
     private BISystemPackAndAuthConfigurationManager manager;
     private BIUser user;
 
+    @Override
     protected void setUp() throws Exception {
-
+        super.setUp();
     }
 
-    //@org.junit.Test
-    public void getAllPackages() throws Exception {
+    public void testGetAllPackages() throws Exception {
         JSONArray roleInfojo = new JSONArray("[3,5,4]");
 
         String[] rolesArray = new String[roleInfojo.length()];
@@ -43,11 +46,12 @@ public class BISystemPackAndAuthConfigurationManagerTest {
         }
 
         Set<BIPackAndAuthority> allPackages = packageAndAuthorityManager.getAllPackages(-999);
-        System.out.println(allPackages);
+        for (BIPackAndAuthority aPackage : allPackages) {
+            assertEquals(aPackage.getBiPackageID(),"2222");
+        }
     }
 
-    //@org.junit.Test
-    public void getPackage() throws Exception {
+    public void testGetPackage() throws Exception {
         String roles="[3,5,4]";
         JSONArray roleInfojo=new JSONArray(roles);
         String[] packageIdArray=new String[roleInfojo.length()];
@@ -56,13 +60,12 @@ public class BISystemPackAndAuthConfigurationManagerTest {
         }
     }
 
-    //@org.junit.Test
-    public void addPackage() throws Exception {
+    
+    public void testAddPackage() throws Exception {
 
     }
 
-    //@org.junit.Test
-    public void removePackage() throws Exception {
+    public void testRemovePackage() throws Exception {
 
     }
 
