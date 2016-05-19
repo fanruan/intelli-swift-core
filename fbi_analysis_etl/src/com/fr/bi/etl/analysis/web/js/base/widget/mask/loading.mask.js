@@ -4,6 +4,13 @@
  * 正在加载mask层
  */
 BI.ETLLoadingMask = BI.inherit(BI.Widget, {
+
+    _constants : {
+        LOADING:"loading",
+        CANCEL:"cancel",
+        CANCELING:"canceling"
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.ETLLoadingMask.superclass._defaultConfig.apply(this, arguments), {})
     },
@@ -12,6 +19,40 @@ BI.ETLLoadingMask = BI.inherit(BI.Widget, {
         BI.ETLLoadingMask.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var mask = BI.Layers.make(this.getName(), o.masker);
+        var card = BI.createWidget({
+            type:"bi.card",
+            items:[{
+                el:{
+                    type: "bi.label",
+                    cls: "loading-bar-label",
+                    text:  BI.i18nText("BI-Loading"),
+                    height: 30
+                },
+                cardName:this._constants.LOADING
+            }, {
+                el:{
+                    type:"bi.center_adapt",
+                    items:[{
+                        type:"bi.button",
+                        level:"ignore",
+                        text: BI.i18nText("BI-Cancel"),
+                        handler : function () {
+                            card.showCardByName(self._constants.CANCELING)
+                        }
+                    }]
+                },
+                cardName:this._constants.CANCEL
+            }, {
+                el:{
+                    type: "bi.label",
+                    cls: "loading-bar-label",
+                    text: BI.i18nText("BI-Canceling"),
+                    height: 30
+                },
+                cardName:this._constants.CANCELING
+            }],
+            height:30
+        })
         BI.createWidget({
             type: "bi.center_adapt",
             element: mask,
@@ -26,14 +67,13 @@ BI.ETLLoadingMask = BI.inherit(BI.Widget, {
                         width: 208,
                         height: 30
                     }]
-                }, {
-                    type: "bi.label",
-                    cls: "loading-bar-label",
-                    text: o.text,
-                    height: 30
-                }]
+                }, card]
             }]
         });
+        card.showCardByName(this._constants.LOADING)
+        BI.delay(function () {
+            card.showCardByName(self._constants.CANCEL)
+        }, 10000)
         BI.Layers.show(this.getName());
         BI.defer(function () {
             BI.Layers.show(self.getName());
