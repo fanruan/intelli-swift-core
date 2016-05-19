@@ -208,16 +208,9 @@ BI.Searcher = BI.inherit(BI.Widget, {
 
     stopSearch: function () {
         this._stopSearch();//先停止搜索，然后再去设置editor为空
-        //important:停止搜索必须退出编辑状态,这里必须加上try(input框不显示时blur会抛异常)
-        try {
-            this.editor.blur();
-        } catch (e) {
-            if (!this.editor.blur) {
-                throw new Error("editor没有实现blur方法");
-            }
-        } finally {
-            this.editor.setValue("");
-        }
+        this.editor.setValue("");
+        //important:必须要blur出来
+        this.editor.blur();
     },
 
     isSearching: function () {
