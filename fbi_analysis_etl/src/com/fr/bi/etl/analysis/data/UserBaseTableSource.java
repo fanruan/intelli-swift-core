@@ -61,15 +61,15 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     @Override
     public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
         int index = 0, step = 1000, total = 0;
-        while (total == (index + 1) * step){
+        while (total == (index) * step){
             List<List> values = userWidget.createData(index*step, index*step + step);
             for (int i = 0; i < values.size(); i ++){
                 List value = values.get(i);
                 for (int j = 0; j < value.size(); j++){
-                    travel.actionPerformed(new BIDataValue(j + total, i, value.get(j)));
+                    travel.actionPerformed(new BIDataValue(i + total, j, value.get(j)));
                 }
             }
-            total +=values.get(0).size();
+            total +=values.size();
         }
         return total;
     }

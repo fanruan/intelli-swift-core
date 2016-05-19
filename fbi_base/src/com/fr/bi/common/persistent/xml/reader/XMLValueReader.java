@@ -191,7 +191,7 @@ public abstract class XMLValueReader {
             });
 //            }
         } catch (Exception e) {
-
+            BILogger.getLogger().error(e.getMessage(), e);
         }
     }
 

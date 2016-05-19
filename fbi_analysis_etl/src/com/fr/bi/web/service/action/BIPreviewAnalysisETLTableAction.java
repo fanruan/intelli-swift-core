@@ -9,6 +9,7 @@ import com.fr.bi.etl.analysis.data.UserTableSource;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -38,6 +39,11 @@ public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction{
             for (AnalysisETLSourceField f : fields){
                 Object ob = service.getRowValue(new IndexKey(f.getFieldName()), i);
                 JSONObject jo = new JSONObject();
+                if(ComparatorUtils.equals(ob, Double.POSITIVE_INFINITY)){
+                    ob = "∞";
+                } else if(ComparatorUtils.equals(ob, Double.NEGATIVE_INFINITY)){
+                    ob = "-∞";
+                }
                 jo.put("text", ob instanceof Date ? getDateString((Date)ob) :ob);
                 ja.put(jo);
             }

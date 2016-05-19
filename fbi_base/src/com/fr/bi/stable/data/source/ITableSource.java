@@ -35,6 +35,33 @@ public interface ITableSource extends XMLable, JSONCreator, BICoreService {
      * @return 字段
      */
     DBField[] getFieldsArray(Set<ITableSource> sources);
+    /**
+     * 当前TableSource父类的全部可用字段。
+     *
+     * @param sources
+     * @return
+     */
+    Set<DBField> getParentFields(Set<ITableSource> sources);
+
+    /**
+     * 当前TableSource最终全部可用字段。
+     * 例如A含有字段a，父类有c，d字段，那么该函数返回
+     * a,c,d
+     * 如果A是使用部分字段，父类有c，d字段，只使用c，那么该
+     * 函数返回c。
+     *
+     * @param sources
+     * @return
+     */
+    Set<DBField> getFacetFields(Set<ITableSource> sources);
+
+    /**
+     * 当前TableSource自身的字段。
+     *
+     * @param sources
+     * @return
+     */
+    Set<DBField> getSelfFields(Set<ITableSource> sources);
 
 
     /**

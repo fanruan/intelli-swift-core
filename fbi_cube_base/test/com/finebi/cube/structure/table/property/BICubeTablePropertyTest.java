@@ -1,4 +1,4 @@
-package com.finebi.cube.structure;
+package com.finebi.cube.structure.table.property;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
@@ -7,6 +7,8 @@ import com.finebi.cube.location.BICubeConfigurationTest;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.structure.BITableKey;
+import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;

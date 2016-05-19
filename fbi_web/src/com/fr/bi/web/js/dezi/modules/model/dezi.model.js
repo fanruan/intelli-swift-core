@@ -19,10 +19,11 @@ BIDezi.Model = BI.inherit(BI.Model, {
         Data.SharingPool.put("reportId", this.get('reportId'));
         Data.SharingPool.put("sessionID", this.get('sessionID'));
         this._initSessionBeater();
+        this.request = BI.debounce(BI.bind(this.update, this), 1000);
     },
 
     change: function () {
-        this.update();
+        this.request();
     },
 
     _initSessionBeater: function () {

@@ -50,7 +50,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
 
     @Override
     protected long writeSimpleIndex() {
-        long oldCount = loadOldValue();
+        int oldCount = loadOldValue();
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         for (int i = 0; i < oldTi.getRemovedList().size(); i++) {
             sortRemovedList.add(oldTi.getRemovedList().get(i));
@@ -60,7 +60,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
     }
 
 
-    private long writeData(TreeSet<Integer> sortRemovedList, long oldCount) {
+    private int writeData(TreeSet<Integer> sortRemovedList, int oldCount) {
         SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(loader.getUserId()).getSingleTableUpdateAction(dataSource.getDbTable());
         oldCount = dealWithInsert(action, oldCount);
         oldCount = dealWithModify(action, oldCount, sortRemovedList);
@@ -68,7 +68,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         return oldCount;
     }
 
-    private long dealWithInsert(SingleTableUpdateAction action, long rowCount) {
+    private int dealWithInsert(SingleTableUpdateAction action, int rowCount) {
         String iSql = action.getInsert(loader);
         if (StringUtils.isEmpty(iSql)) {
             return rowCount;
@@ -85,7 +85,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }, rowCount);
     }
 
-    private long dealWithModify(SingleTableUpdateAction action, long rowCount, final TreeSet<Integer> sortRemovedList) {
+    private int dealWithModify(SingleTableUpdateAction action, int rowCount, final TreeSet<Integer> sortRemovedList) {
         String mSql = action.getModify(loader);
         if (StringUtils.isEmpty(mSql)) {
             return rowCount;
@@ -187,7 +187,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         return StringUtils.EMPTY;
     }
 
-    protected long loadOldValue() {
+    protected int loadOldValue() {
         BILogger.getLogger().info("now loading：" + dataSource.fetchObjectCore() + " old cube");
         new TableCubeFile(BIPathUtils.createTableTempPath(dataSource.fetchObjectCore().getID().getIdentityValue(), loader.getUserId())).copyDetailValue(cube, loader.getNIOReaderManager(), oldTi.getRowCount());
         BILogger.getLogger().info("loading：" + dataSource.fetchObjectCore() + " old cube finished");

@@ -7,17 +7,17 @@ package com.fr.bi.stable.data.db;
 
 public class BIDataValue {
 
-    private long row;
+    private int row;
     private int col;
     private Object value;
 
-    public BIDataValue(long row, int col, Object value) {
+    public BIDataValue(int row, int col, Object value) {
         this.row = row;
         this.col = col;
         this.value = value;
     }
 
-    public long getRow() {
+    public int getRow() {
         return row;
     }
 

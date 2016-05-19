@@ -12,6 +12,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
+import com.fr.bi.stable.utils.code.BILogger;
 
 /**
  * This class created on 2016/3/24.
@@ -93,6 +94,7 @@ public class BITrigger implements ITrigger {
     public void handleMessage(IMessage message) throws BIThresholdIsOffException {
         threshold.handleMessage(message);
         if (threshold.isMeetThreshold()) {
+            BILogger.getLogger().debug("Trigger invoke process,get :" + message);
             processor.process(message);
             triggerOne();
         }

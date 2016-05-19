@@ -30,7 +30,7 @@ BI.AnalysisETLPreviewTableHeaderFilterCell = BI.inherit(BI.Widget, {
             field_type : o.field_type,
             field_name : o.text,
             fieldValuesCreator : function(callback){
-                return o.fieldValuesCreator(o.field_id, callback);
+                return o.fieldValuesCreator(o.text, callback);
             }
         }
         op[ETLCst.FIELDS] = o[ETLCst.FIELDS];

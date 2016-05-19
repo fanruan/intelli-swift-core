@@ -459,4 +459,9 @@ public class BIBaseConstant {
         public static final int DIFFERINDEX = 2;
 
     }
+
+    public static final class ROLE_TYPE {
+        public static final int COMPANY = 1;
+        public static final int CUSTOM = 2;
+    }
 }

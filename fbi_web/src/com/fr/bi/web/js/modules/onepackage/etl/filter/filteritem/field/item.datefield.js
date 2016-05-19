@@ -97,16 +97,16 @@ BI.ConfTargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             });
             o.afterValueChange.apply(self, arguments);
         });
-        this._refreshFilterWidget(o.filter_type);
+        this._refreshFilterWidget(o.filter_type, o.filter_value);
 
         return [this.fieldButton, this.filterType, this.filterWidgetContainer];
     },
 
-    _refreshFilterWidget: function (filterType) {
+    _refreshFilterWidget: function (filterType, filtetValue) {
         switch (filterType) {
             case BICst.FILTER_DATE.BELONG_DATE_RANGE:
             case BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE:
-                this._createTimeRange();
+                this._createTimeRange(filtetValue);
                 break;
             case BICst.FILTER_DATE.LATER_THAN:
             case BICst.FILTER_DATE.EARLY_THAN:
@@ -114,7 +114,7 @@ BI.ConfTargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 break;
             case BICst.FILTER_DATE.EQUAL_TO:
             case BICst.FILTER_DATE.NOT_EQUAL_TO:
-                this._createDate();
+                this._createDate(filtetValue);
                 break;
             case BICst.FILTER_DATE.IS_NULL:
             case BICst.FILTER_DATE.NOT_NULL:
@@ -125,7 +125,7 @@ BI.ConfTargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterWidgetContainer.addItem(this.filterWidget);
     },
 
-    _createTimeRange: function () {
+    _createTimeRange: function (value) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.custom_time_interval",
@@ -138,12 +138,12 @@ BI.ConfTargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             });
             o.afterValueChange.apply(self, arguments);
         });
-        if (BI.isNotNull(this.options.filter_value)) {
-            this.filterWidget.setValue(this.options.filter_value);
+        if (BI.isNotNull(value)) {
+            this.filterWidget.setValue(value);
         }
     },
 
-    _createDate: function () {
+    _createDate: function (value) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.custom_multi_date_combo",
@@ -156,8 +156,8 @@ BI.ConfTargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             });
             o.afterValueChange.apply(self, arguments);
         });
-        if (BI.isNotNull(this.options.filter_value)) {
-            this.filterWidget.setValue(this.options.filter_value);
+        if (BI.isNotNull(value)) {
+            this.filterWidget.setValue(value);
         }
     },
 

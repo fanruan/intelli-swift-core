@@ -109,18 +109,24 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
                     el:this.contentItemWidget
                 }, {
                     el : {
-                        type:"bi.center_adapt",
+                        type:"bi.right",
+                        height:50,
                         items:[{
-                            type:"bi.right",
-                            items:[{
-                                type:"bi.layout",
-                                width:10,
-                                height:1
-                            }, this.save,{
-                                type:"bi.layout",
-                                width:10,
-                                height:1
-                            }, this.cancel]
+                            type:"bi.layout",
+                            width:10,
+                            height:1
+                        }, {
+                            type:"bi.center_adapt",
+                            height:50,
+                            items:[this.save]
+                        },{
+                            type:"bi.layout",
+                            width:10,
+                            height:1
+                        }, {
+                            type:"bi.center_adapt",
+                            height:50,
+                            items:[this.cancel]
                         }]
                     },
                     height:50

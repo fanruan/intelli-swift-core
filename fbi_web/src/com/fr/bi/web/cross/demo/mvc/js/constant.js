@@ -201,6 +201,8 @@ var _JS = [
 
     "layout/mvc.absolutecenteradapt.js",
 
+    "layout/mvc.flexboxcenteradapt.js",
+
     "layout/mvc.verticaladapt.js",
 
     "layout/mvc.horizontaladapt.js",
@@ -384,7 +386,9 @@ var _JS = [
 
     "detail/mvc.adaptivearrangement.js",
 
-    "detail/mvc.detailcharts.js"
+    "detail/mvc.detailcharts.js",
+
+    "detail/mvc.detailcombinecharts.js"
 ];
 
 
@@ -482,6 +486,7 @@ var _Routes = {
     "/center_adapt": "CenterAdaptView",
     "/absolute_center_adapt": "AbsoluteCenterAdaptView",
     "/float_center_adapt": "CenterVerticalAdaptView",
+    "/flexbox_center_adapt": "FlexboxCenterAdaptView",
     "/vertical_adapt": "VerticalAdaptView",
     "/horizontal_adapt": "HorizontalAdaptView",
     "/horizontal_auto": "HorizontalAutoView",
@@ -582,7 +587,8 @@ var _Routes = {
     "/arrangement": "ArrangementView",
     "/adaptive_arrangement": "AdaptiveArrangementView",
 
-    "/detail_chart": "DetailChartView"
+    "/detail_chart": "DetailChartView",
+    "/detail_combine_chart": "DetailCombineChartView"
 };
 
 var _Models = {};
@@ -903,6 +909,9 @@ _Models.layout = [{
 }, {
     text: "bi.absolute_center_adapt",
     value: "absolute_center_adapt"
+}, {
+    text: "bi.flexbox_center_adapt",
+    value: "flexbox_center_adapt"
 }, {
     text: "bi.vertical_adapt",
     value: "vertical_adapt"
@@ -1362,6 +1371,10 @@ _Models.detail = [{
         pId: 31,
         text: "bi.detail_chart",
         value: "detail_chart"
+    }, {
+        pId: 31,
+        text: "bi.detail_combine_chart",
+        value: "detail_combine_chart"
     }];
 _Models.component = [];
 _Models.module = [];

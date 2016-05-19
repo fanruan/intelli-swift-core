@@ -36,7 +36,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             isNeedAdjustWidth: false,
             el: {
                 type: "bi.icon_trigger",
-                extraCls: "icon-analysis-table-set  icon-animate",
+                extraCls: "icon-analysis-table-set",
                 width: o.width,
                 height: o.height
             },
@@ -65,7 +65,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
         //})
         BI.createWidget({
             element:this.element,
-            type:"bi.inline",
+            type:"bi.left",
             scrollable : false,
             items: [this.text, {
                 type:"bi.center_adapt",

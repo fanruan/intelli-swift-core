@@ -7,6 +7,7 @@ import com.fr.json.JSONObject;
 
 /**
  * Created by 小灰灰 on 2016/5/10.
+ * 环期
  */
 public abstract class CorrespondRowCalculatorOperator extends RowCalculatorOperator {
     @BICoreField

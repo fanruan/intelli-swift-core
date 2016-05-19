@@ -117,7 +117,7 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         })
         this.editor.on(BI.Editor.EVENT_STOP, function () {
             self.fireEvent(BI.SearchEditor.EVENT_STOP);
-        });
+        })
 
         this.clear.invisible();
     },
@@ -145,6 +145,7 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         }
     },
 
+
     setValue: function (v) {
         this.editor.setValue(v);
         if (BI.isKey(v)) {
@@ -153,7 +154,11 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
     },
 
     setValid: function (b) {
-        this.editor.setValue(b);
+        this.editor.setValid(b);
+    },
+
+    isEditing: function () {
+        return this.editor.isEditing();
     },
 
     isValid: function () {
@@ -163,7 +168,7 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
     setEnable: function (b) {
         BI.Editor.superclass.setEnable.apply(this, arguments);
         this.editor && this.editor.setEnable(b);
-        this.clear.setEnable(b);
+        this.clear.setEnabled(b);
     }
 });
 BI.SearchEditor.EVENT_CHANGE = "EVENT_CHANGE";

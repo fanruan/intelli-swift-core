@@ -117,8 +117,10 @@ BI.CircleModel = BI.inherit(BI.Widget, {
                 });
             });
             BI.remove(connectionSet, tmpConnectionSet);
-            BI.remove(primKeyMap[tId], tmpPrimKey);
-            BI.remove(foreignKeyMap[tId], tmpForeKey);
+            BI.remove(primKeyMap[tId + oldIdFieldName], tmpPrimKey);
+            BI.each(oldRelationForeignKeyIds, function(idx, id){
+                BI.remove(foreignKeyMap[id], tmpForeKey);
+            });
         }
         //设置1:N的关联
         BI.each(etlValue.floors, function (idx, floor) {

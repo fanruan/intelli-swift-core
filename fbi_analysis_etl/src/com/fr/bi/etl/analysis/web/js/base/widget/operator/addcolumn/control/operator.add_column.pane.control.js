@@ -59,7 +59,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
                     return self._checkField(widget, [column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
                 case BICst.ETL_ADD_COLUMN_TYPE.GROUP:
                     return BI.some(column.item['items'], function (i, item) {
-                        return self._checkField(widget, [item['field']], parent[ETLCst.FIELDS],column.field_name, item['field_type'])
+                        return self._checkField(widget, [item['field']["value"]], parent[ETLCst.FIELDS],column.field_name, item['field']['fieldType'])
                     })
             }
         })
