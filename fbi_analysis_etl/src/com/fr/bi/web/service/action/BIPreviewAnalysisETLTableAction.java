@@ -32,7 +32,7 @@ public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction{
         AnalysisTableSource source = AnalysisETLSourceFactory.createTableSource(items, userId);
         List<AnalysisETLSourceField> fields =  source.getFieldsList();
         UserTableSource userTableSource = source.createUserTableSource(userId);
-        ICubeTableService service = new PartCubeDataLoader(userId, userTableSource).getTableIndex(userTableSource.fetchObjectCore(), 0, 20);
+        ICubeTableService service = PartCubeDataLoader.getInstance(userId, userTableSource).getTableIndex(userTableSource.fetchObjectCore(), 0, 20);
         JSONArray values = new JSONArray();
         for (int i = 0; i < service.getRowCount(); i++){
             JSONArray ja = new JSONArray();

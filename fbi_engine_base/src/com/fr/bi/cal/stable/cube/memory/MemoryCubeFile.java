@@ -195,7 +195,7 @@ public class MemoryCubeFile extends AbstractCubeFile {
                                     break;
                                 }
                                 default: {
-                                    columns[i] = new MemoryDoubleColum();
+                                    columns[i] = new MemoryDoubleColumn();
                                     break;
                                 }
                             }
