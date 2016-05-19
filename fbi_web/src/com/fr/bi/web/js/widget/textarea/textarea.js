@@ -6,8 +6,7 @@
 BI.TextArea = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TextArea.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-text-area-editor",
-            height: 20
+            baseCls: "bi-text-area"
         });
     },
 
@@ -15,16 +14,44 @@ BI.TextArea = BI.inherit(BI.Widget, {
         BI.TextArea.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.textarea = BI.createWidget({
-            type: "bi.text_area_trigger",
-            height: o.height
+            type: "bi.textarea_editor",
+            width: "100%",
+            height: "100%"
         });
 
-        this.textarea.on(BI.TextAreaTrigger.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TextArea.EVENT_DESTROY)
+        this.textarea.on(BI.TextAreaEditor.EVENT_FOCUS, function () {
+            self.combo.showView();
+        });
+
+        this.textarea.on(BI.TextAreaEditor.EVENT_BLUR, function () {
+            self._showLabel();
+            if (BI.isNotEmptyString(this.getValue())) {
+                self._showInput();
+            }
+            self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments)
         });
 
         this.toolbar = BI.createWidget({
             type: "bi.text_toolbar"
+        });
+
+        this.toolbar.on(BI.TextToolbar.EVENT_CHANGE, function () {
+            self.textarea.setValue(this.getValue());
+            self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments);
+        });
+
+        this.combo = BI.createWidget({
+            type: "bi.combo",
+            toggle: false,
+            direction: "top",
+            adjustLength: 1,
+            el: this.textarea,
+            popup: {
+                el: this.toolbar,
+                minWidth: 253,
+                height: 30,
+                stopPropagation: false
+            }
         });
 
         this.label = BI.createWidget({
@@ -39,59 +66,32 @@ BI.TextArea = BI.inherit(BI.Widget, {
             self.textarea.focus();
         });
 
-        this.combo = BI.createWidget({
-            type: "bi.combo",
-            toggle: false,
-            direction: "top",
-            adjustLength: 1,
-            element: this.element,
-            el: this.textarea,
-            hideChecker: function (e) {
-                if (self.toolbar.isColorChooserVisible() || self.toolbar.isBackgroundChooserVisible()) {
-                    return false;
-                }
-            },
-            popup: {
-                el: this.toolbar,
-                minWidth: 253,
-                height: 30,
-                stopPropagation: false
-            }
-        });
-
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
             items: [{
+                el: this.combo,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }, {
                 el: this.label,
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
             }]
-        });
-
-        this.toolbar.on(BI.TextToolbar.EVENT_CHANGE, function () {
-            self.setValue(self.getValue());
-            self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments);
-        });
-
-        this.textarea.on(BI.TextAreaTrigger.EVENT_BLUR, function () {
-            self._showLabel();
-            if (BI.isNotEmptyString(this.getValue())) {
-                self._showInput()
-            }
-            self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments)
         });
     },
 
     _showInput: function () {
-        this.textarea.setVisible(true);
+        this.combo.setVisible(true);
         this.label.setVisible(false);
     },
 
     _showLabel: function () {
-        this.textarea.setVisible(false);
+        this.combo.setVisible(false);
         this.label.setVisible(true);
     },
 
@@ -110,5 +110,4 @@ BI.TextArea = BI.inherit(BI.Widget, {
     }
 });
 BI.TextArea.EVENT_VALUE_CHANGE = "EVENT_VALUE_CHANGE";
-BI.TextArea.EVENT_DESTROY = "EVENT_DESTROY";
 $.shortcut("bi.text_area", BI.TextArea);

@@ -107,7 +107,7 @@ BI.Combo = BI.inherit(BI.Widget, {
                         }
                     });
                     break;
-                default :
+                case "click":
                     if (ev) {
                         self.element.off(ev + "." + self.getName()).on(ev + "." + self.getName(), BI.debounce(function (e) {
                             if (self.combo.element.__isMouseInBounds__(e)) {

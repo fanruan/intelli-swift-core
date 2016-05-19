@@ -22,9 +22,13 @@ BI.ImageButtonHref = BI.inherit(BI.Single, {
         });
 
         this.input = BI.createWidget({
-            type: "bi.href_editor",
+            type: "bi.clear_editor",
+            watermark: BI.i18nText("BI-Input_Href"),
             width: 255,
             height: 30
+        });
+        this.input.on(BI.ClearEditor.EVENT_CONFIRM, function(){
+            self.combo.hideView();
         });
 
         this.combo = BI.createWidget({
@@ -51,7 +55,7 @@ BI.ImageButtonHref = BI.inherit(BI.Single, {
     },
     
     getValue: function() {
-        return this.input.getValue().toString()
+        return this.input.getValue();
     },
 
     setValue: function(url) {
