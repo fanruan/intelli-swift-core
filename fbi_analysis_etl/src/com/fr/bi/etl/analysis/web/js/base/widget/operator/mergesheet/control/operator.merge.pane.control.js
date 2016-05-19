@@ -7,7 +7,7 @@ BI.AnalysisETLOperatorMergeSheetPaneController = BI.inherit(BI.MVCController, {
         widget.table.populate(widget.createTable(tables));
         widget.mergeFields.populate(widget.createCell(model.getMergeFieldsName(), "cell"), widget.createCell([[tables[0].table_name,tables[1].table_name]], "header"))
         widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.get("columns"))
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.getValue("columns"))
     },
 
 

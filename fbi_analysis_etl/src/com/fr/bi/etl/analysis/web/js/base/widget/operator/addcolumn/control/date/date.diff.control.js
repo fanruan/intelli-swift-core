@@ -46,7 +46,7 @@ BI.AnalysisETLOperatorAddColumnDateDiffController = BI.inherit(BI.MVCController,
         })
         model.set(ETLCst.FIELDS, fields)
         widget.segment.setValue(model.get('type') || ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE.YEAR);
-        model.set("type", widget.segment.getValue())
+        model.set("type", widget.segment.getValue()[0])
         widget.lcombo.populate(model.get(ETLCst.FIELDS));
         widget.rcombo.populate(model.get(ETLCst.FIELDS));
         widget.lcombo.setValue(model.get('firstField') || (fields.length > 0 ? fields[0].value : null));
