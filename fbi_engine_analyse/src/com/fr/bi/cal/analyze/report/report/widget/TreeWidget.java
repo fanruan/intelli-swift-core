@@ -321,6 +321,7 @@ public class TreeWidget extends BIAbstractWidget {
             BITableRelation tableRelation = it.next().getValue();
             tableRelationList.add(tableRelation);
         }
+        Collections.reverse(tableRelationList);
         return tableRelationList;
     }
 

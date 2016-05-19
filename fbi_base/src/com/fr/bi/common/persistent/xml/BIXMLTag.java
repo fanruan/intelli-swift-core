@@ -7,5 +7,8 @@ package com.fr.bi.common.persistent.xml;
  * @since 4.0
  */
 public class BIXMLTag {
-    public static String APPEND_INFO = "app_info";
+    public static String APPEND_INFO = "app_i";
+    public static String FIELD_INFO = "f_i";
+    public static String FIELD_NAME = "f_n";
+
 }

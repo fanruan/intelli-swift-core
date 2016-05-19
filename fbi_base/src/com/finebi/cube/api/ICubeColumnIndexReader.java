@@ -70,6 +70,9 @@ public interface ICubeColumnIndexReader<T> {
      */
     T getGroupValue(int position);
 
+
+    T getOriginalValue(int rowNumber);
+
     int sizeOfGroup();
 
 }

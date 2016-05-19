@@ -128,4 +128,12 @@ public class BIPublish implements IPublish {
     public IMessageFragment getFragmentTag() {
         return messageGenerator.getMessageFragmentTag();
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("BIPublish{");
+        sb.append("messageGenerator=").append(messageGenerator);
+        sb.append('}');
+        return sb.toString();
+    }
 }

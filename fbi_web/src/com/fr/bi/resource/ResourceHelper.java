@@ -1595,7 +1595,6 @@ public class ResourceHelper {
 
                 //文本编辑区
                 "com/fr/bi/web/css/widget/textarea/textarea.css",
-                "com/fr/bi/web/css/widget/textarea/trigger/textarea.trigger.css",
 
                 //图片组件
                 "com/fr/bi/web/css/widget/image/uploadimage.css",
@@ -2026,7 +2025,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/base/editor/editor.adapt.js",
                 "com/fr/bi/web/js/widget/base/editor/editor.sign.initial.js",
                 "com/fr/bi/web/js/widget/base/editor/editor.sign.style.js",
-                "com/fr/bi/web/js/widget/base/editor/editor.href.js",
+                "com/fr/bi/web/js/widget/base/editor/editor.clear.js",
 
                 //segment控件
                 "com/fr/bi/web/js/widget/base/segment/button.line.segment.js",
@@ -2073,6 +2072,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.comparearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.comparebar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.compareaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.fallaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.rangearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.combine.js",
+                "com/fr/bi/web/js/widget/detailchart/factory.charts.js",
 
                 //年份控件
                 "com/fr/bi/web/js/widget/year/trigger.year.js",
@@ -2263,7 +2269,6 @@ public class ResourceHelper {
 
                 //文本编辑区
                 "com/fr/bi/web/js/widget/textarea/textarea.js",
-                "com/fr/bi/web/js/widget/textarea/trigger/textarea.trigger.js",
 
                 //文本工具条
                 "com/fr/bi/web/js/widget/texttoolbar/sizechooser/texttoolbar.sizechooser.js",
@@ -2361,9 +2366,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
 
                 //带有序号的table tree
-                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js"
+                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js",
 
-
+                //工程配置
+                "com/fr/bi/web/js/config.js"
         };
     }
 

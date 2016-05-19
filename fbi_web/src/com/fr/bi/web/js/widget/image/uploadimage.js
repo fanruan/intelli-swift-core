@@ -59,7 +59,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.del = BI.createWidget({
             type: "bi.icon_button",
-            cls: "upload-image-icon-button bi-list-item-hover img-shutdown-font",
+            cls: "upload-image-icon-button img-shutdown-font",
             title: BI.i18nText("fbi_Delete"),
             height: 32,
             width: 32
@@ -71,7 +71,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.size = BI.createWidget({
             type: "bi.image_button_size_combo",
-            cls: "upload-image-icon-button bi-list-item-hover"
+            cls: "upload-image-icon-button"
         });
 
         this.size.on(BI.ImageButtonSizeCombo.EVENT_CHANGE, function () {
@@ -81,7 +81,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.href = BI.createWidget({
             type: "bi.image_button_href",
-            cls: "upload-image-icon-button bi-list-item-hover"
+            cls: "upload-image-icon-button"
         });
 
         this.href.on(BI.ImageButtonHref.EVENT_CHANGE, function () {

@@ -39,7 +39,7 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
             rgap: o.rgap,
             tgap: o.tgap,
             bgap: o.bgap,
-            value: o.value,
+            value: o.text,
             validationChecker: o.validationChecker,
             quitChecker: o.quitChecker,
             mouseOut: o.mouseOut,
@@ -125,7 +125,7 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
     getValue: function () {
         return {
             value: this.editor.getValue(),
-            state: this.options.text
+            text: this.options.text
         }
     },
 
@@ -135,9 +135,6 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
 
     setState: function (v) {
         var o = this.options;
-        if (BI.isEmpty(v)) {
-            this.editor.setValue(o.text);
-        }
         v = (BI.isEmpty(v) || v == o.text) ? o.text : v + "(" + o.text + ")";
         this.editor.setState(v);
     }

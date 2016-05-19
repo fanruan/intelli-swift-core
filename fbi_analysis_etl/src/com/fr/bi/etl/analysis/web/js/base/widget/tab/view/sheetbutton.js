@@ -36,7 +36,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             isNeedAdjustWidth: false,
             el: {
                 type: "bi.icon_trigger",
-                extraCls: "icon-analysis-table-set  icon-animate",
+                extraCls: "icon-analysis-table-set",
                 width: o.width,
                 height: o.height
             },
