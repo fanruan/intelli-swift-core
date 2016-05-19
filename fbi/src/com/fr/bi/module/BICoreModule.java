@@ -9,9 +9,9 @@ import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.manager.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
+import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIDataSourceManager;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
-import com.fr.bi.conf.base.pack.BISystemPackAndAuthConfigurationManager;
 import com.fr.bi.conf.base.pack.BISystemPackageConfigurationManager;
 import com.fr.bi.conf.base.relation.BISystemTableRelationManager;
 import com.fr.bi.conf.base.trans.BIAliasManager;
@@ -87,7 +87,7 @@ public class BICoreModule extends AbstractModule {
     private void registProviders() {
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
-        StableFactory.registerMarkedObject(BISystemPackAndAuthConfigurationProvider.XML_TAG, new BISystemPackAndAuthConfigurationManager());
+        StableFactory.registerMarkedObject(BIAuthorityManageProvider.XML_TAG, new BISystemAuthorityManager());
 
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
@@ -97,7 +97,6 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, new BIExcelViewManager());
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
-
     }
 
     protected BICubeManagerProvider getCubeManagerProvider() {

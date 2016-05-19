@@ -32,11 +32,6 @@ public static void registerModuleBeans(){
 			 BILogger.getLogger().error(ignore.getMessage(),ignore);	
 			}
 		try{
-			xmlFactory.registerClass("com.fr.bi.conf.base.pack.BIUserPackAndAuthConfigurationManager",com.fr.bi.conf.base.pack.BIUserPackAndAuthConfigurationManager.class);}
-		catch(BIFactoryKeyDuplicateException ignore){
-			BILogger.getLogger().error(ignore.getMessage(),ignore);
-		}
-		try{
 			xmlFactory.registerClass("com.fr.bi.conf.base.pack.group.BIGroupTagsManagerService",com.fr.bi.conf.base.pack.group.BIGroupTagContainer.class);}
 		catch(BIFactoryKeyDuplicateException ignore){
 			 BILogger.getLogger().error(ignore.getMessage(),ignore);	

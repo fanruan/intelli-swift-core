@@ -43,6 +43,13 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
     getSelectType: function () {
         return this.tree.getSelect()
     },
+    
+    setSelect: function(v){
+        this.tree.setSelect(v);
+        this.tree.setValue([]);
+        this.switchButton.setText(v === BI.SwitchTree.SelectType.MultiSelect ?
+                                     BI.i18nText("BI-Out_Muti_Setting") : BI.i18nText("BI-Muti_Setting"));
+    },
 
     getValue: function(){
         return this.tree.getValue();  
@@ -50,16 +57,16 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
 
     _buildNorth: function () {
         var self = this;
-        var switchButton = BI.createWidget({
+        this.switchButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Muti_Setting"),
             height: 30,
             level: "ignore"
         });
-        switchButton.on(BI.Button.EVENT_CHANGE, function(){
+        this.switchButton.on(BI.Button.EVENT_CHANGE, function(){
             self.tree.switchSelect();
             self.tree.setValue([]);
-                this.setText(self.tree.getSelect() === BI.SwitchTree.SelectType.MultiSelect ?
+            this.setText(self.tree.getSelect() === BI.SwitchTree.SelectType.MultiSelect ?
                             BI.i18nText("BI-Out_Muti_Setting") : BI.i18nText("BI-Muti_Setting"));
             self.fireEvent(BI.AuthorityPackagesTree.EVENT_TYPE_CHANGE);
         });
@@ -71,7 +78,7 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Package_List"),
                 height: 30,
                 cls: "package-list-title"
-            }, switchButton],
+            }, this.switchButton],
             lgap: 10,
             vgap: 10
         });

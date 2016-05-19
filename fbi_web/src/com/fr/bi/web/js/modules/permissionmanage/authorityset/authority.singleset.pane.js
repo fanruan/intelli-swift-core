@@ -62,50 +62,68 @@ BI.AuthoritySinlgeSetPane = BI.inherit(BI.Widget, {
         switch (v) {
             case this._constants.SHOW_EMPTY:
                 return BI.createWidget({
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Select_One_Package_Setting"),
-                    height: 50,
-                    cls: "select-package-empty-tip"
+                    type: "bi.center_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Select_One_Package_Setting"),
+                        height: 50,
+                        cls: "select-package-empty-tip"
+                    }]
                 });
             case this._constants.SHOW_PANE:
                 this.roles = BI.createWidget({
-                    type: "bi.authority_add_role_pane"
+                    type: "bi.authority_single_add_role_pane"
                 });
-                this.roles.on(BI.AuthorityAddRolePane.EVENT_ADD_ROLE, function(){
-                     self.rolesTab.setSelect(self._constants.SHOW_SEARCHER);
+                this.roles.on(BI.AuthoritySingleAddRolePane.EVENT_ADD_ROLE, function(){
+                    self.rolesTab.setSelect(self._constants.SHOW_SEARCHER);
+                    self.searcher.populate(self.packageId);
                 });
                 return this.roles;
             case this._constants.SHOW_SEARCHER:
                 this.searcher = BI.createWidget({
-                    type: "bi.add_role_searcher"
+                    type: "bi.single_add_role_searcher"
                 });
-                this.searcher.on(BI.AddRoleSearcher.EVENT_CANCEL, function(){
+                this.searcher.on(BI.SingleAddRoleSearcher.EVENT_CANCEL, function(){
                     self.rolesTab.setSelect(self._constants.SHOW_PANE);
                 });
-                this.searcher.on(BI.AddRoleSearcher.EVENT_SAVE, function(){
+                this.searcher.on(BI.SingleAddRoleSearcher.EVENT_SAVE, function(v){
+                    self._updatePackageRoles(v);
                     self.rolesTab.setSelect(self._constants.SHOW_PANE);
                 });
                 return this.searcher;
         }
     },
+    
+    _updatePackageRoles: function(roles){
+        var authSettings = Data.SharingPool.get("authority_settings");
+        var packagesAuth = authSettings.packages_auth;
+        var pAuth = packagesAuth[this.packageId] || [];
+        var newPAuth = pAuth.concat(roles);
+        packagesAuth[this.packageId] = newPAuth;
+        Data.SharingPool.put("authority_settings", authSettings);
+        BI.isNotNull(this.roles) && this.roles.populate(this.packageId);
+        BI.isNotNull(this.searcher) && this.searcher.populate(this.packageId);
+        BI.Utils.savePackageAuthority({
+            package_ids: [this.packageId],
+            roles: newPAuth
+        }, function(){});
+    },
 
     setValue: function(v){
-        var pId = v[0];
-        this.packageName.setText(BI.Utils.getPackageNameByID4Conf(pId));
-        this.rolesTab.setSelect(this._constants.SHOW_PANE);
-        BI.isNotNull(this.roles) && this.roles.populate();
+        if(BI.isNotNull(v)) {
+            this.packageId = v[0];
+            this.packageName.setText(BI.Utils.getPackageNameByID4Conf(this.packageId));
+            this.rolesTab.setSelect(this._constants.SHOW_PANE);
+        } else {
+            this.packageName.setText("");
+            this.rolesTab.setSelect(this._constants.SHOW_EMPTY);
+        }
+        BI.isNotNull(this.roles) && this.roles.populate(this.packageId);
         BI.isNotNull(this.searcher) && this.searcher.populate();
     },
 
-    populate: function(packageIds, roles){
-        if(packageIds.length !== 1) {
-            this.packageName.setText("");
-            this.rolesTab.setSelect(this._constants.SHOW_EMPTY);
-            return;
-        }
-        this.packageName.setText(BI.Utils.getPackageNameByID4Conf(packageIds[0]));
-        this.roles.setValue(roles);
-        this.rolesTab.setSelect(this._constants.SHOW_PANE);
+    populate: function(){
+
     }
 });
 $.shortcut("bi.authority_single_set_pane", BI.AuthoritySinlgeSetPane);
