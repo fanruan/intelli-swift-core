@@ -5,6 +5,7 @@ import com.fr.bi.stable.data.db.DBField;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 表的基本属性。
@@ -42,5 +43,9 @@ public interface ICubeTablePropertyService extends Release {
     Boolean isPropertyExist();
 
     Boolean isRowCountAvailable();
+
+    void recordFieldNamesFromParent(Set<String> fieldNames);
+
+    Set<String> getFieldNamesFromParent();
 
 }

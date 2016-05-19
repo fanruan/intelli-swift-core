@@ -168,4 +168,20 @@ public class BIOccupiedTableSource implements ITableSource {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    @Override
+    public Set<DBField> getParentFields(Set<ITableSource> sources) {
+        return null;
+    }
+
+    @Override
+    public Set<DBField> getFacetFields(Set<ITableSource> sources) {
+        return null;
+    }
+
+    @Override
+    public Set<DBField> getSelfFields(Set<ITableSource> sources) {
+        return null;
+    }
+
 }

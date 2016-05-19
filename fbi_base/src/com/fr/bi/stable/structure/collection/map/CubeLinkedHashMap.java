@@ -22,6 +22,11 @@ public class CubeLinkedHashMap extends LinkedHashMap implements
     }
 
     @Override
+    public Object getOriginalValue(int rowNumber) {
+        return null;
+    }
+
+    @Override
     public int sizeOfGroup() {
         return 0;
     }

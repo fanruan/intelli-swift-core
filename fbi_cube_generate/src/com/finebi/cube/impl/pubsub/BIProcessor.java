@@ -27,8 +27,13 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
         messagePublish = publish;
     }
 
+    private void showProcess(final IMessage lastReceiveMessage) {
+        BILogger.getLogger().debug("Process:" + messagePublish + "\n" + "        Get message:" + lastReceiveMessage+"\n");
+    }
+
     @Override
     public void process(final IMessage lastReceiveMessage) {
+        showProcess(lastReceiveMessage);
         if (lastReceiveMessage.isStopStatus()) {
             try {
                 messagePublish.publicStopMessage(getStopMess());
