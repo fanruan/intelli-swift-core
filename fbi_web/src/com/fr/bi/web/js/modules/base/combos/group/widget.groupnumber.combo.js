@@ -10,7 +10,7 @@ BI.GroupNumberCombo = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Same_Value_A_Group"),
                 value: BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_BY_VALUE
             },{
-                text: BI.i18nText("BI-Grouping_setting"),
+                text: BI.i18nText("BI-Grouping_Setting"),
                 value: BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_SETTING
             }],
             [{
