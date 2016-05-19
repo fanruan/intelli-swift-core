@@ -27,10 +27,10 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
             table : table
         }], items)
         if (BI.isNotNull(table.parents)){
+            self._initId(table.parents)
             if(table.parents.length !== 2) {
                 items = this._initItems(table.parents[0], items);
             } else {
-                self._initId(table.parents)
                 this.set("allHistory", true)
             }
         };

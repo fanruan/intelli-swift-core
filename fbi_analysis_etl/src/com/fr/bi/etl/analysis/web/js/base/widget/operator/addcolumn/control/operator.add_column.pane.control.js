@@ -44,14 +44,14 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT:
                     var fields = [];
                     fields.push(column.item['field'])
-                    fields.push(column.item['date'])
+                    fields.push(column.item['monthSeason'])
+                    fields.push(column.item['period'])
                     return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP:
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT:
                     var fields = [];
                     fields.push(column.item['field'])
-                    fields.push(column.item['monthSeason'])
-                    fields.push(column.item['year'])
+                    fields.push(column.item['period'])
                     return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_ACC:
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_RANK:
