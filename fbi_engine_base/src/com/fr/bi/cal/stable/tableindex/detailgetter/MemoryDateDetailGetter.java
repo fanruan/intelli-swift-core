@@ -1,18 +1,18 @@
 package com.fr.bi.cal.stable.tableindex.detailgetter;
 
+import com.fr.bi.cal.stable.cube.memory.AnyIndexArray;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 
 import java.util.Date;
-import java.util.List;
 
 
 /**
  * Created by 小灰灰 on 2016/1/14.
  */
 public class MemoryDateDetailGetter implements DetailGetter<Date>{
-    private List<Long> list;
+    private AnyIndexArray<Long> list;
 
-    public MemoryDateDetailGetter(List<Long> list) {
+    public MemoryDateDetailGetter(AnyIndexArray<Long> list) {
         this.list = list;
     }
 
