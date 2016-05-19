@@ -86,21 +86,23 @@ DetailChartView = BI.inherit(BI.View, {
         line.populate(data);
         axis.populate(data);
         accumulateAxis.populate(data);
-        //peraccumulateAxis.populate(data);
-        //bar.populate(data2);
-        //accumulateBar.populate(data2);
-        //area.populate(data);
-        //accumulateArea.populate(data);
-        //peraccumulateArea.populate(data);
-        //bubble.populate(data1);
-        //forceBubble.populate(data1);
-        //scatter.populate(data1);
-        //radar.populate(data);
-        //accumulateradar.populate(data);
+        peraccumulateAxis.populate(data);
+        bar.populate(data);
+        accumulateBar.populate(data);
+        area.populate(data);
+        accumulateArea.populate(data);
+        peraccumulateArea.populate(data);
+        bubble.populate(data);
+        forceBubble.populate(data);
+        scatter.populate(data);
+        radar.populate(data);
+        accumulateradar.populate(data);
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [line, axis,accumulateAxis]
+            items: [line, axis,accumulateAxis,peraccumulateAxis,bar,accumulateBar,
+                area, accumulateArea, peraccumulateArea, bubble, forceBubble, radar,
+                accumulateradar]
         })
     }
 });
