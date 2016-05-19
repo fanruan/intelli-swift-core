@@ -68,13 +68,13 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
         if (jo.has("item")){
             JSONObject jsonObject= jo.getJSONObject("item");
             if (jsonObject.has("firstField")) {
-                field1 = jo.getString("firstField");
+                field1 = jsonObject.getString("firstField");
             }
-            if (jo.has("secondField")) {
-                field2 = jo.getString("secondField");
+            if (jsonObject.has("secondField")) {
+                field2 = jsonObject.getString("secondField");
             }
-            if (jo.has("type")) {
-                unit = jo.getInt("unit");
+            if (jsonObject.has("type")) {
+                unit = jsonObject.getInt("type");
             }
         }
     }
