@@ -101,7 +101,6 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         dimensions[id] = {
             name: BI.Func.createDistinctName(dimensions, field["field_name"]),
             _src: {
-                field_id: field.id,
                 field_type: type,
                 field_name: field["field_name"]
             },
