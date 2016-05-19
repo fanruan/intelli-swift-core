@@ -78,7 +78,8 @@ public class XMLNormalValueWriter extends XMLValueWriter {
     }
 
     private void fieldTagStart(Field field, XMLPrintWriter writer) {
-        writer.startTAG(field.getName());
+        writer.startTAG(BIXMLTag.FIELD_INFO);
+        writer.attr(BIXMLTag.FIELD_NAME, field.getName());
     }
 
     private void fieldTagEnd(XMLPrintWriter writer) {
