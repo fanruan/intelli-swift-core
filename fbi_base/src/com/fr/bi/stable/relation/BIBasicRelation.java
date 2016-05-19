@@ -112,7 +112,7 @@ public abstract class BIBasicRelation<T,F> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof BITableRelation)) {
+        if (!(o instanceof BIBasicRelation)) {
             return false;
         }
 

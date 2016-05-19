@@ -443,6 +443,8 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/css/modules/selectdatamask/widget.selectdata.mask.css",
 
+                //通用查询选字段
+                "com/fr/bi/web/css/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.css",
                 //选择文本
                 "com/fr/bi/web/css/modules/selectstring/tab.selectstring.css",
 
@@ -605,7 +607,11 @@ public class ResourceHelper {
 
                 //明细表超级链接
                 "com/fr/bi/web/css/modules/hyperlink/hyperlink.insert.css",
+
+                //明细表表格
                 "com/fr/bi/web/css/modules/detailtable/widget.detailtable.css",
+                "com/fr/bi/web/css/modules/detailtable/cell/header.detailtable.css",
+
 
                 //联动
                 "com/fr/bi/web/css/modules/linkage/linkage.target.css",
@@ -654,7 +660,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/permissionmanage/logininfo/authority.logininfo.pane.css",
                 "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.batchset.pane.css",
                 "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.singleset.pane.css",
-                "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.addrole.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.singleaddrole.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.batchaddrole.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/authority.singleaddrole.pane.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/authority.batchaddrole.pane.css",
 
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
@@ -1281,8 +1290,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/permissionmanage/authoritypackagestree.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authorityset/authority.singleset.pane.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authorityset/authority.batchset.pane.js",
-                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.addrole.pane.js",
-                "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.addrole.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.singleaddrole.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.batchaddrole.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.batchaddrole.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.singleaddrole.js",
                 "com/fr/bi/web/js/modules/permissionmanage/logininfo/authority.logininfo.pane.js",
 
 
@@ -1333,6 +1344,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/selectdata.detailtablepopup.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/model.detailtable.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.js",
 
                 "com/fr/bi/web/js/modules/detailtablepopup/module/model/field/model.detailtablepopup.detail.dimension.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/model/model.detailtablepopup.js",
@@ -1841,6 +1856,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/flexbox.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.leftrightvertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.vertical.js",

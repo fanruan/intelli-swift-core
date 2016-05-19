@@ -1,0 +1,15 @@
+@import "../../../bibase";
+.bi-batch-add-role-searcher{
+  background: @color-bi-background-default;
+  & .selected-packages{
+    border-right: 1px solid @color-bi-border-normal;
+  }
+  & .role-item{
+    border: 1px solid @color-bi-border-normal;
+    .border-radius(2px);
+    &.active{
+      color: @color-bi-text;
+      background: @color-bi-background-highlight;
+    }
+  }
+}

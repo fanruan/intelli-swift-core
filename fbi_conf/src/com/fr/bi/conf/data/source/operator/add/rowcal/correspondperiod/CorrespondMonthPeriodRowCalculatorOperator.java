@@ -13,6 +13,7 @@ import com.fr.json.JSONObject;
 
 /**
  * Created by 小灰灰 on 2016/5/9.
+ * 同期
  */
 public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCalculatorOperator {
     @BICoreField
@@ -59,7 +60,7 @@ public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCal
 
     @Override
     protected String getAddColumnType() {
-        return BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT;
+        return BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP;
     }
 
     @Override

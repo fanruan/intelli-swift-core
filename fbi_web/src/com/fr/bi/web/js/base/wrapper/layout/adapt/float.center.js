@@ -1,9 +1,9 @@
 /**
  * 浮动的居中布局
  */
-BI.CenterVerticalAdaptLayout = BI.inherit(BI.Layout, {
+BI.FloatCenterAdaptLayout = BI.inherit(BI.Layout, {
     _defaultConfig: function () {
-        return BI.extend(BI.CenterVerticalAdaptLayout.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.FloatCenterAdaptLayout.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-float-center-layout",
             items: [],
             hgap: 0,
@@ -15,7 +15,7 @@ BI.CenterVerticalAdaptLayout = BI.inherit(BI.Layout, {
         });
     },
     _init: function () {
-        BI.CenterVerticalAdaptLayout.superclass._init.apply(this, arguments);
+        BI.FloatCenterAdaptLayout.superclass._init.apply(this, arguments);
         this.populate(this.options.items);
     },
 
@@ -29,7 +29,7 @@ BI.CenterVerticalAdaptLayout = BI.inherit(BI.Layout, {
     },
 
     populate: function (items) {
-        BI.CenterVerticalAdaptLayout.superclass.populate.apply(this, arguments);
+        BI.FloatCenterAdaptLayout.superclass.populate.apply(this, arguments);
         var self = this, o = this.options;
         var left = BI.createWidget({
             type: "bi.vertical",
@@ -61,4 +61,4 @@ BI.CenterVerticalAdaptLayout = BI.inherit(BI.Layout, {
         });
     }
 });
-$.shortcut('bi.float_center_adapt', BI.CenterVerticalAdaptLayout);
+$.shortcut('bi.float_center_adapt', BI.FloatCenterAdaptLayout);

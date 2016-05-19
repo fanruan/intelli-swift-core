@@ -85,6 +85,11 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     }
 
     @Override
+    public T getOriginalValue(int rowNumber) {
+        return columnReaderService.getOriginalValueByRow(rowNumber);
+    }
+
+    @Override
     public Iterator<Map.Entry<T, GroupValueIndex>> iterator() {
         return ascSet.iterator();
     }

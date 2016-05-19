@@ -4,21 +4,21 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.TableData;
-import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.common.BIMD5CoreWrapper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIBasicField;
+import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.data.db.DBTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -53,21 +53,33 @@ public abstract class AbstractTableSource implements ITableSource {
 
     @Override
     public BICore fetchObjectCore() {
-        try {
-            return new BITableSourceCore().fetchObjectCore();
-        } catch (UnsupportedDataTypeException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        } catch (BIAmountLimitUnmetException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-
-        }
-        return BIBasicCore.EMPTY_CORE;
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 
     //重新获取数据 guy
     public DBTable reGetBiTable() {
         dbTable = null;
         return getDbTable();
+    }
+
+    @Override
+    public Set<DBField> getParentFields(Set<ITableSource> sources) {
+        return new HashSet<DBField>();
+    }
+
+    @Override
+    public Set<DBField> getFacetFields(Set<ITableSource> sources) {
+        return getSelfFields(sources);
+    }
+
+    @Override
+    public Set<DBField> getSelfFields(Set<ITableSource> sources) {
+        Set<DBField> result = new HashSet<DBField>();
+        DBField[] fields = getFieldsArray(sources);
+        for (DBField field : fields) {
+            result.add(field);
+        }
+        return result;
     }
 
     @Override
@@ -216,7 +228,8 @@ public abstract class AbstractTableSource implements ITableSource {
             /**
              * Connery：原来传递的是MD5变量，把MD5当做ID传递了，这个是不对的。
              */
-            DBField field = new DBField(fetchObjectCore().getIDValue(), column.getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(column.getType(), column.getColumnSize(), column.getScale()), column.getColumnSize());
+
+            DBField field = column.toDBField(new BITable(fetchObjectCore().getIDValue()));
             field.setCanSetUseable(column.canSetUseable());
             list.add(field);
         }

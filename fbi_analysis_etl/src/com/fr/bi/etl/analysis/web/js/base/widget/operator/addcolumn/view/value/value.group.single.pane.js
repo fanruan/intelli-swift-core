@@ -194,7 +194,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
 
     update : function () {
         return {
-            field : this.options.field.value,
+            field : this.options.field,
             filter_value : this.range.getValue(),
             value : this.editor.getValue(),
             field_type : this.options.field_type

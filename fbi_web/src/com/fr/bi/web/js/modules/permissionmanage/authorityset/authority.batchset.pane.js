@@ -5,7 +5,8 @@ BI.AuthorityBatchSetPane = BI.inherit(BI.Widget, {
 
     _constants: {
         SHOW_EMPTY: 1,
-        SHOW_PANE: 2
+        SHOW_PANE: 2,
+        SHOW_SEARCHER: 3
     },
     
     _defaultConfig: function(){
@@ -58,50 +59,65 @@ BI.AuthorityBatchSetPane = BI.inherit(BI.Widget, {
     _createTab: function(v) {
         var self = this;
         switch (v) {
-            case this._constants.SHOW_EMPTY:
-                this.batchSetButton = BI.createWidget({
-                    type: "bi.button",
-                    text: BI.i18nText("BI-Have_Set_Package_Auth", 0),
-                    height: 30,
-                    width: 200
-                });
-                this.batchSetButton.on(BI.Button.EVENT_CHANGE, function(){
-                    self.rolesTab.setSelect(self._constants.SHOW_PANE);
-                });
-                return BI.createWidget({
-                    type: "bi.horizontal_auto",
-                    items: [this.batchSetButton, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Muti_Package_Auth_Hint"),
-                        height: 30,
-                        cls: ""
-                    }],
-                    vgap: 10
-                });
             case this._constants.SHOW_PANE:
                 this.roles = BI.createWidget({
-                    type: "bi.authority_add_role_pane"
+                    type: "bi.authority_batch_add_role_pane"
+                });
+                this.roles.on(BI.AuthorityBatchAddRolePane.EVENT_ADD_ROLE, function(){
+                    self.rolesTab.setSelect(self._constants.SHOW_SEARCHER);
+                    self.searcher.populate(self.packageIds);
                 });
                 return this.roles;
+            case this._constants.SHOW_SEARCHER:
+                this.searcher = BI.createWidget({
+                    type: "bi.batch_add_role_searcher"
+                });
+                this.searcher.on(BI.BatchAddRoleSearcher.EVENT_CANCEL, function(){
+                    self.rolesTab.setSelect(self._constants.SHOW_PANE);
+                });
+                this.searcher.on(BI.BatchAddRoleSearcher.EVENT_SAVE, function(v){
+                    self._updatePackageRoles(v);
+                    self.rolesTab.setSelect(self._constants.SHOW_PANE);
+                    self.fireEvent(BI.AuthorityBatchSetPane.EVENT_CHANGE);
+                });
+                return BI.createWidget({
+                    type: "bi.absolute",
+                    items: [{
+                        el: this.searcher,
+                        top: 0,
+                        left: -220,
+                        bottom: 0,
+                        right: 0
+                    }]
+                })
         }
+    },
+
+    _updatePackageRoles: function(roles){
+        var authSettings = Data.SharingPool.get("authority_settings");
+        var packagesAuth = authSettings.packages_auth;
+        var pAuth = packagesAuth[this.packageId] || [];
+        var newPAuth = pAuth.concat(roles);
+        BI.each(this.packageIds, function(i, pId){
+            packagesAuth[pId] = newPAuth;    
+        });
+        Data.SharingPool.put("authority_settings", authSettings);
+        BI.Utils.savePackageAuthority({
+            package_ids: this.packageIds,
+            roles: newPAuth
+        }, function(){});
     },
 
     setValue: function(v){
-        this.packageName.setText(BI.i18nText("BI-N_Packages", v.length));
-        this.batchSetButton.setText(BI.i18nText("BI-Have_Set_Package_Auth", v.length));
-        this.batchSetButton.setEnable(v.length !== 0);
+        this.packageIds = v;
+        this.packageName.setText(BI.isNotNull(v) ? BI.i18nText("BI-N_Packages", BI.uniq(v).length) : "");
+        this.rolesTab.setSelect(this._constants.SHOW_PANE);
+        BI.isNotNull(this.roles) && this.roles.populate(v);
     },
 
-    populate: function(packageIds, roles){
-        this.packageName.setText(BI.i18nText("BI-N_Packages", packageIds.length));
-        if(packageIds.length === 0) {
-            this.packageName.setEnable(false);
-            this.rolesTab.setSelect(this._constants.SHOW_EMPTY);
-            return;
-        }
-        this.packageName.setEnable(true);
-        this.roles.setValue(roles);
-        this.rolesTab.setSelect(this._constants.SHOW_PANE);
+    populate: function(){
+
     }
 });
+BI.AuthorityBatchSetPane.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.authority_batch_set_pane", BI.AuthorityBatchSetPane);

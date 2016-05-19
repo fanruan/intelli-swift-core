@@ -49,7 +49,7 @@ public class DetailAllGVIRunner extends AbstractGVIRunner {
                     executeUntilCallOver(paras, values, calledTargets);
                     Object[] ob = new Object[viewDimension.length];
                     for (int i = 0; i < viewDimension.length; i++) {
-                        ob[i] = viewDimension[i].createShowValue(values.get(viewDimension[i].getValue()));
+                        ob[i] = values.get(viewDimension[i].getValue());
                     }
                     set.add(new BIRowValue(rowIndex, ob));
                 }

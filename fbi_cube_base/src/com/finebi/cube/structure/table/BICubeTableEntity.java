@@ -9,6 +9,7 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.*;
+import com.finebi.cube.structure.table.property.BICubeTableProperty;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
@@ -202,6 +203,16 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     @Override
     public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
         return relationManager.getRelationService(path);
+    }
+
+    @Override
+    public void recordFieldNamesFromParent(Set<String> fieldNames) {
+        tableProperty.recordFieldNamesFromParent(fieldNames);
+    }
+
+    @Override
+    public Set<String> getFieldNamesFromParent() {
+        return tableProperty.getFieldNamesFromParent();
     }
 
     @Override

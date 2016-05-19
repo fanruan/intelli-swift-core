@@ -101,7 +101,7 @@ public class DateColumnFile implements ColumnFile<Long> {
     }
 
     @Override
-    public void addDataValue(long row, Long value) {
+    public void addDataValue(int row, Long value) {
         base.addDataValue(row, value);
     }
 

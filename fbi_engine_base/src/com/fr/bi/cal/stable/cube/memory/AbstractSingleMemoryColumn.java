@@ -52,8 +52,8 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     }
 
     @Override
-    public void addDataValue(long row, T value) {
-        detail.add((int) row, value);
+    public void addDataValue(int row, T value) {
+        detail.add(row, value);
     }
 
 

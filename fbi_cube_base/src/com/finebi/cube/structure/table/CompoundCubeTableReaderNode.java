@@ -220,4 +220,14 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     public boolean isRowCountAvailable() {
         return masterTable.isRowCountAvailable();
     }
+
+    @Override
+    public void recordFieldNamesFromParent(Set<String> fieldNames) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Set<String> getFieldNamesFromParent() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -148,10 +148,6 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     break;
             }
         });
-        this.east = BI.createWidget({
-            type: "bi.right",
-            items: [this.combo]
-        })
     },
 
     _createNumberCombo: function () {
@@ -178,10 +174,6 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     break;
             }
         });
-        this.east = BI.createWidget({
-            type: "bi.right",
-            items: [this.combo]
-        })
     },
 
     _createDateCombo: function () {
@@ -223,10 +215,6 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     break;
             }
         });
-        this.east = BI.createWidget({
-            type: "bi.right",
-            items: [this.combo]
-        })
     },
 
     _createFormulaCombo: function () {
@@ -259,10 +247,6 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
         this.calculateTargetButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self._updateFormula()
         });
-        this.east = BI.createWidget({
-            type: "bi.right",
-            items: [this.combo, this.calculateTargetButton]
-        })
     },
 
     _buildFilterPane: function () {
