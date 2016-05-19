@@ -10,14 +10,12 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by roy on 16/4/21.
@@ -46,9 +44,9 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
         BIDimension[] rowDimension = widget.getViewDimensions();
         DimensionCalculator[] row = new DimensionCalculator[widget.getViewDimensions().length];
         for (int i = 0; i < widget.getViewDimensions().length; i++) {
-            row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), new ArrayList<BITableSourceRelation>());
+            row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), widget.getTableSourceRelationList(rowDimension[i], session.getUserId()));
         }
-        GroupValueIndex gvi = widget.createFilterGVI(row, row[0].getField().getTableBelongTo(), session.getLoader(), session.getUserId()).AND(session.createFilterGvi(row[0].getField().getTableBelongTo()));
+        GroupValueIndex gvi = widget.createFilterGVI(row, widget.getTargetTable(), session.getLoader(), session.getUserId());
         createGroupValueWithParentValues(dataList, parentValues, gvi, 0, times);
         return dataList;
     }
@@ -59,15 +57,18 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
             BIDimension dimension = widget.getViewDimensions()[floors];
             ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable());
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey());
-            final ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
+            List<BITableSourceRelation> list = widget.getTableSourceRelationList(dimension, session.getUserId());
+            ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), list);
             if (times == -1) {
-                filterGvi.Traversal(new SingleRowTraversalAction() {
-                    @Override
-                    public void actionPerformed(int row) {
-                        //这里不该用getGroupValue,用sb给的gvi接口
-                        dataList.add((String) dataReader.getGroupValue(row));
+                Iterator<Map.Entry> it = dataReader.iterator();
+                while (it.hasNext()) {
+                    Map.Entry e = it.next();
+                    Object[] groupValue = new Object[1];
+                    groupValue[0] = e.getKey();
+                    if (!filterGvi.AND((GroupValueIndex) e.getValue()).isAllEmpty()) {
+                        dataList.add(e.getKey().toString());
                     }
-                });
+                }
             }
             if (times > 0 && (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE < dataReader.sizeOfGroup()) {
                 int start = (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE;
