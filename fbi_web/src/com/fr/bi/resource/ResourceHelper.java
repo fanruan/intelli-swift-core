@@ -2351,9 +2351,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
 
                 //带有序号的table tree
-                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js"
+                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js",
 
-
+                //工程配置
+                "com/fr/bi/web/js/config.js"
         };
     }
 
