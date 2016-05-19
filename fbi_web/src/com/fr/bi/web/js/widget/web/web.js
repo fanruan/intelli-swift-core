@@ -26,7 +26,7 @@ BI.WebPage = BI.inherit(BI.Widget, {
 
         this.del = BI.createWidget({
             type: "bi.icon_button",
-            cls: "web-page-button bi-list-item-hover img-shutdown-font",
+            cls: "web-page-button img-shutdown-font",
             title: BI.i18nText("BI-Delete"),
             height: 32,
             width: 32
@@ -38,7 +38,7 @@ BI.WebPage = BI.inherit(BI.Widget, {
 
         this.href = BI.createWidget({
             type: "bi.image_button_href",
-            cls: "web-page-button bi-list-item-hover"
+            cls: "web-page-button"
         });
 
         this.href.on(BI.ImageButtonHref.EVENT_CHANGE, function () {

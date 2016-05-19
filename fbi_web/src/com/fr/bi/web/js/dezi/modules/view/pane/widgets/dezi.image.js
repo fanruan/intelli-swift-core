@@ -20,8 +20,7 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
         var self = this;
         this.image = BI.createWidget({
             type: "bi.upload_image",
-            element: vessel,
-            height: '100%'
+            element: vessel
         });
 
         this.image.on(BI.UploadImage.EVENT_CHANGE, function () {
@@ -29,7 +28,11 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
         });
 
         this.image.on(BI.UploadImage.EVENT_DESTROY, function () {
-            self.model.destroy()
+            BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete"), function (v) {
+                if (v === true) {
+                    self.model.destroy();
+                }
+            });
         });
     },
 
