@@ -97,7 +97,7 @@ public class DateKeyTargetFilterValue implements DateFilterValue {
         this.valueSet = new HashSet<BIDateValue>();
         if(jo.has("filter_value")){
             JSONObject filterValue = jo.getJSONObject("filter_value");
-            this.valueSet.add(BIDateValueFactory.createDateValue(filterValue.getInt("type"), filterValue.getLong("value")));
+            this.valueSet.add(BIDateValueFactory.createDateValue(filterValue.getInt("type"), filterValue.getLong("values")));
             this.group = filterValue.getInt("type");
         }
     }

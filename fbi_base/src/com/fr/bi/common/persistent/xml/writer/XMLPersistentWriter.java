@@ -1,5 +1,6 @@
 package com.fr.bi.common.persistent.xml.writer;
 
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLWriter;
 
@@ -38,8 +39,9 @@ public class XMLPersistentWriter implements XMLWriter {
     public void writeXML(XMLPrintWriter xmlPrintWriter) {
         try {
             beanWrapper.generateWriter(disposedBeans).writeValue(xmlPrintWriter);
+            xmlPrintWriter.flush();
         } catch (Exception e) {
-
+            BILogger.getLogger().error(e.getMessage(), e);
         }
     }
 

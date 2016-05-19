@@ -65,7 +65,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             BI.each(views, function (region, arr) {
                 BI.each(arr, function (i, id) {
                     if (key2 == id) {
-                        arr.push(copy);
+                        arr = arr.splice(i + 1, 0, copy);
                         return false;
                     }
                 })

@@ -2063,6 +2063,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.comparearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.comparebar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.compareaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.fallaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.rangearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.combine.js",
+                "com/fr/bi/web/js/widget/detailchart/factory.charts.js",
 
                 //年份控件
                 "com/fr/bi/web/js/widget/year/trigger.year.js",
@@ -2351,9 +2358,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
 
                 //带有序号的table tree
-                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js"
+                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js",
 
-
+                //工程配置
+                "com/fr/bi/web/js/config.js"
         };
     }
 
