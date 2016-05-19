@@ -325,7 +325,10 @@ public class SystemPackageTest extends TestCase {
             manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("c"), 2);
             assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("a")).getPosition() == 0);
             assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("b")).getPosition() == 1);
-            assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("c")).getPosition() == 3);
+            assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("c")).getPosition() == 2);
+
+            manager.getGroup(user.getUserId(), new BIGroupTagName("a")).setPosition(4);
+            assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("a")).getPosition() == 4);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
