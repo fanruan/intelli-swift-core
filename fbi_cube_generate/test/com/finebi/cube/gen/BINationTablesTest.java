@@ -86,21 +86,6 @@ public class BINationTablesTest extends BICubeTestBase {
             assertEquals(idList.toArray(), new String[]{"nameA", "nameB"});
 
 
-////按流程从上到下走一遍
-////            ITableSource iTableSource=new ITableSource();
-//            ITableKey iTableKey=new ITableKey() {
-//                @Override
-//                public String getSourceID() {
-//                    return null;
-//                }
-//            };
-//            tableEntity = (BICubeTableEntity) cube.getCubeTableWriter();
-//            Set<BIColumnKey> cubeColumnInfo = tableEntity.getCubeColumnInfo();
-//            for (BIColumnKey biColumnKey : cubeColumnInfo) {
-//                    biColumnKey.getColumnName();
-//            }
-
-
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
