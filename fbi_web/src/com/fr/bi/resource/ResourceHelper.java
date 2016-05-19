@@ -1585,7 +1585,6 @@ public class ResourceHelper {
 
                 //文本编辑区
                 "com/fr/bi/web/css/widget/textarea/textarea.css",
-                "com/fr/bi/web/css/widget/textarea/trigger/textarea.trigger.css",
 
                 //图片组件
                 "com/fr/bi/web/css/widget/image/uploadimage.css",
@@ -2016,7 +2015,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/base/editor/editor.adapt.js",
                 "com/fr/bi/web/js/widget/base/editor/editor.sign.initial.js",
                 "com/fr/bi/web/js/widget/base/editor/editor.sign.style.js",
-                "com/fr/bi/web/js/widget/base/editor/editor.href.js",
+                "com/fr/bi/web/js/widget/base/editor/editor.clear.js",
 
                 //segment控件
                 "com/fr/bi/web/js/widget/base/segment/button.line.segment.js",
@@ -2260,7 +2259,6 @@ public class ResourceHelper {
 
                 //文本编辑区
                 "com/fr/bi/web/js/widget/textarea/textarea.js",
-                "com/fr/bi/web/js/widget/textarea/trigger/textarea.trigger.js",
 
                 //文本工具条
                 "com/fr/bi/web/js/widget/texttoolbar/sizechooser/texttoolbar.sizechooser.js",

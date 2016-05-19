@@ -135,9 +135,6 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
 
     setState: function (v) {
         var o = this.options;
-        if (BI.isEmpty(v)) {
-            this.editor.setValue(o.text);
-        }
         v = (BI.isEmpty(v) || v == o.text) ? o.text : v + "(" + o.text + ")";
         this.editor.setState(v);
     }

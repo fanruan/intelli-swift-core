@@ -36,7 +36,7 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
         JSONObject jo = new JSONObject(tableJSON);
         JSONArray items = jo.getJSONArray(Constants.ITEMS);
         UserTableSource source = AnalysisETLSourceFactory.createTableSource(items, userId).createUserTableSource(userId);
-        ICubeTableService service = new PartCubeDataLoader(userId, source).getTableIndex(source.fetchObjectCore());
+        ICubeTableService service = PartCubeDataLoader.getInstance(userId, source).getTableIndex(source.fetchObjectCore());
         JSONArray ja = new JSONArray();
         BIKey key = new IndexKey(field);
         Set set = new HashSet();

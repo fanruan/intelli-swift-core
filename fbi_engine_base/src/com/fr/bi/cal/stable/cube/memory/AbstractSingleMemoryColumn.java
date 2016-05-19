@@ -32,7 +32,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     private String fieldName;
     protected CubeTreeMap getter;
     protected Object getterLock = new Object();
-    protected List<T> detail;
+    protected AnyIndexArray<T> detail;
 
     public AbstractSingleMemoryColumn() {
         initDetail();

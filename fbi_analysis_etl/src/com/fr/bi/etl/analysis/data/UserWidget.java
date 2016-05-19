@@ -19,15 +19,25 @@ import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by 小灰灰 on 2016/4/12.
  */
 public class UserWidget {
 
+    private int maxRow = Integer.MAX_VALUE;
+
     private BIWidget widget;
 
     private long userId;
+
+    private Object lock = new Object();
+
+    private UserSession session = new UserSession();
+
+    private transient Map<Integer, List> tempValue = new ConcurrentHashMap<Integer, List>();
 
     public UserWidget(BIWidget widget, long userId) {
         this.widget = widget;
@@ -36,34 +46,58 @@ public class UserWidget {
 
 
     public List<List> createData(int start, int end) {
-        if (widget.getType() == BIReportConstant.WIDGET.DETAIL){
-            return createDetailData(start, end);
-        } else {
-            return createTableData(start, end); 
+        end = Math.min(end, maxRow);
+        if (!contains(start, end)){
+            synchronized (lock){
+                if (!contains(start, end)){
+                    if (widget.getType() == BIReportConstant.WIDGET.DETAIL){
+                        createDetailData(start, end);
+                    } else {
+                        createTableData(end);
+                    }
+                }
+            }
         }
+        end = Math.min(end, maxRow);
+        return getDate(start, end);
     }
 
-    private List<List> createTableData(int start, int end) {
-        UserSession session = new UserSession();
+    private List<List> getDate(int start, int end) {
         List<List> values = new ArrayList<List>();
-        List<List> v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
-        int rowCount = 0;
-        for (int i = 0; i < v.size(); i++){
-            if (rowCount >= start && rowCount < end){
-                values.add(v.get(i));
-            }
-            rowCount ++;
-        }
-        while (v.size() == PagingFactory.PAGE_PER_GROUP_20 && rowCount < end){
-            v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
-            for (int i = 0; i < v.size(); i++){
-                if (rowCount >= start && rowCount < end){
-                    values.add(v.get(i));
-                }
-                rowCount ++;
-            }
+        for (int i = start; i< end; i++){
+            values.add(tempValue.get(i));
         }
         return values;
+    }
+
+    private boolean contains(int start, int end) {
+        for (int i = start; i< end; i++){
+            if (!tempValue.containsKey(i)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void createTableData(int end) {
+        List<List> v;
+        int rowCount = tempValue.size();
+        if (rowCount == 0){
+            v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
+        } else {
+            v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
+        }
+        while (rowCount < end){
+            for (int i = 0; i < v.size(); i++){
+                tempValue.put(rowCount, v.get(i));
+                rowCount ++;
+            }
+            if (v.size() != PagingFactory.PAGE_PER_GROUP_20 ){
+                maxRow = rowCount;
+                break;
+            }
+            v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
+        }
     }
 
     private List<List> getNextValue(UserSession session, int op){
@@ -99,35 +133,30 @@ public class UserWidget {
         return values;
     }
 
-    private List<List> createDetailData(int start, int end) {
-        List<List> values = new ArrayList<List>();
+    private void createDetailData(int start, int end) {
         int step = end - start;
         Paging paging = PagingFactory.createPaging(step);
         int page = start / step;
         paging.setCurrentPage(page);
         DetailExecutor exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
         List<List> data =  exe.getData();
-        for (int i = start - page * step; i < data.size(); i++){
-            List d = data.get(i);
-            List l = new ArrayList();
-            for (int k = 0; k < d.size(); k++){
-                l.add(d.get(k));
-            }
-            values.add(l);
+        int row = page*step;
+        for (int i = 0; i < data.size(); i++){
+            tempValue.put(i + row, data.get(i));
+        }
+        if (data.size() != step ){
+            maxRow = row + data.size();
         }
         paging.setCurrentPage(page + 1);
-        int leftCount = end - values.size();
         exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
         data =  exe.getData();
-        for (int i =0; i < data.size() && i < leftCount; i++){
-            List d = data.get(i);
-            List l = new ArrayList();
-            for (int k = 0; k < d.size(); k++){
-                l.add(d.get(k));
-            }
-            values.add(l);
+        row = (page + 1) * step;
+        for (int i =0; i < data.size(); i++){
+            tempValue.put(i + row, data.get(i));
         }
-        return values;
+        if (data.size() != step ){
+            maxRow = row + data.size();
+        }
     }
 
     private class UserSession extends BISession{
