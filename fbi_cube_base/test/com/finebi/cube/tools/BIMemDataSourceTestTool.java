@@ -561,6 +561,23 @@ public class BIMemDataSourceTestTool implements ITableSource {
 
     }
 
+    @Override
+    public Set<DBField> getParentFields(Set<ITableSource> sources) {
+        return null;
+    }
+
+    @Override
+    public Set<DBField> getFacetFields(Set<ITableSource> sources) {
+        return null;
+    }
+
+    @Override
+    public Set<DBField> getSelfFields(Set<ITableSource> sources) {
+        return null;
+    }
+
+
+
     public static void main(String[] args) {
         Calendar calendar = Calendar.getInstance();
         System.out.println(calendar.getTime());

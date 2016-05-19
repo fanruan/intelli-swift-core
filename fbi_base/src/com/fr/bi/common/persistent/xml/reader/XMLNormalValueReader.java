@@ -20,6 +20,9 @@ public class XMLNormalValueReader extends XMLValueReader {
     protected void readerContent(XMLableReader xmLableReader) {
         try {
             String fieldName = xmLableReader.getTagName();
+            if ("analysisPackageManager".equals(fieldName)) {
+                System.out.println("find");
+            }
             String fieldClass = xmLableReader.getAttrAsString("class", "null");
             String uuid = xmLableReader.getAttrAsString(BIXMLTag.APPEND_INFO, "null");
             BIBeanXMLReaderWrapper wrapper;

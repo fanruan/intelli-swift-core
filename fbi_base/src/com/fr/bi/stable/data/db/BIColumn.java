@@ -1,5 +1,6 @@
 package com.fr.bi.stable.data.db;
 
+import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.IColumn;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
@@ -16,7 +17,7 @@ public class BIColumn extends BIDBObject implements IColumn {
      *
      */
     public static final int DEFALUTSCALE = 15;
-    
+
     public static final int DEFALUTCOLUMN_SIZE = 100;
 
     public String getRemark() {
@@ -50,7 +51,7 @@ public class BIColumn extends BIDBObject implements IColumn {
     public BIColumn(String columnName, int type, int column_size) {
         this(columnName, columnName, type, column_size, DEFALUTSCALE);
     }
-    
+
     public BIColumn(String columnName, int type) {
         this(columnName, columnName, type, DEFALUTCOLUMN_SIZE, DEFALUTSCALE);
     }
@@ -189,6 +190,10 @@ public class BIColumn extends BIDBObject implements IColumn {
         return scale;
     }
 
+    public DBField toDBField(Table table) {
+
+        return new DBField(table.getID().getIdentityValue(), getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getType(), getColumnSize(), getScale()), getColumnSize());
+    }
 
     /**
      * 克隆方法
@@ -209,7 +214,7 @@ public class BIColumn extends BIDBObject implements IColumn {
                 && ((BIColumn) o2).isPrimaryKey() == this.isPrimaryKey();
     }
 
-    public boolean canSetUseable(){
+    public boolean canSetUseable() {
         return true;
     }
 }

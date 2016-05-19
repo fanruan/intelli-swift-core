@@ -145,4 +145,14 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
     public void clear() {
 
     }
+
+    @Override
+    public void recordFieldNamesFromParent(Set<String> fieldNames) {
+
+    }
+
+    @Override
+    public Set<String> getFieldNamesFromParent() {
+        return null;
+    }
 }

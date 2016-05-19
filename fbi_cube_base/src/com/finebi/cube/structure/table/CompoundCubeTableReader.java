@@ -60,13 +60,17 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         }
         if (isParentAvailable()) {
             for (DBField field : parentTable.getFieldInfo()) {
-                if (!compoundFields.contains(field)) {
+                if (!compoundFields.contains(field) && isInFacedFields(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, parentTable);
 
                 }
             }
         }
+    }
+
+    private boolean isInFacedFields(DBField field) {
+        return getFieldNamesFromParent().contains(field.getFieldName());
     }
 
     private boolean isParentAvailable() {
@@ -228,5 +232,15 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     @Override
     public boolean isRowCountAvailable() {
         return hostTable.isRowCountAvailable() || (isParentAvailable() && parentTable.isRowCountAvailable());
+    }
+
+    @Override
+    public void recordFieldNamesFromParent(Set<String> fieldNames) {
+        hostTable.recordFieldNamesFromParent(fieldNames);
+    }
+
+    @Override
+    public Set<String> getFieldNamesFromParent() {
+        return hostTable.getFieldNamesFromParent();
     }
 }

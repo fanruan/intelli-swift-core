@@ -1,15 +1,15 @@
 /**
  * Created by Young's on 2016/5/17.
  */
-BI.AddRoleSearcher = BI.inherit(BI.Widget, {
+BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
     _defaultConfig: function(){
-        return BI.extend(BI.AddRoleSearcher.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-add-role-searcher"
+        return BI.extend(BI.SingleAddRoleSearcher.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-single-add-role-searcher"
         })
     },
 
     _init: function(){
-        BI.AddRoleSearcher.superclass._init.apply(this, arguments);
+        BI.SingleAddRoleSearcher.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.roles = BI.createWidget({
             type: "bi.button_group",
@@ -26,7 +26,7 @@ BI.AddRoleSearcher = BI.inherit(BI.Widget, {
              saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
         });
 
-        var searcher = BI.createWidget({
+        this.searcher = BI.createWidget({
             type: "bi.searcher",
             el: {
                 type: "bi.search_editor",
@@ -55,7 +55,7 @@ BI.AddRoleSearcher = BI.inherit(BI.Widget, {
                 }
             }
         });
-        searcher.setAdapter(this.roles);
+        this.searcher.setAdapter(this.roles);
         
         var cancelButton = BI.createWidget({
             type: "bi.button",
@@ -64,7 +64,7 @@ BI.AddRoleSearcher = BI.inherit(BI.Widget, {
             height: 30
         });
         cancelButton.on(BI.Button.EVENT_CHANGE, function(){
-            self.fireEvent(BI.AddRoleSearcher.EVENT_CANCEL);
+            self.fireEvent(BI.SingleAddRoleSearcher.EVENT_CANCEL);
         });
         
         var saveButton = BI.createWidget({
@@ -73,7 +73,7 @@ BI.AddRoleSearcher = BI.inherit(BI.Widget, {
             height: 30
         });
         saveButton.on(BI.Button.EVENT_CHANGE, function(){
-            self.fireEvent(BI.AddRoleSearcher.EVENT_SAVE, self.roles.getValue());
+            self.fireEvent(BI.SingleAddRoleSearcher.EVENT_SAVE, self.roles.getValue());
         });
         
         BI.createWidget({
@@ -82,7 +82,7 @@ BI.AddRoleSearcher = BI.inherit(BI.Widget, {
             items: [{
                 el: {
                     type: "bi.left",
-                    items: [searcher],
+                    items: [this.searcher],
                     tgap: 10
                 },
                 height: 50
@@ -102,30 +102,41 @@ BI.AddRoleSearcher = BI.inherit(BI.Widget, {
                 height: 50
             }]
         });
-        this.populate();
     },
     
-    populate: function(){
-        var self = this, o = this.options;
+    populate: function(packageId){
         var allRoles = BI.Utils.getAuthorityRoles();
         var sortedRoles = BI.sortBy(allRoles, function(index, item) {
             return item.departmentid;
         });
-        var settedRoles = o.roles;
+        var settedRoles = BI.Utils.getPackageAuthorityByID(packageId);
         var items = [];
         BI.each(sortedRoles, function(i, role) {
+            var found = BI.some(settedRoles, function(j, r){
+                 if(r.role_id === role.id && r.role_type === role.role_type) {
+                     return true;
+                 }
+            });
+            if(found === true) {
+                return;
+            }
+            var roleName = role.text || (role.department_name  + ", " + role.post_name);
             items.push({
                 type: "bi.text_button",
                 cls: "role-item",
-                text: role.department_name  + ", " + role.post_name,
-                value: role.id,
+                text: roleName,
+                value: {
+                    role_id: role.id,
+                    role_type: role.role_type
+                },
                 height: 30,
                 hgap: 5
             });
         });
         this.roles.populate(items);
+        this.searcher.stopSearch();
     }
 });
-BI.AddRoleSearcher.EVENT_CANCEL = "EVENT_CANCEL";
-BI.AddRoleSearcher.EVENT_SAVE = "EVENT_SAVE";
-$.shortcut("bi.add_role_searcher", BI.AddRoleSearcher);
+BI.SingleAddRoleSearcher.EVENT_CANCEL = "EVENT_CANCEL";
+BI.SingleAddRoleSearcher.EVENT_SAVE = "EVENT_SAVE";
+$.shortcut("bi.single_add_role_searcher", BI.SingleAddRoleSearcher);

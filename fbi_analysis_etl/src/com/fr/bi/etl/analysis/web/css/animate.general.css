@@ -200,16 +200,16 @@
   animation: background-change 0.5s ease;
 }
 @keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
 }
 @-webkit-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
 }
 @-moz-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
 }
 @-o-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
 }
 .bi-message-mask {
   -webkit-animation: background-change 0.5s ease;
@@ -218,14 +218,14 @@
   animation: background-change 0.5s ease;
 }
 @keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
 }
 @-webkit-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
 }
 @-moz-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
 }
 @-o-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
 }

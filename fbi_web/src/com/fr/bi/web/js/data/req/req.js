@@ -251,17 +251,11 @@ Data.Req = BIReq = {
             callback(res);
         })
     },
-    reqAuthorityByPackageId: function (packageId) {
-         return BI.requestSync("fr_bi_configure", "get_package_authority", {packageId:packageId});;
-    },
-    reqAllAuthority: function () {
-        var rolesFromServer = BI.requestSync("fs_set", "auth_getAllRole_withDeptAll", {});
-        return rolesFromServer;
-    },
-    reqUpdatePackageAuthority: function (data, callback) {
+    
+    reqSavePackageAuthority: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "save_package_authority", data, function (res) {
             callback(res);
-        })
+        });
     },
 
     reqAllBusinessPackages: function(callback) {
