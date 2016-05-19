@@ -10,7 +10,8 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         }
         this.set("allHistory", false)
         if (BI.isNull(this.options.etlType)){
-            this.addItemAfter(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_FIELD, -1)
+
+            this.addItemAfter(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_FIELD, -1, new BI.AnalysisETLOperatorSelectDataModel().update())
         } else {
             BI.each(self._initItems(BI.deepClone(this.options), []), function (i, item) {
                 self.addItemAfter(item.op, i - 1, item.table)
