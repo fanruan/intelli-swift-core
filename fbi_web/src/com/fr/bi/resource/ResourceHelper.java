@@ -660,7 +660,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/permissionmanage/logininfo/authority.logininfo.pane.css",
                 "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.batchset.pane.css",
                 "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.singleset.pane.css",
-                "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.addrole.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.singleaddrole.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.batchaddrole.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/authority.singleaddrole.pane.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/authority.batchaddrole.pane.css",
 
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
@@ -1287,8 +1290,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/permissionmanage/authoritypackagestree.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authorityset/authority.singleset.pane.js",
                 "com/fr/bi/web/js/modules/permissionmanage/authorityset/authority.batchset.pane.js",
-                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.addrole.pane.js",
-                "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.addrole.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.singleaddrole.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.batchaddrole.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.batchaddrole.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.singleaddrole.js",
                 "com/fr/bi/web/js/modules/permissionmanage/logininfo/authority.logininfo.pane.js",
 
 
@@ -2058,6 +2063,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.comparearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.comparebar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.compareaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.fallaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.rangearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.combine.js",
+                "com/fr/bi/web/js/widget/detailchart/factory.charts.js",
 
                 //年份控件
                 "com/fr/bi/web/js/widget/year/trigger.year.js",
@@ -2346,9 +2358,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
 
                 //带有序号的table tree
-                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js"
+                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js",
 
-
+                //工程配置
+                "com/fr/bi/web/js/config.js"
         };
     }
 

@@ -1302,7 +1302,7 @@
                         var groupType = dGroup.type;
                         return {
                             filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                            filter_value: {value: v.value[0], type: groupType},
+                            filter_value: {values: v.value[0], type: groupType},
                             _src: {field_id: BI.Utils.getFieldIDByDimensionID(v.dId)}
                         };
                 }
@@ -1583,7 +1583,7 @@
             }
         }
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
-            filterValue.value = parseComplexDate(filterValue);
+            filterValue.values = parseComplexDate(filterValue);
             filterValue.type = BICst.GROUP.YMD;
         }
         return filterValue;

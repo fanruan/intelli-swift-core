@@ -89,7 +89,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                     self._startDrag(id, ui.position, e);
                 },
                 drag: function (e, ui) {
-                    self._drag(id, size, ui.position);
+                    self._drag(id, size || {}, ui.position);
                 },
                 stop: function (e, ui) {
                     self._stopDrag(widget);
@@ -276,8 +276,12 @@ BI.Fit = BI.inherit(BI.Widget, {
     copyRegion: function (id, newId) {
         var flag = false;
         var region = this.arrangement.getRegionByName(id);
+        var el = this._createItem(newId, {
+            width: region.width,
+            height: region.height
+        });
         if (!(flag = this.arrangement.addRegion({
-                el: this._createItem(newId),
+                el: el,
                 width: region.width,
                 height: region.height
             }, {
@@ -315,8 +319,8 @@ BI.Fit = BI.inherit(BI.Widget, {
         var result = [];
         var widgets = Data.SharingPool.cat("widgets");
         BI.each(widgets, function (id, widget) {
-            var item = self._createItem(id);
             var bounds = widget.bounds;
+            var item = self._createItem(id, bounds);
             result.push({
                 el: item,
                 left: bounds.left,

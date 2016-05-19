@@ -29,8 +29,8 @@ public class BIConfigureManagerCenter {
         return StableFactory.getMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, BISystemPackageConfigurationProvider.class);
     }
    /** 获取角色权限接口*/
-    public static BISystemPackAndAuthConfigurationProvider getPackageAndAuthorityManager() {
-        return StableFactory.getMarkedObject(BISystemPackAndAuthConfigurationProvider.XML_TAG, BISystemPackAndAuthConfigurationProvider.class);
+    public static BIAuthorityManageProvider getAuthorityManager() {
+        return StableFactory.getMarkedObject(BIAuthorityManageProvider.XML_TAG, BIAuthorityManageProvider.class);
     }
     /**
      * 获得表关联的接口

@@ -386,7 +386,9 @@ var _JS = [
 
     "detail/mvc.adaptivearrangement.js",
 
-    "detail/mvc.detailcharts.js"
+    "detail/mvc.detailcharts.js",
+
+    "detail/mvc.detailcombinecharts.js"
 ];
 
 
@@ -585,7 +587,8 @@ var _Routes = {
     "/arrangement": "ArrangementView",
     "/adaptive_arrangement": "AdaptiveArrangementView",
 
-    "/detail_chart": "DetailChartView"
+    "/detail_chart": "DetailChartView",
+    "/detail_combine_chart": "DetailCombineChartView"
 };
 
 var _Models = {};
@@ -1368,6 +1371,10 @@ _Models.detail = [{
         pId: 31,
         text: "bi.detail_chart",
         value: "detail_chart"
+    }, {
+        pId: 31,
+        text: "bi.detail_combine_chart",
+        value: "detail_combine_chart"
     }];
 _Models.component = [];
 _Models.module = [];
