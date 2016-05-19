@@ -15,5 +15,6 @@ BI.AnalysisETLOperatorSelectNoneDataController = BI.inherit(BI.AnalysisETLOperat
         BI.AnalysisETLOperatorSelectNoneDataController.superclass.populate.apply(this, arguments);
         this.refreshCenterState(widget);
         this.refreshPopData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, widget, model)
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.getValue(ETLCst.FIELDS))
     }
 })
