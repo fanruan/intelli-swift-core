@@ -110,7 +110,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
                 return Double.parseDouble(value);
             }
             case DBConstant.COLUMN.DATE: {
-                return new Date(Long.valueOf(value).longValue());
+                return Long.valueOf(value).longValue();
             }
         }
         return null;
@@ -134,7 +134,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
                 return value.toString();
             }
             case DBConstant.COLUMN.DATE: {
-                return new Date(value.longValue());
+                return value.longValue();
             }
         }
         return null;

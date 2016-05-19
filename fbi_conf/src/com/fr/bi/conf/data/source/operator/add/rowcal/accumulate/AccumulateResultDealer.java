@@ -32,7 +32,7 @@ public class AccumulateResultDealer implements ResultDealer {
 			private double v = 0;
 			@Override
 			public void actionPerformed(int row) {
-				Double d =  (Double) ti.getRow(key, row);
+				Number d =  (Number) ti.getRow(key, row);
 				if(d != null){
 					v += d.doubleValue();
 				}
