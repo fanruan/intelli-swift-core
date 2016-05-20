@@ -3,7 +3,7 @@ package com.fr.bi.conf.data.source.operator;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.json.JSONTransform;
@@ -26,7 +26,7 @@ public interface IETLOperator extends XMLable, JSONTransform, BICoreService {
      * @param tables 表数组
      * @return 处理过的表
      */
-    PersistentTable getBITable(PersistentTable[] tables);
+    IPersistentTable getBITable(IPersistentTable[] tables);
 
     boolean isAddColumnOprator();
 

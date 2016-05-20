@@ -3,9 +3,9 @@ package com.fr.bi.conf.data.source.operator.add;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.AbstractETLOperator;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -74,9 +74,9 @@ public abstract class AbstractAddColumnOperator extends AbstractETLOperator {
     }
 
     @Override
-    public PersistentTable getBITable(PersistentTable[] tables) {
-        PersistentTable biTable = getBITable();
-        biTable.addColumn(new BIColumn(fieldName, getClassType()));
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable biTable = getBITable();
+        biTable.addColumn(new PersistentField(fieldName, getClassType()));
         return biTable;
     }
     

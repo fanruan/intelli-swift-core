@@ -4,9 +4,9 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -66,14 +66,13 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
     }
 
 
-
     @Override
-    public PersistentTable getBITable(PersistentTable[] tables) {
-        PersistentTable persistentTable = getBITable();
-        for (PersistentTable t : tables) {
-            for (BIColumn c :t.getColumnArray()){
-                if (!uselessFields.contains(c.getFieldName())){
-                    persistentTable.addColumn(new BIColumn(c.getFieldName(), c.getType()));
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
+        for (IPersistentTable t : tables) {
+            for (PersistentField c : t.getFieldList()) {
+                if (!uselessFields.contains(c.getFieldName())) {
+                    persistentTable.addColumn(new PersistentField(c.getFieldName(), c.getType()));
                 }
             }
         }

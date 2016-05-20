@@ -8,7 +8,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.json.JSONObject;
@@ -39,7 +39,7 @@ public class BIOccupiedTableSource implements ITableSource {
     }
 
     @Override
-    public PersistentTable getDbTable() {
+    public IPersistentTable getDbTable() {
         return null;
     }
 

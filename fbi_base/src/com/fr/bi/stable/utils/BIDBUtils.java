@@ -217,7 +217,7 @@ public class BIDBUtils {
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             ColumnInformation[] columns = com.fr.data.core.db.DBUtils.checkInColumnInformation(conn, dialect, query);
             for (int i = 0, cols = columns.length; i < cols; i++) {
-                BIColumn column = new BIColumn(columns[i].getColumnName(), null, columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
+                PersistentField column = new PersistentField(columns[i].getColumnName(), null, columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
                 table.addColumn(column);
             }
         } catch (Exception e) {
@@ -248,7 +248,7 @@ public class BIDBUtils {
             jo.put("tableName", tableName);
             int rowcount = dm.getRowCount();
             for (int i = 0; i < cols; i++) {
-                BIColumn column = new BIColumn(dm.getColumnName(i), null, rowcount == 0 ? java.sql.Types.VARCHAR : resloveValue(dm.getValueAt(0, i)), 255, 15);
+                PersistentField column = new PersistentField(dm.getColumnName(i), null, rowcount == 0 ? java.sql.Types.VARCHAR : resloveValue(dm.getValueAt(0, i)), 255, 15);
                 persistentTable.addColumn(column);
             }
             return persistentTable;
@@ -310,11 +310,11 @@ public class BIDBUtils {
             }
             boolean columnKey = ((Boolean) item.get("column_key")).booleanValue();
             int columnSize = ((Integer) item.get("column_size")).intValue();
-            int decimal_digits = BIColumn.DEFALUTSCALE;
+            int decimal_digits = PersistentField.DEFALUTSCALE;
             if (item.containsKey("DECIMAL_DIGITS")) {
                 decimal_digits = (Integer) item.get("DECIMAL_DIGITS");
             }
-            dbTable.addColumn(new BIColumn(columnName, columnNameText, columnType, columnKey, columnSize, decimal_digits));
+            dbTable.addColumn(new PersistentField(columnName, columnNameText, columnType, columnKey, columnSize, decimal_digits));
         }
         return dbTable;
     }

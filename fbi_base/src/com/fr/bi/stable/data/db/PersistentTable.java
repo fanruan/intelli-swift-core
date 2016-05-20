@@ -1,5 +1,6 @@
 package com.fr.bi.stable.data.db;
 
+import com.fr.bi.stable.utils.program.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONCreator;
@@ -11,12 +12,13 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * BI数据库Table对象
+ * 持久化的Table对象
  *
  * @author Daniel-pc
+ * @author Connery
  */
-public class PersistentTable implements Serializable, JSONCreator {
-    private List<BIColumn> columnList = new ArrayList<BIColumn>();
+public class PersistentTable implements  IPersistentTable {
+    private List<PersistentField> fieldList = new ArrayList<PersistentField>();
     private String remark;
     private String schema;
     protected String tableName;
@@ -32,8 +34,9 @@ public class PersistentTable implements Serializable, JSONCreator {
      *
      * @param column 列
      */
-    public void addColumn(BIColumn column) {
-        columnList.add(column);
+    @Override
+    public void addColumn(PersistentField column) {
+        fieldList.add(column);
     }
 
 
@@ -48,17 +51,21 @@ public class PersistentTable implements Serializable, JSONCreator {
         JSONObject jo = new JSONObject();
         jo.put("tableName", getTableName());
         jo.put("schema", getSchema());
-        Iterator<BIColumn> iter = columnList.iterator();
+        Iterator<PersistentField> iter = fieldList.iterator();
         JSONArray ja = new JSONArray();
         while (iter.hasNext()) {
-            BIColumn column = iter.next();
+            PersistentField column = iter.next();
             ja.put(column.createJSON());
         }
         jo.put("fields", ja);
         return jo;
     }
 
+    public List<PersistentField> getFieldList() {
+        return BICollectionUtils.unmodifiedCollection(fieldList);
+    }
 
+    @Override
     public String getSchema() {
         return schema;
     }
@@ -69,6 +76,7 @@ public class PersistentTable implements Serializable, JSONCreator {
      * @return
      */
 
+    @Override
     public String getTableName() {
         return tableName;
     }
@@ -83,6 +91,7 @@ public class PersistentTable implements Serializable, JSONCreator {
         this.tableName = tableName;
     }
 
+    @Override
     public String getRemark() {
         return remark;
     }
@@ -107,31 +116,20 @@ public class PersistentTable implements Serializable, JSONCreator {
      */
     @Override
     public boolean equals(Object o2) {
-        return o2 instanceof PersistentTable
-                && ComparatorUtils.equals(schema, ((PersistentTable) o2).getSchema())
-                && ComparatorUtils.equals(tableName, ((PersistentTable) o2).getTableName());
+        return o2 instanceof IPersistentTable
+                && ComparatorUtils.equals(schema, ((IPersistentTable) o2).getSchema())
+                && ComparatorUtils.equals(tableName, ((IPersistentTable) o2).getTableName());
     }
+
 
     /**
      * 获取遍历column的list
      *
      * @return
      */
-    public Iterator<BIColumn> getBIColumnIterator() {
-        return this.columnList.iterator();
-    }
-
-    public BIColumn[] getColumnArray() {
-        return this.columnList.toArray(new BIColumn[this.columnList.size()]);
-    }
-
-    /**
-     * 获取遍历column的list
-     *
-     * @return
-     */
-    public int getBIColumnLength() {
-        return this.columnList.size();
+    @Override
+    public int getFieldSize() {
+        return this.fieldList.size();
     }
 
     /**
@@ -140,13 +138,15 @@ public class PersistentTable implements Serializable, JSONCreator {
      * @param index list的index
      * @return
      */
-    public BIColumn getBIColumn(int index) {
-        return (BIColumn) this.columnList.get(index);
+    @Override
+    public PersistentField getField(int index) {
+        return this.fieldList.get(index);
     }
 
-    public BIColumn getBIColumn(String name) {
-        for (int i = 0, len = columnList.size(); i < len; i++) {
-            BIColumn col = columnList.get(i);
+    @Override
+    public PersistentField getField(String name) {
+        for (int i = 0, len = fieldList.size(); i < len; i++) {
+            PersistentField col = fieldList.get(i);
             if (ComparatorUtils.equals(col.getFieldName(), name)) {
                 return col;
             }
@@ -160,9 +160,10 @@ public class PersistentTable implements Serializable, JSONCreator {
      * @param name
      * @return
      */
-    public int getBIColumnIndex(String name) {
-        for (int i = 0, len = columnList.size(); i < len; i++) {
-            BIColumn col = (BIColumn) columnList.get(i);
+    @Override
+    public int getFieldIndex(String name) {
+        for (int i = 0, len = fieldList.size(); i < len; i++) {
+            PersistentField col = fieldList.get(i);
             if (ComparatorUtils.equals(col.getFieldName(), name)) {
                 return i;
             }

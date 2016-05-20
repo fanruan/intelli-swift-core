@@ -8,9 +8,9 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.index.CubeTILoaderAdapter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -36,11 +36,11 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
     }
 
     @Override
-    public PersistentTable getBITable(PersistentTable[] tables) {
-        PersistentTable persistentTable = getBITable();
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
         for (int i = 0; i < tables.length; i++) {
-            for (int j = 0; j < tables[i].getBIColumnLength(); j++) {
-                persistentTable.addColumn(tables[i].getBIColumn(j));
+            for (int j = 0; j < tables[i].getFieldSize(); j++) {
+                persistentTable.addColumn(tables[i].getField(j));
             }
         }
         return persistentTable;
@@ -51,10 +51,10 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
     @Override
     public int writeSimpleIndex(final Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
         final ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
-        PersistentTable ptable = parents.get(0).getDbTable();
-        final BIColumn[] columns = ptable.getColumnArray();
-        GroupValueIndex fgvi =createFilterIndex(parents ,loader);
-        if (fgvi == null){
+        IPersistentTable ptable = parents.get(0).getDbTable();
+        final List<PersistentField> columns = ptable.getFieldList();
+        GroupValueIndex fgvi = createFilterIndex(parents, loader);
+        if (fgvi == null) {
             return 0;
         }
         fgvi.Traversal(new SingleRowTraversalAction() {
@@ -62,24 +62,26 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
 
             @Override
             public void actionPerformed(int rowIndices) {
-                for (int i = 0; i < columns.length; i++) {
-                    travel.actionPerformed(new BIDataValue(row, i, ti.getRow(new IndexKey(columns[i].getFieldName()), rowIndices)));
+                for (int i = 0; i < columns.size(); i++) {
+                    travel.actionPerformed(new BIDataValue(row, i, ti.getRow(new IndexKey(columns.get(i).getFieldName()), rowIndices)));
                 }
                 row++;
             }
         });
         return fgvi.getRowsCountWithData();
     }
+
     private static final int STEP = 100;
+
     @Override
     public int writePartIndex(final Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, final int start, final int end) {
-        ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), 0 , STEP);
+        ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), 0, STEP);
         int index = 0;
         final FinalInt currentRow = new FinalInt();
-        currentRow.i = -1;
+        currentRow.value = -1;
         final FinalInt writeRow = new FinalInt();
-        PersistentTable ptable = parents.get(0).getDbTable();
-        final BIColumn[] columns = ptable.getColumnArray();
+        IPersistentTable ptable = parents.get(0).getDbTable();
+        final List<PersistentField> columns = ptable.getFieldList();
         do {
             final ICubeTableService tableIndex = ti;
             GroupValueIndex fgvi = createFilterIndex(parents, new CubeTILoaderAdapter() {
@@ -87,21 +89,26 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
                 public ICubeTableService getTableIndex(Table td) {
                     return tableIndex;
                 }
+
                 @Override
                 public ICubeTableService getTableIndex(BIField td) {
                     return tableIndex;
                 }
+
                 @Override
                 public ICubeTableService getTableIndex(BICore md5Core) {
                     return tableIndex;
                 }
+
                 @Override
                 public ICubeTableService getTableIndex(BITableID id) {
                     return tableIndex;
                 }
+
                 public ICubeTableService getTableIndex(BICore core, int start, int end) {
                     return tableIndex;
                 }
+
                 public long getUserId() {
                     return user.getUserId();
                 }
@@ -109,27 +116,27 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
             if (fgvi.BrokenableTraversal(new BrokenTraversalAction() {
                 @Override
                 public boolean actionPerformed(int row) {
-                    currentRow.i ++;
-                    if (currentRow.i < start ){
+                    currentRow.value++;
+                    if (currentRow.value < start) {
                         return false;
                     }
-                    if (currentRow.i > end ){
+                    if (currentRow.value > end) {
                         return true;
                     }
-                    for (int i = 0; i < columns.length; i++) {
-                        travel.actionPerformed(new BIDataValue(writeRow.i, i, tableIndex.getRow(new IndexKey(columns[i].getFieldName()), row)));
+                    for (int i = 0; i < columns.size(); i++) {
+                        travel.actionPerformed(new BIDataValue(writeRow.value, i, tableIndex.getRow(new IndexKey(columns.get(i).getFieldName()), row)));
                     }
-                    writeRow.i++;
+                    writeRow.value++;
                     return false;
                 }
-            })){
+            })) {
                 break;
             }
             index++;
-            ti = loader.getTableIndex(getSingleParentMD5(parents), (index - 1) * STEP , index * STEP);
+            ti = loader.getTableIndex(getSingleParentMD5(parents), (index - 1) * STEP, index * STEP);
         }
         while (ti.getRowCount() == STEP);
-        return writeRow.i;
+        return writeRow.value;
     }
 
 }

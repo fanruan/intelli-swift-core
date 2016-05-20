@@ -4,8 +4,8 @@ import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -97,11 +97,11 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
 		Iterator<Map.Entry<String, DBTableSource>> it = sourceTables.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, DBTableSource> entry = it.next();
-			PersistentTable table = entry.getValue().getDbTable();
+			IPersistentTable table = entry.getValue().getDbTable();
 			if (!StringUtils.isEmpty(table.getRemark())) {
 				tableTrans.put(entry.getKey(), table.getRemark());
 			}
-			for (BIColumn column : table.getColumnArray()) {
+			for (PersistentField column : table.getFieldList()) {
 				if (!StringUtils.isEmpty(column.getRemark())) {
 					fieldTrans.put(entry.getKey() + column.getFieldName(), column.getRemark());
 				}

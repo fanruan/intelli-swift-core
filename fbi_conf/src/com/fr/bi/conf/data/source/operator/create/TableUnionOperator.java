@@ -4,9 +4,9 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIBasicField;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -89,9 +89,9 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
 //    }
 
     @Override
-    public PersistentTable getBITable(PersistentTable[] tables) {
-        PersistentTable persistentTable = getBITable();
-        PersistentTable[] pts = new PersistentTable[tables.length];
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
+        IPersistentTable[] pts = new IPersistentTable[tables.length];
         for (int i = 0; i < pts.length; i++) {
             pts[i] = tables[i];
         }
@@ -102,12 +102,12 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
             int columnSize = 0;
             for (int j = 1; j < list.size(); j++) {
                 if (!StringUtils.isEmpty(list.get(j))) {
-                    BIColumn column = pts[j - 1].getBIColumn(list.get(j));
+                    PersistentField column = pts[j - 1].getField(list.get(j));
                     bitype = column.getBIType();
                     columnSize = Math.max(columnSize, column.getColumnSize());
                 }
             }
-            persistentTable.addColumn(new BIColumn(list.get(0), BIDBUtils.biTypeToSql(bitype), columnSize));
+            persistentTable.addColumn(new PersistentField(list.get(0), BIDBUtils.biTypeToSql(bitype), columnSize));
         }
 
         return persistentTable;

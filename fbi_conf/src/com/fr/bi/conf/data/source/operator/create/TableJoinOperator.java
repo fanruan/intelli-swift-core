@@ -6,9 +6,9 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -93,14 +93,14 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     @Override
-    public PersistentTable getBITable(PersistentTable[] tables) {
-        PersistentTable persistentTable = getBITable();
-        PersistentTable leftT = tables[0];
-        PersistentTable rightT = tables[1];
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
+        IPersistentTable leftT = tables[0];
+        IPersistentTable rightT = tables[1];
         for (int i = 0; i < columns.size(); i++) {
-            BIColumn column = columns.get(i).isLeft() ? leftT.getBIColumn(columns.get(i).getColumnName()) : rightT.getBIColumn(columns.get(i).getColumnName());
+            PersistentField column = columns.get(i).isLeft() ? leftT.getField(columns.get(i).getColumnName()) : rightT.getField(columns.get(i).getColumnName());
             if (column != null) {
-                persistentTable.addColumn(new BIColumn(columns.get(i).getName(), columns.get(i).getName(), column.getType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
+                persistentTable.addColumn(new PersistentField(columns.get(i).getName(), columns.get(i).getName(), column.getType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
             }
         }
         return persistentTable;

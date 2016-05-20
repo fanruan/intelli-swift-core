@@ -3,7 +3,7 @@ package com.fr.bi.conf.data.source.operator.add.selfrelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -102,17 +102,17 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
     }
 
     @Override
-    public PersistentTable getBITable(PersistentTable[] tables) {
-        PersistentTable persistentTable = getBITable();
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
         Iterator<Map.Entry<String, Integer>> it = fields.entrySet().iterator();
-        for (PersistentTable t : tables) {
+        for (IPersistentTable t : tables) {
             int type = DBConstant.CLASS.INTEGER;
-            if (t.getBIColumn(idFieldName) != null) {
-                type = t.getBIColumn(idFieldName).getBIType();
+            if (t.getField(idFieldName) != null) {
+                type = t.getField(idFieldName).getBIType();
             }
             while (it.hasNext()) {
                 Map.Entry<String, Integer> entry = it.next();
-                persistentTable.addColumn(new UnionRelationColumn(entry.getKey(), BIDBUtils.biTypeToSql(type), entry.getValue()));
+                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(type), entry.getValue()));
             }
         }
         return persistentTable;

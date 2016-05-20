@@ -12,10 +12,7 @@ import com.fr.bi.conf.data.source.operator.create.TableFilterOperator;
 import com.fr.bi.conf.data.source.operator.create.UsePartOperator;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.data.source.SourceFile;
@@ -93,13 +90,13 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         if (isAllAddColumnOperator()) {
             for (ITableSource p : getParents()) {
                 ICubeTableService ti = loader.getTableIndex(p.fetchObjectCore(), start, end);
-                BIColumn[] fields = p.getDbTable().getColumnArray();
+                List<PersistentField> fields = p.getDbTable().getFieldList();
                 for (int i = 0; i < ti.getRowCount(); i++) {
-                    for (int j = 0; j < fields.length; j++) {
-                        travel.actionPerformed(new BIDataValue(i, j, ti.getRow(new IndexKey(fields[j].getFieldName()), i)));
+                    for (int j = 0; j < fields.size(); j++) {
+                        travel.actionPerformed(new BIDataValue(i, j, ti.getRow(new IndexKey(fields.get(j).getFieldName()), i)));
                     }
                 }
-                startCol += p.getDbTable().getBIColumnLength();
+                startCol += p.getDbTable().getFieldSize();
             }
         }
         Iterator<O> it = oprators.iterator();
@@ -115,9 +112,9 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     @Override
     public Set<DBField> getFacetFields(Set<ITableSource> sources) {
         Set<DBField> result = new HashSet<DBField>();
-        Iterator<BIColumn> it = getDbTable().getBIColumnIterator();
+        Iterator<PersistentField> it = getDbTable().getFieldList().iterator();
         while (it.hasNext()) {
-            BIColumn column = it.next();
+            PersistentField column = it.next();
             result.add(column.toDBField(new BITable(this.getSourceID())));
         }
         return result;
@@ -225,27 +222,27 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public PersistentTable getDbTable() {
+    public IPersistentTable getDbTable() {
         if (dbTable == null) {
             dbTable = createBITable();
 
             if (isAllAddColumnOperator()) {
                 for (S source : parents) {
-                    PersistentTable p = source.getDbTable();
-                    for (int i = 0; i < p.getBIColumnLength(); i++) {
-                        dbTable.addColumn(p.getBIColumn(i));
+                    IPersistentTable p = source.getDbTable();
+                    for (int i = 0; i < p.getFieldSize(); i++) {
+                        dbTable.addColumn(p.getField(i));
                     }
                 }
             }
-            PersistentTable[] ptables = new PersistentTable[parents.size()];
+            IPersistentTable[] ptables = new IPersistentTable[parents.size()];
             for (int i = 0; i < ptables.length; i++) {
                 ptables[i] = parents.get(i).getDbTable();
             }
             for (int i = 0; i < oprators.size(); i++) {
-                PersistentTable ctable = oprators.get(i).getBITable(ptables);
-                Iterator<BIColumn> it = ctable.getBIColumnIterator();
+                IPersistentTable ctable = oprators.get(i).getBITable(ptables);
+                Iterator<PersistentField> it = ctable.getFieldList().iterator();
                 while (it.hasNext()) {
-                    BIColumn column = it.next();
+                    PersistentField column = it.next();
                     dbTable.addColumn(column);
                 }
             }
@@ -274,22 +271,22 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         }
         if (contains) {
             if (hasTableFilterOperator()) {
-                PersistentTable[] ptables = new PersistentTable[parents.size()];
+                IPersistentTable[] ptables = new IPersistentTable[parents.size()];
                 for (int i = 0; i < ptables.length; i++) {
                     ptables[i] = parents.get(i).getDbTable();
                 }
                 for (IETLOperator operator : getETLOperators()) {
                     if (ComparatorUtils.equals(operator.xmlTag(), TableFilterOperator.XML_TAG)) {
-                        PersistentTable table = operator.getBITable(ptables);
-                        for (int j = 0; j < table.getBIColumnLength(); j++) {
-                            useableFields.add(table.getBIColumn(j).getFieldName());
+                        IPersistentTable table = operator.getBITable(ptables);
+                        for (int j = 0; j < table.getFieldSize(); j++) {
+                            useableFields.add(table.getField(j).getFieldName());
                         }
                     }
                 }
             } else {
-                PersistentTable table = source.getDbTable();
-                for (int j = 0; j < table.getBIColumnLength(); j++) {
-                    useableFields.add(table.getBIColumn(j).getFieldName());
+                IPersistentTable table = source.getDbTable();
+                for (int j = 0; j < table.getFieldSize(); j++) {
+                    useableFields.add(table.getField(j).getFieldName());
                 }
             }
         }
@@ -314,7 +311,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         sourceFile.addChild(getParentsSourceFile());
         for (O operator : oprators) {
             try {
-                BICore core = new SingleOpratorETLTableSource((List<ITableSource>) getParents(), operator).fetchObjectCore();
+                BICore core = new SingleOperatorETLTableSource((List<ITableSource>) getParents(), operator).fetchObjectCore();
                 sourceFile.addChild(new SourceFile(core.getIDValue()));
             } catch (Exception ignore) {
                 BILogger.getLogger().error(ignore.getMessage(), ignore);

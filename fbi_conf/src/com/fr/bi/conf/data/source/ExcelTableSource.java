@@ -50,7 +50,7 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
     }
 
     @Override
-    public PersistentTable getDbTable() {
+    public IPersistentTable getDbTable() {
         if (dbTable == null) {
             dbTable = createBITable();
             BIExcelDataModel dm = null;
@@ -59,7 +59,7 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
                 int cols = dm.getColumnCount();
                 for (int i = 0; i < cols; i++) {
 
-                    BIColumn column = new BIColumn(dm.getColumnName(i), dm.getColumnType(i), 255);
+                    PersistentField column = new PersistentField(dm.getColumnName(i), dm.getColumnType(i), 255);
                     dbTable.addColumn(column);
                 }
             } catch (Exception e) {

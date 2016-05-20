@@ -5,7 +5,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -31,7 +31,7 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
     }
 
     @Override
-    public PersistentTable getBITable(PersistentTable[] tables) {
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
         return getTransOperatpr().getBITable(tables);
     }
 

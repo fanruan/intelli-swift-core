@@ -1,12 +1,9 @@
 package com.fr.bi.test;
 
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.bi.base.FinalLong;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.PersistentTable;
-import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONArray;
@@ -41,14 +38,14 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
         int times = timesString == null ? 1 : Integer.parseInt(timesString);
         int count = countString == null ? BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT : Integer.parseInt(countString);
 
-        PersistentTable table = BIDBUtils.getDBTable("important", "items");
-        BIColumn[] columns = table.getColumnArray();
+        IPersistentTable table = BIDBUtils.getDBTable("important", "items");
+        List<PersistentField> columns = table.getFieldList();
 
         DBField[] fields = new DBField[1];
 
-        fields[0] = new DBField(UUID.randomUUID().toString(), columns[0].getFieldName(),
-                BIDBUtils.checkColumnClassTypeFromSQL(columns[0].getType(), columns[0].getColumnSize(), columns[0].getScale()),
-                columns[0].getColumnSize());
+        fields[0] = new DBField(UUID.randomUUID().toString(), columns.get(0).getFieldName(),
+                BIDBUtils.checkColumnClassTypeFromSQL(columns.get(0).getType(), columns.get(0).getColumnSize(), columns.get(0).getScale()),
+                columns.get(0).getColumnSize());
 
         final List<String> list = new ArrayList<String>();
         final int start = (times - 1) * count;
@@ -60,7 +57,7 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
                 if (data.getRow() >= start && data.getRow() < end) {
                     list.add((String) data.getValue());
                 }
-                all.i++;
+                all.value++;
             }
         });
         JSONArray ja = new JSONArray();
@@ -72,7 +69,7 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
         }
 
         JSONObject jo = new JSONObject();
-        jo.put("all", all.i);
+        jo.put("all", all.value);
         jo.put("items", ja);
         WebUtils.printAsJSON(res, jo);
     }

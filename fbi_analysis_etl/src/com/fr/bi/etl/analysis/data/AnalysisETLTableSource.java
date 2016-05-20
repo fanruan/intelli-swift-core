@@ -5,10 +5,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.etl.analysis.Constants;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.*;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -31,11 +28,11 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     private List<AnalysisETLSourceField> fieldList;
 
     @Override
-    public PersistentTable getDbTable() {
+    public IPersistentTable getDbTable() {
         if (dbTable == null) {
             dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
             for (AnalysisETLSourceField c : fieldList){
-                dbTable.addColumn(new BIColumn(c.getFieldName(), c.getFieldType()));
+                dbTable.addColumn(new PersistentField(c.getFieldName(), c.getFieldType()));
             }
         }
         return dbTable;
