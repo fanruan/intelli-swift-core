@@ -25,7 +25,10 @@ public abstract class DateNoneValueFilterValue implements DateFilterValue {
     public int hashCode() {
         return this.getClass().getName().hashCode();
     }
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

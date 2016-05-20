@@ -20,5 +20,8 @@ public class NumberSmallOrEqualsCLFilter extends NumberCalculateLineFilter {
     public NumberSmallOrEqualsCLFilter() {
 		super(SmallOrEquals.INSTANCE);
 	}
+    protected  void parsClose(boolean isClose){
+        t = isClose ? SmallOrEquals.INSTANCE : Small.INSTANCE;
+    }
 
 }

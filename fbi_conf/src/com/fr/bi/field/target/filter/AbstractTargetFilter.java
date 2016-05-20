@@ -18,4 +18,9 @@ public abstract class AbstractTargetFilter implements TargetFilter{
         jo.put("filter_type", BIFilterMap.ALL_TYPES.get(getClass()));
         return jo;
     }
+
+    @Override
+    public boolean hasTopBottomFilterValue() {
+        return false;
+    }
 }

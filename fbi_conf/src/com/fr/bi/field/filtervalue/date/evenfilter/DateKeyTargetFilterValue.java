@@ -80,7 +80,10 @@ public class DateKeyTargetFilterValue implements DateFilterValue {
         return null;
     }
 
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     public Set<BIDateValue> getValues() {
         return valueSet;
     }

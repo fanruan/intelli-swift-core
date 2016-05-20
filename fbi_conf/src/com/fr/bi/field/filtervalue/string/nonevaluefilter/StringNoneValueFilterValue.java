@@ -103,4 +103,9 @@ public abstract class StringNoneValueFilterValue implements StringFilterValue {
         //FIXME 这里之前将空值保存为空字符串
         return isMatchValue(value);
     }
+
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
 }

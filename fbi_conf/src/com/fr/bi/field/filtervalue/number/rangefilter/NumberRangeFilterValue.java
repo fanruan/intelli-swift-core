@@ -34,7 +34,10 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
 
     protected double max;
     protected boolean closemax;
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     /**
      * 解析json
      *

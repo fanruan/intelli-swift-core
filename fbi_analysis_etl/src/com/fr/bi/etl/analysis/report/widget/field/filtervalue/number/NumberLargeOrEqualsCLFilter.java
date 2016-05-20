@@ -21,4 +21,7 @@ public class NumberLargeOrEqualsCLFilter extends NumberCalculateLineFilter {
 		super(LargeOrEquals.INSTANCE);
 	}
 
+    protected  void parsClose(boolean isClose){
+        t = isClose ? LargeOrEquals.INSTANCE : Large.INSTANCE;
+    }
 }
