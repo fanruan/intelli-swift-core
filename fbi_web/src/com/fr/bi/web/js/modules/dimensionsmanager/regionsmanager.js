@@ -58,6 +58,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_BAR:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Series"), BICst.REGION.DIMENSION2);

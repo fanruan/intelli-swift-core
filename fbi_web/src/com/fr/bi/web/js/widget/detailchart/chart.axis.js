@@ -41,6 +41,7 @@ BI.extend(BI.AxisChart, {
         }
     },
     formatConfig: function () {
+        var self = this;
         return {
             "plotOptions": {
                 "categoryGap": "16.0%",
@@ -66,7 +67,8 @@ BI.extend(BI.AxisChart, {
                     "enabled": true,
                     "animation": true
                 },
-                "animation": true
+                "animation": true,
+                "lineWidth": 2
             },
             "borderColor": "rgb(238,238,238)",
             "xAxis": [{

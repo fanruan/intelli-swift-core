@@ -110,7 +110,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     @Override
     public void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
         int columnIndex = originalDataValue.getCol();
-        int rowNumber = (int) originalDataValue.getRow();
+        int rowNumber = originalDataValue.getRow();
         Object value = originalDataValue.getValue();
         DBField field = getAllFields().get(columnIndex);
         ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));

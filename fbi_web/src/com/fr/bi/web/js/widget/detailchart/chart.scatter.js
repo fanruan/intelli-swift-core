@@ -27,16 +27,36 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
         });
     },
 
+    formatItems: function (items) {
+        var self = this;
+        return BI.map(items, function(idx, item){
+            var name = BI.keys(item)[0];
+            return {
+                "data": BI.map(item[name], function(idx, it){
+                    return BI.extend(it, {
+                        "x": it.x,
+                        "y": it.y,
+                        "size": it.z
+                    });
+                }),
+                "name": name
+            }
+        });
+    },
+
+    setTypes: function(){
+    },
+
     populate: function (items) {
-        this.ScatterChart.populate([BI.ScatterChart.formatItems(items)]);
-    },
-
-    loading: function(){
-        this.ScatterChart.loading();
-    },
-
-    loaded: function(){
-        this.ScatterChart.loaded();
+        var self = this;
+        var config = BI.ScatterChart.formatConfig();
+        config.plotOptions.click = function(){
+            self.fireEvent(BI.ScatterChart.EVENT_CHANGE, {category: this.category,
+                seriesName: this.seriesName,
+                value: this.value,
+                options: this.pointOption.options});
+        };
+        this.ScatterChart.populate(this.formatItems(items), config);
     },
 
     resize: function () {
@@ -44,24 +64,9 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
     }
 });
 BI.extend(BI.ScatterChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": items[name],
-            "name": name,
-            stack: false
-        }
-    },
     formatConfig: function(){
         return {
             "plotOptions": {
-                click: function () {
-                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                        category: this.category,
-                        seriesName: this.seriesName,
-                        value: this.value
-                    });
-                },
                 "fillColorOpacity": 1,
                 "large": false,
                 "connectNulls": false,

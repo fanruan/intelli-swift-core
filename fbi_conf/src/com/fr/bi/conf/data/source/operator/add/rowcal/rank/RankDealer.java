@@ -73,7 +73,7 @@ public class RankDealer implements ResultDealer {
 		while(iter.hasNext()){
 			Entry<Number, FinalInt> entry = iter.next();
 			rankMap.put(entry.getKey(), rank);
-			rank += entry.getValue().i;
+			rank += entry.getValue().value;
 		}
 		return rankMap;
 	}
@@ -96,7 +96,7 @@ public class RankDealer implements ResultDealer {
 					count = new FinalInt();
 					tree.put(v, count);
 				}
-				count.i++;
+				count.value++;
 			}
 		});
 		return tree;

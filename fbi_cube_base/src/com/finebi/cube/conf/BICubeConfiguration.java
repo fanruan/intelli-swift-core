@@ -3,8 +3,8 @@ package com.finebi.cube.conf;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.location.BICubeLocation;
 import com.fr.bi.stable.utils.BIParameterUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.io.File;
 import java.net.URI;
@@ -42,7 +42,7 @@ public class BICubeConfiguration implements ICubeConfiguration {
     @Override
     public URI getRootURI() {
         try {
-            return URI.create(new BICubeLocation(BIPathUtils.createBasePath(), buildPath()).getAbsolutePath());
+            return URI.create(new BICubeLocation(BIConfigurePathUtils.createBasePath(), buildPath()).getAbsolutePath());
         } catch (URISyntaxException e) {
             throw BINonValueUtils.beyondControl(e);
         }

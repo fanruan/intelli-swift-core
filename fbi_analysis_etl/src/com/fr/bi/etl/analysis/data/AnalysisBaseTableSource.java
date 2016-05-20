@@ -3,16 +3,14 @@ package com.fr.bi.etl.analysis.data;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -31,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by 小灰灰 on 2015/12/21.
  */
 public class AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisTableSource {
+    @BIIgnoreField
     private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
     @BICoreField
     protected BIWidget widget;
@@ -52,13 +51,13 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
 
     @Override
-    public DBTable getDbTable() {
+    public IPersistentTable getDbTable() {
         if (dbTable == null) {
-            dbTable = new DBTable(null, fetchObjectCore().getID().getIdentityValue(), null);
+            dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
             for (int i = 0; i < fieldList.size(); i++){
                 AnalysisETLSourceField c = fieldList.get(i);
                 int sqlType = (widget.getType() == BIReportConstant.WIDGET.TABLE && i < widget.getViewDimensions().length) ? getSqlTypeByGroupType(((BIDimension)widget.getViewDimensions()[i]).getGroup()) : BIDBUtils.biTypeToSql(c.getFieldType());
-                dbTable.addColumn(new BIColumn(c.getFieldName(), sqlType));
+                dbTable.addColumn(new PersistentField(c.getFieldName(), sqlType));
             }
 
         }
