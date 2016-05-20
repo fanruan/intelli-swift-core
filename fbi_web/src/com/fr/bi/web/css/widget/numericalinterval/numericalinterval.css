@@ -34,6 +34,8 @@
   -webkit-border-bottom-left-radius: 2px;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
+}
+.bi-numerical-interval .numerical-interval-big-combo .bi-icon-combo-trigger .icon-combo-trigger-icon {
   font-size: 18px;
 }
 .bi-numerical-interval .numerical-interval-small-combo .bi-icon-combo-trigger {
@@ -44,6 +46,8 @@
   -webkit-border-bottom-right-radius: 2px;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
+}
+.bi-numerical-interval .numerical-interval-small-combo .bi-icon-combo-trigger .icon-combo-trigger-icon {
   font-size: 18px;
 }
 .bi-numerical-interval.number-error .bi-input {

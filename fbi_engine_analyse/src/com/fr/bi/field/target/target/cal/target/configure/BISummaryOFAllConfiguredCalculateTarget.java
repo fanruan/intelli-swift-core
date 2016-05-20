@@ -1,6 +1,7 @@
 package com.fr.bi.field.target.target.cal.target.configure;
 
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.calculator.cal.configure.AvgOfAllCalculator;
 import com.fr.bi.field.target.calculator.cal.configure.MaxOfAllCalculator;
 import com.fr.bi.field.target.calculator.cal.configure.MinOfAllCalculator;
@@ -20,7 +21,7 @@ public class BISummaryOFAllConfiguredCalculateTarget extends
      *
      */
     private static final long serialVersionUID = -2424220440722738333L;
-
+    @BICoreField
     private int summary_type;
 
     @Override

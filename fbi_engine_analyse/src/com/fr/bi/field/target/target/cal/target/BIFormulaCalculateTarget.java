@@ -1,5 +1,6 @@
 package com.fr.bi.field.target.target.cal.target;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
 import com.fr.bi.field.target.target.BIAbstractTarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class BIFormulaCalculateTarget extends BICalculateTarget {
     private static final long serialVersionUID = -419357785569877543L;
+    @BICoreField
     private String expression = StringUtils.EMPTY;
 
     @Override

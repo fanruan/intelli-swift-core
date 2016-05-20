@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.table;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONObject;
 
@@ -10,8 +11,11 @@ import java.util.ArrayList;
  * Created by GUY on 2015/4/9.
  */
 public class BITableReportSetting extends BIAbstractTableSetting {
+    @BICoreField
     protected String[] summary;
+    @BICoreField
     protected String[] column;
+    @BICoreField
     protected String[] row;
     private boolean freeze;
     private int number;

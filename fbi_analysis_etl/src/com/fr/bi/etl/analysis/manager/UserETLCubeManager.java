@@ -3,17 +3,12 @@
  */
 package com.fr.bi.etl.analysis.manager;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
+import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisTableSource;
 import com.fr.bi.etl.analysis.data.UserTableSource;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.file.XMLFileManager;
 import com.fr.general.GeneralContext;
@@ -22,6 +17,11 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Daniel
@@ -32,7 +32,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 	public static final String XML_TAG = "UserETLCubeManager";
 	
 	private Map<String, SingleUserETLTableCubeManager> threadMap = new ConcurrentHashMap<String, SingleUserETLTableCubeManager>();
-	
+
 	/**
 	 * cube路径
 	 */
@@ -42,7 +42,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 		GeneralContext.addEnvChangedListener(new EnvChangedListener() {
             @Override
             public void envChanged() {
-            	UserETLCubeManager manager = StableFactory.getMarkedObject(UserETLCubeManager.class.getName(), UserETLCubeManager.class);
+            	UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
             	if(manager != null){
             		manager.envChanged();
             	}
@@ -62,13 +62,13 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     }
 
 	@Override
-	public ICubeTableService getTableIndex(String md5, BIUser user){
-		UserTableSource ut = getUserSource(md5, user.getUserId());
+	public ICubeTableService getTableIndex(BICore core, BIUser user){
+		UserTableSource ut = getUserSource(core, user.getUserId());
 		String md5Key = ut.fetchObjectCore().getID().getIdentityValue();
 		SingleUserETLTableCubeManager manager = threadMap.get(md5Key);
 		if(manager == null){
 			synchronized (threadMap) {
-				manager = threadMap.get(md5);
+				manager = threadMap.get(core.getIDValue());
 				if(manager == null){
 					manager = new SingleUserETLTableCubeManager(ut);
 					threadMap.put(md5Key, manager);
@@ -90,11 +90,11 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 		
 	}
 	
-	private UserTableSource getUserSource(String md5, long userId){
+	private UserTableSource getUserSource(BICore core, long userId){
 		AnalysisDataSourceManager ds = StableFactory.getMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, AnalysisDataSourceManager.class);
         AnalysisTableSource ts = null;
         try {
-            ts = ds.getTableSourceByCore(DBTableSource.getCore(md5), new BIUser(userId));
+            ts = ds.getTableSourceByCore(core, new BIUser(userId));
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
             return null;
@@ -124,7 +124,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 	/**
 	 * 
 	 */
-	protected void envChanged() {
+	public void envChanged() {
 		clear();
 	}
 	

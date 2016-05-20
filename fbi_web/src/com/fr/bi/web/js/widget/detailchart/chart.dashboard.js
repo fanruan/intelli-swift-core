@@ -43,13 +43,6 @@ BI.extend(BI.DashboardChart, {
     formatConfig: function(){
         return {
             "plotOptions": {
-                click: function () {
-                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                        category: this.seriesName,
-                        seriesName: this.category,
-                        value: this.value
-                    });
-                },
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "valueLabel": {

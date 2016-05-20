@@ -1,5 +1,6 @@
 package com.fr.bi.conf.utils;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
@@ -12,7 +13,6 @@ import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.ITableSource;
-import com.fr.bi.stable.engine.index.AbstractTIPathLoader;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -44,23 +44,23 @@ public class BIModuleUtils {
         return jo;
     }
 
-    public static ICubeTableService getTableIndex(Table td, BIUser user, Map<String, AbstractTIPathLoader> childLoaderMap) {
+    public static ICubeTableService getTableIndex(Table td, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByID(td.getID(), user);
-            if (source != null) {
-                return childLoaderMap.get(module.getModuleName()).getTableIndexByPath(source.getSourceFile());
+            BICore core = provider.getCoreByTableID(td.getID(), user);
+            if (core != null) {
+                return childLoaderMap.get(module.getModuleName()).getTableIndex(core);
             }
         }
         return null;
     }
 
-    public static ICubeTableService getTableIndex(BICore md5, BIUser user, Map<String, AbstractTIPathLoader> childLoaderMap) {
+    public static ICubeTableService getTableIndex(BICore core, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByCore(md5, user);
+            ITableSource source = provider.getTableSourceByCore(core, user);
             if (source != null) {
-                return childLoaderMap.get(module.getModuleName()).getTableIndexByPath(source.getSourceFile());
+                return childLoaderMap.get(module.getModuleName()).getTableIndex(core);
             }
         }
         return null;
@@ -77,7 +77,7 @@ public class BIModuleUtils {
         return null;
     }
 
-    public static BIKey getFieldIndex(BIField column, BIUser user, Map<String, AbstractTIPathLoader> childLoaderMap) {
+    public static BIKey getFieldIndex(BIField column, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         ICubeTableService ti = getTableIndex(column.getTableBelongTo(), user, childLoaderMap);
         return ti == null ? null : ti.getColumnIndex(column);
     }
