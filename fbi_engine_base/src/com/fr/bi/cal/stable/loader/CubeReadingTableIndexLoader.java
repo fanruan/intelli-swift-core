@@ -1,5 +1,7 @@
 package com.fr.bi.cal.stable.loader;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
@@ -7,15 +9,13 @@ import com.fr.bi.cal.stable.cube.memory.MemoryCubeFile;
 import com.fr.bi.cal.stable.tableindex.index.BITableIndex;
 import com.fr.bi.conf.utils.BIModuleManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
+import com.fr.bi.module.BIModule;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.engine.index.AbstractTIPathLoader;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -33,14 +33,14 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
      */
     private static final long serialVersionUID = -1387444792028060642L;
     private static Map<Long, ICubeDataLoader> userMap = new ConcurrentHashMap<Long, ICubeDataLoader>();
-    private Map<String, AbstractTIPathLoader> childLoaderMap = new ConcurrentHashMap<String, AbstractTIPathLoader>();
+    private Map<String, ICubeDataLoader> childLoaderMap = new ConcurrentHashMap<String, ICubeDataLoader>();
     private BIUser user;
 
     public CubeReadingTableIndexLoader(long userId) {
         user = new BIUser(userId);
-        for (Map.Entry<String, Class<? extends AbstractTIPathLoader>> entry : BIModuleManager.getLoaderClassMap().entrySet()) {
+        for (BIModule module: BIModuleManager.getModules()) {
             try {
-                childLoaderMap.put(entry.getKey(), BIConstructorUtils.constructObject(userId, entry.getValue(), (Map<Long, AbstractTIPathLoader>)entry.getValue().getDeclaredField("userMap").get(null), BIModuleManager.isModuleAllAdmin(entry.getKey())));
+                childLoaderMap.put(module.getModuleName(), module.getCubeDataLoaderCreator().fetchCubeLoader(user));
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
@@ -124,7 +124,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 
     @Override
     public void releaseCurrentThread() {
-        for (AbstractTIPathLoader loader : childLoaderMap.values()) {
+        for (ICubeDataLoader loader : childLoaderMap.values()) {
             loader.releaseCurrentThread();
         }
     }
@@ -154,8 +154,8 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     @Override
     public void clear() {
         synchronized (CubeReadingTableIndexLoader.class) {
-            for (Map.Entry<String, AbstractTIPathLoader> entry : childLoaderMap.entrySet()) {
-                AbstractTIPathLoader loader = entry.getValue();
+            for (Map.Entry<String, ICubeDataLoader> entry : childLoaderMap.entrySet()) {
+                ICubeDataLoader loader = entry.getValue();
                 if (loader != null) {
                     loader.clear();
                 }

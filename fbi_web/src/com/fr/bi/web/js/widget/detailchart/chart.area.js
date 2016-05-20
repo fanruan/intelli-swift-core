@@ -42,7 +42,6 @@ BI.extend(BI.AreaChart, {
     },
     formatConfig: function(){
         return {
-
             "plotOptions": {
                 "fillColor": true,
                 "fillColorOpacity": 0.15,

@@ -10,7 +10,7 @@ BI.MultiTreePopup = BI.inherit(BI.Pane, {
             baseCls: 'bi-multi-tree-popup',
             maxWidth: 230,
             minWidth: 100,
-            maxHeight: 400,
+            maxHeight: 250,
             onLoaded: BI.emptyFn
         });
     },

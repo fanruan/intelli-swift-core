@@ -13,4 +13,8 @@ public class BIAnalysisETLManagerCenter {
     public static BIAnalysisDataSourceManagerProvider getDataSourceManager(){
         return StableFactory.getMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, BIAnalysisDataSourceManagerProvider.class);
     }
+
+    public static UserETLCubeManagerProvider getUserETLCubeManagerProvider(){
+        return StableFactory.getMarkedObject(UserETLCubeManagerProvider.class.getName(), UserETLCubeManagerProvider.class);
+    }
 }

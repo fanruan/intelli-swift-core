@@ -68,6 +68,10 @@ public class BIConfigureManagerCenter {
     }
 
     public static BIUpdateFrequencyManagerProvider getUpdateFrequencyManager() {
-        return StableFactory.getMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, BIUpdateSettingManager.class);
+        return StableFactory.getMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, BIUpdateFrequencyManagerProvider.class);
+    }
+
+    public static BICubeConfManagerProvider getCubeConfManager(){
+        return  StableFactory.getMarkedObject(BICubeConfManagerProvider.XML_TAG, BICubeConfManagerProvider.class);
     }
 }

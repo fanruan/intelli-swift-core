@@ -110,11 +110,13 @@ public class BICreateFieldsUnionAction extends AbstractBIConfigureAction {
     private Set<Integer> getLengthSetFromID(Set set){
         Set<Integer> intSet = new TreeSet<Integer>();
         for (Object ob : set){
-            String v = ob.toString();
-            int len = v.length();
-            Integer key = new Integer(len);
-            if(!intSet.contains(key)){
-                intSet.add(key);
+            if(ob != null){
+                String v = ob.toString();
+                int len = v.length();
+                Integer key = new Integer(len);
+                if(!intSet.contains(key)){
+                    intSet.add(key);
+                }
             }
         }
 

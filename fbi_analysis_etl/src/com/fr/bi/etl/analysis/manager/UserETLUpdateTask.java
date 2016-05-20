@@ -3,12 +3,6 @@
  */
 package com.fr.bi.etl.analysis.manager;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.etl.analysis.data.UserTableSource;
 import com.fr.bi.etl.analysis.tableobj.UserETLIndexGenerator;
@@ -18,8 +12,9 @@ import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.json.JSONObject;
-import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.core.UUID;
+
+import java.util.*;
 
 /**
  * @author Daniel
@@ -50,7 +45,7 @@ public class UserETLUpdateTask implements CubeTask {
 	
 
 	private static TableCubeFile getOldCube(String md5){
-		UserETLCubeManagerProvider manager = StableFactory.getMarkedObject(UserETLCubeManagerProvider.class.getName(), UserETLCubeManagerProvider.class);
+		UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
 		String path = manager.getCubePath(md5);
 		return new TableCubeFile(BIPathUtils.createUserETLTablePath(md5, path));
 	}
@@ -75,7 +70,7 @@ public class UserETLUpdateTask implements CubeTask {
 	
 	@Override
 	public void end() {
-		UserETLCubeManager manager = StableFactory.getMarkedObject(UserETLCubeManagerProvider.class.getName(), UserETLCubeManager.class);
+		UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
 		manager.setCubePath(source.fetchObjectCore().getID().getIdentityValue(), getPath());
 		end = new Date();
 		manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue());
