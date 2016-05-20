@@ -30,9 +30,6 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         BI.each(items, function(i, belongAxisItems){
             var combineItems = BI.ChartCombineFormatItemFactory.combineItems(o.types[i], belongAxisItems);
             BI.each(combineItems, function(j, axisItems){
-                axisItems.click = function () {
-                    self.fireEvent(BI.CombineChart.EVENT_CHANGE, "assa");
-                };
                 result.push(BI.extend(axisItems, {"yAxis": i}));
             });
         });
@@ -41,11 +38,27 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             typess = BI.concat(typess, types);
         });
         var config = BI.ChartCombineFormatItemFactory.combineConfig(BI.uniq(typess));
-        var yAxis = config.yAxis[0] || {};
+        config.plotOptions.click = function(){
+            self.fireEvent(BI.CombineChart.EVENT_CHANGE, {
+                category: this.category,
+                seriesName: this.seriesName,
+                value: this.value,
+                options: this.pointOption.options});
+        };
+        var yAxis = {};
+        if(BI.has(config, "yAxis")){
+            yAxis = config.yAxis[0];
+        }
         BI.each(o.types, function(idx, type){
-            var newYAxis = BI.deepClone(yAxis);
-            newYAxis.position = "right";
-            idx > 0 && config.yAxis.push(newYAxis);
+            if(BI.isEmptyArray(type)){
+                return;
+            }
+            if(idx > 0 && BI.has(config, "yAxis")){
+                var newYAxis = BI.deepClone(yAxis);
+                newYAxis.position = "right";
+                newYAxis.gridLineWidth = 0;
+                config.yAxis.push(newYAxis);
+            }
         });
         return [result, config];
     },
@@ -60,6 +73,10 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         }
         var opts = this._formatItems(items);
         this.CombineChart.populate(opts[0], opts[1]);
+    },
+
+    resize: function(){
+        this.CombineChart.resize();
     }
 });
 BI.CombineChart.EVENT_CHANGE = "EVENT_CHANGE";
