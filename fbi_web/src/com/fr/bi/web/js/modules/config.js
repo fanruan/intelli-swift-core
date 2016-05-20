@@ -34,11 +34,6 @@ BICst.DASHBOARD_WIDGET_ICON = [[{
         title: BI.i18nText("BI-Cross_Table"),
         value: BICst.WIDGET.CROSS_TABLE,
         cls: "chart-table-font"
-    // }, {
-    //     text: BI.i18nText("BI-Complex_Table"),
-    //     title: BI.i18nText("BI-Complex_Table"),
-    //     value: BICst.WIDGET.COMPLEX_TABLE,
-    //     cls: "chart-table-font"
     }]
 }, {
     text: BI.i18nText("BI-Column_Chart"),
