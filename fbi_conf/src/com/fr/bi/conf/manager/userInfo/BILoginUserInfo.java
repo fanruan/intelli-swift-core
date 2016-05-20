@@ -71,13 +71,13 @@ public class BILoginUserInfo implements XMLable, JSONTransform, BICoreService {
                     gvi.BrokenableTraversal(new BrokenTraversalAction() {
                         @Override
                         public boolean actionPerformed(int rowIndex) {
-                            o.i = getter.getConnectedRow(rowIndex);
+                            o.value = getter.getConnectedRow(rowIndex);
                             return true;
                         }
                     });
-                    if (o.i != -1) {
+                    if (o.value != -1) {
                         ICubeTableService cti = loader.getTableIndex(ck);
-                        return cti.getRow(cti.getColumnIndex(ck.getFieldName()), o.i);
+                        return cti.getRow(cti.getColumnIndex(ck.getFieldName()), o.value);
                     }
                 }
             }

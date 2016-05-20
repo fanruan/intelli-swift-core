@@ -4,7 +4,7 @@ import com.fr.bi.base.ValueConverter;
 import com.fr.bi.cal.stable.index.file.VersionFile;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.stable.constant.CubeConstant;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -53,7 +53,7 @@ public class GroupIndexCreator<F, T> implements CubeGenerator {
 
     private BIRecord log;
 
-    private Table tableKey;
+    private IPersistentTable tableKey;
 
     private boolean needRelease;
 
@@ -169,7 +169,7 @@ public class GroupIndexCreator<F, T> implements CubeGenerator {
                 && indexGroupVersionFile != null;
     }
 
-    public void setLog(BIRecord log, Table tableKey) {
+    public void setLog(BIRecord log, IPersistentTable tableKey) {
         this.log = log;
         this.tableKey = tableKey;
     }

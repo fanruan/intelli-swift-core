@@ -6,7 +6,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.ServerLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DecryptBi;
@@ -104,7 +104,7 @@ public class SQLTableSource extends ServerTableSource {
     }
 
     @Override
-    public DBTable getDbTable() {
+    public IPersistentTable getDbTable() {
         dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
         return dbTable;
     }
