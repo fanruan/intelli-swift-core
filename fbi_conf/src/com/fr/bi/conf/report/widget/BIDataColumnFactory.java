@@ -1,7 +1,7 @@
 package com.fr.bi.conf.report.widget;
 
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIColumn;
@@ -15,7 +15,7 @@ public class BIDataColumnFactory {
     public static BIDataColumn createBIDataColumnByFieldID(String fieldId, BIUser user){
         String tableId = BIIDUtils.getTableIDFromFieldID(fieldId);
         String fieldName = BIIDUtils.getFieldNameFromFieldID(fieldId);
-        DBTable table = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), user).getDbTable();
+        DBTable table = BIModuleUtils.getSourceByID(new BITableID(tableId), user).getDbTable();
         BIColumn c = table.getBIColumn(fieldName);
         if(c == null){
             return new BIDataColumn(new BIBasicField(tableId, "pony"));

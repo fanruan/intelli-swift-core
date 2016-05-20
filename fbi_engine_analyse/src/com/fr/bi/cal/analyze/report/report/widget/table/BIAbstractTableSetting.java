@@ -1,5 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.table;
 
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
@@ -43,5 +45,9 @@ public abstract class BIAbstractTableSetting implements BITableSetting {
             return;
         }
         groups_of_targets.put(type, BIJsonUtils.jsonArray2StringArray(ja));
+    }
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 }

@@ -1,15 +1,16 @@
 package com.fr.bi.module;
 
+import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.fr.base.FRContext;
 import com.fr.bi.DemoService;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cal.log.BILogManager;
-import com.fr.bi.cal.stable.loader.BIReadingTableIndexLoader;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.manager.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
+import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
 import com.fr.bi.conf.base.datasource.BIDataSourceManager;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
 import com.fr.bi.conf.base.pack.BISystemPackageConfigurationManager;
@@ -24,7 +25,6 @@ import com.fr.bi.fs.HSQLBIReportDAO;
 import com.fr.bi.fs.TableDataBIReportDAO;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
-import com.fr.bi.stable.engine.index.AbstractTIPathLoader;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.base.Service4BIBase;
@@ -79,8 +79,8 @@ public class BICoreModule extends AbstractModule {
     }
 
     @Override
-    public Class<? extends AbstractTIPathLoader> getTIPathLoaderClass() {
-        return BIReadingTableIndexLoader.class;
+    public ICubeDataLoaderCreator getCubeDataLoaderCreator() {
+        return StableFactory.getMarkedObject(ICubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
     }
 
 
@@ -88,7 +88,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
         StableFactory.registerMarkedObject(BIAuthorityManageProvider.XML_TAG, new BISystemAuthorityManager());
-
+        StableFactory.registerMarkedObject(ICubeDataLoaderCreator.XML_TAG, com.finebi.cube.api.BICubeManager.getInstance());
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
         StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, getConnectionManagerProvider());
@@ -96,7 +96,8 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, new BIExcelViewManager());
-        StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
+        StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, new BISystemCubeConfManager());
+
     }
 
     protected BICubeManagerProvider getCubeManagerProvider() {

@@ -3,10 +3,7 @@ package com.fr.bi.web.conf;
 
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.conf.services.*;
-import com.fr.bi.web.conf.services.cubeconf.BICheckCubePathAction;
-import com.fr.bi.web.conf.services.cubeconf.BICheckGenerateCubeAction;
-import com.fr.bi.web.conf.services.cubeconf.BIGetCubePathAction;
-import com.fr.bi.web.conf.services.cubeconf.BIUpdateAccessMultiPathAction;
+import com.fr.bi.web.conf.services.cubeconf.*;
 import com.fr.bi.web.conf.services.cubetask.*;
 import com.fr.bi.web.conf.services.datalink.*;
 import com.fr.bi.web.conf.services.dbconnection.BIGetAllTranslatedTablesByConnectionAction;
@@ -117,7 +114,10 @@ public class Service4BIConfigure extends NoSessionIDService {
 
             new BIGetAllBusinessPackagesAction(),
 
-            new BIGetAllTableNamesOfAllPackageAction()
+            new BIGetAllTableNamesOfAllPackageAction(),
+            new BIGetFieldValueByFieldIdAction(),
+            new BIGetLoginInfoInTableFieldAction(),
+            new BISaveLoginInfoInTableFieldAction()
 
     };
 

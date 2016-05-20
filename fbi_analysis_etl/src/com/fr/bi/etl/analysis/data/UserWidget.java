@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
@@ -28,20 +29,21 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserWidget {
 
     private int maxRow = Integer.MAX_VALUE;
-
+    @BICoreField
     private BIWidget widget;
-
+    @BICoreField
     private long userId;
 
     private Object lock = new Object();
 
-    private UserSession session = new UserSession();
+    private UserSession session;
 
     private transient Map<Integer, List> tempValue = new ConcurrentHashMap<Integer, List>();
 
     public UserWidget(BIWidget widget, long userId) {
         this.widget = widget;
         this.userId = userId;
+        this.session = new UserSession();
     }
 
 

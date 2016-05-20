@@ -138,47 +138,47 @@ BI.SelectNumberPane = BI.inherit(BI.Widget, {
     _getFieldsStructureByTableId: function (tableId) {
         var self = this, o = this.options;
         var fieldStructure = this._getFieldStructureOfOneTable(tableId);
-        //这里加上相关表
-        var relationTables = BI.Utils.getPrimaryRelationTablesByTableID(tableId);
-        BI.remove(relationTables, tableId);
-        if (BI.isNotEmptyArray(relationTables)) {
-            var relationTablesStructure = [];
-            BI.each(relationTables, function (i, rtId) {
-                relationTablesStructure.push({
-                    id: rtId,
-                    pId: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
-                    type: "bi.select_data_expander",
-                    el: {
-                        type: "bi.detail_select_data_level1_node",
-                        wId: o.wId,
-                        text: BI.Utils.getTableNameByID(rtId),
-                        title: BI.Utils.getTableNameByID(rtId),
-                        value: rtId,
-                        isParent: true,
-                        open: false
-                    },
-                    popup: {
-                        items: self._getFieldStructureOfOneTable(rtId, true)
-                    }
-                });
-            });
-            fieldStructure.push({
-                type: "bi.relation_tables_expander",
-                el: {
-                    id: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
-                    pId: tableId,
-                    type: "bi.select_data_relation_tables_node",
-                    text: BI.i18nText("BI-More_Foreign_Table") + ">>",
-                    title: BI.i18nText("BI-More_Foreign_Table"),
-                    value: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
-                    isParent: true,
-                    open: false
-                },
-                popup: {
-                    items: relationTablesStructure
-                }
-            })
-        }
+        ////这里加上相关表
+        //var relationTables = BI.Utils.getPrimaryRelationTablesByTableID(tableId);
+        //BI.remove(relationTables, tableId);
+        //if (BI.isNotEmptyArray(relationTables)) {
+        //    var relationTablesStructure = [];
+        //    BI.each(relationTables, function (i, rtId) {
+        //        relationTablesStructure.push({
+        //            id: rtId,
+        //            pId: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
+        //            type: "bi.select_data_expander",
+        //            el: {
+        //                type: "bi.detail_select_data_level1_node",
+        //                wId: o.wId,
+        //                text: BI.Utils.getTableNameByID(rtId),
+        //                title: BI.Utils.getTableNameByID(rtId),
+        //                value: rtId,
+        //                isParent: true,
+        //                open: false
+        //            },
+        //            popup: {
+        //                items: self._getFieldStructureOfOneTable(rtId, true)
+        //            }
+        //        });
+        //    });
+        //    fieldStructure.push({
+        //        type: "bi.relation_tables_expander",
+        //        el: {
+        //            id: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
+        //            pId: tableId,
+        //            type: "bi.select_data_relation_tables_node",
+        //            text: BI.i18nText("BI-More_Foreign_Table") + ">>",
+        //            title: BI.i18nText("BI-More_Foreign_Table"),
+        //            value: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
+        //            isParent: true,
+        //            open: false
+        //        },
+        //        popup: {
+        //            items: relationTablesStructure
+        //        }
+        //    })
+        //}
         return fieldStructure;
     },
 
@@ -227,7 +227,7 @@ BI.SelectNumberPane = BI.inherit(BI.Widget, {
             fieldStructure.push({
                 id: fid,
                 pId: tableId,
-                type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
+                type: isRelation ? "bi.select_number_level1_item" : "bi.select_number_level0_item",
                 wId: o.wId,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,

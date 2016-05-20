@@ -4,10 +4,13 @@ package com.fr.bi.web.conf.services.cubeconf;
  * Created by neo on 15/6/30.
  */
 
-import com.fr.base.FRContext;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.conf.cubeconf.CubeConfManager;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -15,7 +18,6 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.logging.Level;
 
 public class BICubePathAction extends AbstractBIConfigureAction {
 
@@ -27,6 +29,7 @@ public class BICubePathAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
+        long userId = ServiceUtils.getCurrentUserID(req);
         String actionType = WebUtils.getHTTPRequestParameter(req, "actionType");
         String cubePath = WebUtils.getHTTPRequestParameter(req, "cubePath");
         JSONObject jo = new JSONObject();
@@ -39,25 +42,24 @@ public class BICubePathAction extends AbstractBIConfigureAction {
             jo.put("pathCheckResult", cubePath);
             WebUtils.printAsJSON(res, jo);
         } else if (ComparatorUtils.equals(actionType, "setCubePath")) {
-            setCubePath(cubePath);
+            setCubePath(cubePath, userId);
         }
     }
 
-    public void setCubePath(String fileName) {
+    private void setCubePath(String fileName, long userId) {
         if (StringUtils.isEmpty(fileName)) {
             return;
         }
 
-        String path = CubeConfManager.getInstance().checkCubePath(fileName);
+        String path = BIConfigurePathUtils.checkCubePath(fileName);
 
         if (!StringUtils.isEmpty(path)) {
-            CubeConfManager.getInstance().setCubePath(path);
+            BIConfigureManagerCenter.getCubeConfManager().saveCubePath(path);
             try {
-                FRContext.getCurrentEnv().writeResource(CubeConfManager.getInstance());
+                BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
             } catch (Exception e) {
-                FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         }
-
     }
 }

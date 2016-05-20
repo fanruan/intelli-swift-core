@@ -1,5 +1,6 @@
 package com.fr.bi.field.target.target.cal.target.configure;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.target.BIAbstractTarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -15,6 +16,7 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
     /**
      * 计算使用的指标
      */
+    @BICoreField
     private String target_id;
 
     /**
