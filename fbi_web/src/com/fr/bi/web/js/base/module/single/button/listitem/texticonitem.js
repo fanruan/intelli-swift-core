@@ -41,7 +41,7 @@ BI.TextIconItem = BI.inherit(BI.BasicButton, {
             text: o.text,
             value: o.value,
             height: o.height
-        })
+        });
         this.icon = BI.createWidget({
             type: "bi.center_adapt",
             width: c.commonWidth,

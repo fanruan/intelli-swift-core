@@ -1,6 +1,6 @@
 package com.fr.bi.web.conf.services.cubeconf;
 
-import com.fr.bi.stable.conf.cubeconf.CubeConfManager;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -22,7 +22,7 @@ public class BICheckCubePathAction extends AbstractBIConfigureAction {
 
         String fileName = WebUtils.getHTTPRequestParameter(req, "fileName");
 
-        String returnCubePath = CubeConfManager.getInstance().checkCubePath(fileName);
+        String returnCubePath = BIConfigurePathUtils.checkCubePath(fileName);
         JSONObject jo = new JSONObject();
         jo.put("cubePath", returnCubePath);
         WebUtils.printAsJSON(res, jo);
