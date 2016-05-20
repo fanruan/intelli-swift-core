@@ -188,9 +188,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                         var bs = this.arrangement._getInDirectRelativeRegions(current.id, ["bottom"]).bottom;
                         var seen = [current.id];
                         var bottoms = bs.bottom;
+                        var occ = this.arrangement._getRegionOccupied(bottoms);
                         clone[id] = BI.extend({}, region, {
-                            left: current.left,
-                            width: this.arrangement._getRegionOccupied(bottoms).width,
+                            left: occ.left,
+                            width: occ.width,
                             top: current.top + current.height,
                             height: insert.height
                         });
