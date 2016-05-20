@@ -10,9 +10,9 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
         });
         warningPopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function () {
             if (BI.isNull(model.get('id'))){
-                this._showNamePop(widget, model);
+                self._showNamePop(widget, model);
             } else {
-                this._doSave(widget, model);
+                self._doSave(widget, model);
             }
         });
         BI.Popovers.remove("etlTableWarning");

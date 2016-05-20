@@ -1,20 +1,23 @@
 /**
- * Created by roy on 15/9/14.
+ * 有清楚按钮的文本框
+ * Created by GUY on 2015/9/29.
+ * @class BI.SmallTextEditor
+ * @extends BI.SearchEditor
  */
-BI.SearchEditor = BI.inherit(BI.Widget, {
+BI.ClearEditor = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        var conf = BI.SearchEditor.superclass._defaultConfig.apply(this, arguments);
+        var conf = BI.ClearEditor.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: "bi-search-editor",
+            baseCls: "bi-clear-editor",
             height: 30,
             errorText: "",
-            watermark: BI.i18nText("BI-Search"),
+            watermark: "",
             validationChecker: BI.emptyFn,
             quitChecker: BI.emptyFn
         });
     },
     _init: function () {
-        BI.SearchEditor.superclass._init.apply(this, arguments);
+        BI.ClearEditor.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.element.height(o.height - 2);
         this.editor = BI.createWidget({
@@ -34,88 +37,75 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         this.clear.on(BI.IconButton.EVENT_CHANGE, function () {
             self.setValue("");
             self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.STOPEDIT);
-            self.fireEvent(BI.SearchEditor.EVENT_CLEAR);
+            self.fireEvent(BI.ClearEditor.EVENT_CLEAR);
         });
         BI.createWidget({
             element: this.element,
             type: "bi.htape",
             items: [
                 {
-                    el: {
-                        type: "bi.center_adapt",
-                        cls: "search-font",
-                        items: [{
-                            el: {
-                                type: "bi.icon"
-                            }
-                        }]
-                    },
-                    width: 25
-                },
-                {
-                    el: self.editor
+                    el: this.editor
                 },
                 {
                     el: this.clear,
                     width: 25
-                }
-            ]
+                }]
         });
         this.editor.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
         this.editor.on(BI.Editor.EVENT_FOCUS, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_FOCUS);
+            self.fireEvent(BI.ClearEditor.EVENT_FOCUS);
         });
         this.editor.on(BI.Editor.EVENT_BLUR, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_BLUR);
+            self.fireEvent(BI.ClearEditor.EVENT_BLUR);
         });
         this.editor.on(BI.Editor.EVENT_CLICK, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_CLICK);
+            self.fireEvent(BI.ClearEditor.EVENT_CLICK);
         });
         this.editor.on(BI.Editor.EVENT_CHANGE, function () {
             self._checkClear();
-            self.fireEvent(BI.SearchEditor.EVENT_CHANGE);
+            self.fireEvent(BI.ClearEditor.EVENT_CHANGE);
         });
         this.editor.on(BI.Editor.EVENT_KEY_DOWN, function (v) {
-            self.fireEvent(BI.SearchEditor.EVENT_KEY_DOWN, v);
+            self.fireEvent(BI.ClearEditor.EVENT_KEY_DOWN, v);
         });
         this.editor.on(BI.Editor.EVENT_SPACE, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_SPACE)
+            self.fireEvent(BI.ClearEditor.EVENT_SPACE)
         });
         this.editor.on(BI.Editor.EVENT_BACKSPACE, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_BACKSPACE)
+            self.fireEvent(BI.ClearEditor.EVENT_BACKSPACE)
         });
 
 
         this.editor.on(BI.Editor.EVENT_VALID, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_VALID)
+            self.fireEvent(BI.ClearEditor.EVENT_VALID)
         });
         this.editor.on(BI.Editor.EVENT_ERROR, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_ERROR)
+            self.fireEvent(BI.ClearEditor.EVENT_ERROR)
         });
         this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_RESTRICT)
+            self.fireEvent(BI.ClearEditor.EVENT_RESTRICT)
         });
         this.editor.on(BI.Editor.EVENT_EMPTY, function () {
             self._checkClear();
-            self.fireEvent(BI.SearchEditor.EVENT_EMPTY)
+            self.fireEvent(BI.ClearEditor.EVENT_EMPTY)
         });
         this.editor.on(BI.Editor.EVENT_REMOVE, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_REMOVE)
+            self.fireEvent(BI.ClearEditor.EVENT_REMOVE)
         });
         this.editor.on(BI.Editor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_CONFIRM)
+            self.fireEvent(BI.ClearEditor.EVENT_CONFIRM)
         });
         this.editor.on(BI.Editor.EVENT_START, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_START);
+            self.fireEvent(BI.ClearEditor.EVENT_START);
         });
         this.editor.on(BI.Editor.EVENT_PAUSE, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_PAUSE);
+            self.fireEvent(BI.ClearEditor.EVENT_PAUSE);
         });
         this.editor.on(BI.Editor.EVENT_STOP, function () {
-            self.fireEvent(BI.SearchEditor.EVENT_STOP);
+            self.fireEvent(BI.ClearEditor.EVENT_STOP);
         });
 
         this.clear.invisible();
@@ -144,7 +134,6 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         }
     },
 
-
     setValue: function (v) {
         this.editor.setValue(v);
         if (BI.isKey(v)) {
@@ -152,40 +141,26 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         }
     },
 
-    setValid: function (b) {
-        this.editor.setValid(b);
-    },
-
-    isEditing: function () {
-        return this.editor.isEditing();
-    },
-
     isValid: function () {
         return this.editor.isValid();
-    },
-
-    setEnable: function (b) {
-        BI.Editor.superclass.setEnable.apply(this, arguments);
-        this.editor && this.editor.setEnable(b);
-        this.clear.setEnabled(b);
     }
 });
-BI.SearchEditor.EVENT_CHANGE = "EVENT_CHANGE";
-BI.SearchEditor.EVENT_FOCUS = "EVENT_FOCUS";
-BI.SearchEditor.EVENT_BLUR = "EVENT_BLUR";
-BI.SearchEditor.EVENT_CLICK = "EVENT_CLICK";
-BI.SearchEditor.EVENT_KEY_DOWN = "EVENT_KEY_DOWN";
-BI.SearchEditor.EVENT_SPACE = "EVENT_SPACE";
-BI.SearchEditor.EVENT_BACKSPACE = "EVENT_BACKSPACE";
-BI.SearchEditor.EVENT_CLEAR = "EVENT_CLEAR";
+BI.ClearEditor.EVENT_CHANGE = "EVENT_CHANGE";
+BI.ClearEditor.EVENT_FOCUS = "EVENT_FOCUS";
+BI.ClearEditor.EVENT_BLUR = "EVENT_BLUR";
+BI.ClearEditor.EVENT_CLICK = "EVENT_CLICK";
+BI.ClearEditor.EVENT_KEY_DOWN = "EVENT_KEY_DOWN";
+BI.ClearEditor.EVENT_SPACE = "EVENT_SPACE";
+BI.ClearEditor.EVENT_BACKSPACE = "EVENT_BACKSPACE";
+BI.ClearEditor.EVENT_CLEAR = "EVENT_CLEAR";
 
-BI.SearchEditor.EVENT_START = "EVENT_START";
-BI.SearchEditor.EVENT_PAUSE = "EVENT_PAUSE";
-BI.SearchEditor.EVENT_STOP = "EVENT_STOP";
-BI.SearchEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
-BI.SearchEditor.EVENT_VALID = "EVENT_VALID";
-BI.SearchEditor.EVENT_ERROR = "EVENT_ERROR";
-BI.SearchEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
-BI.SearchEditor.EVENT_REMOVE = "EVENT_REMOVE";
-BI.SearchEditor.EVENT_EMPTY = "EVENT_EMPTY";
-$.shortcut("bi.search_editor", BI.SearchEditor);
+BI.ClearEditor.EVENT_START = "EVENT_START";
+BI.ClearEditor.EVENT_PAUSE = "EVENT_PAUSE";
+BI.ClearEditor.EVENT_STOP = "EVENT_STOP";
+BI.ClearEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
+BI.ClearEditor.EVENT_VALID = "EVENT_VALID";
+BI.ClearEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.ClearEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
+BI.ClearEditor.EVENT_REMOVE = "EVENT_REMOVE";
+BI.ClearEditor.EVENT_EMPTY = "EVENT_EMPTY";
+$.shortcut("bi.clear_editor", BI.ClearEditor);
