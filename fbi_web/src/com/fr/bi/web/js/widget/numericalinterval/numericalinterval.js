@@ -92,12 +92,12 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                 height: o.height - 2,
                 items: [{
                     text: "(" + BI.i18nText("BI-Less_Than") + ")",
-                    iconClass: "less-arrow-font",
+                    iconClass: "less-font",
                     value: 0
                 }, {
                     text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
                     value: 1,
-                    iconClass: "less-equal-arrow-font"
+                    iconClass: "less-equal-font"
                 }]
             });
             if (o.closemin === true) {
@@ -111,12 +111,12 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                 height: o.height - 2,
                 items: [{
                     text: "(" + BI.i18nText("BI-Less_Than") + ")",
-                    iconClass: "less-arrow-font",
+                    iconClass: "less-font",
                     value: 0
                 }, {
                     text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
                     value: 1,
-                    iconClass: "less-equal-arrow-font"
+                    iconClass: "less-equal-font"
                 }]
             });
             if (o.closemax === true) {
