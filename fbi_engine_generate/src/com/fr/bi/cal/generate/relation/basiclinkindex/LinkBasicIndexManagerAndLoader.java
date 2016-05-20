@@ -14,7 +14,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
@@ -93,7 +93,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         for (BITableSourceRelation relation : set) {
             ArrayList<BITableSourceRelation> nextRelation = new ArrayList<BITableSourceRelation>(parRelation);
 
-            ITableSource key = relation.getForeignTable();
+            ICubeTableSource key = relation.getForeignTable();
             nextRelation.add(relation);
             if (BIRelationUtils.isRelationRepeated(nextRelation, key)) {
                 if (log != null) {

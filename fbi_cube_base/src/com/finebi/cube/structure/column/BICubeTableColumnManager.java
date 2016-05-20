@@ -9,8 +9,8 @@ import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.date.*;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -29,7 +29,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
     private ICubeResourceDiscovery discovery;
     private ITableKey tableKey;
 
-    public BICubeTableColumnManager(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, List<DBField> fieldList, ICubeResourceDiscovery discovery) {
+    public BICubeTableColumnManager(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, List<BICubeFieldSource> fieldList, ICubeResourceDiscovery discovery) {
         columnKey2ColumnMap = new HashMap<BIColumnKey, ICubeColumnEntityService>();
         this.resourceRetrievalService = resourceRetrievalService;
         this.tableKey = tableKey;
@@ -66,10 +66,10 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
     }
 
 
-    private void initialColumn(List<DBField> fieldSet, ITableKey tableKey) {
+    private void initialColumn(List<BICubeFieldSource> fieldSet, ITableKey tableKey) {
         for (int i = 0; i < fieldSet.size(); i++) {
             try {
-                DBField field = fieldSet.get(i);
+                BICubeFieldSource field = fieldSet.get(i);
                 switch (field.getFieldType()) {
                     case DBConstant.COLUMN.DATE:
                         initialDataColumn(field, tableKey);
@@ -100,7 +100,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
 
     }
 
-    private void initialDataColumn(DBField field, ITableKey tableKey) {
+    private void initialDataColumn(BICubeFieldSource field, ITableKey tableKey) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
                 ICubeResourceLocation fieldLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
@@ -120,11 +120,11 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    private ITableKey convert(ITableSource tableSource) {
+    private ITableKey convert(ICubeTableSource tableSource) {
         return new BITableKey(tableSource);
     }
 
-    private void initialLongColumn(DBField field, ITableKey tableKey) {
+    private void initialLongColumn(BICubeFieldSource field, ITableKey tableKey) {
         if (field.getFieldType() == DBConstant.COLUMN.NUMBER) {
             try {
                 BIColumnKey columnKey = new BIColumnKey(field.getFieldName(), BIColumnKey.LONG_COLUMN_TYPE, BIColumnKey.EMPTY_SUB_TYPE);
@@ -138,7 +138,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    private void initialStringColumn(DBField field, ITableKey tableKey) {
+    private void initialStringColumn(BICubeFieldSource field, ITableKey tableKey) {
         if (field.getFieldType() == DBConstant.COLUMN.STRING) {
             try {
                 BIColumnKey columnKey = new BIColumnKey(field.getFieldName(), BIColumnKey.STRING_COLUMN_TYPE, BIColumnKey.EMPTY_SUB_TYPE);
@@ -152,7 +152,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    private void initialDoubleColumn(DBField field, ITableKey tableKey) {
+    private void initialDoubleColumn(BICubeFieldSource field, ITableKey tableKey) {
         if (field.getFieldType() == DBConstant.COLUMN.NUMBER) {
             try {
                 BIColumnKey columnKey = new BIColumnKey(field.getFieldName(), BIColumnKey.DOUBLE_COLUMN_TYPE, BIColumnKey.EMPTY_SUB_TYPE);
@@ -166,7 +166,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    private void initialYearColumn(DBField field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+    private void initialYearColumn(BICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
@@ -182,7 +182,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    private void initialMonthColumn(DBField field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+    private void initialMonthColumn(BICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
@@ -198,7 +198,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    private void initialSeasonColumn(DBField field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+    private void initialSeasonColumn(BICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
@@ -214,7 +214,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    private void initialWeekColumn(DBField field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+    private void initialWeekColumn(BICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
@@ -230,7 +230,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    private void initialDayColumn(DBField field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+    private void initialDayColumn(BICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
@@ -246,7 +246,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    private void initialYearMonthDayColumn(DBField field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+    private void initialYearMonthDayColumn(BICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
                 ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));

@@ -4,7 +4,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.AbstractCubeFile;
 import com.fr.bi.cal.stable.cube.ColumnFiles;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.file.IndexFile;
@@ -22,12 +22,12 @@ import java.util.*;
  * Created by 小灰灰 on 2016/1/13.
  */
 public class MemoryCubeFile extends AbstractCubeFile {
-    private DBField[] dbFields;
+    private BICubeFieldSource[] BICubeFieldSources;
     private int rowCount;
     private static final String UNSUPPORT = "Memory Cube Not Support Link";
 
-    public MemoryCubeFile(DBField[] dbFields) {
-        this.dbFields = dbFields;
+    public MemoryCubeFile(BICubeFieldSource[] BICubeFieldSources) {
+        this.BICubeFieldSources = BICubeFieldSources;
         initColumns();
     }
 
@@ -74,8 +74,8 @@ public class MemoryCubeFile extends AbstractCubeFile {
     }
 
     @Override
-    public DBField[] getBIField() {
-        return dbFields;
+    public BICubeFieldSource[] getBIField() {
+        return BICubeFieldSources;
     }
 
     @Override
@@ -175,11 +175,11 @@ public class MemoryCubeFile extends AbstractCubeFile {
         }
         synchronized (this) {
             if (columns == null) {
-                DBField[] fields = getBIField();
+                BICubeFieldSource[] fields = getBIField();
                 ColumnFile<?>[] columns = new ColumnFile[fields.length];
                 Map<String, Integer> colIndexMap = new HashMap<String, Integer>(fields.length);
                 for (int i = 0, ilen = fields.length; i < ilen; i++) {
-                    DBField field = fields[i];
+                    BICubeFieldSource field = fields[i];
                     colIndexMap.put(field.getFieldName(), i);
                     switch (field.getFieldType()) {
                         case DBConstant.COLUMN.DATE:

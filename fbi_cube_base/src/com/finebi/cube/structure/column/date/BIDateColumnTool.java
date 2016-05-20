@@ -2,7 +2,7 @@ package com.finebi.cube.structure.column.date;
 
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
@@ -12,7 +12,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  * @since 4.0
  */
 public class BIDateColumnTool {
-    public static final BIColumnKey generateYear(DBField field) {
+    public static final BIColumnKey generateYear(BICubeFieldSource field) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR);
         } else {
@@ -21,7 +21,7 @@ public class BIDateColumnTool {
 
     }
 
-    public static final BIColumnKey generateMonth(DBField field) {
+    public static final BIColumnKey generateMonth(BICubeFieldSource field) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_MONTH);
         } else {
@@ -30,7 +30,7 @@ public class BIDateColumnTool {
 
     }
 
-    public static final BIColumnKey generateDay(DBField field) {
+    public static final BIColumnKey generateDay(BICubeFieldSource field) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_DAY);
         } else {
@@ -39,7 +39,7 @@ public class BIDateColumnTool {
 
     }
 
-    public static final BIColumnKey generateSeason(DBField field) {
+    public static final BIColumnKey generateSeason(BICubeFieldSource field) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_SEASON);
         } else {
@@ -48,7 +48,7 @@ public class BIDateColumnTool {
 
     }
 
-    public static final BIColumnKey generateWeek(DBField field) {
+    public static final BIColumnKey generateWeek(BICubeFieldSource field) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_WEEK);
         } else {
@@ -57,7 +57,7 @@ public class BIDateColumnTool {
 
     }
 
-    public static final BIColumnKey generateYearMonthDay(DBField field) {
+    public static final BIColumnKey generateYearMonthDay(BICubeFieldSource field) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY);
         } else {

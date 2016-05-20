@@ -4,7 +4,7 @@ import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
 import com.fr.bi.conf.base.pack.data.BIBusinessTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -27,9 +27,9 @@ public class BIGetAllTableNamesOfAllPackageAction extends AbstractBIConfigureAct
         for(BIBusinessPackage pack : packs) {
             Set<BIBusinessTable> tables = pack.getBusinessTables();
             for(BIBusinessTable table : tables) {
-                ITableSource src = table.getSource();
+                ICubeTableSource src = table.getSource();
                 if(src.getType() == BIBaseConstant.TABLETYPE.DB){
-                    tableJO.put(table.getID().getIdentity(), table.getSource().getDbTable().getTableName());
+                    tableJO.put(table.getID().getIdentity(), table.getSource().getPersistentTable().getTableName());
                 }
             }
         }

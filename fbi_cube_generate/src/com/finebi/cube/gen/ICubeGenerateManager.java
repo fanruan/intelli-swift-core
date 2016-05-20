@@ -1,6 +1,6 @@
 package com.finebi.cube.gen;
 
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 
@@ -13,7 +13,7 @@ import java.util.Set;
  * @since 4.0
  */
 public interface ICubeGenerateManager {
-    void setTables(Set<ITableSource> tables);
+    void setTables(Set<ICubeTableSource> tables);
 
     void setRelation(Set<BITableSourceRelation> relationSet);
 

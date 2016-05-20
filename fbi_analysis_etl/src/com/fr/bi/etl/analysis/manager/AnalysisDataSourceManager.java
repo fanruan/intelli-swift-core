@@ -6,12 +6,12 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.base.BISystemDataManager;
 import com.fr.bi.etl.analysis.data.AnalysisDataSource;
-import com.fr.bi.etl.analysis.data.AnalysisTableSource;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -65,8 +65,8 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
     }
 
     @Override
-    public AnalysisTableSource getTableSourceByID(BITableID id, BIUser user) {
-        AnalysisTableSource source = getInstance(user).getTableSourceByID(id);
+    public AnalysisCubeTableSource getTableSourceByID(BITableID id, BIUser user) {
+        AnalysisCubeTableSource source = getInstance(user).getTableSourceByID(id);
         if (source == null) {
             source = superManager.getTableSourceByID(id);
         }
@@ -74,8 +74,8 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
     }
 
     @Override
-    public AnalysisTableSource getTableSourceByCore(BICore core, BIUser user) {
-        AnalysisTableSource source = getInstance(user).getTableSourceByMD5(core);
+    public AnalysisCubeTableSource getTableSourceByCore(BICore core, BIUser user) {
+        AnalysisCubeTableSource source = getInstance(user).getTableSourceByMD5(core);
         if (source == null) {
             source = superManager.getTableSourceByMD5(core);
         }
@@ -83,7 +83,7 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
     }
 
     @Override
-    public void addCore2SourceRelation(BITableID id, AnalysisTableSource source, BIUser user) {
+    public void addCore2SourceRelation(BITableID id, AnalysisCubeTableSource source, BIUser user) {
         getInstance(user).addTableSource(id, source);
     }
 
@@ -93,7 +93,7 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
     }
 
     @Override
-    public void editCoreAndTable(BITableID id, AnalysisTableSource source, BIUser user) {
+    public void editCoreAndTable(BITableID id, AnalysisCubeTableSource source, BIUser user) {
         getInstance(user).editTableSource(id, source);
     }
 
@@ -108,12 +108,12 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
     }
 
     @Override
-    public DBField findDBField(BIUser user, BIField biField) throws BIFieldAbsentException {
+    public BICubeFieldSource findDBField(BIUser user, BIField biField) throws BIFieldAbsentException {
         return null;
     }
 
     @Override
-    public void addSource(AnalysisTableSource source, long userId) {
+    public void addSource(AnalysisCubeTableSource source, long userId) {
         getInstance(new BIUser(userId)).addCoreSource(source);
     }
 }

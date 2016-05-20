@@ -6,7 +6,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -74,7 +74,7 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
 		Iterator<String> iterator = jo.keys();
 		while (iterator.hasNext()){
 			String id = iterator.next();
-			ITableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
+			ICubeTableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
 			if (source.getType() == BIBaseConstant.TABLETYPE.DB){
 				sources.put(id, (DBTableSource)source);
 			}
@@ -97,7 +97,7 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
 		Iterator<Map.Entry<String, DBTableSource>> it = sourceTables.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, DBTableSource> entry = it.next();
-			IPersistentTable table = entry.getValue().getDbTable();
+			IPersistentTable table = entry.getValue().getPersistentTable();
 			if (!StringUtils.isEmpty(table.getRemark())) {
 				tableTrans.put(entry.getKey(), table.getRemark());
 			}

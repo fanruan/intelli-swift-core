@@ -10,7 +10,7 @@ import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -42,12 +42,12 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader) {
         return getTransOperatpr().writeSimpleIndex(travel, parents, loader);
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         return getTransOperatpr().writePartIndex(travel, parents, loader, startCol, start, end);
     }
 

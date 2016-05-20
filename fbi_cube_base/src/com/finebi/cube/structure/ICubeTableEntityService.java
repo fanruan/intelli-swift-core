@@ -4,7 +4,7 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.structure.column.ICubeTableColumnManagerService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.TreeSet;
  */
 public interface ICubeTableEntityService extends ICubeTableEntityGetterService {
 
-    void recordTableStructure(List<DBField> fields);
+    void recordTableStructure(List<BICubeFieldSource> fields);
 
     void recordTableGenerateVersion(int version);
 

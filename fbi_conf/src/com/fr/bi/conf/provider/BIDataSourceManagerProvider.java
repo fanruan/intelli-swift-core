@@ -5,11 +5,11 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.json.JSONObject;
 
-public interface BIDataSourceManagerProvider<T extends ITableSource> {
+public interface BIDataSourceManagerProvider<T extends ICubeTableSource> {
 
     String XML_TAG = "BIDataSourceManager";
 
@@ -44,5 +44,5 @@ public interface BIDataSourceManagerProvider<T extends ITableSource> {
 
     JSONObject createJSON(BIUser user) throws Exception;
 
-    DBField findDBField(BIUser user, BIField biField) throws BIFieldAbsentException;
+    BICubeFieldSource findDBField(BIUser user, BIField biField) throws BIFieldAbsentException;
 }

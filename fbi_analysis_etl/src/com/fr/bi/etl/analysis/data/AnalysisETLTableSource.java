@@ -18,15 +18,26 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2015/12/14.
  */
-public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator, AnalysisTableSource> implements AnalysisTableSource{
+public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator, AnalysisCubeTableSource> implements AnalysisCubeTableSource {
 
-    private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
+    private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
 
     private int invalidIndex = -1;
 
     private String name;
     @BICoreField
     private List<AnalysisETLSourceField> fieldList;
+
+    @Override
+    public IPersistentTable getPersistentTable() {
+        if (dbTable == null) {
+            dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
+            for (AnalysisETLSourceField c : fieldList){
+                dbTable.addColumn(new PersistentField(c.getFieldName(), c.getFieldType()));
+            }
+        }
+        return dbTable;
+    }
 
     @Override
     public List<AnalysisETLSourceField> getFieldsList() {
@@ -74,7 +85,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
      * @return
      */
     @Override
-    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
         throw new RuntimeException("Only UserTableSource can read");
     }
 
@@ -84,14 +95,14 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     }
 
     @Override
-    public UserTableSource createUserTableSource(long userId) {
-        UserTableSource source = userBaseTableMap.get(userId);
+    public UserCubeTableSource createUserTableSource(long userId) {
+        UserCubeTableSource source = userBaseTableMap.get(userId);
         if (source == null){
             synchronized (userBaseTableMap){
-                UserTableSource tmp = userBaseTableMap.get(userId);
+                UserCubeTableSource tmp = userBaseTableMap.get(userId);
                 if (tmp == null){
-                    List<UserTableSource> parents = new ArrayList<UserTableSource>();
-                    for (AnalysisTableSource parent : getParents()){
+                    List<UserCubeTableSource> parents = new ArrayList<UserCubeTableSource>();
+                    for (AnalysisCubeTableSource parent : getParents()){
                         parents.add(parent.createUserTableSource(userId));
                     }
                     source = new UserETLTableSource(getETLOperators(), parents, userId);

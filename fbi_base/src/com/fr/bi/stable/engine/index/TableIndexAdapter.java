@@ -6,7 +6,7 @@ package com.fr.bi.stable.engine.index;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.GroupValueIndexArrayReader;
 import com.fr.bi.stable.relation.BITableSourceRelation;
@@ -136,7 +136,7 @@ public class TableIndexAdapter implements ICubeTableService {
     }
 
     @Override
-    public Map<BIKey, DBField> getColumns() {
+    public Map<BIKey, BICubeFieldSource> getColumns() {
         throw NULL_EXCEPTION;
     }
 

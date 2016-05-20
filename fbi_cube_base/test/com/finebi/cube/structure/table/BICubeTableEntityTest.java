@@ -1,7 +1,6 @@
 package com.finebi.cube.structure.table;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.finebi.cube.ICubeConfiguration;
@@ -10,7 +9,7 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
@@ -38,7 +37,7 @@ public class BICubeTableEntityTest extends TestCase {
 
     public void testMainData() {
 
-        List<DBField> fields = new ArrayList<DBField>();
+        List<BICubeFieldSource> fields = new ArrayList<BICubeFieldSource>();
         fields.add(DBFieldTestTool.generateDATE());
         fields.add(DBFieldTestTool.generateSTRING());
         tableEntity.recordTableStructure(fields);
@@ -47,7 +46,7 @@ public class BICubeTableEntityTest extends TestCase {
 
     public void testFieldData() {
         try {
-            List<DBField> fields = new ArrayList<DBField>();
+            List<BICubeFieldSource> fields = new ArrayList<BICubeFieldSource>();
             fields.add(DBFieldTestTool.generateDATE());
             fields.add(DBFieldTestTool.generateSTRING());
             fields.add(DBFieldTestTool.generateBOOLEAN());
@@ -77,7 +76,7 @@ public class BICubeTableEntityTest extends TestCase {
     public void testPropertyExceptionData() {
         try {
 
-            List<DBField> fields = new ArrayList<DBField>();
+            List<BICubeFieldSource> fields = new ArrayList<BICubeFieldSource>();
             fields.add(DBFieldTestTool.generateDATE());
             tableEntity.recordTableStructure(fields);
             assertTrue(tableEntity.tableDataAvailable());

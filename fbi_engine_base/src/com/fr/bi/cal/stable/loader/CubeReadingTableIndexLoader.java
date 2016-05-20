@@ -15,7 +15,7 @@ import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -132,7 +132,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     @Override
     public ICubeTableService getTableIndex(BICore core, int start, int end) {
         ICubeTableService ti = getTableIndex(core);
-        MemoryCubeFile cube = new MemoryCubeFile(ti.getColumns().values().toArray(new DBField[ti.getColumns().size()]));
+        MemoryCubeFile cube = new MemoryCubeFile(ti.getColumns().values().toArray(new BICubeFieldSource[ti.getColumns().size()]));
         int row = ti.getRowCount();
         if (row >= start){
             int count = Math.min(row, end) - start;

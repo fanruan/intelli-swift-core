@@ -6,7 +6,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -89,18 +89,18 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
         return basicTable;
     }
     
-    private void initBaseTable(List<? extends ITableSource> parents){
+    private void initBaseTable(List<? extends ICubeTableSource> parents){
     	 if (basicTable == null) {
              IPersistentTable[] base = new IPersistentTable[parents.size()];
              for (int i = 0; i < base.length; i++) {
-                 base[i] = parents.get(0).getDbTable();
+                 base[i] = parents.get(0).getPersistentTable();
              }
              initLCFieldNames(base, user.getUserId());
          }
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader) {
         initBaseTable(parents);
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         return write(travel, ti);
@@ -152,7 +152,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         initBaseTable(parents);
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), start, end);
         return write(travel, ti);

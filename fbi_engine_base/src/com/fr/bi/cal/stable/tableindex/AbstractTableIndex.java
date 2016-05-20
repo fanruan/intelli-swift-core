@@ -3,7 +3,7 @@ package com.fr.bi.cal.stable.tableindex;
 import com.fr.base.FRContext;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractTableIndex implements ICubeTableService {
 
     protected transient Date lastTime;
-    protected transient Map<BIKey, DBField> columns = new ConcurrentHashMap<BIKey, DBField>();
+    protected transient Map<BIKey, BICubeFieldSource> columns = new ConcurrentHashMap<BIKey, BICubeFieldSource>();
     protected transient int tableVersion = 0;
     protected transient int rowCount;
     protected transient Map<BIKey, Long> groupCount = new ConcurrentHashMap<BIKey, Long>();
@@ -83,8 +83,8 @@ public abstract class AbstractTableIndex implements ICubeTableService {
      */
     protected void loadMain() {
         try {
-            DBField[] fields = cube.getBIField();
-            for (DBField column : fields) {
+            BICubeFieldSource[] fields = cube.getBIField();
+            for (BICubeFieldSource column : fields) {
                 this.columns.put(new IndexKey(column.getFieldName()), column);
             }
         } catch (Exception e) {
@@ -109,7 +109,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
     }
 
     @Override
-    public Map<BIKey, DBField> getColumns() {
+    public Map<BIKey, BICubeFieldSource> getColumns() {
         return columns;
     }
 

@@ -43,13 +43,13 @@ public class ServerTableSource extends DBTableSource {
         final HashSet set = new HashSet();
         TableData tableData = getTableData();
         if(tableData instanceof DBTableData){
-            DBField field = getFields().get(fieldName);
+            BICubeFieldSource field = getFields().get(fieldName);
             if (field == null){
                 return set;
             }
             SqlSettedStatement settedStatement = new SqlSettedStatement(((DBTableData) tableData).getDatabase());
             settedStatement.setSql("SELECT distinct " + fieldName + " FROM " + "(" +((DBTableData) tableData).getQuery() + ") " + "t");
-            BIDBUtils.runSQL(settedStatement, new DBField[]{field}, new Traversal<BIDataValue>() {
+            BIDBUtils.runSQL(settedStatement, new BICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue data) {
                     set.add(data.getValue());
@@ -63,12 +63,12 @@ public class ServerTableSource extends DBTableSource {
     }
 
     private HashSet getDistinctValuesOnlyByTableData(TableData tableData, String fieldName) {
-        DBField field = getFields().get(fieldName);
+        BICubeFieldSource field = getFields().get(fieldName);
         final HashSet set = new HashSet();
         if (field == null){
             return set;
         }
-        BIServerUtils.runServer(tableData, new DBField[]{field}, new Traversal<BIDataValue>() {
+        BIServerUtils.runServer(tableData, new BICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 set.add(data.getValue());
@@ -92,7 +92,7 @@ public class ServerTableSource extends DBTableSource {
     }
 
     @Override
-    public IPersistentTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
             dbTable = BIDBUtils.getServerBITable(tableName);
         }
@@ -135,7 +135,7 @@ public class ServerTableSource extends DBTableSource {
     }
 
     @Override
-    public long read(final Traversal<BIDataValue> travel, DBField[] fields, ICubeDataLoader loader) {
+    public long read(final Traversal<BIDataValue> travel, BICubeFieldSource[] fields, ICubeDataLoader loader) {
 
         final long start = System.currentTimeMillis();
         TableData tableData = getTableData();
@@ -173,7 +173,7 @@ public class ServerTableSource extends DBTableSource {
         }
     }
 
-    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, DBField[] fields) {
+    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, BICubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
         sql.setFrom( "(" + query + ") " + "t");
         return BIDBUtils.runSQL(sql, fields, new Traversal<BIDataValue>() {

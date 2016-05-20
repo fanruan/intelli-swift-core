@@ -1,7 +1,7 @@
 package com.fr.bi.stable.relation;
 
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
 
@@ -11,8 +11,8 @@ import com.fr.json.JSONObject;
  * @author Connery
  * @since 4.0
  */
-public class BITableSourceRelation extends BIBasicRelation<ITableSource, BIField> implements JSONCreator {
-    public BITableSourceRelation(BIField primaryField, BIField foreignField, ITableSource primaryTable, ITableSource foreignTable) {
+public class BITableSourceRelation extends BIBasicRelation<ICubeTableSource, BIField> implements JSONCreator {
+    public BITableSourceRelation(BIField primaryField, BIField foreignField, ICubeTableSource primaryTable, ICubeTableSource foreignTable) {
         super(primaryField, foreignField, primaryTable, foreignTable);
     }
 

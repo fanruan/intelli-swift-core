@@ -3,31 +3,37 @@ package com.fr.bi.stable.data.db;
 import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIBasicField;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 
 /**
  * 数据库列转成的基础列, 表示生成cube时的字段信息
  * Created by GUY on 2015/4/10.
  */
-public class DBField extends BIBasicField {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 2399880587121141814L;
-    private int classType;
+public class BICubeFieldSource extends BIBasicField {
 
-    public static DBField createEmpty() {
-        return new DBField("", "", -1, -1);
+    private static final long serialVersionUID = 2399880587121141814L;
+    protected String fieldName = StringUtils.EMPTY;
+
+    protected int fieldType;
+    protected int fieldSize;
+    protected boolean isUsable;
+    private int classType;
+    private ICubeTableSource cubeTableSource;
+
+    public static BICubeFieldSource createEmpty() {
+        return new BICubeFieldSource("", "", -1, -1);
     }
 
-    public DBField(String id, String fieldName, int classType, int fieldSize) {
-        super(id, fieldName, classType, fieldSize);
+    public BICubeFieldSource(String id, String fieldName, int classType, int fieldSize) {
+
         this.classType = classType;
     }
 
-    public static DBField getBiEmptyField() {
-        return new DBField(BIValueConstant.EMPTY, BIValueConstant.EMPTY, -1, -1);
+    public static BICubeFieldSource getBiEmptyField() {
+        return new BICubeFieldSource(BIValueConstant.EMPTY, BIValueConstant.EMPTY, -1, -1);
     }
 
     /**
@@ -39,14 +45,6 @@ public class DBField extends BIBasicField {
         return classType;
     }
 
-    /**
-     * 设置字段对应的java类
-     *
-     * @param classType
-     */
-    public void setClassType(int classType) {
-        this.classType = classType;
-    }
 
     @Override
     public JSONObject createJSON() throws Exception {

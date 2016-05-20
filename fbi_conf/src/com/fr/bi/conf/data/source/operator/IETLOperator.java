@@ -4,7 +4,7 @@ import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.json.JSONTransform;
 import com.fr.stable.xml.XMLable;
@@ -30,7 +30,7 @@ public interface IETLOperator extends XMLable, JSONTransform, BICoreService {
 
     boolean isAddColumnOprator();
 
-    int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader);
+    int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader);
 
-    int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end);
+    int writePartIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end);
 }

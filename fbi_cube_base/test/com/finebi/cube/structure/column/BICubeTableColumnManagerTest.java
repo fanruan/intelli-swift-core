@@ -9,7 +9,7 @@ import com.finebi.cube.structure.column.date.*;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class BICubeTableColumnManagerTest extends BICubeTestBase {
     private ICubeTableColumnManagerService managerService;
-    private List<DBField> fields = new ArrayList<DBField>();
+    private List<BICubeFieldSource> fields = new ArrayList<BICubeFieldSource>();
     private Long time = 1460014759867l;
 
     @Override

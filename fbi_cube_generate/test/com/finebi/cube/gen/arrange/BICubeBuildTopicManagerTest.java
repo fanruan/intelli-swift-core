@@ -8,7 +8,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import junit.framework.TestCase;
 
@@ -43,24 +43,24 @@ public class BICubeBuildTopicManagerTest extends TestCase {
         assertTrue(router.isRegistered(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, BIMemoryDataSourceFactory.generateTableB())));
         assertTrue(router.isRegistered(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, BIMemoryDataSourceFactory.generateTableC())));
         for (int i = 0; i < BIMemoryDataSourceFactory.generateTableA().getFieldsArray(null).length; i++) {
-            DBField field = BIMemoryDataSourceFactory.generateTableA().getFieldsArray(null)[i];
+            BICubeFieldSource field = BIMemoryDataSourceFactory.generateTableA().getFieldsArray(null)[i];
             checkRegisterMethod(router, field);
 
         }
         for (int i = 0; i < BIMemoryDataSourceFactory.generateTableB().getFieldsArray(null).length; i++) {
-            DBField field = BIMemoryDataSourceFactory.generateTableB().getFieldsArray(null)[i];
+            BICubeFieldSource field = BIMemoryDataSourceFactory.generateTableB().getFieldsArray(null)[i];
             checkRegisterMethod(router, field);
 
         }
         for (int i = 0; i < BIMemoryDataSourceFactory.generateTableC().getFieldsArray(null).length; i++) {
-            DBField field = BIMemoryDataSourceFactory.generateTableC().getFieldsArray(null)[i];
+            BICubeFieldSource field = BIMemoryDataSourceFactory.generateTableC().getFieldsArray(null)[i];
             checkRegisterMethod(router, field);
 
         }
 
     }
 
-    private void checkRegisterMethod(IRouter router, DBField field) {
+    private void checkRegisterMethod(IRouter router, BICubeFieldSource field) {
         Iterator<BIColumnKey> it = BIColumnKey.generateColumnKey(field).iterator();
         while (it.hasNext()) {
             BIColumnKey columnKey = it.next();

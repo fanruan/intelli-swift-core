@@ -4,8 +4,8 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.json.JSONObject;
 
 /**
@@ -23,17 +23,17 @@ public class BIDBDataSource implements BIDataSource {
     }
 
     @Override
-    public ITableSource getTableSourceByID(BITableID id) {
+    public ICubeTableSource getTableSourceByID(BITableID id) {
         return null;
     }
 
     @Override
-    public ITableSource getTableSourceByMD5(BICore core) {
+    public ICubeTableSource getTableSourceByMD5(BICore core) {
         return null;
     }
 
     @Override
-    public void addTableSource(BITableID id, ITableSource source) {
+    public void addTableSource(BITableID id, ICubeTableSource source) {
 
     }
 
@@ -43,7 +43,7 @@ public class BIDBDataSource implements BIDataSource {
     }
 
     @Override
-    public void editTableSource(BITableID id, ITableSource source) {
+    public void editTableSource(BITableID id, ICubeTableSource source) {
 
     }
 
@@ -58,7 +58,7 @@ public class BIDBDataSource implements BIDataSource {
     }
 
     @Override
-    public DBField findDBField(BIField biField) throws BIFieldAbsentException {
+    public BICubeFieldSource findDBField(BIField biField) throws BIFieldAbsentException {
         return null;
     }
 }

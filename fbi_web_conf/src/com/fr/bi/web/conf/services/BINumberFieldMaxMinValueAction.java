@@ -6,7 +6,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.utils.BIWebConfUtils;
@@ -28,7 +28,7 @@ public class BINumberFieldMaxMinValueAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         String fieldName = WebUtils.getHTTPRequestParameter(req, "fieldName");
-        ITableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, "table")), userId);
+        ICubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, "table")), userId);
         ICubeDataLoader tiLoader = BICubeManager.getInstance().fetchCubeLoader(userId);
         ICubeTableService ti = tiLoader.getTableIndex( source.fetchObjectCore());
         JSONObject jo = new JSONObject();

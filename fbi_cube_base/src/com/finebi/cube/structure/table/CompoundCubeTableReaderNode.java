@@ -13,7 +13,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -39,8 +39,8 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     private ICubeTableEntityService masterTable = null;
     protected ICubeResourceDiscovery discovery;
     protected ICubeResourceRetrievalService resourceRetrievalService;
-    protected Map<DBField, ICubeTableEntityService> fieldSource = new HashMap<DBField, ICubeTableEntityService>();
-    private List<DBField> currentLevelFields = new ArrayList<DBField>();
+    protected Map<BICubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<BICubeFieldSource, ICubeTableEntityService>();
+    private List<BICubeFieldSource> currentLevelFields = new ArrayList<BICubeFieldSource>();
 
     public CompoundCubeTableReaderNode(List<ITableKey> tableKeys, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;
@@ -57,7 +57,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     private void initialFieldSource(ICubeTableEntityService tableEntityService) {
         if (tableEntityService.tableDataAvailable()) {
-            for (DBField field : tableEntityService.getFieldInfo()) {
+            for (BICubeFieldSource field : tableEntityService.getFieldInfo()) {
 
                 if (!fieldSource.containsKey(field)) {
                     fieldSource.put(field, tableEntityService);
@@ -68,7 +68,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     }
 
     @Override
-    public void recordTableStructure(List<DBField> fields) {
+    public void recordTableStructure(List<BICubeFieldSource> fields) {
         throw new UnsupportedOperationException();
     }
 
@@ -136,7 +136,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     }
 
     @Override
-    public List<DBField> getFieldInfo() {
+    public List<BICubeFieldSource> getFieldInfo() {
         return currentLevelFields;
     }
 
@@ -159,8 +159,8 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     }
 
     @Override
-    public DBField getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        for (DBField field : currentLevelFields) {
+    public BICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
+        for (BICubeFieldSource field : currentLevelFields) {
             if (ComparatorUtils.equals(fieldName, field.getFieldName())) {
                 return field;
             }
@@ -184,7 +184,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     }
 
     private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
-        DBField field = getSpecificColumn(fieldName);
+        BICubeFieldSource field = getSpecificColumn(fieldName);
         return fieldSource.get(field);
     }
 

@@ -9,8 +9,8 @@ import com.finebi.cube.gen.mes.BITopicUtils;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -48,7 +48,7 @@ public class BICubeBuildTopicManager {
 
     }
 
-    public void registerDataSource(Set<ITableSource> tableSourceSet) {
+    public void registerDataSource(Set<ICubeTableSource> tableSourceSet) {
         registerTable(tableSourceSet);
         registerTableField(tableSourceSet);
     }
@@ -99,11 +99,11 @@ public class BICubeBuildTopicManager {
         return path.getSourceID() + "FBI_Field";
     }
 
-    private void registerTable(Set<ITableSource> tableSourceSet) {
-        Iterator<ITableSource> it = tableSourceSet.iterator();
+    private void registerTable(Set<ICubeTableSource> tableSourceSet) {
+        Iterator<ICubeTableSource> it = tableSourceSet.iterator();
         while (it.hasNext()) {
             try {
-                ITableSource tableSource = it.next();
+                ICubeTableSource tableSource = it.next();
                 /**
                  * 将表注册到数据转移阶段Topic下
                  */
@@ -127,14 +127,14 @@ public class BICubeBuildTopicManager {
         }
     }
 
-    private void registerTableField(Set<ITableSource> tableSourceSet) {
-        Iterator<ITableSource> it = tableSourceSet.iterator();
+    private void registerTableField(Set<ICubeTableSource> tableSourceSet) {
+        Iterator<ICubeTableSource> it = tableSourceSet.iterator();
         while (it.hasNext()) {
 
-            ITableSource tableSource = it.next();
-            DBField[] fields = tableSource.getFieldsArray(tableSourceSet);
+            ICubeTableSource tableSource = it.next();
+            BICubeFieldSource[] fields = tableSource.getFieldsArray(tableSourceSet);
             for (int i = 0; i < fields.length; i++) {
-                DBField field = fields[i];
+                BICubeFieldSource field = fields[i];
                 Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
                 while (columnKeyIterator.hasNext()) {
                     BIColumnKey columnKey = columnKeyIterator.next();

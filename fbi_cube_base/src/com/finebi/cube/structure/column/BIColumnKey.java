@@ -3,7 +3,7 @@ package com.finebi.cube.structure.column;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.*;
@@ -69,7 +69,7 @@ public final class BIColumnKey implements BIKey {
     }
 
 
-    private BIColumnKey(DBField field) {
+    private BIColumnKey(BICubeFieldSource field) {
         this(field.getFieldName(), fieldType2ColumnType.get(field.getClassType() + field.getFieldType()), EMPTY_SUB_TYPE);
     }
 
@@ -117,7 +117,7 @@ public final class BIColumnKey implements BIKey {
         return result;
     }
 
-    public static List<BIColumnKey> generateColumnKey(DBField field) {
+    public static List<BIColumnKey> generateColumnKey(BICubeFieldSource field) {
         List<BIColumnKey> result;
         if (field.hasSubField()) {
             result = generateDateSubField(field);
@@ -128,11 +128,11 @@ public final class BIColumnKey implements BIKey {
         return result;
     }
 
-    public static BIColumnKey covertColumnKey(DBField field) {
+    public static BIColumnKey covertColumnKey(BICubeFieldSource field) {
         return new BIColumnKey(field);
     }
 
-    public static List<BIColumnKey> generateSubField(DBField field) {
+    public static List<BIColumnKey> generateSubField(BICubeFieldSource field) {
         switch (field.getFieldType()) {
             case DBConstant.COLUMN.DATE:
                 return generateDateSubField(field);
@@ -141,7 +141,7 @@ public final class BIColumnKey implements BIKey {
         }
     }
 
-    private static List<BIColumnKey> generateDateSubField(DBField field) {
+    private static List<BIColumnKey> generateDateSubField(BICubeFieldSource field) {
         List<BIColumnKey> result = new ArrayList<BIColumnKey>();
         result.add(BIDateColumnTool.generateDay(field));
         result.add(BIDateColumnTool.generateMonth(field));

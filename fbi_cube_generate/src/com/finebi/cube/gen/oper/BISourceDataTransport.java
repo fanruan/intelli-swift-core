@@ -11,8 +11,8 @@ import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 
@@ -28,13 +28,13 @@ import java.util.Set;
  * @since 4.0
  */
 public class BISourceDataTransport extends BIProcessor {
-    protected ITableSource tableSource;
-    protected Set<ITableSource> allSources;
+    protected ICubeTableSource tableSource;
+    protected Set<ICubeTableSource> allSources;
     protected ICubeTableEntityService tableEntityService;
     protected ICube cube;
     protected List<ITableKey> parents = new ArrayList<ITableKey>();
 
-    public BISourceDataTransport(ICube cube, ITableSource tableSource, Set<ITableSource> allSources, Set<ITableSource> parentTableSource) {
+    public BISourceDataTransport(ICube cube, ICubeTableSource tableSource, Set<ICubeTableSource> allSources, Set<ICubeTableSource> parentTableSource) {
         this.tableSource = tableSource;
         this.allSources = allSources;
         this.cube = cube;
@@ -42,9 +42,9 @@ public class BISourceDataTransport extends BIProcessor {
         initialParents(parentTableSource);
     }
 
-    private void initialParents(Set<ITableSource> parentTableSource) {
+    private void initialParents(Set<ICubeTableSource> parentTableSource) {
         if (parentTableSource != null) {
-            for (ITableSource tableSource : parentTableSource) {
+            for (ICubeTableSource tableSource : parentTableSource) {
                 parents.add(new BITableKey(tableSource));
             }
         }
@@ -70,9 +70,9 @@ public class BISourceDataTransport extends BIProcessor {
         if (tableSource.getSourceID().equals("2d023b15")) {
             System.out.println("fine");
         }
-        DBField[] columns = getFieldsArray();
-        List<DBField> columnList = new ArrayList<DBField>();
-        for (DBField col : columns) {
+        BICubeFieldSource[] columns = getFieldsArray();
+        List<BICubeFieldSource> columnList = new ArrayList<BICubeFieldSource>();
+        for (BICubeFieldSource col : columns) {
             columnList.add(convert(col));
         }
         tableEntityService.recordTableStructure(columnList);
@@ -83,11 +83,11 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     private Set<String> getParentFieldNames() {
-        Set<DBField> parentFields = tableSource.getParentFields(allSources);
-        Set<DBField> facetFields = tableSource.getFacetFields(allSources);
-        Set<DBField> selfFields = tableSource.getSelfFields(allSources);
+        Set<BICubeFieldSource> parentFields = tableSource.getParentFields(allSources);
+        Set<BICubeFieldSource> facetFields = tableSource.getFacetFields(allSources);
+        Set<BICubeFieldSource> selfFields = tableSource.getSelfFields(allSources);
         Set<String> fieldNames = new HashSet<String>();
-        for (DBField field : parentFields) {
+        for (BICubeFieldSource field : parentFields) {
             if (!containSameName(selfFields, field.getFieldName()) && containSameName(facetFields, field.getFieldName())) {
                 fieldNames.add(field.getFieldName());
             }
@@ -95,8 +95,8 @@ public class BISourceDataTransport extends BIProcessor {
         return fieldNames;
     }
 
-    private boolean containSameName(Set<DBField> set, String fieldName) {
-        for (DBField field : set) {
+    private boolean containSameName(Set<BICubeFieldSource> set, String fieldName) {
+        for (BICubeFieldSource field : set) {
             if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
                 return true;
             }
@@ -105,10 +105,10 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     private long transport() {
-        List<DBField> fieldList = tableEntityService.getFieldInfo();
-        DBField[] dbFields = new DBField[fieldList.size()];
+        List<BICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
+        BICubeFieldSource[] BICubeFieldSources = new BICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
-            dbFields[i] = fieldList.get(i);
+            BICubeFieldSources[i] = fieldList.get(i);
         }
         return this.tableSource.read(new Traversal<BIDataValue>() {
             @Override
@@ -119,14 +119,14 @@ public class BISourceDataTransport extends BIProcessor {
                     e.printStackTrace();
                 }
             }
-        }, dbFields, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube));
+        }, BICubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube));
     }
 
-    private DBField convert(DBField column) {
-        return new DBField(tableSource.getSourceID(), column.getFieldName(), column.getClassType(), column.getFieldSize());
+    private BICubeFieldSource convert(BICubeFieldSource column) {
+        return new BICubeFieldSource(tableSource.getSourceID(), column.getFieldName(), column.getClassType(), column.getFieldSize());
     }
 
-    private DBField[] getFieldsArray() {
+    private BICubeFieldSource[] getFieldsArray() {
         return tableSource.getFieldsArray(allSources);
     }
 

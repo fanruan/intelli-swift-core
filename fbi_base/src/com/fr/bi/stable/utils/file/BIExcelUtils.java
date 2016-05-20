@@ -4,7 +4,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BIExcelDataModel;
 import com.fr.bi.stable.data.db.BIExcelTableData;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -14,7 +14,7 @@ import com.fr.general.DateUtils;
  */
 public class BIExcelUtils {
 
-    public static long runExcel(BIExcelTableData excel, DBField[] columns, Traversal<BIDataValue> back) {
+    public static long runExcel(BIExcelTableData excel, BICubeFieldSource[] columns, Traversal<BIDataValue> back) {
         BIExcelDataModel dataModel = null;
         long res = 0;
         BILogger.getLogger().info("start extracting data from the excel file");
@@ -25,7 +25,7 @@ public class BIExcelUtils {
             String[] columnNames = dataModel.onlyGetColumnNames();
             for (int i = 0; i < dataModel.getRowCount(); i++) {
                 for (int j = 0; j < columns.length; j++) {
-                    DBField field = columns[j];
+                    BICubeFieldSource field = columns[j];
                     int index = findIndex(columnNames, field.getFieldName());
                     if (index >= 0) {
                         if (!columns[j].isUsable()) {

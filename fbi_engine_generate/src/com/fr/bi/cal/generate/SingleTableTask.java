@@ -7,7 +7,7 @@ import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
@@ -66,8 +66,8 @@ public class SingleTableTask extends AllTask {
     }
 
     @Override
-    protected Map<Integer, Set<ITableSource>> getGenerateTables() {
-        Map<Integer, Set<ITableSource>> generateTable = new HashMap<Integer, Set<ITableSource>>();
+    protected Map<Integer, Set<ICubeTableSource>> getGenerateTables() {
+        Map<Integer, Set<ICubeTableSource>> generateTable = new HashMap<Integer, Set<ICubeTableSource>>();
         BICollectionUtils.mergeSetValueMap(generateTable, BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(table.getID(), biUser).createGenerateTablesMap());
         return generateTable;
     }

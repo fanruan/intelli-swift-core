@@ -10,7 +10,7 @@ import com.fr.bi.field.target.filter.general.GeneralORFilter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -42,12 +42,12 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
         return XML_TAG;
     }
 
-    protected GroupValueIndex createFilterIndex(List<? extends ITableSource> parents, ICubeDataLoader loader){
+    protected GroupValueIndex createFilterIndex(List<? extends ICubeTableSource> parents, ICubeDataLoader loader){
         if (filterList == null || filterList.isEmpty()){
             return loader.getTableIndex(getSingleParentMD5(parents)).getAllShowIndex();
         }
         GroupValueIndex gvi = null;
-        for (ITableSource parent : parents){
+        for (ICubeTableSource parent : parents){
             GroupValueIndex temp = createFilter().createFilterIndex(new BITable(parent.fetchObjectCore().getID().getIdentityValue()), loader, loader.getUserId());
             if (gvi == null){
                 gvi = temp;
