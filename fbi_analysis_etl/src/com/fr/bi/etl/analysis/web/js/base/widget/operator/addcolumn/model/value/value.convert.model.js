@@ -23,5 +23,12 @@ BI.AnalysisETLOperatorAddColumnValueConvertModel = BI.inherit(BI.AnalysisETLOper
             })
         });
         return f;
+    },
+
+    update : function () {
+        var v = BI.deepClone(this.toJSON());
+        delete v[ETLCst.FIELDS];
+        return v;
     }
+
 })

@@ -112,5 +112,6 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
             showContent :false
         })
         this._refreshState(widget, model);
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.getValue(ETLCst.FIELDS))
     }
 })
