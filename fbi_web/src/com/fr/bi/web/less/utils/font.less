@@ -109,6 +109,9 @@
 .font-hover(column-pre-page-h-font, @font-solid-top, @color-bi-text-black, @color-bi-text-black);
 .font-hover(column-next-page-h-font, @font-solid-bottom, @color-bi-text-black, @color-bi-text-black);
 
+//下拉框小小三角
+.font-hover-active(trigger-triangle-font, @font-solid-bottom, @color-bi-text-gray, @color-bi-text-gray, @color-bi-text-highlight);
+
 //日期控件字体图标
 .font-hover(widget-date-next-h-font, @font-right);
 .font-hover(widget-date-pre-h-font, @font-left);
@@ -179,10 +182,8 @@
 .font-hover-active(detail-chart-radar-font, @font-radar);
 
 //数值区间
-.font-hover-active(less-font, @font-less, @color-bi-text-black, @color-bi-text-black, @color-bi-text-highlight);
-.font-hover-active(less-equal-font, @font-less-equal, @color-bi-text-black, @color-bi-text-black, @color-bi-text-highlight);
-.font(less-arrow-font, @font-less-arrow, @color-bi-text-highlight);
-.font(less-equal-arrow-font, @font-less-equal-arrow, @color-bi-text-highlight);
+.font-hover-active(less-font, @font-less);
+.font-hover-active(less-equal-font, @font-less-equal);
 
 .font(check-font, @font-check-mark, @color-bi-text-highlight);
 
@@ -236,8 +237,8 @@
 .font(new-file-font, @font-new-folder);
 .font(file-font, @font-file, @color-create-file-text);
 .font(folder-font, @font-folder, @color-bi-text-highlight);
-.font(letter-font, @font-letter);
-.font(time-font, @font-time);
+.font-hover-active(letter-font, @font-letter);
+.font-hover-active(time-font, @font-time);
 .font(rename-font, @font-rename);
 .font(delete-template-font, @font-delete, @color-bi-text-gray);
 

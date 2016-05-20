@@ -144,7 +144,7 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, ITableS
         Set<ITableSource> set = new HashSet<ITableSource>();
         if (oprators != null){
             for (IETLOperator op : oprators){
-                set.add(new SingleOpratorETLTableSource(parents, op));
+                set.add(new SingleOperatorETLTableSource(parents, op));
             }
         } else {
             set.add(this);

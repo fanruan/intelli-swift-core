@@ -65,7 +65,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
         //})
         BI.createWidget({
             element:this.element,
-            type:"bi.left",
+            type:"bi.inline",
             scrollable : false,
             items: [this.text, {
                 type:"bi.center_adapt",

@@ -36,10 +36,10 @@ BI.extend(BI.BarChart, {
         var name = BI.keys(items)[0];
         return {
             "data": BI.map(items[name], function(idx, item){
-                return {
+                return BI.extend({options: item.options}, {
                     y: item.x,
                     x: item.y
-                };
+                });
             }),
             "name": name,
             stack: false

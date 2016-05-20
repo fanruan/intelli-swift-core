@@ -2,7 +2,8 @@ BI.ChartCombineFormatItemFactory = {
     combineItems: function(types, items){
         var id = BI.UUID();
         var result=[];
-        BI.each(items, function(idx, item){
+        var calItems = BI.values(items);
+        BI.each(calItems, function(idx, item){
             var it = BI.ChartCombineFormatItemFactory.formatItems(types[idx], item);
             if(it.stack === true){
                 it.stack = id;
@@ -48,7 +49,7 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.FALL_AXIS:
                 return BI.extend({"type": "column"}, BI.LineChart.formatItems(items));
             case BICst.WIDGET.DONUT:
-                return BI.extend({"type": "donut"}, BI.DonutChart.formatItems(items));
+                return BI.extend({"type": "pie"}, BI.DonutChart.formatItems(items));
             case BICst.WIDGET.RADAR:
                 return BI.extend({"type": "radar"}, BI.RadarChart.formatItems(items));
             case BICst.WIDGET.ACCUMULATE_RADAR:
@@ -56,7 +57,7 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.PIE:
                 return BI.extend({"type": "pie"}, BI.PieChart.formatItems(items));
             case BICst.WIDGET.DASHBOARD:
-                return BI.extend({"type": "dashboard"}, BI.DashboardChart.formatItems(items));
+                return BI.extend({"type": "gauge"}, BI.DashboardChart.formatItems(items));
             case BICst.WIDGET.FORCE_BUBBLE:
                 return BI.extend({"type": "bubble"}, BI.ForceBubbleChart.formatItems(items));
             case BICst.WIDGET.FUNNEL:
@@ -133,5 +134,5 @@ BI.ChartCombineFormatItemFactory = {
             default:
                 return BI.AxisChart.formatConfig(items);
         }
-    },
+    }
 };

@@ -40,31 +40,39 @@ DetailCombineChartView = BI.inherit(BI.View, {
         //c1.populate(data1);
         //对比柱状图，多系列
         //var compareBAR = BI.createWidget({
-        //    type: "bi.compare_BAR_chart",
+        //    type: "bi.compare_axis_chart",
         //    width: 600,
         //    height: 300
         //});
         //compareBAR.populate(data);
         //瀑布图
-        var fall = BI.createWidget({
-            type: "bi.fall_axis_chart",
-            width: 600,
-            height: 300
-        });
-        fall.populate(data2);
+        //var fall = BI.createWidget({
+        //    type: "bi.fall_axis_chart",
+        //    width: 600,
+        //    height: 300
+        //});
+        //fall.populate(data2);
         //条形图 单轴多系列
         //c1.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
         //c1.populate(data1);
         //对比条形图
-        //var bar = BI.createWidget({
-        //    type: "bi.compare_bar_chart",
-        //    width: 600,
-        //    height: 300
-        //});
-        //bar.populate(data);
+        var bar = BI.createWidget({
+            type: "bi.compare_bar_chart",
+            width: 600,
+            height: 300
+        });
+        bar.populate(data);
         //面积图
         //c1.setTypes([[BICst.WIDGET.AREA, BICst.WIDGET.AREA, BICst.WIDGET.AREA],[BICst.WIDGET.AREA, BICst.WIDGET.AREA, BICst.WIDGET.AREA]]);
         //c1.populate(data);
+        //对比面积图
+        //var area = BI.createWidget({
+        //    type: "bi.compare_area_chart",
+        //    width: 600,
+        //    height: 300
+        //});
+        ////c1.setTypes([[BICst.WIDGET.AREA, BICst.WIDGET.AREA, BICst.WIDGET.AREA],[BICst.WIDGET.AREA, BICst.WIDGET.AREA, BICst.WIDGET.AREA]]);
+        //area.populate(data);
         //范围面积图
         //var area = BI.createWidget({
         //    type: "bi.range_area_chart",
@@ -78,7 +86,7 @@ DetailCombineChartView = BI.inherit(BI.View, {
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [fall]
+            items: [bar]
         });
     }
 });

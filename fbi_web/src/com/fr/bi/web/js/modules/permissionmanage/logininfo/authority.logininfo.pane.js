@@ -196,7 +196,7 @@ BI.AuthorityLoginInfoPane = BI.inherit(BI.BarPopoverSection, {
     
     getValue: function(){
         return {
-            field_name: this.fieldName.getValue(),
+            field_name: this.fieldName.getValue()[0],
             table: this.table
         }
     }

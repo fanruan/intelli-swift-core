@@ -27,8 +27,35 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
         });
     },
 
+    formatItems: function (items) {
+        return BI.map(items, function(idx, item){
+            var name = BI.keys(item)[0];
+            return {
+                "data": BI.map(item[name], function(idx, it){
+                    return BI.extend(it, {
+                        "x": it.x,
+                        "y": it.y,
+                        "size": it.z
+                    });
+                }),
+                "name": name
+            }
+        });
+    },
+
+    setTypes: function(){
+    },
+
     populate: function (items) {
-        this.BubbleChart.populate([BI.BubbleChart.formatItems(items)]);
+        var self = this;
+        var config = BI.BubbleChart.formatConfig();
+        config.plotOptions.click = function(){
+            self.fireEvent(BI.BubbleChart.EVENT_CHANGE, {category: this.category,
+                seriesName: this.seriesName,
+                value: this.value,
+                options: this.pointOption.options});
+        };
+        this.BubbleChart.populate(this.formatItems(items), config);
     },
 
     resize: function () {
@@ -36,20 +63,6 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
     }
 });
 BI.extend(BI.BubbleChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": BI.map(items[name], function(idx, item){
-                return {
-                    "x": item.x,
-                    "y": item.y,
-                    "size": item.z
-                };
-            }),
-            "name": name,
-            stack: false
-        }
-    },
     formatConfig: function(){
         return {
             "plotOptions": {
@@ -141,18 +154,6 @@ BI.extend(BI.BubbleChart, {
                 }
             },
             "plotBorderColor": "rgba(255,255,255,0)",
-            "title": {
-                "borderRadius": 0,
-                "style": {
-                    "fontFamily": "Microsoft YaHei",
-                    "color": "rgba(51,51,51,1.0)",
-                    "fontSize": "16pt",
-                    "fontWeight": ""
-                },
-                "useHtml": false,
-                "text": "新建图表标题",
-                "align": "center"
-            },
             "tools": {
                 "hidden": true,
                 "toImage": {

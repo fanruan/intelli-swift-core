@@ -156,6 +156,15 @@ BI.extend(BI.Utils, {
         });
     },
     
+    getConfDataByFieldId: function(fieldId, filterConfig, callback){
+        Data.Req.reqFieldsDataByFieldId({
+            field_id: fieldId,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        });
+    },
+    
     getAllPackageIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("packages"));
     },
@@ -295,6 +304,18 @@ BI.extend(BI.Utils, {
         Data.Req.reqCheckCubePath(path, function (res) {
             callback(res);
         });
+    },
+    
+    getLoginInfoInTableField: function(callback){
+        Data.Req.reqLoginInfoInTableField(function(res){
+            callback(res); 
+        });
+    },
+    
+    saveLoginInfoInTableField: function(data, callback){
+        Data.Req.reqSaveLoginInfoInTableField(data, function(res){
+            callback(res);
+        })
     },
 
     getConnectionNames: function (callback) {

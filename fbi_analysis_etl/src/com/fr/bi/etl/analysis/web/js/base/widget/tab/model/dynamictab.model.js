@@ -76,12 +76,14 @@ BI.DynamictabModel = BI.inherit(BI.MVCModel, {
                 }
             }
             var parents = self._getChildParents(item);
-            BI.some(parents, function (idx, item) {
-                if(item["table_name"] === name){
-                    hasSameName = true;
-                    return true;
-                }
-            })
+            if(parents.length === 2) {
+                BI.some(parents, function (idx, item) {
+                    if(item["table_name"] === name){
+                        hasSameName = true;
+                        return true;
+                    }
+                })
+            }
         })
         return hasSameName;
     },

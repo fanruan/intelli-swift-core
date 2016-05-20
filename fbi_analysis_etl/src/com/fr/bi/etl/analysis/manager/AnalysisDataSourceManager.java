@@ -3,6 +3,7 @@ package com.fr.bi.etl.analysis.manager;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.base.BISystemDataManager;
 import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.etl.analysis.data.AnalysisTableSource;
@@ -21,7 +22,7 @@ import java.io.File;
  * Created by 小灰灰 on 2015/12/14.
  */
 public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataSource> implements BIAnalysisDataSourceManagerProvider {
-
+    @BIIgnoreField
     private transient AnalysisDataSource superManager = getInstance(new BIUser(UserControl.getInstance().getSuperManagerID()));
 
     public AnalysisDataSource getInstance(BIUser user) {

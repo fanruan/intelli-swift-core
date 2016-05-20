@@ -1111,15 +1111,15 @@
             //控件
             var widgetIds = this.getAllWidgetIDs();
             BI.each(widgetIds, function (i, id) {
-                if(!self.isControlWidgetByWidgetId(id)){
+                if (!self.isControlWidgetByWidgetId(id)) {
                     return;
                 }
-                if(id === notcontain){
+                if (id === notcontain) {
                     return;
                 }
                 //去掉自身和在自身之后创建的控件
                 if (BI.isNotNull(notcontain) && self.isControlWidgetByWidgetId(notcontain)
-                        && self.getWidgetInitTimeByID(id) > self.getWidgetInitTimeByID(notcontain)) {
+                    && self.getWidgetInitTimeByID(id) > self.getWidgetInitTimeByID(notcontain)) {
                     return;
                 }
                 var value = self.getWidgetValueByID(id);
@@ -1222,21 +1222,28 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            case BICst.WIDGET.TREE:
-                                fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
-                                var treeValue = {};
-                                createTreeFilterValue(treeValue, fValue, dimId, i);
-                                fValue = treeValue;
-                                filter = {
-                                    filter_type: fType,
-                                    filter_value: fValue,
-                                    _src: {field_id: self.getFieldIDByDimensionID(dimId)}
-                                };
-                                break;
+                            // case BICst.WIDGET.TREE:
+                            //     var treeValue = [];
+                            //     createTreeFilterValue(treeValue, fValue, dimId, i);
+                            //     fValue = treeValue;
+                            //     filter = {
+                            //         filter_type: BICst.FILTER_TYPE.OR,
+                            //         filter_value: fValue,
+                            //     };
+                            //     break;
 
                         }
                         filterValues.push(filter);
                     });
+
+                    //树控件过滤条件设置,不能对每个纬度单独设置过滤条件
+                    if (self.getWidgetTypeByID(id) === BICst.WIDGET.TREE) {
+                        var dimensionIds = self.getWidgetViewByID(id);
+                        var treeValue = [];
+                        var value = self.getWidgetValueByID(id);
+
+                    }
+
                     if (value.length === 1) {
                         var filter = value[0];
                         parseFilter(filter);
@@ -1246,25 +1253,28 @@
             });
             return filterValues;
 
-            function createTreeFilterValue(result, v, dId, floor) {
-                if (floor === 0) {
-                    if (BI.isNull(result.value)) {
-                        result.value = [];
-                    }
-                    BI.each(v, function (value, child) {
-                        result.value.push(value);
-                    });
-                    BI.isNull(result.type) && (result.type = result.value.length === 0 ? BI.Selection.All : BI.Selection.Multi);
-                }
-                if (floor > 0) {
-                    BI.each(v, function (value, child) {
-                            createTreeFilterValue(result, child, dId, floor - 1);
+            function createTreeFilterValue(result, v, floor, dimensionIds) {
+                BI.each(v, function (value, child) {
+                        if (BI.isEmptyObject(child)) {
+                            var filterObj = {
+                                filter_type: BICst.FILTER_TYPE.AND,
+                                filter_value: []
+                            };
+                            var leafFilterObj = {
+                                filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                                filter_value: {
+                                    type: BI.Selection.Multi,
+                                    value: [value]
+                                },
+                                _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
+                            };
+                            filterObj.filter_value.push(leafFilterObj);
+                            result.push(filterObj);
+                        } else {
+                            createTreeFilterValue(result, child, floor + 1, dimensionIds);
                         }
-                    );
-
-                }
-
-
+                    }
+                );
             }
         },
 

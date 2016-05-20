@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Connery
  * @since 4.0
  */
-public class BICubeManager {
+public class BICubeManager implements ICubeDataLoaderCreator{
     private Map<BIUser, ICubeDataLoader> container = new ConcurrentHashMap<BIUser, ICubeDataLoader>();
     private static BICubeManager instance;
 

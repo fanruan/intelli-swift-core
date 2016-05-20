@@ -43,13 +43,6 @@ BI.extend(BI.AccumulateRadarChart, {
     formatConfig: function(){
         return {
             "plotOptions": {
-                click: function () {
-                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                        category: this.category,
-                        seriesName: this.seriesName,
-                        value: this.value
-                    });
-                },
                 "fillColor": true,
                 "fillColorOpacity": 0,
                 "columnType": false,

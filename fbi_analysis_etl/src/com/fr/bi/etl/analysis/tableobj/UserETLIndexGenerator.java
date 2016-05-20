@@ -15,7 +15,6 @@ import com.fr.bi.stable.utils.file.BIPathUtils;
 public class UserETLIndexGenerator extends IndexGenerator {
 	
 
-	private String path;
 	/**
 	 * 
 	 */
@@ -27,13 +26,12 @@ public class UserETLIndexGenerator extends IndexGenerator {
 	 * @param version
 	 */
 	public UserETLIndexGenerator(UserTableSource source, int version, String path) {
-		super(source, source.getUserId(), version);
-		this.path = path;
-	}
+        super(source, path, source.getUserId(), version);
+    }
 	
     @Override
 	protected void createTableCube() {
-        cube = new TableCubeFile(BIPathUtils.createUserETLTablePath(source.fetchObjectCore().getID().getIdentityValue(), path));
+        cube = new TableCubeFile(BIPathUtils.createUserETLTablePath(source.fetchObjectCore().getID().getIdentityValue(), pathSuffix));
     }
 
 }

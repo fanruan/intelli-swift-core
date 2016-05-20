@@ -1,5 +1,6 @@
 package com.fr.bi.field.target.filter.general;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 
 public abstract class GeneralFilter extends AbstractTargetFilter {
     private static String XML_TAG = "GeneralFilter";
-
+    @BICoreField
     protected TargetFilter[] childs;
 
     public void setChilds(TargetFilter[] childs) {
