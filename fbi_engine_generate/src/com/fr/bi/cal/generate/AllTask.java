@@ -11,7 +11,6 @@ import com.fr.bi.conf.base.pack.data.BIBusinessTable;
 import com.fr.bi.conf.manager.singletable.data.SingleTableUpdateAction;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -72,7 +71,7 @@ public class AllTask extends AbstractCubeTask {
         String md5 = source.fetchObjectCore().getID().getIdentityValue();
         TableCubeFile cube = new TableCubeFile(BIPathUtils.createTablePath(md5, biUser.getUserId()));
         if (!checkCubeVersion(cube)) {
-            SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(biUser.getUserId()).getSingleTableUpdateAction(new BITable(md5));
+            SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(biUser.getUserId()).getSingleTableUpdateAction(source.getDbTable());
             switch (action.getUpdateType()) {
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL:
                     return new IndexGenerator(source, biUser.getUserId(), cube.getTableVersion() + 1);

@@ -1,18 +1,11 @@
 package com.fr.bi.stable.data;
 
 
-import com.fr.bi.common.BICoreWrapper;
-import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
-import com.fr.stable.StringUtils;
-import com.fr.stable.xml.XMLPrintWriter;
-import com.fr.stable.xml.XMLable;
-import com.fr.stable.xml.XMLableReader;
 
-import javax.activation.UnsupportedDataTypeException;
 import java.io.Serializable;
 
 /**
@@ -20,7 +13,7 @@ import java.io.Serializable;
  * TODO clone方法
  * Created by Connery on 2015/12/15.
  */
-public class BITable implements Serializable, XMLable, JSONTransform, Table {
+public class BITable implements Serializable, JSONTransform, Table {
 
     /**
      *
@@ -136,27 +129,10 @@ public class BITable implements Serializable, XMLable, JSONTransform, Table {
     }
 
     @Override
-    public void readXML(XMLableReader reader) {
-        if (reader.isAttr()) {
-            ID = new BITableID(reader.getAttrAsString("id", StringUtils.EMPTY));
-        }
-    }
-
-    @Override
-    public void writeXML(XMLPrintWriter writer) {
-        writer.attr("id", ID.getIdentityValue());
-    }
-
-    @Override
     public int hashCode() {
         int result = tableName != null ? tableName.hashCode() : 0;
         result = 31 * result + (ID != null ? ID.hashCode() : 0);
         return result;
     }
 
-    public class BITableCore extends BICoreWrapper {
-        public BITableCore(Object... attributes) throws UnsupportedDataTypeException, BIAmountLimitUnmetException {
-            super(attributes);
-        }
-    }
 }

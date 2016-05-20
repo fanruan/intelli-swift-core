@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.dbconnection;
 
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.json.JSONArray;
@@ -20,8 +20,8 @@ public class BIGetTableFieldsByTableInfoAction extends AbstractBIConfigureAction
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String connName = WebUtils.getHTTPRequestParameter(req, "connection_name");
         String tableName = WebUtils.getHTTPRequestParameter(req, "table_name");
-        DBTable DBTable = BIDBUtils.getDBTable(connName, tableName);
-        JSONObject table = DBTable.createJSON();
+        PersistentTable persistentTable = BIDBUtils.getDBTable(connName, tableName);
+        JSONObject table = persistentTable.createJSON();
         JSONArray fields = this.parseFields(table.getJSONArray("fields"));
         JSONArray stringField = new JSONArray();
         JSONArray numField = new JSONArray();

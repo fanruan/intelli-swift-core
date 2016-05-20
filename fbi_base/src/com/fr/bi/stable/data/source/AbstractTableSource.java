@@ -14,10 +14,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -40,7 +37,7 @@ public abstract class AbstractTableSource implements ITableSource {
     private static final long serialVersionUID = -8657998191260725924L;
     //表的唯一标识
     protected Map<String, DBField> fields = new LinkedHashMap<String, DBField>();
-    protected DBTable dbTable;
+    protected PersistentTable dbTable;
 
     protected AbstractTableSource() {
 
@@ -57,7 +54,7 @@ public abstract class AbstractTableSource implements ITableSource {
     }
 
     //重新获取数据 guy
-    public DBTable reGetBiTable() {
+    public IPersistentTable reGetBiTable() {
         dbTable = null;
         return getDbTable();
     }
@@ -102,7 +99,7 @@ public abstract class AbstractTableSource implements ITableSource {
         JSONArray allFieldNamesJo = new JSONArray();
         JSONArray fieldValues = new JSONArray();
         JSONArray fieldTypes = new JSONArray();
-        for (BIColumn column : getDbTable().getColumnArray()) {
+        for (PersistentField column : getDbTable().getFieldList()) {
             if (!fields.isEmpty() && !fields.contains(column.getFieldName())) {
                 continue;
             }
@@ -129,7 +126,7 @@ public abstract class AbstractTableSource implements ITableSource {
     }
 
     @Override
-    public DBTable getDbTable() {
+    public IPersistentTable getDbTable() {
         return null;
     }
 
@@ -192,8 +189,8 @@ public abstract class AbstractTableSource implements ITableSource {
     }
 
 
-    protected DBTable createBITable() {
-        return new DBTable(null, fetchObjectCore().getID().getIdentityValue(), null);
+    protected PersistentTable createBITable() {
+        return new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
     }
 
     public Map<String, DBField> getFields() {
@@ -218,13 +215,13 @@ public abstract class AbstractTableSource implements ITableSource {
 
     private Map<String, DBField> synchronousFieldsInforFromDB() {
         Map<String, DBField> fields = new LinkedHashMap<String, DBField>();
-        DBTable bt = getDbTable();
+        IPersistentTable bt = getDbTable();
         if (bt == null) {
             throw new NullPointerException();
         }
         List<DBField> list = new ArrayList<DBField>();
-        for (int i = 0, len = bt.getBIColumnLength(); i < len; i++) {
-            BIColumn column = bt.getBIColumn(i);
+        for (int i = 0, len = bt.getFieldSize(); i < len; i++) {
+            PersistentField column = bt.getField(i);
             /**
              * Connery：原来传递的是MD5变量，把MD5当做ID传递了，这个是不对的。
              */
@@ -254,7 +251,7 @@ public abstract class AbstractTableSource implements ITableSource {
 
     @Override
     public void refresh() {
-        DBTable temp = dbTable;
+        PersistentTable temp = dbTable;
         try {
             if (reGetBiTable() == null) {
                 dbTable = temp;
