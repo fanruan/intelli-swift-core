@@ -12,7 +12,7 @@ import com.fr.bi.module.BIModule;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -58,7 +58,7 @@ public class BIModuleUtils {
     public static ICubeTableService getTableIndex(BICore core, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByCore(core, user);
+            ICubeTableSource source = provider.getTableSourceByCore(core, user);
             if (source != null) {
                 return childLoaderMap.get(module.getModuleName()).getTableIndex(core);
             }
@@ -66,10 +66,10 @@ public class BIModuleUtils {
         return null;
     }
 
-    public static ITableSource getSourceByCore(BICore md5, BIUser user) {
+    public static ICubeTableSource getSourceByCore(BICore md5, BIUser user) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByCore(md5, user);
+            ICubeTableSource source = provider.getTableSourceByCore(md5, user);
             if (source != null) {
                 return source;
             }
@@ -92,10 +92,10 @@ public class BIModuleUtils {
         return set;
     }
 
-    public static ITableSource getSourceByID(BITableID id, BIUser user) {
+    public static ICubeTableSource getSourceByID(BITableID id, BIUser user) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByID(id, user);
+            ICubeTableSource source = provider.getTableSourceByID(id, user);
             if (source != null) {
                 return source;
             }

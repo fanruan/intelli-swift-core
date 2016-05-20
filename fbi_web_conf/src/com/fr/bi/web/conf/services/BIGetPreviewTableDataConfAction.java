@@ -3,7 +3,7 @@ package com.fr.bi.web.conf.services;
 import com.finebi.cube.api.BICubeManager;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.utils.BIWebConfUtils;
 import com.fr.fs.web.service.ServiceUtils;
@@ -22,7 +22,7 @@ public class BIGetPreviewTableDataConfAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        ITableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, BIJSONConstant.JSON_KEYS.TABLE)), userId);
+        ICubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, BIJSONConstant.JSON_KEYS.TABLE)), userId);
         JSONArray ja = new JSONArray(WebUtils.getHTTPRequestParameter(req, BIJSONConstant.JSON_KEYS.FIELDS));
         ArrayList<String> fields = new ArrayList<String>();
         for (int i = 0; i < ja.length(); i ++){

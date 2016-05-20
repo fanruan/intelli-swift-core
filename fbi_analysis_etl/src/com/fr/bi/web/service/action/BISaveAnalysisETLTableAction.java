@@ -7,7 +7,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
-import com.fr.bi.etl.analysis.data.AnalysisTableSource;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.manager.AnalysisDataSourceManager;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.fs.web.service.ServiceUtils;
@@ -31,7 +31,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
         String describe = WebUtils.getHTTPRequestParameter(req, "describe");
         AnalysisBusiTable table = null;
-        AnalysisTableSource source = null;
+        AnalysisCubeTableSource source = null;
         if (StringUtils.isEmpty(newId)){
             table  = new AnalysisBusiTable(tableId, userId);
             table.setDescribe(describe);

@@ -6,7 +6,7 @@ import com.fr.bi.conf.base.pack.data.BIPackageID;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -41,7 +41,7 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
             JSONArray tables = packJSON.getJSONArray("tables");
             for (int i = 0; i < tables.length(); i++) {
                 String tableId = tables.getJSONObject(i).getString("id");
-                ITableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), new BIUser(userId));
+                ICubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), new BIUser(userId));
                 JSONObject data = source.createJSON();
                 formatTableDataFields(tableId, data);
                 tableData.put(tableId, data);

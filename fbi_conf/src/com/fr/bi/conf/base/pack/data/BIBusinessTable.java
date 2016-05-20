@@ -7,9 +7,9 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.*;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.source.AbstractTableSource;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.exception.BIDBConnectionException;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -27,11 +27,11 @@ public class BIBusinessTable extends BIBasicTable {
 
     protected List<String> usedFields = new ArrayList<String>();
 
-    public void setSource(ITableSource source) {
+    public void setSource(ICubeTableSource source) {
         this.source = source;
     }
 
-    protected transient ITableSource source;
+    protected transient ICubeTableSource source;
 
     protected BIUser user;
 
@@ -58,14 +58,14 @@ public class BIBusinessTable extends BIBasicTable {
 
 
     public Iterator<BIBasicField> getFieldsIteratorFromDB() throws BIDBConnectionException {
-        Iterator<Map.Entry<String, DBField>> it = getSourceFieldsIterator();
+        Iterator<Map.Entry<String, BICubeFieldSource>> it = getSourceFieldsIterator();
         if (it == null) {
             return null;
         }
         fieldArray.clear();
         while (it.hasNext()) {
-            Map.Entry<String, DBField> entry = it.next();
-            DBField field = entry.getValue();
+            Map.Entry<String, BICubeFieldSource> entry = it.next();
+            BICubeFieldSource field = entry.getValue();
             fieldArray.add(new BIBusinessField(getID().getIdentityValue(), field.getFieldName(), field.getClassType(), field.getFieldSize()));
         }
         return fieldArray.iterator();
@@ -79,8 +79,8 @@ public class BIBusinessTable extends BIBasicTable {
     }
 
 
-    private Iterator<Map.Entry<String, DBField>> getSourceFieldsIterator() throws BIDBConnectionException {
-        Iterator<Map.Entry<String, DBField>> it = null;
+    private Iterator<Map.Entry<String, BICubeFieldSource>> getSourceFieldsIterator() throws BIDBConnectionException {
+        Iterator<Map.Entry<String, BICubeFieldSource>> it = null;
         try {
             it = ((AbstractTableSource) getSource()).getFields().entrySet().iterator();
         } catch (Exception e) {
@@ -95,7 +95,7 @@ public class BIBusinessTable extends BIBasicTable {
         return it;
     }
 
-    public ITableSource getSource() {
+    public ICubeTableSource getSource() {
         /**
          * 依赖BIConfigureManagerCenter，代码没法移动模块了，
          * 暂时去掉，之后改成set。

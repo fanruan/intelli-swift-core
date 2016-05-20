@@ -2,8 +2,8 @@ package com.fr.bi.stable.relation;
 
 import com.finebi.cube.location.ICubeSource;
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
@@ -17,7 +17,7 @@ import java.util.Iterator;
  * @author Connery
  * @since 4.0
  */
-public class BITableSourceRelationPath extends BIRelationPath<ITableSource, BIField, BITableSourceRelation> implements ICubeSource {
+public class BITableSourceRelationPath extends BIRelationPath<ICubeTableSource, BIField, BITableSourceRelation> implements ICubeSource {
     public BITableSourceRelationPath() {
         super();
     }
@@ -66,8 +66,8 @@ public class BITableSourceRelationPath extends BIRelationPath<ITableSource, BIFi
         isTaggedFieldPath = false;
     }
 
-    public DBField getPrimaryField() throws BITablePathEmptyException {
-        return (DBField) getFirstRelation().primaryField;
+    public BICubeFieldSource getPrimaryField() throws BITablePathEmptyException {
+        return (BICubeFieldSource) getFirstRelation().primaryField;
     }
 
 

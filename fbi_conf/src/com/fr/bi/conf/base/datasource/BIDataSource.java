@@ -4,14 +4,14 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.json.JSONTransform;
 
 /**
  * Created by Connery on 2015/12/7.
  */
-public interface BIDataSource<T extends ITableSource> extends JSONTransform {
+public interface BIDataSource<T extends ICubeTableSource> extends JSONTransform {
 
     void envChanged();
 
@@ -27,5 +27,5 @@ public interface BIDataSource<T extends ITableSource> extends JSONTransform {
 
     void editTableSource(BITableID id, T source);
 
-    DBField findDBField(BIField biField)throws BIFieldAbsentException;
+    BICubeFieldSource findDBField(BIField biField)throws BIFieldAbsentException;
 }

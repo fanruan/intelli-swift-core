@@ -193,8 +193,8 @@ public class PersistentField extends BIDBObject implements IPersistentField {
         return scale;
     }
 
-    public DBField toDBField(Table table) {
-        return new DBField(table.getID().getIdentityValue(), getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getType(), getColumnSize(), getScale()), getColumnSize());
+    public BICubeFieldSource toDBField(Table table) {
+        return new BICubeFieldSource(table.getID().getIdentityValue(), getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getType(), getColumnSize(), getScale()), getColumnSize());
     }
 
     /**

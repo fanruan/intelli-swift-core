@@ -2,7 +2,7 @@ package com.fr.bi.stable.relation;
 
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.*;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
@@ -15,7 +15,7 @@ import com.fr.stable.xml.XMLableReader;
  * @author Connery
  * @since 4.0
  */
-public final class BIRowField extends DBField {
+public final class BIRowField extends BICubeFieldSource {
     public static BIRowField rowNumberField = new BIRowField();
 
     private BIRowField() {

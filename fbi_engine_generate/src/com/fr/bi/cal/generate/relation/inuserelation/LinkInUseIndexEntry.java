@@ -14,7 +14,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
@@ -98,7 +98,7 @@ public class LinkInUseIndexEntry implements CubeGenerator {
 
     private Set<BIKey> createKeys(TableCubeFile cube, String field){
         Set<BIKey> set = new HashSet<BIKey>();
-        for (DBField f :cube.getBIField()){
+        for (BICubeFieldSource f :cube.getBIField()){
             if (ComparatorUtils.equals(f.getFieldName(), field)){
                 if (f.getFieldType() == DBConstant.COLUMN.DATE){
                     set.add(new IndexTypeKey(field, BIReportConstant.GROUP.Y));

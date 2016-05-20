@@ -7,7 +7,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.fs.control.UserControl;
 
@@ -29,19 +29,19 @@ public class BICubeRelationUtils {
              * 测试里面不要传递BIField的，那么就没有问题。
              * TODO 计算部分将BIField转成DBField传递过来。
              */
-            if (!(primaryField instanceof DBField)) {
+            if (!(primaryField instanceof BICubeFieldSource)) {
                 primaryField = BIConfigureManagerCenter.getDataSourceManager().findDBField(new BIUser(UserControl.getInstance().getSuperManagerID()), primaryField);
 
             }
-            if (!(foreignField instanceof DBField)) {
+            if (!(foreignField instanceof BICubeFieldSource)) {
                 foreignField = BIConfigureManagerCenter.getDataSourceManager().findDBField(new BIUser(UserControl.getInstance().getSuperManagerID()), foreignField);
             }
         } catch (BIFieldAbsentException e) {
             e.printStackTrace();
         }
         return new BICubeRelation(
-                BIColumnKey.covertColumnKey((DBField) primaryField),
-                BIColumnKey.covertColumnKey((DBField) foreignField),
+                BIColumnKey.covertColumnKey((BICubeFieldSource) primaryField),
+                BIColumnKey.covertColumnKey((BICubeFieldSource) foreignField),
                 new BITableKey(sourceRelation.getPrimaryTable()),
                 new BITableKey(sourceRelation.getForeignTable())
         );

@@ -4,8 +4,8 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceField;
-import com.fr.bi.etl.analysis.data.AnalysisTableSource;
-import com.fr.bi.etl.analysis.data.UserTableSource;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
+import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.fs.web.service.ServiceUtils;
@@ -29,9 +29,9 @@ public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction{
         long userId = ServiceUtils.getCurrentUserID(req);
         String itemArray = WebUtils.getHTTPRequestParameter(req, Constants.ITEMS);
         JSONArray items = new JSONArray(itemArray);
-        AnalysisTableSource source = AnalysisETLSourceFactory.createTableSource(items, userId);
+        AnalysisCubeTableSource source = AnalysisETLSourceFactory.createTableSource(items, userId);
         List<AnalysisETLSourceField> fields =  source.getFieldsList();
-        UserTableSource userTableSource = source.createUserTableSource(userId);
+        UserCubeTableSource userTableSource = source.createUserTableSource(userId);
         ICubeTableService service = PartCubeDataLoader.getInstance(userId, userTableSource).getTableIndex(userTableSource.fetchObjectCore(), 0, 20);
         JSONArray values = new JSONArray();
         for (int i = 0; i < service.getRowCount(); i++){

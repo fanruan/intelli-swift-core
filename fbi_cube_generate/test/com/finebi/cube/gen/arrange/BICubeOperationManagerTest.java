@@ -11,8 +11,8 @@ import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.BITableSourceRelationTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 
@@ -39,7 +39,7 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
     public void testBasic() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-            Set<ITableSource> setSource = new HashSet<ITableSource>();
+            Set<ICubeTableSource> setSource = new HashSet<ICubeTableSource>();
             operationManager = new BICubeOperationManager4Test(cube, setSource);
             operationManager.initialWatcher();
             manager.registerDataSource(BIMemoryDataSourceFactory.getDataSourceSet());
@@ -75,7 +75,7 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
     public void testTable() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-            Set<ITableSource> setSource = new HashSet<ITableSource>();
+            Set<ICubeTableSource> setSource = new HashSet<ICubeTableSource>();
             operationManager = new BICubeOperationManager4Test(cube, setSource);
             operationManager.initialWatcher();
 
@@ -99,7 +99,7 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
     public void testDependTable() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-            Set<ITableSource> setSource = new HashSet<ITableSource>();
+            Set<ICubeTableSource> setSource = new HashSet<ICubeTableSource>();
             operationManager = new BICubeOperationManager4Test(cube, setSource);
             operationManager.initialWatcher();
 
@@ -121,7 +121,7 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
     }
 
     private void checkTable(BIMemoryDataSource biMemoryDataSource, Map<String, Integer> map) {
-        DBField[] fields = biMemoryDataSource.getFieldsArray(null);
+        BICubeFieldSource[] fields = biMemoryDataSource.getFieldsArray(null);
         for (int i = 0; i < fields.length; i++) {
             assertTrue(map.containsKey(fields[i].getFieldName() + biMemoryDataSource.getSourceID()));
         }

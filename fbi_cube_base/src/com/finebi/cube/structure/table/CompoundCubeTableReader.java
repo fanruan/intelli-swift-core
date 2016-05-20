@@ -13,7 +13,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -32,8 +32,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
      * 上次Table对象
      */
     private ICubeTableEntityService parentTable;
-    protected Map<DBField, ICubeTableEntityService> fieldSource = new HashMap<DBField, ICubeTableEntityService>();
-    private List<DBField> compoundFields = new ArrayList<DBField>();
+    protected Map<BICubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<BICubeFieldSource, ICubeTableEntityService>();
+    private List<BICubeFieldSource> compoundFields = new ArrayList<BICubeFieldSource>();
 
     public CompoundCubeTableReader(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         hostTable = new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
@@ -49,7 +49,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     private void initialFields() {
         if (hostTable.tableDataAvailable()) {
-            for (DBField field : hostTable.getFieldInfo()) {
+            for (BICubeFieldSource field : hostTable.getFieldInfo()) {
                 if (!compoundFields.contains(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, hostTable);
@@ -59,7 +59,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
             throw BINonValueUtils.beyondControl("Please generate Cube firstly");
         }
         if (isParentAvailable()) {
-            for (DBField field : parentTable.getFieldInfo()) {
+            for (BICubeFieldSource field : parentTable.getFieldInfo()) {
                 if (!compoundFields.contains(field) && isInFacedFields(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, parentTable);
@@ -69,7 +69,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         }
     }
 
-    private boolean isInFacedFields(DBField field) {
+    private boolean isInFacedFields(BICubeFieldSource field) {
         return getFieldNamesFromParent().contains(field.getFieldName());
     }
 
@@ -78,7 +78,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public void recordTableStructure(List<DBField> fields) {
+    public void recordTableStructure(List<BICubeFieldSource> fields) {
         throw new UnsupportedOperationException();
 
     }
@@ -138,7 +138,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public List<DBField> getFieldInfo() {
+    public List<BICubeFieldSource> getFieldInfo() {
         return compoundFields;
     }
 
@@ -170,8 +170,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public DBField getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        for (DBField field : compoundFields) {
+    public BICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
+        for (BICubeFieldSource field : compoundFields) {
             if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
                 return field;
             }
@@ -185,7 +185,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
-        DBField field = getSpecificColumn(fieldName);
+        BICubeFieldSource field = getSpecificColumn(fieldName);
         return fieldSource.get(field);
     }
 

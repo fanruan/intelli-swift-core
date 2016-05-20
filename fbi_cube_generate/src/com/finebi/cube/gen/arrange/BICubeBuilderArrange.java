@@ -8,7 +8,7 @@ import com.finebi.cube.gen.sub.BIBuildCubeSubscriber;
 import com.finebi.cube.impl.pubsub.BISubscribeID;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.ICube;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -23,11 +23,11 @@ public class BICubeBuilderArrange {
     private ICube cube;
     private IRouter router;
 
-    public void arrangeTable(Set<ITableSource> tableSourceSet) {
-        Iterator<ITableSource> it = tableSourceSet.iterator();
+    public void arrangeTable(Set<ICubeTableSource> tableSourceSet) {
+        Iterator<ICubeTableSource> it = tableSourceSet.iterator();
         while (it.hasNext()) {
             try {
-                ITableSource tableSource = it.next();
+                ICubeTableSource tableSource = it.next();
                 BISourceDataTransport dataTransport = new BISourceDataTransport(cube, tableSource, tableSourceSet, null);
                 BIBuildCubeSubscriber subscriber = new BIBuildCubeSubscriber(new BISubscribeID(tableSource.getSourceID()), dataTransport);
                 subscriber.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);

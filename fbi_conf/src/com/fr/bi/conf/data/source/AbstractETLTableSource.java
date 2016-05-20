@@ -14,7 +14,7 @@ import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BICollectionUtils;
@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * Created by 小灰灰 on 2015/12/23.
  */
-public abstract class AbstractETLTableSource<O extends IETLOperator, S extends ITableSource> extends AbstractCubeTableSource {
+public abstract class AbstractETLTableSource<O extends IETLOperator, S extends ICubeTableSource> extends AbstractCubeTableSource {
 
     public static final String XML_TAG = "ETLTableSource";
 
@@ -36,8 +36,8 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
      * @return
      */
     @Override
-    public Map<BICore, ITableSource> createSourceMap() {
-        Map<BICore, ITableSource> map = super.createSourceMap();
+    public Map<BICore, ICubeTableSource> createSourceMap() {
+        Map<BICore, ICubeTableSource> map = super.createSourceMap();
         for (S parent : getParents()) {
             map.putAll(parent.createSourceMap());
         }
@@ -85,18 +85,18 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         int startCol = 0;
         if (isAllAddColumnOperator()) {
-            for (ITableSource p : getParents()) {
+            for (ICubeTableSource p : getParents()) {
                 ICubeTableService ti = loader.getTableIndex(p.fetchObjectCore(), start, end);
-                List<PersistentField> fields = p.getDbTable().getFieldList();
+                List<PersistentField> fields = p.getPersistentTable().getFieldList();
                 for (int i = 0; i < ti.getRowCount(); i++) {
                     for (int j = 0; j < fields.size(); j++) {
                         travel.actionPerformed(new BIDataValue(i, j, ti.getRow(new IndexKey(fields.get(j).getFieldName()), i)));
                     }
                 }
-                startCol += p.getDbTable().getFieldSize();
+                startCol += p.getPersistentTable().getFieldSize();
             }
         }
         Iterator<O> it = oprators.iterator();
@@ -110,9 +110,9 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public Set<DBField> getFacetFields(Set<ITableSource> sources) {
-        Set<DBField> result = new HashSet<DBField>();
-        Iterator<PersistentField> it = getDbTable().getFieldList().iterator();
+    public Set<BICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources) {
+        Set<BICubeFieldSource> result = new HashSet<BICubeFieldSource>();
+        Iterator<PersistentField> it = getPersistentTable().getFieldList().iterator();
         while (it.hasNext()) {
             PersistentField column = it.next();
             result.add(column.toDBField(new BITable(this.getSourceID())));
@@ -121,9 +121,9 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public Set<DBField> getParentFields(Set<ITableSource> sources) {
-        Set<DBField> result = new HashSet<DBField>();
-        for (ITableSource tableSource : parents) {
+    public Set<BICubeFieldSource> getParentFields(Set<ICubeTableSource> sources) {
+        Set<BICubeFieldSource> result = new HashSet<BICubeFieldSource>();
+        for (ICubeTableSource tableSource : parents) {
             result.addAll(tableSource.getFacetFields(sources));
         }
         return result;
@@ -143,7 +143,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     public Set<Table> createTableKeys() {
         Set set = new HashSet();
         if (!hasTableFilterOperator()) {
-            for (ITableSource source : createSourceSet()) {
+            for (ICubeTableSource source : createSourceSet()) {
                 set.add(new BITable(source.fetchObjectCore().getID().getIdentityValue()));
             }
         }
@@ -157,8 +157,8 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public Map<Integer, Set<ITableSource>> createGenerateTablesMap() {
-        Map<Integer, Set<ITableSource>> generateTable = new HashMap<Integer, Set<ITableSource>>();
+    public Map<Integer, Set<ICubeTableSource>> createGenerateTablesMap() {
+        Map<Integer, Set<ICubeTableSource>> generateTable = new HashMap<Integer, Set<ICubeTableSource>>();
         generateTable.put(getLevel(), createSourceSet());
         Iterator<S> it = parents.iterator();
         while (it.hasNext()) {
@@ -173,19 +173,19 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public List<Set<ITableSource>> createGenerateTablesList() {
-        List<Set<ITableSource>> generateTable = new ArrayList<Set<ITableSource>>();
-        Set<ITableSource> operators = createSourceSet();
+    public List<Set<ICubeTableSource>> createGenerateTablesList() {
+        List<Set<ICubeTableSource>> generateTable = new ArrayList<Set<ICubeTableSource>>();
+        Set<ICubeTableSource> operators = createSourceSet();
         generateTable.add(operators);
         if (operators.size() > 1) {
-            Set<ITableSource> self = new HashSet<ITableSource>();
-            BIOccupiedTableSource tableSource = new BIOccupiedTableSource(this.getSourceID());
+            Set<ICubeTableSource> self = new HashSet<ICubeTableSource>();
+            BIOccupiedCubeTableSource tableSource = new BIOccupiedCubeTableSource(this.getSourceID());
             self.add(tableSource);
             generateTable.add(self);
         }
         Iterator<S> it = parents.iterator();
         while (it.hasNext()) {
-            List<Set<ITableSource>> parent = it.next().createGenerateTablesList();
+            List<Set<ICubeTableSource>> parent = it.next().createGenerateTablesList();
             if (!parent.isEmpty()) {
                 for (int i = 0; i < parent.size(); i++) {
                     generateTable.add(i, parent.get(i));
@@ -201,12 +201,12 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
         return 0;
     }
 
-    protected Set<ITableSource> createSourceSet() {
-        Set<ITableSource> set = new HashSet<ITableSource>();
+    protected Set<ICubeTableSource> createSourceSet() {
+        Set<ICubeTableSource> set = new HashSet<ICubeTableSource>();
         set.add(this);
         return set;
     }
@@ -222,13 +222,13 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public IPersistentTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
             dbTable = createBITable();
 
             if (isAllAddColumnOperator()) {
                 for (S source : parents) {
-                    IPersistentTable p = source.getDbTable();
+                    IPersistentTable p = source.getPersistentTable();
                     for (int i = 0; i < p.getFieldSize(); i++) {
                         dbTable.addColumn(p.getField(i));
                     }
@@ -236,7 +236,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
             }
             IPersistentTable[] ptables = new IPersistentTable[parents.size()];
             for (int i = 0; i < ptables.length; i++) {
-                ptables[i] = parents.get(i).getDbTable();
+                ptables[i] = parents.get(i).getPersistentTable();
             }
             for (int i = 0; i < oprators.size(); i++) {
                 IPersistentTable ctable = oprators.get(i).getBITable(ptables);
@@ -251,19 +251,19 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public DBField[] getFieldsArray(Set<ITableSource> sources) {
+    public BICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
         if (hasTableFilterOperator()) {
-            return new DBField[0];
+            return new BICubeFieldSource[0];
         } else {
             return super.getFieldsArray(sources);
         }
     }
 
     @Override
-    public Set<String> getUsedFields(ITableSource source) {
+    public Set<String> getUsedFields(ICubeTableSource source) {
         Set<String> useableFields = new HashSet<String>();
         boolean contains = false;
-        for (ITableSource source1 : parents) {
+        for (ICubeTableSource source1 : parents) {
             if (ComparatorUtils.equals(source1, source)) {
                 contains = true;
             }
@@ -273,7 +273,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
             if (hasTableFilterOperator()) {
                 IPersistentTable[] ptables = new IPersistentTable[parents.size()];
                 for (int i = 0; i < ptables.length; i++) {
-                    ptables[i] = parents.get(i).getDbTable();
+                    ptables[i] = parents.get(i).getPersistentTable();
                 }
                 for (IETLOperator operator : getETLOperators()) {
                     if (ComparatorUtils.equals(operator.xmlTag(), TableFilterOperator.XML_TAG)) {
@@ -284,7 +284,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
                     }
                 }
             } else {
-                IPersistentTable table = source.getDbTable();
+                IPersistentTable table = source.getPersistentTable();
                 for (int j = 0; j < table.getFieldSize(); j++) {
                     useableFields.add(table.getField(j).getFieldName());
                 }
@@ -311,7 +311,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         sourceFile.addChild(getParentsSourceFile());
         for (O operator : oprators) {
             try {
-                BICore core = new SingleOperatorETLTableSource((List<ITableSource>) getParents(), operator).fetchObjectCore();
+                BICore core = new SingleOperatorETLTableSource((List<ICubeTableSource>) getParents(), operator).fetchObjectCore();
                 sourceFile.addChild(new SourceFile(core.getIDValue()));
             } catch (Exception ignore) {
                 BILogger.getLogger().error(ignore.getMessage(), ignore);

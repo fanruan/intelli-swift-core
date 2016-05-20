@@ -7,8 +7,8 @@ import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.structure.collection.list.IntList;
@@ -25,8 +25,8 @@ import java.util.TreeMap;
  * @since 4.0
  */
 public class BIFieldIndexGenerator<T> extends BIProcessor {
-    protected ITableSource tableSource;
-    protected DBField hostDBField;
+    protected ICubeTableSource tableSource;
+    protected BICubeFieldSource hostBICubeFieldSource;
     /**
      * 当前需要生产的ColumnKey，不能通过hostDBField转换。
      * 因为子类型是无法通过DBFiled转换得到的
@@ -36,9 +36,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     protected ICube cube;
     protected long rowCount;
 
-    public BIFieldIndexGenerator(ICube cube, ITableSource tableSource, DBField hostDBField, BIColumnKey targetColumnKey) {
+    public BIFieldIndexGenerator(ICube cube, ICubeTableSource tableSource, BICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         this.tableSource = tableSource;
-        this.hostDBField = hostDBField;
+        this.hostBICubeFieldSource = hostBICubeFieldSource;
         this.cube = cube;
         this.targetColumnKey = targetColumnKey;
     }
@@ -67,7 +67,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     public void buildTableIndex() {
-        if (hostDBField.getFieldName().equals("badd")) {
+        if (hostBICubeFieldSource.getFieldName().equals("badd")) {
             System.out.println("find");
         }
         IntList nullRowNumbers = new IntList();

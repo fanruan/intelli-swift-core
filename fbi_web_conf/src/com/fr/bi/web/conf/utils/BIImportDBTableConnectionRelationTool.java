@@ -8,7 +8,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIDBTableField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.file.DatasourceManager;
 
@@ -29,7 +29,7 @@ public class BIImportDBTableConnectionRelationTool {
         for (BIBusinessPackage pack : BIConfigureManagerCenter.getPackageManager().getAllPackages(userId)){
             for (Object table : pack.getBusinessTables()){
                 BITableID id = ((BIBusinessTable)table).getID();
-                ITableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(id, new BIUser(userId));
+                ICubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(id, new BIUser(userId));
                 if (source != null && source.getType() == BIBaseConstant.TABLETYPE.DB){
                     sources.put(id.getIdentityValue(), (DBTableSource)source);
                 }

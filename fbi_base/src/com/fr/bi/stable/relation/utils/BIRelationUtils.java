@@ -3,7 +3,7 @@ package com.fr.bi.stable.relation.utils;
 
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.general.ComparatorUtils;
 
@@ -22,7 +22,7 @@ public class BIRelationUtils {
      * @param key
      * @return
      */
-    public static boolean isRelationRepeated(List<BITableSourceRelation> relationList, ITableSource key) {
+    public static boolean isRelationRepeated(List<BITableSourceRelation> relationList, ICubeTableSource key) {
         if (relationList == null || key == null) {
             return false;
         }

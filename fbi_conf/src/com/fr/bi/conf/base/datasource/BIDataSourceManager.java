@@ -9,8 +9,8 @@ import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
 
@@ -46,17 +46,17 @@ public class BIDataSourceManager extends BIStableMapContainer<Long, BIDataSource
     }
 
     @Override
-    public ITableSource getTableSourceByID(BITableID id, BIUser user) {
+    public ICubeTableSource getTableSourceByID(BITableID id, BIUser user) {
         return getInstance(user).getTableSourceByID(id);
     }
 
     @Override
-    public ITableSource getTableSourceByCore(BICore core, BIUser user) {
+    public ICubeTableSource getTableSourceByCore(BICore core, BIUser user) {
         return getInstance(user).getTableSourceByMD5(core);
     }
 
     @Override
-    public void addCore2SourceRelation(BITableID id, ITableSource source, BIUser user) {
+    public void addCore2SourceRelation(BITableID id, ICubeTableSource source, BIUser user) {
         getInstance(user).addTableSource(id, source);
     }
 
@@ -66,7 +66,7 @@ public class BIDataSourceManager extends BIStableMapContainer<Long, BIDataSource
     }
 
     @Override
-    public void editCoreAndTable(BITableID id, ITableSource source, BIUser user) {
+    public void editCoreAndTable(BITableID id, ICubeTableSource source, BIUser user) {
         getInstance(user).editTableSource(id, source);
     }
 
@@ -81,7 +81,7 @@ public class BIDataSourceManager extends BIStableMapContainer<Long, BIDataSource
     }
 
     @Override
-    public DBField findDBField(BIUser user, BIField biField) throws BIFieldAbsentException {
+    public BICubeFieldSource findDBField(BIUser user, BIField biField) throws BIFieldAbsentException {
         return getInstance(user).findDBField(biField);
     }
 }

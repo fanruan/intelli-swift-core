@@ -11,7 +11,7 @@ import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.Inter;
@@ -59,8 +59,8 @@ public class RelationsGetter {
         for (BITableSourceRelation tableSourceRelation : BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableSourceRelationSet()) {
             BIField primaryKey = tableSourceRelation.getPrimaryKey();
             BIField foreignKey = tableSourceRelation.getForeignKey();
-            ITableSource primaryTableSource = tableSourceRelation.getPrimaryTable();
-            ITableSource foreignTableSource = tableSourceRelation.getForeignTable();
+            ICubeTableSource primaryTableSource = tableSourceRelation.getPrimaryTable();
+            ICubeTableSource foreignTableSource = tableSourceRelation.getForeignTable();
             ICubeTableService primaryCubeTable = loader.getTableIndex(primaryKey);
             ICubeTableService foreignCubeTable = loader.getTableIndex(foreignKey);
             if (primaryCubeTable == null || foreignCubeTable == null) {

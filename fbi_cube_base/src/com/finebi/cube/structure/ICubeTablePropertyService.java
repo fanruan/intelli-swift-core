@@ -1,7 +1,7 @@
 package com.finebi.cube.structure;
 
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @since 4.0
  */
 public interface ICubeTablePropertyService extends Release {
-    void recordTableStructure(List<DBField> fields);
+    void recordTableStructure(List<BICubeFieldSource> fields);
 
     void recordTableGenerateVersion(int version);
 
@@ -38,7 +38,7 @@ public interface ICubeTablePropertyService extends Release {
 
     int getTableVersion();
 
-    List<DBField> getFieldInfo();
+    List<BICubeFieldSource> getFieldInfo();
 
     Boolean isPropertyExist();
 

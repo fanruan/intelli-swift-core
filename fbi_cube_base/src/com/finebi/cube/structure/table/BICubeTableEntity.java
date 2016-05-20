@@ -12,7 +12,7 @@ import com.finebi.cube.structure.column.*;
 import com.finebi.cube.structure.table.property.BICubeTableProperty;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -62,7 +62,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public void recordTableStructure(List<DBField> fields) {
+    public void recordTableStructure(List<BICubeFieldSource> fields) {
         /**
          * tableProperty缓存了上一次的map文件对象。
          * 详见BICubeTable单元测试中的testPropertyExceptionData测试用例
@@ -112,12 +112,12 @@ public class BICubeTableEntity implements ICubeTableEntityService {
         int columnIndex = originalDataValue.getCol();
         int rowNumber = originalDataValue.getRow();
         Object value = originalDataValue.getValue();
-        DBField field = getAllFields().get(columnIndex);
+        BICubeFieldSource field = getAllFields().get(columnIndex);
         ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));
         columnService.addOriginalDataValue(rowNumber, value);
     }
 
-    private List<DBField> getAllFields() {
+    private List<BICubeFieldSource> getAllFields() {
         return tableProperty.getFieldInfo();
     }
 
@@ -146,7 +146,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public List<DBField> getFieldInfo() {
+    public List<BICubeFieldSource> getFieldInfo() {
         return tableProperty.getFieldInfo();
     }
 
@@ -155,10 +155,10 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public DBField getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        Iterator<DBField> fieldIterator = getFieldInfo().iterator();
+    public BICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
+        Iterator<BICubeFieldSource> fieldIterator = getFieldInfo().iterator();
         while (fieldIterator.hasNext()) {
-            DBField field = fieldIterator.next();
+            BICubeFieldSource field = fieldIterator.next();
             if (field.getFieldName().equals(fieldName)) {
                 return field;
             }
@@ -183,11 +183,11 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
     @Override
     public ICubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
-        DBField field = getSpecificColumn(columnName);
+        BICubeFieldSource field = getSpecificColumn(columnName);
         return getColumnDataGetter(convert(field));
     }
 
-    public static BIColumnKey convert(DBField field) {
+    public static BIColumnKey convert(BICubeFieldSource field) {
         return BIColumnKey.covertColumnKey(field);
     }
 

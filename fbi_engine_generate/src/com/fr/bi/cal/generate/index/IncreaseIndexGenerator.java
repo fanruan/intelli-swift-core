@@ -4,13 +4,13 @@ import com.finebi.cube.api.BICubeManager;
 import com.fr.bi.cal.stable.index.AbstractIndexGenerator;
 import com.fr.bi.cal.stable.index.SimpleIndexIncreaseGenerator;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 
 /**
  * Created by 小灰灰 on 2015/10/15.
  */
 public class IncreaseIndexGenerator extends IndexGenerator {
-    public IncreaseIndexGenerator(ITableSource source, long userId, int version) {
+    public IncreaseIndexGenerator(ICubeTableSource source, long userId, int version) {
         super(source, userId, version);
     }
 

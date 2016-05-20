@@ -1,8 +1,8 @@
 package com.finebi.cube.tools;
 
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +13,12 @@ import java.util.Map;
  * Created by wuk on 16/5/17.
  */
 public class BINationDataFactory {
-    public static ITableSource createTablePerson(){
+    public static ICubeTableSource createTablePerson(){
         BINationDataSource source=new BINationDataSource();
-        List<DBField> columns=new ArrayList<DBField>();
-        columns.add(new DBField("persons","id", DBConstant.CLASS.LONG,255));
-        columns.add(new DBField("persons","name", DBConstant.CLASS.STRING,255));
-        columns.add(new DBField("persons","nationId", DBConstant.CLASS.LONG,255));
+        List<BICubeFieldSource> columns=new ArrayList<BICubeFieldSource>();
+        columns.add(new BICubeFieldSource("persons","id", DBConstant.CLASS.LONG,255));
+        columns.add(new BICubeFieldSource("persons","name", DBConstant.CLASS.STRING,255));
+        columns.add(new BICubeFieldSource("persons","nationId", DBConstant.CLASS.LONG,255));
 
         List<Long> id = new ArrayList<Long>();
         id.add(1L);
@@ -46,11 +46,11 @@ public class BINationDataFactory {
         return source;
     }
 
-    public static ITableSource createTableNation(){
+    public static ICubeTableSource createTableNation(){
         BINationDataSource source=new BINationDataSource();
-        List<DBField> columns=new ArrayList<DBField>();
-        columns.add(new DBField("nations","id", DBConstant.CLASS.LONG,255));
-        columns.add(new DBField("nations","name", DBConstant.CLASS.STRING,10));
+        List<BICubeFieldSource> columns=new ArrayList<BICubeFieldSource>();
+        columns.add(new BICubeFieldSource("nations","id", DBConstant.CLASS.LONG,255));
+        columns.add(new BICubeFieldSource("nations","name", DBConstant.CLASS.STRING,10));
 
         List<Long> id = new ArrayList<Long>();
         id.add(1L);

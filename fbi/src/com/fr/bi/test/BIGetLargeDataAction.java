@@ -41,9 +41,9 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
         IPersistentTable table = BIDBUtils.getDBTable("important", "items");
         List<PersistentField> columns = table.getFieldList();
 
-        DBField[] fields = new DBField[1];
+        BICubeFieldSource[] fields = new BICubeFieldSource[1];
 
-        fields[0] = new DBField(UUID.randomUUID().toString(), columns.get(0).getFieldName(),
+        fields[0] = new BICubeFieldSource(UUID.randomUUID().toString(), columns.get(0).getFieldName(),
                 BIDBUtils.checkColumnClassTypeFromSQL(columns.get(0).getType(), columns.get(0).getColumnSize(), columns.get(0).getScale()),
                 columns.get(0).getColumnSize());
 

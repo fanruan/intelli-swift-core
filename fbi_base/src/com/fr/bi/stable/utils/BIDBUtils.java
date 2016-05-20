@@ -477,10 +477,10 @@ public class BIDBUtils {
 
     @SuppressWarnings("rawtypes")
     private static DBDealer[] createDBDealer(boolean needCharSetConvert, String originalCharSetName,
-                                             String newCharSetName, DBField[] columns) {
+                                             String newCharSetName, BICubeFieldSource[] columns) {
         List<DBDealer> res = new ArrayList<DBDealer>();
         for (int i = 0, ilen = columns.length; i < ilen; i++) {
-            DBField field = columns[i];
+            BICubeFieldSource field = columns[i];
             if (field.isUsable()) {
                 DBDealer object = null;
                 int rsColumn = i + 1;
@@ -520,7 +520,7 @@ public class BIDBUtils {
 
 
     private static int dealWithResultSet(ResultSet rs,
-                                         DBField[] columns,
+                                         BICubeFieldSource[] columns,
                                          Traversal<BIDataValue> traversal,
                                          boolean needCharSetConvert,
                                          String originalCharSetName,
@@ -538,7 +538,7 @@ public class BIDBUtils {
         return row;
     }
 
-    public static long runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal) {
+    public static long runSQL(SQLStatement sql, BICubeFieldSource[] columns, Traversal<BIDataValue> traversal) {
         return runSQL(sql, columns, traversal, 0);
     }
 
@@ -547,7 +547,7 @@ public class BIDBUtils {
      *
      * @param traversal
      */
-    public static int runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal, int row) {
+    public static int runSQL(SQLStatement sql, BICubeFieldSource[] columns, Traversal<BIDataValue> traversal, int row) {
         com.fr.data.impl.Connection connection = sql.getConn();
         Connection conn = null;
         Statement stmt = null;
@@ -589,7 +589,7 @@ public class BIDBUtils {
     /**
      * 执行sql语句，获取数据
      */
-    public static ResultSet runQuerySQL(SQLStatement sql, DBField[] columns) {
+    public static ResultSet runQuerySQL(SQLStatement sql, BICubeFieldSource[] columns) {
         com.fr.data.impl.Connection connection = sql.getConn();
         Connection conn = null;
         Statement stmt = null;

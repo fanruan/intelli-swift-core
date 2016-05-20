@@ -7,7 +7,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.etl.analysis.data.UserTableSource;
+import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.tableobj.ETLTableObject;
 import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
@@ -27,9 +27,9 @@ public class SingleUserETLTableCubeManager implements Release {
 	
 	private ThreadUnitedQueue<ETLTableObject> tq = new ThreadUnitedQueue<ETLTableObject>();
 
-    private UserTableSource source;
+    private UserCubeTableSource source;
 
-    public UserTableSource getSource() {
+    public UserCubeTableSource getSource() {
         return source;
     }
 
@@ -49,7 +49,7 @@ public class SingleUserETLTableCubeManager implements Release {
 		tq.releaseObject();
 	}
 	
-	public SingleUserETLTableCubeManager (UserTableSource source){
+	public SingleUserETLTableCubeManager (UserCubeTableSource source){
 		this.source = source;
 		String path = getSavedPath();
 		if(path != null){

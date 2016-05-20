@@ -5,7 +5,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.ServerLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -79,7 +79,7 @@ public class SQLTableSource extends ServerTableSource {
             public void readXML(XMLableReader reader) {
                 if (reader.isChildNode()) {
                     if (reader.getTagName().equals(BIField.XML_TAG)) {
-                        DBField field = DBField.getBiEmptyField();
+                        BICubeFieldSource field = BICubeFieldSource.getBiEmptyField();
                         reader.readXMLObject(field);
                         fields.put(field.getFieldName(), field);
                     }
@@ -104,7 +104,7 @@ public class SQLTableSource extends ServerTableSource {
     }
 
     @Override
-    public IPersistentTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
         return dbTable;
     }

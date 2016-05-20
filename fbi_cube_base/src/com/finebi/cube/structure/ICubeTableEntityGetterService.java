@@ -6,7 +6,7 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 
 import java.util.Date;
 import java.util.List;
@@ -28,7 +28,7 @@ public interface ICubeTableEntityGetterService extends Release {
      *
      * @return 按照顺序的字段信息
      */
-    List<DBField> getFieldInfo();
+    List<BICubeFieldSource> getFieldInfo();
 
     /**
      * Cube中保存的字段信息。
@@ -40,7 +40,7 @@ public interface ICubeTableEntityGetterService extends Release {
 
     int getRowCount();
 
-    DBField getSpecificColumn(String fieldName) throws BICubeColumnAbsentException;
+    BICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException;
 
     Date getCubeLastTime();
 

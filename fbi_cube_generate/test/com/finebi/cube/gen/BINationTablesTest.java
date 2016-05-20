@@ -12,8 +12,8 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.tools.BINationDataFactory;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
@@ -59,7 +59,7 @@ public class BINationTablesTest extends BICubeTestBase {
             assertEquals(iCubeRelationEntityGetterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
 
             //根据value查找索引
-            final ICubeColumnReaderService iCubeColumnReaderService = cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTablePerson()), BIColumnKey.covertColumnKey(new DBField("person", "name", DBConstant.CLASS.STRING, 255)));
+            final ICubeColumnReaderService iCubeColumnReaderService = cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTablePerson()), BIColumnKey.covertColumnKey(new BICubeFieldSource("person", "name", DBConstant.CLASS.STRING, 255)));
 
             //获取本表对应位置索引值
             assertEquals(iCubeColumnReaderService.getIndexByGroupValue("nameA"),RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0,2}));
@@ -95,9 +95,9 @@ public class BINationTablesTest extends BICubeTestBase {
 
 
     /**写入*/
-    public void transport(ITableSource tableSource) {
+    public void transport(ICubeTableSource tableSource) {
         try {
-            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<ITableSource>(), new HashSet<ITableSource>());
+            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<ICubeTableSource>(), new HashSet<ICubeTableSource>());
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,12 +105,12 @@ public class BINationTablesTest extends BICubeTestBase {
         }
     }
     /**生成索引*/
-    public void fieldIndexGenerator(ITableSource tableSource, int columnIndex) {
+    public void fieldIndexGenerator(ICubeTableSource tableSource, int columnIndex) {
         try {
             setUp();
             BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
             transportTest.transport(tableSource);
-            DBField field = tableSource.getFieldsArray(null)[columnIndex];
+            BICubeFieldSource field = tableSource.getFieldsArray(null)[columnIndex];
             Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
             while (columnKeyIterator.hasNext()) {
                 BIColumnKey columnKey = columnKeyIterator.next();
@@ -132,13 +132,13 @@ public class BINationTablesTest extends BICubeTestBase {
     }
     /**生成relation*/
     protected BICubeRelation generatePersonsAndNationsRelation() throws BITablePathConfusionException {
-        ITableSource persons;
-        ITableSource nations;
+        ICubeTableSource persons;
+        ICubeTableSource nations;
         nations = BINationDataFactory.createTableNation();
         persons = BINationDataFactory.createTablePerson();
         BICubeRelation biCubeRelation = new BICubeRelation(
-                BIColumnKey.covertColumnKey(new DBField(persons.getSourceID(), "nationId", DBConstant.CLASS.LONG, 255)),
-                BIColumnKey.covertColumnKey(new DBField(nations.getSourceID(), "id", DBConstant.CLASS.LONG,255)),
+                BIColumnKey.covertColumnKey(new BICubeFieldSource(persons.getSourceID(), "nationId", DBConstant.CLASS.LONG, 255)),
+                BIColumnKey.covertColumnKey(new BICubeFieldSource(nations.getSourceID(), "id", DBConstant.CLASS.LONG,255)),
                 BITableKeyUtils.convert(persons),
                 BITableKeyUtils.convert(nations));
         return biCubeRelation;

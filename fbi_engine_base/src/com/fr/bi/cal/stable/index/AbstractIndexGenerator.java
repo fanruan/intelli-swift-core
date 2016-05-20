@@ -2,7 +2,7 @@ package com.fr.bi.cal.stable.index;
 
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.log.BIRecord;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 
 import java.util.Set;
 
@@ -12,10 +12,10 @@ import java.util.Set;
 public abstract class AbstractIndexGenerator extends AbstractSourceGenerator {
 
 
-    protected Set<ITableSource> derivedDataSources;
+    protected Set<ICubeTableSource> derivedDataSources;
 
 
-    protected AbstractIndexGenerator(TableCubeFile cube, ITableSource dataSource, Set<ITableSource> derivedDataSources, BIRecord log) {
+    protected AbstractIndexGenerator(TableCubeFile cube, ICubeTableSource dataSource, Set<ICubeTableSource> derivedDataSources, BIRecord log) {
         super(cube, dataSource, log);
         this.derivedDataSources = derivedDataSources;
     }

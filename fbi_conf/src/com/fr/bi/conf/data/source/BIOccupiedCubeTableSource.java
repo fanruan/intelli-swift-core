@@ -7,9 +7,9 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -31,15 +31,15 @@ import java.util.*;
  * @author Connery
  * @since 4.0
  */
-public class BIOccupiedTableSource implements ITableSource {
+public class BIOccupiedCubeTableSource implements ICubeTableSource {
     private String ID;
 
-    public BIOccupiedTableSource(String id) {
+    public BIOccupiedCubeTableSource(String id) {
         this.ID = id;
     }
 
     @Override
-    public IPersistentTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         return null;
     }
 
@@ -49,8 +49,8 @@ public class BIOccupiedTableSource implements ITableSource {
     }
 
     @Override
-    public DBField[] getFieldsArray(Set<ITableSource> sources) {
-        return new DBField[0];
+    public BICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
+        return new BICubeFieldSource[0];
     }
 
     @Override
@@ -59,13 +59,13 @@ public class BIOccupiedTableSource implements ITableSource {
     }
 
     @Override
-    public Map<Integer, Set<ITableSource>> createGenerateTablesMap() {
+    public Map<Integer, Set<ICubeTableSource>> createGenerateTablesMap() {
         return null;
     }
 
     @Override
-    public List<Set<ITableSource>> createGenerateTablesList() {
-        return new ArrayList<Set<ITableSource>>();
+    public List<Set<ICubeTableSource>> createGenerateTablesList() {
+        return new ArrayList<Set<ICubeTableSource>>();
     }
 
     @Override
@@ -79,12 +79,12 @@ public class BIOccupiedTableSource implements ITableSource {
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
         return -1;
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return -1;
     }
 
@@ -120,7 +120,7 @@ public class BIOccupiedTableSource implements ITableSource {
     }
 
     @Override
-    public Map<BICore, ITableSource> createSourceMap() {
+    public Map<BICore, ICubeTableSource> createSourceMap() {
         return null;
     }
 
@@ -130,7 +130,7 @@ public class BIOccupiedTableSource implements ITableSource {
     }
 
     @Override
-    public Set<String> getUsedFields(ITableSource source) {
+    public Set<String> getUsedFields(ICubeTableSource source) {
         return new HashSet<String>();
     }
 
@@ -170,17 +170,17 @@ public class BIOccupiedTableSource implements ITableSource {
     }
 
     @Override
-    public Set<DBField> getParentFields(Set<ITableSource> sources) {
+    public Set<BICubeFieldSource> getParentFields(Set<ICubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<DBField> getFacetFields(Set<ITableSource> sources) {
+    public Set<BICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<DBField> getSelfFields(Set<ITableSource> sources) {
+    public Set<BICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources) {
         return null;
     }
 

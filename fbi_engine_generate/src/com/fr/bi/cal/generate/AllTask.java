@@ -12,7 +12,7 @@ import com.fr.bi.conf.manager.singletable.data.SingleTableUpdateAction;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
@@ -31,14 +31,14 @@ public class AllTask extends AbstractCubeTask {
     }
 
     @Override
-    protected Map<Integer, Set<ITableSource>> getGenerateTables() {
-        Map<Integer, Set<ITableSource>> generateTable = new HashMap<Integer, Set<ITableSource>>();
+    protected Map<Integer, Set<ICubeTableSource>> getGenerateTables() {
+        Map<Integer, Set<ICubeTableSource>> generateTable = new HashMap<Integer, Set<ICubeTableSource>>();
         addOtherTables(generateTable);
         Set<BIBusinessPackage> packs = BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPacks();
         for (BIBusinessPackage pack : packs) {
             Set<BIBusinessTable> busiTable = pack.getBusinessTables();
             for (BIBusinessTable table : busiTable) {
-                ITableSource source = table.getSource();
+                ICubeTableSource source = table.getSource();
                 if (source != null) {
                     BICollectionUtils.mergeSetValueMap(generateTable, table.getSource().createGenerateTablesMap());
                 }
@@ -52,8 +52,8 @@ public class AllTask extends AbstractCubeTask {
         return false;
     }
 
-    private void addOtherTables(Map<Integer, Set<ITableSource>> generateTable) {
-        HashSet<ITableSource> set = new HashSet<ITableSource>();
+    private void addOtherTables(Map<Integer, Set<ICubeTableSource>> generateTable) {
+        HashSet<ICubeTableSource> set = new HashSet<ICubeTableSource>();
         Table key = BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getUserInfo().getTableKey();
         if (key != null) {
             set.add(BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(key.getID(), biUser));
@@ -67,11 +67,11 @@ public class AllTask extends AbstractCubeTask {
     }
 
     @Override
-    protected IndexGenerator createGenerator(ITableSource source) {
+    protected IndexGenerator createGenerator(ICubeTableSource source) {
         String md5 = source.fetchObjectCore().getID().getIdentityValue();
         TableCubeFile cube = new TableCubeFile(BIPathUtils.createTablePath(md5, biUser.getUserId()));
         if (!checkCubeVersion(cube)) {
-            SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(biUser.getUserId()).getSingleTableUpdateAction(source.getDbTable());
+            SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(biUser.getUserId()).getSingleTableUpdateAction(source.getPersistentTable());
             switch (action.getUpdateType()) {
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL:
                     return new IndexGenerator(source, biUser.getUserId(), cube.getTableVersion() + 1);

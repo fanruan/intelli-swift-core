@@ -18,11 +18,11 @@ import java.util.List;
  * Created by 小灰灰 on 2016/4/7.
  */
 public class AnalysisETLSourceFactory {
-    public static AnalysisTableSource createTableSource(JSONArray ja, long userId) throws Exception {
+    public static AnalysisCubeTableSource createTableSource(JSONArray ja, long userId) throws Exception {
         if (ja.length() == 1){
             return createOneTableSource(ja.getJSONObject(0), userId);
         } else {
-            List<AnalysisTableSource> sources = new ArrayList<AnalysisTableSource>();
+            List<AnalysisCubeTableSource> sources = new ArrayList<AnalysisCubeTableSource>();
             for (int i = 0; i < ja.length(); i++){
                 sources.add(createOneTableSource(ja.getJSONObject(i), userId));
             }
@@ -30,7 +30,7 @@ public class AnalysisETLSourceFactory {
         }
     }
 
-    private static AnalysisTableSource createOneTableSource(JSONObject jo, long userId) throws Exception {
+    private static AnalysisCubeTableSource createOneTableSource(JSONObject jo, long userId) throws Exception {
         int type = jo.getInt("etlType");
         List<AnalysisETLSourceField> fieldList = new ArrayList<AnalysisETLSourceField>();
         if (jo.has(Constants.FIELDS)){
@@ -52,7 +52,7 @@ public class AnalysisETLSourceFactory {
             default :
                 AnalysisETLTableSource source = new AnalysisETLTableSource(fieldList, name);
                 JSONArray parents = jo.getJSONArray("parents");
-                List<AnalysisTableSource> ps = new ArrayList<AnalysisTableSource>();
+                List<AnalysisCubeTableSource> ps = new ArrayList<AnalysisCubeTableSource>();
                 for (int i = 0; i < parents.length(); i ++){
                     ps.add(createOneTableSource(parents.getJSONObject(i), userId));
                 }
@@ -67,7 +67,7 @@ public class AnalysisETLSourceFactory {
 
     private static BIWidget createWidget(JSONObject jo, long userId) throws Exception {
         if (jo.has("core")){
-            AnalysisTableSource source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByCore(BIBasicCore.generateValueCore(jo.getString("core")), new BIUser(userId));
+            AnalysisCubeTableSource source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByCore(BIBasicCore.generateValueCore(jo.getString("core")), new BIUser(userId));
             if (source.getType() == Constants.TABLE_TYPE.BASE){
                 return ((AnalysisBaseTableSource)source).getWidget();
             }

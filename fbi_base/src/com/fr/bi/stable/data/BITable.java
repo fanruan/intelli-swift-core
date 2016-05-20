@@ -1,10 +1,9 @@
 package com.fr.bi.stable.data;
 
 
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
-import com.fr.json.JSONTransform;
 
 import java.io.Serializable;
 
@@ -13,7 +12,7 @@ import java.io.Serializable;
  * TODO clone方法
  * Created by Connery on 2015/12/15.
  */
-public class BITable implements Serializable, JSONTransform, Table {
+public class BITable implements Serializable, Table {
 
     /**
      *
@@ -26,7 +25,7 @@ public class BITable implements Serializable, JSONTransform, Table {
 
     protected String tableName;
     protected transient BITableID ID;
-    protected ITableSource tableSource;
+    protected ICubeTableSource tableSource;
 
     public BITable(String id) {
         this(id, null);

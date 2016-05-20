@@ -20,7 +20,7 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.BIIDUtils;
@@ -61,11 +61,11 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(BICore core) {
-        ITableSource source = BIModuleUtils.getSourceByCore(core, user);
+        ICubeTableSource source = BIModuleUtils.getSourceByCore(core, user);
         return getTableIndex(source);
     }
 
-    public ICubeTableService getTableIndex(ITableSource tableSource) {
+    public ICubeTableService getTableIndex(ICubeTableSource tableSource) {
 
         return new BICubeTableAdapter(cube, tableSource);
     }
@@ -82,7 +82,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(BITableID id) {
-        ITableSource source = BIModuleUtils.getSourceByID(id, user);
+        ICubeTableSource source = BIModuleUtils.getSourceByID(id, user);
         return getTableIndex(source);
     }
 

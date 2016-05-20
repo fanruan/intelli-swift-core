@@ -1,7 +1,7 @@
 package com.fr.bi.stable.engine.index;
 
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -20,7 +20,7 @@ import java.util.List;
 public interface ITableCubeGetter {
     int getTableVersion();
 
-    DBField[] getBIField();
+    BICubeFieldSource[] getBIField();
 
     int getRowCount();
 

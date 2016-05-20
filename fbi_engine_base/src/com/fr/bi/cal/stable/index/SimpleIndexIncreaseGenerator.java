@@ -11,10 +11,10 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.data.db.SqlSettedStatement;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -42,7 +42,7 @@ import java.util.TreeSet;
 public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
     private transient ICubeTableService oldTi;
 
-    public SimpleIndexIncreaseGenerator(TableCubeFile cube, ITableSource dataSource, Set<ITableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
+    public SimpleIndexIncreaseGenerator(TableCubeFile cube, ICubeTableSource dataSource, Set<ICubeTableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
         super(cube, dataSource, derivedDataSources, version, log, loader);
         oldTi = loader.getTableIndex( dataSource.fetchObjectCore());
     }
@@ -61,7 +61,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
 
 
     private int writeData(TreeSet<Integer> sortRemovedList, int oldCount) {
-        SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(loader.getUserId()).getSingleTableUpdateAction(dataSource.getDbTable());
+        SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(loader.getUserId()).getSingleTableUpdateAction(dataSource.getPersistentTable());
         oldCount = dealWithInsert(action, oldCount);
         oldCount = dealWithModify(action, oldCount, sortRemovedList);
         dealWithRemove(action, sortRemovedList);
@@ -146,8 +146,8 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(rSql);
         String columnName = getColumnName(connection, sqlStatement, rSql);
-        DBField f = null;
-        for (DBField field : cube.getBIField()) {
+        BICubeFieldSource f = null;
+        for (BICubeFieldSource field : cube.getBIField()) {
             if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
                 f = field;
                 break;
@@ -159,7 +159,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }
         BIKey key = new IndexKey(columnName);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
-        BIDBUtils.runSQL(sqlStatement, new DBField[]{f}, new Traversal<BIDataValue>() {
+        BIDBUtils.runSQL(sqlStatement, new BICubeFieldSource[]{f}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 Object[] key = getter.createKey(1);

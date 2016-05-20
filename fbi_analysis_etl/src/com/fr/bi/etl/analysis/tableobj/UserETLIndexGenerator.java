@@ -5,7 +5,7 @@ package com.fr.bi.etl.analysis.tableobj;
 
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.etl.analysis.data.UserTableSource;
+import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 
 /**
@@ -25,7 +25,7 @@ public class UserETLIndexGenerator extends IndexGenerator {
 	 * @param userId
 	 * @param version
 	 */
-	public UserETLIndexGenerator(UserTableSource source, int version, String path) {
+	public UserETLIndexGenerator(UserCubeTableSource source, int version, String path) {
         super(source, path, source.getUserId(), version);
     }
 	

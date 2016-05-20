@@ -13,7 +13,7 @@ import com.fr.bi.cal.stable.relation.uselinkindex.LinkColumnUseIndexLoader;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.file.ColumnFile;
@@ -156,13 +156,13 @@ public class TableCubeFile extends AbstractCubeFile {
     }
 
     @Override
-    public DBField[] getBIField() {
+    public BICubeFieldSource[] getBIField() {
         List<String> columnString = getCubeMainFile().read();
-        DBField[] fields = new DBField[columnString.size()];
+        BICubeFieldSource[] fields = new BICubeFieldSource[columnString.size()];
         for (int i = 0, ilen = columnString.size(); i < ilen; i++) {
             try {
                 JSONObject jo = new JSONObject(columnString.get(i));
-                DBField field = DBField.getBiEmptyField();
+                BICubeFieldSource field = BICubeFieldSource.getBiEmptyField();
                 field.parseJSON(jo);
                 fields[i] = field;
             } catch (Exception e) {
@@ -189,11 +189,11 @@ public class TableCubeFile extends AbstractCubeFile {
         }
         synchronized (this) {
             if (columns == null) {
-                DBField[] fields = getBIField();
+                BICubeFieldSource[] fields = getBIField();
                 ColumnFile<?>[] columns = new ColumnFile[fields.length];
                 Map<String, Integer> colIndexMap = new HashMap<String, Integer>(fields.length);
                 for (int i = 0, ilen = fields.length; i < ilen; i++) {
-                    DBField field = fields[i];
+                    BICubeFieldSource field = fields[i];
                     colIndexMap.put(field.getFieldName(), i);
                     String fieldPath = BIPathUtils.createSingleFieldBasePath(path, field.getFieldName());
                     switch (field.getFieldType()) {

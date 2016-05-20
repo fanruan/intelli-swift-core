@@ -3,7 +3,7 @@ package com.fr.bi.cal.stable.tableindex.index;
 
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -26,7 +26,7 @@ public class BIMultiTableIndex implements ICubeTableService {
 
     private Map<BIKey, ICubeTableService> childs = new ConcurrentHashMap<BIKey, ICubeTableService>();
 
-    private Map<BIKey, DBField> columns = new ConcurrentHashMap<BIKey, DBField>();
+    private Map<BIKey, BICubeFieldSource> columns = new ConcurrentHashMap<BIKey, BICubeFieldSource>();
 
     public BIMultiTableIndex(ICubeTableService[] childs) {
         cs = childs;
@@ -35,7 +35,7 @@ public class BIMultiTableIndex implements ICubeTableService {
 
     private void init(ICubeTableService[] childs) {
         for (ICubeTableService ti : childs) {
-            Map<BIKey, DBField> c = ti.getColumns();
+            Map<BIKey, BICubeFieldSource> c = ti.getColumns();
             for (BIKey key : c.keySet()) {
                 this.childs.put(key, ti);
             }
@@ -147,7 +147,7 @@ public class BIMultiTableIndex implements ICubeTableService {
     }
 
     @Override
-    public Map<BIKey, DBField> getColumns() {
+    public Map<BIKey, BICubeFieldSource> getColumns() {
         return columns;
     }
 

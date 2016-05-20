@@ -15,8 +15,8 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.file.XMLFileManager;
 import com.fr.fs.control.UserControl;
@@ -40,7 +40,7 @@ public class BIXMLDataSource extends XMLFileManager implements BIDataSource {
 
     private static final String XML_TAG = "DataSourceManager";
 
-    private Map<BICore, ITableSource> md5Tables = new ConcurrentHashMap<BICore, ITableSource>();
+    private Map<BICore, ICubeTableSource> md5Tables = new ConcurrentHashMap<BICore, ICubeTableSource>();
 
     private Map<BITableID, BICore> idMd5Tables = new ConcurrentHashMap<BITableID, BICore>();
 
@@ -85,7 +85,7 @@ public class BIXMLDataSource extends XMLFileManager implements BIDataSource {
     }
 
     @Override
-    public ITableSource getTableSourceByID(BITableID id) {
+    public ICubeTableSource getTableSourceByID(BITableID id) {
         if (id == null) {
             return null;
         }
@@ -94,7 +94,7 @@ public class BIXMLDataSource extends XMLFileManager implements BIDataSource {
     }
 
     @Override
-    public ITableSource getTableSourceByMD5(BICore core) {
+    public ICubeTableSource getTableSourceByMD5(BICore core) {
         return md5Tables.get(core);
     }
 
@@ -111,7 +111,7 @@ public class BIXMLDataSource extends XMLFileManager implements BIDataSource {
      * 增加md5表
      */
     @Override
-    public void addTableSource(BITableID id, ITableSource source) {
+    public void addTableSource(BITableID id, ICubeTableSource source) {
         synchronized (this) {
             BICore core = source.fetchObjectCore();
             md5Tables.putAll(source.createSourceMap());
@@ -123,7 +123,7 @@ public class BIXMLDataSource extends XMLFileManager implements BIDataSource {
      * 修改md5表
      */
     @Override
-    public void editTableSource(BITableID id, ITableSource source) {
+    public void editTableSource(BITableID id, ICubeTableSource source) {
         synchronized (this) {
             BICore md5Name = source.fetchObjectCore();
             BICore oldMD5 = idMd5Tables.get(id);
@@ -152,7 +152,7 @@ public class BIXMLDataSource extends XMLFileManager implements BIDataSource {
             writer.attr("id", entry.getKey().getIdentityValue()).attr("md5", entry.getValue().getID().getIdentityValue());
             writer.end();
         }
-        Iterator<ITableSource> md5tableIt = md5Tables.values().iterator();
+        Iterator<ICubeTableSource> md5tableIt = md5Tables.values().iterator();
         while (md5tableIt.hasNext()) {
             md5tableIt.next().writeXML(writer);
         }
@@ -196,7 +196,7 @@ public class BIXMLDataSource extends XMLFileManager implements BIDataSource {
     public JSONObject createJSON() throws JSONException {
         JSONObject jo = new JSONObject();
         for (Entry<BITableID, BICore> id : idMd5Tables.entrySet()) {
-            ITableSource source = md5Tables.get(id.getValue());
+            ICubeTableSource source = md5Tables.get(id.getValue());
             if (source != null) {
                 try {
                     jo.put(id.getKey().getIdentityValue(), source.createJSON());
@@ -220,13 +220,13 @@ public class BIXMLDataSource extends XMLFileManager implements BIDataSource {
     }
 
     @Override
-    public DBField findDBField(BIField biField) throws BIFieldAbsentException {
+    public BICubeFieldSource findDBField(BIField biField) throws BIFieldAbsentException {
         Table table = biField.getTableBelongTo();
-        ITableSource tableSource = getTableSourceByID(table.getID());
-        DBField[] dbFields = tableSource.getFieldsArray(null);
-        for (int i = 0; i < dbFields.length; i++) {
-            if (ComparatorUtils.equals(biField.getFieldName(), dbFields[i].getFieldName())) {
-                return dbFields[i];
+        ICubeTableSource tableSource = getTableSourceByID(table.getID());
+        BICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(null);
+        for (int i = 0; i < BICubeFieldSources.length; i++) {
+            if (ComparatorUtils.equals(biField.getFieldName(), BICubeFieldSources[i].getFieldName())) {
+                return BICubeFieldSources[i];
             }
         }
         throw new BIFieldAbsentException("the field is:" + biField != null ? biField.getFieldName() : "null");

@@ -9,7 +9,7 @@ import com.finebi.cube.tools.BICubePathTestTool;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 
 /**
@@ -24,7 +24,7 @@ public class BIFieldPathIndexTest extends BICubeTestBase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        indexBuilder = new BIFieldPathIndexBuilder(cube, new DBField("tableA", "gender", DBConstant.CLASS.STRING, 6), BICubePathTestTool.getABC());
+        indexBuilder = new BIFieldPathIndexBuilder(cube, new BICubeFieldSource("tableA", "gender", DBConstant.CLASS.STRING, 6), BICubePathTestTool.getABC());
     }
 
     public void testFieldPathIndex() {
@@ -35,7 +35,7 @@ public class BIFieldPathIndexTest extends BICubeTestBase {
             fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableA(), 2);
 
             indexBuilder.mainTask(null);
-            ICubeColumnReaderService getterService = cube.getCubeColumn(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BIColumnKey.covertColumnKey(new DBField("tableA", "gender", DBConstant.CLASS.STRING, 6)));
+            ICubeColumnReaderService getterService = cube.getCubeColumn(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BIColumnKey.covertColumnKey(new BICubeFieldSource("tableA", "gender", DBConstant.CLASS.STRING, 6)));
 
             ICubeRelationEntityGetterService relationEntityGetterService = getterService.getRelationIndexGetter(BICubePathTestTool.getABC());
             assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroup("girl")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));

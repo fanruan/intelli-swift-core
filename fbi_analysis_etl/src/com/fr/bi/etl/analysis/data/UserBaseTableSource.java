@@ -6,7 +6,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * Created by 小灰灰 on 2015/12/24.
  */
-public class UserBaseTableSource extends AnalysisBaseTableSource implements UserTableSource{
+public class UserBaseTableSource extends AnalysisBaseTableSource implements UserCubeTableSource {
     private GroupValueIndex filter;
     private UserWidget userWidget;
     @BICoreField
@@ -60,7 +60,7 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
         int index = 0, step = 1000, total = 0;
         while (total == (index) * step){
             List<List> values = userWidget.createData(index*step, index*step + step);
@@ -77,12 +77,12 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
 
 
     @Override
-    public UserTableSource createUserTableSource(long userId) {
+    public UserCubeTableSource createUserTableSource(long userId) {
         return this;
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         List<List> values = userWidget.createData(start, end);
         for (int i = 0; i < values.size(); i ++){
             List value = values.get(i);

@@ -7,7 +7,7 @@ import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -114,9 +114,9 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader) {
         List<ICubeTableService> tis = new ArrayList<ICubeTableService>();
-        for (ITableSource s : parents) {
+        for (ICubeTableSource s : parents) {
             tis.add(loader.getTableIndex(s.fetchObjectCore()));
         }
         return write(travel, tis);
@@ -147,11 +147,11 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         int st = (int) Math.ceil(start / parents.size());
         int ed = (int) Math.ceil(end / parents.size());
         List<ICubeTableService> tis = new ArrayList<ICubeTableService>();
-        for (ITableSource s : parents) {
+        for (ICubeTableSource s : parents) {
             tis.add(loader.getTableIndex( s.fetchObjectCore(), st, ed));
         }
         return write(travel, tis);

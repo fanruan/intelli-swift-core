@@ -11,7 +11,7 @@ import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
@@ -36,7 +36,7 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
         }
         long userId = session.getUserId();
         String fileName = TempPathGenerator.createTempPath();
-        ITableSource source = BIModuleUtils.getSourceByID(new BITableID(tableId), new BIUser(userId));
+        ICubeTableSource source = BIModuleUtils.getSourceByID(new BITableID(tableId), new BIUser(userId));
         final TempCubeTask task = new TempCubeTask(source.getSourceID(), userId);
         final CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(task);
 

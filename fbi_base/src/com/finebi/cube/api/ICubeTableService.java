@@ -3,7 +3,7 @@ package com.finebi.cube.api;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.engine.index.TableIndexAdapter;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
@@ -91,7 +91,7 @@ public interface ICubeTableService extends Release {
      */
     double getDistinctCountValue(GroupValueIndex gvi, BIKey distinct_field);
 
-    Map<BIKey, DBField> getColumns();
+    Map<BIKey, BICubeFieldSource> getColumns();
 
     int getColumnSize();
 
