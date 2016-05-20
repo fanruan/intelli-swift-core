@@ -58,7 +58,7 @@ public abstract class BIAbstractWidget implements BIWidget {
         this.blockName = name;
     }
 
-    public TargetFilter getFilter(){
+    public TargetFilter getFilter() {
         return filter;
     }
 
@@ -117,11 +117,11 @@ public abstract class BIAbstractWidget implements BIWidget {
         if (jo.has("name")) {
             this.blockName = jo.getString("name");
         }
-        if (jo.has("filter")){
+        if (jo.has("filter")) {
             JSONObject filterJo = jo.getJSONObject("filter");
             filter = TargetFilterFactory.parseFilter(filterJo, userId);
         }
-        if(jo.has("init_time")) {
+        if (jo.has("init_time")) {
             initTime = jo.getLong("init_time");
 
         }
@@ -138,9 +138,9 @@ public abstract class BIAbstractWidget implements BIWidget {
         return null;
     }
 
-    public GroupValueIndex createFilterGVI(DimensionCalculator[] row, Table targetKey, ICubeDataLoader loader, long userId){
+    public GroupValueIndex createFilterGVI(DimensionCalculator[] row, Table targetKey, ICubeDataLoader loader, long userId) {
         GroupValueIndex gvi = loader.getTableIndex(targetKey).getAllShowIndex();
-        if(filter != null){
+        if (filter != null) {
             for (int i = 0; i < row.length; i++) {
                 gvi = GVIUtils.AND(gvi, filter.createFilterIndex(row[i], targetKey, loader, userId));
             }

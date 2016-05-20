@@ -364,7 +364,7 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                         });
                         break;
                     default :
-                        return
+                        break;
                 }
                 self.fireEvent(BI.NumericalInterval.EVENT_CHANGE);
             });
