@@ -140,14 +140,6 @@ public class TreeWidget extends BIAbstractWidget {
         parseDimensions(jo, userId);
         setTargetTable();
         parseSortFilter(jo, userId);
-        if (jo.has("view")) {
-            JSONObject views = jo.getJSONObject("view");
-            JSONArray dimIds = views.getJSONArray(BIReportConstant.REGION.DIMENSION1);
-            viewData = new String[dimIds.length()];
-            for (int i = 0; i < dimIds.length(); i++) {
-                viewData[i] = dimIds.getString(i);
-            }
-        }
 
         if (jo.has("tree_options")) {
             JSONObject treeJo = jo.getJSONObject("tree_options");
@@ -290,12 +282,24 @@ public class TreeWidget extends BIAbstractWidget {
     }
 
     private void parseDimensions(JSONObject jo, long userId) throws Exception {
-        JSONObject dims = jo.getJSONObject("dimensions");
-        JSONArray view = jo.getJSONObject("view").getJSONArray(BIReportConstant.REGION.DIMENSION1);
-        this.dimensions = new BIDimension[view.length()];
-        for (int i = 0; i < view.length(); i++) {
-            JSONObject dimObject = dims.getJSONObject(view.getString(i));
-            dimObject.put("did", view.getString(i));
+        JSONObject dims = jo.optJSONObject("dimensions");
+        JSONObject viewJo = jo.optJSONObject("view");
+        if (viewJo == null) {
+            viewJo = new JSONObject();
+        }
+        JSONArray viewJa = viewJo.optJSONArray(BIReportConstant.REGION.DIMENSION1);
+        if (viewJa == null) {
+            viewJa = new JSONArray();
+        }
+        viewData = new String[viewJa.length()];
+        for (int i = 0; i < viewJa.length(); i++) {
+            viewData[i] = viewJa.getString(i);
+        }
+
+        this.dimensions = new BIDimension[viewJa.length()];
+        for (int i = 0; i < viewJa.length(); i++) {
+            JSONObject dimObject = dims.getJSONObject(viewJa.getString(i));
+            dimObject.put("did", viewJa.getString(i));
             this.dimensions[i] = BIDimensionFactory.parseDimension(dimObject, userId);
             JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
             Iterator it = dimensionMap.keys();
