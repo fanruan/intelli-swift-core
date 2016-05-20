@@ -15,7 +15,7 @@ public class BIDataColumnFactory {
     public static BIDataColumn createBIDataColumnByFieldID(String fieldId, BIUser user){
         String tableId = BIIDUtils.getTableIDFromFieldID(fieldId);
         String fieldName = BIIDUtils.getFieldNameFromFieldID(fieldId);
-        IPersistentTable table = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), user).getDbTable();
+        IPersistentTable table = BIModuleUtils.getSourceByID(new BITableID(tableId), user).getDbTable();
         PersistentField c = table.getField(fieldName);
         if(c == null){
             return new BIDataColumn(new BIBasicField(tableId, "pony"));
