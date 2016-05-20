@@ -22,16 +22,20 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Qiu_Sum"),
-                    value: BICst.SUMMARY_TYPE.SUM
+                    value: BICst.SUMMARY_TYPE.SUM,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Qiu_Avg"),
-                    value: BICst.SUMMARY_TYPE.AVG
+                    value: BICst.SUMMARY_TYPE.AVG,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Qiu_Max"),
-                    value: BICst.SUMMARY_TYPE.MAX
+                    value: BICst.SUMMARY_TYPE.MAX,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Qiu_Min"),
-                    value: BICst.SUMMARY_TYPE.MIN
+                    value: BICst.SUMMARY_TYPE.MIN,
+                    cls: "dot-e-font"
                 }]
             }, {
                 el: {
