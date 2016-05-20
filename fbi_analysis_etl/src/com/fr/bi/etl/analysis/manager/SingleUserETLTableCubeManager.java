@@ -3,20 +3,19 @@
  */
 package com.fr.bi.etl.analysis.manager;
 
-import java.io.File;
-
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.etl.analysis.data.UserTableSource;
 import com.fr.bi.etl.analysis.tableobj.ETLTableObject;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
-import com.fr.stable.bridge.StableFactory;
+
+import java.io.File;
 
 /**
  * @author Daniel
@@ -35,7 +34,7 @@ public class SingleUserETLTableCubeManager implements Release {
     }
 
 	private String getSavedPath(){
-		UserETLCubeManager manager = StableFactory.getMarkedObject(UserETLCubeManager.class.getName(), UserETLCubeManager.class);
+        UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
     	if(manager != null){
     		return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue());
     	}
@@ -88,6 +87,7 @@ public class SingleUserETLTableCubeManager implements Release {
 							}
 						}
 					});
+                    updateTask.start();
 				}
 			}
 		}

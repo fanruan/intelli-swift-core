@@ -1,6 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.base.annotation.BICoreField;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
@@ -9,7 +11,6 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -33,7 +34,6 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     private String blockName;
     private Rectangle rect = new Rectangle();
-    @BICoreField
     private TargetFilter filter;
     private long initTime;
     private long userId;
@@ -147,5 +147,10 @@ public abstract class BIAbstractWidget implements BIWidget {
         }
         return gvi;
 
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 }

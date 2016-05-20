@@ -32,14 +32,10 @@ import java.util.*;
 public class BIDetailWidget extends BIAbstractWidget {
     @BICoreField
     private BIDetailSetting data;
-    @BICoreField
     private BIDetailTarget[] dimensions = new BIDetailTarget[0];
-    @BICoreField
     private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
-    @BICoreField
     private Table target;//目标表
     private List<String> parent_widget = new ArrayList<String>();
-    @BICoreField
     private String[] sortTargets = new String[0];
 
     //page from 1~ max
