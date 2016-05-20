@@ -8,7 +8,7 @@
 BI.DetailTablePopupDetailTableHeader = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTablePopupDetailTableHeader.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-table-popup-detail-table-cell"
+            baseCls: "bi-detail-table-popup-detail-table-header"
         })
     },
 
@@ -19,6 +19,7 @@ BI.DetailTablePopupDetailTableHeader = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.label",
             element: this.element,
+            height: o.height,
             text: o.text,
             value: o.value
         })

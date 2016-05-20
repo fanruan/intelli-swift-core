@@ -19,7 +19,6 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
             }
         }
         this.populate(widget, model);
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, widget.controller, widget.options.value.operatorType)
     },
 
     getFilterValue : function (field, widget, model) {
