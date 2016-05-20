@@ -25,7 +25,6 @@ public class BITable implements Serializable, Table {
 
     protected String tableName;
     protected transient BITableID ID;
-    protected ICubeTableSource tableSource;
 
     public BITable(String id) {
         this(id, null);

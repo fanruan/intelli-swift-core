@@ -3,9 +3,7 @@ package com.fr.bi.stable.data.db;
 import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIBasicField;
-import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
 
 /**
@@ -13,22 +11,18 @@ import com.fr.stable.StringUtils;
  * Created by GUY on 2015/4/10.
  */
 public class BICubeFieldSource extends BIBasicField {
-
+    /**
+     *
+     */
     private static final long serialVersionUID = 2399880587121141814L;
-    protected String fieldName = StringUtils.EMPTY;
-
-    protected int fieldType;
-    protected int fieldSize;
-    protected boolean isUsable;
     private int classType;
-    private ICubeTableSource cubeTableSource;
 
     public static BICubeFieldSource createEmpty() {
         return new BICubeFieldSource("", "", -1, -1);
     }
 
     public BICubeFieldSource(String id, String fieldName, int classType, int fieldSize) {
-
+        super(id, fieldName, classType, fieldSize);
         this.classType = classType;
     }
 
@@ -45,6 +39,14 @@ public class BICubeFieldSource extends BIBasicField {
         return classType;
     }
 
+    /**
+     * 设置字段对应的java类
+     *
+     * @param classType
+     */
+    public void setClassType(int classType) {
+        this.classType = classType;
+    }
 
     @Override
     public JSONObject createJSON() throws Exception {
