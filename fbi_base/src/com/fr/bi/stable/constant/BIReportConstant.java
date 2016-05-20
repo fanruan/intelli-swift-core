@@ -484,4 +484,6 @@ public class BIReportConstant {
         public static final String HEAD = "81c48028-1401-11e6-a148-3e1d05defe78";
     }
 
+    public static final String SYSTEM_TIME = "__system_time-3e1d05defe78__";
+
 }
