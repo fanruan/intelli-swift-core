@@ -1304,492 +1304,602 @@
 }
 .chart-table-font .b-font:before {
   content: "\e60e";
+  color: #808080;
+}
+.chart-table-font:hover .b-font:before,
+.chart-table-font:focus .b-font:before,
+.chart-table-font.hover .b-font:before {
+  content: "\e60e";
+  color: #808080;
+}
+.chart-table-font:active .b-font:before,
+.chart-table-font.active .b-font:before {
+  content: "\e60e";
   color: #009de3;
 }
 .chart-table-font.native .b-font:before,
 .chart-table-font.disabled .b-font:before {
   content: "\e60e";
-  color: #009de3;
+  color: #808080;
 }
 .chart-axis-font .b-font:before {
+  content: "\e626";
+  color: #808080;
+}
+.chart-axis-font:hover .b-font:before,
+.chart-axis-font:focus .b-font:before,
+.chart-axis-font.hover .b-font:before {
+  content: "\e626";
+  color: #808080;
+}
+.chart-axis-font:active .b-font:before,
+.chart-axis-font.active .b-font:before {
   content: "\e626";
   color: #009de3;
 }
 .chart-axis-font.native .b-font:before,
 .chart-axis-font.disabled .b-font:before {
   content: "\e626";
-  color: #009de3;
+  color: #808080;
 }
 .chart-bar-font .b-font:before {
+  content: "\e620";
+  color: #808080;
+}
+.chart-bar-font:hover .b-font:before,
+.chart-bar-font:focus .b-font:before,
+.chart-bar-font.hover .b-font:before {
+  content: "\e620";
+  color: #808080;
+}
+.chart-bar-font:active .b-font:before,
+.chart-bar-font.active .b-font:before {
   content: "\e620";
   color: #009de3;
 }
 .chart-bar-font.native .b-font:before,
 .chart-bar-font.disabled .b-font:before {
   content: "\e620";
-  color: #009de3;
+  color: #808080;
 }
 .chart-accumulate-bar-font .b-font:before {
+  content: "\e60a";
+  color: #808080;
+}
+.chart-accumulate-bar-font:hover .b-font:before,
+.chart-accumulate-bar-font:focus .b-font:before,
+.chart-accumulate-bar-font.hover .b-font:before {
+  content: "\e60a";
+  color: #808080;
+}
+.chart-accumulate-bar-font:active .b-font:before,
+.chart-accumulate-bar-font.active .b-font:before {
   content: "\e60a";
   color: #009de3;
 }
 .chart-accumulate-bar-font.native .b-font:before,
 .chart-accumulate-bar-font.disabled .b-font:before {
   content: "\e60a";
-  color: #009de3;
+  color: #808080;
 }
 .chart-pie-font .b-font:before {
+  content: "\e618";
+  color: #808080;
+}
+.chart-pie-font:hover .b-font:before,
+.chart-pie-font:focus .b-font:before,
+.chart-pie-font.hover .b-font:before {
+  content: "\e618";
+  color: #808080;
+}
+.chart-pie-font:active .b-font:before,
+.chart-pie-font.active .b-font:before {
   content: "\e618";
   color: #009de3;
 }
 .chart-pie-font.native .b-font:before,
 .chart-pie-font.disabled .b-font:before {
   content: "\e618";
-  color: #009de3;
+  color: #808080;
 }
 .chart-map-font .b-font:before {
+  content: "\e62c";
+  color: #808080;
+}
+.chart-map-font:hover .b-font:before,
+.chart-map-font:focus .b-font:before,
+.chart-map-font.hover .b-font:before {
+  content: "\e62c";
+  color: #808080;
+}
+.chart-map-font:active .b-font:before,
+.chart-map-font.active .b-font:before {
   content: "\e62c";
   color: #009de3;
 }
 .chart-map-font.native .b-font:before,
 .chart-map-font.disabled .b-font:before {
   content: "\e62c";
-  color: #009de3;
+  color: #808080;
 }
 .chart-dashboard-font .b-font:before {
+  content: "\e623";
+  color: #808080;
+}
+.chart-dashboard-font:hover .b-font:before,
+.chart-dashboard-font:focus .b-font:before,
+.chart-dashboard-font.hover .b-font:before {
+  content: "\e623";
+  color: #808080;
+}
+.chart-dashboard-font:active .b-font:before,
+.chart-dashboard-font.active .b-font:before {
   content: "\e623";
   color: #009de3;
 }
 .chart-dashboard-font.native .b-font:before,
 .chart-dashboard-font.disabled .b-font:before {
   content: "\e623";
-  color: #009de3;
+  color: #808080;
 }
 .chart-doughnut-font .b-font:before {
+  content: "\e624";
+  color: #808080;
+}
+.chart-doughnut-font:hover .b-font:before,
+.chart-doughnut-font:focus .b-font:before,
+.chart-doughnut-font.hover .b-font:before {
+  content: "\e624";
+  color: #808080;
+}
+.chart-doughnut-font:active .b-font:before,
+.chart-doughnut-font.active .b-font:before {
   content: "\e624";
   color: #009de3;
 }
 .chart-doughnut-font.native .b-font:before,
 .chart-doughnut-font.disabled .b-font:before {
   content: "\e624";
-  color: #009de3;
+  color: #808080;
 }
 .chart-detail-font .b-font:before {
+  content: "\e615";
+  color: #808080;
+}
+.chart-detail-font:hover .b-font:before,
+.chart-detail-font:focus .b-font:before,
+.chart-detail-font.hover .b-font:before {
+  content: "\e615";
+  color: #808080;
+}
+.chart-detail-font:active .b-font:before,
+.chart-detail-font.active .b-font:before {
   content: "\e615";
   color: #009de3;
 }
 .chart-detail-font.native .b-font:before,
 .chart-detail-font.disabled .b-font:before {
   content: "\e615";
-  color: #009de3;
+  color: #808080;
 }
 .chart-more-font .b-font:before {
+  content: "\e60d";
+  color: #808080;
+}
+.chart-more-font:hover .b-font:before,
+.chart-more-font:focus .b-font:before,
+.chart-more-font.hover .b-font:before {
+  content: "\e60d";
+  color: #808080;
+}
+.chart-more-font:active .b-font:before,
+.chart-more-font.active .b-font:before {
   content: "\e60d";
   color: #009de3;
 }
 .chart-more-font.native .b-font:before,
 .chart-more-font.disabled .b-font:before {
   content: "\e60d";
-  color: #009de3;
+  color: #808080;
 }
 .chart-bubble-font .b-font:before {
+  content: "\e62a";
+  color: #808080;
+}
+.chart-bubble-font:hover .b-font:before,
+.chart-bubble-font:focus .b-font:before,
+.chart-bubble-font.hover .b-font:before {
+  content: "\e62a";
+  color: #808080;
+}
+.chart-bubble-font:active .b-font:before,
+.chart-bubble-font.active .b-font:before {
   content: "\e62a";
   color: #009de3;
 }
 .chart-bubble-font.native .b-font:before,
 .chart-bubble-font.disabled .b-font:before {
   content: "\e62a";
-  color: #009de3;
+  color: #808080;
 }
 .chart-scatter-font .b-font:before {
+  content: "\e61d";
+  color: #808080;
+}
+.chart-scatter-font:hover .b-font:before,
+.chart-scatter-font:focus .b-font:before,
+.chart-scatter-font.hover .b-font:before {
+  content: "\e61d";
+  color: #808080;
+}
+.chart-scatter-font:active .b-font:before,
+.chart-scatter-font.active .b-font:before {
   content: "\e61d";
   color: #009de3;
 }
 .chart-scatter-font.native .b-font:before,
 .chart-scatter-font.disabled .b-font:before {
   content: "\e61d";
-  color: #009de3;
+  color: #808080;
 }
 .chart-radar-font .b-font:before {
+  content: "\e614";
+  color: #808080;
+}
+.chart-radar-font:hover .b-font:before,
+.chart-radar-font:focus .b-font:before,
+.chart-radar-font.hover .b-font:before {
+  content: "\e614";
+  color: #808080;
+}
+.chart-radar-font:active .b-font:before,
+.chart-radar-font.active .b-font:before {
   content: "\e614";
   color: #009de3;
 }
 .chart-radar-font.native .b-font:before,
 .chart-radar-font.disabled .b-font:before {
   content: "\e614";
-  color: #009de3;
+  color: #808080;
 }
 .chart-content-font .b-font:before {
+  content: "\e621";
+  color: #808080;
+}
+.chart-content-font:hover .b-font:before,
+.chart-content-font:focus .b-font:before,
+.chart-content-font.hover .b-font:before {
+  content: "\e621";
+  color: #808080;
+}
+.chart-content-font:active .b-font:before,
+.chart-content-font.active .b-font:before {
   content: "\e621";
   color: #009de3;
 }
 .chart-content-font.native .b-font:before,
 .chart-content-font.disabled .b-font:before {
   content: "\e621";
-  color: #009de3;
+  color: #808080;
 }
 .chart-image-font .b-font:before {
+  content: "\e68d";
+  color: #808080;
+}
+.chart-image-font:hover .b-font:before,
+.chart-image-font:focus .b-font:before,
+.chart-image-font.hover .b-font:before {
+  content: "\e68d";
+  color: #808080;
+}
+.chart-image-font:active .b-font:before,
+.chart-image-font.active .b-font:before {
   content: "\e68d";
   color: #009de3;
 }
 .chart-image-font.native .b-font:before,
 .chart-image-font.disabled .b-font:before {
   content: "\e68d";
-  color: #009de3;
+  color: #808080;
 }
 .chart-web-font .b-font:before {
+  content: "\e68c";
+  color: #808080;
+}
+.chart-web-font:hover .b-font:before,
+.chart-web-font:focus .b-font:before,
+.chart-web-font.hover .b-font:before {
+  content: "\e68c";
+  color: #808080;
+}
+.chart-web-font:active .b-font:before,
+.chart-web-font.active .b-font:before {
   content: "\e68c";
   color: #009de3;
 }
 .chart-web-font.native .b-font:before,
 .chart-web-font.disabled .b-font:before {
   content: "\e68c";
-  color: #009de3;
+  color: #808080;
 }
 .chart-string-font .b-font:before {
+  content: "\e622";
+  color: #808080;
+}
+.chart-string-font:hover .b-font:before,
+.chart-string-font:focus .b-font:before,
+.chart-string-font.hover .b-font:before {
+  content: "\e622";
+  color: #808080;
+}
+.chart-string-font:active .b-font:before,
+.chart-string-font.active .b-font:before {
   content: "\e622";
   color: #009de3;
 }
 .chart-string-font.native .b-font:before,
 .chart-string-font.disabled .b-font:before {
   content: "\e622";
-  color: #009de3;
+  color: #808080;
 }
 .chart-number-font .b-font:before {
+  content: "\e61f";
+  color: #808080;
+}
+.chart-number-font:hover .b-font:before,
+.chart-number-font:focus .b-font:before,
+.chart-number-font.hover .b-font:before {
+  content: "\e61f";
+  color: #808080;
+}
+.chart-number-font:active .b-font:before,
+.chart-number-font.active .b-font:before {
   content: "\e61f";
   color: #009de3;
 }
 .chart-number-font.native .b-font:before,
 .chart-number-font.disabled .b-font:before {
   content: "\e61f";
-  color: #009de3;
+  color: #808080;
 }
 .chart-tree-font .b-font:before {
+  content: "\e61e";
+  color: #808080;
+}
+.chart-tree-font:hover .b-font:before,
+.chart-tree-font:focus .b-font:before,
+.chart-tree-font.hover .b-font:before {
+  content: "\e61e";
+  color: #808080;
+}
+.chart-tree-font:active .b-font:before,
+.chart-tree-font.active .b-font:before {
   content: "\e61e";
   color: #009de3;
 }
 .chart-tree-font.native .b-font:before,
 .chart-tree-font.disabled .b-font:before {
   content: "\e61e";
-  color: #009de3;
+  color: #808080;
 }
 .chart-date-font .b-font:before {
+  content: "\e61b";
+  color: #808080;
+}
+.chart-date-font:hover .b-font:before,
+.chart-date-font:focus .b-font:before,
+.chart-date-font.hover .b-font:before {
+  content: "\e61b";
+  color: #808080;
+}
+.chart-date-font:active .b-font:before,
+.chart-date-font.active .b-font:before {
   content: "\e61b";
   color: #009de3;
 }
 .chart-date-font.native .b-font:before,
 .chart-date-font.disabled .b-font:before {
   content: "\e61b";
-  color: #009de3;
+  color: #808080;
 }
 .chart-year-font .b-font:before {
+  content: "\e628";
+  color: #808080;
+}
+.chart-year-font:hover .b-font:before,
+.chart-year-font:focus .b-font:before,
+.chart-year-font.hover .b-font:before {
+  content: "\e628";
+  color: #808080;
+}
+.chart-year-font:active .b-font:before,
+.chart-year-font.active .b-font:before {
   content: "\e628";
   color: #009de3;
 }
 .chart-year-font.native .b-font:before,
 .chart-year-font.disabled .b-font:before {
   content: "\e628";
-  color: #009de3;
+  color: #808080;
 }
 .chart-month-font .b-font:before {
+  content: "\e627";
+  color: #808080;
+}
+.chart-month-font:hover .b-font:before,
+.chart-month-font:focus .b-font:before,
+.chart-month-font.hover .b-font:before {
+  content: "\e627";
+  color: #808080;
+}
+.chart-month-font:active .b-font:before,
+.chart-month-font.active .b-font:before {
   content: "\e627";
   color: #009de3;
 }
 .chart-month-font.native .b-font:before,
 .chart-month-font.disabled .b-font:before {
   content: "\e627";
-  color: #009de3;
+  color: #808080;
 }
 .chart-quarter-font .b-font:before {
+  content: "\e629";
+  color: #808080;
+}
+.chart-quarter-font:hover .b-font:before,
+.chart-quarter-font:focus .b-font:before,
+.chart-quarter-font.hover .b-font:before {
+  content: "\e629";
+  color: #808080;
+}
+.chart-quarter-font:active .b-font:before,
+.chart-quarter-font.active .b-font:before {
   content: "\e629";
   color: #009de3;
 }
 .chart-quarter-font.native .b-font:before,
 .chart-quarter-font.disabled .b-font:before {
   content: "\e629";
-  color: #009de3;
+  color: #808080;
 }
 .chart-ymd-font .b-font:before {
+  content: "\e61c";
+  color: #808080;
+}
+.chart-ymd-font:hover .b-font:before,
+.chart-ymd-font:focus .b-font:before,
+.chart-ymd-font.hover .b-font:before {
+  content: "\e61c";
+  color: #808080;
+}
+.chart-ymd-font:active .b-font:before,
+.chart-ymd-font.active .b-font:before {
   content: "\e61c";
   color: #009de3;
 }
 .chart-ymd-font.native .b-font:before,
 .chart-ymd-font.disabled .b-font:before {
   content: "\e61c";
-  color: #009de3;
+  color: #808080;
 }
 .chart-date-range-font .b-font:before {
+  content: "\e616";
+  color: #808080;
+}
+.chart-date-range-font:hover .b-font:before,
+.chart-date-range-font:focus .b-font:before,
+.chart-date-range-font.hover .b-font:before {
+  content: "\e616";
+  color: #808080;
+}
+.chart-date-range-font:active .b-font:before,
+.chart-date-range-font.active .b-font:before {
   content: "\e616";
   color: #009de3;
 }
 .chart-date-range-font.native .b-font:before,
 .chart-date-range-font.disabled .b-font:before {
   content: "\e616";
-  color: #009de3;
+  color: #808080;
 }
 .chart-general-query-font .b-font:before {
+  content: "\e62b";
+  color: #808080;
+}
+.chart-general-query-font:hover .b-font:before,
+.chart-general-query-font:focus .b-font:before,
+.chart-general-query-font.hover .b-font:before {
+  content: "\e62b";
+  color: #808080;
+}
+.chart-general-query-font:active .b-font:before,
+.chart-general-query-font.active .b-font:before {
   content: "\e62b";
   color: #009de3;
 }
 .chart-general-query-font.native .b-font:before,
 .chart-general-query-font.disabled .b-font:before {
   content: "\e62b";
-  color: #009de3;
+  color: #808080;
 }
 .chart-query-font .b-font:before {
+  content: "\e609";
+  color: #808080;
+}
+.chart-query-font:hover .b-font:before,
+.chart-query-font:focus .b-font:before,
+.chart-query-font.hover .b-font:before {
+  content: "\e609";
+  color: #808080;
+}
+.chart-query-font:active .b-font:before,
+.chart-query-font.active .b-font:before {
   content: "\e609";
   color: #009de3;
 }
 .chart-query-font.native .b-font:before,
 .chart-query-font.disabled .b-font:before {
   content: "\e609";
-  color: #009de3;
+  color: #808080;
 }
 .chart-reset-font .b-font:before {
+  content: "\e61a";
+  color: #808080;
+}
+.chart-reset-font:hover .b-font:before,
+.chart-reset-font:focus .b-font:before,
+.chart-reset-font.hover .b-font:before {
+  content: "\e61a";
+  color: #808080;
+}
+.chart-reset-font:active .b-font:before,
+.chart-reset-font.active .b-font:before {
   content: "\e61a";
   color: #009de3;
 }
 .chart-reset-font.native .b-font:before,
 .chart-reset-font.disabled .b-font:before {
   content: "\e61a";
-  color: #009de3;
+  color: #808080;
 }
 .chart-textarea-font .b-font:before {
+  content: "\e622";
+  color: #808080;
+}
+.chart-textarea-font:hover .b-font:before,
+.chart-textarea-font:focus .b-font:before,
+.chart-textarea-font.hover .b-font:before {
+  content: "\e622";
+  color: #808080;
+}
+.chart-textarea-font:active .b-font:before,
+.chart-textarea-font.active .b-font:before {
   content: "\e622";
   color: #009de3;
 }
 .chart-textarea-font.native .b-font:before,
 .chart-textarea-font.disabled .b-font:before {
   content: "\e622";
-  color: #009de3;
+  color: #808080;
 }
 .chart-reuse-font .b-font:before {
+  content: "\e60b";
+  color: #808080;
+}
+.chart-reuse-font:hover .b-font:before,
+.chart-reuse-font:focus .b-font:before,
+.chart-reuse-font.hover .b-font:before {
+  content: "\e60b";
+  color: #808080;
+}
+.chart-reuse-font:active .b-font:before,
+.chart-reuse-font.active .b-font:before {
   content: "\e60b";
   color: #009de3;
 }
 .chart-reuse-font.native .b-font:before,
 .chart-reuse-font.disabled .b-font:before {
   content: "\e60b";
-  color: #009de3;
-}
-.detail-chart-summary-table-font .b-font:before {
-  content: "\e60e";
-  color: #808080;
-}
-.detail-chart-summary-table-font:hover .b-font:before,
-.detail-chart-summary-table-font:focus .b-font:before,
-.detail-chart-summary-table-font.hover .b-font:before {
-  content: "\e60e";
-  color: #808080;
-}
-.detail-chart-summary-table-font:active .b-font:before,
-.detail-chart-summary-table-font.active .b-font:before {
-  content: "\e60e";
-  color: #009de3;
-}
-.detail-chart-summary-table-font.native .b-font:before,
-.detail-chart-summary-table-font.disabled .b-font:before {
-  content: "\e60e";
-  color: #808080;
-}
-.detail-chart-axis-font .b-font:before {
-  content: "\e626";
-  color: #808080;
-}
-.detail-chart-axis-font:hover .b-font:before,
-.detail-chart-axis-font:focus .b-font:before,
-.detail-chart-axis-font.hover .b-font:before {
-  content: "\e626";
-  color: #808080;
-}
-.detail-chart-axis-font:active .b-font:before,
-.detail-chart-axis-font.active .b-font:before {
-  content: "\e626";
-  color: #009de3;
-}
-.detail-chart-axis-font.native .b-font:before,
-.detail-chart-axis-font.disabled .b-font:before {
-  content: "\e626";
-  color: #808080;
-}
-.detail-chart-bar-font .b-font:before {
-  content: "\e620";
-  color: #808080;
-}
-.detail-chart-bar-font:hover .b-font:before,
-.detail-chart-bar-font:focus .b-font:before,
-.detail-chart-bar-font.hover .b-font:before {
-  content: "\e620";
-  color: #808080;
-}
-.detail-chart-bar-font:active .b-font:before,
-.detail-chart-bar-font.active .b-font:before {
-  content: "\e620";
-  color: #009de3;
-}
-.detail-chart-bar-font.native .b-font:before,
-.detail-chart-bar-font.disabled .b-font:before {
-  content: "\e620";
-  color: #808080;
-}
-.detail-char-accumulate-bar-font .b-font:before {
-  content: "\e60a";
-  color: #808080;
-}
-.detail-char-accumulate-bar-font:hover .b-font:before,
-.detail-char-accumulate-bar-font:focus .b-font:before,
-.detail-char-accumulate-bar-font.hover .b-font:before {
-  content: "\e60a";
-  color: #808080;
-}
-.detail-char-accumulate-bar-font:active .b-font:before,
-.detail-char-accumulate-bar-font.active .b-font:before {
-  content: "\e60a";
-  color: #009de3;
-}
-.detail-char-accumulate-bar-font.native .b-font:before,
-.detail-char-accumulate-bar-font.disabled .b-font:before {
-  content: "\e60a";
-  color: #808080;
-}
-.detail-chart-pie-font .b-font:before {
-  content: "\e618";
-  color: #808080;
-}
-.detail-chart-pie-font:hover .b-font:before,
-.detail-chart-pie-font:focus .b-font:before,
-.detail-chart-pie-font.hover .b-font:before {
-  content: "\e618";
-  color: #808080;
-}
-.detail-chart-pie-font:active .b-font:before,
-.detail-chart-pie-font.active .b-font:before {
-  content: "\e618";
-  color: #009de3;
-}
-.detail-chart-pie-font.native .b-font:before,
-.detail-chart-pie-font.disabled .b-font:before {
-  content: "\e618";
-  color: #808080;
-}
-.detail-chart-map-font .b-font:before {
-  content: "\e62c";
-  color: #808080;
-}
-.detail-chart-map-font:hover .b-font:before,
-.detail-chart-map-font:focus .b-font:before,
-.detail-chart-map-font.hover .b-font:before {
-  content: "\e62c";
-  color: #808080;
-}
-.detail-chart-map-font:active .b-font:before,
-.detail-chart-map-font.active .b-font:before {
-  content: "\e62c";
-  color: #009de3;
-}
-.detail-chart-map-font.native .b-font:before,
-.detail-chart-map-font.disabled .b-font:before {
-  content: "\e62c";
-  color: #808080;
-}
-.detail-chart-dashboard-font .b-font:before {
-  content: "\e623";
-  color: #808080;
-}
-.detail-chart-dashboard-font:hover .b-font:before,
-.detail-chart-dashboard-font:focus .b-font:before,
-.detail-chart-dashboard-font.hover .b-font:before {
-  content: "\e623";
-  color: #808080;
-}
-.detail-chart-dashboard-font:active .b-font:before,
-.detail-chart-dashboard-font.active .b-font:before {
-  content: "\e623";
-  color: #009de3;
-}
-.detail-chart-dashboard-font.native .b-font:before,
-.detail-chart-dashboard-font.disabled .b-font:before {
-  content: "\e623";
-  color: #808080;
-}
-.detail-chart-doughnut-font .b-font:before {
-  content: "\e624";
-  color: #808080;
-}
-.detail-chart-doughnut-font:hover .b-font:before,
-.detail-chart-doughnut-font:focus .b-font:before,
-.detail-chart-doughnut-font.hover .b-font:before {
-  content: "\e624";
-  color: #808080;
-}
-.detail-chart-doughnut-font:active .b-font:before,
-.detail-chart-doughnut-font.active .b-font:before {
-  content: "\e624";
-  color: #009de3;
-}
-.detail-chart-doughnut-font.native .b-font:before,
-.detail-chart-doughnut-font.disabled .b-font:before {
-  content: "\e624";
-  color: #808080;
-}
-.detail-chart-bubble-font .b-font:before {
-  content: "\e62a";
-  color: #808080;
-}
-.detail-chart-bubble-font:hover .b-font:before,
-.detail-chart-bubble-font:focus .b-font:before,
-.detail-chart-bubble-font.hover .b-font:before {
-  content: "\e62a";
-  color: #808080;
-}
-.detail-chart-bubble-font:active .b-font:before,
-.detail-chart-bubble-font.active .b-font:before {
-  content: "\e62a";
-  color: #009de3;
-}
-.detail-chart-bubble-font.native .b-font:before,
-.detail-chart-bubble-font.disabled .b-font:before {
-  content: "\e62a";
-  color: #808080;
-}
-.detail-chart-scatter-font .b-font:before {
-  content: "\e61d";
-  color: #808080;
-}
-.detail-chart-scatter-font:hover .b-font:before,
-.detail-chart-scatter-font:focus .b-font:before,
-.detail-chart-scatter-font.hover .b-font:before {
-  content: "\e61d";
-  color: #808080;
-}
-.detail-chart-scatter-font:active .b-font:before,
-.detail-chart-scatter-font.active .b-font:before {
-  content: "\e61d";
-  color: #009de3;
-}
-.detail-chart-scatter-font.native .b-font:before,
-.detail-chart-scatter-font.disabled .b-font:before {
-  content: "\e61d";
-  color: #808080;
-}
-.detail-chart-radar-font .b-font:before {
-  content: "\e614";
-  color: #808080;
-}
-.detail-chart-radar-font:hover .b-font:before,
-.detail-chart-radar-font:focus .b-font:before,
-.detail-chart-radar-font.hover .b-font:before {
-  content: "\e614";
-  color: #808080;
-}
-.detail-chart-radar-font:active .b-font:before,
-.detail-chart-radar-font.active .b-font:before {
-  content: "\e614";
-  color: #009de3;
-}
-.detail-chart-radar-font.native .b-font:before,
-.detail-chart-radar-font.disabled .b-font:before {
-  content: "\e614";
   color: #808080;
 }
 .less-font .b-font:before {
