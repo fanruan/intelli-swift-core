@@ -40,13 +40,14 @@ BI.ChartType = BI.inherit(BI.Widget, {
                 BI.each(item.children, function (i, child) {
                     child.iconClass = child.cls;
                 });
-                result.push({
+                result.push(BI.extend({
                     type: "bi.icon_combo",
-                    cls: "chart-type-combo",
                     width: 40,
                     iconClass: item.cls,
                     items: item.children
-                });
+                }, item, {
+                    cls: "chart-type-combo"
+                }));
             } else {
                 result.push(BI.extend({
                     type: "bi.icon_button",
