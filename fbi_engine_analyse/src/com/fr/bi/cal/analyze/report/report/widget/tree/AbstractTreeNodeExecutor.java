@@ -75,7 +75,6 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                 int end = Math.min(dataReader.sizeOfGroup(), start + 100);
                 for (int i = start; i < end; i++) {
                     Object[] rowValue = new Object[1];
-                    //这里不该用getGroupValue,用sb给的gvi接口
                     rowValue[0] = dataReader.getGroupValue(i);
                     if (!filterGvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
                         dataList.add(dataReader.getGroupValue(i).toString());
