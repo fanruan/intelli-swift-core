@@ -4,7 +4,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -116,8 +116,8 @@ public class TableFilterOperator extends AbstractCreateTableETLOperator {
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
+    public PersistentTable getBITable(PersistentTable[] tables) {
+        PersistentTable persistentTable = getBITable();
 
         for (int i = 0; i < tables.length; i++) {
             Iterator<FieldState> it = fieldStates.iterator();
@@ -126,11 +126,11 @@ public class TableFilterOperator extends AbstractCreateTableETLOperator {
 
                 if (fieldState.isChecked()) {
                     BIColumn c = tables[i].getBIColumn(fieldState.getFieldName());
-                    DBTable.addColumn(c);
+                    persistentTable.addColumn(c);
                 }
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override

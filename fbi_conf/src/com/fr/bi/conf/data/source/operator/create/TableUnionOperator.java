@@ -6,7 +6,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -89,9 +89,9 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
 //    }
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
-        DBTable[] pts = new DBTable[tables.length];
+    public PersistentTable getBITable(PersistentTable[] tables) {
+        PersistentTable persistentTable = getBITable();
+        PersistentTable[] pts = new PersistentTable[tables.length];
         for (int i = 0; i < pts.length; i++) {
             pts[i] = tables[i];
         }
@@ -107,10 +107,10 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
                     columnSize = Math.max(columnSize, column.getColumnSize());
                 }
             }
-            DBTable.addColumn(new BIColumn(list.get(0), BIDBUtils.biTypeToSql(bitype), columnSize));
+            persistentTable.addColumn(new BIColumn(list.get(0), BIDBUtils.biTypeToSql(bitype), columnSize));
         }
 
-        return DBTable;
+        return persistentTable;
     }
 
     @Override

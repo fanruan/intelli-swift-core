@@ -9,7 +9,7 @@ import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -89,9 +89,9 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
     }
 
     @Override
-    public DBTable getDbTable() {
+    public PersistentTable getDbTable() {
         if (dbTable == null) {
-            DBTable ptable = baseTable.getDbTable();
+            PersistentTable ptable = baseTable.getDbTable();
             dbTable = createBITable();
             for (BIColumn column : ptable.getColumnArray()) {
                 dbTable.addColumn(column);

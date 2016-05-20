@@ -15,7 +15,7 @@ import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.data.source.SourceFile;
@@ -225,24 +225,24 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
     }
 
     @Override
-    public DBTable getDbTable() {
+    public PersistentTable getDbTable() {
         if (dbTable == null) {
             dbTable = createBITable();
 
             if (isAllAddColumnOperator()) {
                 for (S source : parents) {
-                    DBTable p = source.getDbTable();
+                    PersistentTable p = source.getDbTable();
                     for (int i = 0; i < p.getBIColumnLength(); i++) {
                         dbTable.addColumn(p.getBIColumn(i));
                     }
                 }
             }
-            DBTable[] ptables = new DBTable[parents.size()];
+            PersistentTable[] ptables = new PersistentTable[parents.size()];
             for (int i = 0; i < ptables.length; i++) {
                 ptables[i] = parents.get(i).getDbTable();
             }
             for (int i = 0; i < oprators.size(); i++) {
-                DBTable ctable = oprators.get(i).getBITable(ptables);
+                PersistentTable ctable = oprators.get(i).getBITable(ptables);
                 Iterator<BIColumn> it = ctable.getBIColumnIterator();
                 while (it.hasNext()) {
                     BIColumn column = it.next();
@@ -274,20 +274,20 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends I
         }
         if (contains) {
             if (hasTableFilterOperator()) {
-                DBTable[] ptables = new DBTable[parents.size()];
+                PersistentTable[] ptables = new PersistentTable[parents.size()];
                 for (int i = 0; i < ptables.length; i++) {
                     ptables[i] = parents.get(i).getDbTable();
                 }
                 for (IETLOperator operator : getETLOperators()) {
                     if (ComparatorUtils.equals(operator.xmlTag(), TableFilterOperator.XML_TAG)) {
-                        DBTable table = operator.getBITable(ptables);
+                        PersistentTable table = operator.getBITable(ptables);
                         for (int j = 0; j < table.getBIColumnLength(); j++) {
                             useableFields.add(table.getBIColumn(j).getFieldName());
                         }
                     }
                 }
             } else {
-                DBTable table = source.getDbTable();
+                PersistentTable table = source.getDbTable();
                 for (int j = 0; j < table.getBIColumnLength(); j++) {
                     useableFields.add(table.getBIColumn(j).getFieldName());
                 }

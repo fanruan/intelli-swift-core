@@ -5,7 +5,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.general.ComparatorUtils;
@@ -28,7 +28,7 @@ public class BICounterTarget extends BISummaryTarget {
         if (jo.has("_src")) {
             JSONObject obj = jo.optJSONObject("_src");
             String distinct_field_id = obj.getString("field_id");
-            DBTable table = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(BIIDUtils.getTableIDFromFieldID(distinct_field_id)), new BIUser(userId)).getDbTable();
+            PersistentTable table = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(BIIDUtils.getTableIDFromFieldID(distinct_field_id)), new BIUser(userId)).getDbTable();
             BIColumn c = table.getBIColumn(BIIDUtils.getFieldNameFromFieldID(distinct_field_id));
             if(c == null){
                 this.distinct_field_name = null;

@@ -5,7 +5,7 @@ import com.fr.bi.base.FinalLong;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -41,7 +41,7 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
         int times = timesString == null ? 1 : Integer.parseInt(timesString);
         int count = countString == null ? BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT : Integer.parseInt(countString);
 
-        DBTable table = BIDBUtils.getDBTable("important", "items");
+        PersistentTable table = BIDBUtils.getDBTable("important", "items");
         BIColumn[] columns = table.getColumnArray();
 
         DBField[] fields = new DBField[1];

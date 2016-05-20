@@ -8,7 +8,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -31,9 +31,9 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     private List<AnalysisETLSourceField> fieldList;
 
     @Override
-    public DBTable getDbTable() {
+    public PersistentTable getDbTable() {
         if (dbTable == null) {
-            dbTable = new DBTable(null, fetchObjectCore().getID().getIdentityValue(), null);
+            dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
             for (AnalysisETLSourceField c : fieldList){
                 dbTable.addColumn(new BIColumn(c.getFieldName(), c.getFieldType()));
             }

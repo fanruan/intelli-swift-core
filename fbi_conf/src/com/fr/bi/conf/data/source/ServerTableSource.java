@@ -92,7 +92,7 @@ public class ServerTableSource extends DBTableSource {
     }
 
     @Override
-    public DBTable getDbTable() {
+    public PersistentTable getDbTable() {
         if (dbTable == null) {
             dbTable = BIDBUtils.getServerBITable(tableName);
         }

@@ -5,7 +5,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -43,7 +43,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
 
     private List<String> otherColumnNames;
     
-    private transient DBTable basicTable;
+    private transient PersistentTable basicTable;
 
     public TableColumnRowTransOperator(long userId) {
         super(userId);
@@ -82,7 +82,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
+    public PersistentTable getBITable(PersistentTable[] tables) {
         if (basicTable == null) {
             initLCFieldNames(tables, user.getUserId());
         }
@@ -91,7 +91,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
     
     private void initBaseTable(List<? extends ITableSource> parents){
     	 if (basicTable == null) {
-             DBTable[] base = new DBTable[parents.size()];
+             PersistentTable[] base = new PersistentTable[parents.size()];
              for (int i = 0; i < base.length; i++) {
                  base[i] = parents.get(0).getDbTable();
              }
@@ -171,11 +171,11 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
         return map;
     }
 
-    private void initLCFieldNames(DBTable[] base, long userId) {
+    private void initLCFieldNames(PersistentTable[] base, long userId) {
 
         this.basicTable = getBITable();
 
-        for (DBTable pDBTable : base) {
+        for (PersistentTable pDBTable : base) {
             BIColumn column = pDBTable.getBIColumn(group_name);
             basicTable.addColumn(new BIColumn(group_name, group_name, column.getType(), false, column.getColumnSize(), column.getScale()));
 

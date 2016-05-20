@@ -5,7 +5,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.operation.group.data.string.StringGroupInfo;
@@ -65,12 +65,12 @@ public class FieldGroupOperator extends AbstractAddColumnOperator {
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
-        for (DBTable table : tables) {
-            DBTable.addColumn(new BIColumn(fieldName, BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), table.getBIColumn(targetFieldName).getColumnSize()));
+    public PersistentTable getBITable(PersistentTable[] tables) {
+        PersistentTable persistentTable = getBITable();
+        for (PersistentTable table : tables) {
+            persistentTable.addColumn(new BIColumn(fieldName, BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), table.getBIColumn(targetFieldName).getColumnSize()));
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override

@@ -50,7 +50,7 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
     }
 
     @Override
-    public DBTable getDbTable() {
+    public PersistentTable getDbTable() {
         if (dbTable == null) {
             dbTable = createBITable();
             BIExcelDataModel dm = null;

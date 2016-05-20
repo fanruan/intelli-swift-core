@@ -6,7 +6,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -99,24 +99,24 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
 //    }
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
+    public PersistentTable getBITable(PersistentTable[] tables) {
+        PersistentTable persistentTable = getBITable();
         for (int k = 0; k < tables.length; k++) {
-            DBTable parent = tables[k];
+            PersistentTable parent = tables[k];
             for (int i = 0; i < dimensions.length; i++) {
                 if (parent.getBIColumn(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.DATE) {
-                    DBTable.addColumn(new BIColumn(dimensions[i].getNameText(), dimensions[i].getGroup().getType() ==  BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
+                    persistentTable.addColumn(new BIColumn(dimensions[i].getNameText(), dimensions[i].getGroup().getType() ==  BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
                 } else if (parent.getBIColumn(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.NUMBER) {
-                    DBTable.addColumn(new BIColumn(dimensions[i].getNameText(), BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
+                    persistentTable.addColumn(new BIColumn(dimensions[i].getNameText(), BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
                 } else {
-                    DBTable.addColumn(new BIColumn(dimensions[i].getNameText(), parent.getBIColumn(dimensions[i].getName()).getType(), parent.getBIColumn(dimensions[i].getName()).getColumnSize()));
+                    persistentTable.addColumn(new BIColumn(dimensions[i].getNameText(), parent.getBIColumn(dimensions[i].getName()).getType(), parent.getBIColumn(dimensions[i].getName()).getColumnSize()));
                 }
             }
             for (int i = 0; i < targets.length; i++) {
-                DBTable.addColumn(new BIColumn(targets[i].getNameText(),BIDBUtils.biTypeToSql(targets[i].getColumnType()), parent.getBIColumn(targets[i].getName()).getColumnSize()));
+                persistentTable.addColumn(new BIColumn(targets[i].getNameText(),BIDBUtils.biTypeToSql(targets[i].getColumnType()), parent.getBIColumn(targets[i].getName()).getColumnSize()));
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override

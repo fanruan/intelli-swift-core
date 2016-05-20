@@ -8,7 +8,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -93,17 +93,17 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
-        DBTable leftT = tables[0];
-        DBTable rightT = tables[1];
+    public PersistentTable getBITable(PersistentTable[] tables) {
+        PersistentTable persistentTable = getBITable();
+        PersistentTable leftT = tables[0];
+        PersistentTable rightT = tables[1];
         for (int i = 0; i < columns.size(); i++) {
             BIColumn column = columns.get(i).isLeft() ? leftT.getBIColumn(columns.get(i).getColumnName()) : rightT.getBIColumn(columns.get(i).getColumnName());
             if (column != null) {
-                DBTable.addColumn(new BIColumn(columns.get(i).getName(), columns.get(i).getName(), column.getType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
+                persistentTable.addColumn(new BIColumn(columns.get(i).getName(), columns.get(i).getName(), column.getType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override

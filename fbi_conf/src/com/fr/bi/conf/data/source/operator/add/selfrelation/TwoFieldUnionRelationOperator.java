@@ -6,7 +6,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -70,19 +70,19 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
+    public PersistentTable getBITable(PersistentTable[] tables) {
+        PersistentTable persistentTable = getBITable();
         Iterator<Map.Entry<String, Integer>> it = fields.entrySet().iterator();
         for (int i = 0; i < tables.length; i++) {
-            DBTable ptalbe = tables[i];
+            PersistentTable ptalbe = tables[i];
             int size = ptalbe.getBIColumn(idFieldName).getColumnSize();
             int columnType = ptalbe.getBIColumn(idFieldName).getBIType();
             while (it.hasNext()) {
                 Map.Entry<String, Integer> entry = it.next();
-                DBTable.addColumn(new UnionRelationColumn(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
+                persistentTable.addColumn(new UnionRelationColumn(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override

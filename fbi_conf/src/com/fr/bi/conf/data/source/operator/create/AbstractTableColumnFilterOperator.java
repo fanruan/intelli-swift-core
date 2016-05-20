@@ -10,7 +10,7 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.index.CubeTILoaderAdapter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -36,14 +36,14 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
     }
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
+    public PersistentTable getBITable(PersistentTable[] tables) {
+        PersistentTable persistentTable = getBITable();
         for (int i = 0; i < tables.length; i++) {
             for (int j = 0; j < tables[i].getBIColumnLength(); j++) {
-                DBTable.addColumn(tables[i].getBIColumn(j));
+                persistentTable.addColumn(tables[i].getBIColumn(j));
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     protected abstract GroupValueIndex createFilterIndex(List<? extends ITableSource> parents, ICubeDataLoader loader);
@@ -51,7 +51,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
     @Override
     public int writeSimpleIndex(final Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
         final ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
-        DBTable ptable = parents.get(0).getDbTable();
+        PersistentTable ptable = parents.get(0).getDbTable();
         final BIColumn[] columns = ptable.getColumnArray();
         GroupValueIndex fgvi =createFilterIndex(parents ,loader);
         if (fgvi == null){
@@ -78,7 +78,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
         final FinalInt currentRow = new FinalInt();
         currentRow.i = -1;
         final FinalInt writeRow = new FinalInt();
-        DBTable ptable = parents.get(0).getDbTable();
+        PersistentTable ptable = parents.get(0).getDbTable();
         final BIColumn[] columns = ptable.getColumnArray();
         do {
             final ICubeTableService tableIndex = ti;

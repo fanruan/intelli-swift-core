@@ -4,7 +4,7 @@ import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 
 import java.util.Iterator;
@@ -36,13 +36,13 @@ public class SingleOpratorETLTableSource extends ETLTableSource {
 
     public DBField[] getAddedField() {
         if (isAllAddColumnOperator()) {
-            DBTable dbTable = createBITable();
-            DBTable[] ptables = new DBTable[parents.size()];
+            PersistentTable dbTable = createBITable();
+            PersistentTable[] ptables = new PersistentTable[parents.size()];
             for (int i = 0; i < ptables.length; i++) {
                 ptables[i] = parents.get(i).getDbTable();
             }
             for (int i = 0; i < oprators.size(); i++) {
-                DBTable ctable = oprators.get(i).getBITable(ptables);
+                PersistentTable ctable = oprators.get(i).getBITable(ptables);
                 Iterator<BIColumn> it = ctable.getBIColumnIterator();
                 while (it.hasNext()) {
                     BIColumn column = it.next();

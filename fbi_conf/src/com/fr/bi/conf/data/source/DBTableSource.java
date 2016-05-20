@@ -15,7 +15,7 @@ import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
@@ -72,7 +72,7 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     @Override
-    public DBTable reGetBiTable() {
+    public PersistentTable reGetBiTable() {
         return super.reGetBiTable();
     }
 
@@ -99,7 +99,7 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     @Override
-    public DBTable getDbTable() {
+    public PersistentTable getDbTable() {
         if (dbTable == null) {
             dbTable = BIDBUtils.getDBTable(dbName, tableName);
         }

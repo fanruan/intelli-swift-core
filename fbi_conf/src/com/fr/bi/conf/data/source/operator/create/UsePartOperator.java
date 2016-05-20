@@ -6,7 +6,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -68,16 +68,16 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
-        for (DBTable t : tables) {
+    public PersistentTable getBITable(PersistentTable[] tables) {
+        PersistentTable persistentTable = getBITable();
+        for (PersistentTable t : tables) {
             for (BIColumn c :t.getColumnArray()){
                 if (!uselessFields.contains(c.getFieldName())){
-                    DBTable.addColumn(new BIColumn(c.getFieldName(), c.getType()));
+                    persistentTable.addColumn(new BIColumn(c.getFieldName(), c.getType()));
                 }
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override

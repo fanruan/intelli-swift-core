@@ -208,7 +208,7 @@ public class BIDBUtils {
         }
     }
 
-    private static DBTable getServerBITable(DBTableData tableData, DBTable table) {
+    private static PersistentTable getServerBITable(DBTableData tableData, PersistentTable table) {
         String query = tableData.getQuery();
         com.fr.data.impl.Connection connection = tableData.getDatabase();
         java.sql.Connection conn = null;
@@ -238,7 +238,7 @@ public class BIDBUtils {
         return null;
     }
 
-    private static DBTable getBITableOnlyByTableData(TableData tableData, DBTable DBTable, String tableName) {
+    private static PersistentTable getBITableOnlyByTableData(TableData tableData, PersistentTable persistentTable, String tableName) {
 
         DataModel dm = null;
         try {
@@ -249,9 +249,9 @@ public class BIDBUtils {
             int rowcount = dm.getRowCount();
             for (int i = 0; i < cols; i++) {
                 BIColumn column = new BIColumn(dm.getColumnName(i), null, rowcount == 0 ? java.sql.Types.VARCHAR : resloveValue(dm.getValueAt(0, i)), 255, 15);
-                DBTable.addColumn(column);
+                persistentTable.addColumn(column);
             }
-            return DBTable;
+            return persistentTable;
         } catch (Exception e) {
             FRContext.getLogger().error(e.getMessage(), e);
         } finally {
@@ -264,7 +264,7 @@ public class BIDBUtils {
             }
         }
 
-        return DBTable;
+        return persistentTable;
     }
 
     public static Map<String, Set<BIDBTableField>> getAllRelationOfConnection(Connection conn, String schemaName, String tableName) {
@@ -294,10 +294,10 @@ public class BIDBUtils {
         return result;
     }
 
-    private static DBTable getDBTable(com.fr.data.impl.Connection connection, Connection conn, String schema, String table) throws Exception {
+    private static PersistentTable getDBTable(com.fr.data.impl.Connection connection, Connection conn, String schema, String table) throws Exception {
         Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
         String translatedTableName = dialect.getTableCommentName(conn, table, schema, null);
-        DBTable dbTable = new DBTable(schema, table, translatedTableName);
+        PersistentTable dbTable = new PersistentTable(schema, table, translatedTableName);
         List columnList = dialect.getTableFieldsInfor(conn, table, schema, null);
         Iterator iterator = columnList.iterator();
         while (iterator.hasNext()) {
@@ -351,7 +351,7 @@ public class BIDBUtils {
         return sql;
     }
 
-    public static DBTable getDBTable(String dbName, String tableName) {
+    public static PersistentTable getDBTable(String dbName, String tableName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         String schema = BIConnectionManager.getInstance().getSchema(dbName);
         Connection conn = null;
@@ -373,18 +373,18 @@ public class BIDBUtils {
      * @return BITable
      * @throws Exception
      */
-    public static DBTable getServerBITable(String tableName) {
+    public static PersistentTable getServerBITable(String tableName) {
         if (StringUtils.isNotBlank(tableName)) {
-            DBTable DBTable = new DBTable(null, tableName, null);
+            PersistentTable persistentTable = new PersistentTable(null, tableName, null);
             DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
             TableData tableData = datasourceManager.getTableData(tableName);
             if (tableData == null) {
                 BILogger.getLogger().error("can not find server db :" + tableName);
             }
             if (tableData instanceof DBTableData) {
-                return getServerBITable((DBTableData) tableData, DBTable);
+                return getServerBITable((DBTableData) tableData, persistentTable);
             } else if (tableData != null) {
-                return getBITableOnlyByTableData(tableData, DBTable, tableName);
+                return getBITableOnlyByTableData(tableData, persistentTable, tableName);
             }
         }
         return null;
@@ -397,14 +397,14 @@ public class BIDBUtils {
      * @return BITable
      * @throws Exception
      */
-    public static DBTable getServerBITable(String connection, String sql, String tableName) {
+    public static PersistentTable getServerBITable(String connection, String sql, String tableName) {
         TableData tableData = getServerTableData(connection, sql);
         if (StringUtils.isNotBlank(tableName)) {
-            DBTable DBTable = new DBTable(null, tableName, null);
+            PersistentTable persistentTable = new PersistentTable(null, tableName, null);
             if (tableData instanceof DBTableData) {
-                return getServerBITable((DBTableData) tableData, DBTable);
+                return getServerBITable((DBTableData) tableData, persistentTable);
             } else if (tableData != null) {
-                return getBITableOnlyByTableData(tableData, DBTable, tableName);
+                return getBITableOnlyByTableData(tableData, persistentTable, tableName);
             }
         }
         return null;

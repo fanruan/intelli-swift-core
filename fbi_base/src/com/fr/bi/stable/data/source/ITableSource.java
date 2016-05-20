@@ -9,7 +9,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLable;
@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public interface ITableSource extends XMLable, JSONCreator, BICoreService {
 
-    DBTable getDbTable();
+    PersistentTable getDbTable();
 
     String getSourceID();
 

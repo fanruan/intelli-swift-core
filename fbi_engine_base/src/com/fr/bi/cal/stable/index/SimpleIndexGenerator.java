@@ -2,7 +2,7 @@ package com.fr.bi.cal.stable.index;
 
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.log.BIRecord;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -47,7 +47,7 @@ public class SimpleIndexGenerator extends AbstractIndexGenerator {
 
     protected long writeSimpleIndex() {
         final long start = System.currentTimeMillis();
-        final Table table = this.dataSource.getDbTable();
+        final PersistentTable table = this.dataSource.getDbTable();
         return this.dataSource.read(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
