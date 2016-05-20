@@ -31,13 +31,14 @@ public class BIBusinessTable extends BIBasicTable {
         this.source = source;
     }
 
-    protected transient ICubeTableSource source;
+    protected ICubeTableSource source;
 
     protected BIUser user;
 
-    public BIBusinessTable(String id, Long userId) {
+    public BIBusinessTable(ICubeTableSource source, String id, Long userId) {
         super(id);
         user = new BIUser(userId);
+        this.source = source;
     }
 
     public BIUser getUser() {
