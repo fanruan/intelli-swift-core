@@ -1222,26 +1222,20 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
-                            // case BICst.WIDGET.TREE:
-                            //     var treeValue = [];
-                            //     createTreeFilterValue(treeValue, fValue, dimId, i);
-                            //     fValue = treeValue;
-                            //     filter = {
-                            //         filter_type: BICst.FILTER_TYPE.OR,
-                            //         filter_value: fValue,
-                            //     };
-                            //     break;
-
                         }
-                        filterValues.push(filter);
+                        BI.isNotNull(filter) && filterValues.push(filter);
                     });
 
                     //树控件过滤条件设置,不能对每个纬度单独设置过滤条件
                     if (self.getWidgetTypeByID(id) === BICst.WIDGET.TREE) {
-                        var dimensionIds = self.getWidgetViewByID(id);
+                        var viewDimensionIds = self.getWidgetViewByID(id)[BICst.REGION.DIMENSION1];
                         var treeValue = [];
-                        var value = self.getWidgetValueByID(id);
-
+                        createTreeFilterValue(treeValue, value, 0, viewDimensionIds);
+                        filter = {
+                            filter_type: BICst.FILTER_TYPE.OR,
+                            filter_value: treeValue
+                        };
+                        filterValues.push(filter);
                     }
 
                     if (value.length === 1) {
@@ -1253,25 +1247,26 @@
             });
             return filterValues;
 
-            function createTreeFilterValue(result, v, floor, dimensionIds) {
+            function createTreeFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
                 BI.each(v, function (value, child) {
+                        var leafFilterObj = {
+                            filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                            filter_value: {
+                                type: BI.Selection.Multi,
+                                value: [value]
+                            },
+                            _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
+                        };
                         if (BI.isEmptyObject(child)) {
                             var filterObj = {
                                 filter_type: BICst.FILTER_TYPE.AND,
                                 filter_value: []
                             };
-                            var leafFilterObj = {
-                                filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
-                                filter_value: {
-                                    type: BI.Selection.Multi,
-                                    value: [value]
-                                },
-                                _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
-                            };
                             filterObj.filter_value.push(leafFilterObj);
+                            BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
                             result.push(filterObj);
                         } else {
-                            createTreeFilterValue(result, child, floor + 1, dimensionIds);
+                            createTreeFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }
                     }
                 );
