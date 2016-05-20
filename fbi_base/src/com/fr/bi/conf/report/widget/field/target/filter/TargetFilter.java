@@ -18,4 +18,5 @@ public interface TargetFilter extends XMLable, FieldFilter {
      */
     GroupValueIndex createFilterIndex(Table target, ICubeDataLoader loader, long userID);
 
+    boolean hasTopBottomFilterValue();
 }

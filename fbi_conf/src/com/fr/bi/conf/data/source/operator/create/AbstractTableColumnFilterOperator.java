@@ -135,8 +135,10 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
             index++;
             ti = loader.getTableIndex(getSingleParentMD5(parents), (index - 1) * STEP, index * STEP);
         }
-        while (ti.getRowCount() == STEP);
+        while (ti.getRowCount() == STEP && !hasTopBottomFilter());
         return writeRow.value;
     }
+
+    protected abstract boolean hasTopBottomFilter();
 
 }
