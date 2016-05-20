@@ -1,8 +1,8 @@
 package com.fr.bi.module;
 
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
+import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
-import com.fr.bi.stable.engine.index.AbstractTIPathLoader;
+import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.stable.fun.Service;
 
 /**
@@ -20,7 +20,7 @@ public interface BIModule {
 
     BISystemPackageConfigurationProvider getBusiPackManagerProvider();
 
-    Class<? extends AbstractTIPathLoader> getTIPathLoaderClass();
+    ICubeDataLoaderCreator getCubeDataLoaderCreator();
 
     public Service[] service4Register();
 }

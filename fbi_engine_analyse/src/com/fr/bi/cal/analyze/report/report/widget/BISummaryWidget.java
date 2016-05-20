@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.fr.bi.base.BIUser;
-import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.BIDataColumnFactory;
@@ -16,8 +15,8 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BISimpleRelation;
+import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
@@ -32,17 +31,11 @@ import com.fr.json.JSONObject;
 import java.util.*;
 
 public abstract class BISummaryWidget extends BIAbstractWidget {
-    @BICoreField
     protected BISummaryTarget[] targets;
-    @BICoreField
     protected BIDimension[] dimensions;
-    @BICoreField
     protected NameObject targetSort;
-    @BICoreField
     protected Map<String, DimensionFilter> targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
-    @BICoreField
     protected Map<String, Map<String, BIDataColumn>> dimensionsMap = new LinkedHashMap<String, Map<String, BIDataColumn>>();
-    @BICoreField
     protected Map<String, Map<String, List<BISimpleRelation>>> relationsMap = new LinkedHashMap<String, Map<String, List<BISimpleRelation>>>();
     protected Object[] clickValue;
 

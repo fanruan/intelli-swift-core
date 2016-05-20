@@ -3,6 +3,7 @@ package com.fr.bi.etl.analysis.data;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
@@ -31,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by 小灰灰 on 2015/12/21.
  */
 public class AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisTableSource {
+    @BIIgnoreField
     private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
     @BICoreField
     protected BIWidget widget;
