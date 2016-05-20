@@ -985,7 +985,7 @@
             view[BICst.REGION.DIMENSION1] = [dId];
             this.getWidgetDataByWidgetInfo(dimensions, view, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
-            });
+            }, {page: BICst.TABLE_PAGE_OPERATOR.ALL_PAGE});
 
         },
 
