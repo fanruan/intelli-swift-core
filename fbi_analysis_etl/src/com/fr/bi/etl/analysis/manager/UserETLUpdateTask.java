@@ -58,7 +58,7 @@ public class UserETLUpdateTask implements CubeTask {
 	@Override
 	public void start() {
 		start = new Date();
-		BILogger.getLogger().error("started in file path:" + path);
+		BILogger.getLogger().info("started in file path:" + path);
 	}
 	
 	
