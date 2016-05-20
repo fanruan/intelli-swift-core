@@ -33,6 +33,29 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     text: BI.i18nText("BI-Qiu_Min"),
                     value: BICst.SUMMARY_TYPE.MIN
                 }]
+            }, {
+                el: {
+                    text: BI.i18nText("BI-Chart_Type"),
+                    value: BICst.TARGET_COMBO.CHART_TYPE,
+                    iconCls1: ""
+                },
+                children: [{
+                    text: BI.i18nText("BI-Column_Chart"),
+                    value: BICst.WIDGET.AXIS,
+                    cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Stacked_Chart"),
+                    value: BICst.WIDGET.ACCUMULATE_AXIS,
+                    cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Line_Chart"),
+                    value: BICst.WIDGET.LINE,
+                    cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Area_Chart"),
+                    value: BICst.WIDGET.AREA,
+                    cls: "dot-e-font"
+                }]
             }],
             [{
                 text: BI.i18nText("BI-Style_Setting"),
@@ -80,22 +103,45 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         return val;
     },
 
+    _assertChartType:function(val){
+        val || (val = {});
+        val.type || (val.type = BICst.WIDGET.AXIS);
+        return val;
+    },
+
     _rebuildItems: function(){
-        return this.defaultItems();
+        var item = this.defaultItems();
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
+        switch (wType) {
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                break;
+            default:
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+                break;
+        }
+        return item;
     },
 
     _createValue: function () {
         var o = this.options;
         var group = BI.Utils.getDimensionGroupByID(o.dId);
+        var chartType = BI.Utils.getDimensionStyleOfChartByID(o.dId);
         group = this._assertGroup(group);
+        chartType = this._assertChartType(chartType);
 
         var result = {};
 
+        result.chartType = {
+            value: BICst.TARGET_COMBO.CHART_TYPE,
+            childValue: chartType.type
+        };
         result.group = {
             value: BICst.TARGET_COMBO.SUMMERY_TYPE,
             childValue: group.type
         };
-        return [result.group];
+        return [result.chartType, result.group];
     }
 });
 $.shortcut("bi.target_combo", BI.TargetCombo);

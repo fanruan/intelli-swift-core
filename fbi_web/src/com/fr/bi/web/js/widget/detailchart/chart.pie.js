@@ -43,14 +43,6 @@ BI.extend(BI.PieChart, {
     formatConfig: function(){
         return {
             "plotOptions": {
-                click: function () {
-                    self.fireEvent(BI.Chart.EVENT_CHANGE, {
-                        category: this.seriesName,
-                        seriesName: this.category,
-                        value: this.value,
-                        size: this.size
-                    });
-                },
                 innerRadius: '0.0%',
                 "dataLabels": {
                     "formatter": {
