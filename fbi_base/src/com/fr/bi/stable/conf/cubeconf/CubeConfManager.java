@@ -1,6 +1,7 @@
 package com.fr.bi.stable.conf.cubeconf;
 
 import com.fr.base.FRContext;
+import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.file.XMLFileManager;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
@@ -19,6 +20,24 @@ public class CubeConfManager extends XMLFileManager {
     private static final String XML_TAG = "CubeConfManger";
     private static CubeConfManager manager;
     private String cubePath;
+    private ITableSource userInTable;
+    private String userInField;
+
+    public ITableSource getUserInTable() {
+        return userInTable;
+    }
+
+    public void setUserInTable(ITableSource userInTable) {
+        this.userInTable = userInTable;
+    }
+
+    public String getUserInField() {
+        return userInField;
+    }
+
+    public void setUserInField(String userInField) {
+        this.userInField = userInField;
+    }
 
     private CubeConfManager() {
         readXMLFile();

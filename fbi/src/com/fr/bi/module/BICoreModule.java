@@ -10,6 +10,7 @@ import com.fr.bi.cluster.manager.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
+import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
 import com.fr.bi.conf.base.datasource.BIDataSourceManager;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
 import com.fr.bi.conf.base.pack.BISystemPackageConfigurationManager;
@@ -95,7 +96,8 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, new BIExcelViewManager());
-        StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
+        StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, new BISystemCubeConfManager());
+
     }
 
     protected BICubeManagerProvider getCubeManagerProvider() {

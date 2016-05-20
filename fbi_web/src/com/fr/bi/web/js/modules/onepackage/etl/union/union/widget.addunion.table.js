@@ -83,6 +83,7 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
         var combo = BI.createWidget({
             type: "bi.text_value_combo",
             height: 30,
+            width: "100%",
             cls: "table-field-combo",
             items: tFields,
             el: {

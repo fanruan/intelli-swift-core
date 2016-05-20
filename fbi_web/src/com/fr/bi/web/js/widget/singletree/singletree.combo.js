@@ -42,6 +42,9 @@ BI.SingleTreeCombo = BI.inherit(BI.Widget, {
         this.combo.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+        this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function(){
+            self.fireEvent(BI.SingleTreeCombo.EVENT_BEFORE_POPUPVIEW, arguments); 
+        });
 
         this.popup.on(BI.SingleTreePopup.EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
@@ -66,4 +69,5 @@ BI.SingleTreeCombo = BI.inherit(BI.Widget, {
 });
 
 BI.SingleTreeCombo.EVENT_CHANGE = "SingleTreeCombo.EVENT_CHANGE";
+BI.SingleTreeCombo.EVENT_BEFORE_POPUPVIEW = "EVENT_BEFORE_POPUPVIEW";
 $.shortcut("bi.single_tree_combo", BI.SingleTreeCombo);

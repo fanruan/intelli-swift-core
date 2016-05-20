@@ -266,7 +266,7 @@ BI.View = BI.inherit(BI.V, {
     },
 
     listenEnd: function (key1, key2, key3) {
-        return this;
+        return this._cards[cardName];
     },
 
     /**

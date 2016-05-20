@@ -40,15 +40,18 @@ public class AutoGroup extends AbstractGroup {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
             double key = entry.getKey().doubleValue();
             GroupValueIndex gvi = entry.getValue();
-            String groupName = getAutoGroupName(key, interval);
+            String groupName = getAutoGroupName(key, interval, tiMax);
             GroupValueIndex g = (GroupValueIndex) resultMap.get(groupName);
             resultMap.put(groupName, gvi.OR(g));
         }
         return resultMap;
     }
 
-    private String getAutoGroupName(double value, double interval) {
+    private String getAutoGroupName(double value, double interval, double tiMax) {
         int index = (int) ((value - start) / interval);
+        if(value == tiMax){
+            return nFormat.format(start + interval * (index - 1)) + "-" + nFormat.format(start + interval * index);
+        }
         return nFormat.format(start + interval * index) + "-" + nFormat.format(start + interval * (index + 1));
     }
 

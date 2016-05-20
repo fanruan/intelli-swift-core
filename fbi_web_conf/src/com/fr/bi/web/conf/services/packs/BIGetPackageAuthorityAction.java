@@ -53,6 +53,7 @@ public class BIGetPackageAuthorityAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
         jo.put("packages_auth", authorityManager.createJSON(userId));
         jo.put("all_roles", rolesJA);
+        jo.put("login_info", BIConfigureManagerCenter.getCubeConfManager().getLoginInfoInTableField().createJSON());
 
         WebUtils.printAsJSON(res, jo);
 

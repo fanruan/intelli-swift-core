@@ -44,15 +44,15 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
             }, {
                 text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
                 value: 1,
-                iconClass: "less-equal-arrow-font"
+                iconClass: "less-equal-font"
             }] : [{
                 text: "(" + BI.i18nText("BI-More_Than") + ")",
-                iconClass: "more-arrow-font",
+                iconClass: "more-font",
                 value: 0
             }, {
                 text: "(" + BI.i18nText("BI-More_Than_And_Equal") + ")",
                 value: 1,
-                iconClass: "more-equal-arrow-font"
+                iconClass: "more-equal-font"
             }]
         });
         self.smallCombo.on(BI.IconCombo.EVENT_CHANGE, function () {
