@@ -3,6 +3,7 @@ package com.fr.bi.stable.data;
 
 import com.fr.bi.common.BICoreWrapper;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
+import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -21,7 +22,6 @@ import java.io.Serializable;
  */
 public class BITable implements Serializable, XMLable, JSONTransform, Table {
 
-    public static final String XML_TAG = "BITable";
     /**
      *
      */
@@ -33,7 +33,7 @@ public class BITable implements Serializable, XMLable, JSONTransform, Table {
 
     protected String tableName;
     protected transient BITableID ID;
-
+    protected ITableSource tableSource;
 
     public BITable(String id) {
         this(id, null);

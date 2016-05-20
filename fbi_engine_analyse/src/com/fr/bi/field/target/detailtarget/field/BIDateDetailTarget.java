@@ -1,16 +1,14 @@
 package com.fr.bi.field.target.detailtarget.field;
 
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.DateConstant;
-import com.fr.bi.stable.data.BIField;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 
 public class BIDateDetailTarget extends BIStringDetailTarget {

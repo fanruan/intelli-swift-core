@@ -38,8 +38,8 @@ public class BIPackageConfigManager implements Release {
     /**
      * TODO group加入状态管理，减少通过比较Group来计算是否改变。
      */
-    protected BIPackagesManagerService analysisPackageManager;
     protected BIPackagesManagerService currentPackageManager;
+    protected BIPackagesManagerService analysisPackageManager;
     protected BIPackageContainer buildingCubePackages;
     protected BIGroupTagsManagerService groupCollectionManager;
     protected BIUser user;

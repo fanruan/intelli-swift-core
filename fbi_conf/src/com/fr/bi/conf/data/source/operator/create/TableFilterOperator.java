@@ -126,7 +126,7 @@ public class TableFilterOperator extends AbstractCreateTableETLOperator {
 
                 if (fieldState.isChecked()) {
                     BIColumn c = tables[i].getBIColumn(fieldState.getFieldName());
-                    DBTable.addColumn(new BIColumn(c.getFieldName(), c.getType(), c.getColumnSize()));
+                    DBTable.addColumn(c);
                 }
             }
         }

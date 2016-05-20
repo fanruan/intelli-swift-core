@@ -520,11 +520,11 @@ public class BIDBUtils {
 
 
     private static int dealWithResultSet(ResultSet rs,
-                                          DBField[] columns,
-                                          Traversal<BIDataValue> traversal,
-                                          boolean needCharSetConvert,
-                                          String originalCharSetName,
-                                          String newCharSetName, int row) throws SQLException {
+                                         DBField[] columns,
+                                         Traversal<BIDataValue> traversal,
+                                         boolean needCharSetConvert,
+                                         String originalCharSetName,
+                                         String newCharSetName, int row) throws SQLException {
         @SuppressWarnings("rawtypes")
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, columns);
         int ilen = dealers.length;
