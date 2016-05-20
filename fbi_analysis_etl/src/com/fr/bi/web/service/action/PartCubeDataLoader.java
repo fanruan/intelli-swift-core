@@ -17,6 +17,7 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
+import com.fr.bi.stable.utils.program.BIConstructorUtils;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -30,18 +31,29 @@ public class PartCubeDataLoader implements ICubeDataLoader {
 
     private long userId;
 
+    private static Map<Long, PartCubeDataLoader> userMap = new ConcurrentHashMap<Long, PartCubeDataLoader>();
+
+
     private transient Map<BICore, ITableSource> sourceMap = new ConcurrentHashMap<BICore, ITableSource>();
 
-    public PartCubeDataLoader(long userId, UserTableSource source) {
+    public PartCubeDataLoader(long userId) {
         this.userId = userId;
-        initSourceMap(source);
     }
 
-    private void initSourceMap(ITableSource source){
-        sourceMap.put(source.fetchObjectCore(), source);
-        if ( source.getType() == Constants.TABLE_TYPE.USER_ETL ){
-            for (ITableSource s :((UserETLTableSource)source).getParents()){
-                initSourceMap(s);
+    public static PartCubeDataLoader getInstance(long userId, UserTableSource source) {
+        PartCubeDataLoader loader = BIConstructorUtils.constructObject(userId, PartCubeDataLoader.class, userMap, false);
+        loader.registSource(source);
+        return loader;
+    }
+
+    private void registSource(ITableSource source){
+        BICore core = source.fetchObjectCore();
+        if (!sourceMap.containsKey(core)){
+            sourceMap.put(source.fetchObjectCore(), source);
+            if ( source.getType() == Constants.TABLE_TYPE.USER_ETL ){
+                for (ITableSource s :((UserETLTableSource)source).getParents()){
+                    registSource(s);
+                }
             }
         }
     }
@@ -129,6 +141,10 @@ public class PartCubeDataLoader implements ICubeDataLoader {
 
     @Override
     public void clear() {
-
+        synchronized (this) {
+            if(userMap != null){
+                userMap.clear();
+            }
+        }
     }
 }

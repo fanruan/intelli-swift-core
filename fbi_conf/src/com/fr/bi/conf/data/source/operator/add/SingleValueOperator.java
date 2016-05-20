@@ -6,12 +6,14 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.utils.DateUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -92,8 +94,11 @@ public class SingleValueOperator extends AbstractAddColumnOperator {
 				break;
 			}
 			case DBConstant.COLUMN.DATE: {
-				v = new Date(Long.valueOf(value).longValue());
-				break;
+                try {
+                    v = DateUtils.parse(value).getTime();
+                } catch (Exception e) {
+                }
+                break;
 			}
 		}
 		return v;

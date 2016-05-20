@@ -18,6 +18,6 @@ public class MemoryLongColumn extends AbstractSingleMemoryColumn<Long> {
 
     @Override
     protected void initDetail() {
-        detail = new ArrayList<Long>();
+        detail = new AnyIndexArray<Long>();
     }
 }
