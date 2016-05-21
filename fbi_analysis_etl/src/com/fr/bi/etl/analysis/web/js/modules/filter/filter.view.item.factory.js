@@ -93,9 +93,10 @@ BI.ETLFilterViewItemFactory = {
         return [this._getDateText(value.start) ,this._createItemByCls('less-equal-font') , fieldName , this._createItemByCls('less-equal-font'), this._getDateText(value.end)];
     },
 
-    _getDateText : function(date){
-        if (BI.isNotNull(date)){
-            return date.year + "-" + (date.month + 1) + "-" + date.day;
+    _getDateText : function(d){
+        if (BI.isNotNull(d)){
+            var date = new Date(d)
+            return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
         }
         return '-';
     },

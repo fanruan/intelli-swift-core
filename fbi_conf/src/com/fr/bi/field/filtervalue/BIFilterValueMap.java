@@ -5,6 +5,8 @@ import com.fr.bi.field.filtervalue.date.evenfilter.DateNotEqualsTargetFilterValu
 import com.fr.bi.field.filtervalue.date.nonefilter.DateNotNullFilterValue;
 import com.fr.bi.field.filtervalue.date.nonefilter.DateNullFilterValue;
 import com.fr.bi.field.filtervalue.date.rangefilter.DateInRangeFilterValue;
+import com.fr.bi.field.filtervalue.date.rangefilter.DateLessThanFilterValue;
+import com.fr.bi.field.filtervalue.date.rangefilter.DateMoreThanFilterValue;
 import com.fr.bi.field.filtervalue.date.rangefilter.DateNotInRangeFilterValue;
 import com.fr.bi.field.filtervalue.number.containsfilter.NumberContainsFilterValue;
 import com.fr.bi.field.filtervalue.number.containsfilter.NumberNotContainsFilterValue;
@@ -96,5 +98,7 @@ public class BIFilterValueMap {
         put(BIReportConstant.FILTER_DATE.NOT_EQUAL_TO, DateNotEqualsTargetFilterValue.class);
         put(BIReportConstant.FILTER_DATE.IS_NULL, DateNullFilterValue.class);
         put(BIReportConstant.FILTER_DATE.NOT_NULL, DateNotNullFilterValue.class);
+        put(BIReportConstant.FILTER_DATE.MORE_THAN, DateMoreThanFilterValue.class);
+        put(BIReportConstant.FILTER_DATE.LESS_THAN, DateLessThanFilterValue.class);
     }};
 }
