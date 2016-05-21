@@ -54,7 +54,9 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
                     var dimension = widget.dimensions[id];
                     if (dimension.used === true){
                         var field_type =  BI.Utils.getFieldTypeByID(dimension._src);
-                        if (field_type === BICst.COLUMN.DATE && dimension.group.type !== BICst.GROUP.YMD){
+                        if (field_type === BICst.COLUMN.DATE
+                            && dimension.group.type !== BICst.GROUP.YMD
+                            && dimension.group.type !== BICst.GROUP.YMDHMS){
                             field_type = BICst.COLUMN.NUMBER;
                         }
                         fields.push({
