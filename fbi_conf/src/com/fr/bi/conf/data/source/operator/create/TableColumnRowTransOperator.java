@@ -3,9 +3,9 @@ package com.fr.bi.conf.data.source.operator.create;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -43,7 +43,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
 
     private List<String> otherColumnNames;
     
-    private transient DBTable basicTable;
+    private transient IPersistentTable basicTable;
 
     public TableColumnRowTransOperator(long userId) {
         super(userId);
@@ -82,7 +82,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
         if (basicTable == null) {
             initLCFieldNames(tables, user.getUserId());
         }
@@ -91,7 +91,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
     
     private void initBaseTable(List<? extends ITableSource> parents){
     	 if (basicTable == null) {
-             DBTable[] base = new DBTable[parents.size()];
+             IPersistentTable[] base = new IPersistentTable[parents.size()];
              for (int i = 0; i < base.length; i++) {
                  base[i] = parents.get(0).getDbTable();
              }
@@ -117,7 +117,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
             Iterator<Entry<Object, GroupValueIndex>> iter = groupMap.iterator();
             while (iter.hasNext()) {
                 Entry<Object, GroupValueIndex> entry = iter.next();
-                final Object[] values = new Object[basicTable.getBIColumnLength()];
+                final Object[] values = new Object[basicTable.getFieldSize()];
                 values[0] = entry.getKey();
                 GroupValueIndex gvi = entry.getValue();
                 gvi.Traversal(new SingleRowTraversalAction() {
@@ -171,31 +171,31 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
         return map;
     }
 
-    private void initLCFieldNames(DBTable[] base, long userId) {
+    private void initLCFieldNames(IPersistentTable[] base, long userId) {
 
         this.basicTable = getBITable();
 
-        for (DBTable pDBTable : base) {
-            BIColumn column = pDBTable.getBIColumn(group_name);
-            basicTable.addColumn(new BIColumn(group_name, group_name, column.getType(), false, column.getColumnSize(), column.getScale()));
+        for (IPersistentTable pDBTable : base) {
+            PersistentField column = pDBTable.getField(group_name);
+            basicTable.addColumn(new PersistentField(group_name, group_name, column.getType(), false, column.getColumnSize(), column.getScale()));
 
             otherColumnNames = new ArrayList<String>();
-            for (int i = 0; i < pDBTable.getBIColumnLength(); i++) {
-                BIColumn tarColumn = pDBTable.getBIColumn(i);
+            for (int i = 0; i < pDBTable.getFieldSize(); i++) {
+                PersistentField tarColumn = pDBTable.getField(i);
                 if (!isColumnSelected(tarColumn.getFieldName())) {
                     String fieldName = tarColumn.getFieldName();
                     otherColumnNames.add(fieldName);
-                    basicTable.addColumn(new BIColumn(fieldName, null, tarColumn.getType(), false, tarColumn.getColumnSize(), tarColumn.getScale()));
+                    basicTable.addColumn(new PersistentField(fieldName, null, tarColumn.getType(), false, tarColumn.getColumnSize(), tarColumn.getScale()));
                 }
             }
 
             for (NameText column1 : columns) {
-                BIColumn c = pDBTable.getBIColumn(column1.origin);
+                PersistentField c = pDBTable.getField(column1.origin);
                 for (NameText aLc_value : lc_value) {
                     String lcColumn = aLc_value.origin + "-" + column1.origin;
                     String text = aLc_value.getTransText() + "-" + column1.getTransText();
                     String lcColumnText = ComparatorUtils.equals(text, lcColumn) ? null : text;
-                    basicTable.addColumn(new BIColumn(lcColumn, lcColumnText, c.getType(), false, c.getColumnSize(), c.getScale()));
+                    basicTable.addColumn(new PersistentField(lcColumn, lcColumnText, c.getType(), false, c.getColumnSize(), c.getScale()));
                 }
             }
         }

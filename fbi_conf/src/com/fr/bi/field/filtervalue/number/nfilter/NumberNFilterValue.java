@@ -39,7 +39,10 @@ public abstract class NumberNFilterValue implements NumberFilterValue {
         result = prime * result + n;
         return result;
     }
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

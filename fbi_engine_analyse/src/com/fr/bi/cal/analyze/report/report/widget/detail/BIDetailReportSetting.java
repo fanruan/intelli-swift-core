@@ -1,5 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.detail;
 
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
@@ -10,7 +13,7 @@ import com.fr.json.JSONObject;
  * Created by GUY on 2015/4/9.
  */
 public class BIDetailReportSetting implements BIDetailSetting {
-
+    @BICoreField
     protected String[] view;
 
     private boolean freeze;
@@ -69,5 +72,10 @@ public class BIDetailReportSetting implements BIDetailSetting {
     @Override
     public int isOrder() {
         return number;
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 }

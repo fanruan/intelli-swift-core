@@ -9,7 +9,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
         valueReuse: -1,
         iconWidth: 36,
         iconHeight: 30,
-        showMoreCount: 14
+        showMoreCount: 13
     },
 
     _defaultConfig: function () {
@@ -27,7 +27,12 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                 result.push(self._formatConfig(cfg));
                 return;
             }
-            if (i >= c.showMoreCount) {
+            if (i > c.showMoreCount) {
+                return;
+            }
+            if (cfg.value === -1) {//复用
+                cfg.cls = cfg.cls + " widget-reuse";
+                result.push(cfg);
                 return;
             }
             cfg.cls = (cfg.cls || "") + " widget-generator";
@@ -40,7 +45,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                     text: BI.i18nText("BI-More"),
                     invalid: true,
                     value: c.valueMore,
-                    cls: cfg.cls + " chart-more-font",
+                    cls: "widget-more chart-more-font",
                     children: items
                 }
             }
@@ -49,7 +54,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                 self._formatConfig(cfg.children);
                 return;
             }
-        })
+        });
         return result;
     },
 
@@ -168,9 +173,14 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
         BI.DragIconGroup.superclass._init.apply(this, arguments);
         var self = this, o = this.options, c = this._const, icons = [];
 
-        this.dragIcons = [];
-
-        var conf = this._formatConfig(BI.deepClone(BICst.DASHBOARD_WIDGET_ICON));
+        var config = BI.deepClone(BICst.DASHBOARD_WIDGETS);
+        config.push([{
+            text: BI.i18nText("BI-Reuse"),
+            title: BI.i18nText("BI-Reuse"),
+            value: -1,
+            cls: "chart-reuse-font"
+        }]);
+        var conf = this._formatConfig(config);
 
         var gps = [];
         BI.each(conf, function (i, items) {

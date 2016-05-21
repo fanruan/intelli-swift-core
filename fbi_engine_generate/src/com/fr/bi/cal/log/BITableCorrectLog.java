@@ -1,13 +1,8 @@
 package com.fr.bi.cal.log;
 
-import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.general.ComparatorUtils;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.stable.xml.XMLPrintWriter;
-import com.fr.stable.xml.XMLReadable;
-import com.fr.stable.xml.XMLableReader;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -25,10 +20,8 @@ public class BITableCorrectLog extends BITableLog {
 
     private Map<String, BIColumnLog> columnList = new LinkedHashMap<String, BIColumnLog>();
 
-    public BITableCorrectLog() {
-    }
 
-    public BITableCorrectLog(Table table, long t, long userId) {
+    public BITableCorrectLog(IPersistentTable table, long t, long userId) {
         super(table, userId);
         this.getValueFromDB = t;
     }
@@ -38,54 +31,15 @@ public class BITableCorrectLog extends BITableLog {
     }
 
     @Override
-    public void readXML(XMLableReader reader) {
-        if (reader.isAttr()) {
-            getValueFromDB = reader.getAttrAsLong("getValueFromDB", -1L);
-            this.setID(new BITableID(reader.getAttrAsString("id", "")));
-        }
-        if (reader.isChildNode()) {
-            reader.readXMLObject(new XMLReadable() {
-                @Override
-                public void readXML(XMLableReader reader) {
-                    if (reader.isChildNode()) {
-                        if (ComparatorUtils.equals(reader.getTagName(), BIColumnLog.XML_TAG)) {
-                            BIColumnLog log = new BIColumnLog();
-                            log.readXML(reader);
-                            columnList.put(log.getColumnName(), log);
-                        } else if (ComparatorUtils.equals(reader.getTagName(), BIColumnRunningLog.XML_TAG)) {
-                            BIColumnRunningLog log = new BIColumnRunningLog();
-                            log.readXML(reader);
-                            columnList.put(log.getColumnName(), log);
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
-    public void writeXML(XMLPrintWriter writer) {
-        writer.startTAG(XML_TAG);
-        writer.attr("getValueFromDB", getValueFromDB);
-        writer.attr("id", this.getID().getIdentityValue());
-        Iterator<Entry<String, BIColumnLog>> iter = columnList.entrySet().iterator();
-        while (iter.hasNext()) {
-            Entry<String, BIColumnLog> entry = iter.next();
-            entry.getValue().writeXML(writer);
-        }
-        writer.end();
-    }
-
-    @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
         jo.put("time", getValueFromDB);
-        JSONArray columIndexs = new JSONArray();
-        jo.put("column", columIndexs);
-        Iterator<Entry<String, BIColumnLog>> iter = columnList.entrySet().iterator();
+        JSONArray columnIndexes = new JSONArray();
+        jo.put("column", columnIndexes);
+        Iterator<Entry<String, BIColumnLog>> iterator = columnList.entrySet().iterator();
         List<BIColumnLog> list = new ArrayList<BIColumnLog>();
-        while (iter.hasNext()) {
-            Entry<String, BIColumnLog> entry = iter.next();
+        while (iterator.hasNext()) {
+            Entry<String, BIColumnLog> entry = iterator.next();
             list.add(entry.getValue());
         }
         Collections.sort(list, new Comparator<BIColumnLog>() {
@@ -111,7 +65,7 @@ public class BITableCorrectLog extends BITableLog {
         });
         Iterator<BIColumnLog> it = list.iterator();
         while (it.hasNext()) {
-            columIndexs.put(it.next().createJSON());
+            columnIndexes.put(it.next().createJSON());
         }
         return jo;
     }

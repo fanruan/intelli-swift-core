@@ -30,7 +30,7 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Widget, {
             if (BI.isNull(json) || BI.isNull(row)) {
                 return;
             }
-            var header = [], view = self.model.getWidgetViewByID(widgetId);
+            var header = [], view = self.model.getView();
             BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
                 self.model.isDimensionUsable(dId) === true &&
                 header.push({
@@ -56,7 +56,7 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Widget, {
             });
             var columnSize = BI.makeArray(header.length, "");
             self.table.setColumnSize(columnSize);
-            self.table.populate(items, header);
+            self.table.populate(items, [header]);
         });
     },
 

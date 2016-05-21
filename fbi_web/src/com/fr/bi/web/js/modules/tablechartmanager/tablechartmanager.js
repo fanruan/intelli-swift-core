@@ -53,6 +53,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:

@@ -5,5 +5,5 @@ package com.fr.bi.stable.structure.object;
  * Created by GUY on 2015/4/22.
  */
 public class Num<V> {
-    public V i;
+    public V value;
 }

@@ -53,6 +53,10 @@ public abstract class StringRangeFilterValue implements StringFilterValue {
         return result;
     }
 
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */

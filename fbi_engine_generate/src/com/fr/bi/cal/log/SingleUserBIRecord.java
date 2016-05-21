@@ -3,7 +3,7 @@ package com.fr.bi.cal.log;
 
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONArray;
@@ -16,8 +16,8 @@ public class SingleUserBIRecord implements BIRecord {
 
     public static final String XML_TAG = "bi_log_manager";
     Set<ArrayKey<BITableSourceRelation>> loop_error = new HashSet<ArrayKey<BITableSourceRelation>>();
-    private Map<Table, BITableLog> tableLogMap = new ConcurrentHashMap<Table, BITableLog>();
-    private Map<Table, BITableLog> tableReadingLogMap = new ConcurrentHashMap<Table, BITableLog>();
+    private Map<IPersistentTable, BITableLog> tableLogMap = new ConcurrentHashMap<IPersistentTable, BITableLog>();
+    private Map<IPersistentTable, BITableLog> tableReadingLogMap = new ConcurrentHashMap<IPersistentTable, BITableLog>();
     private Map<RelationColumnKey, BIConnectionLog> connectionLogMap = new ConcurrentHashMap<RelationColumnKey, BIConnectionLog>();
     private Date cube_start;
     private Date relation_start;
@@ -75,59 +75,64 @@ public class SingleUserBIRecord implements BIRecord {
      * @param text  内容
      */
     @Override
-    public void recordToErrorTable(Table table, String text) {
+    public void recordToErrorTable(IPersistentTable table, String text) {
         tableLogMap.put(table, new BITableErrorLog(table, text, userId));
     }
 
     /**
      * 表日志
-     *  @param table   表
-     * @param seconds  时间(秒)
+     *
+     * @param table   表
+     * @param seconds 时间(秒)
      * @param percent 百分比
      */
     @Override
-    public void recordToInfoTable(Table table, long seconds, int percent) {
+    public void recordToInfoTable(IPersistentTable table, long seconds, int percent) {
         tableLogMap.put(table, new BITableRunningLog(table, seconds, percent, userId));
     }
 
     /**
      * 表日志
-     *  @param table   表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      * @param percent 百分比
      */
     @Override
-    public void readingInfoTable(Table table, long seconds, int percent) {
+    public void readingInfoTable(IPersistentTable table, long seconds, int percent) {
         tableReadingLogMap.put(table, new BITableRunningLog(table, seconds, percent, userId));
     }
 
     /**
      * 表读日志
-     *  @param table 表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      */
     @Override
-    public void readingInfoTable(Table table, long seconds) {
+    public void readingInfoTable(IPersistentTable table, long seconds) {
         tableReadingLogMap.put(table, new BITableCorrectLog(table, seconds, userId));
     }
 
     /**
      * 表日志
-     *  @param table 表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      */
     @Override
-    public void recordToInfoTable(Table table, long seconds) {
+    public void recordToInfoTable(IPersistentTable table, long seconds) {
         tableLogMap.put(table, new BITableCorrectLog(table, seconds, userId));
     }
 
     /**
      * 表日志
-     *  @param table 表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      */
     @Override
-    public void recordIndexToInfoTable(Table table, long seconds) {
+    public void recordIndexToInfoTable(IPersistentTable table, long seconds) {
         BITableLog log = tableLogMap.get(table);
         if (log instanceof BITableCorrectLog) {
             ((BITableCorrectLog) log).setIndexTime(seconds);
@@ -137,18 +142,19 @@ public class SingleUserBIRecord implements BIRecord {
 
     /**
      * 表日志
-     *  @param table      表
+     *
+     * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
      * @param percent    百分比
      */
     @Override
-    public void recordColumnToInfoTable(Table table, String columnName, long seconds, int percent) {
+    public void recordColumnToInfoTable(IPersistentTable table, String columnName, long seconds, int percent) {
         BITableLog log = tableLogMap.get(table);
         if (log == null) {
             log = tableReadingLogMap.get(table);
             if (log instanceof BITableCorrectLog) {
-                tableLogMap.put(table, new BITableCorrectLog(log, 0, userId));
+                tableLogMap.put(table, new BITableCorrectLog(log.getPersistentTable(), 0, userId));
                 log = tableLogMap.get(table);
             }
         }
@@ -159,17 +165,18 @@ public class SingleUserBIRecord implements BIRecord {
 
     /**
      * 表日志
-     *  @param table      表
+     *
+     * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
      */
     @Override
-    public void recordColumnToInfoTable(Table table, String columnName, long seconds) {
+    public void recordColumnToInfoTable(IPersistentTable table, String columnName, long seconds) {
         BITableLog log = tableLogMap.get(table);
         if (log == null) {
             log = tableReadingLogMap.get(table);
             if (log instanceof BITableCorrectLog) {
-                tableLogMap.put(table, new BITableCorrectLog(log, 0, userId));
+                tableLogMap.put(table, new BITableCorrectLog(log.getPersistentTable(), 0, userId));
                 log = tableLogMap.get(table);
             }
         }
@@ -180,7 +187,8 @@ public class SingleUserBIRecord implements BIRecord {
 
     /**
      * 错误日志
-     *  @param ck   列关键字
+     *
+     * @param ck   列关键字
      * @param text 内容
      */
     @Override
@@ -190,6 +198,7 @@ public class SingleUserBIRecord implements BIRecord {
 
     /**
      * 错误日志
+     *
      * @param ck      列关键字
      * @param seconds 时间(秒)
      * @param percent 百分比
@@ -201,8 +210,10 @@ public class SingleUserBIRecord implements BIRecord {
 
     /**
      * 错误日志
-     *  @param ck 列关键字
-     * @param seconds  时间(秒)*/
+     *
+     * @param ck      列关键字
+     * @param seconds 时间(秒)
+     */
     @Override
     public void infoRelation(RelationColumnKey ck, long seconds) {
         connectionLogMap.put(ck, new BIConnectionCorrectLog(ck, seconds, userId));
@@ -211,7 +222,7 @@ public class SingleUserBIRecord implements BIRecord {
     /**
      * 死循环错误日志
      *
-     * @param map map对象
+     * @param set
      */
     @Override
     public void loopRelation(Set<ArrayKey<BITableSourceRelation>> set) {
@@ -262,10 +273,10 @@ public class SingleUserBIRecord implements BIRecord {
     }
 
     private void addTableLog(JSONArray error, List<BITableLog> output) throws Exception {
-        Iterator<java.util.Map.Entry<Table, BITableLog>> iter = tableLogMap.entrySet().iterator();
+        Iterator<java.util.Map.Entry<IPersistentTable, BITableLog>> iter = tableLogMap.entrySet().iterator();
 
         while (iter.hasNext()) {
-            java.util.Map.Entry<Table, BITableLog> entry = iter.next();
+            java.util.Map.Entry<IPersistentTable, BITableLog> entry = iter.next();
             BITableLog log = entry.getValue();
             if (log instanceof ErrorLog) {
                 error.put(log.createJSON());
@@ -277,9 +288,9 @@ public class SingleUserBIRecord implements BIRecord {
     }
 
     private void addTableReadingLog(List<BITableLog> reading) throws Exception {
-        Iterator<java.util.Map.Entry<Table, BITableLog>> riter = tableReadingLogMap.entrySet().iterator();
+        Iterator<java.util.Map.Entry<IPersistentTable, BITableLog>> riter = tableReadingLogMap.entrySet().iterator();
         while (riter.hasNext()) {
-            java.util.Map.Entry<Table, BITableLog> entry = riter.next();
+            java.util.Map.Entry<IPersistentTable, BITableLog> entry = riter.next();
             BITableLog log = entry.getValue();
             if (tableLogMap.get(entry.getKey()) instanceof BITableErrorLog) {
                 continue;

@@ -12,7 +12,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         return BI.extend(conf, {
             baseCls: "bi-widget-combo"
         })
-    },  
+    },
 
     _init: function () {
         BI.WidgetCombo.superclass._init.apply(this, arguments);
@@ -29,18 +29,18 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             height: 16,
             width: 16
         });
-        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function(v){
-            self.fireEvent(BI.WidgetCombo.EVENT_CHANGE, v); 
-        });
-        this.combo.on(BI.DownListCombo.EVENT_SON_VALUE_CHANGE, function(v){
+        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.WidgetCombo.EVENT_CHANGE, v);
         });
-        this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function(){
+        this.combo.on(BI.DownListCombo.EVENT_SON_VALUE_CHANGE, function (v) {
+            self.fireEvent(BI.WidgetCombo.EVENT_CHANGE, v);
+        });
+        this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
             this.populate(self._rebuildItems());
         });
     },
-    
-    _rebuildItems: function(){
+
+    _rebuildItems: function () {
         var wId = this.options.wId;
         switch (BI.Utils.getWidgetTypeByID(wId)) {
             case BICst.WIDGET.TABLE:
@@ -78,7 +78,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
 
             case BICst.WIDGET.TABLE_SHOW:
                 return BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS_SHOW;
-            
+
             case BICst.WIDGET.DATE:
             case BICst.WIDGET.YEAR :
             case BICst.WIDGET.QUARTER :
@@ -92,13 +92,13 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 return this._createStringTreeComboItems();
             case BICst.WIDGET.NUMBER :
                 return BICst.NUMBER_CONTROL_SETCOMBO_ITEMS;
-            
+
             case BICst.WIDGET.GENERAL_QUERY:
                 return BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS;
         }
     },
 
-    _createWidgetComboItems: function(){
+    _createWidgetComboItems: function () {
         var wId = this.options.wId;
         var isShowName = BI.Utils.isShowWidgetNameByID(wId);
         var namePos = BI.Utils.getWidgetNamePositionByID(wId);
@@ -158,7 +158,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         ]
     },
 
-    _createDetailWidgetComboItems: function(){
+    _createDetailWidgetComboItems: function () {
         var wId = this.options.wId;
         var isShowName = BI.Utils.isShowWidgetNameByID(wId);
         var namePos = BI.Utils.getWidgetNamePositionByID(wId);
@@ -213,10 +213,10 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         ]
     },
 
-    _createStringTreeComboItems: function(){
+    _createStringTreeComboItems: function () {
         var wId = this.options.wId;
         var sort = {}, dims = BI.Utils.getAllDimDimensionIDs(wId);
-        if(dims.length > 0) {
+        if (dims.length > 0) {
             sort = BI.Utils.getDimensionSortByID(dims[0]);
         }
         return [
@@ -228,11 +228,13 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             [{
                 value: BICst.DASHBOARD_CONTROL_RANG_ASC,
                 text: BI.i18nText("BI-Ascend"),
-                selected: sort.type === BICst.SORT.ASC
+                selected: sort.type === BICst.SORT.ASC,
+                cls: "dot-e-font"
             }, {
                 value: BICst.DASHBOARD_CONTROL_RANG_DESC,
                 text: BI.i18nText("BI-Descend"),
-                selected: sort.type === BICst.SORT.DESC
+                selected: sort.type === BICst.SORT.DESC,
+                cls: "dot-e-font"
             }],
             [{
                 value: BICst.DASHBOARD_CONTROL_CLEAR,

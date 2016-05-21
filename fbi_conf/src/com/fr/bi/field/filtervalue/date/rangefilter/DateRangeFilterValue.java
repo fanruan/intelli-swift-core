@@ -57,7 +57,10 @@ public abstract class DateRangeFilterValue implements DateFilterValue, NullFilte
     private GroupValueIndex getGroupValueIndexWhenNull(Table targetKey, ICubeDataLoader loader) {
         return loader.getTableIndex(targetKey).getAllShowIndex();
     }
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
 
     public DateRange getRange() {
         return range;

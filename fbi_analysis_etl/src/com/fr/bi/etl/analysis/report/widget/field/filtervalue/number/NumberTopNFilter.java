@@ -23,9 +23,13 @@ public class NumberTopNFilter extends NumberLargeOrEqualsCLFilter {
 		if(jo.has("filter_value")){
             JSONObject filterValue = jo.getJSONObject("filter_value");
             if (filterValue.has("value")){
-                this.getter = new TopNLine(jo.getInt("value"));
+                this.getter = new TopNLine(filterValue.getInt("value"));
             }
 		}
 	}
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return true;
+    }
 
 }
