@@ -20,6 +20,8 @@ import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.engine.CubeBuildStuffManager;
+import com.fr.bi.stable.data.BITable;
+import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
@@ -46,15 +48,27 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
+    private BITable biTable;
 
     public BuildCubeTask(BIUser biUser) {
-//        cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
-//        cubeBuildStuffManager.initialCubeStuff();
+
         this.biUser = biUser;
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+//        cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
+//        cubeBuildStuffManager.initialCubeStuff();
     }
+
+    public BuildCubeTask(BIUser biUser, BITable biTable) {
+        this.biUser = biUser;
+        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
+        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        this.biTable=biTable;
+
+    }
+
 
     public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {
         this.cubeBuildStuffManager = cubeBuildStuffManager;
@@ -92,6 +106,15 @@ public class BuildCubeTask implements CubeTask {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuffManager.getSources());
         operationManager.initialWatcher();
+        if(null!=biTable){
+        Set<ITableSource> tableSourceSet = new HashSet<ITableSource>();
+        for (ITableSource iTableSource : cubeBuildStuffManager.getAllSingleSources()) {
+            if (iTableSource.getDbTable().getID().equals(biTable.getID())) {
+                tableSourceSet.add(iTableSource);
+            }
+        }
+        cubeBuildStuffManager.setAllSingleSources(tableSourceSet);
+        }
         manager.registerDataSource(cubeBuildStuffManager.getAllSingleSources());
         manager.registerRelation(cubeBuildStuffManager.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuffManager.getRelationPaths());

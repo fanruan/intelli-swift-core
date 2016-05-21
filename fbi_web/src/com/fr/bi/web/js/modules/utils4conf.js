@@ -425,6 +425,11 @@ BI.extend(BI.Utils, {
         Data.Req.getTableNamesOfAllPackages(function(res) {
             callback(res);
         })
-    }
+    },
+    updateCubeByTable: function (data, callback) {
+        Data.Req.updateCubeByTable(data, function () {
+            callback();
+        });
+    },
 
 });
