@@ -252,7 +252,8 @@ BICst.CALCULATE_TARGET_COMBO = {
 
 BICst.CONTROL_COMBO = {
     DELETE: 505,
-    INFO: 506
+    INFO: 506,
+    RENAME: 507
 };
 
 //分组统计下拉选项
