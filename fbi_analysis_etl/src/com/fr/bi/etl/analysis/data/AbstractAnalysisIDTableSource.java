@@ -6,10 +6,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -89,11 +86,11 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
     }
 
     @Override
-    public DBTable getDbTable() {
+    public IPersistentTable getDbTable() {
         if (dbTable == null) {
-            DBTable ptable = baseTable.getDbTable();
+            IPersistentTable ptable = baseTable.getDbTable();
             dbTable = createBITable();
-            for (BIColumn column : ptable.getColumnArray()) {
+            for (PersistentField column : ptable.getFieldList()) {
                 dbTable.addColumn(column);
             }
         }

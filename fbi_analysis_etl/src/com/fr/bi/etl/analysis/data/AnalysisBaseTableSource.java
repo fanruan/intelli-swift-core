@@ -10,10 +10,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -54,13 +51,13 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
 
     @Override
-    public DBTable getDbTable() {
+    public IPersistentTable getDbTable() {
         if (dbTable == null) {
-            dbTable = new DBTable(null, fetchObjectCore().getID().getIdentityValue(), null);
+            dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
             for (int i = 0; i < fieldList.size(); i++){
                 AnalysisETLSourceField c = fieldList.get(i);
                 int sqlType = (widget.getType() == BIReportConstant.WIDGET.TABLE && i < widget.getViewDimensions().length) ? getSqlTypeByGroupType(((BIDimension)widget.getViewDimensions()[i]).getGroup()) : BIDBUtils.biTypeToSql(c.getFieldType());
-                dbTable.addColumn(new BIColumn(c.getFieldName(), sqlType));
+                dbTable.addColumn(new PersistentField(c.getFieldName(), sqlType));
             }
 
         }

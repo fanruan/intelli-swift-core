@@ -19,6 +19,7 @@ BI.DetailTablePopupDetailTableCell = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.label",
             element: this.element,
+            height: o.height,
             text: o.text,
             value: o.value
         })

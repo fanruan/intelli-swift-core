@@ -8,7 +8,6 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +49,7 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
 
     @Override
     public boolean containsIDParentsWithMD5(String md5) {
-        return ComparatorUtils.equals(md5, fetchObjectCore().getIDValue());
+        return false;
     }
 
 

@@ -53,7 +53,10 @@ public abstract class StringNFilterValue implements StringFilterValue {
         return result;
     }
 
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return true;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
