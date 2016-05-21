@@ -36,6 +36,10 @@ BI.AnalysisETLOperatorAddColumnDateDiffController = BI.inherit(BI.MVCController,
 
     populate : function (widget, model) {
         var fields = [];
+        fields.push({
+            text: BI.i18nText("BI-System_Time"),
+            value:ETLCst.SYSTEM_TIME
+        })
         BI.each(model.get(ETLCst.FIELDS) || [], function (idx, item) {
             if(item.field_type === BICst.COLUMN.DATE) {
                 fields.push({
