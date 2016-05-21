@@ -1,5 +1,6 @@
 package com.fr.bi.conf.report;
 
+import com.fr.bi.common.BICoreService;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.base.provider.ParseJSONWithUID;
@@ -17,7 +18,7 @@ import java.util.List;
  *
  * @author Daniel-pc
  */
-public interface BIWidget extends ParseJSONWithUID, FCloneable {
+public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService {
 
     /**
      * 返回Widget的ID

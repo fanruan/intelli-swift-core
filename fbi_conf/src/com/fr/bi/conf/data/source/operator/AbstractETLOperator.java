@@ -1,7 +1,8 @@
 package com.fr.bi.conf.data.source.operator;
 
 import com.fr.bi.base.*;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -55,8 +56,8 @@ public abstract class AbstractETLOperator implements IETLOperator {
 //        writer.attr("md5", fetchObjectCore());
     }
 
-    protected DBTable getBITable() {
-        return new DBTable(null, fetchObjectCore().getIDValue(), null);
+    protected IPersistentTable getBITable() {
+        return new PersistentTable(null, fetchObjectCore().getIDValue(), null);
     }
 
     @Override

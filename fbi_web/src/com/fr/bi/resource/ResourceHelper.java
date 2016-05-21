@@ -694,6 +694,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
                 //指标弹出明细表
+                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
@@ -909,6 +912,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filterpopup/dimensionfilterpopup.js",
                 "com/fr/bi/web/js/modules/filter/filterpopup/targetsummaryfilter.popup.js",
                 "com/fr/bi/web/js/modules/filter/filterpopup/detailtablefilter.popup.js",
+                "com/fr/bi/web/js/modules/filter/filterpopup/authorityfilter.popup.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/item.stringfield.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/item.numberfield.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/item.datefield.js",
@@ -926,6 +930,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.emptyformula.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/item.emptyformula.js",
 
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/item.notypefield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/item.stringfield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/item.numberfield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/item.datefield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.selectdata4authority.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/factory.filteritem.auth.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.authority.stringcombo.js",
+
                 "com/fr/bi/web/js/modules/filter/filteritems/generalquery/item.generalquery.notypefilter.js",
 
                 //过滤
@@ -935,6 +947,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/targetsummary/filter.target.summary.js",
                 "com/fr/bi/web/js/modules/filter/generalquery/filter.generalquery.js",
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
+                "com/fr/bi/web/js/modules/filter/auth/filter.authority.js",
 
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",

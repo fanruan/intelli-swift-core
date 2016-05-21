@@ -53,17 +53,19 @@ public class BIServerUtils {
 	 */
 	public static ResultDealer createDimensonDealer(BIKey[] dimension, ResultDealer lastDealer) {
 		DimensionCalculatorDealer dealer = null;
-		DimensionCalculatorDealer tempDealer = null; 
-		for(BIKey key : dimension){
-			DimensionCalculatorDealer dimensionDealer = new DimensionCalculatorDealer(key);
-			if(dealer == null){
-				dealer = dimensionDealer;
-			}
-			if(tempDealer != null){
-				tempDealer.setNext(dimensionDealer);
-			}
-			tempDealer = dimensionDealer;
-		}
+		DimensionCalculatorDealer tempDealer = null;
+        if(dimension != null) {
+            for (BIKey key : dimension) {
+                DimensionCalculatorDealer dimensionDealer = new DimensionCalculatorDealer(key);
+                if (dealer == null) {
+                    dealer = dimensionDealer;
+                }
+                if (tempDealer != null) {
+                    tempDealer.setNext(dimensionDealer);
+                }
+                tempDealer = dimensionDealer;
+            }
+        }
 		if(dealer != null){
 			tempDealer.setNext(lastDealer);
 			return dealer;

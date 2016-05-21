@@ -275,15 +275,18 @@ public class TreeWidget extends BIAbstractWidget {
     }
 
     private void setTargetTable() {
-        BITableID targetTableID = dimensions[0].createTableKey().getID();
-        target = new BITable(targetTableID);
-        for (int i = 0; i < dimensions.length; i++) {
-            List<BITableRelation> relations = this.getRelationList(dimensions[i]);
-            if (!relations.isEmpty()) {
-                target = relations.get(relations.size() - 1).getForeignTable();
-                break;
+        if (dimensions.length > 0) {
+            BITableID targetTableID = dimensions[0].createTableKey().getID();
+            target = new BITable(targetTableID);
+            for (int i = 0; i < dimensions.length; i++) {
+                List<BITableRelation> relations = this.getRelationList(dimensions[i]);
+                if (!relations.isEmpty()) {
+                    target = relations.get(relations.size() - 1).getForeignTable();
+                    break;
+                }
             }
         }
+
     }
 
     private void parseDimensions(JSONObject jo, long userId) throws Exception {

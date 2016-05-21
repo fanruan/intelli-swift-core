@@ -20,7 +20,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             items: [{
                 el: this._buildUserField(),
                 top: -40,
-                left: 220
+                left: 242
             }, {
                 el: this._builtPackageTree(),
                 top: 0,
@@ -120,13 +120,16 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             delete authoritySettings.login_info;
             Data.SharingPool.put("authority_settings", authoritySettings);
             self._refreshLoginInfo();
+            BI.Utils.saveLoginInfoInTableField({}, function(){});
             BI.Popovers.remove(BICst.LOGIN_INFO_POPOVER);
         });
         loginPane.on(BI.AuthorityLoginInfoPane.EVENT_SAVE, function(){
             var authoritySettings = Data.SharingPool.get("authority_settings");
-            authoritySettings.login_info = this.getValue();
+            var loginInfo = this.getValue();
+            authoritySettings.login_info = loginInfo;
             Data.SharingPool.put("authority_settings", authoritySettings);
             self._refreshLoginInfo();
+            BI.Utils.saveLoginInfoInTableField({"table_field": loginInfo}, function(){});
             BI.Popovers.remove(BICst.LOGIN_INFO_POPOVER);
         });
         BI.Popovers.create(BICst.LOGIN_INFO_POPOVER, loginPane).open(BICst.LOGIN_INFO_POPOVER);

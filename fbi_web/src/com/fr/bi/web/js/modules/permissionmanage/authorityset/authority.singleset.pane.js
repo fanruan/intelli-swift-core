@@ -78,6 +78,12 @@ BI.AuthoritySinlgeSetPane = BI.inherit(BI.Widget, {
                     self.rolesTab.setSelect(self._constants.SHOW_SEARCHER);
                     self.searcher.populate(self.packageId);
                 });
+                this.roles.on(BI.AuthoritySingleAddRolePane.EVENT_REMOVE_ROLE, function(role){
+                    self._removePackageRole(role);
+                });
+                this.roles.on(BI.AuthoritySingleAddRolePane.EVENT_FILTER_CHANGE, function(role){
+                    self._updateOnePackageRole(role);
+                });
                 return this.roles;
             case this._constants.SHOW_SEARCHER:
                 this.searcher = BI.createWidget({
@@ -99,13 +105,44 @@ BI.AuthoritySinlgeSetPane = BI.inherit(BI.Widget, {
         var packagesAuth = authSettings.packages_auth;
         var pAuth = packagesAuth[this.packageId] || [];
         var newPAuth = pAuth.concat(roles);
-        packagesAuth[this.packageId] = newPAuth;
+        this._onAuthChange(newPAuth);
+    },
+
+    _removePackageRole: function(role){
+        var authSettings = Data.SharingPool.get("authority_settings");
+        var packagesAuth = authSettings.packages_auth;
+        var pAuth = packagesAuth[this.packageId] || [];
+        BI.some(pAuth, function(i, auth){
+            if(auth.role_id === role.role_id && auth.role_type === role.role_type) {
+                pAuth.splice(i, 1);
+                return true;
+            }
+        });
+        this._onAuthChange(pAuth);
+    },
+
+    _updateOnePackageRole: function(role){
+        var authSettings = Data.SharingPool.get("authority_settings");
+        var packagesAuth = authSettings.packages_auth;
+        var pAuth = packagesAuth[this.packageId] || [];
+        BI.each(pAuth, function(i, auth){
+            if(auth.role_id === role.role_id && auth.role_type === role.role_type) {
+                pAuth[i] = role;
+            }
+        });
+        this._onAuthChange(pAuth);
+    },
+
+    _onAuthChange: function(auth){
+        var authSettings = Data.SharingPool.get("authority_settings");
+        var packagesAuth = authSettings.packages_auth;
+        packagesAuth[this.packageId] = auth;
         Data.SharingPool.put("authority_settings", authSettings);
         BI.isNotNull(this.roles) && this.roles.populate(this.packageId);
         BI.isNotNull(this.searcher) && this.searcher.populate(this.packageId);
         BI.Utils.savePackageAuthority({
             package_ids: [this.packageId],
-            roles: newPAuth
+            roles: auth
         }, function(){});
     },
 

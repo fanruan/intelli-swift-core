@@ -5,8 +5,8 @@ import com.fr.bi.common.factory.BIFactory;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.conf.manager.singletable.data.BICubeTimeTaskCreator;
 import com.fr.bi.conf.manager.singletable.data.SingleTableUpdateAction;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.utils.code.BILogDelegate;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -36,12 +36,13 @@ public abstract class AbstractSingleTableUpdateManager implements XMLable, JSONT
         }
     }
 
-    public SingleTableUpdateAction getSingleTableUpdateAction(BITable table) {
-        SingleTableUpdateAction action = single_table_update.get(table);
-        if (action == null) {
-            action = new SingleTableUpdateAction(table, user.getUserId());
-        }
-        return action;
+    public SingleTableUpdateAction getSingleTableUpdateAction(IPersistentTable table) {
+//        SingleTableUpdateAction action = single_table_update.get(table);
+//        if (action == null) {
+//            action = new SingleTableUpdateAction(table, user.getUserId());
+//        }
+//        return action;
+        return null;
     }
 
     public void setSingleTableUpdateAction(SingleTableUpdateAction action, BICubeTimeTaskCreator creator) {

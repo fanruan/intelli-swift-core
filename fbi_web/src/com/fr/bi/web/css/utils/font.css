@@ -1104,6 +1104,26 @@
   content: "\e696";
   color: #1a1a1a;
 }
+.trigger-triangle-font .b-font:before {
+  content: "\e696";
+  color: #808080;
+}
+.trigger-triangle-font:hover .b-font:before,
+.trigger-triangle-font:focus .b-font:before,
+.trigger-triangle-font.hover .b-font:before {
+  content: "\e696";
+  color: #808080;
+}
+.trigger-triangle-font:active .b-font:before,
+.trigger-triangle-font.active .b-font:before {
+  content: "\e696";
+  color: #009de3;
+}
+.trigger-triangle-font.native .b-font:before,
+.trigger-triangle-font.disabled .b-font:before {
+  content: "\e696";
+  color: #808080;
+}
 .widget-date-next-h-font .b-font:before {
   content: "\e62f";
   color: #808080;
@@ -1774,13 +1794,13 @@
 }
 .less-font .b-font:before {
   content: "\e633";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-font:hover .b-font:before,
 .less-font:focus .b-font:before,
 .less-font.hover .b-font:before {
   content: "\e633";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-font:active .b-font:before,
 .less-font.active .b-font:before {
@@ -1790,17 +1810,17 @@
 .less-font.native .b-font:before,
 .less-font.disabled .b-font:before {
   content: "\e633";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-equal-font .b-font:before {
   content: "\e636";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-equal-font:hover .b-font:before,
 .less-equal-font:focus .b-font:before,
 .less-equal-font.hover .b-font:before {
   content: "\e636";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-equal-font:active .b-font:before,
 .less-equal-font.active .b-font:before {
@@ -1810,25 +1830,7 @@
 .less-equal-font.native .b-font:before,
 .less-equal-font.disabled .b-font:before {
   content: "\e636";
-  color: #1a1a1a;
-}
-.less-arrow-font .b-font:before {
-  content: "\e637";
-  color: #009de3;
-}
-.less-arrow-font.native .b-font:before,
-.less-arrow-font.disabled .b-font:before {
-  content: "\e637";
-  color: #009de3;
-}
-.less-equal-arrow-font .b-font:before {
-  content: "\e638";
-  color: #009de3;
-}
-.less-equal-arrow-font.native .b-font:before,
-.less-equal-arrow-font.disabled .b-font:before {
-  content: "\e638";
-  color: #009de3;
+  color: #808080;
 }
 .check-font .b-font:before {
   content: "\e611";
@@ -2246,6 +2248,17 @@
   content: "\e659";
   color: #808080;
 }
+.letter-font:hover .b-font:before,
+.letter-font:focus .b-font:before,
+.letter-font.hover .b-font:before {
+  content: "\e659";
+  color: #808080;
+}
+.letter-font:active .b-font:before,
+.letter-font.active .b-font:before {
+  content: "\e659";
+  color: #009de3;
+}
 .letter-font.native .b-font:before,
 .letter-font.disabled .b-font:before {
   content: "\e659";
@@ -2254,6 +2267,17 @@
 .time-font .b-font:before {
   content: "\e658";
   color: #808080;
+}
+.time-font:hover .b-font:before,
+.time-font:focus .b-font:before,
+.time-font.hover .b-font:before {
+  content: "\e658";
+  color: #808080;
+}
+.time-font:active .b-font:before,
+.time-font.active .b-font:before {
+  content: "\e658";
+  color: #009de3;
 }
 .time-font.native .b-font:before,
 .time-font.disabled .b-font:before {

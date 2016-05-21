@@ -106,4 +106,5 @@ BI.DimensionNumberComboShow = BI.inherit(BI.AbstractDimensionCombo, {
         return this.config;
     }
 });
+BI.DimensionNumberComboShow.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.dimension_number_combo_show", BI.DimensionNumberComboShow);

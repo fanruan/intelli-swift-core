@@ -42,7 +42,6 @@ BI.extend(BI.AccumulateAreaChart, {
     },
     formatConfig: function(){
         return {
-
             "plotOptions": {
                 "fillColor": true,
                 "fillColorOpacity": 0.15,

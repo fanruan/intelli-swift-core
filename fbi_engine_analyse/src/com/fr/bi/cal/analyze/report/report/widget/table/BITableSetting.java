@@ -1,11 +1,12 @@
 package com.fr.bi.cal.analyze.report.report.widget.table;
 
+import com.fr.bi.common.BICoreService;
 import com.fr.json.JSONParser;
 
 /**
  * Created by GUY on 2015/4/9.
  */
-public interface BITableSetting extends JSONParser {
+public interface BITableSetting extends JSONParser, BICoreService {
 
     /**
      * 获取行内容

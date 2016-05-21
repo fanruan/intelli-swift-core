@@ -106,6 +106,12 @@ Data.Req = BIReq = {
         });
     },
 
+    reqFieldsDataByFieldId: function (data, callback) {
+        BI.requestAsync("fr_bi_configure", "get_field_value_by_field_id", data, function (res) {
+            callback(res);
+        });
+    },
+
     reqCubeStatusByTable: function (table, callback) {
         BI.requestAsync("fr_bi_configure", "check_generate_cube", {table: table}, function (res) {
             callback(res);
@@ -207,6 +213,18 @@ Data.Req = BIReq = {
     reqCheckCubePath: function (path, callback) {
         BI.requestAsync("fr_bi_configure", "check_cube_path", {fileName: path}, function (res) {
             callback(res.cubePath);
+        })
+    },
+
+    reqLoginInfoInTableField: function (callback) {
+        BI.requestAsync("fr_bi_configure", "get_login_info_in_table_field", {}, function (res) {
+            callback(res);
+        })
+    },
+
+    reqSaveLoginInfoInTableField: function (data, callback) {
+        BI.requestAsync("fr_bi_configure", "save_login_info_in_table_field", data, function (res) {
+            callback();
         })
     },
 
