@@ -216,12 +216,6 @@ Data.Req = BIReq = {
         })
     },
 
-    reqLoginInfoInTableField: function (callback) {
-        BI.requestAsync("fr_bi_configure", "get_login_info_in_table_field", {}, function (res) {
-            callback(res);
-        })
-    },
-
     reqSaveLoginInfoInTableField: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "save_login_info_in_table_field", data, function (res) {
             callback();

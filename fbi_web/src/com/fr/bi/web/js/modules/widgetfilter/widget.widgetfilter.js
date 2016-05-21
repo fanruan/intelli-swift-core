@@ -108,10 +108,6 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
 
         //组件的联动条件
         var linkageFilters = BI.Utils.getLinkageValuesByID(wId);
-
-        //表头上设置的指标过滤条件
-        var targetFilter = BI.Utils.getWidgetFilterValueByID(wId);
-
         BI.each(linkageFilters, function(tId, linkFilter){
             items.push({
                 type: "bi.linkage_filter_item",
@@ -134,8 +130,19 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
             });
         });
 
+        //表头上设置的指标过滤条件
+        var targetFilter = BI.Utils.getWidgetFilterValueByID(wId);
         BI.each(targetFilter, function(tId, filter){
             items.push(self.model.parseTargetFilter(tId, filter));
+        });
+
+        //表头上设置的过滤条件，还要加上所有dimension的过滤条件
+        var dimIds = BI.Utils.getAllDimDimensionIDs(wId);
+        BI.each(dimIds, function(i, dimId){
+            if(BI.Utils.isDimensionUsable(dimId)) {
+                var fValue = BI.Utils.getDimensionFilterValueByID(dimId);
+                BI.isNotNull(fValue) && items.push(self.model.parseDimensionFilter(dimId, fValue));
+            }
         });
 
         if(BI.isEmptyArray(items) && this.model.isEmptyDrillById(wId)) {

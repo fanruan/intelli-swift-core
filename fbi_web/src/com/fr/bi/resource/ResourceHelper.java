@@ -650,6 +650,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/widgetfilter/widget.widgetfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.linkagefilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.targetfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.dimensionfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
 
@@ -1269,6 +1270,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.model.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.linkagefilter.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.targetfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.dimensionfilter.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.controlfilter.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.drillfilter.js",
 

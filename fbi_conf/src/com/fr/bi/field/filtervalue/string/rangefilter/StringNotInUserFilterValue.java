@@ -12,7 +12,6 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
@@ -22,11 +21,9 @@ import com.fr.json.JSONObject;
 public class StringNotInUserFilterValue extends StringRangeFilterValue {
     protected BIDataColumn column = null;
 
-
-
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
-        addLogUserInfo(loader);
+        addLogUserInfo();
         GroupValueIndex gvi = super.createFilterIndex(dimension, target, loader, userId);
         ICubeTableService ti = loader.getTableIndex(target);
         return gvi == null ? GVIFactory.createAllEmptyIndexGVI()
@@ -59,7 +56,7 @@ public class StringNotInUserFilterValue extends StringRangeFilterValue {
 
     @Override
     public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        addLogUserInfo(loader);
+        addLogUserInfo();
         String value = StringFilterValueUtils.toString(node.getShowValue());
         if (valueSet.getValues() == null || valueSet.getValues().isEmpty()) {
             return false;
@@ -67,11 +64,10 @@ public class StringNotInUserFilterValue extends StringRangeFilterValue {
         return isMatchValue(value);
     }
 
-    protected void addLogUserInfo(ICubeDataLoader loader) {
-        if (this.column != null && BIConfigureManagerCenter.getCubeConfManager().getLoginInfoInTableField() != null) {
+    protected void addLogUserInfo() {
+        if (this.column != null && BIConfigureManagerCenter.getCubeConfManager().getLoginInfoField() != null) {
             try {
-                User frUser = UserControl.getInstance().getUser(user.getUserId());
-                Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginInfoInTableField().getFieldValue(frUser.getUsername(), column.createColumnKey(), loader);
+                Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(user.getUserId());
                 if (fieldValue != null) {
                     valueSet.getValues().add(fieldValue.toString());
                 }

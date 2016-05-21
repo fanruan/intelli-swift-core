@@ -306,12 +306,6 @@ BI.extend(BI.Utils, {
         });
     },
     
-    getLoginInfoInTableField: function(callback){
-        Data.Req.reqLoginInfoInTableField(function(res){
-            callback(res); 
-        });
-    },
-    
     saveLoginInfoInTableField: function(data, callback){
         Data.Req.reqSaveLoginInfoInTableField(data, function(res){
             callback(res);
