@@ -934,6 +934,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.selectdata4authority.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/auth/factory.filteritem.auth.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.authority.stringcombo.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.logininfo.combo.js",
 
                 "com/fr/bi/web/js/modules/filter/filteritems/generalquery/item.generalquery.notypefilter.js",
 

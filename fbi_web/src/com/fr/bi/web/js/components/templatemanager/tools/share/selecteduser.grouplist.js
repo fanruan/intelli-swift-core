@@ -30,7 +30,8 @@ BI.SelectedUserGroupList = BI.inherit(BI.Widget, {
                 }),
                 layouts: [{
                     type: "bi.left",
-                    hgap: 5
+                    hgap: 5,
+                    vgap: 2
                 }]
             });
             group.on(BI.Controller.EVENT_CHANGE, function(){

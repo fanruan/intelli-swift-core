@@ -108,7 +108,7 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 break;
             case BICst.TARGET_FILTER_STRING.BELONG_USER:
             case BICst.TARGET_FILTER_STRING.NOT_BELONG_USER:
-                this._createTargetStringBelongCombo(initData);
+                this._createLoginInfoCombo(initData);
                 break;
             case BICst.TARGET_FILTER_STRING.CONTAIN:
             case BICst.TARGET_FILTER_STRING.NOT_CONTAIN:
@@ -137,6 +137,24 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
 
         this.filterWidget.on(BI.AuthoritySelectFieldDataCombo.EVENT_CONFIRM, function () {
+            self._setNodeData({
+                filter_value : this.getValue()
+            });
+            o.afterValueChange.apply(self, arguments);
+        });
+        BI.isNotNull(initData) && this.filterWidget.setValue(initData);
+        return this.filterWidget;
+    },
+
+    _createLoginInfoCombo: function(initData){
+        var self = this, o = this.options;
+        this.filterWidget = BI.createWidget({
+            type: "bi.login_info_combo",
+            field_type: o.field.field_type,
+            width: 200,
+            height: this._constant.BUTTON_HEIGHT
+        });
+        this.filterWidget.on(BI.LoginInfoCombo.EVENT_CHANGE, function(){
             self._setNodeData({
                 filter_value : this.getValue()
             });
