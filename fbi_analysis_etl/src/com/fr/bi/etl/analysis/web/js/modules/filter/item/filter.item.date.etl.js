@@ -12,7 +12,7 @@ BI.DateETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
 
     _refreshFilterWidget: function (value) {
         switch (this.filter_type) {
-            case BICst.FILTER_DATE.CONTAINS:
+            case BICst.FILTER_DATE.CONTAINS_DAY:
                 this._createMultiChooserPane();
                 break;
             case BICst.FILTER_DATE.BELONG_DATE_RANGE:
