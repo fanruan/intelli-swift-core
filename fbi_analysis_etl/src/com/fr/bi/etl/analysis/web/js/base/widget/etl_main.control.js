@@ -30,13 +30,14 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
         namePopover.on(BI.PopoverSection.EVENT_CLOSE, function () {
             BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
         })
-        namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v) {
+        namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v, des) {
             model.set('id', BI.UUID());
             model.set('name', v);
+            model.set('describe', des)
             self._doSave(widget, model);
         });
         BI.Popovers.remove("etlTableName");
-        BI.Popovers.create("etlTableName", namePopover, {width : 400, height : 320, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
+        BI.Popovers.create("etlTableName", namePopover, {width : 450, height : 370, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
         BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
         namePopover.populate(model.getTableDefaultName());
         namePopover.setTemplateNameFocus();

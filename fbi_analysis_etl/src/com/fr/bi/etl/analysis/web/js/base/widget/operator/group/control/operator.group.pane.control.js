@@ -15,7 +15,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         BI.each(view, function(idx, vc){
             BI.each(vc, function(id, v){
                 if(BI.has(dimensions, v)){
-                    var dm = widget.createDimension(v, idx, dimensions[v], parent);
+                    var dm = widget.createDimension(v, idx, dimensions[v]);
                     widget.regions[idx].addDimension(dm)
                 }
             });
@@ -140,7 +140,24 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
     
     _refreshPreview : function (widget, model) {
         widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
-    }
+    },
 
+    getMinMaxValueForNumberCustomGroup : function (fieldName,callback, widget, model) {
+        var table = {};
+        table[ETLCst.ITEMS] = model.get(ETLCst.PARENTS)
+        return BI.ETLReq.reqFieldMinMaxValues({
+            table : table,
+            field : fieldName
+        }, callback)
+    },
+
+    getValuesForCustomGroup : function (fieldName,callback, widget, model) {
+        var table = {};
+        table[ETLCst.ITEMS] = model.get(ETLCst.PARENTS)
+        return BI.ETLReq.reqFieldValues({
+            table : table,
+            field : fieldName
+        }, callback)
+    }
 
 })

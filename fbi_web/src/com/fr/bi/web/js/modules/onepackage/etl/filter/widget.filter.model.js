@@ -103,9 +103,10 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
     },
 
     populate: function (info) {
-        var etlValue = info.tableInfo.etl_value;
+        var etlValue = info.tableInfo.etl_value || {};
+        var filter_value = etlValue.filter_value || {};
         this.reopen = info.reopen;
-        this.filter_value = info.reopen === true ? [etlValue.filter_value] : [];
+        this.filter_value = info.reopen === true ? [filter_value] : [];
         this.tables = info.tableInfo.tables;
         this.old_tables = BI.extend(info.tableInfo, {id: BI.UUID()});
         this.isGenerated = info.isGenerated;

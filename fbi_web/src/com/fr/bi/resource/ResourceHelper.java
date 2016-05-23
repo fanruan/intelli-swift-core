@@ -439,6 +439,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/selectdata/tab.selectdata.css",
                 "com/fr/bi/web/css/modules/selectdata/preview/pane.preview.selectdata.css",
                 "com/fr/bi/web/css/modules/selectdata/relationtable/node.relationtables.css",
+                "com/fr/bi/web/css/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.css",
 
                 "com/fr/bi/web/css/modules/selectdata4filter/node/node.level0.dimension.css",
 
@@ -819,6 +820,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level2.js",
 
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.js",
+                "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.button.level0.js",
 
                 "com/fr/bi/web/js/modules/selectdata/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/treenode/node.level1.js",
@@ -1197,6 +1199,7 @@ public class ResourceHelper {
 
                 //展示表格
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.model.js",
 
 
                 "com/fr/bi/web/js/fragments/multirelation/expander.multirelation.js",
@@ -1555,7 +1558,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/selectdata/tree/node/node.level1.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/treeitem/item.level0.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/treeitem/item.level1.css",
-                "com/fr/bi/web/css/widget/selectdata/tree/treeitem4reusedimension/calctarget.item.level0.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/expander.selectdata.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/tree.selectdata.css",
                 "com/fr/bi/web/css/widget/selectdata/searchpane/segment.search.selectdata.css",
@@ -2080,9 +2082,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.comparearea.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.comparebar.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.compareaxis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.fallaxis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.rangearea.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.combine.js",

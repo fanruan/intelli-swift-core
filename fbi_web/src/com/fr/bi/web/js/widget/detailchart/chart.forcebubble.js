@@ -140,18 +140,6 @@ BI.extend(BI.ForceBubbleChart, {
             },
             "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
             "plotBorderColor": "rgba(255,255,255,0)",
-            "title": {
-                "borderRadius": 0,
-                "style": {
-                    "fontFamily": "Microsoft YaHei UI",
-                    "color": "rgba(136,136,136,1.0)",
-                    "fontSize": "16pt",
-                    "fontWeight": ""
-                },
-                "useHtml": false,
-                "text": "力学气泡图",
-                "align": "center"
-            },
             "tools": {
                 "hidden": true,
                 "toImage": {"enabled": true},

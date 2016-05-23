@@ -316,7 +316,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     text: dimensionName,
                     title: dimensionName,
                     value: dimension,
-                    drag: self._createDrag(dimensionName)
+                    drag: self._createDrag(dimensionName, dimensions)
                 });
             } else {
                 dimensionStructure.push({

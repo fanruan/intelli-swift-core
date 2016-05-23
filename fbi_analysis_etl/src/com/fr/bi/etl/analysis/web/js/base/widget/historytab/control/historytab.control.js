@@ -90,7 +90,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
         })
         var item = model.findItem(id)
-        namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v) {
+        namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v, des) {
             var sheets = [BI.extend(BI.deepClone(item), {
                 value:model.getValue("value"),
                 table_name:v
@@ -101,10 +101,11 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             res["table"] = table;
             res["id"] = BI.UUID();
             res["name"] = v;
+            res['describe'] = des
             BI.ETLReq.reqSaveTable(res, BI.emptyFn);
         });
         BI.Popovers.remove("etlTableName");
-        BI.Popovers.create("etlTableName", namePopover, {width : 400, height : 320, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
+        BI.Popovers.create("etlTableName", namePopover, {width : 450, height : 370, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
         BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
         namePopover.populate(model.getValue("table_name") + "-" + ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[item.operatorValue].text);
         namePopover.setTemplateNameFocus();

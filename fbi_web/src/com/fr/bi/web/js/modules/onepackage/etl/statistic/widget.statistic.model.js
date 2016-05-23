@@ -284,5 +284,17 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
         });
         result = result || {};
         return result.text;
+    },
+
+    getValuesForCustomGroup: function (id, callback) {
+        BI.Utils.getConfDataByField(this.getTableStructure(), this.getDimension(id)._src.field_name, {}, function (unGroupedFields) {
+            callback(unGroupedFields)
+        });
+    },
+
+    getMinMaxValueForNumberCustomGroup: function(id, callback){
+        BI.Utils.getConfNumberFieldMaxMinValue(this.getTableStructure(), this.getDimension(id)._src.field_name, function(res){
+            callback(res);
+        })
     }
 });
