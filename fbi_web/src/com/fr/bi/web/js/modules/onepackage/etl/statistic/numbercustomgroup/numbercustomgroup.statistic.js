@@ -37,7 +37,7 @@ BI.NumberCustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
                 text: BI.i18nText("BI-Loading")
             });
         }
-        BI.Utils.getConfNumberFieldMaxMinValue(this.options.table, o.fieldName, function(res){
+        o.model.getMinMaxValueForNumberCustomGroup(o.dId, function(res){
             BI.createWidget({
                 type: "bi.label",
                 element: north,
@@ -56,7 +56,8 @@ BI.NumberCustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
         var self = this;
         this.group = BI.createWidget({
             type: "bi.conf_number_custom_group",
-            fieldName: this.options.fieldName
+            dId: this.options.dId,
+            model: this.options.model
         });
 
         this.group.on(BI.NumberIntervalCustomGroup.EVENT_ERROR,function(){
@@ -121,9 +122,7 @@ BI.NumberCustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
     },
 
     populate: function(group){
-        this.group.populate(BI.extend(group, {
-            table: this.options.table
-        }));
+        this.group.populate(group);
     }
 });
 

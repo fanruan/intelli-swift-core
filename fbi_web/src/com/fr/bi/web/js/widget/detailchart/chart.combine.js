@@ -37,7 +37,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             "type": "value",
             "lineWidth": 0,
             "showLabel": true,
-            "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+            //"formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
             "enableTick": true,
             "gridLineWidth": 0,
             "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "11pt", "fontWeight": ""},
@@ -73,26 +73,48 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         newxAxis.gridLineWidth = 0;
         newxAxis.type = "category";
         config.xAxis.push(newxAxis);
-        if(typess[0] === BICst.WIDGET.AXIS || typess[0] === BICst.WIDGET.AREA ||
-            typess[0] === BICst.WIDGET.RADAR || typess[0] === BICst.WIDGET.BUBBLE || typess[0] === BICst.WIDGET.SCATTER){
-            config.yAxis = [];
-            BI.each(o.types, function(idx, type){
-                if(BI.isEmptyArray(type)){
-                    return;
-                }
-                var newYAxis = self._axisConfig();
-                newYAxis.position = idx > 0 ? "right" : "left";
-                newYAxis.gridLineWidth = idx > 0 ? 0 : 1;
-                newYAxis.reversed = items[idx][0].reversed || false;
-                if(items[idx][0].name === ""){
-                    config.legend.enabled = false;
-                }
-                config.yAxis.push(newYAxis);
-            });
-        }
-        if(typess[0] === BICst.WIDGET.BAR){
-            newxAxis.type = "value";
-            newxAxis.formatter = "function(){if(this>0) return this; else return this*(-1); }";
+        switch (typess[0]){
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+                config.yAxis = [];
+                BI.each(o.types, function(idx, type){
+                    if(BI.isEmptyArray(type)){
+                        return;
+                    }
+                    var newYAxis = self._axisConfig();
+                    newYAxis.position = idx > 0 ? "right" : "left";
+                    newYAxis.gridLineWidth = idx > 0 ? 0 : 1;
+                    newYAxis.reversed = items[idx][0].reversed || false;
+                    if(items[idx][0].name === ""){
+                        config.legend.enabled = false;
+                    }
+                    config.yAxis.push(newYAxis);
+                });
+                break;
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+                newxAxis.type = "value";
+                newxAxis.formatter = "function(){if(this>0) return this; else return this*(-1); }";
+                break;
+
         }
         return [result, config];
     },

@@ -1,5 +1,10 @@
 BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
+    constants: {
+        BUBBLE_REGION_COUNT: 4,
+        SCATTER_REGION_COUNT: 3
+    },
+
     _init: function(){
         BI.ChartDisplayModel.superclass._init.apply(this, arguments);
     },
@@ -64,17 +69,17 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if (BI.isNotNull(result) || BI.size(view) < this.constants.BUBBLE_REGION_COUNT) {
             return [];
         }
-        return BI.map(data.c, function (idx, item) {
+        return [BI.map(data.c, function (idx, item) {
             var obj = {};
             obj.data = [{
                 x: item.s[1],
                 y: item.s[0],
-                z: item.s[2],
+                size: item.s[2],
                 targetIds: [targetIds[0], targetIds[1], targetIds[2]]
             }];
             obj.name = item.n;
             return obj;
-        });
+        })];
     },
 
     _formatDataForScatter: function (data) {
@@ -87,7 +92,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if (BI.isNotNull(result) || BI.size(view) < this.constants.SCATTER_REGION_COUNT) {
             return [];
         }
-        return BI.map(data.c, function (idx, item) {
+        return [BI.map(data.c, function (idx, item) {
             var obj = {};
             obj.name = item.n;
             obj.data = [{
@@ -96,7 +101,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 targetIds: [targetIds[0], targetIds[1]]
             }];
             return obj;
-        });
+        })];
     },
 
     _formatDataForCommon: function (data) {
@@ -174,16 +179,18 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForFallAxis: function(data){
         var items = this._formatDataForCommon(data);
         var tables = [], sum = 0;
-        BI.each(items.data, function(i, t){
-            if(t.y < 0){
-                tables.push([t.x, t.y, sum + t.y, t.targetIds]);
-            }else{
-                tables.push([t.x, t.y, sum, t.targetIds]);
-            }
-            sum += t.y;
+        BI.each(items, function(idx, item){
+            BI.each(item.data, function(i, t){
+                if(t.y < 0){
+                    tables.push([t.x, t.y, sum + t.y, t.targetIds]);
+                }else{
+                    tables.push([t.x, t.y, sum, t.targetIds]);
+                }
+                sum += t.y;
+            });
         });
 
-        return BI.map(BI.makeArray(2, null), function(idx, item){
+        return [BI.map(BI.makeArray(2, null), function(idx, item){
             return {
                 "data": BI.map(tables, function(id, cell){
                     var axis = BI.extend({targetIds: cell[3]}, {
@@ -207,7 +214,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 stack: "stackedFall",
                 name: ""
             };
-        });
+        })];
     },
 
     _formatDataForRangeArea: function(data){
@@ -249,20 +256,25 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 it.stack = id;
             });
         });
+        return items;
     },
 
     _formatDataForCompareBar: function(data){
         var items = this._formatDataForBar(data);
+        var result = [];
         BI.each(items, function(idx, item){
            BI.each(item, function(id, it){
-               BI.each(it, function(i, t){
+               BI.each(it.data, function(i, t){
                    if(idx === 0){
                        t.x = -t.x;
                    }
                });
            })
         });
-        return items;
+        BI.each(items, function(idx, item){
+            result = BI.concat(result, item);
+        });
+        return [result];
     },
 
     parseChartData: function (data) {
@@ -307,11 +319,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
-                return this._formatDataForCommon(data);
+                return [this._formatDataForCommon(data)];
         }
     },
 
-    getWidgetData: function(callback){
+    getWidgetData: function(type, callback){
         var self = this, o = this.options;
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             var data = self.parseChartData(jsonData.data);

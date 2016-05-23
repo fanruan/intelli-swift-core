@@ -67,7 +67,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         var type = BI.Utils.getWidgetTypeByID(o.wId);
         this.tab.setSelect(type);
         var selectedTab = this.tab.getSelectedTab();
-        this.model.getWidgetData(function(types, data){
+        this.model.getWidgetData(type, function(types, data){
             selectedTab.setTypes(types);
             selectedTab.populate(data);
         });

@@ -82,11 +82,11 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         this.widgetItems = {};
         this.searcher = BI.createWidget({
             type: "bi.select_data_tree",
-            el: {
-                el: {
-                    chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
-                }
-            },
+            //el: {
+            //    el: {
+            //        chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
+            //    }
+            //},
             element: this.element,
             itemsCreator: function (op, populate) {
                 if (BI.isNotNull(op.keyword) && BI.isNotNull(op.searchType)) {
@@ -316,7 +316,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     text: dimensionName,
                     title: dimensionName,
                     value: dimension,
-                    drag: self._createDrag(dimensionName)
+                    drag: self._createDrag(dimensionName, dimensions)
                 });
             } else {
                 dimensionStructure.push({
