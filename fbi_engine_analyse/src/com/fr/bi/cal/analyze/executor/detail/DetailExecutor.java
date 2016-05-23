@@ -103,6 +103,9 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     public List<List> getData() {
+        if (target == null){
+            return new ArrayList<List>();
+        }
         GroupValueIndex gvi = createDetailViewGvi();
         paging.setTotalSize(gvi.getRowsCountWithData());
         final List<List> data = new ArrayList<List>();

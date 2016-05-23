@@ -65,7 +65,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
         //定时设置
         var timeSetting = this._createTimeSetting();
-
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
@@ -88,7 +87,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     el: {
                         type: "bi.button",
                         text: BI.i18nText("BI-Update_Table_Immedi"),
-                        height: 30
+                        height: 30,
+                        handler: function() {
+                            BI.Utils.updateCubeByTable(self.model.table, function(){
+                            });
+                        }
                     },
                     width: 105
                 }],

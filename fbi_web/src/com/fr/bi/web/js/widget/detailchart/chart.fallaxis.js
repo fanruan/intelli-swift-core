@@ -23,20 +23,29 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
         });
     },
 
-    formatItems: function (items) {
+    setTypes: function(types){
+    },
+
+    populate: function (items) {
+        var self = this;
+        this.FallAxisChart.populate(BI.FallAxisChart.formatItems(items));
+    },
+
+    resize: function () {
+        this.FallAxisChart.resize();
+    }
+});
+BI.extend(BI.FallAxisChart, {
+    formatItems: function (item) {
         var tables = [], sum = 0;
-        BI.each(items, function(idx, item){
-            BI.each(item, function(id, it){
-                var name = BI.keys(it)[0];
-                BI.each(it[name], function(i, t){
-                    if(t.y < 0){
-                        tables.push([t.x, t.y, sum + t.y, t.options]);
-                    }else{
-                        tables.push([t.x, t.y, sum, t.options]);
-                    }
-                    sum += t.y;
-                })
-            });
+        var name = BI.keys(item)[0];
+        BI.each(item[name], function(i, t){
+            if(t.y < 0){
+                tables.push([t.x, t.y, sum + t.y, t.options]);
+            }else{
+                tables.push([t.x, t.y, sum, t.options]);
+            }
+            sum += t.y;
         });
 
         return BI.map(BI.makeArray(2, null), function(idx, item){
@@ -67,26 +76,6 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
         });
     },
 
-    setTypes: function(types){
-    },
-
-    populate: function (items) {
-        var self = this;
-        var config = BI.FallAxisChart.formatConfig();
-        config.plotOptions.click = function(){
-            self.fireEvent(BI.FallAxisChart.EVENT_CHANGE, {category: this.category,
-                seriesName: this.seriesName,
-                value: this.value,
-                options: this.pointOption.options});
-        };
-        this.FallAxisChart.populate(this.formatItems(items), config);
-    },
-
-    resize: function () {
-        this.FallAxisChart.resize();
-    }
-});
-BI.extend(BI.FallAxisChart, {
     formatConfig: function () {
         return {
             "plotOptions": {

@@ -16,6 +16,7 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
                 el:{
                     type : 'bi.left_pointer_button',
                     pointerWidth : ETLCst.ENTERBUTTON.POINTERWIDTH,
+                    title:BI.i18nText("BI-SPA_Detail"),
                     iconCls : "icon-add",
                     height : ETLCst.ENTERBUTTON.HEIGHT,
                     width : ETLCst.ENTERBUTTON.WIDTH,

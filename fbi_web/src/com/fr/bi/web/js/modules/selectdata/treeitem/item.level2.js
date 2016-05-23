@@ -121,6 +121,7 @@ BI.DetailSelectDataLevel2Item = BI.inherit(BI.Single, {
                     self.unHighLight();
                 }
             }
+            self.setSelected(false);
         });
     },
 

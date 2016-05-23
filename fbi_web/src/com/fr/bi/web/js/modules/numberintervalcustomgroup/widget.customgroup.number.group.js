@@ -133,20 +133,20 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
             BI.extend(item, {
                 min: 0,
                 max: this.constants.initialMax,
-                closemin: 1,
-                closemax: 1
+                closemin: true,
+                closemax: true
             });
         } else {
             var beforeButton = this.buttons[this.buttons.length - 1];
             var beforeValue = beforeButton.getValue();
             beforeButton.setValue(BI.extend(beforeValue, {
-                closemax: 0
+                closemax: false
             }));
             BI.extend(item, {
                 min: BI.parseInt(beforeValue.max),
                 max: BI.parseInt(beforeValue.max) + this.constants.initialMax,
-                closemin: !beforeValue.closemax ? 1 : 0,
-                closemax: 1
+                closemin: !beforeValue.closemax,
+                closemax: true
             });
         }
         this.buttongroup.addItems([item]);

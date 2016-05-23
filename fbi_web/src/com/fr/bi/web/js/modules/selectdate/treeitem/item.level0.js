@@ -149,6 +149,7 @@ BI.SelectDateLevel0Item = BI.inherit(BI.Single, {
         BI.Utils.isSrcUsedBySrcID(o.id) === true && enable();
         BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function () {
             enable();
+            self.setSelected(false);
         });
     },
 

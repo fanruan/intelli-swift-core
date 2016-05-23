@@ -135,7 +135,7 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
         }
     },
     
-    createDimension:function(id, regionType, dm, parent){
+    createDimension:function(id, regionType, dm){
         var self = this;
         var cls = "bi-string-target-container";
         if (BI.parseInt(regionType) === BI.parseInt(BICst.REGION.DIMENSION1)){
@@ -180,10 +180,24 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
 
                 getTextByType : function () {
                     return self.controller.getTextByType.apply(self.controller, arguments)
+                },
+
+                getMinMaxValueForNumberCustomGroup : function (dId, callback) {
+                    return self.controller.getMinMaxValueForNumberCustomGroup.apply(self.controller, [dm._src.field_name, callback])
+                },
+
+                getValuesForCustomGroup : function (dId, callback) {
+                    return self.controller.getValuesForCustomGroup.apply(self.controller, [dm._src.field_name, function(res){
+                        var items =[];
+                        BI.each(res.value, function (i, item) {
+                            items.push(item.value);
+                        })
+                        callback(items)
+                    }])
                 }
             },
-            fieldName: dm._src.field_name,
-            table: parent
+            fieldName: dm._src.field_name
+          
         });
         dimension.on(BI.AbstractDimension.EVENT_DESTROY, function(){
             self.controller.deleteDimension(id);

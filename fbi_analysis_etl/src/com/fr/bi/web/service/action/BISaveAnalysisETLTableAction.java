@@ -2,7 +2,6 @@ package com.fr.bi.web.service.action;
 
 import com.finebi.cube.api.BICubeManager;
 import com.fr.base.FRContext;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
@@ -19,8 +18,6 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by 小灰灰 on 2016/4/7.
@@ -32,6 +29,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         String newId = WebUtils.getHTTPRequestParameter(req, "new_id");
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
+        String describe = WebUtils.getHTTPRequestParameter(req, "describe");
         AnalysisBusiTable table = null;
         AnalysisTableSource source = null;
         if (StringUtils.isEmpty(newId)){
@@ -39,7 +37,6 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
             String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
             JSONObject jo = new JSONObject(tableJSON);
             JSONArray items = jo.getJSONArray(Constants.ITEMS);
-            Map<BICore, String> sheets = new HashMap<BICore, String>();
             BIConfigureManagerCenter.getAliasManager().setAliasName(tableId, tableName, userId);
             source = AnalysisETLSourceFactory.createTableSource(items, userId);
             table.setSource(source);

@@ -67,6 +67,9 @@ public class UserWidget {
     private List<List> getDate(int start, int end) {
         List<List> values = new ArrayList<List>();
         for (int i = start; i< end; i++){
+            if (!tempValue.containsKey(i)){
+                break;
+            }
             values.add(tempValue.get(i));
         }
         return values;
@@ -138,6 +141,7 @@ public class UserWidget {
     private void createDetailData(int start, int end) {
         int step = end - start;
         Paging paging = PagingFactory.createPaging(step);
+        paging.setPageSize(step);
         int page = start / step;
         paging.setCurrentPage(page);
         DetailExecutor exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
@@ -148,16 +152,17 @@ public class UserWidget {
         }
         if (data.size() != step ){
             maxRow = row + data.size();
-        }
-        paging.setCurrentPage(page + 1);
-        exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
-        data =  exe.getData();
-        row = (page + 1) * step;
-        for (int i =0; i < data.size(); i++){
-            tempValue.put(i + row, data.get(i));
-        }
-        if (data.size() != step ){
-            maxRow = row + data.size();
+        } else {
+            paging.setCurrentPage(page + 1);
+            exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
+            data =  exe.getData();
+            row = (page + 1) * step;
+            for (int i =0; i < data.size(); i++){
+                tempValue.put(i + row, data.get(i));
+            }
+            if (data.size() != step ){
+                maxRow = row + data.size();
+            }
         }
     }
 

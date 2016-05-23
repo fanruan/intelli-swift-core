@@ -243,7 +243,12 @@ public class BIRouterTest extends TestCase {
             /**
              * 随便发个消息
              */
-//            router.deliverMessage(BIMessageTestTool.generateMessageTb());
+//            try {
+//                router.deliverMessage(BIMessageTestTool.generateMessageTb());
+//            } catch (Exception e) {
+//                return ;
+//            }
+//            assertFalse(true);
 
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);

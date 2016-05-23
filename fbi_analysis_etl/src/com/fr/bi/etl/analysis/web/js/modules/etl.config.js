@@ -93,7 +93,7 @@ BICst.ETL_FILTER_NUMBER_N_ITEMS = [{
 }]
 BICst.ETL_FILTER_DATE_COMBO = [[{
     text: BI.i18nText("BI-ETL_Filter_Belongs"),
-    value: BICst.FILTER_DATE.CONTAINS
+    value: BICst.FILTER_DATE.CONTAINS_DAY
 }],[{
     text: BI.i18nText("BI-ETL_Date_In_Range"),
     value: BICst.FILTER_DATE.BELONG_DATE_RANGE
