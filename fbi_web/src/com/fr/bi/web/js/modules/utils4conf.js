@@ -441,12 +441,11 @@ BI.extend(BI.Utils, {
             callback(res);
         })
     },
-    updateCubeByTable: function (data, callback) {
-        Data.Req.updateCubeByTable(data, function () {
+    generateCubeByTable: function (data, callback) {
+        Data.Req.reqGenerateCubeByTable(data, function () {
             callback();
         });
     },
-
 
     getPrimaryTablesByTable4Conf: function(table, callback) {
         Data.Req.reqPrimaryTablesByTable(table, function(res){

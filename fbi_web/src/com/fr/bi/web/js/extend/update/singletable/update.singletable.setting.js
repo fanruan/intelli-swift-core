@@ -65,6 +65,22 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
         //定时设置
         var timeSetting = this._createTimeSetting();
+        this.immediateButton = BI.createWidget({
+            type: "bi.button",
+            text: BI.i18nText("BI-Update_Table_Immedi"),
+            height: 30,
+            handler: function () {
+                self.immediateButton.setEnable(false);
+                self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                console.log('false');
+                BI.Utils.generateCubeByTable(self.model.table.id, function () {
+                    self._createCheckInterval();
+                });
+
+
+            }
+        });
+
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
@@ -84,15 +100,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     el: this.updateType,
                     width: "fill"
                 }, {
-                    el: {
-                        type: "bi.button",
-                        text: BI.i18nText("BI-Update_Table_Immedi"),
-                        height: 30,
-                        handler: function() {
-                            BI.Utils.updateCubeByTable(self.model.table, function(){
-                            });
-                        }
-                    },
+                    el: this.immediateButton,
                     width: 105
                 }],
                 hgap: 5,
@@ -412,7 +420,23 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             together_never: this.globalUpdateSet.getValue()[0],
             time_list: this.timeSettingGroup.getValue()
         }
+    },
+    _createCheckInterval: function () {
+        var self = this;
+        self.cubeInterval=setInterval(function () {
+            BI.Utils.checkCubeStatusByTable(self.model.table, function (data) {
+                    if (data.isGenerated == true) {
+                        self.immediateButton.setEnable(true);
+                        self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
+                        clearInterval(self.cubeInterval);
+                    }
+                }
+            )
+
+        }, 2000)
     }
+
+
 });
 BI.UpdateSingleTableSetting.EVENT_CHANGE = "EVENT_CHANGE";
 BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW = "EVENT_OPEN_PREVIEW";

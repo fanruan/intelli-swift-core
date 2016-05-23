@@ -25,17 +25,13 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
 
         long userId = ServiceUtils.getCurrentUserID(req);
-        String connectionName = WebUtils.getHTTPRequestParameter(req, "connectionName");
-        String tableName = WebUtils.getHTTPRequestParameter(req, "tableName");
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
-        connectionName=null==connectionName?"":connectionName;
-        tableName=null==tableName?"":tableName;
         tableId=null==tableId?"":tableId;
         BICubeManagerProvider cubeManager = BIConfigureManagerCenter.getCubeManager();
-        if ("".equals(connectionName)||"".equals(tableName)||"".equals(tableId)){
+        if ("".equals(tableId)){
             cubeManager.addTask(new BuildCubeTask(new BIUser(userId)), userId);
         }else{
-            BITable biTable=new BITable(tableId,tableName);
+            BITable biTable=new BITable(tableId);
             cubeManager.addTask(new BuildCubeTask(new BIUser(userId),biTable), userId);
         }
     }

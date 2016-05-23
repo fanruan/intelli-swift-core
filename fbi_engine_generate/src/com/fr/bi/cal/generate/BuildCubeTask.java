@@ -20,6 +20,7 @@ import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.engine.CubeBuildStuffManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.CubeTask;
@@ -61,6 +62,7 @@ public class BuildCubeTask implements CubeTask {
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+
 //        cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
 //        cubeBuildStuffManager.initialCubeStuff();
     }
@@ -115,14 +117,14 @@ public class BuildCubeTask implements CubeTask {
         if(null!=biTable){
         Set<ITableSource> tableSourceSet = new HashSet<ITableSource>();
         for (ITableSource iTableSource : cubeBuildStuffManager.getAllSingleSources()) {
-            if (iTableSource.getDbTable().getTableName().equals(biTable.getTableName())) {
+            if(iTableSource.equals(BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(biTable.getID(),biUser))){
                 tableSourceSet.add(iTableSource);
+                cubeBuildStuffManager.setAllSingleSources(tableSourceSet);
+                Set<List<Set<ITableSource>>> calculateTableSource = cubeBuildStuffManager.calculateTableSource(tableSourceSet);
+                cubeBuildStuffManager.setDependTableResource(calculateTableSource);
                 break;
             }
         }
-        cubeBuildStuffManager.setAllSingleSources(tableSourceSet);
-            Set<List<Set<ITableSource>>> calculateTableSource = cubeBuildStuffManager.calculateTableSource(tableSourceSet);
-            cubeBuildStuffManager.setDependTableResource(calculateTableSource);
         }
 
         manager.registerDataSource(cubeBuildStuffManager.getAllSingleSources());
