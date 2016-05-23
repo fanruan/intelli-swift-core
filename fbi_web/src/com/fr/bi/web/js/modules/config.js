@@ -136,7 +136,7 @@ BICst.DASHBOARD_WIDGETS = [[{
     }, {
         text: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
         title: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
-        value: BICst.WIDGET.COMBINE_CHART,
+        value: BICst.WIDGET.MULTI_AXIS_COMBINE_CHART,
         cls: "excel-upload-tip-font"
     }]
 }, {
