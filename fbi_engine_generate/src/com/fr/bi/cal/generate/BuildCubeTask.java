@@ -31,6 +31,7 @@ import com.fr.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -39,6 +40,9 @@ import java.util.concurrent.Future;
  *
  * @author Connery
  * @since 4.0
+ *
+ * edit by wuk
+ * 增加单表更新功能
  */
 public class BuildCubeTask implements CubeTask {
 
@@ -48,6 +52,7 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
+    /*单表更新*/
     private BITable biTable;
 
     public BuildCubeTask(BIUser biUser) {
@@ -59,7 +64,7 @@ public class BuildCubeTask implements CubeTask {
 //        cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
 //        cubeBuildStuffManager.initialCubeStuff();
     }
-
+    /*单表更新*/
     public BuildCubeTask(BIUser biUser, BITable biTable) {
         this.biUser = biUser;
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
@@ -106,15 +111,20 @@ public class BuildCubeTask implements CubeTask {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuffManager.getSources());
         operationManager.initialWatcher();
+            /*单表更新*/
         if(null!=biTable){
         Set<ITableSource> tableSourceSet = new HashSet<ITableSource>();
         for (ITableSource iTableSource : cubeBuildStuffManager.getAllSingleSources()) {
             if (iTableSource.getDbTable().getTableName().equals(biTable.getTableName())) {
                 tableSourceSet.add(iTableSource);
+                break;
             }
         }
         cubeBuildStuffManager.setAllSingleSources(tableSourceSet);
+            Set<List<Set<ITableSource>>> calculateTableSource = cubeBuildStuffManager.calculateTableSource(tableSourceSet);
+            cubeBuildStuffManager.setDependTableResource(calculateTableSource);
         }
+
         manager.registerDataSource(cubeBuildStuffManager.getAllSingleSources());
         manager.registerRelation(cubeBuildStuffManager.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuffManager.getRelationPaths());

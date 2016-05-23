@@ -89,7 +89,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                         text: BI.i18nText("BI-Update_Table_Immedi"),
                         height: 30,
                         handler: function() {
-                            console.log(self.model.table);
                             BI.Utils.updateCubeByTable(self.model.table, function(){
                             });
                         }
