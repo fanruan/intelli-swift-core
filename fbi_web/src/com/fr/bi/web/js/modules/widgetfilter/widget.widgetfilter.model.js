@@ -120,6 +120,28 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
     },
     
+    parseDimensionFilter: function(dimId, filter) {
+        var self = this;
+        if(filter.filter_type === BICst.FILTER_TYPE.AND || filter.filter_type === BICst.FILTER_TYPE.OR) {
+            var children = [];
+            BI.each(filter.filter_value, function(i, value){
+                children.push(self.parseDimensionFilter(dimId, value));
+            });
+            return {
+                id: BI.UUID(),
+                value: filter.filter_type,
+                children: children
+            };
+        } else {
+            return {
+                id: BI.UUID(),
+                type: "bi.dimension_filter_item",
+                tId: dimId,
+                filter: filter
+            }
+        }
+    },
+    
     parseGeneralQueryFilter: function(filter){
         var self = this;
         if(BI.isNull(filter)) {

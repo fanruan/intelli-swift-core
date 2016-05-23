@@ -10,7 +10,7 @@ BI.SimpleTreeView = BI.inherit(BI.Widget, {
         return BI.extend(BI.SimpleTreeView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-simple-tree",
             itemsCreator: BI.emptyFn,
-            items: []
+            items: null
         })
     },
     _init: function () {
@@ -27,7 +27,7 @@ BI.SimpleTreeView = BI.inherit(BI.Widget, {
                     });
                     self.structure.initTree(BI.Tree.transformToTreeFormat(items));
                 };
-                if (BI.isNotEmptyArray(o.items)) {
+                if (BI.isNotNull(o.items)) {
                     fn(o.items);
                 } else {
                     o.itemsCreator(op, fn);
@@ -70,6 +70,10 @@ BI.SimpleTreeView = BI.inherit(BI.Widget, {
         };
         track(val);
         return result;
+    },
+    
+    empty: function(){
+        this.tree.empty();  
     },
 
     getValue: function () {
