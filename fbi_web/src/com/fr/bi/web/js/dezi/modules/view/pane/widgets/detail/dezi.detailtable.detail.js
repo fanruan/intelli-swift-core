@@ -174,6 +174,26 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         });
     },
 
+
+    /**
+     * 图表样式设置
+     * @returns {*}
+     * @private
+     */
+    _createStyle: function () {
+        var self = this;
+        this.chartSetting = BI.createWidget({
+            type: "bi.chart_setting",
+            chartType: this.model.get("type"),
+            settings: this.model.get("settings")
+        });
+        this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
+            self.model.set("settings", BI.extend(self.model.get("settings"), v));
+        });
+        return this.chartSetting;
+    },
+
+
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();
