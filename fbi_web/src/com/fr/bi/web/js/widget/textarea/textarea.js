@@ -36,7 +36,7 @@ BI.TextArea = BI.inherit(BI.Widget, {
         });
 
         this.toolbar.on(BI.TextToolbar.EVENT_CHANGE, function () {
-            self.textarea.setValue(this.getValue());
+            self.textarea.setStyle(this.getValue());
             self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments);
         });
 
@@ -48,6 +48,7 @@ BI.TextArea = BI.inherit(BI.Widget, {
             el: this.textarea,
             popup: {
                 el: this.toolbar,
+                stopEvent: true,
                 minWidth: 253,
                 height: 30,
                 stopPropagation: false

@@ -1,4 +1,4 @@
-BI.TextValueCheckComboPopup = BI.inherit(BI.Widget, {
+BI.TextValueCheckComboPopup = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.TextValueCheckComboPopup.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-text-icon-popup",
@@ -11,7 +11,6 @@ BI.TextValueCheckComboPopup = BI.inherit(BI.Widget, {
         var o = this.options, self = this;
         this.popup = BI.createWidget({
             type: "bi.button_group",
-            element: this.element,
             items: this._formatItems(o.items),
             chooseType: o.chooseType,
             layouts: [{
@@ -24,7 +23,13 @@ BI.TextValueCheckComboPopup = BI.inherit(BI.Widget, {
             if (type === BI.Events.CLICK) {
                 self.fireEvent(BI.TextValueCheckComboPopup.EVENT_CHANGE, val, obj);
             }
-        })
+        });
+
+        BI.createWidget({
+            type: "bi.vertical",
+            element: this.element,
+            items: [this.popup]
+        });
     },
 
     _formatItems: function (items) {
@@ -38,6 +43,7 @@ BI.TextValueCheckComboPopup = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
+        BI.TextValueCheckComboPopup.superclass.populate.apply(this, arguments);
         this.popup.populate(this._formatItems(items));
     },
 
