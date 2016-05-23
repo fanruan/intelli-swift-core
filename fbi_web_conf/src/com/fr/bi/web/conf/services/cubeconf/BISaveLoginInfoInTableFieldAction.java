@@ -1,11 +1,9 @@
 package com.fr.bi.web.conf.services.cubeconf;
 
-import com.fr.bi.conf.base.cube.data.BILoginInfoInTableField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
-import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,14 +16,8 @@ public class BISaveLoginInfoInTableFieldAction extends AbstractBIConfigureAction
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        String table = WebUtils.getHTTPRequestParameter(req, "table_field");
-        JSONObject tableJO = new JSONObject();
-        if(table != null) {
-            tableJO = new JSONObject(table);
-        }
-        BILoginInfoInTableField tableField = new BILoginInfoInTableField();
-        tableField.parseJSON(tableJO);
-        BIConfigureManagerCenter.getCubeConfManager().saveLoginInfoInTableField(tableField);
+        String fieldId = WebUtils.getHTTPRequestParameter(req, "field_id");
+        BIConfigureManagerCenter.getCubeConfManager().saveLoginInfoField(fieldId);
         try {
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         } catch (Exception e) {

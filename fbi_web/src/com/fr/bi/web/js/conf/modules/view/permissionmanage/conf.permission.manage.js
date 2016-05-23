@@ -129,7 +129,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             authoritySettings.login_info = loginInfo;
             Data.SharingPool.put("authority_settings", authoritySettings);
             self._refreshLoginInfo();
-            BI.Utils.saveLoginInfoInTableField({"table_field": loginInfo}, function(){});
+            BI.Utils.saveLoginInfoInTableField({"field_id": loginInfo}, function(){});
             BI.Popovers.remove(BICst.LOGIN_INFO_POPOVER);
         });
         BI.Popovers.create(BICst.LOGIN_INFO_POPOVER, loginPane).open(BICst.LOGIN_INFO_POPOVER);

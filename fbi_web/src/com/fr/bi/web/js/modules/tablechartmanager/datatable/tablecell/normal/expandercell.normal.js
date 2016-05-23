@@ -15,46 +15,56 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         BI.NormalExpanderCell.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
-        var wrapper = BI.createWidget({
-            type: "bi.horizontal_adapt",
-            element: this.element
-        });
-
         var needExpand = o.needExpand, isExpanded = o.isExpanded;
-        var columnSize = [], items = [];
+        var items = [];
         if(needExpand === true) {
-            columnSize.push(25);
             items.push({
-                type: "bi.icon_button",
-                cls: isExpanded === true ? "tree-expand-icon-type1" : "tree-collapse-icon-type1",
-                iconHeight: 25,
-                iconWidth: 25,
-                handler: function(){
-                    o.expandCallback();
-                }
-            });
+                el: {
+                    type: "bi.icon_button",
+                    cls: isExpanded === true ? "tree-expand-icon-type1" : "tree-collapse-icon-type1",
+                    iconHeight: 25,
+                    iconWidth: 25,
+                    handler: function(){
+                        o.expandCallback();
+                    }
+                },
+                width: 25
+            })
         }
 
+        //日期的需要format
+        var text = o.text;
+        var dGroup = BI.Utils.getDimensionGroupByID(o.dId);
+        if(BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
+            var date = new Date(BI.parseInt(text));
+            text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+        }
         items.push({
-            type: "bi.label",
-            text: o.text,
-            title: o.text,
-            cls: "expander-cell-text",
-            height: 30,
-            whiteSpace: "nowrap",
-            textAlign: "left",
-            lgap: 5
+            el: {
+                type: "bi.label",
+                text: text,
+                title: text,
+                cls: "expander-cell-text",
+                height: 30,
+                whiteSpace: "nowrap",
+                textAlign: "left",
+                lgap: 5
+            },
+            width: "fill"
         });
-        columnSize.push("");
 
         var drillCombo = this._createDrillItems();
         if(BI.isNotNull(drillCombo)) {
-            items.push(drillCombo);
-            columnSize.push(25);
+            items.push({
+                el: drillCombo,
+                width: 25
+            });
         }
-
-        wrapper.attr("columnSize", columnSize);
-        wrapper.populate(items);
+        BI.createWidget({
+            type: "bi.htape",
+            element: this.element,
+            items: items
+        });
     },
 
     /**

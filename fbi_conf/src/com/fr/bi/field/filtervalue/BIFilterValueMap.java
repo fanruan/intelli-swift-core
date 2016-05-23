@@ -27,7 +27,9 @@ import com.fr.bi.field.filtervalue.string.nonevaluefilter.StringNotNullFilterVal
 import com.fr.bi.field.filtervalue.string.nonevaluefilter.StringNullFilterValue;
 import com.fr.bi.field.filtervalue.string.onevaluefilter.*;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
+import com.fr.bi.field.filtervalue.string.rangefilter.StringINUserFilterValue;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringNotINFilterValue;
+import com.fr.bi.field.filtervalue.string.rangefilter.StringNotInUserFilterValue;
 import com.fr.bi.stable.constant.BIReportConstant;
 
 import java.util.HashMap;
@@ -39,9 +41,9 @@ import java.util.Map;
 public class BIFilterValueMap {
     public static final Map<Integer, Class> ALL_VALUES = new HashMap<Integer, Class>(){{
         put(BIReportConstant.DIMENSION_FILTER_STRING.BELONG_VALUE, StringINFilterValue.class);
-        put(BIReportConstant.DIMENSION_FILTER_STRING.BELONG_USER, StringINFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_STRING.BELONG_USER, StringINUserFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE, StringNotINFilterValue.class);
-        put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_BELONG_USER, StringNotINFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_BELONG_USER, StringNotInUserFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_STRING.CONTAIN, StringLikeFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_CONTAIN, StringNotLikeFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_VAGUE_CONTAIN, StringNotVagueLikeFilterValue.class);
@@ -65,9 +67,9 @@ public class BIFilterValueMap {
         put(BIReportConstant.DIMENSION_FILTER_NUMBER.TOP_N, NumberTopNFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_NUMBER.BOTTOM_N, NumberBottomNFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.BELONG_VALUE, StringINFilterValue.class);
-        put(BIReportConstant.TARGET_FILTER_STRING.BELONG_USER, StringINFilterValue.class);
+        put(BIReportConstant.TARGET_FILTER_STRING.BELONG_USER, StringINUserFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.NOT_BELONG_VALUE, StringNotINFilterValue.class);
-        put(BIReportConstant.TARGET_FILTER_STRING.NOT_BELONG_USER, StringNotINFilterValue.class);
+        put(BIReportConstant.TARGET_FILTER_STRING.NOT_BELONG_USER, StringNotInUserFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.CONTAIN, StringLikeFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.NOT_CONTAIN, StringNotLikeFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.NOT_VAGUE_CONTAIN, StringNotVagueLikeFilterValue.class);

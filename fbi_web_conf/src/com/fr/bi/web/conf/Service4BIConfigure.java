@@ -116,7 +116,6 @@ public class Service4BIConfigure extends NoSessionIDService {
 
             new BIGetAllTableNamesOfAllPackageAction(),
             new BIGetFieldValueByFieldIdAction(),
-            new BIGetLoginInfoInTableFieldAction(),
             new BISaveLoginInfoInTableFieldAction()
 
     };
