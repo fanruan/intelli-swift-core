@@ -36,7 +36,10 @@ public abstract class NumberEvenFilterValue implements NumberFilterValue {
      */
     protected double V = 0.0;
 
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     /**
      * 创建索引
      *

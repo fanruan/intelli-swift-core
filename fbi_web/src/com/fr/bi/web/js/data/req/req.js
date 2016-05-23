@@ -216,12 +216,6 @@ Data.Req = BIReq = {
         })
     },
 
-    reqLoginInfoInTableField: function (callback) {
-        BI.requestAsync("fr_bi_configure", "get_login_info_in_table_field", {}, function (res) {
-            callback(res);
-        })
-    },
-
     reqSaveLoginInfoInTableField: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "save_login_info_in_table_field", data, function (res) {
             callback();
@@ -295,6 +289,11 @@ Data.Req = BIReq = {
         }, function(res) {
             callback(res);
         });
+    },
+    
+    reqPrimaryTablesByTable: function(table, callback) {
+        BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function(res){
+            callback(res); 
+        });
     }
-
 };

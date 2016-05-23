@@ -6,7 +6,9 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
 import com.fr.bi.etl.analysis.data.UserTableSource;
 import com.fr.bi.stable.constant.BIJSONConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.utils.DateUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -15,6 +17,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,16 +42,27 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
         ICubeTableService service = PartCubeDataLoader.getInstance(userId, source).getTableIndex(source.fetchObjectCore());
         JSONArray ja = new JSONArray();
         BIKey key = new IndexKey(field);
+        int filedType = service.getColumns().get(key).getFieldType();
         Set set = new HashSet();
         for (int i = 0; i < service.getRowCount() && set.size() < MAX_ROW; i ++){
             set.add(service.getRow(key, i));
         }
         for (Object ob : set){
-            ja.put(ob);
+            JSONObject value = new JSONObject();
+            value.put("value", ob);
+            value.put("text", getText(ob, filedType));
+            ja.put(value);
         }
         JSONObject result = new JSONObject();
         result.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
         WebUtils.printAsJSON(res, result);
+    }
+
+    private Object getText(Object ob, int fieldType) {
+        if (fieldType == DBConstant.COLUMN.DATE){
+            return DateUtils.format(new Date((Long)ob));
+        }
+        return ob;
     }
 
     @Override

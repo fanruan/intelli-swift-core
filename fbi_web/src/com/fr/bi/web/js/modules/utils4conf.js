@@ -91,8 +91,8 @@ BI.extend(BI.Utils, {
                 id: id,
                 text: group.name,
                 value: group.name,
-                pId: 0,
-                open: true
+                open: true,
+                isParent: true
             });
             BI.each(group.children, function (i, item) {
                 packStructure.push({
@@ -132,8 +132,8 @@ BI.extend(BI.Utils, {
                 text: BI.i18nText('BI-Ungrouped'),
                 value: BI.i18nText('BI-Ungrouped'),
                 id: 1,
-                pId: 0,
-                open: true
+                open: true,
+                isParent: true
             });
         }
         return packStructure;
@@ -306,12 +306,6 @@ BI.extend(BI.Utils, {
         });
     },
     
-    getLoginInfoInTableField: function(callback){
-        Data.Req.reqLoginInfoInTableField(function(res){
-            callback(res); 
-        });
-    },
-    
     saveLoginInfoInTableField: function(data, callback){
         Data.Req.reqSaveLoginInfoInTableField(data, function(res){
             callback(res);
@@ -453,4 +447,10 @@ BI.extend(BI.Utils, {
         });
     },
 
+
+    getPrimaryTablesByTable4Conf: function(table, callback) {
+        Data.Req.reqPrimaryTablesByTable(table, function(res){
+            callback(res);
+        });
+    }
 });

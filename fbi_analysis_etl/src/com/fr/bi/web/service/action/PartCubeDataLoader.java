@@ -2,6 +2,7 @@ package com.fr.bi.web.service.action;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.memory.MemoryCubeFile;
@@ -60,7 +61,7 @@ public class PartCubeDataLoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(Table td) {
-        throw new RuntimeException(EXCEPTION);
+        return getTableIndex(BIBasicCore.generateValueCore(td.getID().getIdentityValue()));
     }
 
     @Override

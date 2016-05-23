@@ -1,5 +1,7 @@
 package com.fr.bi.etl.analysis;
 
+import com.fr.bi.stable.constant.BIReportConstant;
+
 /**
  * Created by Daniel on 2016/1/21.
  */
@@ -9,6 +11,7 @@ public class Constants {
     public final static String FIELDS ="etl_fields";
     public final static String ITEMS ="items";
     public final static String PACK_ID ="myetlidbuxudonga";
+    public final static String SYSTEM_TIME = BIReportConstant.SYSTEM_TIME;
 
     public final static class BUSINESS_TABLE_TYPE {
         public final static int ANALYSIS_TYPE = 0x8;

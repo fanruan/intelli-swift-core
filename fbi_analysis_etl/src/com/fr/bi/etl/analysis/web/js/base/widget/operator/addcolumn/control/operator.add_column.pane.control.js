@@ -33,8 +33,14 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
                     return self._checkFormula(widget, column, parent[ETLCst.FIELDS])
                 case BICst.ETL_ADD_COLUMN_TYPE.DATE_DIFF :
                     var fields = [];
-                    fields.push(column.item['firstField'])
-                    fields.push(column.item['secondField'])
+                    var f = column.item['firstField'];
+                    if(f !== ETLCst.SYSTEM_TIME) {
+                        fields.push(f);
+                    }
+                    f = column.item['secondField'];
+                    if(f !== ETLCst.SYSTEM_TIME) {
+                        fields.push(f);
+                    }
                     return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name, BICst.COLUMN.DATE)
                 case BICst.ETL_ADD_COLUMN_TYPE.DATE_MONTH :
                 case BICst.ETL_ADD_COLUMN_TYPE.DATE_SEASON :

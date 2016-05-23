@@ -154,8 +154,10 @@ BI.SelectString4RealTime = BI.inherit(BI.Widget, {
                 items.push(item);
             });
             BI.each(positions, function (id, position) {
-                viewFields.push(id);
-                items[position.row][position.col].value = id;
+                if(BI.Utils.getFieldTypeByID(id) === BICst.COLUMN.STRING) {
+                    viewFields.push(id);
+                    items[position.row][position.col].value = id;
+                }
             });
             fieldStructure.push({
                 id: BI.UUID(),

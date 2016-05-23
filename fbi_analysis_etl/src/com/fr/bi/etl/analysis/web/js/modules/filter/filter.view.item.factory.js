@@ -72,6 +72,33 @@ BI.ETLFilterViewItemFactory = {
         }));
     },
 
+    _createDateMultiChooseItems : function (value, text){
+        var v =[];
+        if (BI.isNotNull(value)){
+            BI.each(value.type === BI.Selection.All ? value.assist : value.value, function(i, item){
+                var d = new Date(item);
+                v.push(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
+            });
+        }
+
+        return this._createItems(v, BI.createWidget({
+            type : 'bi.left_right_vertical_adapt',
+            items : {
+                left: [BI.createWidget({
+                    type : 'bi.label',
+                    cls : 'title',
+                    text : text
+                })],
+                right: [BI.createWidget({
+                    type : 'bi.label',
+                    cls : 'title',
+                    text : v.length +BI.i18nText("BI-Tiao") + BI.i18nText("BI-Data")
+                })]
+            }
+        }));
+    },
+
+
     _createNumberRange : function (value, fieldName){
         value = value || {max : '', min:''};
         return [value.min ,( value.closemin ? this._createItemByCls('less-equal-font') : this._createItemByCls('less-font')) , fieldName , (value.closemax ? this._createItemByCls('less-equal-font') : this._createItemByCls('less-font')) , value.max];
@@ -93,9 +120,10 @@ BI.ETLFilterViewItemFactory = {
         return [this._getDateText(value.start) ,this._createItemByCls('less-equal-font') , fieldName , this._createItemByCls('less-equal-font'), this._getDateText(value.end)];
     },
 
-    _getDateText : function(date){
-        if (BI.isNotNull(date)){
-            return date.year + "-" + (date.month + 1) + "-" + date.day;
+    _getDateText : function(d){
+        if (BI.isNotNull(d)){
+            var date = new Date(d)
+            return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
         }
         return '-';
     },
@@ -134,8 +162,9 @@ BI.ETLFilterViewItemFactory = {
             case BICst.TARGET_FILTER_STRING.NOT_END_WITH :
                 return this._createItems([filterValue], BI.i18nText("BI-Not_End_With"));
             case BICst.TARGET_FILTER_NUMBER.CONTAINS :
-            case BICst.FILTER_DATE.CONTAINS:
                 return this._createMultiChooseItems(filterValue, BI.i18nText("BI-ETL_Filter_Belongs"));
+            case BICst.FILTER_DATE.CONTAINS_DAY:
+                return this._createDateMultiChooseItems(filterValue, BI.i18nText("BI-ETL_Filter_Belongs"));
             case BICst.TARGET_FILTER_NUMBER.BELONG_VALUE :
                 return this._createItems([this._createNumberRange(filterValue, fieldName)], BI.i18nText("BI-ETL_Number_IN"));
             case BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE :

@@ -142,15 +142,16 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         });
         BI.each(drill, function (drId, drArray) {
             if (drArray.length !== 0) {
+                var dIndex = self.dimIds.indexOf(drId), cIndex = self.crossDimIds.indexOf(drId);
                 BI.remove(self.dimIds, drId);
                 BI.remove(self.crossDimIds, drId);
                 BI.each(drArray, function (i, dr) {
                     var tempDrId = dr.dId;
                     if (i === drArray.length - 1) {
                         if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
-                            self.dimIds.push(tempDrId);
+                            self.dimIds.splice(dIndex, 0, tempDrId);
                         } else {
-                            self.crossDimIds.push(tempDrId);
+                            self.crossDimIds.splice(cIndex, 0, tempDrId);
                         }
                     } else {
                         BI.remove(self.dimIds, tempDrId);

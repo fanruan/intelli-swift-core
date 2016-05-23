@@ -40,12 +40,15 @@ BI.UserSearchResultPane = BI.inherit(BI.Widget, {
     },
 
     empty: function(){
-        this.tree.populate([]);
+        this.tree.empty();
     },
 
     populate: function(items, keyword, value){
+        var self = this;
         this.tree.populate(items, keyword);
-        this.tree.setValue(value || []);
+        BI.delay(function(){
+            self.tree.setValue(value || []);
+        }, 1000);
     }
 
 });
