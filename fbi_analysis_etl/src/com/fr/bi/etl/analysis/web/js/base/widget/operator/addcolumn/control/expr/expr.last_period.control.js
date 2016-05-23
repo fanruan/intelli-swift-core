@@ -75,6 +75,18 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodController = BI.inherit(BI.Analysis
                 })
             )
         })
+        if (BI.isEmptyArray(group)){
+            var text = BI.i18nText('BI-Calculate_Target_Last', model.get('period') || '')
+            label.addItem(
+                BI.createWidget({
+                    type : 'bi.label',
+                    cls : 'detail-label',
+                    textAlign : 'left',
+                    text : text,
+                    title : text
+                })
+            )
+        }
         var text = BI.i18nText('BI-Brackets_Value', model.get('field')||'');
         label.addItem(
             BI.createWidget({

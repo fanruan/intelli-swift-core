@@ -67,6 +67,9 @@ public class UserWidget {
     private List<List> getDate(int start, int end) {
         List<List> values = new ArrayList<List>();
         for (int i = start; i< end; i++){
+            if (!tempValue.containsKey(i)){
+                break;
+            }
             values.add(tempValue.get(i));
         }
         return values;
@@ -138,6 +141,7 @@ public class UserWidget {
     private void createDetailData(int start, int end) {
         int step = end - start;
         Paging paging = PagingFactory.createPaging(step);
+        paging.setPageSize(step);
         int page = start / step;
         paging.setCurrentPage(page);
         DetailExecutor exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
