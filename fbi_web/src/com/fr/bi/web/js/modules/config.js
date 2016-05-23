@@ -23,271 +23,271 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Group_Table"),
     title: BI.i18nText("BI-Group_Table"),
     value: BICst.WIDGET.TABLE,
-    cls: "chart-table-font",
+    cls: "drag-group-icon",
     children: [{
         text: BI.i18nText("BI-Group_Table"),
         title: BI.i18nText("BI-Group_Table"),
         value: BICst.WIDGET.TABLE,
-        cls: "chart-table-font"
+        cls: "drag-group-icon"
     }, {
         text: BI.i18nText("BI-Cross_Table"),
         title: BI.i18nText("BI-Cross_Table"),
         value: BICst.WIDGET.CROSS_TABLE,
-        cls: "chart-table-font"
+        cls: "drag-cross-icon"
     }]
 }, {
     text: BI.i18nText("BI-Column_Chart"),
     title: BI.i18nText("BI-Column_Chart"),
     value: BICst.WIDGET.AXIS,
-    cls: "chart-axis-font",
+    cls: "drag-axis-icon",
     children: [{
         text: BI.i18nText("BI-Column_Chart"),
         title: BI.i18nText("BI-Column_Chart"),
         value: BICst.WIDGET.AXIS,
-        cls: "chart-axis-font"
+        cls: "drag-axis-icon"
     }, {
         text: BI.i18nText("BI-Stacked_Chart"),
         title: BI.i18nText("BI-Stacked_Chart"),
         value: BICst.WIDGET.ACCUMULATE_AXIS,
-        cls: "chart-bar-font"
+        cls: "drag-axis-accu-icon"
     }, {
         text: BI.i18nText("BI-Percent_Accumulate_Axis"),
         title: BI.i18nText("BI-Percent_Accumulate_Axis"),
         value: BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
-        cls: "chart-accumulate-bar-font"
+        cls: "drag-axis-percent-accu-icon"
     }, {
         text: BI.i18nText("BI-Compare_Axis"),
         title: BI.i18nText("BI-Compare_Axis"),
         value: BICst.WIDGET.COMPARE_AXIS,
-        cls: "chart-accumulate-bar-font"
+        cls: "drag-axis-compare-icon"
     }, {
         text: BI.i18nText("BI-Fall_Axis"),
         title: BI.i18nText("BI-Fall_Axis"),
         value: BICst.WIDGET.FALL_AXIS,
-        cls: "chart-accumulate-bar-font"
+        cls: "drag-axis-fall-icon"
     }]
 }, {
     text: BI.i18nText("BI-Bar_Chart"),
     title: BI.i18nText("BI-Bar_Chart"),
     value: BICst.WIDGET.BAR,
-    cls: "chart-bar-font",
+    cls: "drag-bar-icon",
     children: [{
         text: BI.i18nText("BI-Bar_Chart"),
         title: BI.i18nText("BI-Bar_Chart"),
         value: BICst.WIDGET.BAR,
-        cls: "chart-bar-font"
+        cls: "drag-bar-icon"
     }, {
         text: BI.i18nText("BI-Stacked_Bar_Chart"),
         title: BI.i18nText("BI-Stacked_Bar_Chart"),
         value: BICst.WIDGET.ACCUMULATE_BAR,
-        cls: "chart-bar-font"
+        cls: "drag-bar-accu-icon"
     }, {
         text: BI.i18nText("BI-Compare_Bar"),
         title: BI.i18nText("BI-Compare_Bar"),
         value: BICst.WIDGET.COMPARE_BAR,
-        cls: "chart-bar-font"
+        cls: "drag-bar-compare-icon"
     }]
 }, {
     text: BI.i18nText("BI-Line_Chart"),
     title: BI.i18nText("BI-Line_Chart"),
     value: BICst.WIDGET.LINE,
-    cls: "excel-upload-tip-font"
+    cls: "drag-line-icon"
 }, {
     text: BI.i18nText("BI-Area_Chart"),
     title: BI.i18nText("BI-Area_Chart"),
     value: BICst.WIDGET.AREA,
-    cls: "excel-upload-tip-font",
+    cls: "drag-area-icon",
     children: [{
         text: BI.i18nText("BI-Area_Chart"),
         title: BI.i18nText("BI-Area_Chart"),
         value: BICst.WIDGET.AREA,
-        cls: "excel-upload-tip-font"
+        cls: "drag-area-icon"
     }, {
         text: BI.i18nText("BI-Accumulate_Area"),
         title: BI.i18nText("BI-Accumulate_Area"),
         value: BICst.WIDGET.ACCUMULATE_AREA,
-        cls: "excel-upload-tip-font"
+        cls: "drag-area-accu-icon"
     }, {
         text: BI.i18nText("BI-Percent_Accumulate_Area"),
         title: BI.i18nText("BI-Percent_Accumulate_Area"),
         value: BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
-        cls: "excel-upload-tip-font"
+        cls: "drag-area-percent-accu-icon"
     }, {
         text: BI.i18nText("BI-Compare_Area"),
         title: BI.i18nText("BI-Compare_Area"),
         value: BICst.WIDGET.COMPARE_AREA,
-        cls: "excel-upload-tip-font"
+        cls: "drag-area-compare-icon"
     }, {
         text: BI.i18nText("BI-Compare_Range_Area"),
         title: BI.i18nText("BI-Compare_Range_Area"),
         value: BICst.WIDGET.RANGE_AREA,
-        cls: "excel-upload-tip-font"
+        cls: "drag-area-range-icon"
     }]
 }, {
     text: BI.i18nText("BI-Combine_Chart"),
     title: BI.i18nText("BI-Combine_Chart"),
     value: BICst.WIDGET.COMBINE_CHART,
-    cls: "excel-upload-tip-font",
+    cls: "drag-combine-icon",
     children: [{
         text: BI.i18nText("BI-Combine_Chart"),
         title: BI.i18nText("BI-Combine_Chart"),
         value: BICst.WIDGET.COMBINE_CHART,
-        cls: "excel-upload-tip-font"
+        cls: "drag-combine-icon"
     }, {
         text: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
         title: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
         value: BICst.WIDGET.COMBINE_CHART,
-        cls: "excel-upload-tip-font"
+        cls: "drag-combine-mult-icon"
     }]
 }, {
     text: BI.i18nText("BI-Pie_Chart"),
     title: BI.i18nText("BI-Pie_Chart"),
     value: BICst.WIDGET.PIE,
-    cls: "chart-pie-font"
+    cls: "drag-pie-icon"
 }, {
     text: BI.i18nText("BI-Donut_Chart"),
     title: BI.i18nText("BI-Donut_Chart"),
     value: BICst.WIDGET.DONUT,
-    cls: "chart-doughnut-font"
+    cls: "drag-donut-icon"
 }, {
     text: BI.i18nText("BI-Map"),
     title: BI.i18nText("BI-Map"),
     value: BICst.WIDGET.MAP,
-    cls: "chart-map-font"
+    cls: "drag-map-china-icon"
 }, {
     text: BI.i18nText("BI-GIS_Map"),
     title: BI.i18nText("BI-GIS_Map"),
     value: BICst.WIDGET.GIS_MAP,
-    cls: "excel-upload-tip-font"
+    cls: "drag-map-gis-icon"
 }, {
     text: BI.i18nText("BI-Dashboard_Chart"),
     title: BI.i18nText("BI-Dashboard_Chart"),
     value: BICst.WIDGET.DASHBOARD,
-    cls: "chart-dashboard-font"
+    cls: "drag-dashboard-icon"
 }, {
     text: BI.i18nText("BI-Radar"),
     title: BI.i18nText("BI-Radar"),
     value: BICst.WIDGET.RADAR,
-    cls: "chart-radar-font",
+    cls: "drag-radar-icon",
     children: [{
         text: BI.i18nText("BI-Radar"),
         title: BI.i18nText("BI-Radar"),
         value: BICst.WIDGET.RADAR,
-        cls: "chart-radar-font"
+        cls: "drag-radar-icon"
     }, {
         text: BI.i18nText("BI-Accumulate_Radar"),
         title: BI.i18nText("BI-Accumulate_Radar"),
         value: BICst.WIDGET.ACCUMULATE_RADAR,
-        cls: "chart-radar-font"
+        cls: "drag-radar-accu-icon"
     }]
 }, {
     text: BI.i18nText("BI-Bubble_Chart"),
     title: BI.i18nText("BI-Bubble_Chart"),
     value: BICst.WIDGET.BUBBLE,
-    cls: "chart-bubble-font",
+    cls: "drag-bubble-icon",
     children: [{
         text: BI.i18nText("BI-Bubble_Chart"),
         title: BI.i18nText("BI-Bubble_Chart"),
         value: BICst.WIDGET.BUBBLE,
-        cls: "chart-bubble-font"
+        cls: "drag-bubble-icon"
     }, {
         text: BI.i18nText("BI-Force_Bubble"),
         title: BI.i18nText("BI-Force_Bubble"),
         value: BICst.WIDGET.WEB,
-        cls: "excel-upload-tip-font"
+        cls: "drag-bubble-force-icon"
     }]
 }, {
     text: BI.i18nText("BI-Scatter"),
     title: BI.i18nText("BI-Scatter"),
     value: BICst.WIDGET.SCATTER,
-    cls: "chart-scatter-font"
+    cls: "drag-scatter-icon"
 }, {
     text: BI.i18nText("BI-Funnel_Chart"),
     title: BI.i18nText("BI-Funnel_Chart"),
     value: BICst.WIDGET.FUNNEL,
-    cls: "excel-upload-tip-font"
+    cls: "drag-funnel-icon"
 }], [{
     text: BI.i18nText("BI-Detail_Table"),
     title: BI.i18nText("BI-Detail_Table"),
     value: BICst.WIDGET.DETAIL,
-    cls: "chart-detail-font"
+    cls: "drag-detail-icon"
 }, {
     text: BI.i18nText("BI-Text_Widget"),
     title: BI.i18nText("BI-Text_Widget"),
     value: BICst.WIDGET.CONTENT,
-    cls: "chart-content-font"
+    cls: "drag-input-icon"
 }, {
     text: BI.i18nText("BI-Image_Widget"),
     title: BI.i18nText("BI-Image_Widget"),
     value: BICst.WIDGET.IMAGE,
-    cls: "chart-image-font"
+    cls: "drag-image-icon"
 }, {
     text: BI.i18nText("BI-Web_Widget"),
     title: BI.i18nText("BI-Web_Widget"),
     value: BICst.WIDGET.WEB,
-    cls: "chart-web-font"
+    cls: "drag-web-icon"
 }], [{//以下是控件
     text: BI.i18nText("BI-Text_Control"),
     title: BI.i18nText("BI-Text_Control"),
     value: BICst.WIDGET.STRING,
-    cls: "chart-string-font"
+    cls: "drag-string-icon"
 }, {
     text: BI.i18nText("BI-Numeric_Control"),
     title: BI.i18nText("BI-Numeric_Control"),
     value: BICst.WIDGET.NUMBER,
-    cls: "chart-number-font"
+    cls: "drag-number-icon"
 }, {
     text: BI.i18nText("BI-Tree_Control"),
     title: BI.i18nText("BI-Tree_Control"),
     value: BICst.WIDGET.TREE,
-    cls: "chart-tree-font"
+    cls: "drag-tree-icon"
 }, {
     text: BI.i18nText("BI-Date_Control"),
     title: BI.i18nText("BI-Date_Control"),
     value: BICst.WIDGET.DATE,
-    cls: "chart-date-font",
+    cls: "drag-date-icon",
     children: [
         {
             text: BI.i18nText("BI-Year_Control"),
             title: BI.i18nText("BI-Year_Control"),
             value: BICst.WIDGET.YEAR,
-            cls: "chart-year-font"
+            cls: "drag-year-icon"
         }, {
             text: BI.i18nText("BI-Year_Month_Con"),
             title: BI.i18nText("BI-Year_Month_Con"),
             value: BICst.WIDGET.MONTH,
-            cls: "chart-month-font"
+            cls: "drag-year-month-icon"
         }, {
             text: BI.i18nText("BI-Year_Quarter_Con"),
             title: BI.i18nText("BI-Year_Quarter_Con"),
             value: BICst.WIDGET.QUARTER,
-            cls: "chart-quarter-font"
+            cls: "drag-year-season-icon"
         }, {
             text: BI.i18nText("BI-Date_Control"),
             title: BI.i18nText("BI-Date_Control"),
             value: BICst.WIDGET.YMD,
-            cls: "chart-ymd-font"
+            cls: "drag-ymd-icon"
         }, {
             text: BI.i18nText("BI-Date_Range_Control"),
             title: BI.i18nText("BI-Date_Range_Control"),
             value: BICst.WIDGET.DATE,
-            cls: "chart-date-range-font"
+            cls: "drag-date-icon"
         }]
 }, {
     text: BI.i18nText("BI-General_Query"),
     title: BI.i18nText("BI-General_Query"),
     value: BICst.WIDGET.GENERAL_QUERY,
-    cls: "chart-general-query-font"
+    cls: "drag-general-query-icon"
 }, {
     text: BI.i18nText("BI-Query_Button"),
     title: BI.i18nText("BI-Query_Button"),
     value: BICst.WIDGET.QUERY,
-    cls: "chart-query-font"
+    cls: "drag-query-icon"
 }, {
     text: BI.i18nText("BI-Reset_Button"),
     title: BI.i18nText("BI-Reset_Button"),
     value: BICst.WIDGET.RESET,
-    cls: "chart-reset-font"
+    cls: "drag-reset-icon"
 }]];
 
 //组件的设置的下拉选项

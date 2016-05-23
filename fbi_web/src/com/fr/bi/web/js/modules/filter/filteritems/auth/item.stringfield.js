@@ -150,7 +150,7 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.login_info_combo",
-            field_type: o.field.field_type,
+            field_type: BICst.COLUMN.STRING,
             width: 200,
             height: this._constant.BUTTON_HEIGHT
         });

@@ -409,14 +409,18 @@
         },
 
         getWidgetFilterValueByID: function (wid) {
-            return Data.SharingPool.get("widgets", wid, "filter_value");
+            if(this.isWidgetExistByID(wid)) {
+                return Data.SharingPool.get("widgets", wid, "filter_value");
+            }
         },
 
         getAllDimensionIDs: function (wid) {
             if (!wid) {
                 return BI.keys(Data.SharingPool.get("dimensions"))
             }
-            return BI.keys(Data.SharingPool.get("widgets", wid, "dimensions"));
+            if(this.isWidgetExistByID(wid)) {
+                return BI.keys(Data.SharingPool.get("widgets", wid, "dimensions"));
+            }
         },
 
         getAllUsedFieldIds: function () {

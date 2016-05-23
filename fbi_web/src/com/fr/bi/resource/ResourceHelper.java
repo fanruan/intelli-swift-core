@@ -658,7 +658,7 @@ public class ResourceHelper {
 
                 //权限相关
                 "com/fr/bi/web/css/modules/permissionmanage/authoritypackagestree.css",
-                "com/fr/bi/web/css/modules/permissionmanage/logininfo/authority.logininfo.pane.css",
+                "com/fr/bi/web/css/modules/permissionmanage/logininfo/widget.selectfieldmask.logininfo.css",
                 "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.batchset.pane.css",
                 "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.singleset.pane.css",
                 "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.singleaddrole.css",
@@ -1310,8 +1310,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.batchaddrole.pane.js",
                 "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.batchaddrole.js",
                 "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.singleaddrole.js",
-                "com/fr/bi/web/js/modules/permissionmanage/logininfo/authority.logininfo.pane.js",
-
+                "com/fr/bi/web/js/modules/permissionmanage/logininfo/widget.selectsinglefield.logininfo.js",
+                "com/fr/bi/web/js/modules/permissionmanage/logininfo/widget.selectfieldmask.logininfo.js",
 
                 //dimensionmanager4show
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/model.dimensionsmanagershow.js",
