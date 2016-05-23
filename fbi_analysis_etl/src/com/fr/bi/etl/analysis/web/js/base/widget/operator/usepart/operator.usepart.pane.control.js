@@ -39,8 +39,14 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
     update : function (widget, model) {
         var newFields = [];
         var value = widget.fieldList.getValue();
+
+        var isAll = value.type === BI.ButtonGroup.CHOOSE_TYPE_ALL;
+        var contains = function (name) {
+            var index = BI.indexOf(value.value, name);
+            return isAll ? index < 0 :index > -1
+        }
         BI.each(model.get(ETLCst.PARENTS)[0][ETLCst.FIELDS], function (i, item) {
-            if (BI.indexOf(value.assist, item.field_name) > -1){
+            if (contains(item.field_name)){
                 newFields.push(item);
             }
         })
