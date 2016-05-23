@@ -187,7 +187,13 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
                 },
 
                 getValuesForCustomGroup : function (dId, callback) {
-                    return self.controller.getValuesForCustomGroup.apply(self.controller, [dm._src.field_name, callback])
+                    return self.controller.getValuesForCustomGroup.apply(self.controller, [dm._src.field_name, function(res){
+                        var items =[];
+                        BI.each(res.value, function (i, item) {
+                            items.push(item.value);
+                        })
+                        callback(items)
+                    }])
                 }
             },
             fieldName: dm._src.field_name

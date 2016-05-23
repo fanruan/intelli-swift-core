@@ -145,7 +145,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
     getMinMaxValueForNumberCustomGroup : function (fieldName,callback, widget, model) {
         var table = {};
         table[ETLCst.ITEMS] = model.get(ETLCst.PARENTS)
-        return BI.Utils.reqFieldValues({
+        return BI.ETLReq.reqFieldMinMaxValues({
             table : table,
             field : fieldName
         }, callback)
@@ -154,7 +154,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
     getValuesForCustomGroup : function (fieldName,callback, widget, model) {
         var table = {};
         table[ETLCst.ITEMS] = model.get(ETLCst.PARENTS)
-        return BI.Utils.reqFieldMinMaxValues({
+        return BI.ETLReq.reqFieldValues({
             table : table,
             field : fieldName
         }, callback)
