@@ -35,7 +35,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
             width: 270,
             onSearch: function(op, callback){
                 var keyword = op.keyword.toLowerCase();
-                var searchResult = BI.Func.getSearchResult(self.allUsers, keyword);
+                var searchResult = BI.Func.getSearchResult(self.allUsers, keyword, "user_name");
                 callback(self._formatUserRole(searchResult.matched.concat(searchResult.finded)), keyword, self.allUsersTree.getValue());
             },
             isAutoSearch: false,
@@ -153,15 +153,44 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
         var self = this, roles = [];
         var treeItems = [];
         this.roleUserMap = {};
+        var departPosts = [];
         BI.each(users, function(i, user){
-            if(BI.isNotNull(user.roles) && BI.isNotEmptyArray(user.roles)){
+            var item = {
+                id: user.user_id.toString(),
+                text: user.user_name,
+                value: user.user_id.toString(),
+                pId: user.user_department
+            };
+            treeItems.push({
+                id: user.user_id.toString(),
+                text: user.user_name,
+                value: user.user_id.toString(),
+                pId: user.user_department
+            });
+            if(!departPosts.contains(user.user_department)){
+                departPosts.push(user.user_department);
+                treeItems.push({
+                    id: user.user_department,
+                    text: user.user_department,
+                    value: user.user_department,
+                    isParent: true
+                });
+                if(BI.isNull(self.roleUserMap[user.user_department])){
+                    self.roleUserMap[user.user_department] = [user];
+                } else {
+                    self.roleUserMap[user.user_department].push(user);
+                }
+            }
+
+            if(BI.isNotNull(user.roles) && user.roles.length > 0) {
                 BI.each(user.roles, function(j, role){
                     if(!roles.contains(role)){
                         roles.push(role);
                         treeItems.push({
                             id: role,
                             text: role,
-                            value: role
+                            value: role,
+                            isParent: true
                         })
                     }
                     if(BI.isNull(self.roleUserMap[role])){
@@ -170,19 +199,16 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                         self.roleUserMap[role].push(user);
                     }
                     treeItems.push({
-                        id: user.id,
+                        id: user.user_id.toString(),
                         pId: role,
-                        text: user.name,
-                        value: user.id
+                        text: user.user_name,
+                        value: user.user_id.toString()
                     });
                 })
-            } else {
-                treeItems.push({
-                    id: user.id,
-                    text: user.name,
-                    value: user.id
-                })
             }
+        });
+        treeItems = BI.sortBy(treeItems, function(index, item){
+            return item.text;
         });
         return treeItems;
     },
@@ -196,7 +222,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
             var selectedRolesMap = {}, noRoleUsers = [];
             BI.each(selectedUser, function(i, id){
                     BI.each(self.allUsers, function(i, item) {
-                        if (item.id === id) {
+                        if (item.user_id.toString() === id) {
                             if (BI.isNotNull(item.roles) && BI.isNotEmptyArray(item.roles)) {
                                 BI.each(item.roles, function (j, role) {
                                     if (BI.isNotNull(selectedRolesMap[role])) {
@@ -205,7 +231,14 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                                         selectedRolesMap[role] = [item];
                                     }
                                 })
-                            } else {
+                            }
+                            if (BI.isNotNull(item.user_department)) {
+                                if(BI.isNull(selectedRolesMap[item.user_department])) {
+                                    selectedRolesMap[item.user_department] = [];
+                                }
+                                selectedRolesMap[item.user_department].push(item);
+                            }
+                            if(BI.isNull(item.roles) && BI.isNull(item.user_department)) {
                                 noRoleUsers.push(item);
                             }
                         }

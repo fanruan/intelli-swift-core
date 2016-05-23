@@ -38,7 +38,6 @@ public class StringNotINFilterValue extends StringRangeFilterValue {
 
     @Override
     public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        addLogUserInfo(loader);
         String value = StringFilterValueUtils.toString(node.getShowValue());
         if (valueSet.getValues() == null || valueSet.getValues().isEmpty()) {
             return false;

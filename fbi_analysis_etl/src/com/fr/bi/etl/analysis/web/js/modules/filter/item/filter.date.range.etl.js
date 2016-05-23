@@ -64,19 +64,19 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
     _createCombo: function () {
         var self = this;
         var combo = BI.createWidget({
-            type: 'bi.multidate_combo'
+            type: 'bi.date_filter_combo_etl'
         });
-        combo.on(BI.MultiDateCombo.EVENT_ERROR, function () {
+        combo.on(BI.ETLDateFilterCombo.EVENT_ERROR, function () {
             self._clearTitle();
             self.element.removeClass(self._constants.timeErrorCls);
         });
-        combo.on(BI.MultiDateCombo.EVENT_BEFORE_POPUPVIEW, function () {
+        combo.on(BI.ETLDateFilterCombo.EVENT_BEFORE_POPUPVIEW, function () {
             self.up.hidePopupView();
             self.down.hidePopupView();
         });
-        combo.on(BI.MultiDateCombo.EVENT_CHANGE, function () {
-            var smallDate = self.up.getKey(), bigDate = self.down.getKey();
-            if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
+        combo.on(BI.ETLDateFilterCombo.EVENT_CHANGE, function () {
+            var smallDate = self.up.getValue(), bigDate = self.down.getValue();
+            if (self._compare(smallDate, bigDate)) {
                 self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));
                 self.element.addClass(self._constants.timeErrorCls);
             } else {
@@ -85,9 +85,9 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
             }
         });
 
-        combo.on(BI.MultiDateCombo.EVENT_VALID, function () {
-            var smallDate = self.up.getKey(), bigDate = self.down.getKey();
-            if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
+        combo.on(BI.ETLDateFilterCombo.EVENT_VALID, function () {
+            var smallDate = self.up.getValue(), bigDate = self.down.getValue();
+            if (self._compare(smallDate, bigDate)) {
                 self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));
                 self.element.addClass(self._constants.timeErrorCls);
             } else {
@@ -98,28 +98,9 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
         });
         return combo;
     },
-    _dateCheck: function (date) {
-        return Date.parseDateTime(date, "%Y-%x-%d").print("%Y-%x-%d") == date || Date.parseDateTime(date, "%Y-%X-%d").print("%Y-%X-%d") == date || Date.parseDateTime(date, "%Y-%x-%e").print("%Y-%x-%e") == date || Date.parseDateTime(date, "%Y-%X-%e").print("%Y-%X-%e") == date;
-    },
-    _checkVoid: function (obj) {
-        return !Date.checkVoid(obj.year, obj.month, obj.day, this._constants.DATE_MIN_VALUE, this._constants.DATE_MAX_VALUE)[0];
-    },
-    _check: function (smallDate, bigDate) {
-        var smallObj = smallDate.match(/\d+/g), bigObj = bigDate.match(/\d+/g);
-        return this._dateCheck(smallDate) && Date.checkLegal(smallDate) && this._checkVoid({
-                year: smallObj[0],
-                month: smallObj[1],
-                day: smallObj[2]
-            }) && this._dateCheck(bigDate) && Date.checkLegal(bigDate) && this._checkVoid({
-                year: bigObj[0],
-                month: bigObj[1],
-                day: bigObj[2]
-            });
-    },
+
     _compare: function (smallDate, bigDate) {
-        smallDate = Date.parseDateTime(smallDate, "%Y-%X-%d").print("%Y-%X-%d");
-        bigDate = Date.parseDateTime(bigDate, "%Y-%X-%d").print("%Y-%X-%d");
-        return BI.isNotNull(smallDate) && BI.isNotNull(bigDate) && smallDate > bigDate;
+       return smallDate > bigDate;
     },
     _setTitle: function (v) {
         this.up.setTitle(v);

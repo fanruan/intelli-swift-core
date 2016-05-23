@@ -85,7 +85,7 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
 
     setPackage: function (pId) {
         var name = "";
-        BI.each(this.options.packs, function (i, pack) {
+        BI.each(this.options.packages, function (i, pack) {
             if (pack.value === pId) {
                 name = pack.text;
             }

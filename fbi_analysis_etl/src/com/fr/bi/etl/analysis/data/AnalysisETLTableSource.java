@@ -1,6 +1,7 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
@@ -24,7 +25,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     private int invalidIndex = -1;
 
     private String name;
-
+    @BICoreField
     private List<AnalysisETLSourceField> fieldList;
 
     @Override

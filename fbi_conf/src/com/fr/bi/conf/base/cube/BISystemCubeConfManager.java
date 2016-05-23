@@ -1,7 +1,6 @@
 package com.fr.bi.conf.base.cube;
 
 import com.fr.bi.conf.base.BISystemDataManager;
-import com.fr.bi.conf.base.cube.data.BILoginInfoInTableField;
 import com.fr.bi.conf.provider.BICubeConfManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -47,9 +46,9 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public BILoginInfoInTableField getLoginInfoInTableField() {
+    public String getLoginInfoField() {
         try {
-            return getValue(UserControl.getInstance().getSuperManagerID()).getTableField();
+            return getValue(UserControl.getInstance().getSuperManagerID()).getFieldId();
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
@@ -57,12 +56,22 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public void saveLoginInfoInTableField(BILoginInfoInTableField tableField) {
+    public void saveLoginInfoField(String fieldId) {
         try {
-            getValue(UserControl.getInstance().getSuperManagerID()).setTableField(tableField);
+            getValue(UserControl.getInstance().getSuperManagerID()).setFieldId(fieldId);
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public Object getLoginFieldValue(long userId) {
+        try {
+            return getValue(UserControl.getInstance().getSuperManagerID()).getFieldValue(userId);
+        } catch (BIKeyAbsentException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return null;
     }
 
     @Override

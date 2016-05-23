@@ -265,7 +265,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "dimensions") ||
             BI.has(changed, "sort") ||
             BI.has(changed, "linkages")) {
-            this.tableChartPopupulate();
+            this._refreshTableAndFilter();
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();

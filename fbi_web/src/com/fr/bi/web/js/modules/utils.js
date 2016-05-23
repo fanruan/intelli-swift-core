@@ -1327,8 +1327,13 @@
                             var drillRegionType = self.getRegionTypeByDimensionID(drId);
                             //从原来的region中pop出来
                             var tempRegionType = self.getRegionTypeByDimensionID(drill.dId);
+                            var dIndex = widget.view[drillRegionType].indexOf(drId);
                             BI.remove(widget.view[tempRegionType], drill.dId);
-                            widget.view[drillRegionType].push(drill.dId);
+                            if(drillRegionType === tempRegionType) {
+                                widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
+                            } else {
+                                widget.view[drillRegionType].push(drill.dId);
+                            }
                         }
                         BI.each(drArray[i].values, function (i, v) {
                             var filterValue = parseSimpleFilter(v);

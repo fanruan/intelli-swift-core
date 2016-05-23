@@ -1,6 +1,5 @@
 package com.fr.bi.conf.provider;
 
-import com.fr.bi.conf.base.cube.data.BILoginInfoInTableField;
 import com.fr.json.JSONObject;
 
 /**
@@ -13,9 +12,11 @@ public interface BICubeConfManagerProvider {
 
     void saveCubePath(String path);
 
-    BILoginInfoInTableField getLoginInfoInTableField();
+    String getLoginInfoField();
 
-    void saveLoginInfoInTableField(BILoginInfoInTableField tableField);
+    void saveLoginInfoField(String fieldId);
+
+    Object getLoginFieldValue(long userId);
 
     JSONObject createJSON(long userId) throws Exception;
 
