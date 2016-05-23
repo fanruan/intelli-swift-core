@@ -311,7 +311,7 @@ public class CubeBuildStuffManager implements Serializable {
         }
     }
 
-    private Set<List<Set<ITableSource>>> calculateTableSource(Set<ITableSource> tableSources) {
+    public Set<List<Set<ITableSource>>> calculateTableSource(Set<ITableSource> tableSources) {
         Iterator<ITableSource> it = tableSources.iterator();
         Set<List<Set<ITableSource>>> depends = new HashSet<List<Set<ITableSource>>>();
         while (it.hasNext()) {
