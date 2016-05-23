@@ -109,7 +109,7 @@ public class BuildCubeTask implements CubeTask {
         if(null!=biTable){
         Set<ITableSource> tableSourceSet = new HashSet<ITableSource>();
         for (ITableSource iTableSource : cubeBuildStuffManager.getAllSingleSources()) {
-            if (iTableSource.getDbTable().getID().equals(biTable.getID())) {
+            if (iTableSource.getDbTable().getTableName().equals(biTable.getTableName())) {
                 tableSourceSet.add(iTableSource);
             }
         }
