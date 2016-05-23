@@ -28,14 +28,14 @@ import java.util.Map;
  * @author Daniel-pc
  */
 public class BIWeblet implements Weblet {
-	
-	private BIReportNode node;
+
+    private BIReportNode node;
 
     /**
      * 构造函数
      */
     public BIWeblet(BIReportNode node) {
-    	this.node = node;
+        this.node = node;
     }
 
     public BIWeblet() {
@@ -119,7 +119,8 @@ public class BIWeblet implements Weblet {
     private void dealWithPageHtml(HttpServletRequest req,
                                   HttpServletResponse res, String sessionID) {
         BIAbstractSession sessionIDInfor = (BIAbstractSession) SessionDealWith.getSessionIDInfor(sessionID);
-        if (sessionIDInfor == null) {// Session timeout.
+        if (sessionIDInfor == null) {
+            // Session timeout.
             return;
         }
 

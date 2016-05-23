@@ -8,8 +8,8 @@ import com.fr.bi.base.BIUser;
  */
 public class BIBasicBusinessPackage extends BIBusinessPackage<BIBusinessTable> {
 
-    public BIBasicBusinessPackage(BIPackageID ID, BIPackageName name, BIUser owner,long position) {
-        super(ID, name, owner,position);
+    public BIBasicBusinessPackage(BIPackageID ID, BIPackageName name, BIUser owner, long position) {
+        super(ID, name, owner, position);
     }
 
     public BIBasicBusinessPackage(BIPackageID id) {

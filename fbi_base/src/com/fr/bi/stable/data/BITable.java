@@ -1,11 +1,14 @@
 package com.fr.bi.stable.data;
 
 
+import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * BI的Table基本类型。其他Table都继承此类型
@@ -25,6 +28,10 @@ public class BITable implements Serializable, Table {
 
     protected String tableName;
     protected transient BITableID ID;
+    protected List<BIBasicField> fieldArray;
+    protected List<String> usedFields = new ArrayList<String>();
+    protected ICubeTableSource source;
+    protected BIUser user;
 
     public BITable(String id) {
         this(id, null);
@@ -38,6 +45,7 @@ public class BITable implements Serializable, Table {
     public BITable(BITableID table) {
         this(table.getIdentityValue());
     }
+
 
     public BITable() {
     }

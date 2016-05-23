@@ -12,7 +12,7 @@ import com.fr.json.JSONObject;
  *
  * @author Daniel-pc
  */
-public class PersistentField extends BIDBObject implements IPersistentField {
+public class PersistentField  implements IPersistentField {
     /**
      *
      */
