@@ -209,40 +209,6 @@ BI.extend(BI.BubbleChart, {
             "borderWidth": 0,
             "chartType": "bubble",
             "style": "gradual",
-            "rangeLegend": {
-                "borderColor": "rgb(204,204,204)",
-                "borderRadius": 0,
-                "shadow": false,
-                "borderWidth": 0,
-                "floating": true,
-                "x": "50.0%",
-                "y": "50.0%",
-                "range": {
-                    "min": -19,
-                    "color": [
-                        [
-                            0,
-                            "rgb(182,226,255)"
-                        ],
-                        [
-                            0.5,
-                            "rgb(109,196,255)"
-                        ],
-                        [
-                            1,
-                            "rgb(36,167,255)"
-                        ]
-                    ],
-                    "max": 24000000000
-                },
-                "style": {
-                    "fontFamily": "Microsoft YaHei",
-                    "color": "rgba(102,102,102,1.0)",
-                    "fontSize": "11pt",
-                    "fontWeight": ""
-                },
-                "enabled": true
-            },
             "legend": {
                 "borderColor": "rgb(204,204,204)",
                 "borderRadius": 0,

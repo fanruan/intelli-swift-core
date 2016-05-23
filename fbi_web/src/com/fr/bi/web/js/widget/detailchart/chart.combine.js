@@ -25,41 +25,75 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         });
     },
 
+    _axisConfig: function(){
+        return {
+            "enableMinorTick": false,
+            "gridLineColor": "rgb(196,196,196)",
+            "minorTickColor": "rgb(176,176,176)",
+            "tickColor": "rgb(176,176,176)",
+            "showArrow": false,
+            "lineColor": "rgb(176,176,176)",
+            "plotLines": [],
+            "type": "value",
+            "lineWidth": 0,
+            "showLabel": true,
+            "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+            "enableTick": true,
+            "gridLineWidth": 0,
+            "labelStyle": {"fontFamily": "Verdana", "color": "rgba(102,102,102,1.0)", "fontSize": "11pt", "fontWeight": ""},
+            "plotBands": [],
+            "labelRotation": 0,
+            "reversed": false
+        };
+    },
+
     _formatItems: function(items){
         var result = [], self = this, o = this.options;
         BI.each(items, function(i, belongAxisItems){
             var combineItems = BI.ChartCombineFormatItemFactory.combineItems(o.types[i], belongAxisItems);
             BI.each(combineItems, function(j, axisItems){
-                result.push(BI.extend(axisItems, {"yAxis": i}));
+                if(BI.isArray(axisItems)){
+                    result = BI.concat(result, axisItems);
+                }else{
+                    result.push(BI.extend(axisItems, {"yAxis": i}));
+                }
             });
         });
         var typess=[];
         BI.each(o.types, function(idx, types){
             typess = BI.concat(typess, types);
         });
-        var config = BI.ChartCombineFormatItemFactory.combineConfig(BI.uniq(typess));
+        var config = BI.ChartCombineFormatItemFactory.combineConfig(typess[0]);
         config.plotOptions.click = function(){
-            self.fireEvent(BI.CombineChart.EVENT_CHANGE, {
-                category: this.category,
-                seriesName: this.seriesName,
-                value: this.value,
-                options: this.pointOption.options});
+            self.fireEvent(BI.CombineChart.EVENT_CHANGE, BI.extend(this.pointOption, {seriesName: this.seriesName}));
         };
-        var yAxis = {};
-        if(BI.has(config, "yAxis")){
-            yAxis = config.yAxis[0];
-        }
-        BI.each(o.types, function(idx, type){
-            if(BI.isEmptyArray(type)){
-                return;
-            }
-            if(idx > 0 && BI.has(config, "yAxis")){
-                var newYAxis = BI.deepClone(yAxis);
-                newYAxis.position = "right";
-                newYAxis.gridLineWidth = 0;
+        config.xAxis = [];
+        var newxAxis  = this._axisConfig();
+        newxAxis.position = "bottom";
+        newxAxis.gridLineWidth = 0;
+        newxAxis.type = "category";
+        config.xAxis.push(newxAxis);
+        if(typess[0] === BICst.WIDGET.AXIS || typess[0] === BICst.WIDGET.AREA ||
+            typess[0] === BICst.WIDGET.RADAR || typess[0] === BICst.WIDGET.BUBBLE || typess[0] === BICst.WIDGET.SCATTER){
+            config.yAxis = [];
+            BI.each(o.types, function(idx, type){
+                if(BI.isEmptyArray(type)){
+                    return;
+                }
+                var newYAxis = self._axisConfig();
+                newYAxis.position = idx > 0 ? "right" : "left";
+                newYAxis.gridLineWidth = idx > 0 ? 0 : 1;
+                newYAxis.reversed = items[idx][0].reversed || false;
+                if(items[idx][0].name === ""){
+                    config.legend.enabled = false;
+                }
                 config.yAxis.push(newYAxis);
-            }
-        });
+            });
+        }
+        if(typess[0] === BICst.WIDGET.BAR){
+            newxAxis.type = "value";
+            newxAxis.formatter = "function(){if(this>0) return this; else return this*(-1); }";
+        }
         return [result, config];
     },
 
