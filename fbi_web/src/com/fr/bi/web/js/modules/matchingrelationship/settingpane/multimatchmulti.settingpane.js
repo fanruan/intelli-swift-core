@@ -136,6 +136,9 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
     _createRegionPathsByItems: function(items){
         this.options.dimensionFieldId = items.dimensionFieldId;
         this.options.combineTableId = items.combineTableId;
+        if(BI.isNull(this.options.combineTableId)){
+            return [];
+        }
         var combineFieldId = BI.Utils.getFieldIDsOfTableID(items.combineTableId)[0];
         var lregion = this._createLeftRegionPath(combineFieldId, BI.Utils.getFieldIDByDimensionID(items.targetIds[0]));
         var rregion = this._createRightRegionPath(combineFieldId, items.dimensionFieldId);
