@@ -1,7 +1,7 @@
 BI.TextValueComboPopup = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TextValueComboPopup.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi.text-icon-popup",
+            baseCls: "bi-text-icon-popup",
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
         });
     },
