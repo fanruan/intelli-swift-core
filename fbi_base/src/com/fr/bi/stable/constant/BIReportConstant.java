@@ -206,6 +206,8 @@ public class BIReportConstant {
 
         public final static int CONTAINS = 0x4c;
 
+        public final static int CONTAINS_DAY = 0x4d;
+
     }
 
     public static final class FILTER_TYPE {
