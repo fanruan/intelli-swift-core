@@ -64,12 +64,13 @@ BI.AnalysisETLOperatorAddColumnExprAccController = BI.inherit(BI.MVCController, 
                 items.push({
                     text : item,
                     value : item,
+                    title : item,
                     selected : true
                 });
             })
             BI.each(model.get(ETLCst.FIELDS), function (i, item) {
                 if (BI.indexOf(group, item.value) === -1 && item.value !== field){
-                    items.push({text : item.text, value : item.value});
+                    items.push({text : item.text, value : item.value, title : item.text});
                 }
             })
             widget.refreshGroup(items);

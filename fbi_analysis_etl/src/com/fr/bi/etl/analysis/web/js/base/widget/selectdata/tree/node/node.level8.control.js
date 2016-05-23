@@ -55,7 +55,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
                 self._showWarningPop(option.id);
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.COPY :
-                BI.ETLReq.reqSaveTable({id: option.id,new_id : BI.UUID(),name : BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(), option.text +'copy')}, BI.emptyFn);
+                BI.ETLReq.reqSaveTable({id: option.id,new_id : BI.UUID(),name : BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(), option.text)}, BI.emptyFn);
                 return;
         }
 

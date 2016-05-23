@@ -137,7 +137,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         var self = this;
         var commonPrimaryTableIds = BI.Utils.getCommonPrimaryTablesByTableIDs([BI.Utils.getTableIDByDimensionID(o.targetIds[0]), tId]);
         var combineCombo = this.layout.attr("items")[this.constants.combineComboPosition];
-        if(BI.isNotEmptyArray(commonPrimaryTableIds)){
+        if(commonPrimaryTableIds.length > 1 || (commonPrimaryTableIds.length !== 0 && !BI.contains(commonPrimaryTableIds, tId) && !BI.contains(commonPrimaryTableIds, BI.Utils.getTableIDByDimensionID(o.targetIds[0])))){
             if(!this.selectCombineTableCombo){
                 this.selectCombineTableCombo = BI.createWidget({
                     type: "bi.text_value_combo",

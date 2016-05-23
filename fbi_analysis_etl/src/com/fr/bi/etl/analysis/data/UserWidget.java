@@ -152,16 +152,17 @@ public class UserWidget {
         }
         if (data.size() != step ){
             maxRow = row + data.size();
-        }
-        paging.setCurrentPage(page + 1);
-        exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
-        data =  exe.getData();
-        row = (page + 1) * step;
-        for (int i =0; i < data.size(); i++){
-            tempValue.put(i + row, data.get(i));
-        }
-        if (data.size() != step ){
-            maxRow = row + data.size();
+        } else {
+            paging.setCurrentPage(page + 1);
+            exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
+            data =  exe.getData();
+            row = (page + 1) * step;
+            for (int i =0; i < data.size(); i++){
+                tempValue.put(i + row, data.get(i));
+            }
+            if (data.size() != step ){
+                maxRow = row + data.size();
+            }
         }
     }
 
