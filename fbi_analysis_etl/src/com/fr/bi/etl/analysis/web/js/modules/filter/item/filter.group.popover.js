@@ -30,12 +30,13 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
             items.push({
                 text : item,
                 value : item,
+                title : item,
                 selected : true
             });
         })
         BI.each(o[ETLCst.FIELDS], function (i, item) {
             if (BI.indexOf(self.storedValue, item.field_name) === -1 && item.field_name !== o.field){
-                items.push({text : item.field_name, value : item.field_name});
+                items.push({text : item.field_name, value : item.field_name, title : item.field_name});
             }
         })
         self.list = BI.createWidget({
