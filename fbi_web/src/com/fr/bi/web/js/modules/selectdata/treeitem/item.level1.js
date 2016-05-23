@@ -56,7 +56,7 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
             title: BI.i18nText("BI-Preview")
         });
         this.previewBtn.doHighLight();
-        this.previewBtn.on(BI.TextButton.EVENT_CHANGE, function(){
+        this.previewBtn.on(BI.TextButton.EVENT_CHANGE, function () {
             BI.Popovers.create(self.getName(), BI.createWidget({
                 type: "bi.detail_select_data_preview_section",
                 text: o.text,
@@ -107,24 +107,25 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
         this.bottomLine.invisible();
 
         this.previewBtn.invisible();
-        this.element.hover(function(){
-            if(BI.Utils.getFieldTypeByID(o.value.field_id || o.value) === BICst.COLUMN.COUNTER){
+        this.element.hover(function () {
+            if (BI.Utils.getFieldTypeByID(o.value.field_id || o.value) === BICst.COLUMN.COUNTER) {
                 return;
             }
             self.previewBtn.visible();
-        }, function(){
+        }, function () {
             self.previewBtn.invisible();
         });
 
         BI.Utils.isSrcUsedBySrcID(o.id) === true && this.doHighLight();
-        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function(v){
-            if(v === true){
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
+            if (v === true) {
                 self.doHighLight();
             } else {
-                if(BI.Utils.isSrcUsedBySrcID(o.id) === false){
+                if (BI.Utils.isSrcUsedBySrcID(o.id) === false) {
                     self.unHighLight();
                 }
             }
+            self.setSelected(false);
         });
     },
 
