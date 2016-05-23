@@ -69,6 +69,9 @@ BI.ETLTablePreviewCenter = BI.inherit(BI.Pane, {
     },
 
     _formatDate: function(d){
+        if(BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
         var date = new Date(BI.parseInt(d));
         return date.print("%Y/%X/%d %H:%M:%S")
     }

@@ -183,12 +183,14 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
                 viewFields.push(id);
                 items[position.row][position.col].value = id;
             });
-            fieldStructure.push({
-                id: BI.UUID(),
-                pId: tableId,
-                type: "bi.excel_view",
-                items: items
-            });
+            if(viewFields.length > 0) {
+                fieldStructure.push({
+                    id: BI.UUID(),
+                    pId: tableId,
+                    type: "bi.excel_view",
+                    items: items
+                });
+            }
         }
 
         //count, string, number

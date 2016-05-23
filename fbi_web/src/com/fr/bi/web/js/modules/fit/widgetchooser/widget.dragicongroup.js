@@ -46,7 +46,9 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                     invalid: true,
                     value: c.valueMore,
                     cls: "widget-more chart-more-font",
-                    children: items
+                    children: items,
+                    selected: true,
+                    forceSelected: true
                 }
             }
             result.push(cfg);
@@ -178,7 +180,9 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Reuse"),
             title: BI.i18nText("BI-Reuse"),
             value: -1,
-            cls: "chart-reuse-font"
+            cls: "drag-reuse-icon",
+            iconHeight: 24,
+            iconWidth: 24
         }]);
         var conf = this._formatConfig(config);
 

@@ -62,8 +62,8 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
         this.button = BI.createWidget({
             type: "bi.icon_button",
             element: this.element,
-            height: o.height,
-            width: o.width,
+            iconHeight: 24,
+            iconWidth: 24,
             text: o.text,
             title: o.title,
             value: o.value,
