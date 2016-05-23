@@ -5,7 +5,8 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
         return BI.extend(conf, {
             baseCls: "bi-analysis-etl-operator-title",
             height:40,
-            buttonHeight:30
+            buttonHeight:30,
+            warningTitle: BI.i18nText("BI-Current_Editing")
         })
     },
 
@@ -47,9 +48,10 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
         })
     },
 
-    setEnable : function(v){
-        this.operator.setEnable(v)
-        this.setSaveButtonEnabled(v)
+    setEnable : function(v, txt){
+        txt = txt || this.options.warningTitle;
+        this.operator.setEnable(v, txt)
+        this.setSaveButtonEnabled(v, txt)
         this.fireEvent(BI.AnalysisOperatorTitle.EVENT_STATE_CHANGE,v)
     },
 
@@ -69,8 +71,9 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
         return this.operator.getElementByValue(v)
     },
 
-    setSaveButtonEnabled : function (v) {
+    setSaveButtonEnabled : function (v, txt) {
         this.saveButton.setEnable(v)
+        this.saveButton.setWarningTitle(txt)
     }
 })
 BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE = "EVENT_OPERATOR_CHANGE";
