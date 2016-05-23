@@ -46,7 +46,7 @@ BI.IconCombo = BI.inherit(BI.Widget, {
             el: this.trigger,
             popup: {
                 el: this.popup,
-                maxWidth: "",
+                maxWidth: 230,
                 maxHeight: 300
             }
         });
