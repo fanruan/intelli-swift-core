@@ -4,6 +4,7 @@
 BI.EditorIconCheckCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.EditorIconCheckCombo.superclass._defaultConfig.apply(this, arguments), {
+            baseClass: "bi-check-editor-combo",
             width: 100,
             height: 22,
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE,
