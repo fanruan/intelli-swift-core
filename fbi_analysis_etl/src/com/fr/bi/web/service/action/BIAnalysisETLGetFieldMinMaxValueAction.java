@@ -22,7 +22,6 @@ import java.util.TreeSet;
  * Created by 小灰灰 on 2016/5/23.
  */
 public class BIAnalysisETLGetFieldMinMaxValueAction extends AbstractAnalysisETLAction{
-    private static final int MAX_ROW = 1000;
 
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
