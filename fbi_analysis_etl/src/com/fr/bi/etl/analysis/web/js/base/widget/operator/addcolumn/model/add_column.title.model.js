@@ -4,7 +4,7 @@ BI.AnalysisETLOperatorAddColumnPaneTitleModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BI.AnalysisETLOperatorAddColumnPaneTitleModel.superclass._defaultConfig.apply(this, arguments), {
             field_name : null,
-            field_type : BICst.COLUMN.STRING,
+            field_type : BICst.COLUMN.NUMBER,
             add_column_type : BICst.ETL_ADD_COLUMN_TYPE.FORMULA
         })
     },

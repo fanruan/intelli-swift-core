@@ -29,7 +29,7 @@ BI.AnalysisETLOperatorAddColumnFormulaPane = BI.inherit(BI.MVCWidget, {
             if(valid === true) {
                 self.controller.setFormula( self.formula.getValue())
             }
-            self.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, valid);
+            self.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, valid, BI.i18nText('BI-Formula_Valid'));
 
         })
         BI.createWidget(    {

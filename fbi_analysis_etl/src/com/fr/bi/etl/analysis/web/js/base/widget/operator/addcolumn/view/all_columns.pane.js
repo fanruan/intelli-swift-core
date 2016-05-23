@@ -93,8 +93,11 @@ BI.AnalysisETLOperatorAllColumnsPane = FR.extend(BI.Widget, {
             })
             self.columnGroups.addItems([button]);
         })
-    }
+    },
 
+    scrollToEnd : function () {
+        this.columnGroups.element.scrollTop(BI.MAX)
+    }
 })
 BI.AnalysisETLOperatorAllColumnsPane.EVENT_DELETE="event_delete";
 BI.AnalysisETLOperatorAllColumnsPane.EVENT_EDIT="event_edit";

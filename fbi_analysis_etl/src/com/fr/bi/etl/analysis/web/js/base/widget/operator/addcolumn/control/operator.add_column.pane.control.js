@@ -33,8 +33,14 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
                     return self._checkFormula(widget, column, parent[ETLCst.FIELDS])
                 case BICst.ETL_ADD_COLUMN_TYPE.DATE_DIFF :
                     var fields = [];
-                    fields.push(column.item['firstField'])
-                    fields.push(column.item['secondField'])
+                    var f = column.item['firstField'];
+                    if(f !== ETLCst.SYSTEM_TIME) {
+                        fields.push(f);
+                    }
+                    f = column.item['secondField'];
+                    if(f !== ETLCst.SYSTEM_TIME) {
+                        fields.push(f);
+                    }
                     return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name, BICst.COLUMN.DATE)
                 case BICst.ETL_ADD_COLUMN_TYPE.DATE_MONTH :
                 case BICst.ETL_ADD_COLUMN_TYPE.DATE_SEASON :
@@ -126,7 +132,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         this._cancelEditColumn(widget, model);
         this._doModelCheck(widget, model)
         widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.getAddColumns().length !== 0)
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.getAddColumns().length !== 0, BI.i18nText('BI-Please') + BI.i18nText('BI-Add_Column'))
     },
 
     editColumnByName : function (name, widget, model) {
@@ -174,7 +180,8 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         if(BI.isNotNull(value.field_type)) {
             column.field_type = value.field_type;
         }
-        if(BI.isNotNull(this._editColumnName)){
+        var isEdit = BI.isNotNull(this._editColumnName)
+        if(isEdit){
             model.editColumn(column, this._editColumnName);
         } else {
             model.addColumn(column);
@@ -182,6 +189,9 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         this._doModelCheck(widget, model)
         widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
         this._cancelEditColumn(widget, model);
+        if(!isEdit) {
+            widget.card.getShowingCard().scrollToEnd();
+        }
     },
 
     saveColumn : function (editing, widget, model) {

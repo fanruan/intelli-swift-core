@@ -29,9 +29,7 @@ BI.AnalysisETLOperatorAddColumnPaneTitle = FR.extend(BI.MVCWidget, {
             watermark: BI.i18nText("BI-Input_Column_Name"),
             errorText: BI.i18nText("BI-Cannot_Have_Repeated_Field_Name"),
             validationChecker: function(v){
-                var check = self.controller.checkName(v);
-                self.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, check, BI.i18nText("BI-Cannot_Have_Repeated_Field_Name"))
-                return check;
+                return self.controller.checkName(v);
             },
             allowBlank: false,
             width: 200,

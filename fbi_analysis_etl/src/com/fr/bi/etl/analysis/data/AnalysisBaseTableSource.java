@@ -34,6 +34,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     @BICoreField
     protected BIWidget widget;
     private int etlType;
+    @BICoreField
     private List<AnalysisETLSourceField> fieldList;
     private String name;
 

@@ -19,7 +19,6 @@ BI.LeftPointerButton = FR.extend(BI.BasicButton, {
 
     _switchOptions : function() {
         var o = this.options;
-        o.title = o.text;
         o.shadow = this._createShadowProfile();
     },
 

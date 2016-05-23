@@ -44,7 +44,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         var self = this;
         this._buildWidgetTitle();
         this._createTools();
-        
+
         this.tableChart = BI.createWidget({
             type: "bi.table_chart_manager",
             wId: self.model.get("id")
@@ -74,12 +74,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 bottom: 10
             }]
         });
-        this.widget.element.hover(function(){
+        this.widget.element.hover(function () {
             self.tools.setVisible(true);
-        }, function(){
+        }, function () {
             self.tools.setVisible(false);
         });
-        
+
     },
 
     _buildWidgetTitle: function () {
@@ -89,25 +89,25 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             this.title = BI.createWidget({
                 type: "bi.shelter_editor",
                 cls: BI.Utils.getWidgetNamePositionByID(id) === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
-                        "dashboard-title-left" : "dashboard-title-center",
+                    "dashboard-title-left" : "dashboard-title-center",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
                 height: 30,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
-                validationChecker: function(v){
+                validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function(){
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
             this.title.setValue(BI.Utils.getWidgetNameByID(id));
         }
     },
-    
-    _createTools: function() {
+
+    _createTools: function () {
         var self = this;
         var expand = BI.createWidget({
             type: "bi.icon_button",
@@ -189,6 +189,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self.filterPane.setVisible(!self.filterPane.isVisible());
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
+                    BI.requestAsync("fr_bi_dezi", "bi_export_excel", {
+                        name: self.model.get("name")
+                    }, function () {
+
+                    });
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY:
                     self.model.copy();
@@ -217,9 +222,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tableChartPopupulate();
     },
 
-    _refreshLayout: function() {
+    _refreshLayout: function () {
         var showTitle = BI.Utils.isShowWidgetNameByID(this.model.get("id"));
-        if(showTitle === false) {
+        if (showTitle === false) {
             this.title.setVisible(false);
             this.widget.attr("items")[0].top = 0;
             this.widget.attr("items")[2].top = 20;
@@ -230,13 +235,13 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }
         this.widget.resize();
     },
-    
-    _refreshTitlePosition: function(){
+
+    _refreshTitlePosition: function () {
         var pos = BI.Utils.getWidgetNamePositionByID(this.model.get("id"));
         var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-                            "dashboard-title-center" : "dashboard-title-left";
+            "dashboard-title-center" : "dashboard-title-left";
         this.title.element.removeClass("dashboard-title-left")
-                            .removeClass("dashboard-title-center").addClass(cls);
+            .removeClass("dashboard-title-center").addClass(cls);
     },
 
     _expandWidget: function () {
@@ -260,7 +265,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "dimensions") ||
             BI.has(changed, "sort") ||
             BI.has(changed, "linkages")) {
-            this.tableChartPopupulate();
+            this._refreshTableAndFilter();
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();

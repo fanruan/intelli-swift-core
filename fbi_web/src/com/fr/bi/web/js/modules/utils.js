@@ -434,8 +434,13 @@
 
         //是否所有数据存在（配置部分将数据修改的情况）
         isAllFieldsExistByWidgetID: function (wid) {
+            var self = this;
             var allDimIds = this.getAllDimensionIDs(wid);
             return !BI.some(allDimIds, function (i, dId) {
+                checkDimension(dId)
+            });
+
+            function checkDimension(dId) {
                 var dType = BI.Utils.getDimensionTypeByID(dId);
                 if (dType === BICst.TARGET_TYPE.STRING ||
                     dType === BICst.TARGET_TYPE.NUMBER ||
@@ -451,15 +456,16 @@
                     var fIds = expression.ids;
                     return BI.some(fIds, function (j, fId) {
                         var dId = fId;
-                        // if (dType === BICst.TARGET_TYPE.FORMULA) {
-                        //     dId = fId.substr(BI.size(BICst.FIELD_ID.HEAD), fId.length - BI.size(BICst.FIELD_ID.HEAD))
-                        // }
-                        if (BI.isNull(Pool.fields[BI.Utils.getFieldIDByDimensionID(dId)])) {
+                        var id = BI.Utils.getFieldIDByDimensionID(dId);
+                        if (BI.isNotNull(self.getDimensionTypeByID(dId))) {
+                            checkDimension(dId)
+                        } else if (BI.isNull(Pool.fields[id])) {
                             return true;
                         }
+
                     });
                 }
-            });
+            }
         },
 
         //获取某组件下所有的维度
@@ -751,21 +757,6 @@
             });
         },
 
-        //某维度或指标是否被其他维度或指标（计算指标）使用
-        isDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
-            var self = this;
-            if (this.isDimensionByDimensionID(dId)) {
-                return false;
-            }
-            var wId = this.getWidgetIDByDimensionID(dId);
-            var ids = this.getAllTargetDimensionIDs(wId);
-            return BI.some(ids, function (i, id) {
-                var tids = self.getExpressionValuesByDimensionID(id);
-                if (tids.contains(dId)) {
-                    return true;
-                }
-            });
-        },
 
         //获取某维度或指标是否被其他维度或指标（计算指标）使用的指标
         getDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
@@ -1327,8 +1318,13 @@
                             var drillRegionType = self.getRegionTypeByDimensionID(drId);
                             //从原来的region中pop出来
                             var tempRegionType = self.getRegionTypeByDimensionID(drill.dId);
+                            var dIndex = widget.view[drillRegionType].indexOf(drId);
                             BI.remove(widget.view[tempRegionType], drill.dId);
-                            widget.view[drillRegionType].push(drill.dId);
+                            if(drillRegionType === tempRegionType) {
+                                widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
+                            } else {
+                                widget.view[drillRegionType].push(drill.dId);
+                            }
                         }
                         BI.each(drArray[i].values, function (i, v) {
                             var filterValue = parseSimpleFilter(v);

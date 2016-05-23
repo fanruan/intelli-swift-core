@@ -58,4 +58,15 @@ public class AnalysisETLSourceField implements JSONTransform{
     public int getFieldType() {
         return fieldType;
     }
+
+    @Override
+    public String toString() {
+        return "AnalysisETLSourceField{" +
+                "fieldName='" + fieldName + '\'' +
+                ", fieldType=" + fieldType +
+                ", group=" + group +
+                ", id='" + id + '\'' +
+                ", uid='" + uid + '\'' +
+                '}';
+    }
 }

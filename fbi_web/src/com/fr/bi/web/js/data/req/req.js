@@ -216,12 +216,6 @@ Data.Req = BIReq = {
         })
     },
 
-    reqLoginInfoInTableField: function (callback) {
-        BI.requestAsync("fr_bi_configure", "get_login_info_in_table_field", {}, function (res) {
-            callback(res);
-        })
-    },
-
     reqSaveLoginInfoInTableField: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "save_login_info_in_table_field", data, function (res) {
             callback();
@@ -286,5 +280,20 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "get_table_names_of_all_packages", {}, function(res) {
             callback(res);
         });
+    },
+    updateCubeByTable: function(table,callback) {
+        BI.requestAsync("fr_bi_configure", "set_cube_generate", {
+            connectionName: table.connection_name,
+            tableName:table.table_name,
+            tableId:table.id
+        }, function(res) {
+            callback(res);
+        });
+    },
+    
+    reqPrimaryTablesByTable: function(table, callback) {
+        BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function(res){
+            callback(res); 
+        });
     }
-    };
+};

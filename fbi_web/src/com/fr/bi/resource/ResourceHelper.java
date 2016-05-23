@@ -15,6 +15,7 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.bridge.Transmitter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -651,6 +652,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/widgetfilter/widget.widgetfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.linkagefilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.targetfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.dimensionfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
 
@@ -678,7 +680,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/excelviewsetting/excel/excelviewsetting.cell.css",
                 "com/fr/bi/web/css/extend/excelviewsetting/excel/excel.excelviewsetting.css",
                 "com/fr/bi/web/css/extend/excelviewsetting/excelviewsetting.css",
-
 
 
                 //详细设置相关模块(预览)
@@ -939,6 +940,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.selectdata4authority.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/auth/factory.filteritem.auth.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.authority.stringcombo.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.logininfo.combo.js",
 
                 "com/fr/bi/web/js/modules/filter/filteritems/generalquery/item.generalquery.notypefilter.js",
 
@@ -1017,6 +1019,7 @@ public class ResourceHelper {
                 //明细表
                 "com/fr/bi/web/js/modules/detailtable/widget.detailtable.js",
                 "com/fr/bi/web/js/modules/detailtable/cell/header.detailtable.js",
+                "com/fr/bi/web/js/modules/detailtable/cell/cell.detailtable.js",
 
                 //业务包分组
                 "com/fr/bi/web/js/modules/businesspackagegroup/buttons/button.businesspackage.mange.js",
@@ -1192,6 +1195,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/crosstable/widget.crosstable.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
 
                 //展示表格
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
@@ -1271,6 +1275,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.model.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.linkagefilter.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.targetfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.dimensionfilter.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.controlfilter.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.drillfilter.js",
 
@@ -1673,7 +1678,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                 */
+                */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
@@ -1994,7 +1999,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                 */
+                */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2048,7 +2053,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                 */
+                */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2338,7 +2343,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                 */
+                */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 

@@ -20,7 +20,7 @@ BI.FormulaCombo = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.FormulaCombo.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-formula-input-combo",
+            baseCls: "bi-formula-combo",
             items: []
         })
     },
