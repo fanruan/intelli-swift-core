@@ -23,26 +23,28 @@ import java.util.*;
 /**
  * Created by GUY on 2015/3/3.
  */
-public class BIBusinessTable extends BIBasicTable {
+public class BIBusinessTable extends BITable {
 
-    protected List<String> usedFields = new ArrayList<String>();
 
     public void setSource(ICubeTableSource source) {
         this.source = source;
     }
 
-    protected ICubeTableSource source;
 
-    protected BIUser user;
-
-    public BIBusinessTable(ICubeTableSource source, String id, Long userId) {
+    public BIBusinessTable(String id, Long userId) {
         super(id);
         user = new BIUser(userId);
-        this.source = source;
+        initialTableSource();
     }
 
     public BIUser getUser() {
         return user;
+    }
+
+    private void initialTableSource() {
+        if (source == null) {
+            source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(ID), new BIUser(-999));
+        }
     }
 
     public int getLevel() {
@@ -101,13 +103,7 @@ public class BIBusinessTable extends BIBasicTable {
          * 依赖BIConfigureManagerCenter，代码没法移动模块了，
          * 暂时去掉，之后改成set。
          */
-        if (source == null) {
-            try {
-                source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(getID(), user);
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
-        }
+        initialTableSource();
         if (source == null) {
             BILogger.getLogger().info("BI source missed");
         }
@@ -133,17 +129,6 @@ public class BIBusinessTable extends BIBasicTable {
              */
             JSONObject filedJson = field.createJSON(loader);
             fields.put(field.getTableBelongTo().getID().getIdentityValue() + field.getFieldName(), filedJson);
-//            switch (field.getFieldType()) {
-//                case DBConstant.COLUMN.STRING:
-//                    stringList.add(filedJson);
-//                    break;
-//                case DBConstant.COLUMN.NUMBER:
-//                    numberList.add(filedJson);
-//                    break;
-//                case DBConstant.COLUMN.DATE:
-//                    dateList.add(filedJson);
-//                    break;
-//            }
             stringList.add(filedJson);
         }
         fields.put(getID().getIdentity() + BIConfigureManagerCenter.getAliasManager().getTransManager(user.getUserId()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"), createCountField());
