@@ -69,6 +69,9 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                         dataList.add(e.getKey().toString());
                     }
                 }
+                if (dimension.getSortType() == BIReportConstant.SORT.DESC) {
+                    Collections.reverse(dataList);
+                }
             }
             if (times > 0 && (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE < dataReader.sizeOfGroup()) {
                 int start = (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE;
@@ -79,6 +82,9 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     if (!filterGvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
                         dataList.add(dataReader.getGroupValue(i).toString());
                     }
+                }
+                if (dimension.getSortType() == BIReportConstant.SORT.DESC) {
+                    Collections.reverse(dataList);
                 }
             }
             ti.clear();

@@ -70,6 +70,11 @@ public class TableColumnFilterOperator extends AbstractTableColumnFilterOperator
         return gvi;
     }
 
+    @Override
+    protected boolean hasTopBottomFilter() {
+        return true;
+    }
+
 
     /**
      * 将JSON对象转换成java对象

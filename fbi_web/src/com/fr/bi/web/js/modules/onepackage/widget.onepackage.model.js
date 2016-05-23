@@ -101,11 +101,11 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         return BI.deepClone(this.usedFields);
     },
 
-    getExcelViews: function() {
+    getExcelViews: function () {
         return BI.deepClone(this.excelViews);
     },
 
-    getUpdateSettings: function(){
+    getUpdateSettings: function () {
         return BI.deepClone(this.updateSettings);
     },
 
@@ -189,8 +189,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         });
 
         //删除相关转义
-        BI.each(this.translations, function(id, name){
-            if(id === tableId){
+        BI.each(this.translations, function (id, name) {
+            if (id === tableId) {
                 delete self.translations[id];
             }
         });

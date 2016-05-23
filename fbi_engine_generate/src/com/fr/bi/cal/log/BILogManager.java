@@ -4,7 +4,7 @@ package com.fr.bi.cal.log;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
@@ -73,88 +73,87 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表错误日志
-     *
-     * @param table 表
+     *  @param table 表
      * @param text  内容
      */
     @Override
-    public void errorTable(Table table, String text, long userId) {
+    public void errorTable(IPersistentTable table, String text, long userId) {
         getInstance(userId).recordToErrorTable(table, text);
     }
 
     /**
      * 表日志
-     *  @param table   表
+     * @param table   表
      * @param seconds  时间(秒)
      * @param percent 百分比
      */
     @Override
-    public void infoTable(Table table, long seconds, int percent, long userId) {
+    public void infoTable(IPersistentTable table, long seconds, int percent, long userId) {
         getInstance(userId).recordToInfoTable(table, seconds, percent);
     }
 
     /**
      * 表日志
-     *  @param table   表
+     * @param table   表
      * @param seconds  时间(秒)
      * @param percent 百分比
      */
     @Override
-    public void infoTableReading(Table table, long seconds, int percent, long userId) {
+    public void infoTableReading(IPersistentTable table, long seconds, int percent, long userId) {
         getInstance(userId).readingInfoTable(table, percent);
     }
 
     /**
      * 表读日志
-     *  @param table 表
+     * @param table 表
      * @param seconds  时间(秒)
      */
     @Override
-    public void infoTableReading(Table table, long seconds, long userId) {
+    public void infoTableReading(IPersistentTable table, long seconds, long userId) {
         getInstance(userId).readingInfoTable(table, seconds);
     }
 
     /**
      * 表日志
-     *  @param table 表
+     * @param table 表
      * @param seconds 时间(秒)
      */
     @Override
-    public void infoTable(Table table, long seconds, long userId) {
+    public void infoTable(IPersistentTable table, long seconds, long userId) {
         getInstance(userId).recordToInfoTable(table, seconds);
     }
 
     /**
      * 表日志
-     *  @param table 表
+     * @param table 表
      * @param seconds 时间(秒)
      */
     @Override
-    public void infoTableIndex(Table table, long seconds, long userId) {
+    public void infoTableIndex(IPersistentTable table, long seconds, long userId) {
         getInstance(userId).recordIndexToInfoTable(table, seconds);
 
     }
 
     /**
      * 表日志
-     *  @param table      表
+     * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
      * @param percent    百分比
      */
     @Override
-    public void infoColumn(Table table, String columnName, long seconds, int percent, long userId) {
+    public void infoColumn(IPersistentTable table, String columnName, long seconds, int percent, long userId) {
         getInstance(userId).recordColumnToInfoTable(table, columnName, seconds, percent);
     }
 
     /**
      * 表日志
-     *  @param table      表
+     * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
      */
     @Override
-    public void infoColumn(Table table, String columnName, long seconds, long userId) {
+    public void infoColumn(IPersistentTable table, String columnName, long seconds, long userId) {
         getInstance(userId).recordColumnToInfoTable(table, columnName, seconds);
     }
 

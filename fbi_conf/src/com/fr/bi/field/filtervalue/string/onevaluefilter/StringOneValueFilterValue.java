@@ -173,4 +173,9 @@ public abstract class StringOneValueFilterValue implements StringFilterValue {
         return isMatchValue(value);
     }
 
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
+
 }

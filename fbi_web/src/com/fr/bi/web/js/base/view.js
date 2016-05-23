@@ -262,11 +262,11 @@ BI.View = BI.inherit(BI.V, {
             BI.isKey(cardName) && self._cards[cardName].populate(data, options.force);
         });
         !BI.isKey(cardName) && BI.Layers.hide(layout + this.cid);
-        return this;
+        return this._cards[cardName];
     },
 
     listenEnd: function (key1, key2, key3) {
-        return this._cards[cardName];
+        return this;
     },
 
     /**

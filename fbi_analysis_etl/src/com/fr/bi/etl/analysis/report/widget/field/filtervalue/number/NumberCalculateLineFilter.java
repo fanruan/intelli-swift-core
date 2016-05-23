@@ -3,15 +3,16 @@
  */
 package com.fr.bi.etl.analysis.report.widget.field.filtervalue.number;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.index.NumberIndexCreater;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line.AvgLine;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line.CalLineGetter;
+import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line.NumberLine;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.engine.cal.ResultDealer;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -19,6 +20,7 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
@@ -35,21 +37,27 @@ public abstract class NumberCalculateLineFilter implements NumberFilterValue{
 	 */
 	private static final long serialVersionUID = -5289564327012309298L;
 
-	private Operator t;
+    private static final int AVGTYPE = 2;
+
+    private static final int CLOSE = 1;
+
+    protected Operator t;
 	
 	protected CalLineGetter getter = AvgLine.INSTANCE;
 	
 	private BIKey[] dimension;
 	
 	private BIKey key;
-	
-	
-	
+
+
 	NumberCalculateLineFilter(Operator t){
 		this.t = t;
 	}
 
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
 	@Override
 	public boolean canCreateFilterIndex() {
 		return true;
@@ -75,17 +83,38 @@ public abstract class NumberCalculateLineFilter implements NumberFilterValue{
 		}
 		if(jo.has("filter_value")){
             JSONObject value = jo.getJSONObject("filter_value");
-            if (value.has("group")){
-                JSONArray ja = value.getJSONArray("group");
-                this.dimension = new BIKey[ja.length()];
-                for(int i = 0; i < jo.length(); i++){
-                    this.dimension[i] = new IndexKey(ja.getString(i));
-                }
-            };
+            if (value.has("close")){
+                parsClose(value.getInt("close") == CLOSE);
+            }
+            if (value.optInt("type", 0) == AVGTYPE){
+                parsAVGJSON(value);
+            } else {
+                parsAllJSON(value);
+            }
 		}
 	}
 
-	@Override
+    protected abstract void parsClose(boolean isClose);
+
+    protected void parsAllJSON(JSONObject jo) throws JSONException {
+        getter = new NumberLine(jo.getDouble("value"));
+    }
+
+    protected void parsAVGJSON(JSONObject jo) throws JSONException {
+        getter = AvgLine.INSTANCE;
+        if (jo.has("value")){
+            JSONObject value = jo.getJSONObject("value");
+            if (value.has("group")){
+                JSONArray ja = value.getJSONArray("group");
+                this.dimension = new BIKey[ja.length()];
+                for(int i = 0; i < ja.length(); i++){
+                    this.dimension[i] = new IndexKey(ja.getString(i));
+                }
+            }
+        }
+    }
+
+    @Override
 	public JSONObject createJSON() throws Exception {
 		return null;
 	}

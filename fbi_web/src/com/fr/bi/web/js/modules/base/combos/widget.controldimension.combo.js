@@ -5,10 +5,10 @@
 BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
 
     constants: {
-        FROM_POSITION: 1
+        FROM_POSITION: 2
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.ControlDimensionCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-control-combo"
         })
@@ -21,6 +21,10 @@ BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
                 value: BICst.CONTROL_COMBO.DELETE
             }],
             [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.CONTROL_COMBO.RENAME
+            }],
+            [{
                 text: BI.i18nText("BI-Dimension_From"),
                 value: BICst.CONTROL_COMBO.INFO,
                 disabled: true
@@ -28,9 +32,9 @@ BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
         ]
     },
 
-    _init: function(){
+    _init: function () {
         BI.ControlDimensionCombo.superclass._init.apply(this, arguments);
-        var self = this,o = this.options;
+        var self = this, o = this.options;
 
         var items = this.defaultItems();
         var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIDByDimensionID(o.dId));
@@ -46,16 +50,16 @@ BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
             items: items
         });
 
-        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function(v){
+        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.ControlDimensionCombo.EVENT_CHANGE, v);
         });
     },
 
-    setValue:function(v){
+    setValue: function (v) {
         this.combo.setValue(v);
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.combo.getValue();
     }
 });

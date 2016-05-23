@@ -1,5 +1,8 @@
 package com.fr.bi.field.target.detailtarget;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -7,17 +10,13 @@ import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
-import com.fr.bi.stable.operation.group.group.IdGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
 import com.fr.bi.stable.operation.sort.BISortFactory;
 import com.fr.bi.stable.operation.sort.ISort;
 import com.fr.bi.stable.operation.sort.sort.NoSort;
 import com.fr.bi.stable.relation.BISimpleRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;

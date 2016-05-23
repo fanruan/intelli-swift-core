@@ -21,6 +21,7 @@ BI.IconCombo = BI.inherit(BI.Widget, {
         this.trigger = BI.createWidget({
             type: "bi.icon_combo_trigger",
             iconClass: o.iconClass,
+            title: o.title,
             items: o.items,
             width: o.width,
             height: o.height

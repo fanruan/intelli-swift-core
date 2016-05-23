@@ -80,6 +80,7 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
 
     _createFormular: function(){
         var self = this;
+        var o = this.options;
         var op ={
             type : 'bi.filter_etl_formula_setting'
         }
