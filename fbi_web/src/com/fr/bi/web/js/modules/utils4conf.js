@@ -230,8 +230,8 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("update_settings", id);
     },
 
-    getAuthorityLoginInfo: function(){
-        return Data.SharingPool.get("authority_settings", "login_info") || {};
+    getAuthorityLoginField: function(){
+        return Data.SharingPool.get("authority_settings", "login_field");
     },
 
     getAuthorityRoles: function(){
@@ -241,7 +241,7 @@ BI.extend(BI.Utils, {
     getPackageAuthorityByID: function(pid) {
         return Data.SharingPool.get("authority_settings", "packages_auth", pid);  
     },
-
+    
     savePackageAuthority: function (data, callback) {
         Data.Req.reqSavePackageAuthority(data, function (res) {
             callback(res);
@@ -306,8 +306,8 @@ BI.extend(BI.Utils, {
         });
     },
     
-    saveLoginInfoInTableField: function(data, callback){
-        Data.Req.reqSaveLoginInfoInTableField(data, function(res){
+    saveLoginField: function(data, callback){
+        Data.Req.reqSaveLoginField(data, function(res){
             callback(res);
         })
     },
@@ -440,6 +440,8 @@ BI.extend(BI.Utils, {
         Data.Req.getTableNamesOfAllPackages(function(res) {
             callback(res);
         })
+<<<<<<< HEAD
+=======
     },
     updateCubeByTable: function (data, callback) {
         Data.Req.updateCubeByTable(data, function () {
@@ -452,5 +454,6 @@ BI.extend(BI.Utils, {
         Data.Req.reqPrimaryTablesByTable(table, function(res){
             callback(res);
         });
+>>>>>>> 5f5d5a03e8f63bc23a6bb153d7a6e3e9c753db0a
     }
 });

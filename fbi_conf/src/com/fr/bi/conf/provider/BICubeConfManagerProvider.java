@@ -12,9 +12,9 @@ public interface BICubeConfManagerProvider {
 
     void saveCubePath(String path);
 
-    String getLoginInfoField();
+    String getLoginField();
 
-    void saveLoginInfoField(String fieldId);
+    void saveLoginField(String loginField);
 
     Object getLoginFieldValue(long userId);
 

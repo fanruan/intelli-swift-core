@@ -24,7 +24,9 @@ BI.IconCombo = BI.inherit(BI.Widget, {
             title: o.title,
             items: o.items,
             width: o.width,
-            height: o.height
+            height: o.height,
+            iconWidth: o.iconWidth,
+            iconHeight: o.iconHeight
         });
         this.popup = BI.createWidget({
             type: "bi.icon_combo_popup",

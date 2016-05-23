@@ -187,6 +187,11 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 return true;
             }
         });
+        BI.each(this.allFields, function(id, field){
+            if(field !== null && field.table_id === tableId) {
+                delete self.allFields[id];
+            }
+        });
 
         //删除相关转义
         BI.each(this.translations, function (id, name) {
