@@ -180,10 +180,17 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
 
                 getTextByType : function () {
                     return self.controller.getTextByType.apply(self.controller, arguments)
+                },
+
+                getMinMaxValueForNumberCustomGroup : function () {
+                    
+                },
+
+                getValuesForCustomGroup : function () {
+                    
                 }
             },
-            fieldName: dm._src.field_name,
-            table: parent
+            fieldName: dm._src.field_name
         });
         dimension.on(BI.AbstractDimension.EVENT_DESTROY, function(){
             self.controller.deleteDimension(id);
