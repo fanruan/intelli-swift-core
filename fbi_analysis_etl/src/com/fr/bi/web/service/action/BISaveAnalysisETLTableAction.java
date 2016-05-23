@@ -29,6 +29,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         String newId = WebUtils.getHTTPRequestParameter(req, "new_id");
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
+        String describe = WebUtils.getHTTPRequestParameter(req, "describe");
         AnalysisBusiTable table = null;
         AnalysisTableSource source = null;
         if (StringUtils.isEmpty(newId)){
