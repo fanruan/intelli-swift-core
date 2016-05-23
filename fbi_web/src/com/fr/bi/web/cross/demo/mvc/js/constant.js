@@ -388,7 +388,10 @@ var _JS = [
 
     "detail/mvc.detailcharts.js",
 
-    "detail/mvc.detailcombinecharts.js"
+    "detail/mvc.columncharts.js",
+    "detail/mvc.othercharts.js",
+    "detail/mvc.barcharts.js",
+    "detail/mvc.areacharts.js"
 ];
 
 
@@ -588,7 +591,10 @@ var _Routes = {
     "/adaptive_arrangement": "AdaptiveArrangementView",
 
     "/detail_chart": "DetailChartView",
-    "/detail_combine_chart": "DetailCombineChartView"
+    "/column_charts": "ColumnChartsView",
+    "/bar_charts": "BarChartsView",
+    "/area_charts": "AreaChartsView",
+    "/other_charts": "OtherChartsView"
 };
 
 var _Models = {};
@@ -1373,8 +1379,20 @@ _Models.detail = [{
         value: "detail_chart"
     }, {
         pId: 31,
-        text: "bi.detail_combine_chart",
-        value: "detail_combine_chart"
+        text: "柱形",
+        value: "column_charts"
+    },  {
+        pId: 31,
+        text: "条形图",
+        value: "bar_charts"
+    }, {
+        pId: 31,
+        text: "面积图",
+        value: "area_charts"
+    }, {
+        pId: 31,
+        text: "其他",
+        value: "other_charts"
     }];
 _Models.component = [];
 _Models.module = [];

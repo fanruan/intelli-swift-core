@@ -193,7 +193,7 @@ BICst.DASHBOARD_WIDGETS = [[{
     }, {
         text: BI.i18nText("BI-Force_Bubble"),
         title: BI.i18nText("BI-Force_Bubble"),
-        value: BICst.WIDGET.WEB,
+        value: BICst.WIDGET.FORCE_BUBBLE,
         cls: "excel-upload-tip-font"
     }]
 }, {

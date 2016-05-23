@@ -24,8 +24,20 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         });
     },
 
+    setTypes: function(types){
+    },
+
+    populate: function (items) {
+        this.RangeAreaChart.populate();
+    },
+
+    resize: function () {
+        this.RangeAreaChart.resize();
+    }
+});
+BI.extend(BI.RangeAreaChart, {
     formatItems: function (items) {
-        var result = [], o = this.options;
+        var result = [];
         BI.each(items, function(i, belongAxisItems){
             BI.each(belongAxisItems, function(j, axisItems){
                 var name = BI.keys(axisItems)[0];
@@ -33,7 +45,7 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
                     "data": axisItems[name],
                     "name": name
                 };
-                if (i === 0) {
+                if (j === 0) {
                     res.fillColorOpacity = 0;
                     res.fillColor = "rgb(99,178,238)";
                 }
@@ -42,27 +54,6 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         });
         return result;
     },
-
-    setTypes: function(types){
-    },
-
-    populate: function (items) {
-        var self = this;
-        var config = BI.RangeAreaChart.formatConfig();
-        config.plotOptions.click = function(){
-            self.fireEvent(BI.RangeAreaChart.EVENT_CHANGE, {category: this.category,
-                seriesName: this.seriesName,
-                value: this.value,
-                options: this.pointOption.options});
-        };
-        this.RangeAreaChart.populate(this.formatItems(items), config);
-    },
-
-    resize: function () {
-        this.RangeAreaChart.resize();
-    }
-});
-BI.extend(BI.RangeAreaChart, {
     formatConfig: function(){
         return {
             "plotOptions": {

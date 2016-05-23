@@ -41,7 +41,8 @@ BI.ConfNumberIntervalCustomGroup = BI.inherit(BI.Widget,{
         var self = this,o = this.options;
         this.tab = BI.createWidget({
             type:"bi.conf_number_custom_group_tab",
-            fieldName: o.fieldName,
+            model: o.model,
+            dId: o.dId,
             tab:this.styleCombo,
             height:this.constants.tabHeight
         });
