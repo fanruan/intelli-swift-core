@@ -67,7 +67,7 @@ public class BINationTablesTest extends BICubeTestBase {
             assertEquals(iCubeColumnReaderService.getOriginalValueByRow(1),"nameB");
 
 
-            //select id from persons where name='nameA'
+            //select rowId from persons where name='nameA'
             GroupValueIndex indexByGroupValue = iCubeColumnReaderService.getIndexByGroupValue("nameA");
             final List<Integer> ids = new ArrayList<Integer>();
             indexByGroupValue.Traversal(new SingleRowTraversalAction() {
@@ -79,7 +79,7 @@ public class BINationTablesTest extends BICubeTestBase {
             assertEquals(ids.toArray(), new int[]{0, 2});
 
 
-            //select name from persons where id in (0,1)
+            //select name from persons where rowId in (0,1)
             final List<String> idList = new ArrayList<String>();
             idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(0));
             idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(1));
