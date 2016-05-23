@@ -71,6 +71,10 @@ BI.DetailSelectCalculationTargetLevel0Item = BI.inherit(BI.BasicButton, {
         });
 
         this.buttons.element.draggable(o.drag);
+
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
+            self.setSelected(false);
+        });
     },
 
     _createSubItems: function (dim, items) {
