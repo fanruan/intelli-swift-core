@@ -7,7 +7,7 @@
 BI.StaticCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.StaticCombo.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-single-select-combo",
+            baseCls: "bi-static-combo",
             height: 30,
             text: "",
             el: {},

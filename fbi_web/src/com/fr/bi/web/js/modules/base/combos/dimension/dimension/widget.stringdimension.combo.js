@@ -33,16 +33,16 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }, {
                 text: BI.i18nText("BI-Custom_Sort_Dot"),
                 value: BICst.DIMENSION_STRING_COMBO.SORT_BY_CUSTOM,
-                cls: ""
+                cls: "dot-e-font"
             }],
             [{
                 text: BI.i18nText("BI-Same_Value_A_Group"),
                 value: BICst.DIMENSION_STRING_COMBO.GROUP_BY_VALUE,
-                cls: ""
+                cls: "dot-e-font"
             }, {
                 text: BI.i18nText("BI-Custom_Grouping_Dot"),
                 value: BICst.DIMENSION_STRING_COMBO.GROUP_BY_CUSTOM,
-                cls: ""
+                cls: "dot-e-font"
             }],
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),

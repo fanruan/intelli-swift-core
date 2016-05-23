@@ -318,7 +318,7 @@ BI.ConfNumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
             this._populatePane(configs);
             return;
         }
-        BI.Utils.getConfNumberFieldMaxMinValue(configs.table, o.fieldName, function(res){
+        o.model.getMinMaxValueForNumberCustomGroup(o.dId, function(res){
             self.max = BI.parseInt(res.max);
             self.min = BI.parseInt(res.min);
             self._populatePane(configs);

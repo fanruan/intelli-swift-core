@@ -19,19 +19,24 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
         return [
             [{
                 text: BI.i18nText("BI-Date"),
-                value: BICst.DIMENSION_DATE_COMBO.DATE
+                value: BICst.DIMENSION_DATE_COMBO.DATE,
+                cls: "dot-e-font"
             }, {
                 text: BI.i18nText("BI-Year_Fen"),
-                value: BICst.DIMENSION_DATE_COMBO.YEAR
+                value: BICst.DIMENSION_DATE_COMBO.YEAR,
+                cls: "dot-e-font"
             }, {
                 text: BI.i18nText("BI-Quarter"),
-                value: BICst.DIMENSION_DATE_COMBO.QUARTER
+                value: BICst.DIMENSION_DATE_COMBO.QUARTER,
+                cls: "dot-e-font"
             }, {
                 text: BI.i18nText("BI-Month_Fen"),
-                value: BICst.DIMENSION_DATE_COMBO.MONTH
+                value: BICst.DIMENSION_DATE_COMBO.MONTH,
+                cls: "dot-e-font"
             }, {
                 text: BI.i18nText("BI-Week_XingQi"),
-                value: BICst.DIMENSION_DATE_COMBO.WEEK
+                value: BICst.DIMENSION_DATE_COMBO.WEEK,
+                cls: "dot-e-font"
             }],
             [{
                 el:{

@@ -52,9 +52,8 @@ BI.NumberGroupDimension = BI.inherit(BI.AbstractDimension, {
         BI.Popovers.remove(id);
         var popup = BI.createWidget({
             type: "bi.number_custom_group_popup",
-            id: id,
-            fieldName: o.fieldName,
-            table: this.options.table
+            dId: o.dId,
+            model: o.model
         });
         popup.on(BI.NumberCustomGroupPopup.EVENT_CHANGE, function(v){
             o.model.setDimensionGroupById(o.dId, v);
