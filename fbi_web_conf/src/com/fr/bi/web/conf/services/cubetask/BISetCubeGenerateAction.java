@@ -4,8 +4,10 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BICubeManagerProvider;
+import com.fr.bi.stable.data.BITable;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,14 +25,19 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
 
         long userId = ServiceUtils.getCurrentUserID(req);
-
+        String connectionName = WebUtils.getHTTPRequestParameter(req, "connectionName");
+        String tableName = WebUtils.getHTTPRequestParameter(req, "tableName");
+        String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
+        connectionName=null==connectionName?"":connectionName;
+        tableName=null==tableName?"":tableName;
+        tableId=null==tableId?"":tableId;
         BICubeManagerProvider cubeManager = BIConfigureManagerCenter.getCubeManager();
-//        if (BIPackUtils.isNoPackageChange(userId) && BIPackUtils.isNoGeneratingChange(userId)) {
-//            cubeManager.addTask(new AllTask(userId), userId);
-//        } else {
-//            cubeManager.addTask(new CheckTask(userId), userId);
-//        }
-        cubeManager.addTask(new BuildCubeTask(new BIUser(userId)), userId);
+        if ("".equals(connectionName)||"".equals(tableName)||"".equals(tableId)){
+            cubeManager.addTask(new BuildCubeTask(new BIUser(userId)), userId);
+        }else{
+            BITable biTable=new BITable(tableId,tableName);
+            cubeManager.addTask(new BuildCubeTask(new BIUser(userId),biTable), userId);
+        }
     }
 
 }
