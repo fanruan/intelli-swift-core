@@ -220,7 +220,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
         this._hover = true;
         this.handle().element.addClass("hover");
         if (this.options.shadow) {
-            this.$mask.visible();
+            this.$mask.setVisible(true);
         }
     },
 
@@ -228,7 +228,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
         this._hover = false;
         this.handle().element.removeClass("hover");
         if (this.options.shadow) {
-            this.$mask && this.$mask.invisible();
+            this.$mask && this.$mask.setVisible(false);
         }
     },
 
@@ -241,7 +241,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
             this.handle().element.removeClass("active");
         }
         if (o.shadow && !o.isShadowShowingOnSelected) {
-            this.$mask && this.$mask.invisible();
+            this.$mask && this.$mask.setVisible(false);
         }
     },
 
@@ -271,6 +271,15 @@ BI.BasicButton = BI.inherit(BI.Single, {
 
     getText: function () {
         return this.options.text;
+    },
+
+    setEnable: function (b) {
+        BI.BasicButton.superclass.setEnable.apply(this, arguments);
+        if (!b) {
+            if (this.options.shadow) {
+                this.$mask && this.$mask.setVisible(false);
+            }
+        }
     },
 
     empty: function () {
