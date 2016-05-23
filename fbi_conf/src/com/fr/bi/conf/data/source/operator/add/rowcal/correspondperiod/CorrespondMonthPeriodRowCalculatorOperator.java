@@ -43,7 +43,7 @@ public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCal
         if (item.has("group")){
             JSONArray ja = item.getJSONArray("group");
             this.dimension = new IndexKey[ja.length() + 1];
-            for (int i = 0; i < ja.length() - 1; i++){
+            for (int i = 0; i < ja.length(); i++){
                 this.dimension[i] = new IndexKey(ja.getString(i));
             }
         } else {
