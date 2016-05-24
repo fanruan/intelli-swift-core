@@ -136,7 +136,7 @@ BICst.DASHBOARD_WIDGETS = [[{
     }, {
         text: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
         title: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
-        value: BICst.WIDGET.COMBINE_CHART,
+        value: BICst.WIDGET.MULTI_AXIS_COMBINE_CHART,
         cls: "drag-combine-mult-icon"
     }]
 }, {
@@ -193,8 +193,8 @@ BICst.DASHBOARD_WIDGETS = [[{
     }, {
         text: BI.i18nText("BI-Force_Bubble"),
         title: BI.i18nText("BI-Force_Bubble"),
-        cls: "drag-bubble-force-icon",
         value: BICst.WIDGET.FORCE_BUBBLE,
+        cls: "drag-bubble-force-icon"
     }]
 }, {
     text: BI.i18nText("BI-Scatter"),

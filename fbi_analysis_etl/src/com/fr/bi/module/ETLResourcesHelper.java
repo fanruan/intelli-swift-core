@@ -136,6 +136,7 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/filter/view/operator.filter.pane.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/filter/control/operator.filter.control.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/filter/control/operator.filter.pane.control.js",
+				"com/fr/bi/etl/analysis/web/js/base/widget/operator/filter/model/operator.filter.pane.model.js",
 //				"com/fr/bi/web/js/modules/onepackage/etl/statistic/widget.statistic.model.js",
 //				"com/fr/bi/web/js/modules/etl/partfield/widget.selectpartfieldlist.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/mergesheet/model/merge.fields.model.js",

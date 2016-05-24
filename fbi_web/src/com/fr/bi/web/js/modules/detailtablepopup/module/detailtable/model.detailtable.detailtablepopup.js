@@ -35,7 +35,7 @@ BI.DetailTablePopupDetailTableModel = BI.inherit(FR.OB, {
         return widget.view;
     },
 
-    getData: function (callback) {
+    getData: function (page, callback) {
         var widget = Data.SharingPool.get(BI.DetailTablePopup.SHARING_POOL_KEY);
         var dimensions = widget.dimensions;
         var tables = [], fields = [], map = {};
@@ -59,7 +59,8 @@ BI.DetailTablePopupDetailTableModel = BI.inherit(FR.OB, {
 
         }
         BI.Utils.getWidgetDataByWidgetInfo(dimensions, widget.view, callback, {
-            type: BICst.WIDGET.DETAIL
+            type: BICst.WIDGET.DETAIL,
+            page: page || BICst.TABLE_PAGE_OPERATOR.REFRESH
         })
     },
 

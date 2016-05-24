@@ -107,7 +107,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
 
     _selectSingleField: function(){
         var self = this, maskId = BI.UUID();
-        var mask = BI.Maskers.create(maskId, BICst.BODY_ELEMENT);
+        var mask = BI.Maskers.make(maskId, BICst.BODY_ELEMENT);
         BI.Maskers.show(maskId);
         var selectDataMask = BI.createWidget({
             type: "bi.login_info_select_data_with_mask",

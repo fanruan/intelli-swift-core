@@ -67,12 +67,6 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         config.plotOptions.click = function(){
             self.fireEvent(BI.CombineChart.EVENT_CHANGE, BI.extend(this.pointOption, {seriesName: this.seriesName}));
         };
-        config.xAxis = [];
-        var newxAxis  = this._axisConfig();
-        newxAxis.position = "bottom";
-        newxAxis.gridLineWidth = 0;
-        newxAxis.type = "category";
-        config.xAxis.push(newxAxis);
         switch (typess[0]){
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
@@ -93,6 +87,12 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
+                config.xAxis = [];
+                var newxAxis  = this._axisConfig();
+                newxAxis.position = "bottom";
+                newxAxis.gridLineWidth = 0;
+                newxAxis.type = "category";
+                config.xAxis.push(newxAxis);
                 config.yAxis = [];
                 BI.each(o.types, function(idx, type){
                     if(BI.isEmptyArray(type)){
@@ -111,6 +111,12 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
+                config.xAxis = [];
+                var newxAxis  = this._axisConfig();
+                newxAxis.position = "bottom";
+                newxAxis.gridLineWidth = 0;
+                newxAxis.type = "category";
+                config.xAxis.push(newxAxis);
                 newxAxis.type = "value";
                 newxAxis.formatter = "function(){if(this>0) return this; else return this*(-1); }";
                 break;
