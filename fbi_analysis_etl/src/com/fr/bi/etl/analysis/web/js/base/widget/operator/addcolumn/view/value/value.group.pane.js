@@ -136,12 +136,13 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
         self.editorPane.addItem(self.editor)
     },
 
-    createItem : function (field, value, field_type) {
+    createItem : function (field, value, field_type, table) {
         var pane =  BI.createWidget({
             type:ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.GROUP + "_single",
             field:field,
             value : value,
-            field_type:field_type
+            field_type:field_type,
+            table : table
         })
         var self = this;
         pane.on(BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_DELETE, function () {

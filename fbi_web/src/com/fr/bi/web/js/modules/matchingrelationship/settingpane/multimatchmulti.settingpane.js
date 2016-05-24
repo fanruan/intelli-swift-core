@@ -60,7 +60,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         return value;
     },
 
-    _createRightRegionPath: function (combineFieldId, dimensionFieldId) {
+    _createRightRegionPath: function (combineFieldId, dimensionFieldId, joinRegion) {
         var self = this;
         var ptId = BI.Utils.getTableIdByFieldID(dimensionFieldId);
         var paths = BI.Utils.getPathsFromFieldAToFieldB(combineFieldId, dimensionFieldId);
@@ -79,6 +79,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                     var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
+                        regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                         text: BI.i18nText("BI-Primary_Key"),
                         value: BI.Utils.getTableIdByFieldID(primaryId),
                         direction: -1
@@ -86,10 +87,19 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                 }
                 p.push({
                     region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                    regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                     text: BI.Utils.getFieldNameByID(foreignId),
                     value: foreignId,
                     direction: -1
                 });
+            });
+            //左右两侧路径上的value值可能相同，相同的话要改一下
+            var leftValues = BI.pluck(joinRegion[idx], "value");
+            BI.each(p, function(id, obj){
+                if(BI.contains(leftValues, obj.value) && obj.text !== BI.i18nText("BI-Primary_Key")){
+                    obj.value = BI.UUID();
+                    obj.regionText = BI.UUID();
+                }
             });
             self.pathValueMap[pId] = BI.pluck(p, "value");
             self.pathRelationMap[pId] = path;
@@ -141,7 +151,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         }
         var combineFieldId = BI.Utils.getFieldIDsOfTableID(items.combineTableId)[0];
         var lregion = this._createLeftRegionPath(combineFieldId, BI.Utils.getFieldIDByDimensionID(items.targetIds[0]));
-        var rregion = this._createRightRegionPath(combineFieldId, items.dimensionFieldId);
+        var rregion = this._createRightRegionPath(combineFieldId, items.dimensionFieldId, lregion);
         var newRegion = [];
         if(BI.isEmptyArray(lregion)){
             return rregion;
