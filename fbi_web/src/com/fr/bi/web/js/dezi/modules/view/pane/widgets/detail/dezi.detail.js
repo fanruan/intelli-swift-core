@@ -140,14 +140,22 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             type: "bi.real_data_checkbox"
         });
 
+        var data_style_tab = BI.createWidget({
+            type: "bi.data_style_tab",
+            wId: this.model.get("id"),
+            cardCreator: BI.bind(this._createTabs, this)
+        });
+
+        data_style_tab.on(BI.DataStyleTab.EVENT_CHANGE, function(){
+            if(this.getSelect() === BICst.DETAIL_TAB_STYLE){
+                self.chartSetting.populate(self.model.get("type"), self.model.get("settings"));
+            }
+        });
+
         var top = BI.createWidget({
             type: "bi.vtape",
             cls: "widget-top-wrapper",
-            items: [{
-                type: "bi.data_style_tab",
-                wId: this.model.get("id"),
-                cardCreator: BI.bind(this._createTabs, this)
-            }, {
+            items: [data_style_tab, {
                 el: checkbox,
                 height: this.constants.DETAIL_NORTH_HEIGHT
             }]
