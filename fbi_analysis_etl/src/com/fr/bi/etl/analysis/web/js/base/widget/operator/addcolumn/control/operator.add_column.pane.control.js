@@ -24,53 +24,11 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     },
 
     _doModelCheck : function (widget, model) {
-        var parent = model.get(ETLCst.PARENTS)[0];
-        var self = this;
-        var columns = model.get(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY);
-        var found = BI.some(columns, function(i ,column){
-            switch (column.add_column_type){
-                case BICst.ETL_ADD_COLUMN_TYPE.FORMULA :
-                    return self._checkFormula(widget, column, parent[ETLCst.FIELDS])
-                case BICst.ETL_ADD_COLUMN_TYPE.DATE_DIFF :
-                    var fields = [];
-                    var f = column.item['firstField'];
-                    if(f !== ETLCst.SYSTEM_TIME) {
-                        fields.push(f);
-                    }
-                    f = column.item['secondField'];
-                    if(f !== ETLCst.SYSTEM_TIME) {
-                        fields.push(f);
-                    }
-                    return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name, BICst.COLUMN.DATE)
-                case BICst.ETL_ADD_COLUMN_TYPE.DATE_MONTH :
-                case BICst.ETL_ADD_COLUMN_TYPE.DATE_SEASON :
-                case BICst.ETL_ADD_COLUMN_TYPE.DATE_YEAR :
-                    return self._checkField(widget, [column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.DATE)
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP:
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT:
-                    var fields = [];
-                    fields.push(column.item['field'])
-                    fields.push(column.item['monthSeason'])
-                    fields.push(column.item['period'])
-                    return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP:
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT:
-                    var fields = [];
-                    fields.push(column.item['field'])
-                    fields.push(column.item['period'])
-                    return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_ACC:
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_RANK:
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_SUM:
-                    return self._checkField(widget, [column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
-                case BICst.ETL_ADD_COLUMN_TYPE.GROUP:
-                    return BI.some(column.item['items'], function (i, item) {
-                        return self._checkField(widget, [item['field']["value"]], parent[ETLCst.FIELDS],column.field_name, item['field']['fieldType'])
-                    })
-            }
-        })
-        model.setValid(!found)
-        return found;
+        var found = model.check();
+        if(found[0] === true) {
+            widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, found[1])
+        }
+        return found[0];
     },
 
     _check : function (widget, model) {
@@ -229,6 +187,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         var column = widget.title.update();
         var fields = {}
         fields[ETLCst.FIELDS] = parent[ETLCst.FIELDS];
+        fields[ETLCst.PARENTS] = model.getValue(ETLCst.PARENTS);
         widget.currentEditPane.populate(BI.extend(fields, value), {
             field_type : column.field_type
         })

@@ -16,13 +16,13 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
             type: 'bi.label',
             height: this._constants.height,
             width: this._constants.width,
-            text: BI.i18nText("BI-Sooner_Than")
+            text: BI.i18nText("BI-Later_Than")
         });
         this.dowmlabel = BI.createWidget({
             type: 'bi.label',
             height: this._constants.height,
             width: this._constants.width,
-            text:  BI.i18nText("BI-Later_Than")
+            text:  BI.i18nText("BI-Sooner_Than")
         });
         BI.createWidget({
             element: self.element,

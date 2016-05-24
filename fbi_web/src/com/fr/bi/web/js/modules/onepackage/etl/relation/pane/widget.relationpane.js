@@ -75,7 +75,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
 
     _createSelectDataMask: function(){
         var self = this, maskId = BI.UUID();
-        var mask = BI.Maskers.create(maskId, BICst.BODY_ELEMENT);
+        var mask = BI.Maskers.make(maskId, BICst.BODY_ELEMENT);
         BI.Maskers.show(maskId);
         var selectDataMask = BI.createWidget({
             type: "bi.select_data_with_mask",

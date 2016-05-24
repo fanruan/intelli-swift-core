@@ -3,9 +3,9 @@
  *
  * Created by GUY on 2016/5/18.
  * @class BI.DetailTablePopupDetailTable
- * @extends BI.Widget
+ * @extends BI.Pane
  */
-BI.DetailTablePopupDetailTable = BI.inherit(BI.Widget, {
+BI.DetailTablePopupDetailTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTablePopupDetailTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detail-table-popup-detail-table"
@@ -17,15 +17,50 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Widget, {
         var self = this;
 
         this.model = new BI.DetailTablePopupDetailTableModel({});
-        this.table = BI.createWidget({
-            type: "bi.table_view",
-            element: this.element
+
+        this.pager = BI.createWidget({
+            type: "bi.all_pager",
+            cls: "page-table-pager",
+            height: 18
         });
+
+        this.table = BI.createWidget({
+            type: "bi.page_table",
+            itemsCreator: function (op, populate) {
+                var vPage = op.vpage;
+                self._onPageChange(vPage, function (items, header) {
+                    populate.apply(self.table, arguments);
+                })
+            },
+            pager: this.pager
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.table,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }]
+        })
     },
 
-    populate: function () {
+    _onPageChange: function (vPage, callback) {
         var self = this;
-        this.model.getData(function (jsonData) {
+        this.loading();
+        var dimensions = this.model.getAllDimensionIDs();
+        if (BI.isEmpty(dimensions)) {
+            this.loaded();
+            callback([], [], [], []);
+            self.pager.setAllPages(0);
+            self.pager.setValue(0);
+            return;
+        }
+        this.model.getData(vPage, function (jsonData) {
+            self.loaded();
             var json = jsonData.data, row = jsonData.row, size = jsonData.size;
             if (BI.isNull(json) || BI.isNull(row)) {
                 return;
@@ -54,9 +89,18 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Widget, {
                 });
                 items.push(rowItems);
             });
-            var columnSize = BI.makeArray(header.length, "");
-            self.table.setColumnSize(columnSize);
-            self.table.populate(items, [header]);
+            self.pager.setAllPages(Math.ceil(row / size));
+            self.pager.setValue(vPage);
+            callback(items, [header])
+        });
+    },
+
+    populate: function () {
+        var self = this;
+        this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
+            var columnSize = BI.makeArray(header[0].length, "");
+            self.table.attr("columnSize", columnSize);
+            self.table.populate(items, header);
         });
     },
 
