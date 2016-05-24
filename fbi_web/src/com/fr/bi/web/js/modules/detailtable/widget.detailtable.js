@@ -1,6 +1,6 @@
 /**
  * @class BI.DetailTable
- * @extend BI.Widget
+ * @extend BI.Pane
  * 明细表的表格
  */
 BI.DetailTable = BI.inherit(BI.Pane, {
@@ -15,13 +15,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         BI.DetailTable.superclass._init.apply(this, arguments);
         var self = this;
 
-        this.wrapper = BI.createWidget({
-            type: "bi.absolute",
-            element: this.element
-        });
         this.pager = BI.createWidget({
             type: "bi.all_pager",
-            height: 20
+            cls: "page-table-pager",
+            height: 18
         });
 
         this.table = BI.createWidget({
@@ -43,17 +40,18 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             pager: this.pager
         });
 
-        this.wrapper.addItem({
-            el: this.table,
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.table,
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            }]
         })
-
-
     },
-
 
     _onPageChange: function (vPage, callback) {
         var self = this;
@@ -64,6 +62,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         var isUseHyperLinkDimension = [];
         var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
         if (BI.isEmpty(dimensions)) {
+            this.loaded();
             callback([], [], [], []);
             self.pager.setAllPages(0);
             self.pager.setValue(0);
@@ -101,12 +100,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 children: self._createTableItems(json.value)
             }];
 
-            var columnSize = [];
-            BI.each(header, function (i, item) {
-                columnSize.push("");
-            });
             self.table.attr("showNumber", BI.Utils.getWidgetSettingsByID(self.options.wId).show_number);
-            self.table.attr("columnSize", columnSize);
             self.pager.setAllPages(Math.ceil(row / size));
             self.pager.setValue(vPage);
             callback(items, header, [], [])
@@ -115,57 +109,11 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
     populate: function () {
         var self = this;
-        var widgetId = this.options.wId;
-        this.loading();
-        this.data = [];
-        var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
-        if (BI.isEmpty(dimensions)) {
-            self.table.populate([], [], [], []);
-            self.pager.setAllPages(0);
-            self.pager.setValue(0);
-            return;
-
-        }
-        this.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-
-        var ob = {};
-        ob.page = this.pageOperator;
-        BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
-            self.loaded();
-            var json = jsonData.data, row = jsonData.row, size = jsonData.size;
-            if (BI.isNull(json) || BI.isNull(row)) {
-                return;
-            }
-            var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
-            BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
-                BI.isNotNull(dId) &&
-                BI.Utils.isDimensionUsable(dId) === true &&
-                header.push({
-                    type: "bi.normal_header_cell",
-                    dId: dId,
-                    text: BI.Utils.getDimensionNameByID(dId),
-                    sortFilterChange: function (v) {
-                        self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-                        self._headerOperatorChange(v, dId);
-                    }
-                });
-            });
-
-
-            var items = [{
-                children: self._createTableItems(json.value)
-            }];
-
-            var columnSize = [];
-            BI.each(header, function (i, item) {
-                columnSize.push("");
-            });
-            self.pager.setAllPages(Math.ceil(row / size));
-            self.pager.setValue(1);
-            self.table.attr("showNumber", BI.Utils.getWidgetSettingsByID(self.options.wId).show_number);
+        this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
+            var columnSize = BI.makeArray(header.length, "");
             self.table.attr("columnSize", columnSize);
             self.table.populate(items, header, [], []);
-        }, ob);
+        });
     },
 
 

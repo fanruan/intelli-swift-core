@@ -46,7 +46,7 @@ BI.DetailTablePopupView = BI.inherit(BI.View, {
             type: "bi.button",
             height: 25,
             title: BI.i18nText('BI-Return_To_Dashboard'),
-            text: BI.i18nText('BI-Detail_Set_Complete')
+            text: BI.i18nText('BI-Close')
         });
         shrink.on(BI.Button.EVENT_CHANGE, function () {
             self.notifyParentEnd();

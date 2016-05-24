@@ -50,23 +50,17 @@ BI.Pane = BI.inherit(BI.Widget, {
                     },
                     height: 30
                 }],
-                element: BI.Maskers.create(this.getName(), this, {
-                    container: this
-                })
+                element: BI.Maskers.make(this.getName(), this)
             });
         }
-        BI.defer(function () {
-            BI.Maskers.show(self.getName());
-        });
+        BI.Maskers.show(self.getName());
     },
 
     loaded: function () {
         var self = this, o = this.options;
-        BI.defer(function () {
-            BI.Maskers.remove(self.getName());
-            o.onLoaded();
-            self.fireEvent(BI.Pane.EVENT_LOADED);
-        });
+        BI.Maskers.remove(self.getName());
+        o.onLoaded();
+        self.fireEvent(BI.Pane.EVENT_LOADED);
     },
 
     check: function () {
