@@ -82,7 +82,7 @@ public class PartCubeDataLoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(BIField td) {
-        throw new RuntimeException(EXCEPTION);
+        return getTableIndex(td.getTableBelongTo());
     }
 
     @Override
