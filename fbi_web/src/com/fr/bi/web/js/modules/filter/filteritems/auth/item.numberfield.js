@@ -114,7 +114,7 @@ BI.AuthorityNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 break;
             case BICst.TARGET_FILTER_NUMBER.BELONG_USER:
             case BICst.TARGET_FILTER_NUMBER.NOT_BELONG_USER:
-                this._createNumberIntervalFilter(initData);
+                this._createLoginInfoCombo(initData);
                 break;
             case BICst.TARGET_FILTER_NUMBER.IS_NULL:
             case BICst.TARGET_FILTER_NUMBER.NOT_NULL:
@@ -171,6 +171,24 @@ BI.AuthorityNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 text: "N = "
             }, this.filterWidget]
         });
+    },
+
+    _createLoginInfoCombo: function(initData){
+        var self = this, o = this.options;
+        this.filterWidget = BI.createWidget({
+            type: "bi.login_info_combo",
+            field_type: BICst.COLUMN.NUMBER,
+            width: 200,
+            height: this._constant.BUTTON_HEIGHT
+        });
+        this.filterWidget.on(BI.LoginInfoCombo.EVENT_CHANGE, function(){
+            self._setNodeData({
+                filter_value : this.getValue()
+            });
+            o.afterValueChange.apply(self, arguments);
+        });
+        BI.isNotNull(initData) && this.filterWidget.setValue(initData);
+        return this.filterWidget;
     },
 
     _setNodeData: function (v) {

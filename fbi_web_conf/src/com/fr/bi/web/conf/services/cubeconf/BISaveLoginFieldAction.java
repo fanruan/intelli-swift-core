@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by Young's on 2016/5/19.
  */
-public class BISaveLoginInfoInTableFieldAction extends AbstractBIConfigureAction {
+public class BISaveLoginFieldAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        String fieldId = WebUtils.getHTTPRequestParameter(req, "field_id");
-        BIConfigureManagerCenter.getCubeConfManager().saveLoginInfoField(fieldId);
+        String loginField = WebUtils.getHTTPRequestParameter(req, "login_field");
+        BIConfigureManagerCenter.getCubeConfManager().saveLoginField(loginField);
         try {
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         } catch (Exception e) {
@@ -27,6 +27,6 @@ public class BISaveLoginInfoInTableFieldAction extends AbstractBIConfigureAction
 
     @Override
     public String getCMD() {
-        return "save_login_info_in_table_field";
+        return "save_login_field";
     }
 }

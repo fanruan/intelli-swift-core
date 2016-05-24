@@ -40,6 +40,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
 
         }
     },
+    
     load: function () {
         this._refreshLoginInfo();
     },
@@ -61,20 +62,10 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             cls: "select-field"
         });
         this.selectField.on(BI.TextButton.EVENT_CHANGE, function(){
-            var selectTablePane = BI.createWidget({
-                type: "bi.select_one_table_pane",
-                element: BI.Layers.create(BICst.SELECT_ONE_TABLE_LAYER, BICst.BODY_ELEMENT),
-                translations: Data.SharingPool.get("translations")
-            });
-            BI.Layers.show(BICst.SELECT_ONE_TABLE_LAYER);
-            selectTablePane.on(BI.SelectOneTablePane.EVENT_CHANGE, function (tables) {
-                if (BI.isNotEmptyArray(tables)) {
-                    self._openLoginInfoPane(tables[0]);
-                }
-            });
+            self._selectSingleField();
         });
 
-        this.loginInfo = BI.createWidget({
+        this.loginField = BI.createWidget({
             type: "bi.label",
             text: BI.i18nText(),
             height: 30,
@@ -88,8 +79,17 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             cls: "select-field"
         });
         this.setButton.on(BI.Button.EVENT_CHANGE, function(){
-            var loginInfo = BI.Utils.getAuthorityLoginInfo();
-            self._openLoginInfoPane(loginInfo.table, loginInfo.field_name);
+            self._selectSingleField();
+        });
+
+        this.clearButton = BI.createWidget({
+            type: "bi.text_button",
+            text: BI.i18nText("BI-Clear"),
+            height: 30,
+            cls: "select-field"
+        });
+        this.clearButton.on(BI.TextButton.EVENT_CHANGE, function(){
+            self._clearLoginField();
         });
 
         return BI.createWidget({
@@ -100,52 +100,59 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
                 text: BI.i18nText("BI-Field_Of_Login_Name"),
                 height: 30,
                 cls: "login-info-text"
-            }, this.selectField, this.loginInfo, this.setButton]
+            }, this.loginField, this.selectField, this.setButton, this.clearButton],
+            rgap: 5
         });
     },
 
-    _openLoginInfoPane: function(table, fieldName){
-        var self = this;
-        BI.Popovers.remove(BICst.LOGIN_INFO_POPOVER);
-        var loginPane = BI.createWidget({
-            type: "bi.authority_login_info_pane",
-            table: table,
-            field_name: fieldName
+    _selectSingleField: function(){
+        var self = this, maskId = BI.UUID();
+        var mask = BI.Maskers.create(maskId, BICst.BODY_ELEMENT);
+        BI.Maskers.show(maskId);
+        var selectDataMask = BI.createWidget({
+            type: "bi.login_info_select_data_with_mask",
+            element: mask
         });
-        loginPane.on(BI.AuthorityLoginInfoPane.EVENT_CANCEL, function(){
-            BI.Popovers.remove(BICst.LOGIN_INFO_POPOVER);
+        selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function(){
+            BI.Maskers.remove(maskId);
         });
-        loginPane.on(BI.AuthorityLoginInfoPane.EVENT_CLEAR, function(){
-            var authoritySettings = Data.SharingPool.get("authority_settings");
-            delete authoritySettings.login_info;
-            Data.SharingPool.put("authority_settings", authoritySettings);
-            self._refreshLoginInfo();
-            BI.Utils.saveLoginInfoInTableField({}, function(){});
-            BI.Popovers.remove(BICst.LOGIN_INFO_POPOVER);
+        selectDataMask.on(BI.SelectDataWithMask.EVENT_CHANGE, function(v){
+            self._updateLoginField(v.id);
+            selectDataMask.destroy();
+            BI.Maskers.remove(maskId);
         });
-        loginPane.on(BI.AuthorityLoginInfoPane.EVENT_SAVE, function(){
-            var authoritySettings = Data.SharingPool.get("authority_settings");
-            var loginInfo = this.getValue();
-            authoritySettings.login_info = loginInfo;
-            Data.SharingPool.put("authority_settings", authoritySettings);
-            self._refreshLoginInfo();
-            BI.Utils.saveLoginInfoInTableField({"field_id": loginInfo}, function(){});
-            BI.Popovers.remove(BICst.LOGIN_INFO_POPOVER);
-        });
-        BI.Popovers.create(BICst.LOGIN_INFO_POPOVER, loginPane).open(BICst.LOGIN_INFO_POPOVER);
+    },
+    
+    _clearLoginField: function(){
+        var authoritySettings = Data.SharingPool.get("authority_settings");
+        delete authoritySettings.login_field;
+        Data.SharingPool.put("authority_settings", authoritySettings);
+        this._refreshLoginInfo();
+        BI.Utils.saveLoginField({}, function(){});
+    },
+    
+    _updateLoginField: function(fieldId){
+        var authoritySettings = Data.SharingPool.get("authority_settings");
+        authoritySettings.login_field = fieldId;
+        Data.SharingPool.put("authority_settings", authoritySettings);
+        this._refreshLoginInfo();
+        BI.Utils.saveLoginField({"login_field": fieldId}, function(){});
     },
 
     _refreshLoginInfo: function(){
-        var loginInfo = BI.Utils.getAuthorityLoginInfo();
-        if(BI.isNull(loginInfo) || BI.isNull(loginInfo.field_name)) {
-            this.selectField.setVisible(true);
-            this.loginInfo.setVisible(false);
-            this.setButton.setVisible(false);
-        } else {
+        var loginField = BI.Utils.getAuthorityLoginField();
+        var allFields = Data.SharingPool.get("fields");
+        if(BI.isNotNull(loginField) && BI.isNotNull(allFields[loginField])) {
+            this.loginField.setText(BI.Utils.getTableNameByFieldId4Conf(loginField) + "." + BI.Utils.getFieldNameByFieldId4Conf(loginField));
+            this.loginField.setVisible(true);
             this.selectField.setVisible(false);
-            this.loginInfo.setVisible(true);
             this.setButton.setVisible(true);
-            this.loginInfo.setText(loginInfo.table.table_name + "." + loginInfo.field_name);
+            this.clearButton.setVisible(true);
+        } else {
+            this.loginField.setVisible(false);
+            this.selectField.setVisible(true);
+            this.setButton.setVisible(false);
+            this.clearButton.setVisible(false);
         }
     },
 
