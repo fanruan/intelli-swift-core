@@ -34,6 +34,7 @@ import com.fr.bi.stable.relation.BITableRelationPath;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
@@ -123,7 +124,7 @@ public class BuildCubeTask implements CubeTask {
         if(null!=biTable){
         Set<ITableSource> tableSourceSet = new HashSet<ITableSource>();
         for (ITableSource iTableSource : cubeBuildStuffManager.getAllSingleSources()) {
-            if(iTableSource.equals(BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(biTable.getID(),biUser))){
+            if(ComparatorUtils.equals(iTableSource,BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(biTable.getID(),biUser))){
                 tableSourceSet.add(iTableSource);
                 cubeBuildStuffManager.setAllSingleSources(tableSourceSet);
                 Set<List<Set<ITableSource>>> calculateTableSource = cubeBuildStuffManager.calculateTableSource(tableSourceSet);
@@ -133,28 +134,26 @@ public class BuildCubeTask implements CubeTask {
                 Set<BITableRelation> allTableRelation = tableRelationManager.getAllTableRelation(biUser.getUserId());
                 Set<BITableRelation> tableRelationSet = new HashSet<BITableRelation>();
                 for (BITableRelation biTableRelation : allTableRelation) {
-                    if (biTableRelation.getPrimaryTable().getID().equals(biTable.getID())) {
+                    if (ComparatorUtils.equals(biTableRelation.getPrimaryTable().getID(),biTable.getID())) {
                         tableRelationSet.add(biTableRelation);
                     }
                 }
                 cubeBuildStuffManager.setTableRelationSet(tableRelationSet);
-
-
                 try {
                     Set<BITableRelationPath> allTablePath = BIConfigureManagerCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
                     Set<BITableRelationPath> tablePath = new HashSet<BITableRelationPath>();
                     for (BITableRelationPath biTableRelationPath : allTablePath) {
-                        if(biTableRelationPath.getFirstRelation().getPrimaryTable().equals(biTable.getID())){
+                            if(ComparatorUtils.equals(biTableRelationPath.getFirstRelation().getPrimaryTable(),biTable.getID())){
                             tablePath.add(biTableRelationPath);
                         }
                     }
                     cubeBuildStuffManager.setRelationPaths(cubeBuildStuffManager.convertPaths(tablePath));
                 } catch (BITableRelationConfusionException e) {
-                    e.printStackTrace();
+                    BILogger.getLogger().error(e.getMessage(), e);
                 } catch (BITablePathConfusionException e) {
-                    e.printStackTrace();
+                    BILogger.getLogger().error(e.getMessage(), e);
                 } catch (BITablePathEmptyException e) {
-                    e.printStackTrace();
+                    BILogger.getLogger().error(e.getMessage(), e);
                 }finally {
 
                 }
