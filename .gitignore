@@ -1,5 +1,5 @@
 .gitignore
-fbi/*.iml
+*.iml
 fbi/bin
 fbi_analysis_etl/bin
 fbi_base/bin
