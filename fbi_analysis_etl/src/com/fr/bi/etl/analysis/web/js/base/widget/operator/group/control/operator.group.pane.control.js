@@ -120,6 +120,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         var id = model.addDimensionByField(field);
         var dm = widget.createDimension(id, field.regionType, model.getDimension(id), model.get(ETLCst.PARENTS)[0]);
         widget.regions[field.regionType].addDimension(dm)
+        widget.regions[field.regionType].getRegion().element.scrollTop(BI.MAX)
         this.doCheck(widget, model)
         this._refreshPreview(widget, model);
     },
