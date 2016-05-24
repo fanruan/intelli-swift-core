@@ -169,6 +169,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self.filterPane.setVisible(!self.filterPane.isVisible());
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
+                    BI.Utils.exportExcelByWidgetName(self.model.get("name"));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY :
                     self.model.copy();

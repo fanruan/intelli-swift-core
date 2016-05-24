@@ -446,11 +446,5 @@ BI.extend(BI.Utils, {
         Data.Req.updateCubeByTable(data, function () {
             callback();
         });
-    },
-
-    getPrimaryTablesByTable4Conf: function(table, callback) {
-        Data.Req.reqPrimaryTablesByTable(table, function(res){
-            callback(res);
-        });
     }
 });
