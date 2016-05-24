@@ -81,6 +81,12 @@ Data.Req = BIReq = {
             callback(res);
         });
     },
+    
+    reqExportExcelByWidgetName: function(data, callback) {
+        BI.requestAsync("fr_bi_dezi", "bi_export_excel", data, function(res) {
+            callback(res);  
+        });
+    },
 
     reqRelationsByTableIds: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
@@ -280,9 +286,8 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "get_table_names_of_all_packages", {}, function(res) {
             callback(res);
         });
-<<<<<<< HEAD
-=======
     },
+    
     updateCubeByTable: function(table,callback) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
             connectionName: table.connection_name,
@@ -291,12 +296,5 @@ Data.Req = BIReq = {
         }, function(res) {
             callback(res);
         });
-    },
-    
-    reqPrimaryTablesByTable: function(table, callback) {
-        BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function(res){
-            callback(res); 
-        });
->>>>>>> 5f5d5a03e8f63bc23a6bb153d7a6e3e9c753db0a
     }
 };
