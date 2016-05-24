@@ -20,8 +20,8 @@ BI.DateETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
                 break;
             case BICst.FILTER_DATE.MORE_THAN:
             case BICst.FILTER_DATE.LESS_THAN:
-            case BICst.FILTER_DATE.EQUAL_TO:
-            case BICst.FILTER_DATE.NOT_EQUAL_TO:
+            case BICst.FILTER_DATE.DAY_EQUAL_TO:
+            case BICst.FILTER_DATE.DAY_NOT_EQUAL_TO:
                 this._createDate();
                 break;
             case BICst.FILTER_TYPE.FORMULA:

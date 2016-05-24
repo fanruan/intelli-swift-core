@@ -26,7 +26,7 @@ BI.ETLTableNamePopover = BI.inherit(BI.ETLTableRenamePopover, {
                 if (v === "") {
                     return BI.i18nText("BI-Report_Name_Not_Null");
                 } else {
-                    return BI.i18nText("BI-Template_Name_Already_Exist");
+                    return BI.i18nText("BI-Table_Name_Already_Exist");
                 }
             },
             validationChecker: function (v) {
