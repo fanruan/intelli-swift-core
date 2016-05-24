@@ -17,7 +17,8 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
         this.pager = BI.createWidget({
             type: "bi.all_pager",
-            height: 20
+            cls: "page-table-pager",
+            height: 18
         });
 
         this.table = BI.createWidget({
@@ -99,12 +100,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 children: self._createTableItems(json.value)
             }];
 
-            var columnSize = [];
-            BI.each(header, function (i, item) {
-                columnSize.push("");
-            });
             self.table.attr("showNumber", BI.Utils.getWidgetSettingsByID(self.options.wId).show_number);
-            self.table.attr("columnSize", columnSize);
             self.pager.setAllPages(Math.ceil(row / size));
             self.pager.setValue(vPage);
             callback(items, header, [], [])
@@ -114,6 +110,8 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
+            var columnSize = BI.makeArray(header.length, "");
+            self.table.attr("columnSize", columnSize);
             self.table.populate(items, header, [], []);
         });
     },
