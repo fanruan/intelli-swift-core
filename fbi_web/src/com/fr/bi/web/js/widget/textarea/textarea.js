@@ -24,8 +24,9 @@ BI.TextArea = BI.inherit(BI.Widget, {
         });
 
         this.textarea.on(BI.TextAreaEditor.EVENT_BLUR, function () {
-            self._showLabel();
-            if (BI.isNotEmptyString(this.getValue())) {
+            if (BI.isEmptyString(this.getValue()) && !self.combo.isViewVisible()) {
+                self._showLabel();
+            } else {
                 self._showInput();
             }
             self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments)
@@ -36,7 +37,7 @@ BI.TextArea = BI.inherit(BI.Widget, {
         });
 
         this.toolbar.on(BI.TextToolbar.EVENT_CHANGE, function () {
-            self.textarea.setValue(this.getValue());
+            self.textarea.setStyle(this.getValue());
             self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments);
         });
 
@@ -51,6 +52,14 @@ BI.TextArea = BI.inherit(BI.Widget, {
                 minWidth: 253,
                 height: 30,
                 stopPropagation: false
+            }
+        });
+
+        this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
+            if (BI.isNotEmptyString(self.textarea.getValue())) {
+                self._showInput();
+            } else {
+                self._showLabel();
             }
         });
 
