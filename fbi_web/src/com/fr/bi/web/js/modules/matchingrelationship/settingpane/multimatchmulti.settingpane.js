@@ -98,7 +98,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
             BI.each(p, function(id, obj){
                 if(BI.contains(leftValues, obj.value) && obj.text !== BI.i18nText("BI-Primary_Key")){
                     obj.value = BI.UUID();
-                    obj.regionText = BI.UUID();
+                    obj.region = BI.UUID();
                 }
             });
             self.pathValueMap[pId] = BI.pluck(p, "value");
