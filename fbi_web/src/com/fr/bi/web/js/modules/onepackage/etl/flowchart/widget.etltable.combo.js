@@ -49,7 +49,6 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
                 left: this.constants.OPERATOR_LEFT_GAP
             });
             BI.Utils.checkCubeStatusByTable(tableInfo, function (data) {
-                console.log('cube generate');
                 var items = data.isGenerated === true ? BI.deepClone(BICst.ETL_MANAGE_ITEMS) :
                     self._setPartItemsDisable();
                 if (tableInfo.isFinal !== true) {
