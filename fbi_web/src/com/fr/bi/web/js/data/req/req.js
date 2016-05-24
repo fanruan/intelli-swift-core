@@ -280,8 +280,6 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "get_table_names_of_all_packages", {}, function(res) {
             callback(res);
         });
-<<<<<<< HEAD
-=======
     },
     reqGenerateCubeByTable: function(tableId, callback) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
@@ -295,7 +293,7 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function(res){
             callback(res); 
         });
->>>>>>> 5f5d5a03e8f63bc23a6bb153d7a6e3e9c753db0a
     }
 
-};
+
+    };

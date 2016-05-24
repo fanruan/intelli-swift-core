@@ -65,6 +65,20 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
         //定时设置
         var timeSetting = this._createTimeSetting();
+
+        this.immediateButton = BI.createWidget({
+            type: "bi.button",
+            text: BI.i18nText("BI-Update_Table_Immedi"),
+            height: 30,
+            handler: function () {
+                self.immediateButton.setEnable(false);
+                self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                BI.Utils.generateCubeByTable(self.model.table.id, function () {
+                    self._createCheckInterval();
+                });
+            }
+        });
+
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
@@ -84,18 +98,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     el: this.updateType,
                     width: "fill"
                 }, {
-                    el: {
-                        type: "bi.button",
-                        text: BI.i18nText("BI-Update_Table_Immedi"),
-                        height: 30,
-                        handler: function() {
-                            self.immediateButton.setEnable(false);
-                            self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
-                            BI.Utils.generateCubeByTable(self.model.table.id, function () {
-                                self._createCheckInterval();
-                            });
-                        }
-                    },
+                    el: this.immediateButton,
                     width: 105
                 }],
                 hgap: 5,

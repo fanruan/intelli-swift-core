@@ -440,8 +440,6 @@ BI.extend(BI.Utils, {
         Data.Req.getTableNamesOfAllPackages(function(res) {
             callback(res);
         })
-<<<<<<< HEAD
-=======
     },
     generateCubeByTable: function (data, callback) {
         Data.Req.reqGenerateCubeByTable(data, function () {
@@ -453,6 +451,5 @@ BI.extend(BI.Utils, {
         Data.Req.reqPrimaryTablesByTable(table, function(res){
             callback(res);
         });
->>>>>>> 5f5d5a03e8f63bc23a6bb153d7a6e3e9c753db0a
     }
 });

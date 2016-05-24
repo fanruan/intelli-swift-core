@@ -21,10 +21,16 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.engine.CubeBuildStuffManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.provider.BITableRelationConfigurationProvider;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
+import com.fr.bi.stable.exception.BITablePathConfusionException;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
+import com.fr.bi.stable.exception.BITableRelationConfusionException;
+import com.fr.bi.stable.relation.BITableRelation;
+import com.fr.bi.stable.relation.BITableRelationPath;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -122,9 +128,42 @@ public class BuildCubeTask implements CubeTask {
                 cubeBuildStuffManager.setAllSingleSources(tableSourceSet);
                 Set<List<Set<ITableSource>>> calculateTableSource = cubeBuildStuffManager.calculateTableSource(tableSourceSet);
                 cubeBuildStuffManager.setDependTableResource(calculateTableSource);
+                BITableRelationConfigurationProvider tableRelationManager = BIConfigureManagerCenter.getTableRelationManager();
+
+                Set<BITableRelation> allTableRelation = tableRelationManager.getAllTableRelation(biUser.getUserId());
+                Set<BITableRelation> tableRelationSet = new HashSet<BITableRelation>();
+                for (BITableRelation biTableRelation : allTableRelation) {
+                    if (biTableRelation.getPrimaryTable().getID().equals(biTable.getID())) {
+                        tableRelationSet.add(biTableRelation);
+                    }
+                }
+                cubeBuildStuffManager.setTableRelationSet(tableRelationSet);
+
+
+                try {
+                    Set<BITableRelationPath> allTablePath = BIConfigureManagerCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
+                    Set<BITableRelationPath> tablePath = new HashSet<BITableRelationPath>();
+                    for (BITableRelationPath biTableRelationPath : allTablePath) {
+                        if(biTableRelationPath.getFirstRelation().getPrimaryTable().equals(biTable.getID())){
+                            tablePath.add(biTableRelationPath);
+                        }
+                    }
+                    cubeBuildStuffManager.setRelationPaths(cubeBuildStuffManager.convertPaths(tablePath));
+                } catch (BITableRelationConfusionException e) {
+                    e.printStackTrace();
+                } catch (BITablePathConfusionException e) {
+                    e.printStackTrace();
+                } catch (BITablePathEmptyException e) {
+                    e.printStackTrace();
+                }finally {
+
+                }
+
                 break;
             }
         }
+
+
         }
 
         manager.registerDataSource(cubeBuildStuffManager.getAllSingleSources());

@@ -65,10 +65,10 @@ public class CubeRunner {
                     cubeTask.run();
                     cubeTask.end();
 
-                    finish();
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 } finally {
+                    finish();
                     setStatue(Status.LOADED);
                     BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                 }
