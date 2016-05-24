@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.Executor.Executor;
 import com.fr.bi.cal.analyze.cal.Executor.ILazyExecutorOperation;
 import com.fr.bi.cal.analyze.cal.index.loader.IndexIterator;
@@ -63,7 +64,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
      * @param column 维度
      * @param gvi    获取实际过滤条件的对象
      */
-    protected SingleDimensionGroup(Table tableKey, DimensionCalculator[] pcolumns, int[] pckindex, DimensionCalculator column, Object[] data, int ckIndex, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
+    protected SingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, int[] pckindex, DimensionCalculator column, Object[] data, int ckIndex, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
         this.loader = loader;
         this.tableKey = tableKey;
         this.pcolumns = pcolumns;
@@ -80,13 +81,13 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         }
     }
 
-    public static SingleDimensionGroup createDimensionGroup(final Table tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
-        long rowCount = loader.getTableIndex(column.getField()).getRowCount();
+    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
+        long rowCount = loader.getTableIndex(column.getField().getTableBelongTo().getTableSource()).getRowCount();
         int groupLimit = 10;
         if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
             useRealData = true;
         } else {
-            long groupCount = loader.getTableIndex(column.getField()).loadGroup(column.createKey(), new ArrayList<BITableSourceRelation>()).nonPrecisionSize();
+            long groupCount = loader.getTableIndex(column.getField().getTableBelongTo().getTableSource()).loadGroup(column.createKey(), new ArrayList<BITableSourceRelation>()).nonPrecisionSize();
             groupLimit = (int) (groupCount * BIBaseConstant.PART_DATA_COUNT_LIMIT / rowCount);
         }
         final boolean urd = useRealData;
@@ -94,12 +95,12 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return new SingleDimensionGroup(tableKey, pcolumns, pckindex, column, data, ckIndex, gvi, loader, urd, count);
     }
 
-    public static ISingleDimensionGroup createSortDimensionGroup(final Table tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, SortedNode sortedNode, boolean useRealData) {
+    public static ISingleDimensionGroup createSortDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, SortedNode sortedNode, boolean useRealData) {
         SingleDimensionGroup singleDimensionGroup = createDimensionGroup(tableKey, pcolumns, pckindex, column, data, ckIndex, gvi, loader, useRealData);
         return new SortedSingleDimensionGroup(singleDimensionGroup, sortedNode);
     }
 
-    public static GroupKey createGroupKey(Table tableKey, DimensionCalculator column, GroupValueIndex gvi, boolean useRealData) {
+    public static GroupKey createGroupKey(BusinessTable tableKey, DimensionCalculator column, GroupValueIndex gvi, boolean useRealData) {
         DimensionCalculator[] columnKey = new DimensionCalculator[2];
         columnKey[0] = new UserRightColumnKey(gvi, tableKey);
         columnKey[1] = column;
@@ -198,7 +199,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
 
-    private Table getRealTableKey4Calculate() {
+    private BusinessTable getRealTableKey4Calculate() {
         return tableKey == BITable.BI_EMPTY_TABLE() ? column.getField().getTableBelongTo() : tableKey;
     }
 

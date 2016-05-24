@@ -1,7 +1,10 @@
 package com.fr.bi.cal;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.fr.bi.base.provider.AllUserTravel;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.BIUserUtils;
@@ -30,7 +33,7 @@ public class BICubeManager implements BICubeManagerProvider {
         GeneralContext.addEnvChangedListener(new EnvChangedListener() {
             @Override
             public void envChanged() {
-             BIConfigureManagerCenter.getCubeManager().envChanged();
+             BICubeConfigureCenter.getCubeManager().envChanged();
             }
         });
     }

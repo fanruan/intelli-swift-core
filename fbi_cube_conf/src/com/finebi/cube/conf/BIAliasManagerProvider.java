@@ -3,6 +3,7 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.conf.trans.UserAliasManager;
 import com.fr.json.JSONObject;
+
 /**
  * This class created on 2016/5/23.
  *
@@ -22,4 +23,7 @@ public interface BIAliasManagerProvider {
     JSONObject getAliasJSON(long userID);
 
     void envChanged();
+
+    @Deprecated
+    void persistData(long userId);
 }

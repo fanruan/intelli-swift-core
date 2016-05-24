@@ -9,7 +9,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
@@ -107,7 +107,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         if (parents == null || parents.size() != 2) {
             throw new RuntimeException("invalid join parents");
         }
@@ -129,7 +129,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         if (parents == null || parents.size() != 2) {
             throw new RuntimeException("invalid join parents");
         }

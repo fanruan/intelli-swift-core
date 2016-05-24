@@ -1,7 +1,9 @@
 package com.fr.bi.cal.loader;
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.cal.stable.engine.index.loader.CubeAbstractLoader;
 import com.fr.bi.cal.stable.tableindex.index.BIMultiTableIndex;
@@ -13,6 +15,7 @@ import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -71,22 +74,18 @@ public class CubeGeneratingTableIndexLoader extends CubeAbstractLoader {
         return biUser.getUserId();
     }
 
-    @Override
     public ICubeTableService getTableIndex(final Table td) {
         return getTableIndexByPath(BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(td.getID(), biUser).getSourceFile());
     }
 
-    @Override
     public ICubeTableService getTableIndex(BITableID id) {
         return getTableIndex(new BITable(id));
     }
 
-    @Override
     public ICubeTableService getTableIndex(BICore md5Core) {
         return getTableIndexByPath(BIModuleUtils.getSourceByCore(md5Core, biUser).getSourceFile());
     }
 
-    @Override
 
     public ICubeTableService getTableIndex(BIField td) {
         return getTableIndex(td.getTableBelongTo());
@@ -115,6 +114,15 @@ public class CubeGeneratingTableIndexLoader extends CubeAbstractLoader {
         return new BIMultiTableIndex(tis);
     }
 
+    @Override
+    public ICubeTableService getTableIndex(CubeTableSource tableSource) {
+        return createTableIndex(BIBasicCore.generateValueCore(tableSource.getSourceID()));
+    }
+
+    @Override
+    public BIKey getFieldIndex(BusinessField column) {
+        return null;
+    }
 
     private ICubeTableService createTableIndex(final BICore core) {
         return indexMap.get(core, new ValueCreator<ICubeTableService>() {

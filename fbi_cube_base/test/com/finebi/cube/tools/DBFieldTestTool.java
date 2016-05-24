@@ -12,49 +12,51 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
  */
 public class DBFieldTestTool {
     public static BICubeFieldSource generateDATE() {
-        return new BICubeFieldSource("tableA", "DATE", DBConstant.CLASS.DATE, 2);
+        return new BICubeFieldSource(null, "DATE", DBConstant.CLASS.DATE, 2);
     }
 
     public static ICubeFieldSource generateBOOLEAN() {
-        return new BICubeFieldSource("tableA", "BOOLEAN", DBConstant.CLASS.BOOLEAN, 2);
+        return new BICubeFieldSource(null, "BOOLEAN", DBConstant.CLASS.BOOLEAN, 2);
     }
 
     public static ICubeFieldSource generateDECIMAL() {
-        return new BICubeFieldSource("tableA", "DECIMAL", DBConstant.CLASS.DECIMAL, 2);
+        return new BICubeFieldSource(null, "DECIMAL", DBConstant.CLASS.DECIMAL, 2);
     }
 
     public static BICubeFieldSource generateDOUBLE() {
-        return new BICubeFieldSource("tableA", "DOUBLE", DBConstant.CLASS.DOUBLE, 2);
+        return new BICubeFieldSource(null, "DOUBLE", DBConstant.CLASS.DOUBLE, 2);
     }
+
     public static BICubeFieldSource generateDOUBLE(String fieldName) {
-        return new BICubeFieldSource("tableA",fieldName, DBConstant.CLASS.DOUBLE, 2);
+        return new BICubeFieldSource(null, fieldName, DBConstant.CLASS.DOUBLE, 2);
     }
+
     public static ICubeFieldSource generateFLOAT() {
-        return new BICubeFieldSource("tableA", "FLOAT", DBConstant.CLASS.FLOAT, 2);
+        return new BICubeFieldSource(null, "FLOAT", DBConstant.CLASS.FLOAT, 2);
     }
 
     public static ICubeFieldSource generateINTEGER() {
-        return new BICubeFieldSource("tableA", "INTEGER", DBConstant.CLASS.INTEGER, 2);
+        return new BICubeFieldSource(null, "INTEGER", DBConstant.CLASS.INTEGER, 2);
     }
 
     public static BICubeFieldSource generateLONG() {
-        return new BICubeFieldSource("tableA", "LONG", DBConstant.CLASS.LONG, 2);
+        return new BICubeFieldSource(null, "LONG", DBConstant.CLASS.LONG, 2);
     }
 
     public static BICubeFieldSource generateTIME() {
-        return new BICubeFieldSource("tableA", "TIME", DBConstant.CLASS.TIME, 2);
+        return new BICubeFieldSource(null, "TIME", DBConstant.CLASS.TIME, 2);
     }
 
     public static ICubeFieldSource generateTIMESTAMP() {
-        return new BICubeFieldSource("tableA", "TIMESTAMP", DBConstant.CLASS.TIMESTAMP, 2);
+        return new BICubeFieldSource(null, "TIMESTAMP", DBConstant.CLASS.TIMESTAMP, 2);
     }
 
     public static BICubeFieldSource generateSTRING() {
-        return new BICubeFieldSource("tableA", "STRING", DBConstant.CLASS.STRING, 2);
+        return new BICubeFieldSource(null, "STRING", DBConstant.CLASS.STRING, 2);
     }
 
     public static BICubeFieldSource generateSTRINGA() {
-        return new BICubeFieldSource("A", "a", DBConstant.CLASS.STRING, 2);
+        return new BICubeFieldSource(null, "a", DBConstant.CLASS.STRING, 2);
     }
 
 }

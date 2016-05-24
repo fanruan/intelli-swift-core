@@ -6,7 +6,6 @@ import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -22,11 +21,13 @@ import java.util.Set;
 /**
  * Created by GUY on 2015/2/28.
  */
-public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
+public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
 
     IPersistentTable getPersistentTable();
 
     String getSourceID();
+
+    String getTableName();
 
     /**
      * 根据sources获取fields, 用来生成cube,判断cube版本
@@ -34,14 +35,15 @@ public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources generatingobjects 的packs的sources
      * @return 字段
      */
-    ICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources);
+    ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources);
+
     /**
      * 当前TableSource父类的全部可用字段。
      *
      * @param sources
      * @return
      */
-    Set<ICubeFieldSource> getParentFields(Set<ICubeTableSource> sources);
+    Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources);
 
     /**
      * 当前TableSource最终全部可用字段。
@@ -53,7 +55,7 @@ public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources
      * @return
      */
-    Set<ICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources);
+    Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources);
 
     /**
      * 当前TableSource自身的字段。
@@ -61,8 +63,7 @@ public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources
      * @return
      */
-    Set<ICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources);
-
+    Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources);
 
 
     /**
@@ -70,9 +71,9 @@ public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
      *
      * @return
      */
-    Map<Integer, Set<ICubeTableSource>> createGenerateTablesMap();
+    Map<Integer, Set<CubeTableSource>> createGenerateTablesMap();
 
-    List<Set<ICubeTableSource>> createGenerateTablesList();
+    List<Set<CubeTableSource>> createGenerateTablesList();
 
     /**
      * 层级
@@ -88,9 +89,9 @@ public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
      *
      * @return
      */
-    long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader);
+    long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader);
 
-    long read4Part(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader, int start, int end);
+    long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end);
 
     /**
      * 获取某个字段的distinct值
@@ -107,11 +108,11 @@ public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
 
     boolean needGenerateIndex();
 
-    Map<BICore, ICubeTableSource> createSourceMap();
+    Map<BICore, CubeTableSource> createSourceMap();
 
     SourceFile getSourceFile();
 
-    Set<String> getUsedFields(ICubeTableSource source);
+    Set<String> getUsedFields(CubeTableSource source);
 
     void refresh();
 

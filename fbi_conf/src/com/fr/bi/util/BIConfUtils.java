@@ -3,14 +3,15 @@ package com.fr.bi.util;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BISimpleRelation;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.connection.DirectTableConnection;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.general.ComparatorUtils;
@@ -60,7 +61,7 @@ public class BIConfUtils {
 
     }
 
-    public static DirectTableConnection createDirectTableConnection(DimensionCalculator ck, Table targetKey, ICubeDataLoader loader) {
+    public static DirectTableConnection createDirectTableConnection(DimensionCalculator ck, BusinessTable targetKey, ICubeDataLoader loader) {
         DirectTableConnection temp = null;
         List<BITableSourceRelation> relationList = ck.getRelationList();
         for (int i = relationList.size(); i > 0; i--) {
@@ -98,20 +99,31 @@ public class BIConfUtils {
     public static List<BITableSourceRelation> convert2TableSourceRelation(List<BITableRelation> relations) {
         List<BITableSourceRelation> list = new ArrayList<BITableSourceRelation>();
         for (BITableRelation relation : relations) {
-            BusinessField primaryField = relation.getPrimaryField();
-            BusinessField foreignField = relation.getForeignField();
-            ICubeTableSource primaryTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(primaryField.getTableBelongTo().getID(), new BIUser(-999));
-            ICubeTableSource foreignTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(primaryField.getTableBelongTo().getID(), new BIUser(-999));
-            ICubeFieldSource primaryFieldSource = new BICubeFieldSource(primaryTableSource, primaryField.getFieldName(), primaryField.getClassType(), primaryField.getFieldSize());
-            ICubeFieldSource foreignFieldSource = new BICubeFieldSource(foreignTableSource, foreignField.getFieldName(), foreignField.getClassType(), foreignField.getFieldSize());
-            list.add(new BITableSourceRelation(
-                    primaryFieldSource,
-                    foreignFieldSource,
-                    primaryTableSource,
-                    foreignTableSource
-            ));
+            list.add(convert2TableSourceRelation(relation));
         }
         return list;
     }
 
+    public static BITableSourceRelation convert2TableSourceRelation(BITableRelation relation) {
+        BusinessField primaryField = relation.getPrimaryField();
+        BusinessField foreignField = relation.getForeignField();
+        CubeTableSource primaryTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(primaryField.getTableBelongTo().getID(), new BIUser(-999));
+        CubeTableSource foreignTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(primaryField.getTableBelongTo().getID(), new BIUser(-999));
+        ICubeFieldSource primaryFieldSource = new BICubeFieldSource(primaryTableSource, primaryField.getFieldName(), primaryField.getClassType(), primaryField.getFieldSize());
+        ICubeFieldSource foreignFieldSource = new BICubeFieldSource(foreignTableSource, foreignField.getFieldName(), foreignField.getClassType(), foreignField.getFieldSize());
+        return new BITableSourceRelation(
+                primaryFieldSource,
+                foreignFieldSource,
+                primaryTableSource,
+                foreignTableSource
+        );
+    }
+
+    public static List<BITableSourceRelation> convertToMD5RelationFromSimpleRelation(List<BISimpleRelation> relations, BIUser user) {
+        List<BITableRelation> list = new ArrayList<BITableRelation>();
+        for (BISimpleRelation relation : relations) {
+            list.add(relation.getTableRelation());
+        }
+        return BIConfUtils.convert2TableSourceRelation(list);
+    }
 }

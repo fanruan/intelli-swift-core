@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.stable.exception.BITableAbsentException;
 

@@ -13,7 +13,7 @@ import com.fr.bi.common.BICoreWrapper;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -161,7 +161,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getSort().createGroupedMap(getter);
     }
 
-    private ICubeTableSource getTableSourceFromField() {
+    private CubeTableSource getTableSourceFromField() {
         return field.getTableBelongTo().getTableSource();
     }
 

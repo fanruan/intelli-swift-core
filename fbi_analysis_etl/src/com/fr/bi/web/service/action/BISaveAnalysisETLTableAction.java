@@ -1,6 +1,7 @@
 package com.fr.bi.web.service.action;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -22,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by 小灰灰 on 2016/4/7.
  */
-public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
+public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
@@ -32,28 +33,28 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String describe = WebUtils.getHTTPRequestParameter(req, "describe");
         AnalysisBusiTable table = null;
         AnalysisCubeTableSource source = null;
-        if (StringUtils.isEmpty(newId)){
-            table  = new AnalysisBusiTable(tableId, userId);
+        if (StringUtils.isEmpty(newId)) {
+            table = new AnalysisBusiTable(tableId, userId);
             table.setDescribe(describe);
             String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
             JSONObject jo = new JSONObject(tableJSON);
             JSONArray items = jo.getJSONArray(Constants.ITEMS);
-            BIConfigureManagerCenter.getAliasManager().setAliasName(tableId, tableName, userId);
+            BICubeConfigureCenter.getAliasManager().setAliasName(tableId, tableName, userId);
             source = AnalysisETLSourceFactory.createTableSource(items, userId);
             table.setSource(source);
         } else {
-            table  = new AnalysisBusiTable(newId, userId);
-            BIConfigureManagerCenter.getAliasManager().setAliasName(newId, tableName, userId);
+            table = new AnalysisBusiTable(newId, userId);
+            BICubeConfigureCenter.getAliasManager().setAliasName(newId, tableName, userId);
             AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
             table.setSource(oldTable.getSource());
             table.setDescribe(oldTable.getDescribe());
             source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByID(oldTable.getID(), new BIUser(userId));
         }
-        FRContext.getCurrentEnv().writeResource(BIConfigureManagerCenter.getAliasManager().getTransManager(userId));
+        BICubeConfigureCenter.getAliasManager().persistData(userId);
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
-        BIAnalysisETLManagerCenter.getDataSourceManager().addCore2SourceRelation(table.getID(),source , new BIUser(userId));
+        BIAnalysisETLManagerCenter.getDataSourceManager().addCore2SourceRelation(table.getID(), source, new BIUser(userId));
         BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-        ((AnalysisDataSourceManager)BIAnalysisETLManagerCenter.getDataSourceManager()).persistUserData(userId);
+        ((AnalysisDataSourceManager) BIAnalysisETLManagerCenter.getDataSourceManager()).persistUserData(userId);
         JSONObject result = new JSONObject();
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
         JSONObject translations = new JSONObject();

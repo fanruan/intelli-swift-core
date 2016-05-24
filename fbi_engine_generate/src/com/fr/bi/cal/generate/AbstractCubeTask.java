@@ -5,7 +5,7 @@ import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.generate.relation.RelationGenerator;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -63,7 +63,7 @@ public abstract class AbstractCubeTask implements CubeTask {
         return name;
     }
 
-    protected abstract Map<Integer, Set<ICubeTableSource>> getGenerateTables();
+    protected abstract Map<Integer, Set<CubeTableSource>> getGenerateTables();
 
 
     @Override
@@ -72,7 +72,7 @@ public abstract class AbstractCubeTask implements CubeTask {
         loadRelation();
     }
 
-    protected void loadIndex(Map<Integer, Set<ICubeTableSource>> tables) {
+    protected void loadIndex(Map<Integer, Set<CubeTableSource>> tables) {
         if (tables == null || tables.isEmpty()) {
             return;
         }
@@ -81,9 +81,9 @@ public abstract class AbstractCubeTask implements CubeTask {
         BILogger.getLogger().info("start sync data from database");
         long start = System.currentTimeMillis();
             List<IndexGenerator> threadList = new ArrayList<IndexGenerator>();
-        for (Map.Entry<Integer, Set<ICubeTableSource>> entry : tables.entrySet()) {
+        for (Map.Entry<Integer, Set<CubeTableSource>> entry : tables.entrySet()) {
             List<IndexGenerator> ilist = new ArrayList<IndexGenerator>();
-            for (ICubeTableSource source : entry.getValue()) {
+            for (CubeTableSource source : entry.getValue()) {
                 IndexGenerator generator = createGenerator(source);
                 if (generator != null) {
                     threadList.add(generator);
@@ -108,7 +108,7 @@ public abstract class AbstractCubeTask implements CubeTask {
 
     protected abstract boolean checkCubeVersion(TableCubeFile cube);
 
-    protected abstract IndexGenerator createGenerator(ICubeTableSource source);
+    protected abstract IndexGenerator createGenerator(CubeTableSource source);
 
     protected void loadRelation() {
         BIConfigureManagerCenter.getLogManager().logRelationStart(biUser.getUserId());

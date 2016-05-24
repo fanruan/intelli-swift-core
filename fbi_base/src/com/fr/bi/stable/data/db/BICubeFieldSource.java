@@ -2,7 +2,7 @@ package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -19,10 +19,10 @@ public class BICubeFieldSource implements ICubeFieldSource {
     protected int fieldSize;
     protected BIFieldID fieldID;
     protected String fieldName = StringUtils.EMPTY;
-    protected ICubeTableSource tableBelongTo;
+    protected CubeTableSource tableBelongTo;
     protected boolean usable = true;
 
-    public BICubeFieldSource(ICubeTableSource tableBelongTo, String fieldName, int classType, int fieldSize) {
+    public BICubeFieldSource(CubeTableSource tableBelongTo, String fieldName, int classType, int fieldSize) {
         this.tableBelongTo = tableBelongTo;
         this.fieldName = fieldName;
         this.fieldType = BIDBUtils.checkColumnTypeFromClass(classType);
@@ -39,7 +39,7 @@ public class BICubeFieldSource implements ICubeFieldSource {
         return fieldType;
     }
 
-    public void setTableBelongTo(ICubeTableSource tableBelongTo) {
+    public void setTableBelongTo(CubeTableSource tableBelongTo) {
         this.tableBelongTo = tableBelongTo;
     }
 
@@ -47,7 +47,7 @@ public class BICubeFieldSource implements ICubeFieldSource {
         return fieldID;
     }
 
-    public ICubeTableSource getTableBelongTo() {
+    public CubeTableSource getTableBelongTo() {
         return tableBelongTo;
     }
 
@@ -70,6 +70,7 @@ public class BICubeFieldSource implements ICubeFieldSource {
         return usable;
     }
 
+    @Override
     public boolean hasSubField() {
         return (getFieldType() == DBConstant.COLUMN.DATE);
     }

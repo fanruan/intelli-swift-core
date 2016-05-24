@@ -1,11 +1,12 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.conf.BISystemDataManager;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
+import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BIField;
@@ -46,12 +47,12 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
 
     @Override
     public String managerTag() {
-        return "AnalysisDataSourceManager" ;
+        return "AnalysisDataSourceManager";
     }
 
     @Override
     public String persistUserDataName(long key) {
-        return "sue" + File.separator + "datasource"  + key;
+        return "sue" + File.separator + "datasource" + key;
     }
 
     @Override
@@ -114,5 +115,10 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
     @Override
     public void addSource(AnalysisCubeTableSource source, long userId) {
         getInstance(new BIUser(userId)).addCoreSource(source);
+    }
+
+    @Override
+    public void persistData(long userId) {
+        persistData(userId);
     }
 }

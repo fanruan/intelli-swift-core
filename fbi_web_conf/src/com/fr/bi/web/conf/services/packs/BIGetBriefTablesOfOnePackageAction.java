@@ -1,8 +1,9 @@
 package com.fr.bi.web.conf.services.packs;
 
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;

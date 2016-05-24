@@ -9,9 +9,8 @@ import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
@@ -33,17 +32,17 @@ public class CubeBuildStuffManager implements Serializable {
      */
     private static final long serialVersionUID = -2315016175890907748L;
     private Set<IBusinessPackageGetterService> packs;
-    private Set<ICubeTableSource> sources;
-    private Set<ICubeTableSource> allSingleSources;
+    private Set<CubeTableSource> sources;
+    private Set<CubeTableSource> allSingleSources;
 
     private String rootPath;
     private String buildTempPath;
     private Set<BITableSourceRelation> tableSourceRelationSet;
     private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private Set<BITableRelation> tableRelationSet;
-    private Map<ICubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<ICubeTableSource, Map<String, ICubeFieldSource>>();
-    private Map<Table, Set<BITableSourceRelation>> primaryKeyMap;
-    private Map<Table, Set<BITableSourceRelation>> foreignKeyMap;
+    private Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
+    private Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap;
+    private Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap;
     private BIUser biUser;
     private Set<BITableSourceRelationPath> relationPaths;
     /**
@@ -52,7 +51,7 @@ public class CubeBuildStuffManager implements Serializable {
      * 不合理的在于为何要把这个依赖关系用一个List(原来是个Map)，把间接依赖的统统获得。
      * 开发的时候封装一下即可，如果当时不封装，这个结构就镶嵌代码了，随着开发替换代价越高。
      */
-    private Set<List<Set<ICubeTableSource>>> dependTableResource;
+    private Set<List<Set<CubeTableSource>>> dependTableResource;
 
     public CubeBuildStuffManager(BIUser biUser) {
         this.biUser = biUser;
@@ -68,7 +67,7 @@ public class CubeBuildStuffManager implements Serializable {
     /**
      * @return sources
      */
-    public Set<ICubeTableSource> getSources() {
+    public Set<CubeTableSource> getSources() {
         return sources;
     }
 
@@ -79,8 +78,8 @@ public class CubeBuildStuffManager implements Serializable {
     public Set<BITableRelation> getTableRelationSet() {
         Set<BITableRelation> set = new HashSet<BITableRelation>();
         for (BITableRelation relation : tableRelationSet) {
-            ICubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getPrimaryField().getTableBelongTo().getID(), biUser);
-            ICubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getForeignField().getTableBelongTo().getID(), biUser);
+            CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getPrimaryField().getTableBelongTo().getID(), biUser);
+            CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getForeignField().getTableBelongTo().getID(), biUser);
             ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
             ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
             if (tableSourceRelationSet.contains(
@@ -137,8 +136,8 @@ public class CubeBuildStuffManager implements Serializable {
     private BITableSourceRelation convert(BITableRelation relation) {
 
 
-        ICubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getPrimaryField().getTableBelongTo().getID(), biUser);
-        ICubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getForeignField().getTableBelongTo().getID(), biUser);
+        CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getPrimaryField().getTableBelongTo().getID(), biUser);
+        CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getForeignField().getTableBelongTo().getID(), biUser);
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         if (primaryField == null || foreignField == null) {
@@ -173,11 +172,11 @@ public class CubeBuildStuffManager implements Serializable {
         return set;
     }
 
-    public Set<ICubeTableSource> getAllSingleSources() {
+    public Set<CubeTableSource> getAllSingleSources() {
         return allSingleSources;
     }
 
-    public void setAllSingleSources(Set<ICubeTableSource> allSingleSources) {
+    public void setAllSingleSources(Set<CubeTableSource> allSingleSources) {
         this.allSingleSources = allSingleSources;
     }
 
@@ -193,11 +192,11 @@ public class CubeBuildStuffManager implements Serializable {
         return tableSourceRelationPath;
     }
 
-    public Set<List<Set<ICubeTableSource>>> getDependTableResource() {
+    public Set<List<Set<CubeTableSource>>> getDependTableResource() {
         return dependTableResource;
     }
 
-    public void setDependTableResource(Set<List<Set<ICubeTableSource>>> dependTableResource) {
+    public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {
         this.dependTableResource = dependTableResource;
     }
 
@@ -206,7 +205,7 @@ public class CubeBuildStuffManager implements Serializable {
      */
     public void setPacks(Set<IBusinessPackageGetterService> packs, long userId) {
         this.packs = packs;
-        this.sources = new HashSet<ICubeTableSource>();
+        this.sources = new HashSet<CubeTableSource>();
         for (IBusinessPackageGetterService pack : packs) {
             Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
             while (tIt.hasNext()) {
@@ -219,9 +218,9 @@ public class CubeBuildStuffManager implements Serializable {
     }
 
     private void fullTableDBFields() {
-        Iterator<ICubeTableSource> tableSourceIterator = sources.iterator();
+        Iterator<CubeTableSource> tableSourceIterator = sources.iterator();
         while (tableSourceIterator.hasNext()) {
-            ICubeTableSource tableSource = tableSourceIterator.next();
+            CubeTableSource tableSource = tableSourceIterator.next();
             ICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(sources);
             Map<String, ICubeFieldSource> name2Field = new HashMap<String, ICubeFieldSource>();
             for (int i = 0; i < BICubeFieldSources.length; i++) {
@@ -249,28 +248,28 @@ public class CubeBuildStuffManager implements Serializable {
     /**
      * @return the primaryKeyMap
      */
-    public Map<Table, Set<BITableSourceRelation>> getPrimaryKeyMap() {
+    public Map<CubeTableSource, Set<BITableSourceRelation>> getPrimaryKeyMap() {
         return primaryKeyMap;
     }
 
     /**
      * @param primaryKeyMap the primaryKeyMap to set
      */
-    public void setPrimaryKeyMap(Map<Table, Set<BITableSourceRelation>> primaryKeyMap) {
+    public void setPrimaryKeyMap(Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap) {
         this.primaryKeyMap = primaryKeyMap;
     }
 
     /**
      * @return the foreignKeyMap
      */
-    public Map<Table, Set<BITableSourceRelation>> getForeignKeyMap() {
+    public Map<CubeTableSource, Set<BITableSourceRelation>> getForeignKeyMap() {
         return foreignKeyMap;
     }
 
     /**
      * @param foreignKeyMap the foreignKeyMap to set
      */
-    public void setForeignKeyMap(Map<Table, Set<BITableSourceRelation>> foreignKeyMap) {
+    public void setForeignKeyMap(Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap) {
         this.foreignKeyMap = foreignKeyMap;
     }
 
@@ -278,14 +277,14 @@ public class CubeBuildStuffManager implements Serializable {
         try {
             Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId());
             setPacks(packs, biUser.getUserId());
-            Set<List<Set<ICubeTableSource>>> depends = calculateTableSource(getSources());
+            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
             BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
             setTableRelationSet(BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId()));
-            Map<Table, Set<BITableSourceRelation>> primaryKeyMap = new HashMap<Table, Set<BITableSourceRelation>>();
+            Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             setPrimaryKeyMap(primaryKeyMap);
-            Map<Table, Set<BITableSourceRelation>> foreignKeyMap = new HashMap<Table, Set<BITableSourceRelation>>();
+            Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             setForeignKeyMap(foreignKeyMap);
             setRelationPaths(convertPaths(BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId())));
             rootPath = BIPathUtils.createBasePath();
@@ -294,18 +293,18 @@ public class CubeBuildStuffManager implements Serializable {
         }
     }
 
-    private Set<List<Set<ICubeTableSource>>> calculateTableSource(Set<ICubeTableSource> tableSources) {
-        Iterator<ICubeTableSource> it = tableSources.iterator();
-        Set<List<Set<ICubeTableSource>>> depends = new HashSet<List<Set<ICubeTableSource>>>();
+    private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
+        Iterator<CubeTableSource> it = tableSources.iterator();
+        Set<List<Set<CubeTableSource>>> depends = new HashSet<List<Set<CubeTableSource>>>();
         while (it.hasNext()) {
-            ICubeTableSource tableSource = it.next();
+            CubeTableSource tableSource = it.next();
             depends.add(tableSource.createGenerateTablesList());
         }
         return depends;
     }
 
-    private List<Set<ICubeTableSource>> map2List(Map<Integer, Set<ICubeTableSource>> map) {
-        List<Set<ICubeTableSource>> tableList = new ArrayList<Set<ICubeTableSource>>();
+    private List<Set<CubeTableSource>> map2List(Map<Integer, Set<CubeTableSource>> map) {
+        List<Set<CubeTableSource>> tableList = new ArrayList<Set<CubeTableSource>>();
 
         for (int i = 0; i < map.size(); i++) {
             tableList.add(map.get(i));
@@ -319,11 +318,11 @@ public class CubeBuildStuffManager implements Serializable {
      * @param set
      * @return
      */
-    public static Set<ICubeTableSource> set2Set(Set<List<Set<ICubeTableSource>>> set) {
-        Set<ICubeTableSource> result = new HashSet<ICubeTableSource>();
-        Iterator<List<Set<ICubeTableSource>>> outIterator = set.iterator();
+    public static Set<CubeTableSource> set2Set(Set<List<Set<CubeTableSource>>> set) {
+        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
+        Iterator<List<Set<CubeTableSource>>> outIterator = set.iterator();
         while (outIterator.hasNext()) {
-            Iterator<Set<ICubeTableSource>> middleIterator = outIterator.next().iterator();
+            Iterator<Set<CubeTableSource>> middleIterator = outIterator.next().iterator();
             while (middleIterator.hasNext()) {
                 result.addAll(middleIterator.next());
             }

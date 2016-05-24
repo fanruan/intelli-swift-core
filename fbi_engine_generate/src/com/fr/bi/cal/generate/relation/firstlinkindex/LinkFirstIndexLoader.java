@@ -82,8 +82,8 @@ public class LinkFirstIndexLoader implements LinkIndexLoader, java.util.concurre
         if (log != null) {
             log.infoRelation(ck, 0, 0);
         }
-        final ICubeTableService sti = loader.getTableIndex(relation.getPrimaryKey());
-        final ICubeTableService eti = loader.getTableIndex(relation.getForeignKey());
+        final ICubeTableService sti = loader.getTableIndex(relation.getPrimaryKey().getTableBelongTo());
+        final ICubeTableService eti = loader.getTableIndex(relation.getForeignKey().getTableBelongTo());
         final String message = "generate first relation from table :" + relation.getPrimaryKey().toString().toString() + "to table:" + relation.getForeignKey().toString();
         BILogger.getLogger().info(message + " start ");
         final BIKey si = sti.getColumnIndex(relation.getPrimaryKey().getFieldName());

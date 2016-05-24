@@ -6,7 +6,6 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 
 import java.util.Date;
@@ -41,7 +40,7 @@ public interface ICubeTableEntityGetterService extends Release {
 
     int getRowCount();
 
-    BICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException;
+    ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException;
 
     Date getCubeLastTime();
 

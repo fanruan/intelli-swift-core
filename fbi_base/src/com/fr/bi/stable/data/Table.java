@@ -8,7 +8,7 @@ import com.fr.json.JSONTransform;
  * @author Connery
  * @since 4.0
  */
-public interface Table extends Cloneable,JSONTransform {
+public interface Table extends Cloneable, JSONTransform {
     BITableID getID();
 
     void setID(BITableID id);

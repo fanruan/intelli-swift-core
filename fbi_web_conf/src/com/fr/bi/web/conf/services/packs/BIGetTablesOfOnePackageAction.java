@@ -1,11 +1,12 @@
 package com.fr.bi.web.conf.services.packs;
 
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -40,7 +41,7 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
             JSONArray tables = packJSON.getJSONArray("tables");
             for (int i = 0; i < tables.length(); i++) {
                 String tableId = tables.getJSONObject(i).getString("id");
-                ICubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), new BIUser(userId));
+                CubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), new BIUser(userId));
                 JSONObject data = source.createJSON();
                 formatTableDataFields(tableId, data);
                 tableData.put(tableId, data);

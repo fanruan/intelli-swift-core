@@ -3,7 +3,7 @@ package com.fr.bi.cal.stable.index;
 
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.log.BIRecord;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.finebi.cube.api.ICubeDataLoader;
@@ -24,7 +24,7 @@ public class GroupIndexGenerator extends AbstractSourceGenerator {
 
     private ICubeDataLoader loader;
 
-    public GroupIndexGenerator(TableCubeFile cube, ICubeTableSource dataSource, ICubeDataLoader loader, BIRecord log) {
+    public GroupIndexGenerator(TableCubeFile cube, CubeTableSource dataSource, ICubeDataLoader loader, BIRecord log) {
         super(cube, dataSource, log);
         this.loader = loader;
     }

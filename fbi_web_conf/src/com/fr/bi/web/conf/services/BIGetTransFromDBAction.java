@@ -8,7 +8,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.file.DatasourceManager;
 import com.fr.fs.web.service.ServiceUtils;
@@ -64,7 +64,7 @@ public class BIGetTransFromDBAction extends AbstractBIConfigureAction {
         Map<String, DBTableSource> sources = new HashMap<String, DBTableSource>();
         while (iterator.hasNext()){
             String id = iterator.next();
-            ICubeTableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
+            CubeTableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
             if (source.getType() == BIBaseConstant.TABLETYPE.DB){
                 sources.put(id, (DBTableSource)source);
             }

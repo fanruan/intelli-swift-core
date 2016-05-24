@@ -2,17 +2,26 @@ package com.finebi.cube.conf.table;
 
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.program.BICollectionUtils;
 import com.fr.json.JSONObject;
 
+import java.util.List;
+
 /**
- * Created by GUY on 2015/3/3.
+ * This class created on 2016/5/21.
+ *
+ * @author Connery
+ * @since 4.0
  */
 public class BIBusinessTable implements BusinessTable {
 
     protected BITableID ID;
-    private String tableName;
+    protected String tableName;
+    protected List<BusinessField> fields;
+    protected CubeTableSource source;
 
     public BIBusinessTable(BITableID ID) {
         this(ID, "");
@@ -35,6 +44,11 @@ public class BIBusinessTable implements BusinessTable {
     @Override
     public JSONObject createJSON() throws Exception {
         return null;
+    }
+
+    @Override
+    public List<BusinessField> getFields() {
+        return BICollectionUtils.unmodifiedCollection(fields);
     }
 
     @Override
@@ -69,8 +83,8 @@ public class BIBusinessTable implements BusinessTable {
     }
 
     @Override
-    public ICubeTableSource getTableSource() {
-        return null;
+    public CubeTableSource getTableSource() {
+        return source;
     }
 
     @Override

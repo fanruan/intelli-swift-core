@@ -3,7 +3,7 @@ package com.fr.bi.conf.data.source.operator;
 import com.fr.bi.base.*;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentTable;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
@@ -74,7 +74,7 @@ public abstract class AbstractETLOperator implements IETLOperator {
         return BIBasicCore.EMPTY_CORE;
     }
 
-    protected ICubeTableSource getSingleParentMD5(List<? extends ICubeTableSource> parents) {
+    protected CubeTableSource getSingleParentMD5(List<? extends CubeTableSource> parents) {
         if (parents == null || parents.size() != 1) {
             return null;
         }

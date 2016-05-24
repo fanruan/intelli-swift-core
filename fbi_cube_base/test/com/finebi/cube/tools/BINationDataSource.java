@@ -1,16 +1,14 @@
 package com.finebi.cube.tools;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -54,17 +52,12 @@ public class BINationDataSource extends AbstractCubeTableSource{
     }
 
     @Override
-    public BICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
-        BICubeFieldSource[] result = new BICubeFieldSource[fieldList.size()];
+    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
+        ICubeFieldSource[] result = new ICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
             result[i] = fieldList.get(i);
         }
         return result;
-    }
-
-    @Override
-    public Set<BusinessTable> createTableKeys() {
-        return null;
     }
 
 
@@ -79,7 +72,7 @@ public class BINationDataSource extends AbstractCubeTableSource{
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         for (int i = 0; i < rowCount; i++) {
             Iterator<Map.Entry<Integer, List>> it = contents.entrySet().iterator();
             while (it.hasNext()) {
@@ -93,7 +86,7 @@ public class BINationDataSource extends AbstractCubeTableSource{
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return 0;
     }
 
@@ -134,12 +127,12 @@ public class BINationDataSource extends AbstractCubeTableSource{
     }
 
     @Override
-    public Map<BICore, ICubeTableSource> createSourceMap() {
+    public Map<BICore, CubeTableSource> createSourceMap() {
         return null;
     }
 
     @Override
-    public Set<String> getUsedFields(ICubeTableSource source) {
+    public Set<String> getUsedFields(CubeTableSource source) {
         return null;
     }
 

@@ -1,10 +1,10 @@
 package com.fr.bi.web.conf.services.packs;
 
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -16,20 +16,20 @@ import java.util.Set;
 
 /**
  * @author windy
- * 获取所有业务包中的表的原始表名，关联视图时使用
+ *         获取所有业务包中的表的原始表名，关联视图时使用
  */
 public class BIGetAllTableNamesOfAllPackageAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        Set<BIBusinessPackage> packs = BIConfigureManagerCenter.getPackageManager().getAllPackages(userId);
+        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(userId);
         JSONObject tableJO = new JSONObject();
-        for(BIBusinessPackage pack : packs) {
+        for (IBusinessPackageGetterService pack : packs) {
             Set<BIBusinessTable> tables = pack.getBusinessTables();
-            for(BIBusinessTable table : tables) {
-                ICubeTableSource src = table.getSource();
-                if(src.getType() == BIBaseConstant.TABLETYPE.DB){
-                    tableJO.put(table.getID().getIdentity(), table.getSource().getPersistentTable().getTableName());
+            for (BIBusinessTable table : tables) {
+                CubeTableSource src = table.getTableSource();
+                if (src.getType() == BIBaseConstant.TABLETYPE.DB) {
+                    tableJO.put(table.getID().getIdentity(), table.getTableSource().getPersistentTable().getTableName());
                 }
             }
         }

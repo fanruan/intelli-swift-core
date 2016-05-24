@@ -23,6 +23,7 @@ public class SingleTableUpdateManager implements JSONTransform, Release {
 
     private Map<BusinessTable, TableUpdate> single_table_update = new HashMap<BusinessTable, TableUpdate>();
     private BIUser user;
+    public static String XML_TAG = "SingleTableUpdateManager";
 
     public SingleTableUpdateManager(long userId) {
         try {

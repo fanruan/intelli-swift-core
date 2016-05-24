@@ -4,7 +4,7 @@ import com.finebi.cube.api.BICubeManager;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -30,7 +30,7 @@ public class BIGetFieldValueAction extends AbstractBIConfigureAction {
             return;
         }
         long userId = ServiceUtils.getCurrentUserID(req);
-        ICubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, "table")), userId);
+        CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, "table")), userId);
         Set set = source.getFieldDistinctNewestValues(fieldName, BICubeManager.getInstance().fetchCubeLoader(userId), userId);
         String filterConfigString = WebUtils.getHTTPRequestParameter(req, "filterConfig");
         String keyword = null;

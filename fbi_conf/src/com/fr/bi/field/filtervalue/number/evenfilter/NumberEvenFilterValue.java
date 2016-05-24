@@ -3,14 +3,14 @@
  */
 package com.fr.bi.field.filtervalue.number.evenfilter;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.data.number.NumberGroupInfo;
@@ -112,7 +112,7 @@ public abstract class NumberEvenFilterValue implements NumberFilterValue {
             if (ja.length() > 0) {
                 JSONObject jsonObject = ja.getJSONObject(0);
                 BusinessField column = null;
-                column = new BIDataColumn();
+                column = new BIBusinessField();
                 column.parseJSON(jsonObject);
                 this.column = column;
                 this.user = new BIUser(userId);

@@ -3,7 +3,7 @@ package com.fr.bi.conf.utils;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.finebi.cube.conf.pack.data.BIBasicBusinessPackage;
-import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -28,9 +28,9 @@ public class BIPackUtils {
         return null;
     }
 
-    public static Set<BusinessTable> getAllBusiTableKeys(Set<BIBusinessPackage> packs) {
+    public static Set<BusinessTable> getAllBusiTableKeys(Set<IBusinessPackageGetterService> packs) {
         Set<BusinessTable> keys = new HashSet<BusinessTable>();
-        Iterator<BIBusinessPackage> itPacks = packs.iterator();
+        Iterator<IBusinessPackageGetterService> itPacks = packs.iterator();
 
         while (itPacks.hasNext()) {
             Set<BIBusinessTable> busiTable = itPacks.next().getBusinessTables();

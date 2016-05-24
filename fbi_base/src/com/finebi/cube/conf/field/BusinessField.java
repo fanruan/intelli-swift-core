@@ -1,6 +1,7 @@
 package com.finebi.cube.conf.field;
 
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.json.JSONTransform;
 
 /**
@@ -15,6 +16,8 @@ public interface BusinessField extends JSONTransform, Cloneable {
     int getFieldType();
 
     int getFieldSize();
+
+    BIFieldID getFieldID();
 
     int getClassType();
 

@@ -1,11 +1,15 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.base.BIUser;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.tree.*;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -14,15 +18,10 @@ import com.fr.bi.field.dimension.BIDimensionFactory;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.fr.bi.stable.relation.BITableRelation;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.util.BIConfUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -49,10 +48,10 @@ public class TreeWidget extends BIAbstractWidget {
     private String not_selected_value;
     private String[] viewData;
     private BIDimension[] dimensions;
-    private Table target;
+    private BusinessTable target;
     protected NameObject targetSort;
     protected Map<String, DimensionFilter> targetFilterMap = new HashMap<String, DimensionFilter>();
-    protected Map<BIDimension, Map<Table, BITableRelation>> dimensionMap = new HashMap<BIDimension, Map<Table, BITableRelation>>();
+    protected Map<BIDimension, Map<BusinessTable, BITableRelation>> dimensionMap = new HashMap<BIDimension, Map<BusinessTable, BITableRelation>>();
 
 
     @Override
@@ -85,12 +84,12 @@ public class TreeWidget extends BIAbstractWidget {
     }
 
     @Override
-    public List<Table> getUsedTableDefine() {
+    public List<BusinessTable> getUsedTableDefine() {
         return null;
     }
 
     @Override
-    public List<BIField> getUsedFieldDefine() {
+    public List<BusinessField> getUsedFieldDefine() {
         return null;
     }
 
@@ -269,7 +268,7 @@ public class TreeWidget extends BIAbstractWidget {
     private void setTargetTable() {
         if (dimensions.length > 0) {
             BITableID targetTableID = dimensions[0].createTableKey().getID();
-            target = new BITable(targetTableID);
+            target = new BIBusinessTable(targetTableID);
             for (int i = 0; i < dimensions.length; i++) {
                 List<BITableRelation> relations = this.getRelationList(dimensions[i]);
                 if (!relations.isEmpty()) {
@@ -304,7 +303,7 @@ public class TreeWidget extends BIAbstractWidget {
             JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
             Iterator it = dimensionMap.keys();
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
-            Map<Table, BITableRelation> relationMap = new HashMap<Table, BITableRelation>();
+            Map<BusinessTable, BITableRelation> relationMap = new HashMap<BusinessTable, BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
                 BISimpleRelation viewRelation = new BISimpleRelation();
                 viewRelation.parseJSON(relationJa.getJSONObject(j));
@@ -316,14 +315,14 @@ public class TreeWidget extends BIAbstractWidget {
         }
     }
 
-    public Table getTargetTable() {
+    public BusinessTable getTargetTable() {
         return this.target;
     }
 
     public List<BITableRelation> getRelationList(BIDimension dimension) {
         List<BITableRelation> tableRelationList = new ArrayList<BITableRelation>();
-        Map<Table, BITableRelation> tableRelationMap = this.dimensionMap.get(dimension);
-        Iterator<Map.Entry<Table, BITableRelation>> it = tableRelationMap.entrySet().iterator();
+        Map<BusinessTable, BITableRelation> tableRelationMap = this.dimensionMap.get(dimension);
+        Iterator<Map.Entry<BusinessTable, BITableRelation>> it = tableRelationMap.entrySet().iterator();
         while (it.hasNext()) {
             BITableRelation tableRelation = it.next().getValue();
             tableRelationList.add(tableRelation);
@@ -333,18 +332,18 @@ public class TreeWidget extends BIAbstractWidget {
     }
 
     public List<BITableSourceRelation> getTableSourceRelationList(BIDimension dimension, long userId) {
-        Map<Table, BITableRelation> tableRelationMap = this.dimensionMap.get(dimension);
+        Map<BusinessTable, BITableRelation> tableRelationMap = this.dimensionMap.get(dimension);
         List<BITableSourceRelation> tableSourceRelationList = new ArrayList<BITableSourceRelation>();
-        Iterator<Map.Entry<Table, BITableRelation>> it = tableRelationMap.entrySet().iterator();
+        Iterator<Map.Entry<BusinessTable, BITableRelation>> it = tableRelationMap.entrySet().iterator();
         while (it.hasNext()) {
             BITableRelation tableRelation = it.next().getValue();
-            BITableSourceRelation tableSourceRelation = new BITableSourceRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField(), BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tableRelation.getPrimaryTable().getID(), new BIUser(userId)), BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tableRelation.getForeignTable().getID(), new BIUser(userId)));
+            BITableSourceRelation tableSourceRelation = BIConfUtils.convert2TableSourceRelation(tableRelation);
             tableSourceRelationList.add(tableSourceRelation);
         }
         return tableSourceRelationList;
     }
 
-    public Map<Table, BITableRelation> getRelationMap(BIDimension dimension) {
+    public Map<BusinessTable, BITableRelation> getRelationMap(BIDimension dimension) {
         return this.dimensionMap.get(dimension);
     }
 

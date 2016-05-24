@@ -12,7 +12,7 @@ import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BIXMLDataSource implements BIDataSource {
 
 
-    private Map<BICore, ICubeTableSource> md5Tables = new ConcurrentHashMap<BICore, ICubeTableSource>();
+    private Map<BICore, CubeTableSource> md5Tables = new ConcurrentHashMap<BICore, CubeTableSource>();
 
     private Map<BITableID, BICore> idMd5Tables = new ConcurrentHashMap<BITableID, BICore>();
 
@@ -75,7 +75,7 @@ public class BIXMLDataSource implements BIDataSource {
     }
 
     @Override
-    public ICubeTableSource getTableSourceByID(BITableID id) {
+    public CubeTableSource getTableSourceByID(BITableID id) {
         if (id == null) {
             return null;
         }
@@ -84,7 +84,7 @@ public class BIXMLDataSource implements BIDataSource {
     }
 
     @Override
-    public ICubeTableSource getTableSourceByMD5(BICore core) {
+    public CubeTableSource getTableSourceByMD5(BICore core) {
         return md5Tables.get(core);
     }
 
@@ -101,7 +101,7 @@ public class BIXMLDataSource implements BIDataSource {
      * 增加md5表
      */
     @Override
-    public void addTableSource(BITableID id, ICubeTableSource source) {
+    public void addTableSource(BITableID id, CubeTableSource source) {
         synchronized (this) {
             BICore core = source.fetchObjectCore();
             md5Tables.putAll(source.createSourceMap());
@@ -113,7 +113,7 @@ public class BIXMLDataSource implements BIDataSource {
      * 修改md5表
      */
     @Override
-    public void editTableSource(BITableID id, ICubeTableSource source) {
+    public void editTableSource(BITableID id, CubeTableSource source) {
         synchronized (this) {
             BICore md5Name = source.fetchObjectCore();
             BICore oldMD5 = idMd5Tables.get(id);
@@ -130,7 +130,7 @@ public class BIXMLDataSource implements BIDataSource {
     public JSONObject createJSON() throws JSONException {
         JSONObject jo = new JSONObject();
         for (Entry<BITableID, BICore> id : idMd5Tables.entrySet()) {
-            ICubeTableSource source = md5Tables.get(id.getValue());
+            CubeTableSource source = md5Tables.get(id.getValue());
             if (source != null) {
                 try {
                     jo.put(id.getKey().getIdentityValue(), source.createJSON());
@@ -151,7 +151,7 @@ public class BIXMLDataSource implements BIDataSource {
     @Override
     public ICubeFieldSource findDBField(BusinessField businessField) throws BIFieldAbsentException {
         BusinessTable table = businessField.getTableBelongTo();
-        ICubeTableSource tableSource = getTableSourceByID(table.getID());
+        CubeTableSource tableSource = getTableSourceByID(table.getID());
         ICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(null);
         for (int i = 0; i < BICubeFieldSources.length; i++) {
             if (ComparatorUtils.equals(businessField.getFieldName(), BICubeFieldSources[i].getFieldName())) {

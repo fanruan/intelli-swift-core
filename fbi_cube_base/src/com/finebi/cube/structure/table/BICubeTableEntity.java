@@ -7,14 +7,13 @@ import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.*;
 import com.finebi.cube.structure.table.property.BICubeTableProperty;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.*;
@@ -113,7 +112,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
         int columnIndex = originalDataValue.getCol();
         int rowNumber = originalDataValue.getRow();
         Object value = originalDataValue.getValue();
-        BICubeFieldSource field = getAllFields().get(columnIndex);
+        ICubeFieldSource field = getAllFields().get(columnIndex);
         ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));
         columnService.addOriginalDataValue(rowNumber, value);
     }
@@ -156,10 +155,10 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public BICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
+    public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
         Iterator<ICubeFieldSource> fieldIterator = getFieldInfo().iterator();
         while (fieldIterator.hasNext()) {
-            BICubeFieldSource field = fieldIterator.next();
+            ICubeFieldSource field = fieldIterator.next();
             if (field.getFieldName().equals(fieldName)) {
                 return field;
             }
@@ -184,11 +183,11 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
     @Override
     public ICubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
-        BICubeFieldSource field = getSpecificColumn(columnName);
+        ICubeFieldSource field = getSpecificColumn(columnName);
         return getColumnDataGetter(convert(field));
     }
 
-    public static BIColumnKey convert(BICubeFieldSource field) {
+    public static BIColumnKey convert(ICubeFieldSource field) {
         return BIColumnKey.covertColumnKey(field);
     }
 

@@ -2,10 +2,10 @@ package com.fr.bi.field.filtervalue.string.rangefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -66,7 +66,7 @@ public class StringNotInUserFilterValue extends StringRangeFilterValue {
     }
 
     protected void addLogUserInfo() {
-        if (this.column != null && BIConfigureManagerCenter.getCubeConfManager().getLoginInfoField() != null) {
+        if (this.column != null && BIConfigureManagerCenter.getCubeConfManager().getLoginField() != null) {
             try {
                 Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(user.getUserId());
                 if (fieldValue != null) {
@@ -87,7 +87,7 @@ public class StringNotInUserFilterValue extends StringRangeFilterValue {
             if (value.has("login_user")) {
                 valueSet.getValues().add(UserControl.getInstance().getUser(userId).getUsername());
             } else {
-                BusinessField dataColumn = new BIDataColumn();
+                BusinessField dataColumn = new BIBusinessField();
                 dataColumn.parseJSON(value);
                 this.column = dataColumn;
             }

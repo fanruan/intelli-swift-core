@@ -57,6 +57,11 @@ public class BIAliasManager extends BISystemDataManager<UserAliasManager> implem
         }
     }
 
+    @Override
+    public void persistData(long userId) {
+        persistUserData(userId);
+    }
+
     /**
      * 更新
      */

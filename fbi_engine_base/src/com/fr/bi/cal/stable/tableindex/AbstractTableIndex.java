@@ -1,12 +1,11 @@
 package com.fr.bi.cal.stable.tableindex;
 
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -84,8 +83,8 @@ public abstract class AbstractTableIndex implements ICubeTableService {
      */
     protected void loadMain() {
         try {
-            BICubeFieldSource[] fields = cube.getBIField();
-            for (BICubeFieldSource column : fields) {
+            ICubeFieldSource[] fields = cube.getBIField();
+            for (ICubeFieldSource column : fields) {
                 this.columns.put(new IndexKey(column.getFieldName()), column);
             }
         } catch (Exception e) {

@@ -7,7 +7,7 @@ import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.ICubeGeneratorConfigure;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,8 +21,8 @@ import java.util.Set;
  */
 public class BICubeGeneratorConfiguration implements ICubeGeneratorConfigure {
     @Override
-    public Set<ICubeTableSource> getAllTableData(long userId) {
-        Set<ICubeTableSource> allTable = new HashSet<ICubeTableSource>();
+    public Set<CubeTableSource> getAllTableData(long userId) {
+        Set<CubeTableSource> allTable = new HashSet<CubeTableSource>();
 
         Iterator<IBusinessPackageGetterService> allPackages = BICubeConfigureCenter.getPackageManager().getAllPackages(userId).iterator();
         while (allPackages.hasNext()) {
@@ -30,7 +30,7 @@ public class BICubeGeneratorConfiguration implements ICubeGeneratorConfigure {
             Iterator<BIBusinessTable> itTable = businessPackage.getBusinessTables().iterator();
             while (itTable.hasNext()) {
                 BIBusinessTable biBusinessTable = itTable.next();
-                ICubeTableSource tableSource = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(biBusinessTable.getID(), new BIUser(userId));
+                CubeTableSource tableSource = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(biBusinessTable.getID(), new BIUser(userId));
                 allTable.add(tableSource);
             }
         }

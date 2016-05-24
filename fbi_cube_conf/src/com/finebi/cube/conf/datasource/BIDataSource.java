@@ -5,7 +5,7 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONTransform;
 
 /**
@@ -14,7 +14,7 @@ import com.fr.json.JSONTransform;
  * @author Connery
  * @since 4.0
  */
-public interface BIDataSource<T extends ICubeTableSource> extends JSONTransform {
+public interface BIDataSource<T extends CubeTableSource> extends JSONTransform {
 
     void envChanged();
 

@@ -1,15 +1,14 @@
 package com.fr.bi.field.dimension.calculator;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.conf.report.widget.BIDataColumn;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.operation.sort.comp.CustomComparator;
-import com.finebi.cube.relation.BITableSourceRelation;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,7 +35,7 @@ public class StringDimensionCalculator extends AbstractDimensionCalculator {
     @Override
     public boolean isSupperLargeGroup(ICubeDataLoader loader) {
         try {
-            return loader.getTableIndex(dimension.createTableKey()).loadGroup(dimension.createKey(field), new ArrayList<BITableSourceRelation>()).nonPrecisionSize() > BIBaseConstant.LARGE_GROUP_LINE;
+            return loader.getTableIndex(dimension.createTableKey().getTableSource()).loadGroup(dimension.createKey(field), new ArrayList<BITableSourceRelation>()).nonPrecisionSize() > BIBaseConstant.LARGE_GROUP_LINE;
         } catch (Exception e) {
             return false;
         }
@@ -56,7 +55,7 @@ public class StringDimensionCalculator extends AbstractDimensionCalculator {
     @Override
     public Object clone() throws CloneNotSupportedException {
         StringDimensionCalculator sdc = (StringDimensionCalculator) super.clone();
-        sdc.field = (BIDataColumn) this.field.clone();
+        sdc.field = (BusinessField) this.field.clone();
         sdc.dimension = this.dimension;
         sdc.relations = this.relations;
         return sdc;

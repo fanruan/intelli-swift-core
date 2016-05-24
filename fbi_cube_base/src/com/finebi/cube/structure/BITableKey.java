@@ -1,6 +1,6 @@
 package com.finebi.cube.structure;
 
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 /**
  * This class created on 2016/4/6.
@@ -15,7 +15,7 @@ public class BITableKey implements ITableKey {
         this.sourceID = sourceID;
     }
 
-    public BITableKey(ICubeTableSource tableSource) {
+    public BITableKey(CubeTableSource tableSource) {
         this(tableSource.getSourceID());
     }
 

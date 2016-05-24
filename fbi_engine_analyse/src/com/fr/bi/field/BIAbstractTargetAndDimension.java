@@ -1,14 +1,13 @@
 package com.fr.bi.field;
 
+import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIID;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.conf.report.widget.BIDataColumn;
-import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.stable.constant.BIJSONConstant;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -27,7 +26,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
      *
      */
     private static final long serialVersionUID = -6531968195020108676L;
-    protected BIDataColumn column;
+    protected BusinessField column;
     private String hyperLinkExpression = StringUtils.EMPTY;
     private boolean useHyperLink = false;
     private boolean used = true;
@@ -94,7 +93,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
             if (fieldJo.has("field_id")) {
-                column = BIDataColumnFactory.createBIDataColumnByFieldID(fieldJo.getString("field_id"), new BIUser(userId));
+                column = new BIBusinessField(new BIFieldID(fieldJo.getString("field_id")));
             }
         }
     }

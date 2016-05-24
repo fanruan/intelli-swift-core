@@ -5,7 +5,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 /**
  * This class created on 2016/4/11.
@@ -15,26 +15,26 @@ import com.fr.bi.stable.data.source.ICubeTableSource;
  */
 public class BICubeRelationTestTool {
     public static BICubeRelation getTaTb() {
-        ICubeTableSource tableA;
-        ICubeTableSource tableB;
+        CubeTableSource tableA;
+        CubeTableSource tableB;
         tableA = BIMemoryDataSourceFactory.generateTableA();
         tableB = BIMemoryDataSourceFactory.generateTableB();
         return new BICubeRelation(
-                BIColumnKey.covertColumnKey(new BICubeFieldSource("tableA", "name", DBConstant.CLASS.STRING, 6)),
-                BIColumnKey.covertColumnKey(new BICubeFieldSource("tableB", "lover", DBConstant.CLASS.STRING, 6)),
+                BIColumnKey.covertColumnKey(new BICubeFieldSource(tableA, "name", DBConstant.CLASS.STRING, 6)),
+                BIColumnKey.covertColumnKey(new BICubeFieldSource(tableB, "lover", DBConstant.CLASS.STRING, 6)),
                 BITableKeyUtils.convert(tableA),
                 BITableKeyUtils.convert(tableB));
     }
 
     public static BICubeRelation getTbTc() {
-        ICubeTableSource tableC;
+        CubeTableSource tableC;
         tableC = BIMemoryDataSourceFactory.generateTableC();
-        ICubeTableSource tableB;
+        CubeTableSource tableB;
         tableB = BIMemoryDataSourceFactory.generateTableB();
 
         return new BICubeRelation(
-                BIColumnKey.covertColumnKey(new BICubeFieldSource("tableB", "name", DBConstant.CLASS.STRING, 6)),
-                BIColumnKey.covertColumnKey(new BICubeFieldSource("tableC", "lover", DBConstant.CLASS.STRING, 6)),
+                BIColumnKey.covertColumnKey(new BICubeFieldSource(tableB, "name", DBConstant.CLASS.STRING, 6)),
+                BIColumnKey.covertColumnKey(new BICubeFieldSource(tableC, "lover", DBConstant.CLASS.STRING, 6)),
                 BITableKeyUtils.convert(tableB),
                 BITableKeyUtils.convert(tableC));
     }

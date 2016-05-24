@@ -79,7 +79,6 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetCubeGenerateStatusAction(),
             new BISetCubeGenerateAction(),
             new BIGetCubeTaskListAction(),
-            new BISetSingleTableUpdateAction(),
             new BIAddSingleTableUpdateTaskAction(),
             new BIRemoveCubeTaskAction(),
             new BIUpdateAccessMultiPathAction(),
@@ -96,7 +95,6 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BICreateFieldsUnionAction(),
 
             new BINumberFieldMaxMinValueAction(),
-            new BIGetFields4RelationIntableAction(),
 
             new BIGetMultiPathAction(),
             new BIUpdateMultiPathAction(),

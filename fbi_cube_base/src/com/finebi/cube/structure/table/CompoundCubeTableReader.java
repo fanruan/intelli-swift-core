@@ -5,6 +5,7 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.structure.ICubeTableEntityService;
@@ -13,9 +14,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -60,7 +59,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
             throw BINonValueUtils.beyondControl("Please generate Cube firstly");
         }
         if (isParentAvailable()) {
-            for (BICubeFieldSource field : parentTable.getFieldInfo()) {
+            for (ICubeFieldSource field : parentTable.getFieldInfo()) {
                 if (!compoundFields.contains(field) && isInFacedFields(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, parentTable);
@@ -70,7 +69,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         }
     }
 
-    private boolean isInFacedFields(BICubeFieldSource field) {
+    private boolean isInFacedFields(ICubeFieldSource field) {
         return getFieldNamesFromParent().contains(field.getFieldName());
     }
 
@@ -171,8 +170,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public BICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        for (BICubeFieldSource field : compoundFields) {
+    public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
+        for (ICubeFieldSource field : compoundFields) {
             if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
                 return field;
             }

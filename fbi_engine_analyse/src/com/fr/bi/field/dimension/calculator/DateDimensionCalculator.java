@@ -23,12 +23,12 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
-        ICubeColumnIndexReader getter = loader.getTableIndex(field).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
+        ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         CubeTreeMap treeMap = new CubeTreeMap(getComparator());
         Iterator it = getter.iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
-            treeMap.put(getGroupDate() == BIReportConstant.GROUP.M ? String.valueOf((Integer)entry.getKey() + 1) : entry.getKey().toString(), entry.getValue());
+            treeMap.put(getGroupDate() == BIReportConstant.GROUP.M ? String.valueOf((Integer) entry.getKey() + 1) : entry.getKey().toString(), entry.getValue());
         }
         return getSortType() != BIReportConstant.SORT.DESC ? treeMap.iterator() : treeMap.previousIterator();
     }

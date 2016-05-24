@@ -11,7 +11,7 @@ import com.fr.bi.field.target.filter.general.GeneralORFilter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -44,12 +44,12 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
         return XML_TAG;
     }
 
-    protected GroupValueIndex createFilterIndex(List<? extends ICubeTableSource> parents, ICubeDataLoader loader) {
+    protected GroupValueIndex createFilterIndex(List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         if (filterList == null || filterList.isEmpty()) {
             return loader.getTableIndex(getSingleParentMD5(parents)).getAllShowIndex();
         }
         GroupValueIndex gvi = null;
-        for (ICubeTableSource parent : parents) {
+        for (CubeTableSource parent : parents) {
             //TODO Connery 这里有问题Mark
             GroupValueIndex temp = createFilter().createFilterIndex(new BIBusinessTable(new BITableID(parent.fetchObjectCore().getID().getIdentityValue())), loader, loader.getUserId());
             if (gvi == null) {

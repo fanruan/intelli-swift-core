@@ -2,6 +2,7 @@ package com.finebi.cube.location;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.tools.BIColumnKeyTestTool;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
@@ -9,7 +10,6 @@ import com.finebi.cube.tools.BITableSourceRelationTestTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
-import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.stable.StableUtils;

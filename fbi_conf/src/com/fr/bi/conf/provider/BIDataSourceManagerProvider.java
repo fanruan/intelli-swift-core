@@ -6,10 +6,10 @@ import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONObject;
 
-public interface BIDataSourceManagerProvider<T extends ICubeTableSource> {
+public interface BIDataSourceManagerProvider<T extends CubeTableSource> {
 
     String XML_TAG = "BIDataSourceManager";
 
@@ -45,4 +45,7 @@ public interface BIDataSourceManagerProvider<T extends ICubeTableSource> {
     JSONObject createJSON(BIUser user) throws Exception;
 
     ICubeFieldSource findDBField(BIUser user, BIField biField) throws BIFieldAbsentException;
+
+    @Deprecated
+    void persistData(long userId);
 }

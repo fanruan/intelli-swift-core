@@ -3,7 +3,7 @@ package com.finebi.cube.api;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 
 public interface ICubeDataLoader extends Release {
@@ -15,7 +15,7 @@ public interface ICubeDataLoader extends Release {
      * @return
      */
 
-    ICubeTableService getTableIndex(ICubeTableSource tableSource);
+    ICubeTableService getTableIndex(CubeTableSource tableSource);
 
 
     BIKey getFieldIndex(BusinessField column);
@@ -37,5 +37,5 @@ public interface ICubeDataLoader extends Release {
 
     void releaseCurrentThread();
 
-    ICubeTableService getTableIndex(ICubeTableSource tableSource, int start, int end);
+    ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end);
 }

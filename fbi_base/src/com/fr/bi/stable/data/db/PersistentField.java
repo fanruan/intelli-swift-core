@@ -1,7 +1,7 @@
 package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.data.key.IPersistentField;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
@@ -194,7 +194,7 @@ public class PersistentField implements IPersistentField {
         return scale;
     }
 
-    public BICubeFieldSource toDBField(ICubeTableSource tableBelongTo) {
+    public BICubeFieldSource toDBField(CubeTableSource tableBelongTo) {
         return new BICubeFieldSource(tableBelongTo, getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getType(), getColumnSize(), getScale()), getColumnSize());
     }
 

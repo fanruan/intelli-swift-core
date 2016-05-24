@@ -12,12 +12,11 @@ import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.CubeConstant;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractTableSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.data.core.db.dialect.Dialect;
@@ -113,12 +112,12 @@ public class DBTableSource extends AbstractTableSource {
      * @return 字段
      */
     @Override
-    public ICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
+    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
         ICubeFieldSource[] allFields = super.getFieldsArray(sources);
         if (sources == null || sources.isEmpty()) {
             return allFields;
         }
-        Iterator<ICubeTableSource> it = sources.iterator();
+        Iterator<CubeTableSource> it = sources.iterator();
         Set<String> usedFields = new HashSet<String>();
         while (it.hasNext()) {
             usedFields.addAll(((it.next())).getUsedFields(this));
@@ -149,7 +148,7 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     @Override
-    public long read(final Traversal<BIDataValue> travel, BICubeFieldSource[] fields, ICubeDataLoader loader) {
+    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
         long rowCount = 0;
         try {
             rowCount = BIDBUtils.runSQL(BIDBUtils.getSQLStatement(dbName, tableName), fields, new Traversal<BIDataValue>() {

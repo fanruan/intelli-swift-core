@@ -84,8 +84,8 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
     }
 
     @Override
-    public long read(final Traversal<BIDataValue> travel, BICubeFieldSource[] fields, ICubeDataLoader loader) {
-        final BICubeFieldSource[] columns = fields;
+    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
+        final ICubeFieldSource[] columns = fields;
         return BIExcelUtils.runExcel(createExcelTableData(), columns, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {

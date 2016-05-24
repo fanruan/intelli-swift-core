@@ -8,7 +8,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 
 /**
@@ -78,12 +78,12 @@ public class CubeTILoaderAdapter implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(ICubeTableSource tableSource, int start, int end) {
+    public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
         throw NULL_EXCEPTION;
     }
 
     @Override
-    public ICubeTableService getTableIndex(ICubeTableSource tableSource) {
+    public ICubeTableService getTableIndex(CubeTableSource tableSource) {
         return null;
     }
 

@@ -1,6 +1,6 @@
 package com.fr.bi.cal.generate;
 
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class CubeBuildBasicDBOperation implements CubeBuildOperation {
 
     @Override
     public Object process(Object tableKeys) {
-        cubeTask.loadIndex((Map<Integer, Set<ICubeTableSource>>) tableKeys);
+        cubeTask.loadIndex((Map<Integer, Set<CubeTableSource>>) tableKeys);
         return new Object();
     }
 }

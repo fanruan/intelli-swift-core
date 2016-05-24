@@ -7,7 +7,7 @@ import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 
@@ -21,7 +21,7 @@ public class SimpleIndexGenerator extends AbstractIndexGenerator {
     protected int version;
     protected ICubeDataLoader loader;
 
-    public SimpleIndexGenerator(TableCubeFile cube, ICubeTableSource dataSource, Set<ICubeTableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
+    public SimpleIndexGenerator(TableCubeFile cube, CubeTableSource dataSource, Set<CubeTableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
         super(cube, dataSource, derivedDataSources, log);
         this.version = version;
         this.loader = loader;

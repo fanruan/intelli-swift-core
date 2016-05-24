@@ -1,6 +1,11 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -16,12 +21,8 @@ import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.stable.constant.CellConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
@@ -38,7 +39,7 @@ import java.util.Map;
 public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObject> {
 
 
-    protected transient Table target;
+    protected transient BusinessTable target;
     protected transient BIDetailTarget[] viewDimension;
     protected transient String[] sortTargets;
     protected transient long userId;
@@ -56,41 +57,41 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     }
 
     protected GroupValueIndex createDetailViewGvi() {
-        ICubeTableService ti = getLoader().getTableIndex(target);
+        ICubeTableService ti = getLoader().getTableIndex(target.getTableSource());
         GroupValueIndex gvi = ti.getAllShowIndex();
-        for(int i = 0; i < this.viewDimension.length; i++) {
+        for (int i = 0; i < this.viewDimension.length; i++) {
             BIDetailTarget target = this.viewDimension[i];
             TargetFilter filterValue = target.getFilter();
-            if(filterValue != null) {
-                BIField dataColumn = target.createColumnKey();
-                List <BISimpleRelation> simpleRelations = target.getRelationList(this.target, this.userId);
+            if (filterValue != null) {
+                BusinessField dataColumn = target.createColumnKey();
+                List<BISimpleRelation> simpleRelations = target.getRelationList(this.target, this.userId);
                 gvi = GVIUtils.AND(gvi, filterValue.createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convertToMD5RelationFromSimpleRelation(simpleRelations, new BIUser(this.userId))), this.target, getLoader(), this.userId));
             }
         }
         Map<String, TargetFilter> filterMap = widget.getTargetFilterMap();
-        for(Map.Entry<String, TargetFilter> entry : filterMap.entrySet()) {
+        for (Map.Entry<String, TargetFilter> entry : filterMap.entrySet()) {
             String targetId = entry.getKey();
             BIDetailTarget target = getTargetById(targetId);
-            if(target != null) {
-                BIField dataColumn = target.createColumnKey();
-                List <BISimpleRelation> simpleRelations = target.getRelationList(this.target, this.userId);
+            if (target != null) {
+                BusinessField dataColumn = target.createColumnKey();
+                List<BISimpleRelation> simpleRelations = target.getRelationList(this.target, this.userId);
                 gvi = GVIUtils.AND(gvi, entry.getValue().createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convertToMD5RelationFromSimpleRelation(simpleRelations, new BIUser(this.userId))), this.target, getLoader(), this.userId));
             }
         }
         gvi = GVIUtils.AND(gvi,
-                widget.createFilterGVI(new DimensionCalculator[]{new NoneDimensionCalculator(new BIField(this.target, StringUtils.EMPTY),
+                widget.createFilterGVI(new DimensionCalculator[]{new NoneDimensionCalculator(new BIBusinessField(this.target, StringUtils.EMPTY),
                         new ArrayList<BITableSourceRelation>())}, this.target, getLoader(), this.userId));
         return gvi;
     }
 
     private BIDetailTarget getTargetById(String id) {
         BIDetailTarget target = null;
-        for(int i = 0; i < viewDimension.length; i++) {
-            if(BIComparatorUtils.isExactlyEquals(viewDimension[i].getValue(), id)) {
+        for (int i = 0; i < viewDimension.length; i++) {
+            if (BIComparatorUtils.isExactlyEquals(viewDimension[i].getValue(), id)) {
                 target = viewDimension[i];
             }
         }
-        return  target;
+        return target;
     }
 
     protected CBCell[][] createCells(GroupValueIndex gvi) {

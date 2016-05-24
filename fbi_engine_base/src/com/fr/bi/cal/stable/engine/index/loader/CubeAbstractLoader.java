@@ -1,12 +1,10 @@
 package com.fr.bi.cal.stable.engine.index.loader;
 
-import com.fr.bi.base.BICore;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BIUser;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.collection.map.lru.LRUWithKHashMap;
 
 
@@ -41,11 +39,6 @@ public abstract class CubeAbstractLoader implements ICubeDataLoader {
     }
 
 
-    @Override
-    public BIKey getFieldIndex(BIField column) {
-        ICubeTableService ti = getTableIndex(column);
-        return ti.getColumnIndex(column);
-    }
 
     @Override
     public void releaseCurrentThread() {
@@ -53,7 +46,7 @@ public abstract class CubeAbstractLoader implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(ICubeTableSource tableSource, int start, int end) {
+    public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
         return getTableIndex(tableSource);
     }
 

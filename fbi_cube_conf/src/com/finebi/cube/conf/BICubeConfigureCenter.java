@@ -1,5 +1,7 @@
 package com.finebi.cube.conf;
 
+import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
+import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.fr.stable.bridge.StableFactory;
 
 /**
@@ -51,5 +53,11 @@ public class BICubeConfigureCenter {
         return StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
     }
 
+    public static SingleTableUpdateManager getTableUpdateManager() {
+        return StableFactory.getMarkedObject(SingleTableUpdateManager.XML_TAG, SingleTableUpdateManager.class);
+    }
 
+    public static UpdateFrequencyManager getTableUpdateFreguency() {
+        return StableFactory.getMarkedObject(UpdateFrequencyManager.XML_TAG, UpdateFrequencyManager.class);
+    }
 }

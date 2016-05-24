@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.dbconnection;
 
 import com.fr.bi.conf.data.source.*;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -24,7 +24,7 @@ public class BIGetFieldInfo4NewTableAction extends AbstractBIConfigureAction {
         JSONArray tablesWithFields = new JSONArray();
         for(int i = 0; i < tablesJA.length(); i++){
             JSONObject table = tablesJA.getJSONObject(i);
-            ICubeTableSource source = TableSourceFactory.createTableSource(table, userId);
+            CubeTableSource source = TableSourceFactory.createTableSource(table, userId);
             JSONObject data = source.createJSON();
             if(table.has("id")){
                 formatTableDataFields(table.getString("id"), data);

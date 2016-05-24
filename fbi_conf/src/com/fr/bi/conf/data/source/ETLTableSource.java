@@ -6,9 +6,9 @@ import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.data.source.operator.OperatorFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -20,7 +20,7 @@ import java.util.Set;
 /**
  * Created by GUY on 2015/2/28.
  */
-public class ETLTableSource extends AbstractETLTableSource<IETLOperator, ICubeTableSource> {
+public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTableSource> {
 
     public static final String XML_TAG = "ETLTableSource";
     /**
@@ -31,7 +31,7 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, ICubeTa
     public ETLTableSource() {
     }
 
-    public ETLTableSource(List<IETLOperator> operators, List<ICubeTableSource> parents) {
+    public ETLTableSource(List<IETLOperator> operators, List<CubeTableSource> parents) {
         super(operators, parents);
     }
 
@@ -64,7 +64,7 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, ICubeTa
     /**
      * FIXME 需要实现
      */
-    public long read(final Traversal<BIDataValue> travel, BICubeFieldSource[] fields, ICubeDataLoader loader) {
+    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
         Iterator<IETLOperator> it = oprators.iterator();
         long index = 0;
         while (it.hasNext()) {
@@ -75,8 +75,8 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, ICubeTa
     }
 
     @Override
-    protected Set<ICubeTableSource> createSourceSet() {
-        Set<ICubeTableSource> set = new HashSet<ICubeTableSource>();
+    protected Set<CubeTableSource> createSourceSet() {
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
         if (oprators != null) {
             for (IETLOperator op : oprators) {
                 set.add(new SingleOperatorETLTableSource(parents, op));
