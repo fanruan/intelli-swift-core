@@ -270,6 +270,43 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     
     isDefaultValue : function () {
         return !this.changed;
+    },
+
+    check : function () {
+        var parent = this.get(ETLCst.PARENTS)[0];
+        var view = this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
+        var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
+        var msg = "";
+        var found = BI.some(view[BICst.REGION.DIMENSION1], function (i, v) {
+            var  dimension = dimensions[v];
+            var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
+                return field.field_name === dimension._src.field_name
+            })
+            if (BI.isNull(f)){
+                msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
+                return true;
+            } else if (dimension.group.type !== BICst.GROUP.ID_GROUP &&  f.field_type !== dimension._src.field_type){
+                msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
+                return true;
+            }
+        })
+        if (!found){
+            found = BI.some(view[BICst.REGION.TARGET1], function (i, v) {
+                var  dimension = dimensions[v];
+                var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
+                    return field.field_name === dimension._src.field_name
+                })
+                if (BI.isNull(f)){
+                    msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
+                    return true;
+                } else if (f.field_type !== BICst.COLUMN.NUMBER && dimension.group.type !== BICst.SUMMARY_TYPE.COUNT ){
+                    msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
+                    return true;
+                }
+            })
+        }
+        this.setValid(!found);
+        return [found, msg];
     }
 });
 BI.AnalysisETLOperatorGroupPaneModel.DIMKEY = "dimensions";
