@@ -5,6 +5,7 @@ package com.fr.bi.conf.data.source.operator.add.express;
 
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -41,7 +42,7 @@ public class FilterExpression<T> implements Expression {
 
 	@Override
 	public BICore fetchObjectCore() {
-		return null;
+		return new BICoreGenerator(this).fetchObjectCore();
 	}
 
 	@Override
@@ -52,5 +53,6 @@ public class FilterExpression<T> implements Expression {
 		}
 		return null;
 	}
+
 
 }
