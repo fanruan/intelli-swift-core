@@ -5,9 +5,9 @@ import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
@@ -53,10 +53,6 @@ public class BIOccupiedCubeTableSource implements ICubeTableSource {
         return new BICubeFieldSource[0];
     }
 
-    @Override
-    public Set<Table> createTableKeys() {
-        return null;
-    }
 
     @Override
     public Map<Integer, Set<ICubeTableSource>> createGenerateTablesMap() {
@@ -170,17 +166,17 @@ public class BIOccupiedCubeTableSource implements ICubeTableSource {
     }
 
     @Override
-    public Set<BICubeFieldSource> getParentFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getParentFields(Set<ICubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<BICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<BICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources) {
         return null;
     }
 

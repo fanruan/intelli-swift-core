@@ -7,6 +7,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ public interface ICubeTableEntityGetterService extends Release {
      *
      * @return 按照顺序的字段信息
      */
-    List<BICubeFieldSource> getFieldInfo();
+    List<ICubeFieldSource> getFieldInfo();
 
     /**
      * Cube中保存的字段信息。

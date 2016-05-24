@@ -1,8 +1,8 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.tableindex.AbstractTableIndex;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -40,7 +40,7 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
     }
 
     @Override
-    public BIKey getColumnIndex(BIField field) {
+    public BIKey getColumnIndex(BusinessField field) {
         return getColumnIndex(field.getFieldName());
     }
 

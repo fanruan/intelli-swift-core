@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.relation;
 
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,8 +16,8 @@ public class BISystemTableRelationManager4Test extends BISystemTableRelationMana
     }
 
     @Override
-    protected Set<IBusinessTable> getAllTables(long userId) {
-        Set<IBusinessTable> result = new HashSet<IBusinessTable>();
+    protected Set<BusinessTable> getAllTables(long userId) {
+        Set<BusinessTable> result = new HashSet<BusinessTable>();
         result.add(BIFieldTestTool.getAa().getTableBelongTo());
         result.add(BIFieldTestTool.getBa().getTableBelongTo());
         result.add(BIFieldTestTool.getCa().getTableBelongTo());

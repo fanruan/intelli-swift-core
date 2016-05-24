@@ -5,7 +5,7 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
@@ -291,5 +291,5 @@ public interface BISystemPackageConfigurationProvider {
      */
     Boolean isPackageTaggedSpecificGroup(long userId, BIPackageID packageID, BIGroupTagName groupTagName) throws BIGroupAbsentException;
 
-    Set<IBusinessTable> getAllTables(long userId);
+    Set<BusinessTable> getAllTables(long userId);
 }

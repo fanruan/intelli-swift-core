@@ -1,15 +1,12 @@
 package com.fr.bi.conf.data.source.operator.create;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BIBasicField;
-import com.fr.bi.stable.data.db.PersistentField;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONArray;
@@ -37,7 +34,8 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
 
     public TableUnionOperator() {
     }
-    public TableUnionOperator( List<List<String>> lists) {
+
+    public TableUnionOperator(List<List<String>> lists) {
         this.lists = lists;
     }
 
@@ -117,7 +115,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
     public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader) {
         List<ICubeTableService> tis = new ArrayList<ICubeTableService>();
         for (ICubeTableSource s : parents) {
-            tis.add(loader.getTableIndex(s.fetchObjectCore()));
+            tis.add(loader.getTableIndex(s));
         }
         return write(travel, tis);
     }
@@ -126,7 +124,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
         int index = 0;
         for (int i = 0; i < tis.size(); i++) {
             ICubeTableService ti = tis.get(i);
-            BIBasicField[] cIndex = new BIBasicField[lists.size()];
+            ICubeFieldSource[] cIndex = new ICubeFieldSource[lists.size()];
             for (int j = 0; j < cIndex.length; j++) {
                 cIndex[j] = ti.getColumns().get(new IndexKey(lists.get(j).get(i + 1)));
             }
@@ -152,7 +150,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
         int ed = (int) Math.ceil(end / parents.size());
         List<ICubeTableService> tis = new ArrayList<ICubeTableService>();
         for (ICubeTableSource s : parents) {
-            tis.add(loader.getTableIndex( s.fetchObjectCore(), st, ed));
+            tis.add(loader.getTableIndex(s, st, ed));
         }
         return write(travel, tis);
     }

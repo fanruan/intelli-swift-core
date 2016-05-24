@@ -1,8 +1,6 @@
 package com.fr.bi.conf.report.widget;
 
-import com.fr.bi.conf.base.pack.data.BIBusinessField;
-import com.fr.bi.stable.data.BIBasicField;
-import com.fr.bi.stable.data.BIField;
+import com.finebi.cube.conf.field.BIBusinessField;
 
 import java.io.Serializable;
 
@@ -21,21 +19,14 @@ public class BIDataColumn extends BIBusinessField implements Serializable {
         super();
     }
 
-    public BIDataColumn(BIBasicField fieldKey) {
-        super(fieldKey.getTableBelongTo().getID().getIdentityValue(), fieldKey.getFieldName(), fieldKey.getFieldType(), fieldKey.getFieldSize());
-
-    }
-
-
-    public BIField createColumnKey() {
-        return new BIField(this);
+    public BIDataColumn(BIBusinessField fieldKey) {
+        super(fieldKey.getTableBelongTo(), fieldKey.getFieldName(), fieldKey.getClassType(), fieldKey.getFieldSize());
     }
 
 
     @Override
     public boolean equals(Object obj) {
         return obj instanceof BIDataColumn
-
                 && super.equals(obj);
     }
 

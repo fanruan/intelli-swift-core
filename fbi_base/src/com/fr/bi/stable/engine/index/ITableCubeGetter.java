@@ -1,13 +1,13 @@
 package com.fr.bi.stable.engine.index;
 
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public interface ITableCubeGetter {
     int getTableVersion();
 
-    BICubeFieldSource[] getBIField();
+    ICubeFieldSource[] getBIField();
 
     int getRowCount();
 

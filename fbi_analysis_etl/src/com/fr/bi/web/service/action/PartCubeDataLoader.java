@@ -121,8 +121,8 @@ public class PartCubeDataLoader implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(BICore core, int start, int end) {
-        ICubeTableSource source = sourceMap.get(core);
+    public ICubeTableService getTableIndex(ICubeTableSource tableSource, int start, int end) {
+        ICubeTableSource source = sourceMap.get(tableSource);
         if (isParentTableIndex(source)){
             return getTableIndex(((UserETLTableSource) source).getParents().get(0).fetchObjectCore(), start, end);
         }

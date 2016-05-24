@@ -14,7 +14,7 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.io.newio.NIOWriter;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.code.BIPrintUtils;

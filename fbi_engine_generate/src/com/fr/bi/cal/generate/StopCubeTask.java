@@ -14,7 +14,6 @@ import com.finebi.cube.message.IMessageTopic;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.conf.engine.CubeBuildStuffManager;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;

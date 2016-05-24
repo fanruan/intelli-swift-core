@@ -2,6 +2,7 @@ package com.finebi.cube.tools;
 
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 
 /**
  * This class created on 2016/3/30.
@@ -14,11 +15,11 @@ public class DBFieldTestTool {
         return new BICubeFieldSource("tableA", "DATE", DBConstant.CLASS.DATE, 2);
     }
 
-    public static BICubeFieldSource generateBOOLEAN() {
+    public static ICubeFieldSource generateBOOLEAN() {
         return new BICubeFieldSource("tableA", "BOOLEAN", DBConstant.CLASS.BOOLEAN, 2);
     }
 
-    public static BICubeFieldSource generateDECIMAL() {
+    public static ICubeFieldSource generateDECIMAL() {
         return new BICubeFieldSource("tableA", "DECIMAL", DBConstant.CLASS.DECIMAL, 2);
     }
 
@@ -28,11 +29,11 @@ public class DBFieldTestTool {
     public static BICubeFieldSource generateDOUBLE(String fieldName) {
         return new BICubeFieldSource("tableA",fieldName, DBConstant.CLASS.DOUBLE, 2);
     }
-    public static BICubeFieldSource generateFLOAT() {
+    public static ICubeFieldSource generateFLOAT() {
         return new BICubeFieldSource("tableA", "FLOAT", DBConstant.CLASS.FLOAT, 2);
     }
 
-    public static BICubeFieldSource generateINTEGER() {
+    public static ICubeFieldSource generateINTEGER() {
         return new BICubeFieldSource("tableA", "INTEGER", DBConstant.CLASS.INTEGER, 2);
     }
 
@@ -44,7 +45,7 @@ public class DBFieldTestTool {
         return new BICubeFieldSource("tableA", "TIME", DBConstant.CLASS.TIME, 2);
     }
 
-    public static BICubeFieldSource generateTIMESTAMP() {
+    public static ICubeFieldSource generateTIMESTAMP() {
         return new BICubeFieldSource("tableA", "TIMESTAMP", DBConstant.CLASS.TIMESTAMP, 2);
     }
 

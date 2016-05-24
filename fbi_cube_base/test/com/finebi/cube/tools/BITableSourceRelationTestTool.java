@@ -1,7 +1,7 @@
 package com.finebi.cube.tools;
 
 import com.fr.bi.stable.relation.BIRowField;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 
 /**
  * This class created on 2016/3/9.

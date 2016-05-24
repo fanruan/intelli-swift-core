@@ -3,9 +3,8 @@
  */
 package com.fr.bi.field.filtervalue.number.nonefilter;
 
-import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
@@ -16,16 +15,18 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 
-public abstract class NumberNoneValueFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue {
+public abstract class NumberNoneValueFilterValue implements NumberFilterValue {
 
     /**
      *
      */
     private static final long serialVersionUID = 3099851820106421738L;
+
     @Override
     public boolean isTopOrBottomFilterValue() {
         return false;
     }
+
     /**
      * 重写code
      *
@@ -96,8 +97,8 @@ public abstract class NumberNoneValueFilterValue extends AbstractFilterValue<Num
      * @return 分组索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
-        ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo());
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
+        ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource());
         GroupValueIndex gvi = TableIndexUtils.createLinkNullGVI(ti, dimension.getRelationList(), loader);
         return gvi == null
                 ? ti.getNullGroupValueIndex(dimension.createKey()) : gvi;
@@ -114,6 +115,10 @@ public abstract class NumberNoneValueFilterValue extends AbstractFilterValue<Num
         return false;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
     @Override
     public boolean canCreateFilterIndex() {

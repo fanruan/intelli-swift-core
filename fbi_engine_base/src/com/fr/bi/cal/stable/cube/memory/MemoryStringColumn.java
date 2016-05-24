@@ -7,7 +7,7 @@ import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 
 import java.util.ArrayList;

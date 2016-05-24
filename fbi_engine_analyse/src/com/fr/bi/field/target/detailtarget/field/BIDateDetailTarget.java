@@ -2,9 +2,9 @@ package com.fr.bi.field.target.detailtarget.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 
@@ -33,7 +33,7 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
     }
 
     @Override
-    public BIKey createKey(BIField column) {
+    public BIKey createKey(BusinessField column) {
         if (group.getType() == BIReportConstant.GROUP.NO_GROUP) {
             return new IndexKey(column.getFieldName());
         }

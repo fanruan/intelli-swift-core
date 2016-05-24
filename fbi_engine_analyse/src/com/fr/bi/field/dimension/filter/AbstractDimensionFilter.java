@@ -1,10 +1,8 @@
 package com.fr.bi.field.dimension.filter;
 
 
-import com.fr.bi.base.BICore;
-import com.fr.bi.base.BICoreGenerator;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -18,7 +16,7 @@ public abstract class AbstractDimensionFilter implements DimensionFilter {
     private DimensionFilter traversingResultFilter;
 
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         return null;
     }
 
@@ -41,8 +39,4 @@ public abstract class AbstractDimensionFilter implements DimensionFilter {
         return false;
     }
 
-    @Override
-    public BICore fetchObjectCore() {
-        return new BICoreGenerator(this).fetchObjectCore();
-    }
 }

@@ -4,7 +4,6 @@ import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.bi.etl.analysis.manager.*;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.*;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;

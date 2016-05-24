@@ -10,6 +10,7 @@ import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.date.*;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -29,7 +30,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
     private ICubeResourceDiscovery discovery;
     private ITableKey tableKey;
 
-    public BICubeTableColumnManager(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, List<BICubeFieldSource> fieldList, ICubeResourceDiscovery discovery) {
+    public BICubeTableColumnManager(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, List<ICubeFieldSource> fieldList, ICubeResourceDiscovery discovery) {
         columnKey2ColumnMap = new HashMap<BIColumnKey, ICubeColumnEntityService>();
         this.resourceRetrievalService = resourceRetrievalService;
         this.tableKey = tableKey;
@@ -66,7 +67,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
     }
 
 
-    private void initialColumn(List<BICubeFieldSource> fieldSet, ITableKey tableKey) {
+    private void initialColumn(List<ICubeFieldSource> fieldSet, ITableKey tableKey) {
         for (int i = 0; i < fieldSet.size(); i++) {
             try {
                 BICubeFieldSource field = fieldSet.get(i);

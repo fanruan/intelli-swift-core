@@ -3,7 +3,7 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.conf.relation.path.BITableContainer;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.stable.exception.*;
@@ -15,6 +15,11 @@ import java.util.Set;
 
 /**
  * 系统的关联接口，其中包括对关联的计算，比如间的路径，公共主子表等计算
+ * <p/>
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 public interface BITableRelationConfigurationProvider {
 
@@ -43,7 +48,7 @@ public interface BITableRelationConfigurationProvider {
      * @param userId 用户ID
      * @return 表与关联集合的MAP
      */
-    Map<IBusinessTable, IRelationContainer> getAllTable2PrimaryRelation(long userId);
+    Map<BusinessTable, IRelationContainer> getAllTable2PrimaryRelation(long userId);
 
     /**
      * 获得一个表与关联集合的MAP，并且该表是集合中关联的外键
@@ -51,7 +56,7 @@ public interface BITableRelationConfigurationProvider {
      * @param userId 用户ID
      * @return 表与关联集合的MAP
      */
-    Map<IBusinessTable, IRelationContainer> getAllTable2ForeignRelation(long userId);
+    Map<BusinessTable, IRelationContainer> getAllTable2ForeignRelation(long userId);
 
     /**
      * 利用当前可用的关联，计算子表到长辈表的全部路径
@@ -66,7 +71,7 @@ public interface BITableRelationConfigurationProvider {
      * @throws BITableRelationConfusionException 注册的关联有误
      * @throws BITablePathConfusionException     路径有误
      */
-    Set<BITableRelationPath> getAllPath(long userId, IBusinessTable juniorTable, IBusinessTable primaryTable) throws BITableUnreachableException,
+    Set<BITableRelationPath> getAllPath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
 
     /**
@@ -82,7 +87,7 @@ public interface BITableRelationConfigurationProvider {
      * @throws BITablePathConfusionException     路径有误
      */
 
-    Set<BITableRelationPath> getAllAvailablePath(long userId, IBusinessTable juniorTable, IBusinessTable primaryTable) throws BITableUnreachableException,
+    Set<BITableRelationPath> getAllAvailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
 
     Set<BITableRelationPath> getAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException;
@@ -96,7 +101,7 @@ public interface BITableRelationConfigurationProvider {
      * @return 获得第一条路径
      * @throws BITableUnreachableException 表不可达
      */
-    BITableRelationPath getFirstPath(long userId, IBusinessTable juniorTable, IBusinessTable primaryTable) throws BITableUnreachableException;
+    BITableRelationPath getFirstPath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException;
 
     /**
      * 获取第一条可用路径
@@ -107,7 +112,7 @@ public interface BITableRelationConfigurationProvider {
      * @return 获得第一条路径
      * @throws BITableUnreachableException 表不可达
      */
-    BITableRelationPath getFirstAvailablePath(long userId, IBusinessTable primaryTable, IBusinessTable juniorTable) throws BITableUnreachableException;
+    BITableRelationPath getFirstAvailablePath(long userId, BusinessTable primaryTable, BusinessTable juniorTable) throws BITableUnreachableException;
 
     /**
      * 获得表集合中的公共子类表
@@ -116,7 +121,7 @@ public interface BITableRelationConfigurationProvider {
      * @param tables 表集合
      * @return 公共子类表
      */
-    BITableContainer getCommonSonTables(long userId, Set<IBusinessTable> tables);
+    BITableContainer getCommonSonTables(long userId, Set<BusinessTable> tables);
 
     /**
      * 环境改变
@@ -162,9 +167,9 @@ public interface BITableRelationConfigurationProvider {
     boolean containTableRelationship(long userId, BITableRelation tableRelation);
 
 
-    boolean containTablePrimaryRelation(long userId, IBusinessTable table);
+    boolean containTablePrimaryRelation(long userId, BusinessTable table);
 
-    boolean containTableForeignRelation(long userId, IBusinessTable table);
+    boolean containTableForeignRelation(long userId, BusinessTable table);
 
     /**
      * 注册表关联
@@ -241,11 +246,11 @@ public interface BITableRelationConfigurationProvider {
      * @param primaryTable 父类表
      * @return 是否可达
      */
-    boolean isReachable(long userId, IBusinessTable juniorTable, IBusinessTable primaryTable);
+    boolean isReachable(long userId, BusinessTable juniorTable, BusinessTable primaryTable);
 
-    IRelationContainer getPrimaryRelation(long userId, IBusinessTable table) throws BITableAbsentException;
+    IRelationContainer getPrimaryRelation(long userId, BusinessTable table) throws BITableAbsentException;
 
-    IRelationContainer getForeignRelation(long userId, IBusinessTable table) throws BITableAbsentException;
+    IRelationContainer getForeignRelation(long userId, BusinessTable table) throws BITableAbsentException;
 
 
 }

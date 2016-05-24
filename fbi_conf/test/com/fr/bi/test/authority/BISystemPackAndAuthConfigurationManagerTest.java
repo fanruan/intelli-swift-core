@@ -3,7 +3,6 @@ package fr.bi.test.authority;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.base.pack.BISystemPackAndAuthConfigurationManager;
 import com.fr.bi.conf.base.pack.data.BIPackAndAuthority;
-import com.fr.bi.conf.provider.BISystemPackAndAuthConfigurationProvider;
 import com.fr.json.JSONArray;
 import junit.framework.TestCase;
 

@@ -12,7 +12,8 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.finebi.cube.relation.BITableSourceRelation;
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.TreeSet;
  */
 public class BICubeOccupiedTable implements ICubeTableEntityService {
     @Override
-    public void recordTableStructure(List<BICubeFieldSource> fields) {
+    public void recordTableStructure(List<ICubeFieldSource> fields) {
 
     }
 
@@ -92,7 +93,7 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
     }
 
     @Override
-    public List<BICubeFieldSource> getFieldInfo() {
+    public List<ICubeFieldSource> getFieldInfo() {
         return null;
     }
 

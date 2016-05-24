@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.relation.path;
 
 import com.finebi.cube.conf.relation.BITableRelationAnalysisService;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.common.container.BICollectionContainer;
@@ -20,11 +20,11 @@ import java.util.Set;
  */
 public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserNode> {
 
-    private IBusinessTable currentNodeTable;
+    private BusinessTable currentNodeTable;
     private BITablePathAnalyser currentPath;
     private BITableRelationAnalysisService tableRelationAnalyser;
 
-    public BITablePathAnalyserNode(IBusinessTable currentNodeTable, BITableRelationAnalysisService tableRelationAnalyser) {
+    public BITablePathAnalyserNode(BusinessTable currentNodeTable, BITableRelationAnalysisService tableRelationAnalyser) {
         this.currentNodeTable = currentNodeTable;
         this.tableRelationAnalyser = tableRelationAnalyser;
     }
@@ -55,7 +55,7 @@ public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserN
      * @throws BITableRelationConfusionException
      * @throws BITablePathConfusionException
      */
-    protected Set<BITableRelationPath> getAllRelationPath(Set<BITablePathAnalyserNode> scannedNodes, IBusinessTable targetTable)
+    protected Set<BITableRelationPath> getAllRelationPath(Set<BITablePathAnalyserNode> scannedNodes, BusinessTable targetTable)
             throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         /**
          * 获得全部的直接子节点；
@@ -95,7 +95,7 @@ public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserN
         return result;
     }
 
-    private boolean isSpecificTable(IBusinessTable table, IBusinessTable targetTable) {
+    private boolean isSpecificTable(BusinessTable table, BusinessTable targetTable) {
         return ComparatorUtils.equals(table, targetTable);
     }
 

@@ -9,7 +9,7 @@ import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 
 import java.util.List;
 import java.util.Map;

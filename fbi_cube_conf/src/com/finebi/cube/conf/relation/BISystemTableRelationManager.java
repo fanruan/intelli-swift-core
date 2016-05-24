@@ -1,11 +1,11 @@
 package com.finebi.cube.conf.relation;
 
 import com.finebi.cube.conf.BISystemDataManager;
-import com.finebi.cube.conf.BIConfigureManagerCenter;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.conf.relation.path.BITableContainer;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -90,12 +90,12 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
-    public boolean containTablePrimaryRelation(long userId, IBusinessTable table) {
+    public boolean containTablePrimaryRelation(long userId, BusinessTable table) {
         return getUserGroupConfigManager(userId).containTablePrimaryRelation(table);
     }
 
     @Override
-    public boolean containTableForeignRelation(long userId, IBusinessTable table) {
+    public boolean containTableForeignRelation(long userId, BusinessTable table) {
         return getUserGroupConfigManager(userId).containTableForeignRelation(table);
     }
 
@@ -136,12 +136,12 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
-    public Map<IBusinessTable, IRelationContainer> getAllTable2PrimaryRelation(long userId) {
+    public Map<BusinessTable, IRelationContainer> getAllTable2PrimaryRelation(long userId) {
         return getUserGroupConfigManager(userId).getAllTable2PrimaryRelation();
     }
 
     @Override
-    public Map<IBusinessTable, IRelationContainer> getAllTable2ForeignRelation(long userId) {
+    public Map<BusinessTable, IRelationContainer> getAllTable2ForeignRelation(long userId) {
         return getUserGroupConfigManager(userId).getAllTable2ForeignRelation();
 
     }
@@ -157,27 +157,27 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
-    public Set<BITableRelationPath> getAllPath(long userId, IBusinessTable juniorTable, IBusinessTable primaryTable) throws
+    public Set<BITableRelationPath> getAllPath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws
             BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         return getUserGroupConfigManager(userId).getAllPath(juniorTable, primaryTable);
     }
 
     @Override
-    public Set<BITableRelationPath> getAllAvailablePath(long userId, IBusinessTable juniorTable, IBusinessTable primaryTable) throws BITableUnreachableException,
+    public Set<BITableRelationPath> getAllAvailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         return getUserGroupConfigManager(userId).getAllAvailablePath(juniorTable, primaryTable);
     }
 
     @Override
     public Set<BITableRelationPath> getAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException {
-        Set<IBusinessTable> allTables = getAllTables(userId);
-        Iterator<IBusinessTable> superTableIt = allTables.iterator();
+        Set<BusinessTable> allTables = getAllTables(userId);
+        Iterator<BusinessTable> superTableIt = allTables.iterator();
         Set<BITableRelationPath> resultPaths = new HashSet<BITableRelationPath>();
         while (superTableIt.hasNext()) {
-            IBusinessTable superTable = superTableIt.next();
-            Iterator<IBusinessTable> juniorTableIt = allTables.iterator();
+            BusinessTable superTable = superTableIt.next();
+            Iterator<BusinessTable> juniorTableIt = allTables.iterator();
             while (juniorTableIt.hasNext()) {
-                IBusinessTable juniorTable = juniorTableIt.next();
+                BusinessTable juniorTable = juniorTableIt.next();
                 if (!ComparatorUtils.equals(superTable, juniorTable)) {
                     try {
                         resultPaths.addAll(getAllPath(userId, juniorTable, superTable));
@@ -190,38 +190,38 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         return resultPaths;
     }
 
-    protected Set<IBusinessTable> getAllTables(long userId) {
-        return BIConfigureManagerCenter.getPackageManager().getAllTables(userId);
+    protected Set<BusinessTable> getAllTables(long userId) {
+        return BICubeConfigureCenter.getPackageManager().getAllTables(userId);
     }
 
     @Override
-    public BITableRelationPath getFirstPath(long userId, IBusinessTable juniorTable, IBusinessTable primaryTable) throws BITableUnreachableException {
+    public BITableRelationPath getFirstPath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException {
         return null;
     }
 
     @Override
-    public BITableRelationPath getFirstAvailablePath(long userId, IBusinessTable primaryTable, IBusinessTable juniorTable) throws BITableUnreachableException {
+    public BITableRelationPath getFirstAvailablePath(long userId, BusinessTable primaryTable, BusinessTable juniorTable) throws BITableUnreachableException {
         return null;
     }
 
     @Override
-    public BITableContainer getCommonSonTables(long userId, Set<IBusinessTable> tables) {
+    public BITableContainer getCommonSonTables(long userId, Set<BusinessTable> tables) {
         return null;
     }
 
     @Override
     public JSONObject createRelationsPathJSON(long userId) throws JSONException {
         JSONObject jo = new JSONObject();
-        Set<IBusinessTable> primaryTables = new HashSet<IBusinessTable>();
-        Set<IBusinessTable> foreignTables = new HashSet<IBusinessTable>();
+        Set<BusinessTable> primaryTables = new HashSet<BusinessTable>();
+        Set<BusinessTable> foreignTables = new HashSet<BusinessTable>();
         for (BITableRelation relation : getAllTableRelation(userId)) {
             primaryTables.add(relation.getPrimaryTable());
             foreignTables.add(relation.getForeignTable());
         }
-        for (IBusinessTable p : primaryTables) {
+        for (BusinessTable p : primaryTables) {
             JSONObject relation = new JSONObject();
             jo.put(p.getID().getIdentity(), relation);
-            for (IBusinessTable f : foreignTables) {
+            for (BusinessTable f : foreignTables) {
                 try {
                     Set<BITableRelationPath> path = getAllAvailablePath(userId, f, p);
                     if (path != null || !path.isEmpty()) {
@@ -255,17 +255,17 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
-    public boolean isReachable(long userId, IBusinessTable juniorTable, IBusinessTable primaryTable) {
+    public boolean isReachable(long userId, BusinessTable juniorTable, BusinessTable primaryTable) {
         return false;
     }
 
     @Override
-    public IRelationContainer getPrimaryRelation(long userId, IBusinessTable table) throws BITableAbsentException {
+    public IRelationContainer getPrimaryRelation(long userId, BusinessTable table) throws BITableAbsentException {
         return getUserGroupConfigManager(userId).getPrimaryRelation(table);
     }
 
     @Override
-    public IRelationContainer getForeignRelation(long userId, IBusinessTable table) throws BITableAbsentException {
+    public IRelationContainer getForeignRelation(long userId, BusinessTable table) throws BITableAbsentException {
         return getUserGroupConfigManager(userId).getForeignRelation(table);
     }
 

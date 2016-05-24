@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.relation.path;
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 
 /**
  * Created by Connery on 2016/1/14.
@@ -11,7 +11,7 @@ class BIFatherTablesManager extends BIDirectlyRelativeTablesManager {
     }
 
     @Override
-    protected BIDirectlyRelativeTableContainer generateDirectTableContainer(IBusinessTable table) {
+    protected BIDirectlyRelativeTableContainer generateDirectTableContainer(BusinessTable table) {
         return new BIFatherTableContainer(table);
     }
 

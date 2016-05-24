@@ -8,7 +8,7 @@ import com.fr.bi.stable.data.db.BIRowValue;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.CollectionKey;
 import com.fr.bi.util.BIConfUtils;
 

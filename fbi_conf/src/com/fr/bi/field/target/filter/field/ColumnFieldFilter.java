@@ -4,18 +4,17 @@
 package com.fr.bi.field.target.filter.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableRelationPath;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BIConfUtils;
@@ -30,8 +29,7 @@ public class ColumnFieldFilter extends ColumnFilter {
     /**
      *
      */
-    @BICoreField
-    protected BIDataColumn dataColumn;
+    protected BusinessField dataColumn;
 
     public ColumnFieldFilter() {
     }
@@ -108,16 +106,16 @@ public class ColumnFieldFilter extends ColumnFilter {
      * @return
      */
     @Override
-    public GroupValueIndex createFilterIndex(Table target, ICubeDataLoader loader, long userID) {
+    public GroupValueIndex createFilterIndex(BusinessTable target, ICubeDataLoader loader, long userID) {
         GroupValueIndex gvi = null;
         if (filterValue != null) {
             try {
-                Set<BITableRelationPath> pathSet = BIConfigureManagerCenter.getTableRelationManager().getAllAvailablePath(userID, target, dataColumn.getTableBelongTo());
+                Set<BITableRelationPath> pathSet = BICubeConfigureCenter.getTableRelationManager().getAllAvailablePath(userID, target, dataColumn.getTableBelongTo());
                 if (ComparatorUtils.equals(dataColumn.getTableBelongTo(), target) && pathSet.isEmpty()) {
                     gvi = filterValue.createFilterIndex(new NoneDimensionCalculator(dataColumn, new ArrayList<BITableSourceRelation>()), target, loader, userID);
                 } else {
                     for (BITableRelationPath path : pathSet) {
-                        gvi = GVIUtils.OR(gvi, filterValue.createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convert2TableSourceRelation(path.getAllRelations(), new BIUser(userID))), target, loader, userID));
+                        gvi = GVIUtils.OR(gvi, filterValue.createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convert2TableSourceRelation(path.getAllRelations())), target, loader, userID));
                     }
                 }
             } catch (Exception e) {
@@ -133,9 +131,9 @@ public class ColumnFieldFilter extends ColumnFilter {
      * @return 分组索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         if (dataColumn != null && filterValue != null) {
-            if (ComparatorUtils.equals(dimension.getField(), dataColumn.createColumnKey())) {
+            if (ComparatorUtils.equals(dimension.getField(), dataColumn)) {
                 return filterValue.createFilterIndex(dimension, target, loader, userId);
             }
             return createFilterIndex(target, loader, userId);

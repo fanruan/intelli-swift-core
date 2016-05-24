@@ -3,15 +3,15 @@
  */
 package com.finebi.cube.conf.datasource;
 
-import com.finebi.cube.conf.BIConfigureManagerCenter;
-import com.finebi.cube.conf.field.IBusinessField;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -23,7 +23,12 @@ import com.fr.stable.EnvChangedListener;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
+ */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = BIDataSource.class)
 public class BIXMLDataSource implements BIDataSource {
 
@@ -42,7 +47,7 @@ public class BIXMLDataSource implements BIDataSource {
         GeneralContext.addEnvChangedListener(new EnvChangedListener() {
             @Override
             public void envChanged() {
-                BIConfigureManagerCenter.getDataSourceManager().envChanged();
+                BICubeConfigureCenter.getDataSourceManager().envChanged();
             }
         });
     }
@@ -144,10 +149,10 @@ public class BIXMLDataSource implements BIDataSource {
 
 
     @Override
-    public BICubeFieldSource findDBField(IBusinessField businessField) throws BIFieldAbsentException {
-        IBusinessTable table = businessField.getTableBelongTo();
+    public ICubeFieldSource findDBField(BusinessField businessField) throws BIFieldAbsentException {
+        BusinessTable table = businessField.getTableBelongTo();
         ICubeTableSource tableSource = getTableSourceByID(table.getID());
-        BICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(null);
+        ICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(null);
         for (int i = 0; i < BICubeFieldSources.length; i++) {
             if (ComparatorUtils.equals(businessField.getFieldName(), BICubeFieldSources[i].getFieldName())) {
                 return BICubeFieldSources[i];

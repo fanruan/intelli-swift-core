@@ -1,25 +1,20 @@
 package com.fr.bi.cal.stable.index;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BIRecord;
-import com.fr.bi.conf.manager.singletable.data.SingleTableUpdateAction;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.db.SQLStatement;
-import com.fr.bi.stable.data.db.SqlSettedStatement;
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
@@ -44,7 +39,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
 
     public SimpleIndexIncreaseGenerator(TableCubeFile cube, ICubeTableSource dataSource, Set<ICubeTableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
         super(cube, dataSource, derivedDataSources, version, log, loader);
-        oldTi = loader.getTableIndex( dataSource.fetchObjectCore());
+        oldTi = loader.getTableIndex(dataSource);
     }
 
 
@@ -104,7 +99,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             return rowCount;
         }
         int index = -1;
-        BIField[] fields = cube.getBIField();
+        ICubeFieldSource[] fields = cube.getBIField();
         for (int i = 0; i < fields.length; i++) {
             if (ComparatorUtils.equals(fields[i].getFieldName(), columnName)) {
                 index = i;

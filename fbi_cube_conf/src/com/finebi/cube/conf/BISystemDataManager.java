@@ -7,8 +7,10 @@ import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
 
 /**
+ * This class created on 2016/5/23.
  *
- * Created by Connery on 2016/1/20.
+ * @author Connery
+ * @since 4.0
  */
 public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<Long, MANAGER> {
 

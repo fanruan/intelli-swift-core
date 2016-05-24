@@ -1,17 +1,14 @@
 package com.fr.bi.field;
 
-import com.fr.bi.base.BICore;
-import com.fr.bi.base.BICoreGenerator;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIID;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -30,30 +27,28 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
      *
      */
     private static final long serialVersionUID = -6531968195020108676L;
-    @BICoreField
     protected BIDataColumn column;
     private String hyperLinkExpression = StringUtils.EMPTY;
     private boolean useHyperLink = false;
-    @BICoreField
     private boolean used = true;
 
     @Override
-    public BIDataColumn getStatisticElement() {
+    public BusinessField getStatisticElement() {
         return column;
     }
 
     @Override
-    public BITable createTableKey() {
-        return new BITable(column.getTableBelongTo());
+    public BusinessTable createTableKey() {
+        return column.getTableBelongTo();
     }
 
     @Override
-    public BIField createColumnKey() {
-        return new BIField(column);
+    public BusinessField createColumnKey() {
+        return column;
     }
 
     @Override
-    public BIKey createKey(BIField column) {
+    public BIKey createKey(BusinessField column) {
         return new IndexKey(column.getFieldName());
     }
 
@@ -88,7 +83,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo);
-        if(jo.has("hyperlink")){
+        if (jo.has("hyperlink")) {
             JSONObject hyperlink = jo.getJSONObject("hyperlink");
             this.hyperLinkExpression = hyperlink.optString("expression", StringUtils.EMPTY);
             this.useHyperLink = hyperlink.getBoolean("used");
@@ -137,11 +132,6 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
 
         result = prime * result + (column != null ? column.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public BICore fetchObjectCore() {
-        return new BICoreGenerator(this).fetchObjectCore();
     }
 
     @Override

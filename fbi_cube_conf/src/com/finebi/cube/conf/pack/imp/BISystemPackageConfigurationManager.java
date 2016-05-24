@@ -4,7 +4,7 @@ import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
@@ -19,7 +19,10 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Created by Connery on 2016/1/4.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 public class BISystemPackageConfigurationManager extends BISystemDataManager<BIUserPackageConfigurationManager> implements BISystemPackageConfigurationProvider {
 
@@ -205,7 +208,7 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     }
 
     @Override
-    public Set<IBusinessTable> getAllTables(long userId) {
+    public Set<BusinessTable> getAllTables(long userId) {
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAllTables();
     }
 }

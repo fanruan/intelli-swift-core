@@ -13,7 +13,8 @@ import com.finebi.cube.structure.table.property.BICubeTableProperty;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.*;
@@ -62,7 +63,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public void recordTableStructure(List<BICubeFieldSource> fields) {
+    public void recordTableStructure(List<ICubeFieldSource> fields) {
         /**
          * tableProperty缓存了上一次的map文件对象。
          * 详见BICubeTable单元测试中的testPropertyExceptionData测试用例
@@ -117,7 +118,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
         columnService.addOriginalDataValue(rowNumber, value);
     }
 
-    private List<BICubeFieldSource> getAllFields() {
+    private List<ICubeFieldSource> getAllFields() {
         return tableProperty.getFieldInfo();
     }
 
@@ -146,7 +147,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public List<BICubeFieldSource> getFieldInfo() {
+    public List<ICubeFieldSource> getFieldInfo() {
         return tableProperty.getFieldInfo();
     }
 
@@ -156,7 +157,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
     @Override
     public BICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        Iterator<BICubeFieldSource> fieldIterator = getFieldInfo().iterator();
+        Iterator<ICubeFieldSource> fieldIterator = getFieldInfo().iterator();
         while (fieldIterator.hasNext()) {
             BICubeFieldSource field = fieldIterator.next();
             if (field.getFieldName().equals(fieldName)) {

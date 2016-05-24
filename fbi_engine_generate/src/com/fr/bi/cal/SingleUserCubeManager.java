@@ -2,7 +2,6 @@ package com.fr.bi.cal;
 
 import com.fr.bi.cal.generate.CubeRunner;
 import com.fr.bi.cal.generate.TimerRunner;
-import com.fr.bi.conf.engine.CubeBuildStuffManager;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.constant.Status;

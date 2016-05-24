@@ -2,7 +2,7 @@ package com.finebi.cube.conf.relation.path;
 
 
 import com.finebi.cube.conf.relation.BITableRelationAnalysisService;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.exception.BIKeyAbsentException;
@@ -27,7 +27,7 @@ public class BITablePathAnalysersManager implements BITablePathAnalysersService 
         this.biTableRelationAnalyser = biTableRelationAnalyser;
     }
 
-    private BITablePathAnalyser getTablePathAnalyser(IBusinessTable table) {
+    private BITablePathAnalyser getTablePathAnalyser(BusinessTable table) {
         synchronized (pathContainer) {
             try {
                 return pathContainer.getValue(table);
@@ -52,8 +52,8 @@ public class BITablePathAnalysersManager implements BITablePathAnalysersService 
 
     @Override
     public void registerBITableRelation(BITableRelation biTableRelation) {
-        IBusinessTable primaryTable = biTableRelation.getPrimaryTable();
-        IBusinessTable foreignTable = biTableRelation.getForeignTable();
+        BusinessTable primaryTable = biTableRelation.getPrimaryTable();
+        BusinessTable foreignTable = biTableRelation.getForeignTable();
         BITablePathAnalyser primaryTablePathAnalyser;
         BITablePathAnalyser foreignTablePathAnalyser;
         primaryTablePathAnalyser = getTablePathAnalyser(primaryTable);
@@ -65,8 +65,8 @@ public class BITablePathAnalysersManager implements BITablePathAnalysersService 
 
     @Override
     public boolean contain(BITableRelation biTableRelation) {
-        IBusinessTable primaryTable = biTableRelation.getPrimaryTable();
-        IBusinessTable foreignTable = biTableRelation.getForeignTable();
+        BusinessTable primaryTable = biTableRelation.getPrimaryTable();
+        BusinessTable foreignTable = biTableRelation.getForeignTable();
         BITablePathAnalyser primaryTablePathAnalyser;
         BITablePathAnalyser foreignTablePathAnalyser;
         primaryTablePathAnalyser = getTablePathAnalyser(primaryTable);
@@ -76,8 +76,8 @@ public class BITablePathAnalysersManager implements BITablePathAnalysersService 
 
     @Override
     public void removeBITableRelation(BITableRelation biTableRelation) {
-        IBusinessTable primaryTable = biTableRelation.getPrimaryTable();
-        IBusinessTable foreignTable = biTableRelation.getForeignTable();
+        BusinessTable primaryTable = biTableRelation.getPrimaryTable();
+        BusinessTable foreignTable = biTableRelation.getForeignTable();
         BITablePathAnalyser primaryTablePathAnalyser;
         BITablePathAnalyser foreignTablePathAnalyser;
         primaryTablePathAnalyser = getTablePathAnalyser(primaryTable);

@@ -72,7 +72,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
 
     private void initialTableSource(ICubeDataLoader loader) {
         if (cubeTableService == null) {
-            cubeTableService = loader.getTableIndex(this.createTableKey());
+            cubeTableService = loader.getTableIndex(this.createTableKey().getTableSource());
         }
     }
 

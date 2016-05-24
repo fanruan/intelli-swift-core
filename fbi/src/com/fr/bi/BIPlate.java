@@ -1,11 +1,12 @@
 package com.fr.bi;
 
+
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
-import com.fr.bi.conf.provider.BICubeManagerProvider;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
-import com.fr.bi.conf.provider.BITableRelationConfigurationProvider;
 import com.fr.bi.conf.utils.BIModuleManager;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.module.BICoreModule;

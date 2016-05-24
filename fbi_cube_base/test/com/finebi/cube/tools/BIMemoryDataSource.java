@@ -1,12 +1,13 @@
 package com.finebi.cube.tools;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
@@ -26,7 +27,7 @@ import java.util.*;
 public class BIMemoryDataSource extends AbstractTableSource {
 
     public String sourceID;
-    public List<BICubeFieldSource> fieldList;
+    public List<ICubeFieldSource> fieldList;
     public int rowCount;
     public Map<Integer, List> contents;
 
@@ -34,7 +35,7 @@ public class BIMemoryDataSource extends AbstractTableSource {
         this.sourceID = sourceID;
     }
 
-    public void setFieldList(List<BICubeFieldSource> fieldList) {
+    public void setFieldList(List<ICubeFieldSource> fieldList) {
         this.fieldList = fieldList;
     }
 
@@ -66,7 +67,7 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
-    public Set<Table> createTableKeys() {
+    public Set<BusinessTable> createTableKeys() {
         return null;
     }
 

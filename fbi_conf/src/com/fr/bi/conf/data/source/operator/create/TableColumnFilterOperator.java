@@ -1,11 +1,12 @@
 package com.fr.bi.conf.data.source.operator.create;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.BITable;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.json.JSONObject;
@@ -54,14 +55,15 @@ public class TableColumnFilterOperator extends AbstractTableColumnFilterOperator
     }
 
 
-    protected GroupValueIndex createFilterIndex(List<? extends ICubeTableSource> parents, ICubeDataLoader loader){
-        if (filter == null){
+    protected GroupValueIndex createFilterIndex(List<? extends ICubeTableSource> parents, ICubeDataLoader loader) {
+        if (filter == null) {
             return loader.getTableIndex(getSingleParentMD5(parents)).getAllShowIndex();
         }
         GroupValueIndex gvi = null;
-        for (ICubeTableSource parent : parents){
-            GroupValueIndex temp = filter.createFilterIndex(new BITable(parent.fetchObjectCore().getID().getIdentityValue()), loader, loader.getUserId());
-            if (gvi == null){
+        for (ICubeTableSource parent : parents) {
+            //TODO Connery 这里有问题Mark
+            GroupValueIndex temp = filter.createFilterIndex(new BIBusinessTable(new BITableID(parent.fetchObjectCore().getID().getIdentityValue())), loader, loader.getUserId());
+            if (gvi == null) {
                 gvi = temp;
             } else {
                 gvi = gvi.AND(temp);

@@ -1,11 +1,11 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
@@ -48,7 +48,7 @@ public abstract class AbstractAnalysisIDTableSource<T extends ICubeTableSource> 
      * @return
      */
     @Override
-    public Set<Table> createTableKeys() {
+    public Set<BusinessTable> createTableKeys() {
         return baseTable.createTableKeys();
     }
 

@@ -4,9 +4,9 @@ import com.finebi.cube.conf.pack.IPackagesManagerService;
 import com.finebi.cube.conf.pack.BIStatusChaosException;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.IGroupTagsManagerService;
-import com.finebi.cube.conf.BIConfigureManagerCenter;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.IFactoryService;
@@ -29,7 +29,10 @@ import java.util.*;
 
 /**
  * 主要记录分组，业务包，表等变动。
- * Created by Connery on 2015/12/22.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = BIPackageConfigManager.class)
 public class BIPackageConfigManager implements Release {
@@ -288,7 +291,7 @@ public class BIPackageConfigManager implements Release {
                 if (changedPackage != null) {
                     String newPackageName = changedPackage.getString("newPackageName");
                     String packageID = changedPackage.getString("packageID");
-                    BISystemPackageConfigurationProvider packageConfigProvider = BIConfigureManagerCenter.getPackageManager();
+                    BISystemPackageConfigurationProvider packageConfigProvider = BICubeConfigureCenter.getPackageManager();
                     IBusinessPackageGetterService pack = null;
                     BIPackageID packID = new BIPackageID(packageID);
                     try {
@@ -298,7 +301,7 @@ public class BIPackageConfigManager implements Release {
                     }
                     if (!ComparatorUtils.equals(newPackageName, pack.getName().getValue())) {
                         try {
-                            BIConfigureManagerCenter.getPackageManager().renamePackage(userId, packID, new BIPackageName(newPackageName));
+                            BICubeConfigureCenter.getPackageManager().renamePackage(userId, packID, new BIPackageName(newPackageName));
                         } catch (BIPackageAbsentException e) {
                             BILogger.getLogger().error(e.getMessage(), e);
                         } catch (BIPackageDuplicateException e) {
@@ -343,8 +346,8 @@ public class BIPackageConfigManager implements Release {
         currentPackageManager.removeTable(packageID, tableID);
     }
 
-    public Set<IBusinessTable> getAllTables() {
-        Set<IBusinessTable> result = new HashSet<IBusinessTable>();
+    public Set<BusinessTable> getAllTables() {
+        Set<BusinessTable> result = new HashSet<BusinessTable>();
         Iterator<BIBusinessPackage> it = getAllPackages().iterator();
         while (it.hasNext()) {
             result.addAll(it.next().getBusinessTables());

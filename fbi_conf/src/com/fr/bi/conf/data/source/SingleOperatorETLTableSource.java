@@ -1,10 +1,10 @@
 package com.fr.bi.conf.data.source;
 
 import com.fr.bi.conf.data.source.operator.IETLOperator;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 
 import java.util.Iterator;
@@ -26,7 +26,7 @@ public class SingleOperatorETLTableSource extends ETLTableSource {
     }
 
     @Override
-    public BICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
+    public ICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
         if (isAllAddColumnOperator()) {
             return getAddedField();
         } else {
@@ -54,7 +54,7 @@ public class SingleOperatorETLTableSource extends ETLTableSource {
             Iterator<PersistentField> it = dbTable.getFieldList().iterator();
             int count = 0;
             while (it.hasNext()) {
-                result[count++] = (it.next().toDBField(new BITable(this.getSourceID())));
+                result[count++] = (it.next().toDBField(this));
             }
             return result;
         }

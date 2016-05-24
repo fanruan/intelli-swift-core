@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.pack.data;
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.container.BISetContainer;
 import com.fr.bi.stable.data.BITableID;
@@ -15,11 +15,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 /**
- * Created by Connery on 2016/1/20.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
-public abstract class BIBusinessPackage<T extends IBusinessTable> extends BISetContainer<T> implements JSONTransform, FCloneable, IBusinessPackageGetterService<T> {
+public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetContainer<T> implements JSONTransform, FCloneable, IBusinessPackageGetterService<T> {
 
     protected BIUser owner;
     protected BIPackageName name;

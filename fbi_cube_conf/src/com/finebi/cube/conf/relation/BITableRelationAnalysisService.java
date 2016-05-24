@@ -2,7 +2,7 @@ package com.finebi.cube.conf.relation;
 
 import com.finebi.cube.conf.relation.relation.BIRelationContainer;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
 import com.fr.bi.stable.exception.BITableAbsentException;
@@ -23,13 +23,13 @@ public interface BITableRelationAnalysisService {
 
     boolean contain(BITableRelation relation);
 
-    IRelationContainer getPrimaryRelation(IBusinessTable table) throws BITableAbsentException;
+    IRelationContainer getPrimaryRelation(BusinessTable table) throws BITableAbsentException;
 
-    IRelationContainer getForeignRelation(IBusinessTable table) throws BITableAbsentException;
+    IRelationContainer getForeignRelation(BusinessTable table) throws BITableAbsentException;
 
-    boolean containTablePrimaryRelation(IBusinessTable table);
+    boolean containTablePrimaryRelation(BusinessTable table);
 
-    boolean containTableForeignRelation(IBusinessTable table);
+    boolean containTableForeignRelation(BusinessTable table);
 
     void clear();
 
@@ -37,10 +37,10 @@ public interface BITableRelationAnalysisService {
 
     BIRelationContainer getRelationContainer();
 
-    List<BITableRelation> getRelation(IBusinessTable primaryTable, IBusinessTable foreignTable) throws BITableAbsentException;
+    List<BITableRelation> getRelation(BusinessTable primaryTable, BusinessTable foreignTable) throws BITableAbsentException;
 
-    Map<IBusinessTable, IRelationContainer> getAllTable2PrimaryRelation();
+    Map<BusinessTable, IRelationContainer> getAllTable2PrimaryRelation();
 
-    Map<IBusinessTable, IRelationContainer> getAllTable2ForeignRelation();
+    Map<BusinessTable, IRelationContainer> getAllTable2ForeignRelation();
 
 }

@@ -2,22 +2,23 @@ package com.finebi.cube.conf.datasource;
 
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemDataManager;
-import com.finebi.cube.conf.field.IBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
 
 /**
- * rt
+ * This class created on 2016/5/23.
  *
- * @author Daniel
+ * @author Connery
+ * @since 4.0
  */
 public class BIDataSourceManager extends BISystemDataManager<BIDataSource> implements BIDataSourceManagerProvider {
     @Override
@@ -85,7 +86,7 @@ public class BIDataSourceManager extends BISystemDataManager<BIDataSource> imple
     }
 
     @Override
-    public BICubeFieldSource findDBField(BIUser user, IBusinessField biField) throws BIFieldAbsentException {
+    public ICubeFieldSource findDBField(BIUser user, BusinessField biField) throws BIFieldAbsentException {
         return getInstance(user).findDBField(biField);
     }
 }

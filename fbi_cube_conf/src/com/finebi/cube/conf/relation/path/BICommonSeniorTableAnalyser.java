@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.relation.path;
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITablePair;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.common.container.BIHashMapContainer;
@@ -22,7 +22,7 @@ public class BICommonSeniorTableAnalyser extends BIHashMapContainer<BITablePair,
         this.seniorTablesManager = new BISeniorTablesManager();
     }
 
-    private void addOneCommonSeniorTable(BITablePair pair, IBusinessTable seniorTable) {
+    private void addOneCommonSeniorTable(BITablePair pair, BusinessTable seniorTable) {
         if (containsKey(pair)) {
             try {
                 BITableContainer tableContainer = getValue(pair);
@@ -57,9 +57,9 @@ public class BICommonSeniorTableAnalyser extends BIHashMapContainer<BITablePair,
         BITableContainer firstContainer = seniorTablesManager.getSpecificTableIndirectContainer(tablePair.getFrom());
         BITableContainer secondContainer = seniorTablesManager.getSpecificTableIndirectContainer(tablePair.getTo());
         BITableContainer result = new BITableContainer();
-        Iterator<IBusinessTable> it = firstContainer.getContainer().iterator();
+        Iterator<BusinessTable> it = firstContainer.getContainer().iterator();
         while (it.hasNext()) {
-            IBusinessTable table = it.next();
+            BusinessTable table = it.next();
             if (secondContainer.contain(table)) {
                 try {
                     result.addBITable(table);

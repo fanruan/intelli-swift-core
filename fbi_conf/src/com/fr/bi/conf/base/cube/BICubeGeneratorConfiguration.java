@@ -1,12 +1,13 @@
 package com.fr.bi.conf.base.cube;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.ICubeGeneratorConfigure;
 import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.fr.bi.stable.relation.BITableRelationPath;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,9 +24,9 @@ public class BICubeGeneratorConfiguration implements ICubeGeneratorConfigure {
     public Set<ICubeTableSource> getAllTableData(long userId) {
         Set<ICubeTableSource> allTable = new HashSet<ICubeTableSource>();
 
-        Iterator<BIBusinessPackage> allPackages = BIConfigureManagerCenter.getPackageManager().getAllPackages(userId).iterator();
+        Iterator<IBusinessPackageGetterService> allPackages = BICubeConfigureCenter.getPackageManager().getAllPackages(userId).iterator();
         while (allPackages.hasNext()) {
-            BIBusinessPackage businessPackage = allPackages.next();
+            IBusinessPackageGetterService businessPackage = allPackages.next();
             Iterator<BIBusinessTable> itTable = businessPackage.getBusinessTables().iterator();
             while (itTable.hasNext()) {
                 BIBusinessTable biBusinessTable = itTable.next();

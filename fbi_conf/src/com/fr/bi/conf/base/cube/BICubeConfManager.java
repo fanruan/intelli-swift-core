@@ -4,7 +4,8 @@ import com.finebi.cube.api.BICubeManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ITableSource;
+
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
@@ -49,7 +50,7 @@ public class BICubeConfManager {
         try {
             String tableId = BIIDUtils.getTableIDFromFieldID(loginField);
             BITableID tId = new BITableID(tableId);
-            ITableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tId, new BIUser(userId));
+            ICubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tId, new BIUser(userId));
             Set set = source.getFieldDistinctNewestValues(BIIDUtils.getFieldNameFromFieldID(loginField), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
             return set;
         } catch (Exception e) {

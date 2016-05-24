@@ -4,12 +4,12 @@
 package com.fr.bi.stable.engine.index;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.GroupValueIndexArrayReader;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
@@ -136,7 +136,7 @@ public class TableIndexAdapter implements ICubeTableService {
     }
 
     @Override
-    public Map<BIKey, BICubeFieldSource> getColumns() {
+    public Map<BIKey, ICubeFieldSource> getColumns() {
         throw NULL_EXCEPTION;
     }
 
@@ -146,7 +146,7 @@ public class TableIndexAdapter implements ICubeTableService {
     }
 
     @Override
-    public BIKey getColumnIndex(BIField field) {
+    public BIKey getColumnIndex(BusinessField field) {
         throw NULL_EXCEPTION;
     }
 

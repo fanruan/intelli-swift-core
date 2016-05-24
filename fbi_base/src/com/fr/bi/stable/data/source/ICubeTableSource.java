@@ -6,9 +6,9 @@ import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
@@ -34,14 +34,14 @@ public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources generatingobjects 的packs的sources
      * @return 字段
      */
-    BICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources);
+    ICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources);
     /**
      * 当前TableSource父类的全部可用字段。
      *
      * @param sources
      * @return
      */
-    Set<BICubeFieldSource> getParentFields(Set<ICubeTableSource> sources);
+    Set<ICubeFieldSource> getParentFields(Set<ICubeTableSource> sources);
 
     /**
      * 当前TableSource最终全部可用字段。
@@ -53,7 +53,7 @@ public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources
      * @return
      */
-    Set<BICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources);
+    Set<ICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources);
 
     /**
      * 当前TableSource自身的字段。
@@ -61,15 +61,9 @@ public interface ICubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources
      * @return
      */
-    Set<BICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources);
+    Set<ICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources);
 
 
-    /**
-     * 获取所有相关基础表
-     *
-     * @return
-     */
-    Set<Table> createTableKeys();
 
     /**
      * key为层次

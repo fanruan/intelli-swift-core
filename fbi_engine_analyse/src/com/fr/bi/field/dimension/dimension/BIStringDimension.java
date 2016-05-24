@@ -1,13 +1,12 @@
 package com.fr.bi.field.dimension.dimension;
 
-import com.fr.bi.conf.report.widget.BIDataColumn;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class BIStringDimension extends BIAbstractDimension {
     }
 
     @Override
-    public DimensionCalculator createCalculator(BIDataColumn column, List<BITableSourceRelation> relations) {
+    public DimensionCalculator createCalculator(BusinessField column, List<BITableSourceRelation> relations) {
         return new StringDimensionCalculator(this, column, relations);
     }
 

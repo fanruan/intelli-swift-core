@@ -25,7 +25,7 @@ import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;

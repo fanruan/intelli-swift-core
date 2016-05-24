@@ -21,7 +21,7 @@ import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.relation.BISimpleRelation;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;

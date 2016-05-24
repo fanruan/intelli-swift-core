@@ -105,7 +105,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
                     return tableIndex;
                 }
 
-                public ICubeTableService getTableIndex(BICore core, int start, int end) {
+                public ICubeTableService getTableIndex(ICubeTableSource tableSource, int start, int end) {
                     return tableIndex;
                 }
 

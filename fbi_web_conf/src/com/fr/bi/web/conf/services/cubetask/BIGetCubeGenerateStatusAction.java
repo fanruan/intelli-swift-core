@@ -3,7 +3,6 @@
  */
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.fr.bi.conf.provider.BICubeManagerProvider;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIPackUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;

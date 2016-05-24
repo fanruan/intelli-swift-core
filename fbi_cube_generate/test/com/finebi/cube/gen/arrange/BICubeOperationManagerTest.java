@@ -13,7 +13,7 @@ import com.finebi.cube.tools.BITableSourceRelationTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 
 import java.util.HashSet;

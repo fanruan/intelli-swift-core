@@ -3,9 +3,11 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.conf.trans.UserAliasManager;
 import com.fr.json.JSONObject;
-
 /**
- * Created by GUY on 2015/3/31.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 public interface BIAliasManagerProvider {
 

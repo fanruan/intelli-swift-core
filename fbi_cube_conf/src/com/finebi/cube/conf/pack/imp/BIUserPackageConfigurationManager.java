@@ -14,7 +14,10 @@ import java.util.Set;
 
 /**
  * Manager包含Set<BIGroup>，BIGroup包含Set<BIPackage>，BIPackage包含List<BITable>
- * Created by Connery on 2015/12/25.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 
 /**
@@ -61,7 +64,6 @@ public class BIUserPackageConfigurationManager {
     public void envChanged() {
         packageConfigManager.clear();
     }
-
 
 
     public void startGenerateCubes() {

@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.relation.path;
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.common.container.BIHashMapContainer;
 import com.fr.bi.exception.BIKeyAbsentException;
@@ -11,7 +11,7 @@ import com.fr.bi.stable.exception.BITableAbsentException;
 /**
  * Created by Connery on 2016/1/14.
  */
-abstract class BIIndirectlyRelativeTablesManager extends BIHashMapContainer<IBusinessTable, BIIndirectlyRelativeTableContainer> {
+abstract class BIIndirectlyRelativeTablesManager extends BIHashMapContainer<BusinessTable, BIIndirectlyRelativeTableContainer> {
     BIDirectlyRelativeTablesManager biDirectlyRelativeTablesManager;
 
     public BIIndirectlyRelativeTablesManager() {
@@ -34,7 +34,7 @@ abstract class BIIndirectlyRelativeTablesManager extends BIHashMapContainer<IBus
     public boolean containBITableRelation(BITableRelation tableRelation) {
       return   biDirectlyRelativeTablesManager.containRelation(tableRelation);
     }
-    protected void updateTable(IBusinessTable table, BITableContainer container) {
+    protected void updateTable(BusinessTable table, BITableContainer container) {
         if (containsKey(table)) {
             try {
                 BIIndirectlyRelativeTableContainer indirectlyTableContainer = getSpecificTableIndirectContainer(table);
@@ -54,7 +54,7 @@ abstract class BIIndirectlyRelativeTablesManager extends BIHashMapContainer<IBus
         }
     }
 
-    protected BIIndirectlyRelativeTableContainer getSpecificTableIndirectContainer(IBusinessTable table) throws BITableAbsentException {
+    protected BIIndirectlyRelativeTableContainer getSpecificTableIndirectContainer(BusinessTable table) throws BITableAbsentException {
         try {
             return getValue(table);
         } catch (BIKeyAbsentException ignore) {

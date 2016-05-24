@@ -1,7 +1,7 @@
 package com.finebi.cube.gen;
 
 import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 
 import java.util.Set;

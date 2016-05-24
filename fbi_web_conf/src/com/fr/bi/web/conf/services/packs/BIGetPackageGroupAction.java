@@ -1,7 +1,6 @@
 package com.fr.bi.web.conf.services.packs;
 
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;

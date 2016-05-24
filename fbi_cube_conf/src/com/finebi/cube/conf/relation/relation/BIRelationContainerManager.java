@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.relation.relation;
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
 import com.finebi.cube.relation.BITableRelation;
@@ -69,7 +69,7 @@ public class BIRelationContainerManager implements BIRelationContainerService {
     }
 
     @Override
-    public List<BITableRelation> getRelationSpecificForeignTable(IBusinessTable foreignTable) {
+    public List<BITableRelation> getRelationSpecificForeignTable(BusinessTable foreignTable) {
         Iterator<BITableRelation> relationIterator = allRelations.getContainer().iterator();
         List<BITableRelation> result = new ArrayList<BITableRelation>();
         while (relationIterator.hasNext()) {
@@ -82,7 +82,7 @@ public class BIRelationContainerManager implements BIRelationContainerService {
     }
 
     @Override
-    public List<BITableRelation> getRelationSpecificPrimaryTable(IBusinessTable primaryTable) {
+    public List<BITableRelation> getRelationSpecificPrimaryTable(BusinessTable primaryTable) {
         Iterator<BITableRelation> relationIterator = allRelations.getContainer().iterator();
         List<BITableRelation> result = new ArrayList<BITableRelation>();
         while (relationIterator.hasNext()) {

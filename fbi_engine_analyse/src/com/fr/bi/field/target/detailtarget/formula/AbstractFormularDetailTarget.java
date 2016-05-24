@@ -1,7 +1,7 @@
 package com.fr.bi.field.target.detailtarget.formula;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeColumnIndexReader;
@@ -47,7 +47,7 @@ public abstract class AbstractFormularDetailTarget extends BIAbstractDetailTarge
     }
 
     @Override
-    public BITable createTableKey() {
+    public BusinessTable createTableKey() {
         return null;
     }
 

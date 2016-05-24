@@ -1,10 +1,11 @@
 package com.fr.bi.stable.connection;
 
-import com.fr.bi.base.FinalInt;
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.FinalInt;
+import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
@@ -14,14 +15,14 @@ public class DirectTableConnection {
     private BIKey eIndex;
     private DirectTableConnection next;
     private DirectTableConnection last;
-    private Table start;
-    private Table end;
+    private ICubeTableSource start;
+    private ICubeTableSource end;
     private transient ICubeTableService sti;
     private transient ICubeTableService eti;
 
 
-    public DirectTableConnection(Table sTable, BIKey sIndex, ICubeTableService sti,
-                                 Table eTable, BIKey eIndex, ICubeTableService eti) {
+    public DirectTableConnection(ICubeTableSource sTable, BIKey sIndex, ICubeTableService sti,
+                                 ICubeTableSource eTable, BIKey eIndex, ICubeTableService eti) {
         this.sIndex = sIndex;
         this.start = sTable;
         this.eIndex = eIndex;
@@ -110,8 +111,8 @@ public class DirectTableConnection {
      * @param value
      * @return
      */
-    public Object[] getParentTableValues(Table table, Object value, BIKey startIndex, BIKey endIndex, ICubeDataLoader loader) {
-        GroupValueIndex[] gvi = loader.getTableIndex(table).getIndexes(startIndex, new Object[]{value});
+    public Object[] getParentTableValues(BusinessTable table, Object value, BIKey startIndex, BIKey endIndex, ICubeDataLoader loader) {
+        GroupValueIndex[] gvi = loader.getTableIndex(table.getTableSource()).getIndexes(startIndex, new Object[]{value});
         return getParentTableValuesbyKeyValue(gvi, endIndex);
     }
 

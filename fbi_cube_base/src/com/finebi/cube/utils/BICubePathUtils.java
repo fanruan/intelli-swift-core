@@ -1,7 +1,7 @@
 package com.finebi.cube.utils;
 
 import com.finebi.cube.structure.BICubeTablePath;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 

@@ -13,7 +13,7 @@ import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -111,8 +111,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         if (parents == null || parents.size() != 2) {
             throw new RuntimeException("invalid join parents");
         }
-        ICubeTableService lti = loader.getTableIndex(parents.get(0).fetchObjectCore());
-        ICubeTableService rti = loader.getTableIndex(parents.get(1).fetchObjectCore());
+        ICubeTableService lti = loader.getTableIndex(parents.get(0));
+        ICubeTableService rti = loader.getTableIndex(parents.get(1));
         return write(travel, lti, rti);
     }
 
@@ -133,8 +133,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         if (parents == null || parents.size() != 2) {
             throw new RuntimeException("invalid join parents");
         }
-        ICubeTableService lti = loader.getTableIndex( parents.get(0).fetchObjectCore(), start, end);
-        ICubeTableService rti = loader.getTableIndex( parents.get(1).fetchObjectCore(), start, end);
+        ICubeTableService lti = loader.getTableIndex(parents.get(0), start, end);
+        ICubeTableService rti = loader.getTableIndex(parents.get(1), start, end);
         return write(travel, lti, rti);
     }
 
@@ -411,8 +411,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
     public int getColumnSize(boolean isLeft) {
         int i = 0;
-        for (JoinColumn c : columns){
-            if (c.isLeft() == isLeft){
+        for (JoinColumn c : columns) {
+            if (c.isLeft() == isLeft) {
                 i++;
             }
         }

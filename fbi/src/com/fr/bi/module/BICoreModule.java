@@ -1,6 +1,10 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.conf.BIAliasManagerProvider;
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.fr.base.FRContext;
 import com.fr.bi.DemoService;
 import com.fr.bi.cal.BICubeManager;
