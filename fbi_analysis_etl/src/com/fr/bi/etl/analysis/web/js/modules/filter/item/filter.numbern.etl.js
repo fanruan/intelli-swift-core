@@ -36,7 +36,7 @@ BI.ETLNumberNFilterPane = BI.inherit(BI.Widget, {
         self.editor = BI.createWidget({
             type: "bi.text_editor",
             validationChecker: function(v){
-                return BI.isNumeric(v);
+                return BI.isPositiveInteger(v);
             },
             errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
             height: self._constants.HEIGHT
