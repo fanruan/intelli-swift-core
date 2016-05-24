@@ -182,7 +182,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         if(BI.has(changed, "bounds")) {
             this._refreshLayout();
         }
-        if(BI.has(changed, "value")) {
+        if(BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },

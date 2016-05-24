@@ -3,7 +3,7 @@
  * 处理popup中的item分组样式
  * 一个item分组中的成员大于一时，该分组设置为单选，并且默认状态第一个成员设置为已选择项
  */
-BI.DownListPopup = BI.inherit(BI.Widget, {
+BI.DownListPopup = BI.inherit(BI.Pane, {
     constants: {
         nextIcon: "pull-right-e-font",
         height: 25,
@@ -27,23 +27,20 @@ BI.DownListPopup = BI.inherit(BI.Widget, {
         this.childValueMap = {};
         this.fatherValueMap = {};
         var self = this, o = this.options, children = this._createChildren(o.items);
-        this.popup = BI.createWidget(
-            {
-                element: this.element,
-                type: "bi.button_tree",
-                items: BI.createItems(children,
-                    {}, {
-                        adjustLength: -2
-                    }
-                ),
-                layouts: [{
-                    type: "bi.vertical",
-                    hgap: this.constants.hgap,
-                    vgap: this.constants.vgap
-                }],
-                chooseType: o.chooseType
-            }
-        );
+        this.popup = BI.createWidget({
+            type: "bi.button_tree",
+            items: BI.createItems(children,
+                {}, {
+                    adjustLength: -2
+                }
+            ),
+            layouts: [{
+                type: "bi.vertical",
+                hgap: this.constants.hgap,
+                vgap: this.constants.vgap
+            }],
+            chooseType: o.chooseType
+        });
 
         this.popup.on(BI.ButtonTree.EVENT_CHANGE, function (value, object) {
             var changedValue = value;
@@ -66,7 +63,13 @@ BI.DownListPopup = BI.inherit(BI.Widget, {
                 self.setValue(result);
             }
 
-        })
+        });
+
+        BI.createWidget({
+            type: "bi.vertical",
+            element: this.element,
+            items: [this.popup]
+        });
 
     },
     _createChildren: function (items) {
@@ -173,6 +176,7 @@ BI.DownListPopup = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
+        BI.DownListPopup.superclass.populate.apply(this, arguments);
         var self = this;
         self.childValueMap = {};
         self.fatherValueMap = {};

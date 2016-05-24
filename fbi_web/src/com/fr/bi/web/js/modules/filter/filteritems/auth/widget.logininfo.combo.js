@@ -15,6 +15,7 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
             type: "bi.single_tree_combo",
             element: this.element
         });
+        this._beforeLoginComboPopup();
         this.combo.on(BI.SingleTreeCombo.EVENT_BEFORE_POPUPVIEW, function(){
             self._beforeLoginComboPopup();
         });
@@ -25,40 +26,42 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
 
     _beforeLoginComboPopup: function(){
         var self = this, o = this.options;
-        var loginInfo = BI.Utils.getAuthorityLoginInfo();
+        var loginField = BI.Utils.getAuthorityLoginField();
         var fieldType = o.field_type;
-        if(BI.isNotNull(loginInfo) && BI.isNotNull(loginInfo.field_name)) {
-            var table = loginInfo.table;
-            BI.Utils.getPrimaryTablesByTable4Conf(table, function(tables){
-                var items = [];
-                tables = tables || [];
-                tables.push(table);
-                BI.each(tables, function(i, t){
-                    items.push({
-                        text: t.table_name,
-                        id: t.md5
-                    });
-                    BI.each(t.fields, function(j, fs){
-                        BI.each(fs, function(k, field){
-                            if(field.field_type === fieldType) {
-                                items.push({
-                                    text: field.field_name,
-                                    value: {
-                                        table: t,
-                                        field_name: field.field_name
-                                    },
-                                    id: field.id,
-                                    pId: t.md5
-                                })
-                            }
+        var items = [];
+        if(BI.isNotNull(loginField)) {
+            var primaryFields = this._getPrimaryFieldsByFieldId(loginField);
+            primaryFields.splice(0, 0, loginField);
+            var comboValue = this.combo.getValue();
+            BI.each(primaryFields, function(i, fieldId){
+                var tableName = BI.Utils.getTableNameByFieldId4Conf(fieldId);
+                var tableId = BI.Utils.getTableIdByFieldId4Conf(fieldId);
+                var fields = self._getAllFieldsByTableId(tableId);
+
+                var parentOpen = false;
+                BI.each(fields, function(j, field){
+                    if(field.field_type === fieldType) {
+                        items.push({
+                            id: field.id,
+                            pId: tableId,
+                            text: field.field_name,
+                            value: field.id,
+                            selected: comboValue.contains(field.id)
                         });
-                    })
+                        comboValue.contains(field.id) && (parentOpen = true);
+                    }
                 });
-                self.combo.populate(items);
+                items.push({
+                    id: tableId,
+                    isParent: true,
+                    text: tableName,
+                    open: parentOpen
+                });
             });
+            this.combo.populate(items);
             return;
         }
-        var items = [];
+
         switch (fieldType) {
             case BICst.COLUMN.STRING:
                 items.push({
@@ -77,9 +80,38 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
         }
         this.combo.populate(items);
     },
+
+    _getAllFieldsByTableId: function(tableId) {
+        var fields = [], allFields = Data.SharingPool.get("fields");
+        BI.each(allFields, function(i, field){
+            if(field.table_id === tableId) {
+                fields.push(field);
+            }
+        });
+        return fields;
+    },
+
+    _getPrimaryFieldsByFieldId: function(fieldId){
+        var self = this;
+        var relations = Data.SharingPool.get("relations");
+        var translations = Data.SharingPool.get("translations");
+        var primaryFields = [];
+        var connectionSet = relations.connectionSet;
+        BI.each(connectionSet, function(i, cs){
+            if(cs.foreignKey.field_id === fieldId) {
+                primaryFields.push(cs.primaryKey.field_id);
+                primaryFields = primaryFields.concat(self._getPrimaryFieldsByFieldId(cs.primaryKey.field_id));
+            }
+        });
+        return primaryFields;
+    },
+
+    setValue: function(v){
+        this.combo.setValue(v);
+    },
     
     getValue: function(){
-        return this.combo.getValue();
+        return this.combo.getValue()[0];
     }
 });
 BI.extend(BI.LoginInfoCombo, {

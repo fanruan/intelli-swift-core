@@ -3,7 +3,7 @@
  * @extend BI.Widget
  * 明细表的表格
  */
-BI.DetailTable = BI.inherit(BI.Widget, {
+BI.DetailTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detail-table",
@@ -58,6 +58,7 @@ BI.DetailTable = BI.inherit(BI.Widget, {
     _onPageChange: function (vPage, callback) {
         var self = this;
         var widgetId = this.options.wId;
+        this.loading();
         this.data = [];
         var hyperLinkExpressions = [];
         var isUseHyperLinkDimension = [];
@@ -74,6 +75,7 @@ BI.DetailTable = BI.inherit(BI.Widget, {
         var ob = {};
         ob.page = this.pageOperator;
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
+            self.loaded();
             var json = jsonData.data, row = jsonData.row, size = jsonData.size;
             if (BI.isNull(json) || BI.isNull(row)) {
                 return;
@@ -114,6 +116,7 @@ BI.DetailTable = BI.inherit(BI.Widget, {
     populate: function () {
         var self = this;
         var widgetId = this.options.wId;
+        this.loading();
         this.data = [];
         var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
         if (BI.isEmpty(dimensions)) {
@@ -128,6 +131,7 @@ BI.DetailTable = BI.inherit(BI.Widget, {
         var ob = {};
         ob.page = this.pageOperator;
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
+            self.loaded();
             var json = jsonData.data, row = jsonData.row, size = jsonData.size;
             if (BI.isNull(json) || BI.isNull(row)) {
                 return;

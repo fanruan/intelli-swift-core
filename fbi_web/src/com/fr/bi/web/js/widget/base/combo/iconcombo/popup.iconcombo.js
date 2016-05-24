@@ -2,9 +2,9 @@
  * Created by GUY on 2016/2/2.
  *
  * @class BI.IconComboPopup
- * @extend BI.Widget
+ * @extend BI.Pane
  */
-BI.IconComboPopup = BI.inherit(BI.Widget, {
+BI.IconComboPopup = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.IconComboPopup.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi.icon-combo-popup",
@@ -17,7 +17,6 @@ BI.IconComboPopup = BI.inherit(BI.Widget, {
         var o = this.options, self = this;
         this.popup = BI.createWidget({
             type: "bi.button_group",
-            element: this.element,
             items: BI.createItems(o.items, {
                 type: "bi.single_select_icon_text_item",
                 height: 30
@@ -33,10 +32,17 @@ BI.IconComboPopup = BI.inherit(BI.Widget, {
             if (type === BI.Events.CLICK) {
                 self.fireEvent(BI.IconComboPopup.EVENT_CHANGE, val, obj);
             }
-        })
+        });
+
+        BI.createWidget({
+            type: "bi.vertical",
+            element: this.element,
+            items: [this.popup]
+        });
     },
 
-    populate: function(items){
+    populate: function (items) {
+        BI.IconComboPopup.superclass.populate.apply(this, arguments);
         items = BI.createItems(items, {
             type: "bi.single_select_icon_text_item",
             height: 30

@@ -12,37 +12,16 @@ BI.FolderFileSortCombo = BI.inherit(BI.Widget, {
     _init: function () {
         BI.FolderFileSortCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.trigger = BI.createWidget({
-            type: "bi.icon_combo_trigger",
+        this.iconCombo = BI.createWidget({
+            type: "bi.icon_combo",
+            element: this.element,
             items: o.items,
             width: o.width,
-            height: o.height
+            height: o.height,
+            offsetStyle: "right"
         });
-        this.popup = BI.createWidget({
-            type: "bi.icon_combo_popup",
-            chooseType: o.chooseType,
-            items: o.items
-        });
-        this.popup.on(BI.IconComboPopup.EVENT_CHANGE, function () {
-            self.setValue(self.popup.getValue());
-            self.iconCombo.hideView();
+        this.iconCombo.on(BI.IconCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.FolderFileSortCombo.EVENT_CHANGE);
-        });
-        this.popup.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
-        });
-        this.iconCombo = BI.createWidget({
-            type: "bi.combo",
-            element: this.element,
-            direction: "top,left",
-            adjustXOffset: -30,
-            adjustYOffset: -30,
-            el: this.trigger,
-            popup: {
-                el: this.popup,
-                maxWidth: "",
-                maxHeight: 300
-            }
         });
     },
 

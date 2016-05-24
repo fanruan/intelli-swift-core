@@ -159,12 +159,14 @@ BI.SelectString4RealTime = BI.inherit(BI.Widget, {
                     items[position.row][position.col].value = id;
                 }
             });
-            fieldStructure.push({
-                id: BI.UUID(),
-                pId: tableId,
-                type: "bi.excel_view",
-                items: items
-            });
+            if(viewFields.length > 0) {
+                fieldStructure.push({
+                    id: BI.UUID(),
+                    pId: tableId,
+                    type: "bi.excel_view",
+                    items: items
+                });
+            }
         }
 
         BI.each(BI.Utils.getStringFieldIDsOfTableID(tableId), function (i, fid) {
