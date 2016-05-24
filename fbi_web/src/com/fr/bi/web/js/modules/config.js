@@ -868,6 +868,17 @@ BICst.CONF_STATISTIC_NUMBER = [{
     text: BI.i18nText("BI-No_Repeat_Count"),
     value: BICst.SUMMARY_TYPE.COUNT
 }];
+//选色
+BICst.CHART_COLORS = [{
+    text: BI.i18nText("BI-Default"),
+    value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "6ed3c9"]
+}, {
+    text: BI.i18nText("BI-Bright"),
+    value: ["#9193ac", "#779ae3", "#e6a469", "#eddc80", "9889d0"]
+}, {
+    text: BI.i18nText("BI-Elegant"),
+    value: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"]
+}];
 
 //表格（分组表、交叉表和复杂表）类型
 BICst.TABLE_FORM_GROUP = [{

@@ -11,10 +11,6 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     defaultItems: function () {
         return [
             [{
-                text: BI.i18nText("BI-Style_Setting"),
-                value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING
-            }],
-            [{
                 text: BI.i18nText("BI-Modify_Cal_Target"),
                 value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
             }], [{
