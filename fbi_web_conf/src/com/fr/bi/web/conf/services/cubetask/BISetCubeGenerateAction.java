@@ -2,11 +2,13 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
+import com.fr.bi.cal.generate.BuildCubeTaskIncremental;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BICubeManagerProvider;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,13 +28,12 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
 
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
-        tableId=null==tableId?"":tableId;
         BICubeManagerProvider cubeManager = BIConfigureManagerCenter.getCubeManager();
-        if ("".equals(tableId)){
+        if (StringUtils.isEmpty(tableId)){
             cubeManager.addTask(new BuildCubeTask(new BIUser(userId)), userId);
         }else{
             BITable biTable=new BITable(tableId);
-            cubeManager.addTask(new BuildCubeTask(new BIUser(userId),biTable), userId);
+            cubeManager.addTask(new BuildCubeTaskIncremental(new BIUser(userId),biTable), userId);
         }
     }
 
