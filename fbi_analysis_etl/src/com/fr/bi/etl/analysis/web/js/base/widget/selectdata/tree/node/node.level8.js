@@ -21,6 +21,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
     },
 
     _init: function () {
+        this.options.title = BI.Utils.getDescribe(this.options.id);
         BI.SelectDataLevel8Node.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         self._initControl();
