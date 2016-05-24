@@ -143,29 +143,28 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         switch (field.fieldType){
             case BICst.COLUMN.STRING :
                 var pane =  BI.createWidget({
-                    type: "bi.conf_filter_value_chooser_combo",
+                    type: "bi.multi_select_combo",
                     width : self._constants.FIELD_ITEM_WIDTH,
-                    height : self._constants.ITEM_HEIGHT
+                    height : self._constants.ITEM_HEIGHT,
+                    itemsCreator: BI.bind(this._itemsCreator, this)  
                 });
-                pane.on(BI.ConfFilterValueChooserCombo.EVENT_CONFIRM, function () {
+                pane.on(BI.MultiSelectCombo.EVENT_CONFIRM , function () {
                     self.fireEvent(BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_CHANGE)
                 });
                 pane.validChecked = true;
                 return pane;
             case BICst.COLUMN.DATE :
                 var pane =  BI.createWidget({
-                    type: "bi.time_interval",
+                    type: "bi.date_group_range_pane_etl",
                     width : self._constants.FIELD_ITEM_WIDTH,
                     height : self._constants.ITEM_HEIGHT
                 });
-                pane.on(BI.TimeInterval.EVENT_CHANGE, function () {
-                    self.fireEvent(BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_CHANGE);
-                });
-                pane.on(BI.TimeInterval.EVENT_ERROR, function () {
+                pane.on(BI.ETLSingleGroupDateRangePane.EVENT_INVALID, function () {
                     pane.validChecked = false;
                     self.checkValid();
                 });
-                pane.on(BI.TimeInterval.EVENT_VALID, function () {
+                pane.on(BI.ETLSingleGroupDateRangePane.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_CHANGE);
                     pane.validChecked = true;
                     self.checkValid();
                 });
@@ -191,6 +190,46 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         }
     },
 
+    _itemsCreator: function (opts, callback) {
+        var self = this, o = this.options;
+        if (!this.items) {
+            var table = {};
+            table[ETLCst.ITEMS] = o.table;
+            BI.ETLReq.reqFieldValues({
+                table : table,
+                field : o.field.value
+            }, function (items) {
+                self.items = BI.map(items.value, function (i, v) {
+                    return {
+                        text: v,
+                        value: v,
+                        title: v
+                    }
+                });
+                call();
+            });
+        } else {
+            call();
+        }
+        function call() {
+            var items = self.items;
+            var keyword = opts.keyword;
+            if (BI.isNotNull(keyword)) {
+                var search = BI.Func.getSearchResult(items, keyword);
+                items = search.matched.concat(search.finded);
+            }
+            var values =  opts.selected_values;
+            if (BI.isNotNull(values)) {
+                var filter = BI.makeObject(values, true);
+                items = BI.filter(items, function (i, ob) {
+                    return !filter[ob.value];
+                });
+            }
+            callback({
+                items : items
+            })
+        }
+    },
 
     update : function () {
         return {

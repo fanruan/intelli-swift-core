@@ -9,6 +9,10 @@ BI.AnalysisETLOperatorFilterPane = FR.extend(BI.MVCWidget, {
         return BI.AnalysisETLOperatorFilterPaneController;
     },
 
+    _initModel : function () {
+        return BI.AnalysisETLOperatorFilterPaneModel;
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.AnalysisETLOperatorFilterPane.superclass._defaultConfig.apply(this, arguments), {
             extraCls:"bi-analysis-etl-operator-filter-pane",

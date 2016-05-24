@@ -263,7 +263,6 @@ BI.SelectNumberPane = BI.inherit(BI.Widget, {
                 }
                 var data = BI.map(fields, function (idx, fId) {
                     return {
-                        id: fId,
                         name: BI.Utils.getFieldNameByID(fId),
                         _src: {
                             id: fId,

@@ -7,6 +7,12 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
         DATE_MIN_VALUE: "1900-01-01",
         DATE_MAX_VALUE: "2099-12-31"
     },
+    _defaultConfig: function () {
+        var conf = BI.ETLDateRangePane.superclass._defaultConfig.apply(this, arguments);
+        return BI.extend(conf, {
+            extraCls: "bi-filter-time-interval"
+        })
+    },
     _init: function () {
         var self = this;
         BI.ETLDateRangePane.superclass._init.apply(this, arguments);
@@ -16,13 +22,13 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
             type: 'bi.label',
             height: this._constants.height,
             width: this._constants.width,
-            text: BI.i18nText("BI-Sooner_Than")
+            text: BI.i18nText("BI-Later_Than")
         });
         this.dowmlabel = BI.createWidget({
             type: 'bi.label',
             height: this._constants.height,
             width: this._constants.width,
-            text:  BI.i18nText("BI-Later_Than")
+            text:  BI.i18nText("BI-Sooner_Than")
         });
         BI.createWidget({
             element: self.element,

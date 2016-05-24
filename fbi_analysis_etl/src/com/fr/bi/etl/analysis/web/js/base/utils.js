@@ -20,8 +20,18 @@ BI.extend(BI.Utils, {
         })
         BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
+
+    getDescribe : function (id) {
+        var table =  BI.find(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+            return item.id === id
+        })
+        return table.describe;
+    },
     getAllETLTableNames : function () {
         var names = [];
+        if (BI.isNull(Pool["packages"][ETLCst.PACK_ID])){
+            return names;
+        }
         BI.each(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
             names.push(Pool["translations"][item.id])
         })

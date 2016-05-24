@@ -1,6 +1,5 @@
 package com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage;
 
-import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.CorrespondMonthPeriodRowCalculatorOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -12,7 +11,6 @@ import com.fr.bi.stable.engine.cal.ResultDealer;
  * 同期比
  */
 public class CorrespondMonthPeriodPercentRowCalculatorOperator extends CorrespondMonthPeriodRowCalculatorOperator {
-    @BICoreField
     private static final String XML_TAG="CorrespondMonthPeriodPercentRowCalculatorOperator";
     @Override
     protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {

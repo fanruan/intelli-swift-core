@@ -3,6 +3,7 @@ package com.fr.bi.field.filtervalue.date.evenfilter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDayValue;
+import com.fr.bi.stable.utils.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -20,7 +21,7 @@ public class DateDayContainsTargetFilterValue extends DateKeyTargetFilterValue{
             JSONObject valueOb = jo.getJSONObject("filter_value");
             JSONArray ja = valueOb.getJSONArray("value");
             for (int i = 0, len = ja.length(); i < len; i++) {
-                valueSet.add(new BIDayValue(ja.getLong(i)));
+                valueSet.add(new BIDayValue(DateUtils.parse(ja.getString(i)).getTime()));
             }
         }
     }

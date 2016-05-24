@@ -48,7 +48,7 @@ public class Paging {
      * @return
      */
     public int getCurrentSize() {
-        return current == getPages() ? ((int) totalSize - getPages() * (current - 1)) : getPageSize();
+        return current == getPages() ? ((int) totalSize - getPageSize() * (current - 1)) : getPageSize();
     }
 
     /**
