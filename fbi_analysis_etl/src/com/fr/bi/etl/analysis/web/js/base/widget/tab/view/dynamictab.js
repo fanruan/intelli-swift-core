@@ -54,11 +54,10 @@ BI.DynamicTab = FR.extend(BI.MVCWidget, {
     },
 
     _createTabs : function(v) {
-        var item = this.controller.getTabItem(v);
         var tab = BI.createWidget({
             type: "bi.history_tab",
             cls : "bi-animate-right-in",
-            allHistory:item.allHistory
+            allHistory: this.controller.hasMergeHistory(v)
         });
         var self = this;
         BI.defer(function () {
@@ -78,6 +77,10 @@ BI.DynamicTab = FR.extend(BI.MVCWidget, {
         tab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, function (data, oldSheets) {
             self.controller.changeMergeSheet(data, oldSheets, v)
         });
+
+        tab.on(BI.HistoryTab.VALID_CHANGE, function () {
+            self.controller.setTabValid(v)
+        })
 
         tab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE, function () {
             self.controller.deleteMergeSheet(v)

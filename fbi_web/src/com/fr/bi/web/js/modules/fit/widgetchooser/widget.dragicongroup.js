@@ -9,7 +9,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
         valueReuse: -1,
         iconWidth: 36,
         iconHeight: 30,
-        showMoreCount: 8
+        showMoreCount: 13
     },
 
     _defaultConfig: function () {
@@ -27,7 +27,12 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                 result.push(self._formatConfig(cfg));
                 return;
             }
-            if (i >= c.showMoreCount) {
+            if (i > c.showMoreCount) {
+                return;
+            }
+            if (cfg.value === -1) {//复用
+                cfg.cls = cfg.cls + " widget-reuse";
+                result.push(cfg);
                 return;
             }
             cfg.cls = (cfg.cls || "") + " widget-generator";
@@ -40,8 +45,10 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                     text: BI.i18nText("BI-More"),
                     invalid: true,
                     value: c.valueMore,
-                    cls: cfg.cls + " chart-more-font",
-                    children: items
+                    cls: "widget-more chart-more-font",
+                    children: items,
+                    selected: true,
+                    forceSelected: true
                 }
             }
             result.push(cfg);
@@ -49,7 +56,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                 self._formatConfig(cfg.children);
                 return;
             }
-        })
+        });
         return result;
     },
 
@@ -90,13 +97,13 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                             },
                             el: {
                                 type: "bi.reuse_pane",
-                                drag: function(info, position){
+                                drag: function (size, position, opt) {
                                     dragIcon.hideView();
-                                    o.drag.apply(self, [info, position]);
+                                    o.drag.apply(self, arguments);
                                 },
-                                stop: function(info, position){
+                                stop: function (size, position, opt) {
                                     dragIcon.showView();
-                                    o.stop.apply(self, [info, position]);
+                                    o.stop.apply(self, arguments);
                                 },
                                 helper: o.helper
                             }
@@ -155,10 +162,11 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             items: icons,
             layouts: [{
-                type: "bi.vertical"
+                type: "bi.left"
             }, {
                 type: "bi.center_adapt",
-                height: 40
+                height: 40,
+                width: 40
             }]
         })
     },
@@ -167,9 +175,16 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
         BI.DragIconGroup.superclass._init.apply(this, arguments);
         var self = this, o = this.options, c = this._const, icons = [];
 
-        this.dragIcons = [];
-
-        var conf = this._formatConfig(BI.deepClone(BICst.DASHBOARD_WIDGET_ICON));
+        var config = BI.deepClone(BICst.DASHBOARD_WIDGETS);
+        config.push([{
+            text: BI.i18nText("BI-Reuse"),
+            title: BI.i18nText("BI-Reuse"),
+            value: -1,
+            cls: "drag-reuse-icon",
+            iconHeight: 24,
+            iconWidth: 24
+        }]);
+        var conf = this._formatConfig(config);
 
         var gps = [];
         BI.each(conf, function (i, items) {
@@ -180,7 +195,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                     items: [{
                         type: "bi.label",
                         height: 1,
-                        width: 36,
+                        width: 60,
                         cls: "widget-generator-gap"
                     }]
                 }));
@@ -195,7 +210,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 type: "bi.vertical",
-                width: 38,
+                width: 80,
                 items: gps
             }]
         });

@@ -9,6 +9,7 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.*;
+import com.finebi.cube.structure.table.property.BICubeTableProperty;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
@@ -102,9 +103,14 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
+    public List<ITableKey> getParentsTable() {
+        return tableProperty.getParentsTable();
+    }
+
+    @Override
     public void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
         int columnIndex = originalDataValue.getCol();
-        int rowNumber = (int) originalDataValue.getRow();
+        int rowNumber = originalDataValue.getRow();
         Object value = originalDataValue.getValue();
         DBField field = getAllFields().get(columnIndex);
         ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));
@@ -200,7 +206,22 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
+    public void recordFieldNamesFromParent(Set<String> fieldNames) {
+        tableProperty.recordFieldNamesFromParent(fieldNames);
+    }
+
+    @Override
+    public Set<String> getFieldNamesFromParent() {
+        return tableProperty.getFieldNamesFromParent();
+    }
+
+    @Override
     public boolean tableDataAvailable() {
         return tableProperty.isPropertyExist();
+    }
+
+    @Override
+    public boolean isRowCountAvailable() {
+        return tableProperty.isRowCountAvailable();
     }
 }

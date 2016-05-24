@@ -28,4 +28,6 @@ public class BIResourceSimpleCache<R> implements IResourceCache<R> {
     public boolean isAvailableResource(ICubeResourceLocation location) {
         return contents.containsKey(location);
     }
+
+
 }

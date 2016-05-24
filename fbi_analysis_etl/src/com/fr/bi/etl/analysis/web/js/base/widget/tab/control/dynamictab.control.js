@@ -133,10 +133,10 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
     },
 
 
-    getTabItem : function (v, widget, model) {
-        return model.getSheetData(v);
+    hasMergeHistory : function (v, widget, model) {
+        return model.hasMergeHistory(v);
     },
-
+    
     resize : function (widget) {
       this._resize(widget);
     },
@@ -182,18 +182,19 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
 
     },
 
+    setTabValid : function (v, widget, model) {
+        var isValid = model.get(v).isModelValid();
+        var button = widget.tabButton.getButton(v);
+        button.setValid(isValid)
+    },
+
     saveMergeSheet : function (v, widget, model) {
         var sheets = v["sheets"];
         var self = this;
         BI.each(sheets, function (idx, item) {
             self._removeSheet(item, widget, model);
         })
-        self.addNewSheet(BI.extend(v, {
-            table_name:v["name"],
-            allHistory:true,
-            etlType: ETLCst.ETL_TYPE.MERGE_SHEET,
-            operator: BI.deepClone(v)
-        }),  widget, model)
+        self.addNewSheet(v,  widget, model)
     },
 
     chooseSheetForMerge : function (widget, model) {
@@ -209,15 +210,31 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
 
         var self = this;
 
+        var getTablesBySheetId = function (sheets) {
+            var tables = [];
+            var self = this;
+            BI.each(sheets, function (idx, item) {
+                tables.push(getTableById(item))
+            })
+            return tables;
+        }
+
+        var getTableById = function (id) {
+            return BI.find(tables, function (idx, item) {
+                return item.value === id;
+            })
+        }
+
         var func = function (v) {
+            var m = {
+                name: model.createNewName(BI.i18nText("BI-Merge_Table")),
+                tables: tables
+            }
+            m[ETLCst.PARENTS] = getTablesBySheetId(v);
             BI.createWidget({
                 type : "bi.analysis_etl_merge_sheet",
                 element:BI.Layers.create(BICst.ANALYSIS_MERGE_LAYER, "body"),
-                model : {
-                    sheets: v,
-                    name: model.createNewName(BI.i18nText("BI-Merge_Table")),
-                    tables : tables
-                },
+                model :m,
                 controller : {
                     saveHandler : function(v) {
                         self.saveMergeSheet(v, widget, model)

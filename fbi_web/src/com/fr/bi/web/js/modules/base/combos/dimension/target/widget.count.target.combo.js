@@ -32,16 +32,20 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Column_Chart"),
-                    value: BICst.CHART_VIEW_STYLE_BAR
+                    value: BICst.WIDGET.AXIS,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Stacked_Chart"),
-                    value: BICst.CHART_VIEW_STYLE_ACCUMULATED_BAR
+                    value: BICst.WIDGET.ACCUMULATE_AXIS,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Line_Chart"),
-                    value: BICst.CHART_VIEW_STYLE_LINE
+                    value: BICst.WIDGET.LINE,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Area_Chart"),
-                    value: BICst.CHART_VIEW_STYLE_SQUARE
+                    value: BICst.WIDGET.AREA,
+                    cls: "dot-e-font"
                 }]
             }],
             [{
@@ -53,6 +57,15 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 text: BI.i18nText("BI-Filter_Number_Summary"),
                 value: BICst.TARGET_COMBO.FILTER,
                 cls: "filter-h-font"
+            }],
+            [{
+                text: BI.i18nText("BI-Display"),
+                value: BICst.TARGET_COMBO.DISPLAY,
+                cls: "dot-ha-font"
+            }, {
+                text: BI.i18nText("BI-Hidden"),
+                value: BICst.TARGET_COMBO.HIDDEN,
+                cls: "dot-ha-font"
             }],
             [{
                 text: BI.i18nText("BI-Copy"),
@@ -67,6 +80,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: fromText,
                 title: fromText,
+                tipType: "warning",
                 value: BICst.TARGET_COMBO.INFO,
                 cls: "dimension-from-font",
                 disabled: true
@@ -82,7 +96,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _init: function(){
         BI.CountTargetCombo.superclass._init.apply(this, arguments);
-        this.field_id = BI.Utils.getFieldIDByDimensionID(o.dId);
+        this.field_id = BI.Utils.getFieldIDByDimensionID(this.options.dId);
     },
 
     _rebuildItems: function(){
@@ -92,12 +106,14 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var children = [];
         children.push({
             text: BI.i18nText("BI-Total_Row_Count"),
-            value: this.field_id
+            value: this.field_id,
+            cls: "dot-e-font"
         });
         BI.each(fieldIds, function(idx, fieldId){
             children.push({
                 text: BI.Utils.getFieldNameByID(fieldId),
-                value: fieldId
+                value: fieldId,
+                cls: "dot-e-font"
             });
         });
 
@@ -107,6 +123,17 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var dependItem = {};
 
         var items = this.defaultItem();
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
+
+        switch (wType) {
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                items[this.constants.CHART_TYPE_POSITION][0].disabled = false;
+                break;
+            default:
+                items[this.constants.CHART_TYPE_POSITION][0].disabled = true;
+                break;
+        }
 
         BI.find(items, function(idx, item){
             dependItem = BI.find(item, function(id, it){
@@ -125,7 +152,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     _assertChartType: function (val) {
         val || (val = {});
         if(BI.isNull(val.type)){
-            val.type = BICst.Widget.COLUMN;
+            val.type = BICst.WIDGET.AXIS;
         }
         return val;
     },

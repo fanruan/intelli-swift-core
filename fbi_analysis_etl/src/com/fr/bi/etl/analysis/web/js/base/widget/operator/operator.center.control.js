@@ -125,7 +125,9 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
     },
 
     doPreviewChange : function (m, type, widget, model) {
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, m, this._editing ? type : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
+        var type = (this._editing || type === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR ) ? type : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL
+        this.isError = (type === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, m, type)
     },
 
     _getOperatorPane : function (widget){
@@ -151,6 +153,9 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
     },
 
     refreshPreviewData : function (v, widget) {
+        if(this.isError === true){
+            v = ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR;
+        }
         this.setPreviewOperator(v);
         var args = BI.clone(this.currentData);
         if(BI.isNull(args)) {
@@ -176,8 +181,10 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
     },
 
     fieldValuesCreator : function (field, callback, widget, model) {
+        var table = {};
+        table[ETLCst.ITEMS] = [model.update()]
         return BI.ETLReq.reqFieldValues({
-            table : model.update(),
+            table : table,
             field : field
         }, callback);
     },

@@ -78,8 +78,8 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     k++;
                 }
 
-                for (long i = 0; i < rowCount; i++) {
-                    String v = ti.getRow(new IndexKey(idFieldName), (int) i).toString();
+                for (int i = 0; i < rowCount; i++) {
+                    String v = ti.getRow(new IndexKey(idFieldName), i).toString();
                     v = dealWithLayerValue(v, groupLength);
                     String[] res = new String[columnLength];
                     if (v != null) {

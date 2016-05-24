@@ -10,6 +10,7 @@ import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,5 +31,11 @@ public class MemoryStringColumn extends AbstractSingleMemoryColumn<String> {
             }
         }
         return getter;
+    }
+
+
+    @Override
+    protected void initDetail() {
+        detail = new AnyIndexArray<String>();
     }
 }

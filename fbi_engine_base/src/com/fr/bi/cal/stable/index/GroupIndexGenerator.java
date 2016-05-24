@@ -42,7 +42,7 @@ public class GroupIndexGenerator extends AbstractSourceGenerator {
             multiThreadGenerate(threadCount, gics);
         } else {
             for (int i = 0, len = gics.length; i < len; i++) {
-                gics[i].setLog(log, dataSource.getDbTable());
+//                gics[i].setLog(log, dataSource.getDbTable());
                 gics[i].generateCube();
                 BILogger.getLogger().info("table: " + dataSource.toString() + "finish:" + Math.round(i / len * 100) + "%");
             }

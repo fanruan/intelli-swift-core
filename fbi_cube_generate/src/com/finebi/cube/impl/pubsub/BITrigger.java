@@ -12,6 +12,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
+import com.fr.bi.stable.utils.code.BILogger;
 
 /**
  * This class created on 2016/3/24.
@@ -39,8 +40,10 @@ public class BITrigger implements ITrigger {
 
     @Override
     public void setTriggerCount(int count) {
-        if (count > 0) {
-            this.triggerCount = count;
+        synchronized (this) {
+            if (count > 0) {
+                this.triggerCount = count;
+            }
         }
     }
 
@@ -50,8 +53,10 @@ public class BITrigger implements ITrigger {
     }
 
     private void triggerOne() {
-        if (triggerCount != Integer.MAX_VALUE) {
-            triggerCount--;
+        synchronized (this) {
+            if (triggerCount != Integer.MAX_VALUE) {
+                triggerCount--;
+            }
         }
     }
 
@@ -89,8 +94,14 @@ public class BITrigger implements ITrigger {
     public void handleMessage(IMessage message) throws BIThresholdIsOffException {
         threshold.handleMessage(message);
         if (threshold.isMeetThreshold()) {
+            BILogger.getLogger().debug("Trigger invoke process,get :" + message);
             processor.process(message);
             triggerOne();
         }
+    }
+
+    @Override
+    public String leftCondition() {
+        return threshold.leftCondition();
     }
 }

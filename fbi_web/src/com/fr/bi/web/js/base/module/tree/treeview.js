@@ -17,12 +17,11 @@ BI.TreeView = BI.inherit(BI.Pane, {
         FR.$defaultImport('/com/fr/bi/web/js/third/ztree/jquery.ztree.core-3.5.js', 'js');
         FR.$defaultImport('/com/fr/bi/web/js/third/ztree/jquery.ztree.excheck-3.5.js', 'js');
         FR.$defaultImport('/com/fr/bi/web/css/base/third/ztree/zTreeStyle.css', 'css');
-        this.id = "bi-tree" + BI.UUID();
+
         this._stop = false;
-        this.tree = BI.createWidget({
-            type: "bi.layout",
-            element: "<ul id='" + this.id + "' class='ztree'></ul>"
-        });
+        this.container = BI.createWidget();
+
+        this._createTree();
         this.tip = BI.createWidget({
             type: "bi.loading_bar",
             invisible: true,
@@ -33,9 +32,28 @@ BI.TreeView = BI.inherit(BI.Pane, {
             scrollable: true,
             scrolly: false,
             element: this.element,
-            items: [this.tree, this.tip]
+            items: [this.container, this.tip]
         });
 
+    },
+
+    _createTree: function () {
+        this.id = "bi-tree" + BI.UUID();
+        if(this.nodes) {
+            this.nodes.destroy();
+        }
+        if (this.tree) {
+            this.tree.destroy();
+        }
+        this.tree = BI.createWidget({
+            type: "bi.layout",
+            element: "<ul id='" + this.id + "' class='ztree'></ul>"
+        });
+        BI.createWidget({
+            type: "bi.default",
+            element: this.container,
+            items: [this.tree]
+        });
     },
 
     //选择节点触发方法
@@ -405,6 +423,7 @@ BI.TreeView = BI.inherit(BI.Pane, {
         delete this.options.keyword;
         BI.extend(this.options.paras, config);
         var setting = this._configSetting();
+        this._createTree();
         this.start();
         this._initTree(setting);
     },
@@ -457,11 +476,12 @@ BI.TreeView = BI.inherit(BI.Pane, {
     },
 
     empty: function () {
-        this.tree.empty();
+        BI.isNotNull(this.nodes) && this.nodes.destroy();
     },
 
     destroy: function () {
         this.stop();
+        this.nodes && this.nodes.destroy();
         BI.TreeView.superclass.destroy.apply(this, arguments);
     }
 });

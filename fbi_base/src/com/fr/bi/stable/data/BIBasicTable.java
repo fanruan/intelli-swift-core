@@ -20,13 +20,17 @@ public class BIBasicTable extends BITable {
     }
 
     public BIBasicTable() {
-         this("Default_ID");
+        this("Default_ID");
     }
 
     public BIBasicTable(Table table) {
         super(table);
         if (table instanceof BIBasicTable) {
-            fieldArray = table != null ? new ArrayList(((BIBasicTable) table).getFieldArray()) : new ArrayList<BIField>();
+            if (table != null) {
+                fieldArray = new ArrayList<BIBasicField>(((BIBasicTable) table).getFieldArray());
+            } else {
+                fieldArray = new ArrayList<BIBasicField>();
+            }
         }
     }
 

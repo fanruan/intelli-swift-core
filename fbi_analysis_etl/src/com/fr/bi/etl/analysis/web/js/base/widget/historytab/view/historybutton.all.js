@@ -17,8 +17,8 @@ BI.AllHistoryButton = FR.extend(BI.BasicButton, {
         var button =  BI.createWidget({
             type:"bi.button",
             level: 'ignore',
-            text: BI.i18nText("BI-all_history"),
-            title: BI.i18nText("BI-all_history"),
+            text: BI.i18nText("BI-ETL_Merge_History"),
+            title: BI.i18nText("BI-ETL_Merge_History"),
             height: o.height,
             width: o.buttonWidth
         });

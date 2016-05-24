@@ -44,7 +44,10 @@ public abstract class NumberValuesFilterValue implements NumberFilterValue {
     public boolean canCreateFilterIndex() {
         return true;
     }
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader,
                                              long userId) {

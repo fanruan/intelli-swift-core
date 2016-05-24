@@ -13,89 +13,89 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
 
     getWidget: function (id, type) {
         switch (BI.parseInt(type)) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.CROSS_TABLE:
-            case BICst.Widget.COMPLEX_TABLE:
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.AXIS:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE:
-            case BICst.Widget.SCATTER:
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
                 return "BIShow.WidgetView";
-            case BICst.Widget.CONTENT:
+            case BICst.WIDGET.CONTENT:
                 return "BIShow.ContentWidgetView";
-            case BICst.Widget.IMAGE:
+            case BICst.WIDGET.IMAGE:
                 return "BIShow.ImageWidgetView";
-            case BICst.Widget.WEB:
+            case BICst.WIDGET.WEB:
                 return "BIShow.WebWidgetView";
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return "BIShow.DetailTableView";
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return "BIShow.StringWidgetView";
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 return "BIShow.NumberWidgetView";
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 return "BIShow.DateRangeView";
-            case BICst.Widget.YEAR:
+            case BICst.WIDGET.YEAR:
                 return "BIShow.YearWidgetView";
-            case BICst.Widget.QUARTER:
+            case BICst.WIDGET.QUARTER:
                 return "BIShow.YearQuarterWidgetView";
-            case BICst.Widget.MONTH:
+            case BICst.WIDGET.MONTH:
                 return "BIShow.YearMonthWidgetView";
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YMD:
                 return "BIShow.DateWidgetView";
-            case BICst.Widget.TREE:
+            case BICst.WIDGET.TREE:
                 return "BIShow.TreeDetailView";
-            case BICst.Widget.QUERY:
+            case BICst.WIDGET.QUERY:
                 break;
-            case BICst.Widget.RESET:
+            case BICst.WIDGET.RESET:
                 break;
         }
     },
 
     getDimensionOrTarget: function (id, type, region, dId) {
         switch (BI.parseInt(type)) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.CROSS_TABLE:
-            case BICst.Widget.COMPLEX_TABLE:
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.AXIS:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE:
-            case BICst.Widget.SCATTER:
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
                 if (BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
                     BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region)) {
                     return "BIShow.DimensionView";
                 }
                 return "BIShow.DimensionView";
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return "BIShow.DetailDimensionView";
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return "BIShow.StringDimensionView";
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 return "BIShow.NumberDimensionView";
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 return "BIShow.DateDimensionView";
-            case BICst.Widget.YEAR:
-            case BICst.Widget.QUARTER:
-            case BICst.Widget.MONTH:
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YEAR:
+            case BICst.WIDGET.QUARTER:
+            case BICst.WIDGET.MONTH:
+            case BICst.WIDGET.YMD:
                 return "BIShow.DateDimensionView";
-            case BICst.Widget.TREE:
+            case BICst.WIDGET.TREE:
                 return "BIShow.TreeDimensionView";
-            case BICst.Widget.QUERY:
+            case BICst.WIDGET.QUERY:
                 break;
-            case BICst.Widget.RESET:
+            case BICst.WIDGET.RESET:
                 break;
         }
     }

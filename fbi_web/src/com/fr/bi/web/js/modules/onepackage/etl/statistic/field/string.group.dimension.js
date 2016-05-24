@@ -46,8 +46,8 @@ BI.StringGroupDimension = BI.inherit(BI.AbstractDimension, {
         BI.Popovers.remove(id);
         var popup = BI.createWidget({
             type: "bi.custom_group_popup",
-            fieldName: o.fieldName,
-            table: this.options.table
+            model: o.model,
+            dId: o.dId
         });
         popup.on(BI.CustomGroupPopup.EVENT_CHANGE, function(v){
             o.model.setDimensionGroupById(o.dId, v);

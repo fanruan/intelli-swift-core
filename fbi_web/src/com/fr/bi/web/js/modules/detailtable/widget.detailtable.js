@@ -1,76 +1,89 @@
 /**
  * @class BI.DetailTable
- * @extend BI.Widget
+ * @extend BI.Pane
  * 明细表的表格
  */
-BI.DetailTable = BI.inherit(BI.Widget, {
+BI.DetailTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-table"
+            baseCls: "bi-detail-table",
+            wId: ""
         })
     },
 
     _init: function () {
         BI.DetailTable.superclass._init.apply(this, arguments);
         var self = this;
+
         this.pager = BI.createWidget({
-            type: "bi.all_pager"
-        });
-        this.pager.on(BI.AllPagger.EVENT_CHANGE, function () {
-            self.populate(self.pager.getCurrentPage())
+            type: "bi.all_pager",
+            cls: "page-table-pager",
+            height: 18
         });
 
-        this.tabler = BI.createWidget({
-            type: "bi.tabler",
+        this.table = BI.createWidget({
+            type: "bi.page_table",
+            el: {
+                el: {
+                    el: {
+                        type: "bi.table_tree_with_number",
+                        showNumber: false
+                    }
+                }
+            },
+            itemsCreator: function (op, populate) {
+                var vPage = op.vpage;
+                self._onPageChange(vPage, function (items, header, crossItems, crossHeader) {
+                    populate.apply(self.table, arguments);
+                })
+            },
+            pager: this.pager
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
             element: this.element,
-            pager: this.pager,
-            layout: [{
-                type: "bi.right"
+            items: [{
+                el: this.table,
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
             }]
-        });
-
-
+        })
     },
 
-    populate: function (page) {
+    _onPageChange: function (vPage, callback) {
         var self = this;
         var widgetId = this.options.wId;
+        this.loading();
         this.data = [];
+        var hyperLinkExpressions = [];
+        var isUseHyperLinkDimension = [];
         var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
         if (BI.isEmpty(dimensions)) {
-            this.tabler.populate({
-                items: [],
-                header: [],
-                columnSize: []
-            });
+            this.loaded();
+            callback([], [], [], []);
             self.pager.setAllPages(0);
             self.pager.setValue(0);
             return;
 
         }
-        this.pageOperator = page || BICst.TABLE_PAGE_OPERATOR.REFRESH;
-        function formatTree(tree) {
-            var result = [];
-            BI.each(tree, function (i, t) {
-                var item = {};
-                item.name = t.node.name;
-                if (BI.isNotNull(t.children)) {
-                    item.children = formatTree(t.children);
-                }
-                result.push(item);
-            });
-            return result;
-        }
+        this.pageOperator = vPage || BICst.TABLE_PAGE_OPERATOR.REFRESH;
 
         var ob = {};
         ob.page = this.pageOperator;
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
+            self.loaded();
             var json = jsonData.data, row = jsonData.row, size = jsonData.size;
             if (BI.isNull(json) || BI.isNull(row)) {
                 return;
             }
             var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
             BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
+                var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId) || {};
+                isUseHyperLinkDimension.push(hyperlink.used || false);
+                hyperLinkExpressions.push(hyperlink.expression || "");
                 BI.isNotNull(dId) &&
                 BI.Utils.isDimensionUsable(dId) === true &&
                 header.push({
@@ -83,31 +96,26 @@ BI.DetailTable = BI.inherit(BI.Widget, {
                     }
                 });
             });
-            var items = [], values = json.value;
-            BI.each(values, function (i, row) {
-                var rowItems = [];
-                BI.each(row, function (j, v) {
-                    var item = {};
-                    item.text = v;
-                    rowItems.push(item);
-                });
-                items.push({
-                    values: rowItems
-                });
-            });
-            var columnSize = [];
-            BI.each(header, function (i, item) {
-                columnSize.push("");
-            });
+            var items = [{
+                children: self._createTableItems(json.value)
+            }];
+
+            self.table.attr("showNumber", BI.Utils.getWidgetSettingsByID(self.options.wId).show_number);
             self.pager.setAllPages(Math.ceil(row / size));
-            self.pager.setValue(page);
-            self.tabler.populate({
-                items: items,
-                header: header,
-                columnSize: columnSize
-            })
+            self.pager.setValue(vPage);
+            callback(items, header, [], [])
         }, ob);
     },
+
+    populate: function () {
+        var self = this;
+        this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
+            var columnSize = BI.makeArray(header.length, "");
+            self.table.attr("columnSize", columnSize);
+            self.table.populate(items, header, [], []);
+        });
+    },
+
 
     _headerOperatorChange: function (v, dId) {
         switch (v) {
@@ -156,7 +164,36 @@ BI.DetailTable = BI.inherit(BI.Widget, {
         });
         BI.Popovers.create(dId, popup).open(dId);
         popup.populate();
+    },
+
+    _createTableItems: function (values) {
+        var tableItems = [], self = this;
+        BI.each(values, function (i, row) {
+            tableItems.push(self._createRowItem(row));
+        });
+        return tableItems
+    },
+
+    _createRowItem: function (rowValues, dId) {
+        var rowItem = {};
+        var dimensionIds = BI.Utils.getWidgetViewByID(this.options.wId)[BICst.REGION.DIMENSION1];
+        BI.each(rowValues, function (i, rowValue) {
+            if (i === 0) {
+                rowItem.text = rowValue;
+                rowItem.type = "bi.detail_table_cell";
+                rowItem.dId = dimensionIds[i];
+                rowItem.values = [];
+            } else {
+                rowItem.values.push({
+                    type: "bi.detail_table_cell",
+                    dId: dId,
+                    text: rowValue
+                })
+            }
+        });
+        return rowItem;
     }
+
 });
 BI.DetailTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.detail_table", BI.DetailTable);

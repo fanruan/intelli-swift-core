@@ -189,7 +189,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         });
 
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-
+            self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_INIT);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
 
@@ -203,7 +203,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.PageTable.EVENT_COLUMN_RESIZE);
+            self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
         this.pager = BI.createWidget(o.pager, {
             type: "bi.number_pager",
@@ -263,38 +263,41 @@ BI.PageTable = BI.inherit(BI.Widget, {
     _showCurrentColumn: function () {
         var self = this, o = this.options;
         this._hideCurrentColumn();
-        this._currentColumn = BI.createWidget({
-            type: "bi.text_button",
-            cls: "page-table-current-column",
-            text: BI.i18nText("BI-Di_A_Col", ((this.hpage - 1) * 20 + 1)),
-            hgap: 15,
-            height: 20,
-            handler: function () {
-                self._hideCurrentColumn();
-            }
-        });
-        if (BI.isNotNull(o.isNeedFreeze)) {
-            var regionSize = this.table.getRegionColumnSize();
-            BI.createWidget({
-                type: "bi.absolute",
-                element: this.element,
-                items: [{
-                    el: this._currentColumn,
-                    left: regionSize[0] + 2,
-                    bottom: this._const.scrollWidth + 2
-                }]
-            })
-        } else {
-            BI.createWidget({
-                type: "bi.absolute",
-                element: this.element,
-                items: [{
-                    el: this._currentColumn,
-                    left: 2,
-                    bottom: this._const.scrollWidth + 2
-                }]
-            })
-        }
+        /**
+         * 暂时不用显示分页信息
+         */
+        //this._currentColumn = BI.createWidget({
+        //    type: "bi.text_button",
+        //    cls: "page-table-current-column",
+        //    text: BI.i18nText("BI-Di_A_Col", ((this.hpage - 1) * 20 + 1)),
+        //    hgap: 15,
+        //    height: 20,
+        //    handler: function () {
+        //        self._hideCurrentColumn();
+        //    }
+        //});
+        //if (BI.isNotNull(o.isNeedFreeze)) {
+        //    var regionSize = this.table.getRegionColumnSize();
+        //    BI.createWidget({
+        //        type: "bi.absolute",
+        //        element: this.element,
+        //        items: [{
+        //            el: this._currentColumn,
+        //            left: regionSize[0] + 2,
+        //            bottom: this._const.scrollWidth + 2
+        //        }]
+        //    })
+        //} else {
+        //    BI.createWidget({
+        //        type: "bi.absolute",
+        //        element: this.element,
+        //        items: [{
+        //            el: this._currentColumn,
+        //            left: 2,
+        //            bottom: this._const.scrollWidth + 2
+        //        }]
+        //    })
+        //}
     },
 
     _hideCurrentColumn: function () {
@@ -329,6 +332,10 @@ BI.PageTable = BI.inherit(BI.Widget, {
         return this.table.getColumnSize();
     },
 
+    getCalculateColumnSize: function () {
+        return this.table.getCalculateColumnSize();
+    },
+
     getCalculateRegionColumnSize: function () {
         return this.table.getCalculateRegionColumnSize();
     },
@@ -351,6 +358,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
     }
 });
 BI.PageTable.EVENT_CHANGE = "PageTable.EVENT_CHANGE";
-BI.PageTable.EVENT_COLUMN_RESIZE = "PageTable.EVENT_COLUMN_RESIZE";
+BI.PageTable.EVENT_TABLE_AFTER_INIT = "EVENT_TABLE_AFTER_INIT";
+BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE = "PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE";
 BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE = "PageTable.EVENT_TABLE_AFTER_REGION_RESIZE";
 $.shortcut('bi.page_table', BI.PageTable);

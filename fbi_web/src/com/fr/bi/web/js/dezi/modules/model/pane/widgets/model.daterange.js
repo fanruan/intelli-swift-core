@@ -3,10 +3,11 @@ BIDezi.DateRangeModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.DateRangeModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.DATE,
+            type: BICst.WIDGET.DATE,
             dimensions: {},
             view: {},
-            value: {}
+            value: {},
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 

@@ -3,9 +3,9 @@
  *
  * Created by GUY on 2016/3/17.
  * @class BI.DimensionsManagerModel
- * @extends BI.Widget
+ * @extends FR.OB
  */
-BI.DimensionsManagerModel = BI.inherit(BI.Widget, {
+BI.DimensionsManagerModel = BI.inherit(FR.OB, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DimensionsManagerModel.superclass._defaultConfig.apply(this, arguments), {
@@ -72,7 +72,7 @@ BI.DimensionsManagerModel = BI.inherit(BI.Widget, {
     getValue: function () {
         return {
             type: this.type,
-            view: this.viewMap[this.type] || []
+            view: this.viewMap[this.type] || {}
         }
     },
 

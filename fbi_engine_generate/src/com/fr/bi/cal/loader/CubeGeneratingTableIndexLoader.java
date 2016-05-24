@@ -8,6 +8,7 @@ import com.fr.bi.cal.stable.tableindex.index.BIMultiTableIndex;
 import com.fr.bi.cal.stable.tableindex.index.BITableIndex;
 import com.fr.bi.common.inter.ValueCreator;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.BITableID;
@@ -82,7 +83,7 @@ public class CubeGeneratingTableIndexLoader extends CubeAbstractLoader {
 
     @Override
     public ICubeTableService getTableIndex(BICore md5Core) {
-        return getTableIndexByPath(BIConfigureManagerCenter.getDataSourceManager().getTableSourceByCore(md5Core, biUser).getSourceFile());
+        return getTableIndexByPath(BIModuleUtils.getSourceByCore(md5Core, biUser).getSourceFile());
     }
 
     @Override

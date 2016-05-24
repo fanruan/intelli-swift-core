@@ -1,12 +1,13 @@
 package com.fr.bi.stable.connection;
 
-import com.fr.bi.base.BIBasicCore;
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,8 +29,13 @@ public class DirectTableConnectionFactory {
      */
     private static DirectTableConnection createDirectTableConnection(List<BITableSourceRelation> relationList, ICubeDataLoader loader) {
         DirectTableConnection temp = null;
+        //计算时关联反转
+        List<BITableSourceRelation> relationListRev = new ArrayList<BITableSourceRelation>();
+        relationListRev.addAll(relationList);
+        Collections.reverse(relationListRev);
 
-        Iterator<BITableSourceRelation> it = relationList.iterator();
+
+        Iterator<BITableSourceRelation> it = relationListRev.iterator();
         while (it.hasNext()) {
             DirectTableConnection c = createConnection(it.next(), loader);
             if (temp != null) {
@@ -62,7 +68,7 @@ public class DirectTableConnectionFactory {
     }
 
     private static BIKey getFieldIndex(ICubeDataLoader loader, BIField foreignKey) {
-        ICubeTableService ti = loader.getTableIndex(BIBasicCore.generateValueCore(foreignKey.getTableBelongTo().getID().getIdentityValue()));
+        ICubeTableService ti = loader.getTableIndex(foreignKey.getTableBelongTo());
         if (ti != null) {
             return ti.getColumnIndex(foreignKey.getFieldName());
         } else {

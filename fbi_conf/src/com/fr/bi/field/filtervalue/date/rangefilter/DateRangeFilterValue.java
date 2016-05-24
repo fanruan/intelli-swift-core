@@ -57,7 +57,10 @@ public abstract class DateRangeFilterValue implements DateFilterValue, NullFilte
     private GroupValueIndex getGroupValueIndexWhenNull(Table targetKey, ICubeDataLoader loader) {
         return loader.getTableIndex(targetKey).getAllShowIndex();
     }
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
 
     public DateRange getRange() {
         return range;
@@ -94,7 +97,10 @@ public abstract class DateRangeFilterValue implements DateFilterValue, NullFilte
      */
     @Override
     public JSONObject createJSON() throws Exception {
-		return range.createJSON();
+		JSONObject jo = range.createJSON();
+        JSONObject resjo = new JSONObject();
+        resjo.put("filter_value", jo);
+        return resjo;
     }
 
     /**

@@ -60,7 +60,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         return value;
     },
 
-    _createRightRegionPath: function (combineFieldId, dimensionFieldId) {
+    _createRightRegionPath: function (combineFieldId, dimensionFieldId, joinRegion) {
         var self = this;
         var ptId = BI.Utils.getTableIdByFieldID(dimensionFieldId);
         var paths = BI.Utils.getPathsFromFieldAToFieldB(combineFieldId, dimensionFieldId);
@@ -79,6 +79,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                     var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
+                        regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
                         text: BI.i18nText("BI-Primary_Key"),
                         value: BI.Utils.getTableIdByFieldID(primaryId),
                         direction: -1
@@ -86,10 +87,19 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                 }
                 p.push({
                     region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                    regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                     text: BI.Utils.getFieldNameByID(foreignId),
                     value: foreignId,
                     direction: -1
                 });
+            });
+            //左右两侧路径上的value值可能相同，相同的话要改一下
+            var leftValues = BI.pluck(joinRegion[idx], "value");
+            BI.each(p, function(id, obj){
+                if(BI.contains(leftValues, obj.value) && obj.text !== BI.i18nText("BI-Primary_Key")){
+                    obj.value = BI.UUID();
+                    obj.region = BI.UUID();
+                }
             });
             self.pathValueMap[pId] = BI.pluck(p, "value");
             self.pathRelationMap[pId] = path;
@@ -136,9 +146,12 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
     _createRegionPathsByItems: function(items){
         this.options.dimensionFieldId = items.dimensionFieldId;
         this.options.combineTableId = items.combineTableId;
+        if(BI.isNull(this.options.combineTableId)){
+            return [];
+        }
         var combineFieldId = BI.Utils.getFieldIDsOfTableID(items.combineTableId)[0];
         var lregion = this._createLeftRegionPath(combineFieldId, BI.Utils.getFieldIDByDimensionID(items.targetIds[0]));
-        var rregion = this._createRightRegionPath(combineFieldId, items.dimensionFieldId);
+        var rregion = this._createRightRegionPath(combineFieldId, items.dimensionFieldId, lregion);
         var newRegion = [];
         if(BI.isEmptyArray(lregion)){
             return rregion;
@@ -182,15 +195,19 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
     _unpackValueByValue: function (value) {
         var v = [], self = this;
         var lvalue = this._checkPathOfOneTable(value.lpath);
-        var rvalue = this._checkPathOfOneTable(value.rpath);
+        var rkey = null;
+        BI.any(BI.keys(this.pathRelationMap), function (idx, key) {
+            if(BI.isEqual(value.rpath, self.pathRelationMap[key])){
+                rkey = key;
+            }
+            return BI.isNotNull(rkey);
+        });
+        var rvalue = BI.isNotNull(rkey) ? this.pathValueMap[rkey] : [];
         BI.backEach(lvalue, function (idx, val) {
             v.push(BI.Utils.getForeignIdFromRelation(val));
-            if (idx === 0) {
-                v.push(BI.Utils.getTableIdByFieldID(BI.Utils.getPrimaryIdFromRelation(val)));
-            }
         });
         BI.each(rvalue, function (idx, val) {
-            v.push(BI.Utils.getForeignIdFromRelation(val));
+            v.push(val);
         });
         return v;
     },
@@ -199,6 +216,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         this.path = [];
         this.pathRelationMap = {};
         this.pathValueMap = {};
+        this.options.combineTableId = items.combineTableId;
         items = this._createRegionPathsByItems(items);
         this.pathChooser.populate(items);
         if(items.length > 1){

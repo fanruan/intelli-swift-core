@@ -15,7 +15,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         BI.each(view, function(idx, vc){
             BI.each(vc, function(id, v){
                 if(BI.has(dimensions, v)){
-                    var dm = widget.createDimension(v, idx, dimensions[v], parent);
+                    var dm = widget.createDimension(v, idx, dimensions[v]);
                     widget.regions[idx].addDimension(dm)
                 }
             });
@@ -29,44 +29,25 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         BI.each(view,function(region, id){
             widget.regions[region].setCommentVisible(BI.isEmpty(id));
         });
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isValid())
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isFieldValid())
+    },
+
+    _doModelCheck : function (widget, model) {
+        var found = model.check();
+        if(found[0] === true) {
+            widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, found[1])
+        }
+        return found[0];
     },
 
     _check : function (widget, model) {
-        var parent = model.get(ETLCst.PARENTS)[0];
-        var view = model.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
-        var dimensions = model.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
-        var found = BI.some(view[BICst.REGION.DIMENSION1], function (i, v) {
-            var  dimension = dimensions[v];
-            var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
-                return field.field_name === dimension._src.field_name
-            })
-            if (BI.isNull(f)){
-                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount'))
-                return true;
-            } else if (dimension.group.type !== BICst.GROUP.ID_GROUP &&  f.field_type !== dimension._src.field_type){
-                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type'))
-                return true;
-            }
-        })
-        if (!found){
-            found = BI.some(view[BICst.REGION.TARGET1], function (i, v) {
-                var  dimension = dimensions[v];
-                var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
-                    return field.field_name === dimension._src.field_name
-                })
-                if (BI.isNull(f)){
-                    widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount'))
-                    return true;
-                } else if (f.field_type !== BICst.COLUMN.NUMBER && dimension.group.type !== BICst.SUMMARY_TYPE.COUNT ){
-                    widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type'))
-                    return true;
-                }
-            })
-        }
+        var found = this._doModelCheck(widget, model)
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
+        } else {
+            model.set(ETLCst.FIELDS, model.createFields());
         }
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !found);
     },
 
 
@@ -102,6 +83,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
 
     setDimensionGroupById : function (id, group, widget, model) {
         model.setDimensionGroupById(id, group)
+        this._doModelCheck(widget, model)
         this._refreshPreview(widget, model);
     },
 
@@ -110,6 +92,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         var id = model.addDimensionByField(field);
         var dm = widget.createDimension(id, field.regionType, model.getDimension(id), model.get(ETLCst.PARENTS)[0]);
         widget.regions[field.regionType].addDimension(dm)
+        widget.regions[field.regionType].getRegion().element.scrollTop(BI.MAX)
         this.doCheck(widget, model)
         this._refreshPreview(widget, model);
     },
@@ -124,12 +107,30 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
     deleteDimension: function (dId,  widget, model) {
         model.deleteDimension(dId);
         this.doCheck(widget, model)
+        this._doModelCheck(widget, model)
         this._refreshPreview(widget, model);
     },
     
     _refreshPreview : function (widget, model) {
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
-    }
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
+    },
 
+    getMinMaxValueForNumberCustomGroup : function (fieldName,callback, widget, model) {
+        var table = {};
+        table[ETLCst.ITEMS] = model.get(ETLCst.PARENTS)
+        return BI.ETLReq.reqFieldMinMaxValues({
+            table : table,
+            field : fieldName
+        }, callback)
+    },
+
+    getValuesForCustomGroup : function (fieldName,callback, widget, model) {
+        var table = {};
+        table[ETLCst.ITEMS] = model.get(ETLCst.PARENTS)
+        return BI.ETLReq.reqFieldValues({
+            table : table,
+            field : fieldName
+        }, callback)
+    }
 
 })

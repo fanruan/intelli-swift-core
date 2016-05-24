@@ -139,6 +139,7 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     self._buildFilterPane();
                     break;
                 case BICst.DETAIL_STRING_COMBO.HYPERLINK:
+                    self._buildHyperlinkPane();
                     break;
                 case BICst.DETAIL_STRING_COMBO.DELETE:
                     self._deleteDimension();
@@ -147,10 +148,6 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     break;
             }
         });
-        this.east = BI.createWidget({
-            type: "bi.right",
-            items: [this.combo]
-        })
     },
 
     _createNumberCombo: function () {
@@ -177,10 +174,6 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     break;
             }
         });
-        this.east = BI.createWidget({
-            type: "bi.right",
-            items: [this.combo]
-        })
     },
 
     _createDateCombo: function () {
@@ -222,10 +215,6 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     break;
             }
         });
-        this.east = BI.createWidget({
-            type: "bi.right",
-            items: [this.combo]
-        })
     },
 
     _createFormulaCombo: function () {
@@ -258,10 +247,6 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
         this.calculateTargetButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self._updateFormula()
         });
-        this.east = BI.createWidget({
-            type: "bi.right",
-            items: [this.combo, this.calculateTargetButton]
-        })
     },
 
     _buildFilterPane: function () {
@@ -292,7 +277,17 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
     },
 
     _buildHyperlinkPane: function(){
-
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.hyper_link_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.HyperLinkPopup.EVENT_CHANGE, function (v) {
+            self.model.set("hyperlink", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
     },
 
     _deleteDimension: function () {

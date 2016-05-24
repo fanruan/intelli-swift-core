@@ -6,7 +6,8 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
 
     _constant : {
         nullCard : "null_card",
-        tableCard : "table_card"
+        tableCard : "table_card",
+        errorCard : "error_card"
     },
 
     _defaultConfig: function() {
@@ -62,12 +63,22 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                    items : [{
                        type:"bi.label",
                        cls: o.baseCls +"-null-label",
-                       text: BI.i18nText("BI-add_fields_first")
+                       text: BI.i18nText("BI-Add_Fields_First")
                    }]
                }
             }, {
                 el :this.table,
                 cardName: this._constant.tableCard
+            }, {
+                cardName : this._constant.errorCard,
+                el : {
+                    type : "bi.center_adapt",
+                    items : [{
+                        type:"bi.label",
+                        cls: o.baseCls +"-null-label warning",
+                        text: BI.i18nText("BI-Current_Tab_Error")
+                    }]
+                }
             }]
         })
         this._showCard()
@@ -236,7 +247,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                             if(scrollTable.parent().length === 0) {
                                 return;
                             }
-                            self.dragHepler.stroke(value[1].outerWidth(), value[2].outerHeight(), 0, value[1][0].offsetLeft - scrollTable[0].scrollLeft);
+                            self.dragHepler.stroke(value[1].outerWidth(), Math.min(self.element.outerHeight(),value[2].outerHeight()), 0, value[1][0].offsetLeft - scrollTable[0].scrollLeft);
                         }
                         e.stopPropagation();
                     }
@@ -364,11 +375,15 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
     },
 
     _showCard : function () {
-        if(this.options.header.length === 0){
+        if(this.options.operator === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR) {
+            this.card.showCardByName(this._constant.errorCard)
+        } else if(this.options.header.length === 0){
             this.card.showCardByName(this._constant.nullCard)
         } else {
             this.card.showCardByName(this._constant.tableCard)
+            return true;
         }
+        return false;
     },
 
     _adjustColumns : function () {
@@ -387,7 +402,10 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
             }
             self.options.header = header;
             self.options.items = items;
-            self._showCard()
+            var showTable = self._showCard()
+            if(showTable === false) {
+                return;
+            }
             self.table.populate(self._createCell(), self._createHeader())
             self.dragHepler.reInitDrag()
             if(BI.isNotNull(self.dropHelper.scrollLeft)){

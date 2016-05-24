@@ -72,6 +72,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
     }
 
+    public NoneDimensionGroup getRoot() {
+        return dereplicationRoot;
+    }
+
     public static int findPageIndexDichotomy(int[] shrinkPos, List<int[]> pageIndex, int start, int end) throws ArrayIndexOutOfBoundsException {
         //判断数组是否为空
         if (pageIndex == null) {
@@ -439,7 +443,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 }
                 Set currentSet = ((StringDimensionCalculator) ckp).createFilterValueSet((String) value, session.getLoader());
                 StringINFilterValue stf = new StringINFilterValue(currentSet);
-                GroupValueIndex pgvi = stf.createFilterIndex(ckp, ck.getField().getTableBelongTo(),BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
+                GroupValueIndex pgvi = stf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
                 gvi = gvi.AND(pgvi);
             }
             v = v.getParent();

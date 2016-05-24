@@ -136,6 +136,9 @@ public class CubeBuildStuffManager implements Serializable {
         ITableSource foreignTable = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(relation.getForeignField().getTableID(), biUser);
         DBField primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         DBField foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
+        if (primaryField == null || foreignField == null) {
+            throw new NullPointerException();
+        }
         /**
          * 设置成业务包里面的Table
          * 原因：外部无法区分当前是getTableBelongTo获得的是什么Table。
@@ -308,12 +311,12 @@ public class CubeBuildStuffManager implements Serializable {
         }
     }
 
-    private Set<List<Set<ITableSource>>> calculateTableSource(Set<ITableSource> tableSources) {
+    public Set<List<Set<ITableSource>>> calculateTableSource(Set<ITableSource> tableSources) {
         Iterator<ITableSource> it = tableSources.iterator();
         Set<List<Set<ITableSource>>> depends = new HashSet<List<Set<ITableSource>>>();
         while (it.hasNext()) {
             ITableSource tableSource = it.next();
-            depends.add(map2List(tableSource.createGenerateTablesMap()));
+            depends.add(tableSource.createGenerateTablesList());
         }
         return depends;
     }
@@ -330,7 +333,7 @@ public class CubeBuildStuffManager implements Serializable {
     /**
      * TODO改变层级结构
      *
-     * @param map
+     * @param set
      * @return
      */
     public static Set<ITableSource> set2Set(Set<List<Set<ITableSource>>> set) {

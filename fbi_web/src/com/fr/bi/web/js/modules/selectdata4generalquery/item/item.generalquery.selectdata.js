@@ -4,7 +4,7 @@
 BI.GeneralQuerySelectDataItem = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         return BI.extend(BI.GeneralQuerySelectDataItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-detail-select-data-level0-item bi-select-data-level0-item",
+            extraCls: "bi-general-query-select-data-level0-item bi-select-data-level0-item",
             height: 25,
             hgap: 0,
             fieldType: BICst.COLUMN.STRING,

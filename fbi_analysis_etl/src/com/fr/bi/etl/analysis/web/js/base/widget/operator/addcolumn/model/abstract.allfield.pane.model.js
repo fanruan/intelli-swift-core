@@ -22,6 +22,7 @@ BI.AnalysisETLOperatorAddColumnAllFieldsModel = BI.inherit(BI.MVCModel, {
 
     update : function () {
         var v = BI.AnalysisETLOperatorAddColumnAllFieldsModel.superclass.update.apply(this, arguments);
+        delete v["field_type"];
         delete v[ETLCst.FIELDS];
         return v;
     }

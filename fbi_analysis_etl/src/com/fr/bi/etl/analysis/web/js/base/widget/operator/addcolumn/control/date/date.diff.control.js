@@ -36,6 +36,10 @@ BI.AnalysisETLOperatorAddColumnDateDiffController = BI.inherit(BI.MVCController,
 
     populate : function (widget, model) {
         var fields = [];
+        fields.push({
+            text: BI.i18nText("BI-System_Time"),
+            value:ETLCst.SYSTEM_TIME
+        })
         BI.each(model.get(ETLCst.FIELDS) || [], function (idx, item) {
             if(item.field_type === BICst.COLUMN.DATE) {
                 fields.push({
@@ -46,7 +50,7 @@ BI.AnalysisETLOperatorAddColumnDateDiffController = BI.inherit(BI.MVCController,
         })
         model.set(ETLCst.FIELDS, fields)
         widget.segment.setValue(model.get('type') || ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE.YEAR);
-        model.set("type", widget.segment.getValue())
+        model.set("type", widget.segment.getValue()[0])
         widget.lcombo.populate(model.get(ETLCst.FIELDS));
         widget.rcombo.populate(model.get(ETLCst.FIELDS));
         widget.lcombo.setValue(model.get('firstField') || (fields.length > 0 ? fields[0].value : null));

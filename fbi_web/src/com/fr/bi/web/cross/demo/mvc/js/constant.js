@@ -96,9 +96,9 @@ var _JS = [
 
     "widget/mvc.sheltereditor.js",
 
-    "widget/mvc.textarea.js",
+    "widget/mvc.codeeditor.js",
 
-    "widget/mvc.contenteditor.js",
+    "widget/mvc.textareaeditor.js",
 
     "widget/mvc.simpletree.js",
 
@@ -200,6 +200,8 @@ var _JS = [
     "layout/mvc.float_center_adapt.js",
 
     "layout/mvc.absolutecenteradapt.js",
+
+    "layout/mvc.flexboxcenteradapt.js",
 
     "layout/mvc.verticaladapt.js",
 
@@ -307,6 +309,8 @@ var _JS = [
 
     "detail/mvc.selectdatasearcher.js",
 
+    "detail/mvc.simple.searcher.js",
+
     "detail/mvc.simple.selectdatasearcher.js",
 
     "detail/mvc.numericalinterval.js",
@@ -380,7 +384,16 @@ var _JS = [
 
     "detail/mvc.arrangement.js",
 
-    "detail/mvc.adaptivearrangement.js"
+    "detail/mvc.adaptivearrangement.js",
+
+    "detail/mvc.detailcharts.js",
+
+    "detail/mvc.columncharts.js",
+    "detail/mvc.othercharts.js",
+    "detail/mvc.barcharts.js",
+    "detail/mvc.areacharts.js",
+
+    "detail/mvc.selectcolorcombo.js"
 ];
 
 
@@ -423,8 +436,8 @@ var _Routes = {
     "/record_editor": "RecordEditorView",
     "/sign_editor": "SignEditorView",
     "/shelter_editor": "ShelterEditorView",
-    "/textarea": "TextAreaView",
-    "/contenteditor": "ContentEditorView",
+    "/code_editor": "CodeEditorView",
+    "/textareaeditor": "TextAreaEditorView",
     "/simpletree": "SimpleTreeView",
     "/leveltree": "LevelTreeView",
     "/branch_tree": "BranchTreeView",
@@ -478,6 +491,7 @@ var _Routes = {
     "/center_adapt": "CenterAdaptView",
     "/absolute_center_adapt": "AbsoluteCenterAdaptView",
     "/float_center_adapt": "CenterVerticalAdaptView",
+    "/flexbox_center_adapt": "FlexboxCenterAdaptView",
     "/vertical_adapt": "VerticalAdaptView",
     "/horizontal_adapt": "HorizontalAdaptView",
     "/horizontal_auto": "HorizontalAutoView",
@@ -527,6 +541,7 @@ var _Routes = {
     "/select_data_switcher": "SelectDataSwitcherView",
     "/select_data_search_result": "SelectDataSearchResultView",
     "/select_data_searcher": "SelectDataSearcherView",
+    "/simple_searcher": "SimpleSearcherView",
     "/simple_select_data_searcher": "SimpleSelectDataSearcherView",
     "/multidate_combo": "MultiDateComboView",
     "/time_interval": "TimeIntervalView",
@@ -557,7 +572,7 @@ var _Routes = {
     "/filter": "FilterView",
     "/color_chooser": "ColorChooserView",
     "/text_toolbar": "TextToolbarView",
-    "/text_area_editor": "TextAreaEditorView",
+    "/text_area": "TextAreaEditorView",
     "/path_chooser": "PathChooserView",
     "/direction_path_chooser": "DirectionPathChooserView",
     "/file_manager": "FileManagerView",
@@ -575,7 +590,14 @@ var _Routes = {
 
     "/arrangement_droppable": "ArrangementDroppableView",
     "/arrangement": "ArrangementView",
-    "/adaptive_arrangement": "AdaptiveArrangementView"
+    "/adaptive_arrangement": "AdaptiveArrangementView",
+
+    "/detail_chart": "DetailChartView",
+    "/column_charts": "ColumnChartsView",
+    "/bar_charts": "BarChartsView",
+    "/area_charts": "AreaChartsView",
+    "/other_charts": "OtherChartsView",
+    "/select_color_combo": "SelectColorComboView"
 };
 
 var _Models = {};
@@ -724,12 +746,12 @@ _Models.widget = [{
     value: "shelter_editor"
 }, {
     pId: 2,
-    text: "bi.textarea",
-    value: "textarea"
+    text: "bi.code_editor",
+    value: "code_editor"
 }, {
     pId: 2,
-    text: "bi.contenteditor",
-    value: "contenteditor"
+    text: "bi.textareaeditor",
+    value: "textareaeditor"
 }, {
     pId: 6,
     text: "bi.combo",
@@ -897,6 +919,9 @@ _Models.layout = [{
     text: "bi.absolute_center_adapt",
     value: "absolute_center_adapt"
 }, {
+    text: "bi.flexbox_center_adapt",
+    value: "flexbox_center_adapt"
+}, {
     text: "bi.vertical_adapt",
     value: "vertical_adapt"
 }, {
@@ -1018,6 +1043,9 @@ _Models.detail = [{
     id: 17,
     text: "时间区间控件"
 }, {
+    id: 30,
+    text: "简单搜索控件"
+}, {
     id: 18,
     text: "简单选择字段"
 }, {
@@ -1050,6 +1078,9 @@ _Models.detail = [{
 }, {
     id: 29,
     text: "布局"
+}, {
+    id: 31,
+    text: "详细图表"
 },
 
 
@@ -1271,8 +1302,8 @@ _Models.detail = [{
         value: "text_toolbar"
     }, {
         pId: 21,
-        text: "bi.text_area_editor",
-        value: "text_area_editor"
+        text: "bi.text_area",
+        value: "text_area"
     }, {
         pId: 22,
         text: "bi.path_chooser",
@@ -1341,6 +1372,34 @@ _Models.detail = [{
         pId: 29,
         text: "bi.adaptive_arrangement",
         value: "adaptive_arrangement"
+    }, {
+        pId: 30,
+        text: "bi.simple_searcher",
+        value: "simple_searcher"
+    },{
+        pId: 31,
+        text: "选色",
+        value: "select_color_combo"
+    }, {
+        pId: 31,
+        text: "bi.detail_chart",
+        value: "detail_chart"
+    }, {
+        pId: 31,
+        text: "柱形",
+        value: "column_charts"
+    },  {
+        pId: 31,
+        text: "条形图",
+        value: "bar_charts"
+    }, {
+        pId: 31,
+        text: "面积图",
+        value: "area_charts"
+    }, {
+        pId: 31,
+        text: "其他",
+        value: "other_charts"
     }];
 _Models.component = [];
 _Models.module = [];

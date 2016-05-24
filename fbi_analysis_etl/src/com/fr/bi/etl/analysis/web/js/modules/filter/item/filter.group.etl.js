@@ -19,7 +19,6 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
     _init: function () {
         BI.ETLGroupSettingPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.fields = o.fields;
         this.storedValue = o.value || [];
         self.button = BI.createWidget({
             type :'bi.button',
@@ -28,13 +27,14 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
             text : BI.i18nText('BI-Edit') + BI.i18nText('BI-Grouping')
         });
         self.button.on(BI.Button.EVENT_CHANGE,function(){
-            var groupPopOver = BI.createWidget({
+            var op ={
                 type: "bi.etl_filter_group_popup",
-                fields : o.fields,
                 field : o.field_name,
                 value : self.storedValue,
                 targetText : self._getTargetText()
-            });
+            }
+            op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+            var groupPopOver = BI.createWidget(op);
             groupPopOver.on(BI.PopoverSection.EVENT_CLOSE, function () {
                 BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
             })
@@ -106,14 +106,14 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
                 type : 'bi.label',
                 textAlign : 'left',
                 height : 25,
-                text : self._getTargetText()
+                text : BI.i18nText('BI-De') +  self._getTargetText()
             }))
         } else {
             self.labels.addItem(BI.createWidget({
                 type : 'bi.label',
                 textAlign : 'center',
                 height : 25,
-                text : BI.i18nText('BI-(Empty)')
+                text : self._getTargetText()
             }))
         }
     },

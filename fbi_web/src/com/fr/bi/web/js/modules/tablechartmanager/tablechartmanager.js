@@ -27,22 +27,39 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
 
     _createChartTabs: function (v) {
         switch (v) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.CROSS_TABLE:
-            case BICst.Widget.COMPLEX_TABLE:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
                 return this._createTable();
-            case BICst.Widget.AXIS:
-            case BICst.Widget.BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.RADAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE:
-            case BICst.Widget.SCATTER:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.FUNNEL:
                 return this._createChart();
-            case BICst.Widget.NONE:
+            case BICst.WIDGET.NONE:
                 return this._createNoDataPane();
         }
     },
@@ -84,7 +101,6 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         var self = this, o =  this.options;
         this.table = BI.createWidget({
             type: "bi.summary_table",
-            cls: "widget-attr-chart",
             wId: o.wId
         });
         this.table.on(BI.SummaryTable.EVENT_CHANGE, function(obs){
@@ -95,16 +111,16 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
 
     resize: function () {
         switch (this.tableChartTab.getSelect()) {
-            case BICst.Widget.AXIS:
-            case BICst.Widget.BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.RADAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE:
-            case BICst.Widget.SCATTER:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
                 this.tableChartTab.getSelectedTab().resize();
         }
     },
@@ -116,7 +132,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     populate: function () {
         var widgetType = BI.Utils.getWidgetTypeByID(this.options.wId);
         if(!BI.Utils.isAllFieldsExistByWidgetID(this.options.wId)){
-            widgetType = BICst.Widget.NONE;
+            widgetType = BICst.WIDGET.NONE;
         }
         this.tableChartTab.setSelect(widgetType);
         this.tableChartTab.populate();

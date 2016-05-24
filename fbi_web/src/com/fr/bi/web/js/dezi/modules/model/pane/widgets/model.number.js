@@ -3,10 +3,11 @@ BIDezi.NumberWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.NumberWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.NUMBER,
+            type: BICst.WIDGET.NUMBER,
             dimensions: {},
             view: {},
-            value: {}
+            value: {},
+            settings: BICst.DEFAULT_CONTROL_SETTING
         })
     },
 

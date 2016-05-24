@@ -15,25 +15,25 @@ BI.ControlFilterItem = BI.inherit(BI.Widget, {
         var widgetName = BI.Utils.getWidgetNameByID(wId);
         var widgetIcon = "chart-string-font";
         switch (widgetType) {
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 widgetIcon = "chart-string-font";
                 break;
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 widgetIcon = "chart-number-font";
                 break;
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 widgetIcon = "chart-date-range-font";
                 break;
-            case BICst.Widget.YEAR:
+            case BICst.WIDGET.YEAR:
                 widgetIcon = "chart-year-font";
                 break;
-            case BICst.Widget.MONTH:
+            case BICst.WIDGET.MONTH:
                 widgetIcon = "chart-month-font";
                 break;
-            case BICst.Widget.QUARTER:
+            case BICst.WIDGET.QUARTER:
                 widgetIcon = "chart-quarter-font";
                 break;
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YMD:
                 widgetIcon = "chart-ymd-font";
                 break;
         }

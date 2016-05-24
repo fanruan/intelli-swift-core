@@ -17,7 +17,7 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
         var self = this, o = this.options;
         self.storedValue = [];
         BI.each(o.value, function (i ,item) {
-            if (BI.find(o.fields, function (i, field) {
+            if (BI.find(o[ETLCst.FIELDS], function (i, field) {
                     if (field.field_name === item){
                         return true;
                     }
@@ -30,12 +30,13 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
             items.push({
                 text : item,
                 value : item,
+                title : item,
                 selected : true
             });
         })
-        BI.each(o.fields, function (i, item) {
+        BI.each(o[ETLCst.FIELDS], function (i, item) {
             if (BI.indexOf(self.storedValue, item.field_name) === -1 && item.field_name !== o.field){
-                items.push({text : item.field_name, value : item.field_name});
+                items.push({text : item.field_name, value : item.field_name, title : item.field_name});
             }
         })
         self.list = BI.createWidget({
@@ -67,6 +68,13 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
                     text : BI.i18nText('BI-ETL_Group_Field_Name_Same', item) + (i === self.storedValue.length - 1 ? BI.i18nText('BI-Relation_In') : '')
                 }))
             })
+            self.labels.addItem(BI.createWidget({
+                type : 'bi.label',
+                textAlign : 'left',
+                height : 25,
+                text : BI.i18nText('BI-De')  + o.targetText
+            }))
+        } else {
             self.labels.addItem(BI.createWidget({
                 type : 'bi.label',
                 textAlign : 'left',

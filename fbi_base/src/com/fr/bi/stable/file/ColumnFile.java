@@ -20,7 +20,7 @@ public interface ColumnFile<T> extends IndexFile {
 
     void releaseDetailDataWriter();
 
-    void addDataValue(long row, T value);
+    void addDataValue(int row, T value);
 
 
     CubeGenerator createGroupIndexCreator(BIKey key,

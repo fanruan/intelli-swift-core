@@ -132,7 +132,7 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             dId: self.model.get("id")
 
         });
-        this.combo.on(BI.AbstractDimensionCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.DimensionStringComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_STRING_COMBO.ASCEND:
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
@@ -168,7 +168,7 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             type: "bi.dimension_number_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.DimensionNumberComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_NUMBER_COMBO.ASCEND:
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
@@ -202,7 +202,7 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             type: "bi.dimension_date_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.DimensionDateComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_DATE_COMBO.YEAR:
                     break;
@@ -252,7 +252,6 @@ BIShow.DimensionView = BI.inherit(BI.View, {
         BI.Popovers.create(id, popup).open(id);
         popup.populate();
     },
-
 
 
     local: function () {

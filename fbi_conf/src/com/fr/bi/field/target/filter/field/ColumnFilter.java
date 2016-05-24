@@ -88,4 +88,11 @@ public abstract class ColumnFilter implements TargetFilter {
         return super.clone();
     }
 
+    @Override
+    public boolean hasTopBottomFilterValue() {
+        if (filterValue == null){
+            return false;
+        }
+        return filterValue.isTopOrBottomFilterValue();
+    }
 }

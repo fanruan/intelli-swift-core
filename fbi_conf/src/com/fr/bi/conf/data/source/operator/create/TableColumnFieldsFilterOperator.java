@@ -43,7 +43,7 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
     }
 
     protected GroupValueIndex createFilterIndex(List<? extends ITableSource> parents, ICubeDataLoader loader){
-        if (filterList == null){
+        if (filterList == null || filterList.isEmpty()){
             return loader.getTableIndex(getSingleParentMD5(parents)).getAllShowIndex();
         }
         GroupValueIndex gvi = null;
@@ -159,5 +159,24 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
             gf.setChilds(filter.toArray(new TargetFilter[filter.size()]));
             return gf;
         }
+
+        public boolean hasTopBottomFilter() {
+            for (TargetFilter f : filter){
+                if (f.hasTopBottomFilterValue()){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    @Override
+    protected boolean hasTopBottomFilter() {
+        for (FilterItem item : filterList){
+            if (item.hasTopBottomFilter()){
+                return true;
+            }
+        }
+        return false;
     }
 }

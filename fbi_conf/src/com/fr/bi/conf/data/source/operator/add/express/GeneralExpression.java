@@ -4,8 +4,12 @@
 package com.fr.bi.conf.data.source.operator.add.express;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -15,10 +19,10 @@ import com.fr.json.JSONObject;
  */
 public class GeneralExpression implements Expression {
 	
-	
+	@BICoreField
 	private Expression[] expressions;
-	
-	private LeftExpression leftValues;
+    @BICoreField
+    private LeftExpression leftValues;
 
 	@Override
 	public void parseJSON(JSONObject jo) throws Exception {
@@ -57,10 +61,16 @@ public class GeneralExpression implements Expression {
 		return jo;
 	}
 
-	@Override
-	public BICore fetchObjectCore() {
-		return null;
-	}
+    @Override
+    public BICore fetchObjectCore() {
+
+        try {
+            return new BICoreGenerator(this).fetchObjectCore();
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return BIBasicCore.EMPTY_CORE;
+    }
 
 	@Override
 	public Object get(ICubeTableService ti, int row) {

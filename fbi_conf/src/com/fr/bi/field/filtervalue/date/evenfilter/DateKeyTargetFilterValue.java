@@ -31,9 +31,9 @@ public class DateKeyTargetFilterValue implements DateFilterValue {
      */
     private static final long serialVersionUID = -2509778015034905186L;
 
-    private int group;
+    protected int group;
 
-    private Set<BIDateValue> valueSet;
+    protected Set<BIDateValue> valueSet;
 
     private JSONObject valueJo;
 
@@ -80,7 +80,10 @@ public class DateKeyTargetFilterValue implements DateFilterValue {
         return null;
     }
 
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     public Set<BIDateValue> getValues() {
         return valueSet;
     }
@@ -97,7 +100,7 @@ public class DateKeyTargetFilterValue implements DateFilterValue {
         this.valueSet = new HashSet<BIDateValue>();
         if(jo.has("filter_value")){
             JSONObject filterValue = jo.getJSONObject("filter_value");
-            this.valueSet.add(BIDateValueFactory.createDateValue(filterValue.getInt("type"), filterValue.getLong("value")));
+            this.valueSet.add(BIDateValueFactory.createDateValue(filterValue.getInt("type"), filterValue.getLong("values")));
             this.group = filterValue.getInt("type");
         }
     }

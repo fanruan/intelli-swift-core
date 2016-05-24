@@ -4,17 +4,20 @@ import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
-import com.finebi.cube.structure.table.BICubeTableEntity;
+import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.fs.control.UserControl;
+import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,19 +32,32 @@ public class BISourceDataTransport extends BIProcessor {
     protected Set<ITableSource> allSources;
     protected ICubeTableEntityService tableEntityService;
     protected ICube cube;
+    protected List<ITableKey> parents = new ArrayList<ITableKey>();
 
-    public BISourceDataTransport(ICube cube, ITableSource tableSource, Set<ITableSource> allSources) {
+    public BISourceDataTransport(ICube cube, ITableSource tableSource, Set<ITableSource> allSources, Set<ITableSource> parentTableSource) {
         this.tableSource = tableSource;
         this.allSources = allSources;
         this.cube = cube;
-        tableEntityService = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableSource));
+        tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+        initialParents(parentTableSource);
+    }
+
+    private void initialParents(Set<ITableSource> parentTableSource) {
+        if (parentTableSource != null) {
+            for (ITableSource tableSource : parentTableSource) {
+                parents.add(new BITableKey(tableSource));
+            }
+        }
     }
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         recordTableInfo();
         long count = transport();
-        tableEntityService.recordRowCount(count);
+
+        if (count >= 0) {
+            tableEntityService.recordRowCount(count);
+        }
         return null;
     }
 
@@ -51,12 +67,41 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     private void recordTableInfo() {
+        if (tableSource.getSourceID().equals("2d023b15")) {
+            System.out.println("fine");
+        }
         DBField[] columns = getFieldsArray();
         List<DBField> columnList = new ArrayList<DBField>();
         for (DBField col : columns) {
             columnList.add(convert(col));
         }
         tableEntityService.recordTableStructure(columnList);
+        if (!tableSource.isIndependent()) {
+            tableEntityService.recordParentsTable(parents);
+            tableEntityService.recordFieldNamesFromParent(getParentFieldNames());
+        }
+    }
+
+    private Set<String> getParentFieldNames() {
+        Set<DBField> parentFields = tableSource.getParentFields(allSources);
+        Set<DBField> facetFields = tableSource.getFacetFields(allSources);
+        Set<DBField> selfFields = tableSource.getSelfFields(allSources);
+        Set<String> fieldNames = new HashSet<String>();
+        for (DBField field : parentFields) {
+            if (!containSameName(selfFields, field.getFieldName()) && containSameName(facetFields, field.getFieldName())) {
+                fieldNames.add(field.getFieldName());
+            }
+        }
+        return fieldNames;
+    }
+
+    private boolean containSameName(Set<DBField> set, String fieldName) {
+        for (DBField field : set) {
+            if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private long transport() {

@@ -4,7 +4,7 @@ package com.fr.bi.stable.utils.code;
  * BI日志输出
  */
 public class BILogger {
-
+    boolean verbose = true;
     public static BILogger logger = null;
 
     public static BILogger getLogger() {
@@ -33,6 +33,8 @@ public class BILogger {
     }
 
     public void debug(String message) {
-        System.out.println(message);
+        if (verbose) {
+            System.out.println(message);
+        }
     }
 }

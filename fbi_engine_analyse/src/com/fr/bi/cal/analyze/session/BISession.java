@@ -1,11 +1,11 @@
 package com.fr.bi.cal.analyze.session;
 
-import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
+import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
@@ -52,6 +52,10 @@ public class BISession extends BIAbstractSession {
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> partpageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
 
+
+    public BISession(String remoteAddress, BIWeblet let, long userId) {
+        super(remoteAddress, let, userId);
+    }
 
     private BISession(String remoteAddress, BIWeblet let, long userId, BIReportNode node) {
         super(remoteAddress, let, userId);
@@ -219,7 +223,7 @@ public class BISession extends BIAbstractSession {
     public ICubeDataLoader getLoader() {
         synchronized (this) {
             if (!isRealTime()) {
-                return BICubeManager.getInstance().fetchCubeLoader(accessUserId);
+                return CubeReadingTableIndexLoader.getInstance(accessUserId);
             } else {
 
                 if (loader == null) {

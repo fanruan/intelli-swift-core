@@ -27,7 +27,7 @@ BI.ConvertMultiSelectItem = BI.inherit(BI.Widget, {
         this.stateEditor = BI.createWidget({
             type: "bi.sign_initial_editor",
             cls: "sign-initial-editor",
-            value: o.value,
+            text: o.value,
             height: o.height,
             hgap: o.hgap,
             rgap: o.rgap
@@ -71,8 +71,8 @@ BI.ConvertMultiSelectItem = BI.inherit(BI.Widget, {
             if(initialValue + "" === self.options.value + ""){
                 self.checkbox.setSelected(true);
                 self.stateEditor.setValue({
-                    state: newValue,
-                    default: initialValue
+                    value: newValue,
+                    text: initialValue
                 });
                 return true;
             }else{
@@ -84,8 +84,8 @@ BI.ConvertMultiSelectItem = BI.inherit(BI.Widget, {
     getValue: function(){
         var value = this.stateEditor.getValue();
         var arr = [];
-        arr.push(value.default);
-        arr.push(value.state === value.default ? "" : value.state);
+        arr.push(value.text);
+        arr.push(value.value === value.text ? "" : value.value);
         return {
             value: arr,
             selected: this.checkbox.isSelected()

@@ -29,7 +29,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
             height: 28,
             handler: function () {
                 self.model.clearRowCol();
-                self.populate();
+                self._clearConf();
             }
         });
         var cancel = BI.createWidget({
@@ -236,6 +236,13 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
     _refreshAfterUpload: function(){
         this.excelName.setText(this.model.getExcelName());
         this.uploadButton.setText(BI.i18nText("BI-Excel_Reupload"));
+        this.excel.populate(this.model.getExcelData());
+        this.populate();
+    },
+
+    _clearConf: function(){
+        this.excelName.setText(this.model.getExcelName());
+        this.uploadButton.setText(BI.i18nText("BI-Upload_Data"));
         this.excel.populate(this.model.getExcelData());
         this.populate();
     },

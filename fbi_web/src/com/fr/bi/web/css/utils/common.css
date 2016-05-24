@@ -37,6 +37,12 @@
 .bi-tips {
   color: #c4c6c6;
 }
+.bi-resizer {
+  background: #d8f3fe;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+  z-index: 1000000000;
+}
 .bi-list-item:hover,
 .bi-list-item.hover {
   background-color: #f4f4f4;

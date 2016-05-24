@@ -8,9 +8,8 @@ import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.stable.StringUtils;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class BIDateDimension extends BIAbstractDimension {
@@ -24,14 +23,9 @@ public class BIDateDimension extends BIAbstractDimension {
     @Override
     public String toString(Object v) {
         if (group.getType() == BIReportConstant.GROUP.YMD) {
-            Date date = new Date(Long.parseLong((String) v));
-            Calendar c = Calendar.getInstance();
-            c.setTime(date);
-            return c.get(Calendar.YEAR) + "/" + insertZero(c.get(Calendar.MONTH) + 1) + "/" + insertZero(c.get(Calendar.DAY_OF_MONTH)).toString();
+            return v.toString();
 
         }
-
-
         if (v != null) {
             return v.toString();
         }
@@ -69,5 +63,13 @@ public class BIDateDimension extends BIAbstractDimension {
             return "0" + time;
         }
         return "" + time;
+    }
+
+    @Override
+    public Object getValueByType(Object data) {
+        if (group.getType() == BIReportConstant.GROUP.YMD){
+            return data == null ? null : Long.parseLong(data.toString());
+        }
+        return data == null ? StringUtils.EMPTY : Integer.parseInt(data.toString());
     }
 }

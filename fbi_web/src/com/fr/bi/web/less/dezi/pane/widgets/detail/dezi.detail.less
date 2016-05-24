@@ -1,67 +1,21 @@
 @import "../../../../bibase";
-.bi-widget-attribute-setter{
-  background: @color-bi-background-default;
-  & .widget-attr-north {
-    background: @color-bi-background-normal;
-    .bi-widget-attr-name-input{
-      font-size: 16px;
-    }
-  }
 
-  & .widget-attr-west{
-    background: @color-bi-background-normal;
-    & .widget-select-data-pane{
+.bi-widget-attribute-setter {
+  background: @color-bi-background-normal;
+
+  & .widget-attr-west {
+    & .widget-select-data-pane {
       background: @color-bi-background-default;
       .border-radius(2px);
     }
   }
 
-  & .widget-attr-center{
-    background: @color-bi-background-normal;
-    & .widget-show-data-pane{
-      & .bi-sp-control-display {
-        min-width: 864px;
-        border: 1px solid #7691a3;
-      }
-
-      & .bi-statistic-button-group{
-        & .bi-statistic-tab-button{
-          .border-corner-radius(2px, 2px, 0px, 0px);
-          &.active {
-            background: @color-bi-background-highlight;
-            color: @color-bi-text;
-          }
-        }
-      }
-
-      & .widget-top-wrapper{
-        background: @color-bi-background-default;
-        .border-radius(2px);
-        & .bi-widget-attr-tab{
-          & .bi-data-style-button-group{
-            font-size: @font-size-16;
-            border-bottom: 3px solid @color-bi-background-default;
-            &.active{
-              border-bottom: 3px solid @color-bi-text-highlight;
-              color: @color-bi-text-highlight;
-            }
-          }
-        }
-        & .bi-widget-real-data{
-          & .bi-real-data-warning{
-            color: @color-bi-text-warning;
-          }
-        }
-      }
-
-      & .bi-view-setter-card-block {
-        & > div{
-          min-width: 182px;
-          max-width: 282px;
-        }
-      }
+  & .widget-attr-center {
+    & .widget-top-wrapper {
+      background: @color-bi-background-default;
+      .border-radius(2px);
     }
-    & .widget-attr-chart{
+    & .widget-center-wrapper {
       background: @color-bi-background-default;
       .border-radius(2px);
     }

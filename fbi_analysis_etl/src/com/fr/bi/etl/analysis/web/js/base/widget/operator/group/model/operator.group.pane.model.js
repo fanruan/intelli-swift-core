@@ -20,6 +20,8 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
             BI.each(fields, function (idx, item) {
                 if(item.field_type === BICst.COLUMN.NUMBER) {
                     self.addDimensionByField({fieldInfo: item,regionType: BICst.REGION.TARGET1})
+                } else if(item.field_type === BICst.COLUMN.STRING || item.field_type === BICst.COLUMN.DATE) {
+                    self.addDimensionByField({fieldInfo: item,regionType: BICst.REGION.DIMENSION1})
                 }
             })
         }
@@ -99,7 +101,6 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         dimensions[id] = {
             name: BI.Func.createDistinctName(dimensions, field["field_name"]),
             _src: {
-                field_id: field.id,
                 field_type: type,
                 field_name: field["field_name"]
             },
@@ -155,18 +156,20 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
 
     createFields : function () {
         var fields = [];
-        var view = this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
-        var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
-        var self = this;
-        BI.each(view, function (idx, item) {
-            BI.each(item, function (i, v) {
-                var  dimension = dimensions[v];
-                fields.push({
-                    field_name : dimension["name"],
-                    field_type: self._getFieldType(dimension, idx),
-                });
+        if(this.valid === true) {
+            var view = this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
+            var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
+            var self = this;
+            BI.each(view, function (idx, item) {
+                BI.each(item, function (i, v) {
+                    var  dimension = dimensions[v];
+                    fields.push({
+                        field_name : dimension["name"],
+                        field_type: self._getFieldType(dimension, idx),
+                    });
+                })
             })
-        })
+        }
         return fields;
     },
 
@@ -198,7 +201,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     update : function () {
         var v  = BI.AnalysisETLOperatorGroupPaneModel.superclass.update.apply(this, arguments);
         v.etlType = ETLCst.ETL_TYPE.GROUP_SUMMARY;
-        v.fields = this.createFields();
+        v[ETLCst.FIELDS] = this.createFields();
         v.operator = {};
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY];
         v.operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] = v[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY];
@@ -218,7 +221,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         this.changed = true;
     },
 
-    isValid : function () {
+    isFieldValid : function () {
         return !BI.isEmptyObject(this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY))
     },
 
@@ -256,9 +259,54 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         result = result || {};
         return result.text;
     },
+
+    isValid : function () {
+       return this.valid;
+    },
+
+    setValid : function (valid) {
+        this.valid = valid;
+    },
     
     isDefaultValue : function () {
         return !this.changed;
+    },
+
+    check : function () {
+        var parent = this.get(ETLCst.PARENTS)[0];
+        var view = this.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY);
+        var dimensions = this.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY);
+        var msg = "";
+        var found = BI.some(view[BICst.REGION.DIMENSION1], function (i, v) {
+            var  dimension = dimensions[v];
+            var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
+                return field.field_name === dimension._src.field_name
+            })
+            if (BI.isNull(f)){
+                msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
+                return true;
+            } else if (dimension.group.type !== BICst.GROUP.ID_GROUP &&  f.field_type !== dimension._src.field_type){
+                msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
+                return true;
+            }
+        })
+        if (!found){
+            found = BI.some(view[BICst.REGION.TARGET1], function (i, v) {
+                var  dimension = dimensions[v];
+                var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
+                    return field.field_name === dimension._src.field_name
+                })
+                if (BI.isNull(f)){
+                    msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
+                    return true;
+                } else if (f.field_type !== BICst.COLUMN.NUMBER && dimension.group.type !== BICst.SUMMARY_TYPE.COUNT ){
+                    msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
+                    return true;
+                }
+            })
+        }
+        this.setValid(!found);
+        return [found, msg];
     }
 });
 BI.AnalysisETLOperatorGroupPaneModel.DIMKEY = "dimensions";

@@ -22,16 +22,20 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Qiu_Sum"),
-                    value: BICst.SUMMARY_TYPE.SUM
+                    value: BICst.SUMMARY_TYPE.SUM,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Qiu_Avg"),
-                    value: BICst.SUMMARY_TYPE.AVG
+                    value: BICst.SUMMARY_TYPE.AVG,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Qiu_Max"),
-                    value: BICst.SUMMARY_TYPE.MAX
+                    value: BICst.SUMMARY_TYPE.MAX,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Qiu_Min"),
-                    value: BICst.SUMMARY_TYPE.MIN
+                    value: BICst.SUMMARY_TYPE.MIN,
+                    cls: "dot-e-font"
                 }]
             }, {
                 el: {
@@ -41,16 +45,20 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Column_Chart"),
-                    value: BICst.Widget.COLUMN
+                    value: BICst.WIDGET.AXIS,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Stacked_Chart"),
-                    value: BICst.Widget.ACCUMULATE_COLUMN
+                    value: BICst.WIDGET.ACCUMULATE_AXIS,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Line_Chart"),
-                    value: BICst.Widget.LINE
+                    value: BICst.WIDGET.LINE,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Area_Chart"),
-                    value: BICst.Widget.AREA
+                    value: BICst.WIDGET.AREA,
+                    cls: "dot-e-font"
                 }]
             }],
             [{
@@ -62,6 +70,15 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 text: BI.i18nText("BI-Filter_Number_Summary"),
                 value: BICst.TARGET_COMBO.FILTER,
                 cls: "filter-h-font"
+            }],
+            [{
+                text: BI.i18nText("BI-Display"),
+                value: BICst.TARGET_COMBO.DISPLAY,
+                cls: "dot-ha-font"
+            }, {
+                text: BI.i18nText("BI-Hidden"),
+                value: BICst.TARGET_COMBO.HIDDEN,
+                cls: "dot-ha-font"
             }],
             [{
                 text: BI.i18nText("BI-Copy"),
@@ -101,7 +118,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _assertChartType:function(val){
         val || (val = {});
-        val.type || (val.type = BICst.Widget.COLUMN);
+        val.type || (val.type = BICst.WIDGET.AXIS);
         return val;
     },
 
@@ -109,11 +126,12 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var item = this.defaultItems();
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
         switch (wType) {
-            case BICst.Widget.TABLE:
-                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
                 break;
             default:
-                item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
                 break;
         }
         return item;

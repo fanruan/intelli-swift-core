@@ -77,23 +77,22 @@ BI.extend(BI.Utils, {
         }
         return packStructure;
     },
+
     /**
      * 获取所有业务包分组信息树结构
      * 用于业务包权限管理功能
-     * 同步
      * @returns {Array}
      */
-    getAllGroupedPackagesTreeSync: function () {
-        var data = Data.Req.reqPakageAndGroupSync();
-        var groups = data.groups, packages = data.packages;
+    getAllGroupedPackagesTree: function () {
+        var groups = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
         var packStructure = [], groupedPacks = [];
         BI.each(groups, function (id, group) {
             packStructure.push({
                 id: id,
                 text: group.name,
                 value: group.name,
-                pId: 0,
-                open: true
+                open: true,
+                isParent: true
             });
             BI.each(group.children, function (i, item) {
                 packStructure.push({
@@ -133,122 +132,20 @@ BI.extend(BI.Utils, {
                 text: BI.i18nText('BI-Ungrouped'),
                 value: BI.i18nText('BI-Ungrouped'),
                 id: 1,
-                pId: 0,
-                open: true
+                open: true,
+                isParent: true
             });
         }
-        Data.SharingPool.put("packStructure", packStructure);
         return packStructure;
 
     },
-    /**
-     * 获取所有业务包分组信息树结构
-     * 用于业务包权限管理功能
-     * 异步
-     * @returns {Array}
-     */
-    getAllGroupedPackagesTreeAsync: function (tree) {
-        Data.Req.reqPakageAndGroup(function (data) {
-                var groups = data.groups, packages = data.packages;
-                var packStructure = [], groupedPacks = [];
-                BI.each(groups, function (id, group) {
-                packStructure.push({
-                    id: id,
-                    text: group.name,
-                    value: group.name,
-                    pId: 0,
-                    open: true
-                });
-
-                    BI.each(group.children, function (i, item) {
-                        packStructure.push({
-                            id: item.id,
-                            text: packages[item.id].name,
-                            value: item.id,
-                            pId: id,
-                            open: true
-                        });
-                        groupedPacks.push(item.id);
-                    })
-                });
-
-                var isGroupedExisted = false;
-                BI.each(packages, function (id, pack) {
-                    var isGrouped = false;
-                    BI.any(groupedPacks, function (i, pId) {
-                        if (pId === id) {
-                            isGrouped = true;
-                            return false;
-                        }
-                    });
-                    //未分组
-                    if (!isGrouped) {
-                        isGroupedExisted = true;
-                        packStructure.push({
-                            text: pack.name,
-                            value: pack.id,
-                            pId: 1,
-                            id: id,
-                            open: true
-                        })
-                    }
-                });
-                if (isGroupedExisted === true) {
-                    packStructure.push({
-                        text: BI.i18nText('BI-Ungrouped'),
-                        value: BI.i18nText('BI-Ungrouped'),
-                        id: 1,
-                        pId: 0,
-                        open: true
-                    });
-                }
-                Data.SharingPool.put("packStructure", packStructure);
-                tree.populate(packStructure);
-            }
-        );
-    },
-    /**业务包权限
-     * 选择多个业务包时,默认没有角色被选中*/
-    clearAuthority: function() {
-        var allRole = Data.Req.reqAllAuthority();
-        Data.SharingPool.put("allAuthorityInfo", allRole);
-
-        var unselectedTemp=[];
-        BI.each(allRole, function (i, item) {
-            if (typeof item.text != 'undefined') {
-                unselectedTemp.push(item.text);
-            }
-        });
-        Data.SharingPool.put("unselectedRole", unselectedTemp);
-        Data.SharingPool.put("selectedRole", []);
-        return;
-
-    },
-    getAuthorityInfoByPackageId: function (packageId) {
-        var allRole = Data.Req.reqAllAuthority();
-        var selectedTemp = Data.Req.reqAuthorityByPackageId(packageId).roles;
-        Data.SharingPool.put("allAuthorityInfo", allRole);
-
-        var selectedRole = new Array();
-        BI.each(selectedTemp, function (a, item) {
-            for (var i = 0; i < allRole.length; i++) {
-                if (typeof allRole[i].text != 'undefined' && allRole[i].id == item) {
-                    selectedRole.push(allRole[i].text
-                    );
-                    break;
-                }
-            }
-        });
-        Data.SharingPool.put("selectedRole", selectedRole);
-
-        var unselectedRole = [];
-        BI.each(allRole, function (i, item) {
-            if (!BI.contains(selectedRole, item.text) && typeof item.text != 'undefined') {
-                unselectedRole.push(item.text);
-            }
+    
+    getUpdatePreviewSqlResult: function (data, callback) {
+        Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
+            callback(res);
         })
-        Data.SharingPool.put("unselectedRole", unselectedRole);
     },
+    
     getConfDataByField: function (table, fieldName, filterConfig, callback) {
         Data.Req.reqFieldsDataByData({
             table: table,
@@ -258,6 +155,16 @@ BI.extend(BI.Utils, {
             callback(data.value, data.hasNext);
         });
     },
+    
+    getConfDataByFieldId: function(fieldId, filterConfig, callback){
+        Data.Req.reqFieldsDataByFieldId({
+            field_id: fieldId,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        });
+    },
+    
     getAllPackageIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("packages"));
     },
@@ -323,6 +230,23 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("update_settings", id);
     },
 
+    getAuthorityLoginField: function(){
+        return Data.SharingPool.get("authority_settings", "login_field");
+    },
+
+    getAuthorityRoles: function(){
+        return Data.SharingPool.get("authority_settings", "all_roles");
+    },
+    
+    getPackageAuthorityByID: function(pid) {
+        return Data.SharingPool.get("authority_settings", "packages_auth", pid);  
+    },
+    
+    savePackageAuthority: function (data, callback) {
+        Data.Req.reqSavePackageAuthority(data, function (res) {
+            callback(res);
+        });
+    },
 
     //fuck you
     getCircleLayerLevelInfo: function (table, layerInfo, callback) {
@@ -380,6 +304,12 @@ BI.extend(BI.Utils, {
         Data.Req.reqCheckCubePath(path, function (res) {
             callback(res);
         });
+    },
+    
+    saveLoginField: function(data, callback){
+        Data.Req.reqSaveLoginField(data, function(res){
+            callback(res);
+        })
     },
 
     getConnectionNames: function (callback) {
@@ -499,12 +429,7 @@ BI.extend(BI.Utils, {
             callback(res);
         });
     },
-    updatePackageAuthority: function (data, callback) {
-        Data.Req.reqUpdatePackageAuthority(data, function (res) {
-            callback(res);
-        })
-    },
-
+    
     getAllPackages: function (callback) {
         Data.Req.reqAllBusinessPackages(function (res) {
             callback(res);
@@ -515,6 +440,11 @@ BI.extend(BI.Utils, {
         Data.Req.getTableNamesOfAllPackages(function(res) {
             callback(res);
         })
-    }
+    },
 
+    updateCubeByTable: function (data, callback) {
+        Data.Req.updateCubeByTable(data, function () {
+            callback();
+        });
+    }
 });

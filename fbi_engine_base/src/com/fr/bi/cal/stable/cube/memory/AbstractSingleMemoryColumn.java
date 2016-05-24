@@ -32,10 +32,13 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     private String fieldName;
     protected CubeTreeMap getter;
     protected Object getterLock = new Object();
-    protected List<T> detail;
+    protected AnyIndexArray<T> detail;
 
     public AbstractSingleMemoryColumn() {
+        initDetail();
     }
+
+    protected abstract void initDetail();
 
     @Override
 
@@ -49,8 +52,8 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     }
 
     @Override
-    public void addDataValue(long row, T value) {
-        detail.add((int) row, value);
+    public void addDataValue(int row, T value) {
+        detail.add(row, value);
     }
 
 
@@ -108,28 +111,24 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         throw new UnsupportedOperationException(UNSUPPORT);
     }
 
+
+
     public CubeTreeMap createGroupByType(ValueConverter converter, Comparator comparator) {
-        if (getter == null){
-            synchronized (getterLock){
-                if (getter == null){
-                    Map<Object, IntList> treeMap = new TreeMap<Object, IntList>();
-                    for (int i = 0; i < detail.size(); i ++){
-                        Object value = converter.result2Value(detail.get(i));
-                        if (value != null) {
-                            IntList list = treeMap.get(value);
-                            if (list == null) {
-                                list = new IntList();
-                                treeMap.put(value, list);
-                            }
-                            list.add(i);
-                        }
-                    }
-                    getter = new CubeTreeMap(comparator);
-                    for (Map.Entry<Object, IntList> entry : treeMap.entrySet()){
-                        getter.put(entry.getKey(), GVIFactory.createGroupVauleIndexBySimpleIndex(entry.getValue()));
-                    }
+        CubeTreeMap getter = new CubeTreeMap(comparator);
+        Map<Object, IntList> treeMap = new TreeMap<Object, IntList>();
+        for (int i = 0; i < detail.size(); i ++){
+            Object value = converter.result2Value(detail.get(i));
+            if (value != null) {
+                IntList list = treeMap.get(value);
+                if (list == null) {
+                    list = new IntList();
+                    treeMap.put(value, list);
                 }
+                list.add(i);
             }
+        }
+        for (Map.Entry<Object, IntList> entry : treeMap.entrySet()){
+            getter.put(entry.getKey(), GVIFactory.createGroupVauleIndexBySimpleIndex(entry.getValue()));
         }
         return getter;
     }

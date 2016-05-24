@@ -57,21 +57,21 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             self.file.select();
         });
 
-        this.delete = BI.createWidget({
+        this.del = BI.createWidget({
             type: "bi.icon_button",
-            cls: "upload-image-icon-button bi-list-item-hover img-shutdown-font",
+            cls: "upload-image-icon-button img-shutdown-font",
             title: BI.i18nText("fbi_Delete"),
             height: 32,
             width: 32
         });
 
-        this.delete.on(BI.IconButton.EVENT_CHANGE, function () {
+        this.del.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.UploadImage.EVENT_DESTROY);
         });
 
         this.size = BI.createWidget({
             type: "bi.image_button_size_combo",
-            cls: "upload-image-icon-button bi-list-item-hover"
+            cls: "upload-image-icon-button"
         });
 
         this.size.on(BI.ImageButtonSizeCombo.EVENT_CHANGE, function () {
@@ -81,7 +81,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.href = BI.createWidget({
             type: "bi.image_button_href",
-            cls: "upload-image-icon-button bi-list-item-hover"
+            cls: "upload-image-icon-button"
         });
 
         this.href.on(BI.ImageButtonHref.EVENT_CHANGE, function () {
@@ -109,7 +109,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             }, {
                 el: this.img
             }, {
-                el: this.delete,
+                el: this.del,
                 right: 4,
                 top: 4
             }, {

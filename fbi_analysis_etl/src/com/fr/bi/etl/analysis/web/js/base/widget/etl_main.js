@@ -26,6 +26,17 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
             }
         })
 
+        var cancelButton = BI.createWidget({
+            type:"bi.button",
+            height: this._constant.buttonHeight,
+            width: this._constant.buttonWidth,
+            level:"ignore",
+            text:BI.i18nText("BI-Cancel"),
+            handler : function(e){
+                self.controller.doCancel()
+            }
+        })
+
         var title = BI.createWidget({
             type:"bi.right",
             height:this._constant.titleHeight,
@@ -33,6 +44,11 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
                 type:"bi.center_adapt",
                 cls:"bi-analysis-etl-main-save-button",
                 items:[this.saveButton],
+                height:this._constant.titleHeight
+            }, {
+                type:"bi.center_adapt",
+                cls:"bi-analysis-etl-main-save-button",
+                items:[cancelButton],
                 height:this._constant.titleHeight
             }]
         })

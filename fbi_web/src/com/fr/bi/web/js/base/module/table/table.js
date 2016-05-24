@@ -292,15 +292,56 @@ BI.Table = BI.inherit(BI.Widget, {
         });
 
         if (o.isNeedResize) {
+            var resizer;
+            var createResizer = function (size, position) {
+                var rowSize = self.getCalculateRegionRowSize();
+                resizer = BI.createWidget({
+                    type: "bi.layout",
+                    cls: "bi-resizer",
+                    width: size.width,
+                    height: rowSize[0] + rowSize[1]
+                });
+                BI.createWidget({
+                    type: "bi.absolute",
+                    element: "body",
+                    items: [{
+                        el: resizer,
+                        left: position.left,
+                        top: position.top - rowSize[0]
+                    }]
+                });
+            };
+            var resizeResizer = function (size, position) {
+                var rowSize = self.getCalculateRegionRowSize();
+                var height = rowSize[0] + rowSize[1];
+                resizer.element.css({
+                    "left": position.left + "px",
+                    "width": size.width + "px",
+                    "height": height + "px"
+                });
+            };
+            var stopResizer = function () {
+                resizer && resizer.destroy();
+                resizer = null;
+            };
             var handle;
             if (isRight) {
                 var options = {
                     handles: "w",
                     minWidth: 15,
+                    helper: "clone",
                     start: function (event, ui) {
+                        createResizer(ui.size, ui.position);
                         self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
                     },
                     resize: function (e, ui) {
+                        resizeResizer(ui.size, ui.position);
+                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
+                        e.stopPropagation();
+                        return false;
+                    },
+                    stop: function (e, ui) {
+                        stopResizer();
                         if (o.isResizeAdapt) {
                             var increment = ui.size.width - (BI.sum(self.columnRight) + self.columnRight.length);
                             o.columnSize[self.columnLeft.length] += increment;
@@ -309,11 +350,6 @@ BI.Table = BI.inherit(BI.Widget, {
                         }
                         self._resize();
                         ui.element.css("left", "");
-                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
-                        e.stopPropagation();
-                        return false;
-                    },
-                    stop: function (e, ui) {
                         self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                     }
                 };
@@ -323,10 +359,19 @@ BI.Table = BI.inherit(BI.Widget, {
                 var options = {
                     handles: "e",
                     minWidth: 15,
+                    helper: "clone",
                     start: function (event, ui) {
+                        createResizer(ui.size, ui.position);
                         self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
                     },
                     resize: function (e, ui) {
+                        resizeResizer(ui.size, ui.position);
+                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
+                        e.stopPropagation();
+                        return false;
+                    },
+                    stop: function (e, ui) {
+                        stopResizer();
                         if (o.isResizeAdapt) {
                             var increment = ui.size.width - (BI.sum(self.columnLeft) + self.columnLeft.length);
                             o.columnSize[self.columnLeft.length - 1] += increment;
@@ -334,11 +379,6 @@ BI.Table = BI.inherit(BI.Widget, {
                             self.setRegionColumnSize([ui.size.width, "fill"]);
                         }
                         self._resize();
-                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
-                        e.stopPropagation();
-                        return false;
-                    },
-                    stop: function (e, ui) {
                         self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                     }
                 };
@@ -615,21 +655,60 @@ BI.Table = BI.inherit(BI.Widget, {
             var tds = TDs[BI.size(TDs) - 1];
             BI.each(tds, function (j, td) {
                 j = j | 0;
+                var resizer;
+                var getHeight = function (size, position) {
+                    var rowSize = self.getCalculateRegionRowSize();
+                    if (o.isNeedFreeze === true) {
+                        var tableHeight = self.bottomRightContainer.element.outerHeight();
+                        return size.height + Math.min(rowSize[1], tableHeight);
+                    } else {
+                        var tableHeight = self.tableContainer.element.outerHeight();
+                        var offset = self.tableContainer.element.offset();
+                        var offsetTop = position.top - offset.top;
+                        var height = tableHeight - offsetTop;
+                        height = Math.min(height, rowSize[0] - offsetTop);
+                        return height;
+                    }
+                };
                 if (j < BI.size(tds) - 1) {
                     td.resizable({
                         handles: "e",
                         minWidth: 15,
+                        helper: "clone",
                         start: function (event, ui) {
+                            var height = getHeight(ui.size, ui.position);
+                            resizer = BI.createWidget({
+                                type: "bi.layout",
+                                cls: "bi-resizer",
+                                width: ui.size.width,
+                                height: height
+                            });
+
+                            BI.createWidget({
+                                type: "bi.absolute",
+                                element: "body",
+                                items: [{
+                                    el: resizer,
+                                    left: ui.position.left,
+                                    top: ui.position.top
+                                }]
+                            });
                             self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE);
                         },
                         resize: function (e, ui) {
-                            o.columnSize[start + j] = ui.size.width;
-                            self.setColumnSize(o.columnSize);
+                            var height = getHeight(ui.size, ui.position);
+                            resizer.element.css({"width": ui.size.width + "px", "height": height + "px"});
+                            //o.columnSize[start + j] = ui.size.width;
+                            //self.setColumnSize(o.columnSize);
                             self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE);
                             e.stopPropagation();
                             return false;
                         },
                         stop: function (e, ui) {
+                            resizer.destroy();
+                            resizer = null;
+                            o.columnSize[start + j] = ui.size.width - 1;
+                            self.setColumnSize(o.columnSize);
                             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
                         }
                     })

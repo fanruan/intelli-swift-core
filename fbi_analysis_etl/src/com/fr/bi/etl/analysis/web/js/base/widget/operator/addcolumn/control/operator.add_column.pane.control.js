@@ -16,86 +16,29 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         widget.allColumnsPane.populate(model.getAddColumns())
         widget.card.showCardByName(cardName);
         this.doCheck(widget);
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
     },
     
     doCheck : function (widget) {
         widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
     },
 
+    _doModelCheck : function (widget, model) {
+        var found = model.check();
+        if(found[0] === true) {
+            widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, found[1])
+        }
+        return found[0];
+    },
+
     _check : function (widget, model) {
-        var parent = model.get(ETLCst.PARENTS)[0];
-        var self = this;
-        var columns = model.get(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY);
-        var found = BI.some(columns, function(i ,column){
-            switch (column.add_column_type){
-                case BICst.ETL_ADD_COLUMN_TYPE.FORMULA :
-                    return self._checkFormula(widget, column, parent[ETLCst.FIELDS])
-                case BICst.ETL_ADD_COLUMN_TYPE.DATE_DIFF :
-                    var fields = [];
-                    fields.push(column.item['firstField'])
-                    fields.push(column.item['secondField'])
-                    return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name, BICst.COLUMN.DATE)
-                case BICst.ETL_ADD_COLUMN_TYPE.DATE_MONTH :
-                case BICst.ETL_ADD_COLUMN_TYPE.DATE_SEASON :
-                case BICst.ETL_ADD_COLUMN_TYPE.DATE_YEAR :
-                    return self._checkField(widget, [column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.DATE)
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP:
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT:
-                    var fields = [];
-                    fields.push(column.item['field'])
-                    fields.push(column.item['date'])
-                    return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP:
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT:
-                    var fields = [];
-                    fields.push(column.item['field'])
-                    fields.push(column.item['monthSeason'])
-                    fields.push(column.item['year'])
-                    return self._checkField(widget, fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_ACC:
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_RANK:
-                case BICst.ETL_ADD_COLUMN_TYPE.EXPR_SUM:
-                    return self._checkField(widget, [column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
-                case BICst.ETL_ADD_COLUMN_TYPE.GROUP:
-                    return BI.some(column.item['items'], function (i, item) {
-                        return self._checkField(widget, [item['field']], parent[ETLCst.FIELDS],column.field_name, item['field_type'])
-                    })
-            }
-        })
+        var found = this._doModelCheck(widget, model)
         if (!found){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.createFields())
+        } else {
+            model.set(ETLCst.FIELDS, [])
         }
-    },
-
-    _checkField : function (widget, dates, fields, columnName, type) {
-        return BI.find(dates, function (i, date) {
-            var f = BI.find(fields, function (i, field) {
-                return date === field.field_name;
-            });
-            if (BI.isNull(f)){
-                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-New_Column_Name') + columnName + '' + date + BI.i18nText('BI-Not_Fount'))
-                return true;
-            } else  if (f.field_type !== type){
-                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-New_Column_Name') + columnName + '' + date + BI.i18nText('BI-Illegal_Field_Type'))
-                return true;
-            }
-        })
-    },
-
-    _checkFormula : function (widget, column, fields) {
-        var fs = BI.Utils.getFieldsFromFormulaValue(column.item.formula);
-        var lostField = BI.find(fs, function (i, field) {
-             if(BI.isNull(BI.find(fields, function (idx, f) {
-                return f.field_name === field;
-                }))){
-                 return field
-             }
-        })
-        if (BI.isNotNull(lostField)){
-            widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-New_Column_Name') + column.field_name + BI.i18nText('BI-Formula_Valid')) + lostField
-            return true;
-        }
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !found);
     },
 
     getDefaultCardName : function (widget, model) {
@@ -115,8 +58,9 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     deleteColumnByName : function (name, widget, model) {
         model.deleteColumnByName(name);
         this._cancelEditColumn(widget, model);
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.getAddColumns().length !== 0)
+        this._doModelCheck(widget, model)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.getAddColumns().length !== 0, BI.i18nText('BI-Please') + BI.i18nText('BI-Add_Column'))
     },
 
     editColumnByName : function (name, widget, model) {
@@ -164,13 +108,18 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         if(BI.isNotNull(value.field_type)) {
             column.field_type = value.field_type;
         }
-        if(BI.isNotNull(this._editColumnName)){
+        var isEdit = BI.isNotNull(this._editColumnName)
+        if(isEdit){
             model.editColumn(column, this._editColumnName);
         } else {
             model.addColumn(column);
         }
-        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, widget.options.value.operatorType)
+        this._doModelCheck(widget, model)
+        widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
         this._cancelEditColumn(widget, model);
+        if(!isEdit) {
+            widget.card.getShowingCard().scrollToEnd();
+        }
     },
 
     saveColumn : function (editing, widget, model) {
@@ -185,7 +134,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     _getAllColumnNames : function (model, name) {
         var columnNames = [];
         var parent = model.get(ETLCst.PARENTS)[0];
-        BI.each(BI.concat(parent.fields, model.getAddColumns()), function (idx, item) {
+        BI.each(BI.concat(parent[ETLCst.FIELDS], model.getAddColumns()), function (idx, item) {
             if(item.field_name !== name) {
                 columnNames.push(item.field_name)
             }
@@ -206,9 +155,10 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         });
         widget.oneConditionPane.populate([widget.currentEditPane]);
         var column = widget.title.update();
-        widget.currentEditPane.populate(BI.extend({
-                fields:parent[ETLCst.FIELDS]
-        }, value), {
+        var fields = {}
+        fields[ETLCst.FIELDS] = parent[ETLCst.FIELDS];
+        fields[ETLCst.PARENTS] = model.getValue(ETLCst.PARENTS);
+        widget.currentEditPane.populate(BI.extend(fields, value), {
             field_type : column.field_type
         })
     },

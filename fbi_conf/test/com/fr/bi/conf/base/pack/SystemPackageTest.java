@@ -3,7 +3,6 @@ package com.fr.bi.conf.base.pack;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
 import com.fr.bi.conf.base.pack.data.BIGroupTagName;
-
 import com.fr.bi.conf.base.pack.group.BIBusinessGroupGetterService;
 import com.fr.bi.conf.data.BIBusinessPackageTestTool;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
@@ -31,21 +30,21 @@ public class SystemPackageTest extends TestCase {
 
     public void testAddGroup() {
         try {
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"), 0);
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("a")));
             assertFalse(manager.containGroup(user.getUserId(), new BIGroupTagName("ab")));
             assertFalse(manager.containGroup(user.getUserId(), new BIGroupTagName("abc")));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("ab"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("ab"), 0);
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("a")));
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("ab")));
             assertFalse(manager.containGroup(user.getUserId(), new BIGroupTagName("abc")));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("abc"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("abc"), 0);
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("a")));
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("ab")));
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("abc")));
             boolean isDuplicate = false;
             try {
-                manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("abc"));
+                manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("abc"), 0);
 
             } catch (BIGroupDuplicateException ignore) {
                 isDuplicate = true;
@@ -58,7 +57,7 @@ public class SystemPackageTest extends TestCase {
 
     public void testRemoveGroup() {
         try {
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("TestGroup"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("TestGroup"), 0);
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("TestGroup")));
             manager.removeGroup(user.getUserId(), new BIGroupTagName("TestGroup"));
             assertFalse(manager.containGroup(user.getUserId(), new BIGroupTagName("TestGroup")));
@@ -155,7 +154,7 @@ public class SystemPackageTest extends TestCase {
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a"));
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab"));
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc"));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("TestGroup"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("TestGroup"), 0);
             assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a")));
             assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab")));
             assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc")));
@@ -179,8 +178,8 @@ public class SystemPackageTest extends TestCase {
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a"));
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab"));
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc"));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("TestGroup"));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("TestGroup_2"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("TestGroup"), 0);
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("TestGroup_2"), 0);
 
             assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a")));
             assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab")));
@@ -201,9 +200,9 @@ public class SystemPackageTest extends TestCase {
 
     public void testRenameGroup() {
         try {
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("ab"));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("abc"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"), 0);
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("ab"), 0);
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("abc"), 0);
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("a")));
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("ab")));
             assertTrue(manager.containGroup(user.getUserId(), new BIGroupTagName("abc")));
@@ -263,7 +262,7 @@ public class SystemPackageTest extends TestCase {
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a"));
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab"));
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc"));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"), 0);
             manager.stickGroupTagOnPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a").getID(), new BIGroupTagName("a"));
             BIBusinessGroupGetterService group = manager.getGroup(user.getUserId(), new BIGroupTagName("a"));
             assertTrue(group.containPackage(BIBusinessPackageTestTool.generatePackage("a")));
@@ -279,7 +278,7 @@ public class SystemPackageTest extends TestCase {
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a"));
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab"));
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc"));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"), 0);
             manager.stickGroupTagOnPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a").getID(), new BIGroupTagName("a"));
             manager.stickGroupTagOnPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab").getID(), new BIGroupTagName("a"));
             manager.stickGroupTagOnPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc").getID(), new BIGroupTagName("a"));
@@ -300,7 +299,7 @@ public class SystemPackageTest extends TestCase {
         try {
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a"));
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab"));
-            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"));
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"), 0);
 
             manager.stickGroupTagOnPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a").getID(), new BIGroupTagName("a"));
             assertTrue(manager.isPackageTaggedSomeGroup(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a").getID()));
@@ -314,6 +313,22 @@ public class SystemPackageTest extends TestCase {
                 isAbs = true;
             }
             assertTrue(isAbs);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+    }
+
+    public void testGetPackagePosition() {
+        try {
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("a"), 0);
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("b"), 1);
+            manager.createEmptyGroup(user.getUserId(), new BIGroupTagName("c"), 2);
+            assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("a")).getPosition() == 0);
+            assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("b")).getPosition() == 1);
+            assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("c")).getPosition() == 2);
+
+            manager.getGroup(user.getUserId(), new BIGroupTagName("a")).setPosition(4);
+            assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("a")).getPosition() == 4);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }

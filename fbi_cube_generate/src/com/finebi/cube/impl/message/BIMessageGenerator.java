@@ -64,4 +64,14 @@ public class BIMessageGenerator implements IMessageGenerator {
     public IMessageStatus getMessageStatusTag() {
         return this.statusTag;
     }
+
+    @Override
+    public String toString() {
+        try {
+            return generateMessage(null).toString();
+        } catch (BIMessageGenerateException e) {
+            e.printStackTrace();
+            return "Empty";
+        }
+    }
 }

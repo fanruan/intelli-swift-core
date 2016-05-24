@@ -19,270 +19,286 @@ BICst.DASHBOARD_TOOLBAR = [{
 }];
 
 
-BICst.DASHBOARD_WIDGET_ICON = [[{
-    text: BI.i18nText("BI-Summary_Table"),
-    title: BI.i18nText("BI-Summary_Table"),
-    value: BICst.Widget.TABLE,
-    cls: "chart-table-font"
-}, {
-    text: BI.i18nText("BI-Cor_Chart"),
-    title: BI.i18nText("BI-Cor_Chart"),
-    value: BICst.Widget.AXIS,
-    cls: "chart-axis-font",
+BICst.DASHBOARD_WIDGETS = [[{
+    text: BI.i18nText("BI-Group_Table"),
+    title: BI.i18nText("BI-Group_Table"),
+    value: BICst.WIDGET.TABLE,
+    cls: "drag-group-icon",
     children: [{
-        text: BI.i18nText("BI-Cor_Chart"),
-        title: BI.i18nText("BI-Cor_Chart"),
-        value: BICst.Widget.AXIS,
-        cls: "chart-axis-font"
+        text: BI.i18nText("BI-Group_Table"),
+        title: BI.i18nText("BI-Group_Table"),
+        value: BICst.WIDGET.TABLE,
+        cls: "drag-group-icon"
     }, {
+        text: BI.i18nText("BI-Cross_Table"),
+        title: BI.i18nText("BI-Cross_Table"),
+        value: BICst.WIDGET.CROSS_TABLE,
+        cls: "drag-cross-icon"
+    }]
+}, {
+    text: BI.i18nText("BI-Column_Chart"),
+    title: BI.i18nText("BI-Column_Chart"),
+    value: BICst.WIDGET.AXIS,
+    cls: "drag-axis-icon",
+    children: [{
+        text: BI.i18nText("BI-Column_Chart"),
+        title: BI.i18nText("BI-Column_Chart"),
+        value: BICst.WIDGET.AXIS,
+        cls: "drag-axis-icon"
+    }, {
+        text: BI.i18nText("BI-Stacked_Chart"),
+        title: BI.i18nText("BI-Stacked_Chart"),
+        value: BICst.WIDGET.ACCUMULATE_AXIS,
+        cls: "drag-axis-accu-icon"
+    }, {
+        text: BI.i18nText("BI-Percent_Accumulate_Axis"),
+        title: BI.i18nText("BI-Percent_Accumulate_Axis"),
+        value: BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
+        cls: "drag-axis-percent-accu-icon"
+    }, {
+        text: BI.i18nText("BI-Compare_Axis"),
+        title: BI.i18nText("BI-Compare_Axis"),
+        value: BICst.WIDGET.COMPARE_AXIS,
+        cls: "drag-axis-compare-icon"
+    }, {
+        text: BI.i18nText("BI-Fall_Axis"),
+        title: BI.i18nText("BI-Fall_Axis"),
+        value: BICst.WIDGET.FALL_AXIS,
+        cls: "drag-axis-fall-icon"
+    }]
+}, {
+    text: BI.i18nText("BI-Bar_Chart"),
+    title: BI.i18nText("BI-Bar_Chart"),
+    value: BICst.WIDGET.BAR,
+    cls: "drag-bar-icon",
+    children: [{
         text: BI.i18nText("BI-Bar_Chart"),
         title: BI.i18nText("BI-Bar_Chart"),
-        value: BICst.Widget.BAR,
-        cls: "chart-bar-font"
+        value: BICst.WIDGET.BAR,
+        cls: "drag-bar-icon"
     }, {
         text: BI.i18nText("BI-Stacked_Bar_Chart"),
         title: BI.i18nText("BI-Stacked_Bar_Chart"),
-        value: BICst.Widget.ACCUMULATE_BAR,
-        cls: "chart-accumulate-bar-font"
+        value: BICst.WIDGET.ACCUMULATE_BAR,
+        cls: "drag-bar-accu-icon"
+    }, {
+        text: BI.i18nText("BI-Compare_Bar"),
+        title: BI.i18nText("BI-Compare_Bar"),
+        value: BICst.WIDGET.COMPARE_BAR,
+        cls: "drag-bar-compare-icon"
+    }]
+}, {
+    text: BI.i18nText("BI-Line_Chart"),
+    title: BI.i18nText("BI-Line_Chart"),
+    value: BICst.WIDGET.LINE,
+    cls: "drag-line-icon"
+}, {
+    text: BI.i18nText("BI-Area_Chart"),
+    title: BI.i18nText("BI-Area_Chart"),
+    value: BICst.WIDGET.AREA,
+    cls: "drag-area-icon",
+    children: [{
+        text: BI.i18nText("BI-Area_Chart"),
+        title: BI.i18nText("BI-Area_Chart"),
+        value: BICst.WIDGET.AREA,
+        cls: "drag-area-icon"
+    }, {
+        text: BI.i18nText("BI-Accumulate_Area"),
+        title: BI.i18nText("BI-Accumulate_Area"),
+        value: BICst.WIDGET.ACCUMULATE_AREA,
+        cls: "drag-area-accu-icon"
+    }, {
+        text: BI.i18nText("BI-Percent_Accumulate_Area"),
+        title: BI.i18nText("BI-Percent_Accumulate_Area"),
+        value: BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+        cls: "drag-area-percent-accu-icon"
+    }, {
+        text: BI.i18nText("BI-Compare_Area"),
+        title: BI.i18nText("BI-Compare_Area"),
+        value: BICst.WIDGET.COMPARE_AREA,
+        cls: "drag-area-compare-icon"
+    }, {
+        text: BI.i18nText("BI-Compare_Range_Area"),
+        title: BI.i18nText("BI-Compare_Range_Area"),
+        value: BICst.WIDGET.RANGE_AREA,
+        cls: "drag-area-range-icon"
+    }]
+}, {
+    text: BI.i18nText("BI-Combine_Chart"),
+    title: BI.i18nText("BI-Combine_Chart"),
+    value: BICst.WIDGET.COMBINE_CHART,
+    cls: "drag-combine-icon",
+    children: [{
+        text: BI.i18nText("BI-Combine_Chart"),
+        title: BI.i18nText("BI-Combine_Chart"),
+        value: BICst.WIDGET.COMBINE_CHART,
+        cls: "drag-combine-icon"
+    }, {
+        text: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
+        title: BI.i18nText("BI-Multi_Axis_Combine_Chart"),
+        value: BICst.WIDGET.MULTI_AXIS_COMBINE_CHART,
+        cls: "drag-combine-mult-icon"
     }]
 }, {
     text: BI.i18nText("BI-Pie_Chart"),
     title: BI.i18nText("BI-Pie_Chart"),
-    value: BICst.Widget.PIE,
-    cls: "chart-pie-font"
-}, {
-    text: BI.i18nText("BI-Map"),
-    title: BI.i18nText("BI-Map"),
-    value: BICst.Widget.MAP,
-    cls: "chart-map-font"
-}, {
-    text: BI.i18nText("BI-Dashboard_Chart"),
-    title: BI.i18nText("BI-Dashboard_Chart"),
-    value: BICst.Widget.DASHBOARD,
-    cls: "chart-dashboard-font"
+    value: BICst.WIDGET.PIE,
+    cls: "drag-pie-icon"
 }, {
     text: BI.i18nText("BI-Donut_Chart"),
     title: BI.i18nText("BI-Donut_Chart"),
-    value: BICst.Widget.DOUGHNUT,
-    cls: "chart-doughnut-font"
+    value: BICst.WIDGET.DONUT,
+    cls: "drag-donut-icon"
 }, {
-    text: BI.i18nText("BI-Detail_Table"),
-    title: BI.i18nText("BI-Detail_Table"),
-    value: BICst.Widget.DETAIL,
-    cls: "chart-detail-font"
+    text: BI.i18nText("BI-Map"),
+    title: BI.i18nText("BI-Map"),
+    value: BICst.WIDGET.MAP,
+    cls: "drag-map-china-icon"
 }, {
-    text: BI.i18nText("BI-More"),
-    title: BI.i18nText("BI-More"),
-    value: BICst.Widget.CONTENT,
-    cls: "chart-more-font",
+    text: BI.i18nText("BI-GIS_Map"),
+    title: BI.i18nText("BI-GIS_Map"),
+    value: BICst.WIDGET.GIS_MAP,
+    cls: "drag-map-gis-icon"
+}, {
+    text: BI.i18nText("BI-Dashboard_Chart"),
+    title: BI.i18nText("BI-Dashboard_Chart"),
+    value: BICst.WIDGET.DASHBOARD,
+    cls: "drag-dashboard-icon"
+}, {
+    text: BI.i18nText("BI-Radar"),
+    title: BI.i18nText("BI-Radar"),
+    value: BICst.WIDGET.RADAR,
+    cls: "drag-radar-icon",
     children: [{
-        text: BI.i18nText("BI-Text_Widget"),
-        title: BI.i18nText("BI-Text_Widget"),
-        value: BICst.Widget.CONTENT,
-        cls: "chart-content-font"
+        text: BI.i18nText("BI-Radar"),
+        title: BI.i18nText("BI-Radar"),
+        value: BICst.WIDGET.RADAR,
+        cls: "drag-radar-icon"
     }, {
-        text: BI.i18nText("BI-Image_Widget"),
-        title: BI.i18nText("BI-Image_Widget"),
-        value: BICst.Widget.IMAGE,
-        cls: "chart-image-font"
-    }, {
-        text: BI.i18nText("BI-Web_Widget"),
-        title: BI.i18nText("BI-Web_Widget"),
-        value: BICst.Widget.WEB,
-        cls: "chart-web-font"
+        text: BI.i18nText("BI-Accumulate_Radar"),
+        title: BI.i18nText("BI-Accumulate_Radar"),
+        value: BICst.WIDGET.ACCUMULATE_RADAR,
+        cls: "drag-radar-accu-icon"
     }]
 }, {
     text: BI.i18nText("BI-Bubble_Chart"),
     title: BI.i18nText("BI-Bubble_Chart"),
-    value: BICst.Widget.BUBBLE,
-    cls: "chart-bubble-font"
+    value: BICst.WIDGET.BUBBLE,
+    cls: "drag-bubble-icon",
+    children: [{
+        text: BI.i18nText("BI-Bubble_Chart"),
+        title: BI.i18nText("BI-Bubble_Chart"),
+        value: BICst.WIDGET.BUBBLE,
+        cls: "drag-bubble-icon"
+    }, {
+        text: BI.i18nText("BI-Force_Bubble"),
+        title: BI.i18nText("BI-Force_Bubble"),
+        value: BICst.WIDGET.FORCE_BUBBLE,
+        cls: "drag-bubble-force-icon"
+    }]
 }, {
     text: BI.i18nText("BI-Scatter"),
     title: BI.i18nText("BI-Scatter"),
-    value: BICst.Widget.SCATTER,
-    cls: "chart-scatter-font"
+    value: BICst.WIDGET.SCATTER,
+    cls: "drag-scatter-icon"
 }, {
-    text: BI.i18nText("BI-Radar"),
-    title: BI.i18nText("BI-Radar"),
-    value: BICst.Widget.RADAR,
-    cls: "chart-radar-font"
-}
-], [{//以下是控件
+    text: BI.i18nText("BI-Funnel_Chart"),
+    title: BI.i18nText("BI-Funnel_Chart"),
+    value: BICst.WIDGET.FUNNEL,
+    cls: "drag-funnel-icon"
+}], [{
+    text: BI.i18nText("BI-Detail_Table"),
+    title: BI.i18nText("BI-Detail_Table"),
+    value: BICst.WIDGET.DETAIL,
+    cls: "drag-detail-icon"
+}, {
+    text: BI.i18nText("BI-Text_Widget"),
+    title: BI.i18nText("BI-Text_Widget"),
+    value: BICst.WIDGET.CONTENT,
+    cls: "drag-input-icon"
+}, {
+    text: BI.i18nText("BI-Image_Widget"),
+    title: BI.i18nText("BI-Image_Widget"),
+    value: BICst.WIDGET.IMAGE,
+    cls: "drag-image-icon"
+}, {
+    text: BI.i18nText("BI-Web_Widget"),
+    title: BI.i18nText("BI-Web_Widget"),
+    value: BICst.WIDGET.WEB,
+    cls: "drag-web-icon"
+}], [{//以下是控件
     text: BI.i18nText("BI-Text_Control"),
     title: BI.i18nText("BI-Text_Control"),
-    value: BICst.Widget.STRING,
-    cls: "chart-string-font"
+    value: BICst.WIDGET.STRING,
+    cls: "drag-string-icon"
 }, {
     text: BI.i18nText("BI-Numeric_Control"),
     title: BI.i18nText("BI-Numeric_Control"),
-    value: BICst.Widget.NUMBER,
-    cls: "chart-number-font"
+    value: BICst.WIDGET.NUMBER,
+    cls: "drag-number-icon"
 }, {
     text: BI.i18nText("BI-Tree_Control"),
     title: BI.i18nText("BI-Tree_Control"),
-    value: BICst.Widget.TREE,
-    cls: "chart-tree-font"
+    value: BICst.WIDGET.TREE,
+    cls: "drag-tree-icon"
 }, {
     text: BI.i18nText("BI-Date_Control"),
     title: BI.i18nText("BI-Date_Control"),
-    value: BICst.Widget.DATE,
-    cls: "chart-date-font",
+    value: BICst.WIDGET.DATE,
+    cls: "drag-date-icon",
     children: [
         {
             text: BI.i18nText("BI-Year_Control"),
             title: BI.i18nText("BI-Year_Control"),
-            value: BICst.Widget.YEAR,
-            cls: "chart-year-font"
+            value: BICst.WIDGET.YEAR,
+            cls: "drag-year-icon"
         }, {
             text: BI.i18nText("BI-Year_Month_Con"),
             title: BI.i18nText("BI-Year_Month_Con"),
-            value: BICst.Widget.MONTH,
-            cls: "chart-month-font"
+            value: BICst.WIDGET.MONTH,
+            cls: "drag-year-month-icon"
         }, {
             text: BI.i18nText("BI-Year_Quarter_Con"),
             title: BI.i18nText("BI-Year_Quarter_Con"),
-            value: BICst.Widget.QUARTER,
-            cls: "chart-quarter-font"
+            value: BICst.WIDGET.QUARTER,
+            cls: "drag-year-season-icon"
         }, {
             text: BI.i18nText("BI-Date_Control"),
             title: BI.i18nText("BI-Date_Control"),
-            value: BICst.Widget.YMD,
-            cls: "chart-ymd-font"
+            value: BICst.WIDGET.YMD,
+            cls: "drag-ymd-icon"
         }, {
             text: BI.i18nText("BI-Date_Range_Control"),
             title: BI.i18nText("BI-Date_Range_Control"),
-            value: BICst.Widget.DATE,
-            cls: "chart-date-range-font"
+            value: BICst.WIDGET.DATE,
+            cls: "drag-date-icon"
         }]
 }, {
     text: BI.i18nText("BI-General_Query"),
     title: BI.i18nText("BI-General_Query"),
-    value: BICst.Widget.GENERAL_QUERY,
-    cls: "chart-general-query-font"
+    value: BICst.WIDGET.GENERAL_QUERY,
+    cls: "drag-general-query-icon"
 }, {
     text: BI.i18nText("BI-Query_Button"),
     title: BI.i18nText("BI-Query_Button"),
-    value: BICst.Widget.QUERY,
-    cls: "chart-query-font"
+    value: BICst.WIDGET.QUERY,
+    cls: "drag-query-icon"
 }, {
     text: BI.i18nText("BI-Reset_Button"),
     title: BI.i18nText("BI-Reset_Button"),
-    value: BICst.Widget.RESET,
-    cls: "chart-reset-font"
-}], [{
-    text: BI.i18nText("BI-Reuse"),
-    title: BI.i18nText("BI-Reuse"),
-    value: -1,
-    cls: "chart-reuse-font"
+    value: BICst.WIDGET.RESET,
+    cls: "drag-reset-icon"
 }]];
 
-//三种表格类型
-BICst.TABLE_TYPE = [{
-    title: BI.i18nText("BI-Group_Table"),
-    value: BICst.Widget.TABLE,
-    text: BI.i18nText("BI-Group_Table")
-}, {
-    title: BI.i18nText("BI-Cross_Table"),
-    value: BICst.Widget.CROSS_TABLE,
-    text: BI.i18nText("BI-Cross_Table")
-}, {
-    title: BI.i18nText("BI-Complex_Table"),
-    value: BICst.Widget.COMPLEX_TABLE,
-    text: BI.i18nText("BI-Complex_Table")
-}];
-
-//图表类型
-BICst.CHART_TYPE = [{
-    title: BI.i18nText("BI-Cor_Chart"),
-    value: BICst.Widget.AXIS,
-    cls: "detail-chart-axis-font"
-}, {
-    title: BI.i18nText("BI-Bar_Chart"),
-    value: BICst.Widget.BAR,
-    cls: "detail-chart-bar-font"
-}, {
-    title: BI.i18nText("BI-Stacked_Bar_Chart"),
-    value: BICst.Widget.ACCUMULATE_BAR,
-    cls: "detail-char-accumulate-bar-font"
-}, {
-    title: BI.i18nText("BI-Pie_Chart"),
-    value: BICst.Widget.PIE,
-    cls: "detail-chart-pie-font"
-}, {
-    title: BI.i18nText("BI-Map"),
-    value: BICst.Widget.MAP,
-    cls: "detail-chart-map-font"
-}, {
-    title: BI.i18nText("BI-Dashboard_Chart"),
-    value: BICst.Widget.DASHBOARD,
-    cls: "detail-chart-dashboard-font"
-}, {
-    title: BI.i18nText("BI-Donut_Chart"),
-    value: BICst.Widget.DOUGHNUT,
-    cls: "detail-chart-doughnut-font"
-}, {
-    title: BI.i18nText("BI-Bubble_Chart"),
-    value: BICst.Widget.BUBBLE,
-    cls: "detail-chart-bubble-font"
-}, {
-    title: BI.i18nText("BI-Scatter"),
-    value: BICst.Widget.SCATTER,
-    cls: "detail-chart-scatter-font"
-}, {
-    title: BI.i18nText("BI-Radar"),
-    value: BICst.Widget.RADAR,
-    cls: "detail-chart-radar-font"
-}];
-
-//四种汇总
-BICst.SUMMARY_TYPE_ITEMS = [{
-    value: BICst.SUMMARY_TYPE.SUM, text: BI.i18nText("BI-Qiu_Sum"), text_class: "fr-bi-target-summary-sum"
-}, {
-    value: BICst.SUMMARY_TYPE.AVG, text: BI.i18nText("BI-Qiu_Avg"), text_class: "fr-bi-target-summary-avg"
-}, {
-    value: BICst.SUMMARY_TYPE.MAX, text: BI.i18nText("BI-Qiu_Max"), text_class: "fr-bi-target-summary-max"
-}, {
-    value: BICst.SUMMARY_TYPE.MIN, text: BI.i18nText("BI-Qiu_Min"), text_class: "fr-bi-target-summary-min"
-}];
-
-//过滤所用四种汇总
-BICst.FILTER_SUMMARY_TYPE_ITEMS = [{
-    value: BICst.FILTER_TYPE.NUMBER_SUM, text: BI.i18nText("BI-Qiu_Sum"), text_class: "fr-bi-target-summary-sum"
-}, {
-    value: BICst.FILTER_TYPE.NUMBER_AVG, text: BI.i18nText("BI-Qiu_Avg"), text_class: "fr-bi-target-summary-avg"
-}, {
-    value: BICst.FILTER_TYPE.NUMBER_MAX, text: BI.i18nText("BI-Qiu_Max"), text_class: "fr-bi-target-summary-max"
-}, {
-    value: BICst.FILTER_TYPE.NUMBER_MIN, text: BI.i18nText("BI-Qiu_Min"), text_class: "fr-bi-target-summary-min"
-}];
-
-//指标的四种类型
-BICst.TARGET_CHART_STYLE = [{
-    text: BI.i18nText("BI-Column_Chart"),
-    value: (BICst.CHART_VIEW_STYLE_BAR = 0),
-    text_class: "fr-bi-chart-view-setter-style-of-chart-vertical-bar"
-}, {
-    text: BI.i18nText("BI-Stacked_Chart"),
-    value: (BICst.CHART_VIEW_STYLE_ACCUMULATED_BAR = 1),
-    text_class: "fr-bi-chart-view-setter-style-of-chart-vertical-accumulated-bar"
-}, {
-    text: BI.i18nText("BI-Line_Chart"),
-    value: (BICst.CHART_VIEW_STYLE_LINE = 2),
-    text_class: "fr-bi-chart-view-setter-style-of-chart-line"
-}, {
-    text: BI.i18nText("BI-Area_Chart"),
-    value: (BICst.CHART_VIEW_STYLE_SQUARE = 3),
-    text_class: "fr-bi-chart-view-setter-style-of-chart-square"
-}];
 //组件的设置的下拉选项
 BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_WIDGET_DRILL,
-    text: BI.i18nText("BI-Linked_To_Components"),
+    value: BICst.DASHBOARD_WIDGET_LINKAGE,
+    text: BI.i18nText("BI-Link_To_Dots"),
     extraCls: "dashboard-widget-combo-linkage-font"
-}, {
-    value: BICst.DASHBOARD_DETAIL_WIDGET_DRILL,
-    text: BI.i18nText("BI-Linked_To_Detail"),
-    extraCls: "dashboard-widget-combo-linkage-font"
+// }, {
+//     value: BICst.DASHBOARD_DETAIL_WIDGET_DRILL,
+//     text: BI.i18nText("BI-Linked_To_Detail"),
+//     extraCls: "dashboard-widget-combo-linkage-font"
 }, {
     value: BICst.DASHBOARD_WIDGET_EXPAND,
     text: BI.i18nText("BI-Detailed_Setting"),
@@ -300,220 +316,88 @@ BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS = [{
     text: BI.i18nText("BI-Delete_Component"),
     extraCls: "delete-h-font"
 }];
-//组件的设置的下拉选项(预览)
-BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS_SHOW = [{
-    value: BICst.DASHBOARD_WIDGET_EXPAND,
-    text: BI.i18nText("BI-Detailed_Setting"),
-    extraCls: "dashboard-widget-combo-detail-set-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_EXCEL,
-    text: BI.i18nText("BI-Export_As_Excel"),
-    extraCls: "dashboard-widget-combo-export-excel-font"
-}];
-
-BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS.VIEW = [{
-    value: BICst.DASHBOARD_WIDGET_EXCEL,
-    text: BI.i18nText("BI-Export_As_Excel"),
-    extraCls: "widget-combo-menu-excel-export-icon"
-}, {
-    value: BICst.DASHBOARD_WIDGET_EASY_SETTING,
-    text: BI.i18nText("BI-Quick_Setting"),
-    extraCls: "widget-combo-menu-detail-icon"
-}];
-
-//明细表的设置的下拉选项
-BICst.DETIAL_WIDGET_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_WIDGET_EXPAND,
-    text: BI.i18nText("BI-Detailed_Setting"),
-    extraCls: "dashboard-widget-combo-detail-set-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_EXCEL,
-    text: BI.i18nText("BI-Export_As_Excel"),
-    extraCls: "dashboard-widget-combo-export-excel-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_COPY,
-    text: BI.i18nText("BI-Copy"),
-    extraCls: "copy-h-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_DELETE,
-    text: BI.i18nText("BI-Delete_Detail"),
-    extraCls: "delete-h-font"
-}];
-
-BICst.DETIAL_WIDGET_SETCOMBO_ITEMS.VIEW = [{
-    value: BICst.DASHBOARD_WIDGET_EXCEL,
-    text: BI.i18nText("BI-Export_As_Excel"),
-    extraCls: "widget-combo-menu-excel-export-icon"
-}, {
-    value: BICst.DASHBOARD_WIDGET_EASY_SETTING,
-    text: BI.i18nText("BI-Quick_Setting"),
-    extraCls: "widget-combo-menu-detail-icon"
-}];
-
-//复选框和下拉树控件的下拉选项
-BICst.STRING_TREE_CONTROL_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_WIDGET_EXPAND,
-    text: BI.i18nText("BI-Detailed_Setting"),
-    extraCls: "dashboard-widget-combo-detail-set-font"
-}, {
-    value: BICst.DASHBOARD_CONTROL_RANG_ASC,
-    text: BI.i18nText("BI-Ascend"),
-    list_border_not_show: true,
-    extraCls: "sort-asc-small-icon"
-}, {
-    value: BICst.DASHBOARD_CONTROL_RANG_DESC,
-    text: BI.i18nText("BI-Descend"),
-    extraCls: "sort-desc-small-icon"
-}, {
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "fr-bi-erase-button-small"
-}, {
-    value: BICst.DASHBOARD_WIDGET_COPY,
-    text: BI.i18nText("BI-Copy"),
-    extraCls: "widget-combo-menu-copy-icon"
-}, {
-    value: BICst.DASHBOARD_WIDGET_DELETE,
-    text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-combo-menu-delete-icon"
-}];
-
-BICst.STRING_TREE_CONTROL_SETCOMBO_ITEMS.VIEW = [{
-    value: BICst.DASHBOARD_CONTROL_RANG_ASC,
-    text: BI.i18nText("BI-Ascend"),
-    list_border_not_show: true,
-    extraCls: "sort-asc-small-icon"
-}, {
-    value: BICst.DASHBOARD_CONTROL_RANG_DESC, text: BI.i18nText("BI-Descend"), extraCls: "sort-desc-small-icon"
-}];
-
 
 //时间控件的下拉选项
-BICst.TIME_CONTROL_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_WIDGET_EXPAND,
-    text: BI.i18nText("BI-Detailed_Setting"),
-    extraCls: "dashboard-widget-combo-detail-set-font"
-}, {
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "dashboard-widget-combo-clear-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_COPY,
-    text: BI.i18nText("BI-Copy"),
-    extraCls: "widget-copy-h-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_DELETE,
-    text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-delete-h-font"
-}];
-
-BICst.TIME_CONTROL_SETCOMBO_ITEMS.VIEW = [];
+BICst.TIME_CONTROL_SETCOMBO_ITEMS = [
+    [{
+        value: BICst.DASHBOARD_WIDGET_EXPAND,
+        text: BI.i18nText("BI-Detailed_Setting"),
+        cls: "dashboard-widget-combo-detail-set-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_CONTROL_CLEAR,
+        text: BI.i18nText("BI-Clear_Selected_Value"),
+        cls: "widget-combo-clear-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_RENAME,
+        text: BI.i18nText("BI-Rename"),
+        cls: "widget-combo-rename-edit-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_COPY,
+        text: BI.i18nText("BI-Copy"),
+        cls: "widget-combo-copy"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-combo-delete"
+    }]
+];
 
 //数值控件的下拉选项
-BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_WIDGET_EXPAND,
-    text: BI.i18nText("BI-Detailed_Setting"),
-    extraCls: "widget-combo-menu-detail-icon"
-}, {
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "dashboard-widget-combo-clear-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_COPY,
-    text: BI.i18nText("BI-Copy"),
-    extraCls: "widget-copy-h-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_DELETE,
-    text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-delete-h-font"
-}];
-
-BICst.NUMBER_CONTROL_SETCOMBO_ITEMS.VIEW = [{
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "dashboard-widget-combo-clear-font"
-}];
+BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
+    [{
+        value: BICst.DASHBOARD_WIDGET_EXPAND,
+        text: BI.i18nText("BI-Detailed_Setting"),
+        cls: "dashboard-widget-combo-detail-set-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_CONTROL_CLEAR,
+        text: BI.i18nText("BI-Clear_Selected_Value"),
+        cls: "widget-combo-clear-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_RENAME,
+        text: BI.i18nText("BI-Rename"),
+        cls: "widget-combo-rename-edit-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_COPY,
+        text: BI.i18nText("BI-Copy"),
+        cls: "widget-combo-copy"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-combo-delete"
+    }]
+];
 
 //通用查询的下拉选项
-BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [{
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "dashboard-widget-combo-clear-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_COPY, 
-    text: BI.i18nText("BI-Copy"),
-    extraCls: "widget-copy-h-font"
-}, {
-    value: BICst.DASHBOARD_WIDGET_DELETE,
-    text: BI.i18nText("BI-Delete_Control"),
-    extraCls: "widget-delete-h-font"
-}];
-
-BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS.VIEW = [{
-    value: BICst.DASHBOARD_CONTROL_CLEAR,
-    text: BI.i18nText("BI-Clear_Selected_Value"),
-    extraCls: "dashboard-widget-combo-clear-font"
-}];
-
-//指标下拉选项
-BICst.WIDGET_DETAIL_TARGET_ITEM = [{
-    value: BICst.TARGET_COMBO.SUMMERY_TYPE,
-    text: BI.i18nText("BI-Summary_Style"),
-    children: BICst.SUMMARY_TYPE_ITEMS,
-    suffix_class: "fr-bi-list-spread",
-    list_border_not_show: true
-}, {
-    value: BICst.TARGET_COMBO.CHART_TYPE,
-    text: BI.i18nText("BI-Chart_Type"),
-    children: BICst.TARGET_CHART_STYLE,
-    suffix_class: "fr-bi-list-spread"
-}, {
-    value: BICst.TARGET_COMBO.STYLE_SETTING, text: BI.i18nText("BI-Style_Setting")
-}, {
-    value: BICst.TARGET_COMBO.FILTER,
-    text: BI.i18nText("BI-Filter_Number_Summary"),
-    tooltip: BI.i18nText("BI-Target_Summary_Filter_Title")
-}, {
-    value: BICst.TARGET_COMBO.COPY, text: BI.i18nText("BI-Copy")
-}, {
-    value: BICst.TARGET_COMBO.DELETE, text: BI.i18nText("BI-Delete_Target")
-}, {
-    value: BICst.TARGET_COMBO.INFO, text: BI.i18nText("BI-This_Target_From"), disable: true
-}];
-
-BICst.WIDGET_DETAIL_TARGET_ITEM.PREDICTION = [{
-    value: BICst.TARGET_ELEMENT_GATHER_STYLE,
-    text: "fbi_Summary_Style",
-    children: BICst.SUMMARY_TYPE_ITEMS,
-    suffix_class: "fr-bi-list-spread",
-    list_border_not_show: true
-}, {
-    value: BICst.TARGET_ELEMENT_CHART_STYLE,
-    text: "fbi_Chart_Type",
-    children: BICst.TARGET_CHART_STYLE,
-    suffix_class: "fr-bi-list-spread"
-}, {
-    value: BICst.TARGET_ELEMENT_STYLE_SET, text: "fbi_Style_Setting"
-}, {
-    value: BICst.TARGET_ELEMENT_FILTER_SET, text: "fbi_Filter_Setting"
-}, {
-    value: BICst.TARGET_ELEMENT_PREDICT, text: "fbi_Predict_Target"
-}, {
-    value: BICst.TARGET_ELEMENT_DELETE, text: "fbi_Delete_Target"
-}];
-
-BICst.WIDGET_DETAIL_TARGET_ITEM.VIEW = [{
-    value: BICst.TARGET_ELEMENT_GATHER_STYLE,
-    text: "fbi_Summary_Style(Sum)",
-    children: BICst.SUMMARY_TYPE_ITEMS,
-    suffix_class: "fr-bi-list-spread",
-    list_border_not_show: true
-}, {
-    value: BICst.TARGET_ELEMENT_CHART_STYLE,
-    text: "fbi_Chart_Type",
-    children: BICst.TARGET_CHART_STYLE,
-    suffix_class: "fr-bi-list-spread"
-}];
+BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
+    [{
+        value: BICst.DASHBOARD_CONTROL_CLEAR,
+        text: BI.i18nText("BI-Clear_Selected_Value"),
+        cls: "widget-combo-clear-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_RENAME,
+        text: BI.i18nText("BI-Rename"),
+        cls: "widget-combo-rename-edit-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_COPY,
+        text: BI.i18nText("BI-Copy"),
+        cls: "widget-combo-copy"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-combo-delete"
+    }]
+];
 
 //etl group
 BICst.ETL_MANAGE_ITEMS = [{
@@ -558,100 +442,68 @@ BICst.ETL_MANAGE_ITEMS = [{
     text: BI.i18nText("BI-Remove"), title: BI.i18nText("BI-Remove"), value: BICst.ETL_MANAGE_TABLE_DELETE
 }];
 
-//field type
-BICst.ETL_ADD_FORMULA_FIELD_TYPE = [{
-    value: BICst.COLUMN.STRING, cls: "chart-string-font"
-}, {
-    value: BICst.COLUMN.NUMBER, cls: "chart-number-font"
-}, {
-    value: BICst.COLUMN.DATE, cls: "chart-string-font"
-}];
-
 //过滤的几种类型
 //target string
 BICst.TARGET_FILTER_STRING_COMBO = [[{
     text: BI.i18nText("BI-In"),
-    value: BICst.TARGET_FILTER_STRING.BELONG_VALUE
+    value: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE
+    value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Contain"),
-    value: BICst.TARGET_FILTER_STRING.CONTAIN
+    value: BICst.TARGET_FILTER_STRING.CONTAIN,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Contain"),
-    value: BICst.TARGET_FILTER_STRING.NOT_CONTAIN
+    value: BICst.TARGET_FILTER_STRING.NOT_CONTAIN,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.TARGET_FILTER_STRING.IS_NULL
+    value: BICst.TARGET_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.TARGET_FILTER_STRING.NOT_NULL
+    value: BICst.TARGET_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Begin_With"),
-    value: BICst.TARGET_FILTER_STRING.BEGIN_WITH
+    value: BICst.TARGET_FILTER_STRING.BEGIN_WITH,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-End_With"),
-    value: BICst.TARGET_FILTER_STRING.END_WITH
+    value: BICst.TARGET_FILTER_STRING.END_WITH,
+    cls: "dot-e-font"
 }]];
 
 //target number
 BICst.TARGET_FILTER_NUMBER_COMBO = [[{
     text: BI.i18nText("BI-Equal"),
-    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Equal_To"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-In"),
-    value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE
+    value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE
+    value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.TARGET_FILTER_NUMBER.IS_NULL
+    value: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_NULL
+    value: BICst.TARGET_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
 }]];
-
-BICst.DATE_WEEK_COMBO = [{
-    //text: BI.i18nText("BI-Monday"),
-    value: 1
-}, {
-    //text: BI.i18nText("BI-Tuesday"),
-    value: 2
-}, {
-    //text: BI.i18nText("BI-Wednesday"),
-    value: 3
-}, {
-    //text: BI.i18nText("BI-Thursday"),
-    value: 4
-}, {
-    //text: BI.i18nText("BI-Friday"),
-    value: 5
-}, {
-    //text: BI.i18nText("BI-Saturday"),
-    value: 6
-}, {
-    //text: BI.i18nText("BI-Sunday"),
-    value: 7
-}];
-
-BICst.DATE_SEASON_COMBO = [{
-    //text: BI.i18nText("BI-Quarter_1"),
-    value: 1
-}, {
-    //text: BI.i18nText("BI-Quarter_2"),
-    value: 2
-}, {
-    // text: BI.i18nText("BI-Quarter_3"),
-    value: 3
-}, {
-    //text: BI.i18nText("BI-Quarter_4"),
-    value: 4
-}];
 
 BICst.BEFORE_AFTER_COMBO = [{
     text: BI.i18nText("BI-Qian_First"),
@@ -664,86 +516,78 @@ BICst.BEFORE_AFTER_COMBO = [{
 //dimension string
 BICst.DIMENSION_FILTER_STRING_COMBO = [[{
     text: BI.i18nText("BI-In"),
-    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Contain"),
-    value: BICst.DIMENSION_FILTER_STRING.CONTAIN
+    value: BICst.DIMENSION_FILTER_STRING.CONTAIN,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Contain"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN
+    value: BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.DIMENSION_FILTER_STRING.IS_NULL
+    value: BICst.DIMENSION_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_NULL
+    value: BICst.DIMENSION_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Begin_With"),
-    value: BICst.DIMENSION_FILTER_STRING.BEGIN_WITH
+    value: BICst.DIMENSION_FILTER_STRING.BEGIN_WITH,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-End_With"),
-    value: BICst.DIMENSION_FILTER_STRING.END_WITH
+    value: BICst.DIMENSION_FILTER_STRING.END_WITH,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Top_N"),
-    value: BICst.DIMENSION_FILTER_STRING.TOP_N
+    value: BICst.DIMENSION_FILTER_STRING.TOP_N,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Last_N"),
-    value: BICst.DIMENSION_FILTER_STRING.BOTTOM_N
+    value: BICst.DIMENSION_FILTER_STRING.BOTTOM_N,
+    cls: "dot-e-font"
 }]];
 
 BICst.DIMENSION_TAR_FILTER_NUMBER_COMBO = [[{
     text: BI.i18nText("BI-In"),
-    value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE
+    value: BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Above_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.MORE_THAN_AVG
+    value: BICst.DIMENSION_FILTER_NUMBER.MORE_THAN_AVG,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Below_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.LESS_THAN_AVG
+    value: BICst.DIMENSION_FILTER_NUMBER.LESS_THAN_AVG,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.DIMENSION_FILTER_NUMBER.IS_NULL
+    value: BICst.DIMENSION_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL
+    value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Top_N"),
-    value: BICst.DIMENSION_FILTER_NUMBER.TOP_N
+    value: BICst.DIMENSION_FILTER_NUMBER.TOP_N,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Last_N"),
-    value: BICst.DIMENSION_FILTER_NUMBER.BOTTOM_N
-}]];
-
-BICst.DIMENSION_DIM_FILTER_NUMBER_COMBO = [[{
-    text: BI.i18nText("BI-In"),
-    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE
-}, {
-    text: BI.i18nText("BI-Not_In"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE
-}], [{
-    text: BI.i18nText("BI-Above_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.MORE_THAN_AVG
-}, {
-    text: BI.i18nText("BI-Below_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.LESS_THAN_AVG
-}], [{
-    text: BI.i18nText("BI-Is_Null"),
-    value: BICst.DIMENSION_FILTER_NUMBER.IS_NULL
-}, {
-    text: BI.i18nText("BI-Not_Null"),
-    value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL
-}], [{
-    text: BI.i18nText("BI-Top_N"),
-    value: BICst.DIMENSION_FILTER_NUMBER.TOP_N
-}, {
-    text: BI.i18nText("BI-Last_N"),
-    value: BICst.DIMENSION_FILTER_NUMBER.BOTTOM_N
+    value: BICst.DIMENSION_FILTER_NUMBER.BOTTOM_N,
+    cls: "dot-e-font"
 }]];
 
 //date
@@ -754,10 +598,12 @@ BICst.FILTER_DATE_COMBO = [[{
     },
     children: [{
         text: BI.i18nText("BI-Periods_Time"),
-        value: BICst.FILTER_DATE.BELONG_DATE_RANGE
+        value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
+        cls: "dot-e-font"
     }, {
         text: BI.i18nText("BI-Control_Value"),
-        value: BICst.FILTER_DATE.BELONG_WIDGET_VALUE
+        value: BICst.FILTER_DATE.BELONG_WIDGET_VALUE,
+        cls: "dot-e-font"
     }]
 }, {
     el: {
@@ -766,43 +612,63 @@ BICst.FILTER_DATE_COMBO = [[{
     },
     children: [{
         text: BI.i18nText("BI-Periods_Time"),
-        value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE
+        value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE,
+        cls: "dot-e-font"
     }, {
         text: BI.i18nText("BI-Control_Value"),
-        value: BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE
+        value: BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE,
+        cls: "dot-e-font"
     }]
 }], [{
     text: BI.i18nText("BI-More_Than"),
-    value: BICst.FILTER_DATE.LATER_THAN
+    value: BICst.FILTER_DATE.LATER_THAN,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Less_Than"),
-    value: BICst.FILTER_DATE.EARLY_THAN
+    value: BICst.FILTER_DATE.EARLY_THAN,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Equal"),
-    value: BICst.FILTER_DATE.EQUAL_TO
+    value: BICst.FILTER_DATE.EQUAL_TO,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Equal_To"),
-    value: BICst.FILTER_DATE.NOT_EQUAL_TO
+    value: BICst.FILTER_DATE.NOT_EQUAL_TO,
+    cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.FILTER_DATE.IS_NULL
+    value: BICst.FILTER_DATE.IS_NULL,
+    cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.FILTER_DATE.NOT_NULL
+    value: BICst.FILTER_DATE.NOT_NULL,
+    cls: "dot-e-font"
 }]];
 
 BICst.DATA_SETTING_FILTER_DATE_COMBO = [[{
-    text: BI.i18nText("BI-In"), value: BICst.FILTER_DATE.BELONG_DATE_RANGE
+    text: BI.i18nText("BI-In"),
+    value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
+    cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Not_In"), value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE,
+    cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Equal"), value: BICst.FILTER_DATE.EQUAL_TO
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.FILTER_DATE.EQUAL_TO,
+    cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Not_Equal_To"), value: BICst.FILTER_DATE.NOT_EQUAL_TO
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.FILTER_DATE.NOT_EQUAL_TO,
+    cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Is_Null"), value: BICst.FILTER_DATE.IS_NULL
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.FILTER_DATE.IS_NULL,
+    cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Not_Null"), value: BICst.FILTER_DATE.NOT_NULL
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.FILTER_DATE.NOT_NULL,
+    cls: "dot-e-font"
 }]];
 
 BICst.Date_Range_FILTER_COMBO = [{
@@ -818,6 +684,108 @@ BICst.FILTER_CONDITION_TYPE = [{
 }, {
     text: BI.i18nText("BI-Or"), value: BICst.FILTER_TYPE.OR
 }];
+
+//auth string
+BICst.AUTHORITY_FILTER_STRING_COMBO = [[{
+    el: {
+        text: BI.i18nText("BI-In"),
+        value: BICst.TARGET_FILTER_STRING.BELONG_VALUE
+    },
+    children: [{
+        text: BI.i18nText("BI-Field_Value"),
+        value: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+        cls: "dot-e-font"
+    }, {
+        text: BI.i18nText("BI-Login_User_Info"),
+        value: BICst.TARGET_FILTER_STRING.BELONG_USER,
+        cls: "dot-e-font"
+    }]
+}, {
+    el: {
+        text: BI.i18nText("BI-Not_In"),
+        value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE
+    },
+    children: [{
+        text: BI.i18nText("BI-Field_Value"),
+        value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
+        cls: "dot-e-font"
+    }, {
+        text: BI.i18nText("BI-Login_User_Info"),
+        value: BICst.TARGET_FILTER_STRING.NOT_BELONG_USER,
+        cls: "dot-e-font"
+    }]
+}], [{
+    text: BI.i18nText("BI-Contain"),
+    value: BICst.TARGET_FILTER_STRING.CONTAIN,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Contain"),
+    value: BICst.TARGET_FILTER_STRING.NOT_CONTAIN,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.TARGET_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.TARGET_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Begin_With"),
+    value: BICst.TARGET_FILTER_STRING.BEGIN_WITH,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-End_With"),
+    value: BICst.TARGET_FILTER_STRING.END_WITH,
+    cls: "dot-e-font"
+}]];
+
+//auth number
+BICst.AUTHORITY_FILTER_NUMBER_COMBO = [[{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
+    cls: "dot-e-font"
+}], [{
+    el: {
+        text: BI.i18nText("BI-In"),
+        value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE
+    },
+    children: [{
+        text: BI.i18nText("BI-Field_Value"),
+        value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+        cls: "dot-e-font"
+    }, {
+        text: BI.i18nText("BI-Login_User_Info"),
+        value: BICst.TARGET_FILTER_NUMBER.BELONG_USER,
+        cls: "dot-e-font"
+    }]
+}, {
+    el: {
+        text: BI.i18nText("BI-Not_In"),
+        value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE
+    },
+    children: [{
+        text: BI.i18nText("BI-Field_Value"),
+        value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+        cls: "dot-e-font"
+    }, {
+        text: BI.i18nText("BI-Login_User_Info"),
+        value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_USER,
+        cls: "dot-e-font"
+    }]
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
+}]];
 
 //添加公式combo
 BICst.FILTER_ADD_FORMULA_COMBO = [{
@@ -900,6 +868,17 @@ BICst.CONF_STATISTIC_NUMBER = [{
     text: BI.i18nText("BI-No_Repeat_Count"),
     value: BICst.SUMMARY_TYPE.COUNT
 }];
+//选色
+BICst.CHART_COLORS = [{
+    text: BI.i18nText("BI-Default"),
+    value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "6ed3c9"]
+}, {
+    text: BI.i18nText("BI-Bright"),
+    value: ["#9193ac", "#779ae3", "#e6a469", "#eddc80", "9889d0"]
+}, {
+    text: BI.i18nText("BI-Elegant"),
+    value: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"]
+}];
 
 //表格（分组表、交叉表和复杂表）类型
 BICst.TABLE_FORM_GROUP = [{
@@ -935,7 +914,14 @@ BICst.DEFAULT_CHART_SETTING = {
     max_row: BICst.TABLE_MAX_ROW,
     max_col: BICst.TABLE_MAX_COL,
     freeze_dim: true,
-    transfer_filter: true
+    transfer_filter: true,
+    show_name: true,
+    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
+};
+
+BICst.DEFAULT_CONTROL_SETTING = {
+    show_name: true,
+    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
 };
 
 

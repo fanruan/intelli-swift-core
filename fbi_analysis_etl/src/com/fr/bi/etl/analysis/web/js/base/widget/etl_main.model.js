@@ -4,9 +4,7 @@
 BI.AnalysisETLMainModel = BI.inherit(BI.MVCModel, {
     _init : function () {
         BI.AnalysisETLMainModel.superclass._init.apply(this, arguments);
-        this.set(BI.AnalysisETLMainModel.TAB, new BI.DynamictabModel({
-            items:this.getValue(BI.AnalysisETLMainModel.TAB)
-        }));
+        this.set(BI.AnalysisETLMainModel.TAB, new BI.DynamictabModel(this.get(BI.AnalysisETLMainModel.TAB)));
     },
 
     getSheetLength : function () {
@@ -15,13 +13,15 @@ BI.AnalysisETLMainModel = BI.inherit(BI.MVCModel, {
 
     getTableDefaultName : function () {
         var id = this.get(BI.AnalysisETLMainModel.TAB).get(ETLCst.ITEMS)[0];
-        return this.get('name') || this.get(BI.AnalysisETLMainModel.TAB).get(id).get('table_name');
+        var name = this.get('name') || this.get(BI.AnalysisETLMainModel.TAB).get(id).get('table_name');
+        return BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(), name);
     },
     
     update : function () {
         var value = {
             id : this.get('id'),
-            name : this.get('name')
+            name : this.get('name'),
+            describe : this.get('describe')
         }
         value[BI.AnalysisETLMainModel.TAB] = this.get(BI.AnalysisETLMainModel.TAB).update();
         return value;

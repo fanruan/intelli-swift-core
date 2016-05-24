@@ -23,8 +23,6 @@ public class StringINFilterValue extends StringRangeFilterValue {
         this.valueSet = new StringValueSet(valueSet, StringValueSet.CONTAINS);
     }
 
-
-
     /**
      * 获取过滤后的索引
      *
@@ -45,6 +43,6 @@ public class StringINFilterValue extends StringRangeFilterValue {
     
     @Override
     public boolean isMatchValue(String v) {
-    	return valueSet.contains(v);
+    	return v!= null && valueSet.contains(v);
     }
 }

@@ -15,8 +15,8 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BISimpleRelation;
+import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
@@ -31,14 +31,14 @@ import com.fr.json.JSONObject;
 import java.util.*;
 
 public abstract class BISummaryWidget extends BIAbstractWidget {
-
     protected BISummaryTarget[] targets;
     protected BIDimension[] dimensions;
     protected NameObject targetSort;
-    protected Map<String, DimensionFilter> targetFilterMap = new HashMap<String, DimensionFilter>();
-    protected Map<String, Map<String, BIDataColumn>> dimensionsMap = new HashMap<String, Map<String, BIDataColumn>>();
-    protected Map<String, Map<String, List<BISimpleRelation>>> relationsMap = new HashMap<String, Map<String, List<BISimpleRelation>>>();
+    protected Map<String, DimensionFilter> targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
+    protected Map<String, Map<String, BIDataColumn>> dimensionsMap = new LinkedHashMap<String, Map<String, BIDataColumn>>();
+    protected Map<String, Map<String, List<BISimpleRelation>>> relationsMap = new LinkedHashMap<String, Map<String, List<BISimpleRelation>>>();
     protected Object[] clickValue;
+
     protected ComplexExpander complexExpander = new ComplexExpander();
     private int maxCol = 7;     //单页最大列数
     private int maxRow = 20;    //单页最大行数
@@ -226,7 +226,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 while (iterator.hasNext()) {
                     String targetId = (String) iterator.next();
                     JSONObject tar = dimMap.getJSONObject(targetId);
-                    Map<String, BIDataColumn> dimensionMap = new HashMap<String, BIDataColumn>();
+                    Map<String, BIDataColumn> dimensionMap = new LinkedHashMap<String, BIDataColumn>();
                     dimensionsMap.put(dimensionId, dimensionMap);
                     if (tar.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
                         Object ob = tar.get(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
@@ -237,7 +237,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         }
                     }
                     if (tar.has("target_relation")) {
-                        Map<String, List<BISimpleRelation>> relationMap = new HashMap<String, List<BISimpleRelation>>();
+                        Map<String, List<BISimpleRelation>> relationMap = new LinkedHashMap<String, List<BISimpleRelation>>();
                         relationsMap.put(dimensionId, relationMap);
                         Object t = tar.get("target_relation");
                         if (t instanceof JSONArray) {

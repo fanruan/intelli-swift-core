@@ -10,7 +10,7 @@ BI.AllPagger = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.AllPagger.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-all-pager",
-            width: 100,
+            width: 95,
             height: 25,
             pages: 1, //必选项
             curr: 1 //初始化当前页， pages为数字时可用
@@ -30,10 +30,11 @@ BI.AllPagger = BI.inherit(BI.Widget, {
             value: o.curr,
             errorText: BI.i18nText("BI-Please_Input_Integer"),
             width: 30,
-            height: 20
+            height: o.height - 2
         });
         this.pager = BI.createWidget({
             type: "bi.pager",
+            width: 36,
             layouts: [{
                 type: "bi.horizontal",
                 hgap: 1,
@@ -52,7 +53,7 @@ BI.AllPagger = BI.inherit(BI.Widget, {
                 value: "prev",
                 title: BI.i18nText("BI-Previous_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_First_Page"),
-                height: 20,
+                height: o.height - 2,
                 cls: "all-pager-prev column-pre-page-h-font"
             },
             next: {
@@ -60,7 +61,7 @@ BI.AllPagger = BI.inherit(BI.Widget, {
                 value: "next",
                 title: BI.i18nText("BI-Next_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_Last_Page"),
-                height: 20,
+                height: o.height - 2,
                 cls: "all-pager-next column-next-page-h-font"
             },
 
@@ -92,6 +93,7 @@ BI.AllPagger = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.center_adapt",
             element: this.element,
+            columnSize: [30, "", 36],
             items: [this.editor, this.allPages, this.pager]
         })
     },

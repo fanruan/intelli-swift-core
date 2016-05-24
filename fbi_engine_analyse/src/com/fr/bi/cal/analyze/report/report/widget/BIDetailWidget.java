@@ -1,17 +1,18 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
-import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
-import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
+import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIField;
@@ -29,13 +30,12 @@ import com.fr.report.poly.TemplateBlock;
 import java.util.*;
 
 public class BIDetailWidget extends BIAbstractWidget {
-
+    @BICoreField
     private BIDetailSetting data;
     private BIDetailTarget[] dimensions = new BIDetailTarget[0];
-    private Map<String, TargetFilter> targetFilterMap = new HashMap<String, TargetFilter>();
+    private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
     private Table target;//目标表
     private List<String> parent_widget = new ArrayList<String>();
-
     private String[] sortTargets = new String[0];
 
     //page from 1~ max
@@ -200,6 +200,11 @@ public class BIDetailWidget extends BIAbstractWidget {
         jo.put("row", paging.getTotalSize());
         jo.put("size", paging.getPageSize());
         return jo;
+    }
+
+    @Override
+    public int getType() {
+        return BIReportConstant.WIDGET.DETAIL;
     }
 
     @Override

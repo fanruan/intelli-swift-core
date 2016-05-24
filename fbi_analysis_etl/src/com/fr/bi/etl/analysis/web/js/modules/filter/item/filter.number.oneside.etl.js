@@ -39,20 +39,20 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
             type: "bi.icon_combo",
             items: o.filter_type === BICst.TARGET_FILTER_NUMBER.SMALL_OR_EQUAL_CAL_LINE ? [{
                 text: "(" + BI.i18nText("BI-Less_Than") + ")",
-                iconClass: "less-arrow-font",
+                iconClass: "less-font",
                 value: 0
             }, {
                 text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
                 value: 1,
-                iconClass: "less-equal-arrow-font"
+                iconClass: "less-equal-font"
             }] : [{
                 text: "(" + BI.i18nText("BI-More_Than") + ")",
-                iconClass: "more-arrow-font",
+                iconClass: "more-font",
                 value: 0
             }, {
                 text: "(" + BI.i18nText("BI-More_Than_And_Equal") + ")",
                 value: 1,
-                iconClass: "more-equal-arrow-font"
+                iconClass: "more-equal-font"
             }]
         });
         self.smallCombo.on(BI.IconCombo.EVENT_CHANGE, function () {
@@ -174,13 +174,14 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         self.groupContainer.empty();
         if (self.editor.getValue() == BICst.ETL_FILTER_NUMBER_AVG_TYPE.INNER_GROUP){
-            self.group = BI.createWidget({
+            var op ={
                 type :'bi.filter_etl_group_setting',
-                fields : o.fields,
                 field_name : o.field_name,
                 filterType : o.filterType,
                 value : self.storedValue.value.group
-            })
+            }
+            op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+            self.group = BI.createWidget(op)
             self.group.on(BI.ETLGroupSettingPane.EVENT_VALUE_CHANGED, function () {
                 self.storedValue.value.group = self.group.getValue();
                 self.fireEvent(BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM);

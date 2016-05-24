@@ -25,7 +25,10 @@ public class BIFieldIndexBuilder4Test extends BIFieldIndexGenerator {
 //        }
         return null;
     }
+    @Override
+    public void release() {
 
+    }
     public BIFieldIndexBuilder4Test(ICube cube, ITableSource tableSource, DBField hostDBField, BIColumnKey targetColumnKey) {
         super(cube, tableSource, hostDBField, targetColumnKey);
     }

@@ -20,57 +20,57 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
 
     _getWidgetClass: function (type) {
         switch (type) {
-            case BICst.Widget.TABLE:
+            case BICst.WIDGET.TABLE:
                 return "chart-table-font";
-            case BICst.Widget.BAR:
+            case BICst.WIDGET.BAR:
                 return "chart-bar-font";
-            case BICst.Widget.ACCUMULATE_BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
                 return "chart-accumulate-bar-font";
-            case BICst.Widget.PIE:
+            case BICst.WIDGET.PIE:
                 return "chart-pie-font";
-            case BICst.Widget.AXIS:
+            case BICst.WIDGET.AXIS:
                 return "chart-axis-font";
-            case BICst.Widget.DASHBOARD:
+            case BICst.WIDGET.DASHBOARD:
                 return "chart-dashboard-font";
-            case BICst.Widget.MAP:
+            case BICst.WIDGET.MAP:
                 return "chart-map-font";
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return "chart-detail-font";
-            case BICst.Widget.BUBBLE:
+            case BICst.WIDGET.BUBBLE:
                 return "chart-bubble-font";
-            case BICst.Widget.SCATTER:
+            case BICst.WIDGET.SCATTER:
                 return "chart-scatter-font";
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.RADAR:
                 return "chart-radar-font";
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return "chart-string-font";
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 return "chart-number-font";
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 return "chart-date-font";
-            case BICst.Widget.YEAR:
+            case BICst.WIDGET.YEAR:
                 return "chart-year-font";
-            case BICst.Widget.QUARTER:
+            case BICst.WIDGET.QUARTER:
                 return "chart-quarter-font";
-            case BICst.Widget.MONTH:
+            case BICst.WIDGET.MONTH:
                 return "chart-month-font";
-            case BICst.Widget.TREE:
+            case BICst.WIDGET.TREE:
                 return "chart-tree-font";
-            case BICst.Widget.QUERY:
+            case BICst.WIDGET.QUERY:
                 return "chart-query-font";
-            case BICst.Widget.RESET:
+            case BICst.WIDGET.RESET:
                 return "chart-reset-font";
-            case BICst.Widget.CROSS_TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
                 return "chart-table-font";
-            case BICst.Widget.COMPLEX_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
                 return "chart-table-font";
-            case BICst.Widget.CONTENT:
+            case BICst.WIDGET.CONTENT:
                 return "chart-content-font";
-            case BICst.Widget.IMAGE:
+            case BICst.WIDGET.IMAGE:
                 return "chart-image-font";
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YMD:
                 return "chart-ymd-font";
-            case BICst.Widget.WEB:
+            case BICst.WIDGET.WEB:
                 return "chart-web-font";
         }
     },
@@ -81,18 +81,13 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         this.templateItems = [];
         this.widgetItems = {};
         this.searcher = BI.createWidget({
-            type: "bi.simple_select_data_searcher",
+            type: "bi.select_data_tree",
+            //el: {
+            //    el: {
+            //        chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
+            //    }
+            //},
             element: this.element,
-            adapter: {
-                el: {
-                    el: {
-                        chooseType: BI.ButtonGroup.CHOOSE_TYPE_MULTI
-                    }
-                }
-            },
-            popup: {
-                segment: {}
-            },
             itemsCreator: function (op, populate) {
                 if (BI.isNotNull(op.keyword) && BI.isNotNull(op.searchType)) {
                     //var result = self._getSearchResult(op.searchType, op.keyword);
@@ -313,7 +308,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             if (dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.DATE
                 || dimension.type === BICst.TARGET_TYPE.COUNTER) {
                 dimensionStructure.push({
-                    id: dimension.dId,
+                    id: dimension._src.field_id,
                     pId: wId,
                     type: "bi.detail_select_dimension_level0_item",
                     layer: layer,
@@ -321,7 +316,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     text: dimensionName,
                     title: dimensionName,
                     value: dimension,
-                    drag: self._createDrag(dimensionName)
+                    drag: self._createDrag(dimensionName, dimensions)
                 });
             } else {
                 dimensionStructure.push({
@@ -435,6 +430,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
 
                         var sort = dim.sort;
                         var group = dim.group;
+                        var settings = dim.settings;
                         var filter_value = dim.filter_value;
                         if (BI.isNotNull(sort) && sort.type === BICst.SORT.CUSTOM) {
                             dimension.sort = sort;
@@ -447,6 +443,12 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         }
                         if (BI.isNotNull(filter_value)) {
                             dimension.filter_value = filter_value;
+                        }
+                        if (BI.isNotNull(filter_value)) {
+                            dimension.filter_value = filter_value;
+                        }
+                        if(BI.isNotNull(settings)){
+                            dimension.settings = settings;
                         }
                         return dimension;
                     } else {

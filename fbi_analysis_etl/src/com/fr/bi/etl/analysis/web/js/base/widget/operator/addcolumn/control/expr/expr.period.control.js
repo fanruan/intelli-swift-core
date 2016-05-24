@@ -5,8 +5,6 @@ BI.AnalysisETLOperatorAddColumnExprPeriodController = BI.inherit(BI.MVCControlle
     _checkCanSave : function (widget, model) {
         if (BI.isNull(model.get('field'))){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Value_From')));
-        } else if (BI.isNull(model.get('group')) || BI.isEmptyArray(model.get('group'))){
-            widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Group_Detail_Setting')));
         } else {
             widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
         }
@@ -47,12 +45,13 @@ BI.AnalysisETLOperatorAddColumnExprPeriodController = BI.inherit(BI.MVCControlle
             items.push({
                 text : item,
                 value : item,
+                title : item,
                 selected : true
             });
         })
         BI.each(model.get(ETLCst.FIELDS), function (i, item) {
             if (BI.indexOf(group, item.value) === -1 && BI.indexOf(selectedFields, item.value) === -1){
-                items.push({text : item.text, value : item.value});
+                items.push({text : item.text, value : item.value, title : item.text});
             }
         })
         widget.refreshGroup(items);

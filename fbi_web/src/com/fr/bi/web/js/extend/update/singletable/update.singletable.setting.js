@@ -65,7 +65,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
         //定时设置
         var timeSetting = this._createTimeSetting();
-
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
@@ -88,7 +87,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     el: {
                         type: "bi.button",
                         text: BI.i18nText("BI-Update_Table_Immedi"),
-                        height: 30
+                        height: 30,
+                        handler: function() {
+                            BI.Utils.updateCubeByTable(self.model.table, function(){
+                            });
+                        }
                     },
                     width: 105
                 }],
@@ -239,7 +242,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         switch (v) {
             case this._constants.PART_ADD:
                 this.partAddSql = BI.createWidget({
-                    type: "bi.textarea",
+                    type: "bi.code_editor",
                     cls: "sql-container"
                 });
                 this.partAddSql.setValue(this.model.getAddSql());
@@ -255,7 +258,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 });
             case this._constants.PART_DELETE:
                 this.partDeleteSql = BI.createWidget({
-                    type: "bi.textarea",
+                    type: "bi.code_editor",
                     cls: "sql-container"
                 });
                 this.partDeleteSql.setValue(this.model.getDeleteSql());
@@ -271,7 +274,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 });
             case this._constants.PART_MODIFY:
                 this.partModifySql = BI.createWidget({
-                    type: "bi.textarea",
+                    type: "bi.code_editor",
                     cls: "sql-container"
                 });
                 this.partModifySql.setValue(this.model.getModifySql());

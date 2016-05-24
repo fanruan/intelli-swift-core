@@ -25,7 +25,9 @@ public class DBFieldTestTool {
     public static DBField generateDOUBLE() {
         return new DBField("tableA", "DOUBLE", DBConstant.CLASS.DOUBLE, 2);
     }
-
+    public static DBField generateDOUBLE(String fieldName) {
+        return new DBField("tableA",fieldName, DBConstant.CLASS.DOUBLE, 2);
+    }
     public static DBField generateFLOAT() {
         return new DBField("tableA", "FLOAT", DBConstant.CLASS.FLOAT, 2);
     }

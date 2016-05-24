@@ -223,12 +223,14 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                 viewFields.push(id);
                 items[position.row][position.col].value = id;
             });
-            fieldStructure.push({
-                id: BI.UUID(),
-                pId: tableId,
-                type: "bi.excel_view",
-                items: items
-            });
+            if(viewFields.length > 0) {
+                fieldStructure.push({
+                    id: BI.UUID(),
+                    pId: tableId,
+                    type: "bi.excel_view",
+                    items: items
+                });
+            }
         }
 
         //count, string, number
@@ -331,7 +333,6 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                                 break;
                         }
                         return {
-                            id: fId.field_id + fId.group.type,
                             name: name,
                             _src: {
                                 id: fId.field_id + fId.group.type,
@@ -342,7 +343,6 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                         }
                     }
                     return {
-                        id: fId,
                         name: BI.Utils.getFieldNameByID(fId),
                         _src: {
                             id: fId,

@@ -8,6 +8,7 @@ import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -51,4 +52,9 @@ public interface ICubeTableEntityService extends ICubeTableEntityGetterService {
 
     void recordParentsTable(List<ITableKey> parents);
 
+    List<ITableKey> getParentsTable();
+
+    void recordFieldNamesFromParent(Set<String> fieldNames);
+
+    Set<String> getFieldNamesFromParent();
 }

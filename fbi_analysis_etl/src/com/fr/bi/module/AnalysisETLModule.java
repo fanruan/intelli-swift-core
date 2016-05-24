@@ -1,5 +1,6 @@
 package com.fr.bi.module;
 
+import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
@@ -9,7 +10,6 @@ import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.*;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.engine.index.AbstractTIPathLoader;
 import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.cluster.rpc.RPC;
 import com.fr.stable.bridge.StableFactory;
@@ -40,9 +40,7 @@ public class AnalysisETLModule extends AbstractModule {
      *
      */
     private void registerFilter() {
-        BIFilterValueMap.ALL_VALUES.put(BIReportConstant.TARGET_FILTER_NUMBER.LARGE_THAN_CAL_LINE, NumberLargeCLFilter.class);
         BIFilterValueMap.ALL_VALUES.put(BIReportConstant.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE, NumberLargeOrEqualsCLFilter.class);
-        BIFilterValueMap.ALL_VALUES.put(BIReportConstant.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE, NumberSmallCLFilter.class);
         BIFilterValueMap.ALL_VALUES.put(BIReportConstant.TARGET_FILTER_NUMBER.SMALL_OR_EQUAL_CAL_LINE, NumberSmallOrEqualsCLFilter.class);
         BIFilterValueMap.ALL_VALUES.put(BIReportConstant.TARGET_FILTER_NUMBER.TOP_N, NumberTopNFilter.class);
         BIFilterValueMap.ALL_VALUES.put(BIReportConstant.TARGET_FILTER_NUMBER.BOTTOM_N, NumberBottomNFilter.class);
@@ -64,15 +62,16 @@ public class AnalysisETLModule extends AbstractModule {
     }
 
     @Override
-    public Class<? extends AbstractTIPathLoader> getTIPathLoaderClass() {
-        return UserETLCubeTILoader.class;
+    public ICubeDataLoaderCreator getCubeDataLoaderCreator() {
+        return  StableFactory.getMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), ICubeDataLoaderCreator.class);
     }
 
 
     private void registerManager() {
         StableFactory.registerMarkedObject(BIAnalysisBusiPackManagerProvider.XML_TAG, getBusiPackProvider());
         StableFactory.registerMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, getDataSourceProvider());
-        StableFactory.registerMarkedObject(UserETLCubeManager.class.getName(), new UserETLCubeManager());
+        StableFactory.registerMarkedObject(UserETLCubeManagerProvider.class.getName(), new UserETLCubeManager());
+        StableFactory.registerMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), UserETLCubeDataLoaderCreator.getInstance());
     }
 
     private BIAnalysisBusiPackManagerProvider getBusiPackProvider() {

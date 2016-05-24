@@ -145,7 +145,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/show/pane/show.pane.css",
                 "com/fr/bi/web/css/show/pane/widgets/show.widgets.css",
                 "com/fr/bi/web/css/show/pane/widgets/detail/show.detail.css",
-                "com/fr/bi/web/css/show/pane/widgets/detail/show.detail.detail.css",
                 "com/fr/bi/web/css/show/pane/widgets/detail/region/show.region.css",
                 "com/fr/bi/web/css/show/pane/widgets/detail/region/field/show.dimension.css",
                 "com/fr/bi/web/css/show/pane/widgets/detail/region/field/show.target.css"
@@ -244,7 +243,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/dezi/pane/dezi.pane.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/dezi.widgets.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/detail/dezi.detail.css",
-                "com/fr/bi/web/css/dezi/pane/widgets/detail/dezi.detail.detail.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/detail/region/dezi.region.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/detail/region/field/dezi.dimension.css",
                 "com/fr/bi/web/css/dezi/pane/widgets/detail/region/field/dezi.target.css"
@@ -366,7 +364,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/join/conf.join.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/circle/conf.circle.css",
                 "com/fr/bi/web/css/conf/multirelation/conf.multirelation.css",
-                "com/fr/bi/web/css/conf/businesspackages/group/conf.packages.group.css"
+                "com/fr/bi/web/css/conf/businesspackages/group/conf.packages.group.css",
+                "com/fr/bi/web/css/conf/permissionmanage/conf.permission.manage.css",
 
 
         };
@@ -440,11 +439,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/selectdata/tab.selectdata.css",
                 "com/fr/bi/web/css/modules/selectdata/preview/pane.preview.selectdata.css",
                 "com/fr/bi/web/css/modules/selectdata/relationtable/node.relationtables.css",
+                "com/fr/bi/web/css/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.css",
 
                 "com/fr/bi/web/css/modules/selectdata4filter/node/node.level0.dimension.css",
 
                 "com/fr/bi/web/css/modules/selectdatamask/widget.selectdata.mask.css",
 
+                //通用查询选字段
+                "com/fr/bi/web/css/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.css",
                 //选择文本
                 "com/fr/bi/web/css/modules/selectstring/tab.selectstring.css",
 
@@ -565,6 +567,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/fragments/multirelation/item.tablefield.multirelation.css",
                 "com/fr/bi/web/css/fragments/multirelation/view.searcher.multirelation.css",
 
+                //查看真实数据
+                "com/fr/bi/web/css/fragments/base/items/widget.realdatacheckbox.css",
 
                 "com/fr/bi/web/css/fragments/datalink/widget.testlink.loading.css",
 
@@ -596,13 +600,19 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
 
-
                 //自适应布局
                 "com/fr/bi/web/css/modules/fit/widgetchooser/widget.dragicongroup.css",
                 "com/fr/bi/web/css/modules/fit/fit.widget.css",
                 "com/fr/bi/web/css/modules/fit/fit.css",
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
+
+                //明细表超级链接
+                "com/fr/bi/web/css/modules/hyperlink/hyperlink.insert.css",
+
+                //明细表表格
+                "com/fr/bi/web/css/modules/detailtable/widget.detailtable.css",
+                "com/fr/bi/web/css/modules/detailtable/cell/header.detailtable.css",
 
 
                 //联动
@@ -642,10 +652,21 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/widgetfilter/widget.widgetfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.linkagefilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.targetfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.dimensionfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
                 "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
+
+                //权限相关
+                "com/fr/bi/web/css/modules/permissionmanage/authoritypackagestree.css",
+                "com/fr/bi/web/css/modules/permissionmanage/logininfo/widget.selectfieldmask.logininfo.css",
+                "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.batchset.pane.css",
+                "com/fr/bi/web/css/modules/permissionmanage/authorityset/authority.singleset.pane.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.singleaddrole.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/searcher.batchaddrole.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/authority.singleaddrole.pane.css",
+                "com/fr/bi/web/css/modules/permissionmanage/addrole/authority.batchaddrole.pane.css",
 
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
@@ -661,7 +682,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/excelviewsetting/excelviewsetting.css",
 
 
-
                 //详细设置相关模块(预览)
                 "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.css",
                 "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/charttype.css",
@@ -674,6 +694,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/update/update.tabledata.css",
                 "com/fr/bi/web/css/extend/update/singletable/update.singletable.setting.css",
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
+
+                //指标弹出明细表
+                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
 
         };
     }
@@ -735,7 +763,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/numberintervalcustomgroup/widget.customgroup.number.panel.js",
 
                 //详细设置相关模块
-                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.tabletype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.tablecharttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/charttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.dimension.js",
@@ -792,6 +820,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level2.js",
 
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.js",
+                "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.button.level0.js",
 
                 "com/fr/bi/web/js/modules/selectdata/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/treenode/node.level1.js",
@@ -886,6 +915,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filterpopup/dimensionfilterpopup.js",
                 "com/fr/bi/web/js/modules/filter/filterpopup/targetsummaryfilter.popup.js",
                 "com/fr/bi/web/js/modules/filter/filterpopup/detailtablefilter.popup.js",
+                "com/fr/bi/web/js/modules/filter/filterpopup/authorityfilter.popup.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/item.stringfield.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/item.numberfield.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/item.datefield.js",
@@ -903,6 +933,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.emptyformula.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/item.emptyformula.js",
 
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/item.notypefield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/item.stringfield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/item.numberfield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/item.datefield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.selectdata4authority.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/factory.filteritem.auth.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.authority.stringcombo.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/auth/widget.logininfo.combo.js",
+
                 "com/fr/bi/web/js/modules/filter/filteritems/generalquery/item.generalquery.notypefilter.js",
 
                 //过滤
@@ -912,6 +951,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/targetsummary/filter.target.summary.js",
                 "com/fr/bi/web/js/modules/filter/generalquery/filter.generalquery.js",
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
+                "com/fr/bi/web/js/modules/filter/auth/filter.authority.js",
 
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",
@@ -979,11 +1019,11 @@ public class ResourceHelper {
                 //明细表
                 "com/fr/bi/web/js/modules/detailtable/widget.detailtable.js",
                 "com/fr/bi/web/js/modules/detailtable/cell/header.detailtable.js",
+                "com/fr/bi/web/js/modules/detailtable/cell/cell.detailtable.js",
 
                 //业务包分组
                 "com/fr/bi/web/js/modules/businesspackagegroup/buttons/button.businesspackage.mange.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/buttons/button.businesspackage.add.js",
-                "com/fr/bi/web/js/modules/businesspackagegroup/editor.label.covered.businesspackage.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/expander.businesspackage.group.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/pane.businesspackage.js",
                 "com/fr/bi/web/js/modules/businesspackagegroup/pane.ungroup.and.group.businesspackage.js",
@@ -1152,12 +1192,19 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/dimensiontreecombo/dimensiontree.trigger.js",
 
                 //表格属性设置
+                "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/combo.selectcolor.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/popup.selectcolor.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/charts.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/crosstable/widget.crosstable.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
 
                 //展示表格
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.model.js",
 
 
                 "com/fr/bi/web/js/fragments/multirelation/expander.multirelation.js",
@@ -1178,7 +1225,7 @@ public class ResourceHelper {
                 //选组件
                 "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/pane.reuse.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/dragiconbutton.js",
-                "com/fr/bi/web/js/modules/fit/widgetchooser/dragwidgetitem.js",
+                "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/dragwidgetitem.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/widget.dragicongroup.js",
                 "com/fr/bi/web/js/modules/fit/fit.widget.js",
                 "com/fr/bi/web/js/modules/fit/fit.js",
@@ -1233,6 +1280,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.model.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.linkagefilter.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.targetfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.dimensionfilter.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.controlfilter.js",
                 "com/fr/bi/web/js/modules/widgetfilter/item.drillfilter.js",
 
@@ -1240,6 +1288,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/globalupdate/widget.globalupdate.setting.js",
                 "com/fr/bi/web/js/modules/globalupdate/item/item.timesetting.js",
 
+                //明细表超级链接
+                "com/fr/bi/web/js/modules/hyperlink/hyperlink.insert.js",
+                "com/fr/bi/web/js/modules/hyperlink/hyperlink.popup.js",
 
                 //etl plugin
                 "com/fr/bi/web/js/extend/excel/etl.excel.plugin.js",
@@ -1262,13 +1313,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/excelviewsetting/excelviewsetting.js",
 
                 //权限控制
-                "com/fr/bi/web/js/modules/permissionmanage/packagetreemanage.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypaneshow.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypaneadd.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritypane.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritytabs.js",
-                "com/fr/bi/web/js/modules/permissionmanage/authoritybutton.js",
-
+                "com/fr/bi/web/js/modules/permissionmanage/authoritypackagestree.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authorityset/authority.singleset.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/authorityset/authority.batchset.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.singleaddrole.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.batchaddrole.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.batchaddrole.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.singleaddrole.js",
+                "com/fr/bi/web/js/modules/permissionmanage/logininfo/widget.selectsinglefield.logininfo.js",
+                "com/fr/bi/web/js/modules/permissionmanage/logininfo/widget.selectfieldmask.logininfo.js",
 
                 //dimensionmanager4show
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/model.dimensionsmanagershow.js",
@@ -1310,6 +1363,23 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.model.js",
+
+                //指标弹出明细表
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level1.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/selectdata.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/model.detailtable.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.js",
+
+                "com/fr/bi/web/js/modules/detailtablepopup/module/model/field/model.detailtablepopup.detail.dimension.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/model/model.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/view/field/view.detailtablepopup.detail.dimension.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/view/view.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/detailtablepopup.js",
         };
     }
 
@@ -1331,10 +1401,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/bar/bar.css",
                 "com/fr/bi/web/css/base/single/editor/editor.css",
                 "com/fr/bi/web/css/base/single/editor/editor.state.css",
+                "com/fr/bi/web/css/base/single/editor/editor.state.simple.css",
                 "com/fr/bi/web/css/base/single/editor/editor.record.css",
                 "com/fr/bi/web/css/base/single/editor/editor.sign.css",
                 "com/fr/bi/web/css/base/single/editor/editor.shelter.css",
-                "com/fr/bi/web/css/base/single/editor/editor.content.css",
+                "com/fr/bi/web/css/base/single/editor/editor.textarea.css",
                 "com/fr/bi/web/css/base/single/editor/editor.multifile.css",
                 "com/fr/bi/web/css/base/single/tip/tip.css",
                 "com/fr/bi/web/css/base/single/tip/tip.bubble.css",
@@ -1486,12 +1557,12 @@ public class ResourceHelper {
 
                 //时间区间
                 "com/fr/bi/web/css/widget/timeinterval/timeinterval.css",
+
                 //选择字段树
                 "com/fr/bi/web/css/widget/selectdata/tree/node/node.level0.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/node/node.level1.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/treeitem/item.level0.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/treeitem/item.level1.css",
-                "com/fr/bi/web/css/widget/selectdata/tree/treeitem4reusedimension/calctarget.item.level0.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/expander.selectdata.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/tree.selectdata.css",
                 "com/fr/bi/web/css/widget/selectdata/searchpane/segment.search.selectdata.css",
@@ -1539,7 +1610,6 @@ public class ResourceHelper {
 
                 //文本编辑区
                 "com/fr/bi/web/css/widget/textarea/textarea.css",
-                "com/fr/bi/web/css/widget/textarea/trigger/textarea.trigger.css",
 
                 //图片组件
                 "com/fr/bi/web/css/widget/image/uploadimage.css",
@@ -1613,7 +1683,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                 */
+                */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
@@ -1728,8 +1798,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/single/input/radio.js",
                 "com/fr/bi/web/js/base/module/single/bar/bar.loading.js",
                 "com/fr/bi/web/js/base/module/single/editor/editor.js",
-                "com/fr/bi/web/js/base/module/single/editor/textarea.js",
-                "com/fr/bi/web/js/base/module/single/editor/editor.content.js",
+                "com/fr/bi/web/js/base/module/single/editor/editor.code.js",
+                "com/fr/bi/web/js/base/module/single/editor/editor.textarea.js",
                 "com/fr/bi/web/js/base/module/single/editor/editor.multifile.js",
                 "com/fr/bi/web/js/base/module/single/label/label.js",
                 "com/fr/bi/web/js/base/module/single/link/link.js",
@@ -1810,6 +1880,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/flexbox.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.leftrightvertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.vertical.js",
@@ -1877,6 +1948,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/button/icon/icon.half.js",
 
                 "com/fr/bi/web/js/case/editor/editor.state.js",
+                "com/fr/bi/web/js/case/editor/editor.state.simple.js",
                 "com/fr/bi/web/js/case/editor/editor.sign.js",
                 "com/fr/bi/web/js/case/editor/editor.shelter.js",
                 "com/fr/bi/web/js/case/editor/editor.record.js",
@@ -1932,7 +2004,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                 */
+                */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -1968,7 +2040,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/base/editor/editor.adapt.js",
                 "com/fr/bi/web/js/widget/base/editor/editor.sign.initial.js",
                 "com/fr/bi/web/js/widget/base/editor/editor.sign.style.js",
-                "com/fr/bi/web/js/widget/base/editor/editor.href.js",
+                "com/fr/bi/web/js/widget/base/editor/editor.clear.js",
 
                 //segment控件
                 "com/fr/bi/web/js/widget/base/segment/button.line.segment.js",
@@ -1986,7 +2058,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                 */
+                */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -1995,6 +2067,30 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/date/calendar/combo.month.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/popup.calendar.date.js",
                 "com/fr/bi/web/js/widget/date/combo.date.js",
+
+                //图控件
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulatearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulateaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulatebar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.accumulateradar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.area.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.donut.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.forcebubble.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.funnel.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.line.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.percentaccumulateaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.percentaccumulatearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.fallaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.rangearea.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.combine.js",
+                "com/fr/bi/web/js/widget/detailchart/factory.charts.js",
 
                 //年份控件
                 "com/fr/bi/web/js/widget/year/trigger.year.js",
@@ -2072,6 +2168,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/selectdata/searchpane/result.search.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/searcher/searcher.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/tab/tab.selectdata.js",
+
+                //简单的一个搜索功能
+                "com/fr/bi/web/js/widget/simplesearcher/searcher.simple.js",
 
                 //简单的选择字段树，主要用于过滤、cube配置内的选择字段
                 "com/fr/bi/web/js/widget/simpleselectdata/searchpane/segment.search.simpleselectdata.js",
@@ -2182,7 +2281,6 @@ public class ResourceHelper {
 
                 //文本编辑区
                 "com/fr/bi/web/js/widget/textarea/textarea.js",
-                "com/fr/bi/web/js/widget/textarea/trigger/textarea.trigger.js",
 
                 //文本工具条
                 "com/fr/bi/web/js/widget/texttoolbar/sizechooser/texttoolbar.sizechooser.js",
@@ -2250,7 +2348,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                 */
+                */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 
@@ -2280,9 +2378,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
 
                 //带有序号的table tree
-                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js"
+                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js",
 
-
+                //工程配置
+                "com/fr/bi/web/js/config.js"
         };
     }
 

@@ -262,7 +262,7 @@ BI.View = BI.inherit(BI.V, {
             BI.isKey(cardName) && self._cards[cardName].populate(data, options.force);
         });
         !BI.isKey(cardName) && BI.Layers.hide(layout + this.cid);
-        return this;
+        return this._cards[cardName];
     },
 
     listenEnd: function (key1, key2, key3) {
@@ -276,6 +276,7 @@ BI.View = BI.inherit(BI.V, {
      */
     notifyParentEnd: function (force) {
         this.parent && this.parent.trigger("end:" + this.cid);
+        this.trigger("end");
         !force && this.notify();
         return this;
     },
@@ -393,9 +394,7 @@ BI.View = BI.inherit(BI.V, {
                         height: 30,
                         cls: "loading-background"
                     }],
-                    element: BI.Maskers.create(name, self, {
-                        container: self
-                    })
+                    element: BI.Maskers.make(name, self)
                 });
                 loading.setVisible(true);
             },
@@ -419,9 +418,7 @@ BI.View = BI.inherit(BI.V, {
                         height: 30,
                         cls: "loading-background"
                     }],
-                    element: BI.Maskers.create(name, self, {
-                        container: self
-                    })
+                    element: BI.Maskers.make(name, self)
                 });
                 loading.setVisible(true);
             },
@@ -445,9 +442,7 @@ BI.View = BI.inherit(BI.V, {
                         height: 30,
                         cls: "loading-background"
                     }],
-                    element: BI.Maskers.create(name, self, {
-                        container: self
-                    })
+                    element: BI.Maskers.make(name, self)
                 });
                 loading.setVisible(true);
             },

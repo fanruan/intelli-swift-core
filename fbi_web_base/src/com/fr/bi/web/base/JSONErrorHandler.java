@@ -29,4 +29,8 @@ public class JSONErrorHandler implements ErrorHandler {
         }
     }
 
+    @Override
+    public int currentAPILevel() {
+        return CURRENT_LEVEL;
+    }
 }

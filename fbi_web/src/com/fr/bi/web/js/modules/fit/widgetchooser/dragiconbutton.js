@@ -15,43 +15,43 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
 
     _getDefaultWidgetNameByWidgetType: function (widgetType) {
         switch (widgetType) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.CROSS_TABLE:
-            case BICst.Widget.COMPLEX_TABLE:
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.AXIS:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE:
-            case BICst.Widget.SCATTER:
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
                 return BI.i18nText("BI-Statistical_Component");
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return BI.i18nText("BI-Detail_Table");
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return BI.i18nText("BI-Text_Control");
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 return BI.i18nText("BI-Date_Range_Control");
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 return BI.i18nText("BI-Number_Control");
-            case BICst.Widget.QUERY:
+            case BICst.WIDGET.QUERY:
                 return BI.i18nText("BI-Query_Button");
-            case BICst.Widget.YEAR:
+            case BICst.WIDGET.YEAR:
                 return BI.i18nText("BI-Year_Control");
-            case BICst.Widget.QUARTER:
+            case BICst.WIDGET.QUARTER:
                 return BI.i18nText("BI-Year_Quarter_Con");
-            case BICst.Widget.MONTH:
+            case BICst.WIDGET.MONTH:
                 return BI.i18nText("BI-Year_Month_Con");
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YMD:
                 return BI.i18nText("BI-Date_Control");
-            case BICst.Widget.TREE:
+            case BICst.WIDGET.TREE:
                 return BI.i18nText("BI-Tree_Control");
-            case BICst.Widget.RESET:
+            case BICst.WIDGET.RESET:
                 return BI.i18nText("BI-Reset_Button");
-            case BICst.Widget.GENERAL_QUERY:
+            case BICst.WIDGET.GENERAL_QUERY:
                 return BI.i18nText("BI-General_Query");
         }
     },
@@ -62,28 +62,31 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
         this.button = BI.createWidget({
             type: "bi.icon_button",
             element: this.element,
-            height: o.height,
-            width: o.width,
+            iconHeight: 24,
+            iconWidth: 24,
             text: o.text,
+            title: o.title,
             value: o.value,
             cls: o.cls
         });
         var value = {
             type: o.value,
-            name: this._getDefaultWidgetNameByWidgetType(o.value),
-            bounds: {
-                height:BICst.Widget.Heights[o.value],
-                width: BICst.Widget.Widths[o.value]
-            }
+            name: this._getDefaultWidgetNameByWidgetType(o.value)
         };
         this.button.element.draggable({
             cursor: BICst.cursorUrl,
             cursorAt: {left: 0, top: 0},
-            drag: function(e, ui){
-                o.drag.apply(self, [value, ui.position]);
+            drag: function (e, ui) {
+                o.drag.apply(self, [{
+                    height: BICst.WIDGET.Heights[o.value],
+                    width: BICst.WIDGET.Widths[o.value]
+                }, ui.position, value]);
             },
-            stop: function(e, ui){
-                o.stop.apply(self, [value, ui.position]);
+            stop: function (e, ui) {
+                o.stop.apply(self, [{
+                    height:BICst.WIDGET.Heights[o.value],
+                    width: BICst.WIDGET.Widths[o.value]
+                }, ui.position, value]);
             },
             helper: o.helper
         });

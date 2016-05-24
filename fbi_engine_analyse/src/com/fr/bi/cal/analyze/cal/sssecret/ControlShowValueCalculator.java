@@ -112,7 +112,7 @@ public class ControlShowValueCalculator {
             public boolean actionPerformed(int rowIndex) {
                 String rowValue = (String) ti.getRow(index, rowIndex);
                 if (isValueValid(rowValue, isBlank, keyWord)) {
-                    if (selectValues.contains(rowValue) || start > count.i++) {
+                    if (selectValues.contains(rowValue) || start > count.value++) {
                         return false;
                     }
                     set.add(rowValue);
@@ -156,7 +156,7 @@ public class ControlShowValueCalculator {
     private static void treeControlShowValue(BITableSourceRelation[] relation, DimensionCalculator currentKey, GroupValueIndex parentIndex, int rank, int times, final List<String> resultList, BISession sessionIDInfo) {
         final int start = (times - 1) * MAX_STRING_ROW;
         final FinalLong t = new FinalLong();
-        t.i = 0L;
+        t.value = 0L;
         if (currentKey.isSupperLargeGroup(sessionIDInfo.getLoader())) {
             treeControlShowValuWhenSupperLargeGroup(relation, currentKey, parentIndex, rank, resultList, sessionIDInfo, start, t);
         } else {
@@ -170,7 +170,7 @@ public class ControlShowValueCalculator {
                     GroupValueIndex v = entry.getValue();
                     try {
                         if (v != null && v.hasSameValue(parentIndex)) {
-                            if (start > t.i++) {
+                            if (start > t.value++) {
                                 continue;
                             }
                             resultList.add(rowValue);
@@ -199,7 +199,7 @@ public class ControlShowValueCalculator {
             	int currentRow = getter.getConnectedRow(rowIndex);
                 String rowValue = (String) ti.getRow(index, currentRow);
                 if (rowValue != null) {
-                    if (start > t.i++) {
+                    if (start > t.value++) {
                         return false;
                     }
                     set.add(rowValue);

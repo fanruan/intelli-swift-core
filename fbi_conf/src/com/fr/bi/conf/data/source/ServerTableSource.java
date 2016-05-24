@@ -92,7 +92,7 @@ public class ServerTableSource extends DBTableSource {
     }
 
     @Override
-    public DBTable getDbTable() {
+    public IPersistentTable getDbTable() {
         if (dbTable == null) {
             dbTable = BIDBUtils.getServerBITable(tableName);
         }
@@ -147,7 +147,7 @@ public class ServerTableSource extends DBTableSource {
             return BIServerUtils.runServer(tableData, columns, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue data) {
-                    long i = data.getRow();
+                    int i = data.getRow();
                     int j = data.getCol();
                     Object v = data.getValue();
                     Object value = null;

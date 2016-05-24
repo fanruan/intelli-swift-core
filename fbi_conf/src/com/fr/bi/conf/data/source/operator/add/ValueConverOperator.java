@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -44,6 +45,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         item.put("field", field);
         item.put("field_type", columnType);
         jo.put("item", item);
+        jo.put("add_column_type", BIJSONConstant.ETL_ADD_COLUMN_TYPE.VALUE_CONVERT);
         return jo;
     }
 
@@ -71,10 +73,10 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         int rowCount = ti.getRowCount();
         BIKey key = new IndexKey(field);
         int fieldType = ti.getColumns().get(key).getFieldType();
-        for (long row = 0; row < rowCount; row++) {
-            Object value = checkValueType(ti.getRow(key, (int)row), fieldType);
+        for (int row = 0; row < rowCount; row++) {
+            Object value = checkValueType(ti.getRow(key, row), fieldType);
             try {
-                travel.actionPerformed(new BIDataValue(row, 0, value));
+                travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
                 BILogger.getLogger().error("incorrect formular");
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
@@ -92,7 +94,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         }
         switch (fieldType){
             case DBConstant.COLUMN.NUMBER:{
-               return convertNumber((Long)value);
+               return convertNumber((Number)value);
             }
             case DBConstant.COLUMN.DATE: {
                 return convertDate((Long)value);
@@ -105,10 +107,19 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
     private Object convertString(String value) {
         switch (columnType){
             case DBConstant.COLUMN.NUMBER:{
-                return Double.parseDouble(value);
+                try {
+                    return Double.parseDouble(value);
+                } catch (Exception e) {
+                }
+                break;
             }
             case DBConstant.COLUMN.DATE: {
-                return new Date(Long.valueOf(value).longValue());
+                try {
+                    Date d = DateUtils.parse(value);
+                    return d.getTime();
+                } catch (Exception e) {
+                }
+                break;
             }
         }
         return null;
@@ -126,13 +137,13 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         return null;
     }
 
-    private Object convertNumber(Long value) {
+    private Object convertNumber(Number value) {
         switch (columnType){
             case DBConstant.COLUMN.STRING:{
                 return value.toString();
             }
             case DBConstant.COLUMN.DATE: {
-                return new Date(value);
+                return value.longValue();
             }
         }
         return null;

@@ -26,11 +26,11 @@ BI.YearCalendar = BI.inherit(BI.Widget, {
         BI.each(BI.range(BI.YearCalendar.INTERVAL), function (i) {
             var td = {};
             if (Date.checkVoid(start + i, 1, 1, o.min, o.max)[0]) {
-                td.void = true;
+                td.disabled = true;
             }
             td.text = start + i;
             items.push(td);
-        })
+        });
         return items;
     },
 
@@ -66,7 +66,7 @@ BI.YearCalendar = BI.inherit(BI.Widget, {
                     height: 23,
                     width: 38,
                     value: td.text,
-                    disabled: td.void
+                    disabled: td.disabled
                 });
             });
         });

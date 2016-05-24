@@ -16,6 +16,10 @@ BI.AnalysisETLMergeSheetPreview = BI.inherit(BI.MVCWidget, {
     _initController : function () {
         return BI.AnalysisETLMergeSheetPreviewController;
     },
+
+    resetLeftRight : function () {
+        this.first = false;
+    },
     
     _initView : function () {
         var self = this;

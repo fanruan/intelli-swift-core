@@ -6,7 +6,6 @@ import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.cal.stable.index.*;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
@@ -59,9 +58,9 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
         try {
             BILogger.getLogger().info("now start" + source.toString() + "loading data");
             long start = System.currentTimeMillis();
-            BIConfigureManagerCenter.getLogManager().infoTableReading(new BITable(source.fetchObjectCore().getID().getIdentityValue()), 0, biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().infoTableReading(source.getDbTable(), 0, biUser.getUserId());
             generateSimpleCube();
-            BIConfigureManagerCenter.getLogManager().infoTableReading(new BITable(source.fetchObjectCore().getID().getIdentityValue()),
+            BIConfigureManagerCenter.getLogManager().infoTableReading(source.getDbTable(),
                     System.currentTimeMillis() - start, biUser.getUserId());
             BILogger.getLogger().info("loading table data:" + source.toString() + "cost:" + DateUtils.timeCostFrom(start));
         } catch (Throwable e) {
@@ -87,7 +86,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
 
     protected void wrong(Throwable e) {
         BILogger.getLogger().error(e.getMessage(), e);
-        BIConfigureManagerCenter.getLogManager().errorTable(new BITable(source.fetchObjectCore().getID().getIdentityValue()), e.getClass().getName() + ":" + e.getMessage() + ":" + Arrays.toString(e.getStackTrace()), biUser.getUserId());
+        BIConfigureManagerCenter.getLogManager().errorTable(source.getDbTable(), e.getClass().getName() + ":" + e.getMessage() + ":" + Arrays.toString(e.getStackTrace()), biUser.getUserId());
         release();
         cube.delete();
     }
@@ -97,7 +96,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
             BIRecord log = BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId());
             AbstractIndexGenerator generator = new BeforeIndexGenerator(cube, source,
                     BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getSources(), log);
-            BIConfigureManagerCenter.getLogManager().infoTable(new BITable(source.fetchObjectCore().getID().getIdentityValue()), 0, biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().infoTable(source.getDbTable(), 0, biUser.getUserId());
             generator.generateCube();
             generator = createSimpleIndexGenerator();
             generator.generateCube();

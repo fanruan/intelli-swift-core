@@ -3,7 +3,6 @@
  */
 package com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage;
 
-import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.PeriodRowCalculatorOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -12,6 +11,7 @@ import com.fr.bi.stable.engine.cal.ResultDealer;
 
 /**
  * @author Daniel
+ * 环期比
  *
  */
 public class PeriodPercentRowCalculatorOperator extends PeriodRowCalculatorOperator {
@@ -20,7 +20,6 @@ public class PeriodPercentRowCalculatorOperator extends PeriodRowCalculatorOpera
 	 * 
 	 */
 	private static final long serialVersionUID = 574637556670188056L;
-	@BICoreField
 	private static final String XML_TAG="PeriodPercentRowCalculatorOperator";
 
 	@Override
@@ -31,7 +30,7 @@ public class PeriodPercentRowCalculatorOperator extends PeriodRowCalculatorOpera
 
 	@Override
 	protected String getAddColumnType() {
-		return BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP;
+		return BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT;
 	}
 	@Override
 	public String xmlTag() {

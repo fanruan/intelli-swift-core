@@ -13,7 +13,9 @@ import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This class created on 2016/3/24.
@@ -28,6 +30,8 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
     protected Map<Integer, ConditionAndSet> initContainer() {
         return new HashMap<Integer, ConditionAndSet>();
     }
+
+    private boolean verbose = true;
 
     @Override
     protected ConditionAndSet generateAbsentValue(Integer key) {
@@ -132,7 +136,10 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
     public void handleMessage(IMessage message) throws BIThresholdIsOffException {
         Iterator<ConditionAndSet> it = container.values().iterator();
         while (it.hasNext()) {
-            it.next().handleMessage(message);
+            ConditionAndSet conditionAndSet = it.next();
+            if (conditionAndSet.isUsable()) {
+                conditionAndSet.handleMessage(message);
+            }
         }
     }
 
@@ -159,6 +166,10 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
             }
         }
         throw new BIThresholdUnsatisfiedException();
+    }
+
+    public String leftCondition() {
+        return container.get(0).leftCondition();
     }
 
     public class ConditionAndSet {
@@ -256,8 +267,16 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
                     statusTagThreshold.handleMessage(message);
                 }
             } catch (BIThresholdIsOffException e) {
+//                BILogger.getLogger().info(e.getMessage());
                 return;
             }
+        }
+
+        private String leftCondition() {
+            StringBuffer sb = new StringBuffer();
+            sb.append(statusTagThreshold.leftCondition("statusTagThreshold")).append("\n");
+
+            return sb.toString();
         }
     }
 }

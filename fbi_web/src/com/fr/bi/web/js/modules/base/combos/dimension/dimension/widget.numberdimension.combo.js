@@ -70,16 +70,16 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }, {
                 text: BI.i18nText("BI-Custom_Sort_Dot"),
                 value: BICst.DIMENSION_NUMBER_COMBO.SORT_BY_CUSTOM,
-                cls: ""
+                cls: "dot-e-font"
             }],
             [{
                 text: BI.i18nText("BI-Same_Value_A_Group"),
                 value: BICst.DIMENSION_NUMBER_COMBO.GROUP_BY_VALUE,
-                cls: ""
+                cls: "dot-e-font"
             },{
                 text: BI.i18nText("BI-Grouping_Setting"),
                 value: BICst.DIMENSION_NUMBER_COMBO.GROUP_SETTING,
-                cls: ""
+                cls: "dot-e-font"
             }],
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),

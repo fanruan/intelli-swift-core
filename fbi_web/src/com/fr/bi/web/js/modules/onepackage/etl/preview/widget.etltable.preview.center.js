@@ -37,6 +37,7 @@ BI.ETLTablePreviewCenter = BI.inherit(BI.Pane, {
     },
 
     _createTableItems: function(data){
+        var self = this;
         var fields = data.fields, values = data.value;
         var header = [], items = [];
         BI.each(fields, function(i, field){
@@ -44,13 +45,20 @@ BI.ETLTablePreviewCenter = BI.inherit(BI.Pane, {
                 text: field
             });
         });
+        var fieldTypes = [];
+        BI.each(this.options.table.fields, function(i, fs){
+            BI.each(fs, function(j, field){
+                fieldTypes.push(field.field_type);
+            });
+        });
         //后台的数据是按照列放进去的
         BI.each(values, function(i, value){
+            var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
             BI.each(value, function(j, v){
                 if(BI.isNotNull(items[j])){
-                    items[j].push({text: v});
+                    items[j].push({text: isDate === true ? self._formatDate(v) : v});
                 } else {
-                    items.push([{text: v}]);
+                    items.push([{text: isDate === true ? self._formatDate(v) : v}]);
                 }
             });
         });
@@ -58,6 +66,14 @@ BI.ETLTablePreviewCenter = BI.inherit(BI.Pane, {
             header: [header],
             items: items
         }
+    },
+
+    _formatDate: function(d){
+        if(BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
+        var date = new Date(BI.parseInt(d));
+        return date.print("%Y/%X/%d %H:%M:%S")
     }
 });
 $.shortcut("bi.etl_table_preview_center", BI.ETLTablePreviewCenter);

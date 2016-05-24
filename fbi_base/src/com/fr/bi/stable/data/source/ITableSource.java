@@ -1,6 +1,7 @@
 package com.fr.bi.stable.data.source;
 
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.BICoreService;
@@ -8,8 +9,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
-import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLable;
@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public interface ITableSource extends XMLable, JSONCreator, BICoreService {
 
-    DBTable getDbTable();
+    IPersistentTable getDbTable();
 
     String getSourceID();
 
@@ -35,6 +35,33 @@ public interface ITableSource extends XMLable, JSONCreator, BICoreService {
      * @return 字段
      */
     DBField[] getFieldsArray(Set<ITableSource> sources);
+    /**
+     * 当前TableSource父类的全部可用字段。
+     *
+     * @param sources
+     * @return
+     */
+    Set<DBField> getParentFields(Set<ITableSource> sources);
+
+    /**
+     * 当前TableSource最终全部可用字段。
+     * 例如A含有字段a，父类有c，d字段，那么该函数返回
+     * a,c,d
+     * 如果A是使用部分字段，父类有c，d字段，只使用c，那么该
+     * 函数返回c。
+     *
+     * @param sources
+     * @return
+     */
+    Set<DBField> getFacetFields(Set<ITableSource> sources);
+
+    /**
+     * 当前TableSource自身的字段。
+     *
+     * @param sources
+     * @return
+     */
+    Set<DBField> getSelfFields(Set<ITableSource> sources);
 
 
     /**
@@ -50,6 +77,8 @@ public interface ITableSource extends XMLable, JSONCreator, BICoreService {
      * @return
      */
     Map<Integer, Set<ITableSource>> createGenerateTablesMap();
+
+    List<Set<ITableSource>> createGenerateTablesList();
 
     /**
      * 层级
@@ -82,8 +111,6 @@ public interface ITableSource extends XMLable, JSONCreator, BICoreService {
 
     JSONObject createPreviewJSONFromCube(ArrayList<String> fields, ICubeDataLoader loader) throws Exception;
 
-    JSONObject createPreviewJSONFromMemory(ArrayList<String> fields, ICubeDataLoader loader) throws Exception;
-
     boolean needGenerateIndex();
 
     Map<BICore, ITableSource> createSourceMap();
@@ -93,4 +120,6 @@ public interface ITableSource extends XMLable, JSONCreator, BICoreService {
     Set<String> getUsedFields(ITableSource source);
 
     void refresh();
+
+    boolean isIndependent();
 }

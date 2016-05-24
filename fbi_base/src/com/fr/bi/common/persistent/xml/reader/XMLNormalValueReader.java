@@ -2,6 +2,7 @@ package com.fr.bi.common.persistent.xml.reader;
 
 import com.fr.bi.common.persistent.xml.BIXMLTag;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.program.BITypeUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.xml.XMLableReader;
 
@@ -18,12 +19,25 @@ public class XMLNormalValueReader extends XMLValueReader {
     @Override
     protected void readerContent(XMLableReader xmLableReader) {
         try {
-            String fieldName = xmLableReader.getTagName();
+            String fieldName = xmLableReader.getAttrAsString(BIXMLTag.FIELD_NAME, "null");
             String fieldClass = xmLableReader.getAttrAsString("class", "null");
             String uuid = xmLableReader.getAttrAsString(BIXMLTag.APPEND_INFO, "null");
             BIBeanXMLReaderWrapper wrapper;
             Object fieldValue = beanWrapper.getOriginalValue(fieldName);
-            if (fieldValue != null) {
+            /**
+             * 增加对数组类型的判断
+             * 因为数组在对象构造过程中被初始化，
+             * 而初始化的大小往往就是一个空数组而已，但不是null，那么就会把
+             * 空数组当做初始化过的来使用，这里就会抛错。
+             * 例如Info对象中有一个contents是String[]，在构造过程中
+             * 会将contents赋值为String[0]，于是这里fieldValue不为null而直接
+             * 进入赋值阶段，那么在空数组上赋值就产生了越界的异常。
+             *
+             * 所有要判断如果当前fieldValue非空但是数组的话，仍然走构造的过程。
+             * 通过记录的数组大小来构造一个非空数组，然后在进行赋值。
+             *
+             */
+            if (fieldValue != null && !BITypeUtils.isArrayType(fieldValue.getClass())) {
                 /**
                  * 由于使用了对象的强制构造，那么
                  * 如果属性在对象构造的时候可能被new了一个对象，那么这里fieldValue

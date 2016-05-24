@@ -4,28 +4,32 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
 
     _init : function () {
         BI.AnalysisETLOperatorSelectDataModel.superclass._init.apply(this, arguments);
-        var operator = this.get("operator");
-        var fields = [];
-        if(BI.isNotNull(operator)) {
-            var dimensions = operator["dimensions"];
-            var self = this;
-            BI.each(operator["view"][BICst.REGION.DIMENSION1], function (idx, item) {
-                var dim = dimensions[item];
-                var field_type = dim["type"];
-                var group = dim["group"]
-                if(field_type !== BICst.TARGET_TYPE.DATE) {
-                    group = null;
-                }
-                field_type = self._getTypeFromTargetType(field_type, group)
-                fields.push({
-                    "field_name":dim["name"],
-                    "field_type" : field_type,
-                    "id": dim["_src"]["field_id"],
-                    "uid" : item,
-                    "group" : group
-                })
-            })
-        }
+        //BI.AnalysisETLOperatorSelectDataModel.KEY后台已存这里暂时注释不需要
+        // var operator = this.get("operator");
+        // var fields = [];
+        // if(BI.isNotNull(operator)) {
+        //     var dimensions = operator["dimensions"];
+        //     var self = this;
+        //     BI.each(operator["view"][BICst.REGION.DIMENSION1], function (idx, item) {
+        //         var dim = dimensions[item];
+        //         var field_type = dim["type"];
+        //         var group = dim["group"]
+        //         if(field_type !== BICst.TARGET_TYPE.DATE) {
+        //             group = null;
+        //         }
+        //         field_type = self._getTypeFromTargetType(field_type, group)
+        //         fields.push({
+        //             "field_name":dim["name"],
+        //             "field_type" : field_type,
+        //             "id": dim["_src"]["field_id"],
+        //             "uid" : item,
+        //             "group" : BI.isNull(group) ? null : group["type"]
+        //         })
+        //     })
+        // }
+        var fields = this.get(BI.AnalysisETLOperatorSelectDataModel.KEY) || []
+        this.set(BI.AnalysisETLOperatorSelectDataModel.KEY, fields);
+        //this.set("operator", this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY));
         this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, fields);
         this.save();
     },
@@ -46,13 +50,16 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
             fieldId = fieldId.field_id
         }
         var fieldName =  this.createDistinctName(name);
-        this._addField({
+        var field = {
             "field_name":fieldName,
             "field_type" : fieldType,
             "id":fieldId,
-            "group" : group,
             "uid":BI.UUID()
-        })
+        }
+        if(BI.isNotNull(group)) {
+            field["group"] = group;
+        }
+        this._addField(field)
     },
 
 
@@ -146,13 +153,13 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         return valid;
     },
 
-    _buildDetailTableModel : function () {
+    _buildDetailTableModel : function (key) {
         var res = {
             filter_value:{},
             page : -1,
             type : BICst.WIDGET.DETAIL
         };
-        var fields = this.get(BI.AnalysisETLOperatorSelectDataModel.KEY);
+        var fields = this.get(key);
         var tableIds = this._getTablesFromFields(fields)
         var fTable = tableIds[0];
         BI.each(tableIds, function (idx, item) {
@@ -226,11 +233,21 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         })
     },
 
+    update4Preview : function () {
+        var v  = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
+            etlType:ETLCst.ETL_TYPE.SELECT_DATA
+        })
+        v[BI.AnalysisETLOperatorSelectDataModel.KEY] = v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY];
+        v["operator"] = this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
+        delete v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY]
+        return v;
+    },
+
     update : function () {
         var v  = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
             etlType:ETLCst.ETL_TYPE.SELECT_DATA
         })
-        v["operator"] = this._buildDetailTableModel();
+        v["operator"] = this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY);
         delete v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY]
         return v;
     }

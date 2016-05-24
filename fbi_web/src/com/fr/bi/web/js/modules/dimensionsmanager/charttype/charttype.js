@@ -4,6 +4,7 @@
  * 选择图表类型组
  */
 BI.ChartType = BI.inherit(BI.Widget, {
+
     _defaultConfig: function () {
         return BI.extend(BI.ChartType.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-chart-type"
@@ -13,59 +14,64 @@ BI.ChartType = BI.inherit(BI.Widget, {
     _init: function () {
         BI.ChartType.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.tableCombo = BI.createWidget({
-            type: "bi.table_type_combo",
-            width: 40,
-            height: 34,
-            items: [BICst.TABLE_TYPE]
-        });
-        this.tableCombo.on(BI.TableTypeCombo.EVENT_CHANGE, function (v) {
-            self.setValue(v);
-            self.fireEvent(BI.ChartType.EVENT_CHANGE, arguments);
-        });
-        this.chartGroup = BI.createWidget({
-            type: "bi.button_group",
-            scrollable: false,
-            items: BI.createItems(BICst.CHART_TYPE, {
-                type: "bi.icon_button",
-                iconHeight: 25,
-                iconWidth: 25,
-                width: 40,
-                height: 34,
-                extraCls: "chart-type-icon"
-            }),
+
+        this.buttonTree = BI.createWidget({
+            type: "bi.button_tree",
+            element: this.element,
+            items: this._formatItems(BI.deepClone(BICst.DASHBOARD_WIDGETS[0])),
             layouts: [{
                 type: "bi.horizontal",
                 scrollx: false,
+                scrollable: false,
+                vgap: 3,
                 hgap: 3
             }]
         });
-        this.chartGroup.on(BI.ButtonGroup.EVENT_CHANGE, function (v) {
-            self.setValue(v);
+        this.buttonTree.on(BI.ButtonTree.EVENT_CHANGE, function () {
             self.fireEvent(BI.ChartType.EVENT_CHANGE, arguments);
-        });
-        BI.createWidget({
-            type: "bi.horizontal",
-            element: this.element,
-            scrollx: false,
-            scrollable: false,
-            items: [this.tableCombo, this.chartGroup],
-            vgap: 3,
-            hgap: 3
         })
     },
 
+    _formatItems: function (items) {
+        var self = this;
+        var result = [];
+        BI.each(items, function (i, item) {
+            if (BI.isNotEmptyArray(item.children)) {
+                BI.each(item.children, function (i, child) {
+                    child.iconClass = child.cls;
+                    child.iconWidth = 20;
+                    child.iconHeight = 20;
+                });
+                result.push(BI.extend({
+                    type: "bi.icon_combo",
+                    width: 40,
+                    iconClass: item.cls,
+                    items: item.children,
+                    iconWidth: 24,
+                    iconHeight: 24
+                }, item, {
+                    cls: "chart-type-combo"
+                }));
+            } else {
+                result.push(BI.extend({
+                    type: "bi.icon_button",
+                    width: 40,
+                    iconWidth: 24,
+                    iconHeight: 24
+                }, item, {
+                    cls: item.cls + " chart-type-icon"
+                }));
+            }
+        });
+        return result;
+    },
+
     getValue: function () {
-        if (this.tableCombo.isSelected()) {
-            return this.tableCombo.getValue();
-        } else {
-            return this.chartGroup.getValue()[0];
-        }
+        return this.buttonTree.getValue()[0];
     },
 
     setValue: function (v) {
-        this.tableCombo.setValue(v);
-        this.chartGroup.setValue(v);
+        this.buttonTree.setValue(v);
     }
 });
 BI.ChartType.EVENT_CHANGE = "EVENT_CHANGE";

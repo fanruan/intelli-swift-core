@@ -34,7 +34,10 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
 
     protected double max;
     protected boolean closemax;
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     /**
      * 解析json
      *
@@ -94,8 +97,9 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
             jo.put("max", this.max);
             jo.put("closemax", this.closemax);
         }
-
-        return jo;
+        JSONObject resjo = new JSONObject();
+        resjo.put("filter_value", jo);
+        return resjo;
     }
 
     /**

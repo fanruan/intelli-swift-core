@@ -86,14 +86,14 @@ public class DirectTableConnection {
         gvi.BrokenableTraversal(new BrokenTraversalAction() {
             @Override
             public boolean actionPerformed(int rowIndex) {
-                r.i = rowIndex;
+                r.value = rowIndex;
                 return true;
             }
         });
-        if (next != null && r.i != -1) {
-            return next.getParentTableValue(r.i);
+        if (next != null && r.value != -1) {
+            return next.getParentTableValue(r.value);
         }
-        return r.i;
+        return r.value;
     }
 
     public long getFinalRowLength() {

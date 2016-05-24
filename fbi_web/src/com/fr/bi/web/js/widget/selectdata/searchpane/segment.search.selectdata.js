@@ -16,7 +16,7 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
     //创建所有数据和业务包选项
     _createSectionTab: function () {
         var self = this;
-        this.package = BI.createWidget({
+        this.pack = BI.createWidget({
             type: "bi.line_segment_button",
             height: 24,
             selected: true,
@@ -33,7 +33,7 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
         this.button_group = BI.createWidget({
             type: "bi.line_segment",
             height: 25,
-            items: [this.all, this.package]
+            items: [this.all, this.pack]
         });
 
         this.button_group.on(BI.ButtonGroup.EVENT_CHANGE, function () {
@@ -90,7 +90,7 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
                 name = pack.text;
             }
         });
-        this.package.setText(name);
+        this.pack.setText(name);
     },
 
     setValue: function (v) {

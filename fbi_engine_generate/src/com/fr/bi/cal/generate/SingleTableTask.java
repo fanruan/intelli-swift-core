@@ -9,7 +9,7 @@ import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.utils.BIMapUtils;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
@@ -68,7 +68,7 @@ public class SingleTableTask extends AllTask {
     @Override
     protected Map<Integer, Set<ITableSource>> getGenerateTables() {
         Map<Integer, Set<ITableSource>> generateTable = new HashMap<Integer, Set<ITableSource>>();
-        BIMapUtils.mergeSetValueMap(generateTable, BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(table.getID(), biUser).createGenerateTablesMap());
+        BICollectionUtils.mergeSetValueMap(generateTable, BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(table.getID(), biUser).createGenerateTablesMap());
         return generateTable;
     }
 

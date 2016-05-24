@@ -1,11 +1,16 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -13,10 +18,13 @@ import java.util.Set;
  */
 public class UserBaseTableSource extends AnalysisBaseTableSource implements UserTableSource{
     private GroupValueIndex filter;
+    private UserWidget userWidget;
+    @BICoreField
     private long userId;
-    public UserBaseTableSource(BIWidget widget, int etlType, long userId) {
-        super(new UserWidget(widget, userId), etlType);
+    public UserBaseTableSource(BIWidget widget, int etlType, long userId, List<AnalysisETLSourceField> fieldList, String name) {
+        super(widget, etlType,  fieldList, name);
         this.userId = userId;
+        this.userWidget = new UserWidget(widget, userId);
     }
 
 
@@ -41,7 +49,7 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
 
     @Override
     public boolean containsIDParentsWithMD5(String md5) {
-        return ComparatorUtils.equals(md5, fetchObjectCore().getIDValue());
+        return false;
     }
 
 
@@ -51,7 +59,21 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
         return Constants.TABLE_TYPE.USER_BASE;
     }
 
-
+    @Override
+    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+        int index = 0, step = 1000, total = 0;
+        while (total == (index) * step){
+            List<List> values = userWidget.createData(index*step, index*step + step);
+            for (int i = 0; i < values.size(); i ++){
+                List value = values.get(i);
+                for (int j = 0; j < value.size(); j++){
+                    travel.actionPerformed(new BIDataValue(i + total, j, value.get(j)));
+                }
+            }
+            total +=values.size();
+        }
+        return total;
+    }
 
 
     @Override
@@ -59,4 +81,15 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
         return this;
     }
 
+    @Override
+    public long read4Part(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader, int start, int end) {
+        List<List> values = userWidget.createData(start, end);
+        for (int i = 0; i < values.size(); i ++){
+            List value = values.get(i);
+            for (int j = 0; j < value.size(); j++){
+                travel.actionPerformed(new BIDataValue(i, j, value.get(j)));
+            }
+        }
+        return values.size();
+    }
 }

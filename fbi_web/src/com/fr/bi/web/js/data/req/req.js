@@ -81,6 +81,12 @@ Data.Req = BIReq = {
             callback(res);
         });
     },
+    
+    reqExportExcelByWidgetName: function(data, callback) {
+        BI.requestAsync("fr_bi_dezi", "bi_export_excel", data, function(res) {
+            callback(res);  
+        });
+    },
 
     reqRelationsByTableIds: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
@@ -102,6 +108,12 @@ Data.Req = BIReq = {
 
     reqFieldsDataByData: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "get_field_value", data, function (res) {
+            callback(res);
+        });
+    },
+
+    reqFieldsDataByFieldId: function (data, callback) {
+        BI.requestAsync("fr_bi_configure", "get_field_value_by_field_id", data, function (res) {
             callback(res);
         });
     },
@@ -210,6 +222,12 @@ Data.Req = BIReq = {
         })
     },
 
+    reqSaveLoginField: function (data, callback) {
+        BI.requestAsync("fr_bi_configure", "save_login_field", data, function (res) {
+            callback();
+        })
+    },
+
     reqServerSetPreviewBySql: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "preview_server_link", data, function (res) {
             callback(res);
@@ -251,17 +269,11 @@ Data.Req = BIReq = {
             callback(res);
         })
     },
-    reqAuthorityByPackageId: function (packageId) {
-         return BI.requestSync("fr_bi_configure", "get_package_authority", {packageId:packageId});;
-    },
-    reqAllAuthority: function () {
-        var rolesFromServer = BI.requestSync("fs_set", "auth_getAllRole_withDeptAll", {});
-        return rolesFromServer;
-    },
-    reqUpdatePackageAuthority: function (data, callback) {
+    
+    reqSavePackageAuthority: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "save_package_authority", data, function (res) {
             callback(res);
-        })
+        });
     },
 
     reqAllBusinessPackages: function(callback) {
@@ -274,5 +286,15 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "get_table_names_of_all_packages", {}, function(res) {
             callback(res);
         });
+    },
+    
+    updateCubeByTable: function(table,callback) {
+        BI.requestAsync("fr_bi_configure", "set_cube_generate", {
+            connectionName: table.connection_name,
+            tableName:table.table_name,
+            tableId:table.id
+        }, function(res) {
+            callback(res);
+        });
     }
-    };
+};

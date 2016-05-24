@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
@@ -33,11 +34,12 @@ public class TableWidget extends BISummaryWidget {
     /**
      * 保存列字段等内容
      */
+    @BICoreField
     private BITableReportSetting data = new BITableReportSetting();
 
     private int[] pageSpinner = new int[5];
 
-    private int oprator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
+    private int operator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
 
     @Override
     public void setPageSpinner(int index, int value) {
@@ -168,15 +170,15 @@ public class TableWidget extends BISummaryWidget {
         boolean b2 = !row.isEmpty() && column.isEmpty() && hasTarget;
         boolean b3 = !row.isEmpty() && column.isEmpty() && summaryLen == 0;
         if (b0) {
-            executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), column, session, complexExpander);
+            executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
         } else if (b1) {
-            executor = new ComplexHorGroupNoneExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), column, session, complexExpander);
+            executor = new ComplexHorGroupNoneExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
         } else if (b2) {
-            executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), row, session, complexExpander);
+            executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
         } else if (b3) {
-            executor = new ComplexGroupNoneExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), row, session, complexExpander);
+            executor = new ComplexGroupNoneExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
         } else {
-            executor = new ComplexCrossExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), row, column, session, complexExpander);
+            executor = new ComplexCrossExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, column, session, complexExpander);
         }
         return executor;
     }
@@ -190,15 +192,15 @@ public class TableWidget extends BISummaryWidget {
         boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
         boolean b3 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen == 0;
         if (b0) {
-            executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), session, expander);
+            executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b1) {
-            executor = new HorGroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), session, expander);
+            executor = new HorGroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b2) {
-            executor = new GroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), session, expander);
+            executor = new GroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b3) {
-            executor = new GroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), session, expander);
+            executor = new GroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else {
-            executor = new CrossExecutor(this, usedRows, usedColumn, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, oprator), session, expander);
+            executor = new CrossExecutor(this, usedRows, usedColumn, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         }
 
         return executor;
@@ -225,7 +227,7 @@ public class TableWidget extends BISummaryWidget {
      */
     @Override
     protected TemplateBlock createBIBlock(BISession session) {
-        return new PolyCubeECBlock(this, session, oprator);
+        return new PolyCubeECBlock(this, session, operator);
     }
 
     @Override
@@ -239,11 +241,15 @@ public class TableWidget extends BISummaryWidget {
         }
 
         if (jo.has("page")) {
-            this.oprator = jo.getInt("page");
+            this.operator = jo.getInt("page");
         }
         if (jo.has(BIJSONConstant.JSON_KEYS.EXPANDER)) {
             parsExpander(jo);
         }
+    }
+
+    public void setComplexExpander(ComplexExpander complexExpander) {
+        this.complexExpander = complexExpander;
     }
 
     private void parsExpander(JSONObject jo) throws Exception {
@@ -256,5 +262,14 @@ public class TableWidget extends BISummaryWidget {
                 clickValue[i] = ja.getString(i);
             }
         }
+    }
+
+    @Override
+    public int getType() {
+        return BIReportConstant.WIDGET.TABLE;
+    }
+
+    public void setOperator(int operator) {
+        this.operator = operator;
     }
 }

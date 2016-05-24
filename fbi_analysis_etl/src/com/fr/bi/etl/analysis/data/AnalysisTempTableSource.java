@@ -5,10 +5,13 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.json.JSONArray;
+import com.fr.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +34,12 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
-    public DBTable getDbTable() {
+    public List<AnalysisETLSourceField> getFieldsList() {
+        return new ArrayList<AnalysisETLSourceField>();
+    }
+
+    @Override
+    public IPersistentTable getDbTable() {
         throw new RuntimeException(UNSUPPORT);
     }
 
@@ -43,6 +51,17 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     @Override
     public int getType() {
         return Constants.TABLE_TYPE.TEMP;
+    }
+
+    @Override
+    public JSONObject createJSON() throws Exception {
+        JSONArray ja = new JSONArray();
+        for (AnalysisTableSource source : this.sourceList){
+            ja.put(source.createJSON());
+        }
+        JSONObject table = new JSONObject();
+        table.put(Constants.ITEMS, ja);
+        return table;
     }
 
     @Override

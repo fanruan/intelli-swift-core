@@ -32,6 +32,7 @@ public class BICubeBuildTopicManager {
         router = BIFactoryHelper.getObject(IRouter.class);
         router.reset();
         try {
+
             router.registerTopic(BICubeBuildTopicTag.DATA_SOURCE_TOPIC);
             router.registerTopic(BICubeBuildTopicTag.PATH_TOPIC);
             router.registerTopic(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);

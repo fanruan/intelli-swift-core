@@ -146,6 +146,7 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.sign_editor",
+            cls: "condition-operator-input",
             validationChecker: function(){
                 if(!BI.isNumeric(self.filterWidget.getValue())){
                     return false;
@@ -169,8 +170,8 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 type: "bi.label",
                 height: this._constant.BUTTON_HEIGHT,
                 text: "N = "
-            }]
-        }, this.filterWidget);
+            }, this.filterWidget]
+        });
     },
 
     _setNodeData: function(v){

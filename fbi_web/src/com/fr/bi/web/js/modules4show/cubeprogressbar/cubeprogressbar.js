@@ -16,7 +16,6 @@ BI.CubeProgressBar = BI.inherit(BI.Widget, {
     _init: function () {
         BI.CubeProgressBar.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-
         this.progressbar = BI.createWidget({
             type: "bi.progress_bar",
             width: 600,
@@ -35,9 +34,11 @@ BI.CubeProgressBar = BI.inherit(BI.Widget, {
         BI.requestAsync("fr_bi_dezi", "get_temp_cube_generating_status", {}, function (state) {
             self.progressbar.setValue(state.percent);
             if (state.percent < 100) {
-                setTimeout(BI.bind(self._reqState, self), 300);
+                BI.delay(BI.bind(self._reqState, self), 300);
             } else {
-                self.fireEvent(BI.CubeProgressBar.EVENT_COMPLETE);
+                BI.delay(function () {
+                    self.fireEvent(BI.CubeProgressBar.EVENT_COMPLETE);
+                }, 1000);
             }
         })
     },

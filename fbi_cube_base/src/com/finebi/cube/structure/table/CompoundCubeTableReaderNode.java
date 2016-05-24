@@ -14,7 +14,10 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
 
 import java.util.*;
 
@@ -32,12 +35,14 @@ import java.util.*;
  */
 public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
-    private Set<ICubeTableEntityService> currentLevelTables = new HashSet<ICubeTableEntityService>();
+    private List<ICubeTableEntityService> currentLevelTables = new ArrayList<ICubeTableEntityService>();
     private ICubeTableEntityService masterTable = null;
     protected ICubeResourceDiscovery discovery;
     protected ICubeResourceRetrievalService resourceRetrievalService;
+    protected Map<DBField, ICubeTableEntityService> fieldSource = new HashMap<DBField, ICubeTableEntityService>();
+    private List<DBField> currentLevelFields = new ArrayList<DBField>();
 
-    public CompoundCubeTableReaderNode(Set<ITableKey> tableKeys, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
+    public CompoundCubeTableReaderNode(List<ITableKey> tableKeys, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;
         this.discovery = discovery;
         for (ITableKey tableKey : tableKeys) {
@@ -45,7 +50,20 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
             if (masterTable == null) {
                 masterTable = tableEntityService;
             }
+            initialFieldSource(tableEntityService);
             currentLevelTables.add(tableEntityService);
+        }
+    }
+
+    private void initialFieldSource(ICubeTableEntityService tableEntityService) {
+        if (tableEntityService.tableDataAvailable()) {
+            for (DBField field : tableEntityService.getFieldInfo()) {
+
+                if (!fieldSource.containsKey(field)) {
+                    fieldSource.put(field, tableEntityService);
+                    currentLevelFields.add(field);
+                }
+            }
         }
     }
 
@@ -102,7 +120,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     @Override
     public void recordParentsTable(List<ITableKey> parents) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -119,12 +137,20 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     @Override
     public List<DBField> getFieldInfo() {
-        return masterTable.getFieldInfo();
+        return currentLevelFields;
     }
 
     @Override
     public Set<BIColumnKey> getCubeColumnInfo() {
-        return masterTable.getCubeColumnInfo();
+        Set<BIColumnKey> result = new HashSet<BIColumnKey>();
+        for (ICubeTableEntityService tableEntityService : currentLevelTables) {
+            for (BIColumnKey columnKey : tableEntityService.getCubeColumnInfo()) {
+                if (!result.contains(columnKey)) {
+                    result.add(columnKey);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -134,7 +160,12 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     @Override
     public DBField getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        return masterTable.getSpecificColumn(fieldName);
+        for (DBField field : currentLevelFields) {
+            if (ComparatorUtils.equals(fieldName, field.getFieldName())) {
+                return field;
+            }
+        }
+        throw new BICubeColumnAbsentException();
     }
 
     @Override
@@ -144,22 +175,32 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     @Override
     public ICubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
-        return masterTable.getColumnDataGetter(columnKey);
+        return pickTableService(columnKey.getColumnName()).getColumnDataGetter(columnKey);
     }
 
     @Override
     public ICubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
-        return masterTable.getColumnDataGetter(columnName);
+        return pickTableService(columnName).getColumnDataGetter(columnName);
+    }
+
+    private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
+        DBField field = getSpecificColumn(fieldName);
+        return fieldSource.get(field);
     }
 
     @Override
     public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
-        return masterTable.getRelationIndexGetter(path);
+        try {
+            BIColumnKey columnKey = path.getFirstRelation().getPrimaryField();
+            return pickTableService(columnKey.getColumnName()).getRelationIndexGetter(path);
+        } catch (BITablePathEmptyException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 
     @Override
     public boolean tableDataAvailable() {
-        return masterTable.tableDataAvailable();
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -167,5 +208,26 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
         for (ICubeTableEntityService table : currentLevelTables) {
             table.clear();
         }
+    }
+
+    @Override
+    public List<ITableKey> getParentsTable() {
+        throw new UnsupportedOperationException();
+
+    }
+
+    @Override
+    public boolean isRowCountAvailable() {
+        return masterTable.isRowCountAvailable();
+    }
+
+    @Override
+    public void recordFieldNamesFromParent(Set<String> fieldNames) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Set<String> getFieldNamesFromParent() {
+        throw new UnsupportedOperationException();
     }
 }

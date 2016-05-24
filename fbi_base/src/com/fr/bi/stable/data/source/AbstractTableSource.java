@@ -1,22 +1,21 @@
 package com.fr.bi.stable.data.source;
 
-import com.fr.bi.base.BIBasicCore;
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.common.BIMD5CoreWrapper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIBasicField;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.db.DBTable;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.BITable;
+import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.finebi.cube.api.ICubeColumnIndexReader;
-import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -38,7 +37,7 @@ public abstract class AbstractTableSource implements ITableSource {
     private static final long serialVersionUID = -8657998191260725924L;
     //表的唯一标识
     protected Map<String, DBField> fields = new LinkedHashMap<String, DBField>();
-    protected DBTable dbTable;
+    protected PersistentTable dbTable;
 
     protected AbstractTableSource() {
 
@@ -51,21 +50,33 @@ public abstract class AbstractTableSource implements ITableSource {
 
     @Override
     public BICore fetchObjectCore() {
-        try {
-            return new BITableSourceCore().fetchObjectCore();
-        } catch (UnsupportedDataTypeException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        } catch (BIAmountLimitUnmetException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-
-        }
-        return BIBasicCore.EMPTY_CORE;
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 
     //重新获取数据 guy
-    public DBTable reGetBiTable() {
+    public IPersistentTable reGetBiTable() {
         dbTable = null;
         return getDbTable();
+    }
+
+    @Override
+    public Set<DBField> getParentFields(Set<ITableSource> sources) {
+        return new HashSet<DBField>();
+    }
+
+    @Override
+    public Set<DBField> getFacetFields(Set<ITableSource> sources) {
+        return getSelfFields(sources);
+    }
+
+    @Override
+    public Set<DBField> getSelfFields(Set<ITableSource> sources) {
+        Set<DBField> result = new HashSet<DBField>();
+        DBField[] fields = getFieldsArray(sources);
+        for (DBField field : fields) {
+            result.add(field);
+        }
+        return result;
     }
 
     @Override
@@ -84,17 +95,11 @@ public abstract class AbstractTableSource implements ITableSource {
         return createPreviewJSONFromTableIndex(fields, tableIndex);
     }
 
-    @Override
-    public JSONObject createPreviewJSONFromMemory(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
-        ICubeTableService tableIndex = loader.getTableIndex(fetchObjectCore(), 0, BIBaseConstant.MEMORY_PREVIEW_COUNT);
-        return createPreviewJSONFromTableIndex(fields, tableIndex);
-    }
-
     public JSONObject createPreviewJSONFromTableIndex(ArrayList<String> fields, ICubeTableService tableIndex) throws Exception {
         JSONArray allFieldNamesJo = new JSONArray();
         JSONArray fieldValues = new JSONArray();
         JSONArray fieldTypes = new JSONArray();
-        for (BIColumn column : getDbTable().getColumnArray()) {
+        for (PersistentField column : getDbTable().getFieldList()) {
             if (!fields.isEmpty() && !fields.contains(column.getFieldName())) {
                 continue;
             }
@@ -121,6 +126,55 @@ public abstract class AbstractTableSource implements ITableSource {
     }
 
     @Override
+    public IPersistentTable getDbTable() {
+        return null;
+    }
+
+    @Override
+    public Set<Table> createTableKeys() {
+        return null;
+    }
+
+    @Override
+    public List<Set<ITableSource>> createGenerateTablesList() {
+        List<Set<ITableSource>> generateTable = new ArrayList<Set<ITableSource>>();
+        Set<ITableSource> set = new HashSet<ITableSource>();
+        set.add(this);
+        generateTable.add(set);
+        return generateTable;
+    }
+
+    @Override
+    public boolean isIndependent() {
+        return true;
+    }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
+
+    @Override
+    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+        return 0;
+    }
+
+    @Override
+    public Set getFieldDistinctNewestValues(String fieldName, ICubeDataLoader loader, long userId) {
+        return null;
+    }
+
+    @Override
+    public JSONObject createPreviewJSON(ArrayList<String> fields, ICubeDataLoader loader, long userId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public TableData createTableData(List<String> fields, ICubeDataLoader loader, long userId) throws Exception {
+        return null;
+    }
+
+    @Override
     public Set getFieldDistinctValuesFromCube(String fieldName, ICubeDataLoader loader, long userId) {
         HashSet set = new HashSet();
         ICubeTableService tableIndex = loader.getTableIndex(fetchObjectCore());
@@ -135,8 +189,8 @@ public abstract class AbstractTableSource implements ITableSource {
     }
 
 
-    protected DBTable createBITable() {
-        return new DBTable(null, fetchObjectCore().getID().getIdentityValue(), null);
+    protected PersistentTable createBITable() {
+        return new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
     }
 
     public Map<String, DBField> getFields() {
@@ -161,17 +215,18 @@ public abstract class AbstractTableSource implements ITableSource {
 
     private Map<String, DBField> synchronousFieldsInforFromDB() {
         Map<String, DBField> fields = new LinkedHashMap<String, DBField>();
-        DBTable bt = getDbTable();
+        IPersistentTable bt = getDbTable();
         if (bt == null) {
             throw new NullPointerException();
         }
         List<DBField> list = new ArrayList<DBField>();
-        for (int i = 0, len = bt.getBIColumnLength(); i < len; i++) {
-            BIColumn column = bt.getBIColumn(i);
+        for (int i = 0, len = bt.getFieldSize(); i < len; i++) {
+            PersistentField column = bt.getField(i);
             /**
              * Connery：原来传递的是MD5变量，把MD5当做ID传递了，这个是不对的。
              */
-            DBField field = new DBField(fetchObjectCore().getIDValue(), column.getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(column.getType(), column.getColumnSize(), column.getScale()), column.getColumnSize());
+
+            DBField field = column.toDBField(new BITable(fetchObjectCore().getIDValue()));
             field.setCanSetUseable(column.canSetUseable());
             list.add(field);
         }
@@ -196,7 +251,7 @@ public abstract class AbstractTableSource implements ITableSource {
 
     @Override
     public void refresh() {
-        DBTable temp = dbTable;
+        PersistentTable temp = dbTable;
         try {
             if (reGetBiTable() == null) {
                 dbTable = temp;

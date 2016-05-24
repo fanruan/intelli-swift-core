@@ -10,7 +10,7 @@ BI.GroupNumberCombo = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Same_Value_A_Group"),
                 value: BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_BY_VALUE
             },{
-                text: BI.i18nText("BI-Grouping_setting"),
+                text: BI.i18nText("BI-Grouping_Setting"),
                 value: BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_SETTING
             }],
             [{
@@ -32,6 +32,7 @@ BI.GroupNumberCombo = BI.inherit(BI.Widget, {
         this.combo = BI.createWidget({
             type: "bi.down_list_combo",
             element: this.element,
+            stopPropagation: true,
             height: 25,
             iconCls: "detail-dimension-set-font",
             items:this._defaultItems()

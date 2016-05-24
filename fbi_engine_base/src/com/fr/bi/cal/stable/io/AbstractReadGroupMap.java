@@ -118,6 +118,11 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
         return null;
     }
 
+    @Override
+    public T getOriginalValue(int rowNumber) {
+        return null;
+    }
+
     private class CSet<V> implements Set<V>, Serializable {
         /**
          *

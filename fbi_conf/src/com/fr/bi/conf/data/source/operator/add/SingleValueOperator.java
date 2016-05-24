@@ -2,15 +2,18 @@ package com.fr.bi.conf.data.source.operator.add;
 
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.utils.DateUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -42,6 +45,7 @@ public class SingleValueOperator extends AbstractAddColumnOperator {
         JSONObject item = new JSONObject();
         item.put("v", value);
         jo.put("item", item);
+        jo.put("add_column_type", BIJSONConstant.ETL_ADD_COLUMN_TYPE.SINGLE_VALUE);
         return jo;
     }
 
@@ -68,9 +72,9 @@ public class SingleValueOperator extends AbstractAddColumnOperator {
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
         int rowCount = ti.getRowCount();
         Object value = checkValueType();
-        for (long row = 0; row < rowCount; row++) {
+        for (int row = 0; row < rowCount; row++) {
             try {
-                travel.actionPerformed(new BIDataValue(row, 0, value));
+                travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
                 BILogger.getLogger().error("incorrect formular");
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
@@ -90,8 +94,11 @@ public class SingleValueOperator extends AbstractAddColumnOperator {
 				break;
 			}
 			case DBConstant.COLUMN.DATE: {
-				v = new Date(Long.valueOf(value).longValue());
-				break;
+                try {
+                    v = DateUtils.parse(value).getTime();
+                } catch (Exception e) {
+                }
+                break;
 			}
 		}
 		return v;

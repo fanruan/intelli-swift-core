@@ -21,7 +21,10 @@ public abstract class NumberNoneValueFilterValue implements NumberFilterValue {
      *
      */
     private static final long serialVersionUID = 3099851820106421738L;
-
+    @Override
+    public boolean isTopOrBottomFilterValue() {
+        return false;
+    }
     /**
      * 重写code
      *

@@ -25,9 +25,8 @@ public class BIMessageFragment implements IMessageFragment {
     @Override
     public String
     toString() {
-        final StringBuffer sb = new StringBuffer("BIMessageFragment{");
-        sb.append("fragmentTag=").append(fragmentTag);
-        sb.append('}');
+        final StringBuffer sb = new StringBuffer();
+        sb.append(fragmentTag);
         return sb.toString();
     }
 }

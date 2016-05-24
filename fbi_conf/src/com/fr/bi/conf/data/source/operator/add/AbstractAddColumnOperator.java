@@ -3,9 +3,9 @@ package com.fr.bi.conf.data.source.operator.add;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.AbstractETLOperator;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -74,9 +74,9 @@ public abstract class AbstractAddColumnOperator extends AbstractETLOperator {
     }
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable biTable = getBITable();
-        biTable.addColumn(new BIColumn(fieldName, getClassType()));
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable biTable = getBITable();
+        biTable.addColumn(new PersistentField(fieldName, getClassType()));
         return biTable;
     }
     
@@ -89,7 +89,7 @@ public abstract class AbstractAddColumnOperator extends AbstractETLOperator {
         return true;
     }
 
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader){
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader){
         return write(travel, loader.getTableIndex(getSingleParentMD5(parents)), 0);
     }
 

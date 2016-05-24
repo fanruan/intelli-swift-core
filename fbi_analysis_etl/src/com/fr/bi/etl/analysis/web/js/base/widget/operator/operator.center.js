@@ -143,6 +143,10 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             
         })
 
+        this.operatorEditPane.on(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, function (v) {
+            self.title.setEnable(v, BI.i18nText("BI-Current_Error"))
+        })
+
         this.operatorEditPaneItem = {
             el : this.operatorEditPane,
             height:0

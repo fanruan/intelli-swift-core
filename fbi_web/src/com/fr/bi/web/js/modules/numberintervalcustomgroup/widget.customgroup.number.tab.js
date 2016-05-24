@@ -191,12 +191,13 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
     },
 
     _checkInterval:function(){
-        var min = this.min + "";
-        var max = this.max + "";
-        var magnify = 1;
-        var minCount = this._checkMagnifyCount(this.min);
-        var maxCount = this._checkMagnifyCount(this.max);
+        var self = this;
+        var min = Math.abs(this.min) + "";
+        var max = Math.abs(this.max) + "";
+        var minCount = this._checkMagnifyCount(min);
+        var maxCount = this._checkMagnifyCount(max);
         var count = minCount > maxCount ? minCount : maxCount;
+        //缩小补零
         var s = "0.";
         while (count - minCount > 0) {
             s += "0";
@@ -212,21 +213,63 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         max = max.replace(".", "");
         max = s + max;
 
+        //后面补零对齐
+        var zeros = max.length - min.length;
+        if(zeros > 0){
+            while (zeros-- > 0) {
+                min += "0";
+            }
+        }else{
+            while (zeros++ < 0) {
+                max += "0";
+            }
+        }
+        //截零
         var i = max.length - 1, add = "0.";
-        while (min[i] === "0" && max[i] === "0") {
+        while (min[i] === "0" && max[i] === "0" && this.min != 0 && this.max != 0) {
             i--;
         }
-        min = min.substring(0, i);
-        max = this.min === 0 ? max.substring(0, max.length - 1) : max.substring(0, i);
-        var length = max.length - 2;
-        while (--length > 0) {
-            add += "0";
+
+        //截位/截位+1
+        min = this.min < 0 ? -(cutBig(min)) : cutSmall(min);
+        max = this.max < 0 ? -(cutSmall(max)) : cutBig(max);
+
+        //(max - min) / 5
+        var tmp = max - min + "";
+        var p = BI.parseFloat(tmp.substring(2)) / 5 + "";
+        var len = tmp.split(".")[1].length - p.split(".")[0].length;
+        s = "0.";
+        while (len-- > 0){
+            s += "0";
         }
-        add += "1";
-        while (count-- > 0) {
-            magnify *= 10;
+        tmp = s + p.replace(".", "");
+
+        var tmpLength = tmp.split(".")[1].length;
+        if(tmpLength < count){
+            while (tmpLength++ < count){
+                tmp += "0";
+            }
+            return BI.parseFloat(tmp.substring(2));
+        }else{
+            return BI.parseFloat(tmp.substring(2, 2 + count) + "." + tmp.substring(2 + count));
         }
-        return (BI.parseFloat(max) + BI.parseFloat(add) - BI.parseFloat(min)) / 5 * magnify;
+
+        function cutSmall(val){
+            return BI.parseFloat(val.substring(0, i));
+        }
+
+        function  cutBig(val){
+            if(val[i] === "0"){
+                return BI.parseFloat(val);
+            }
+            val = val.substring(0, i);
+            var length = val.length - 2;
+            while (--length > 0) {
+                add += "0";
+            }
+            add += "1";
+            return BI.parseFloat(val) + BI.parseFloat(add);
+        }
     },
 
     getValue:function(){

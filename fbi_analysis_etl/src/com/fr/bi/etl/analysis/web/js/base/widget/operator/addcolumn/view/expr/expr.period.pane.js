@@ -32,15 +32,23 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
                 {el : {
                     type : 'bi.label',
                     cls : 'label-name',
-                    text : BI.i18nText('BI-Value_From'),
+                    text : BI.i18nText('BI-ETL_Add_Column_EXPR_Warning'),
                     textAlign : 'left'
                 },
                     left : 10,
                     top : 15
+                }, {el : {
+                    type : 'bi.label',
+                    cls : 'label-name',
+                    text : BI.i18nText('BI-Value_From'),
+                    textAlign : 'left'
+                },
+                    left : 10,
+                    top : 45
                 },{
                     el : self.combo,
                     left : 75,
-                    top : 10
+                    top : 40
                 },{
                     el : self._createGroup(),
                     left : 285,

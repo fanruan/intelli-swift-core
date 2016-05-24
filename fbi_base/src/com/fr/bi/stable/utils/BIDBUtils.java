@@ -208,7 +208,7 @@ public class BIDBUtils {
         }
     }
 
-    private static DBTable getServerBITable(DBTableData tableData, DBTable table) {
+    private static PersistentTable getServerBITable(DBTableData tableData, PersistentTable table) {
         String query = tableData.getQuery();
         com.fr.data.impl.Connection connection = tableData.getDatabase();
         java.sql.Connection conn = null;
@@ -217,7 +217,7 @@ public class BIDBUtils {
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             ColumnInformation[] columns = com.fr.data.core.db.DBUtils.checkInColumnInformation(conn, dialect, query);
             for (int i = 0, cols = columns.length; i < cols; i++) {
-                BIColumn column = new BIColumn(columns[i].getColumnName(), null, columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
+                PersistentField column = new PersistentField(columns[i].getColumnName(), null, columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
                 table.addColumn(column);
             }
         } catch (Exception e) {
@@ -238,7 +238,7 @@ public class BIDBUtils {
         return null;
     }
 
-    private static DBTable getBITableOnlyByTableData(TableData tableData, DBTable DBTable, String tableName) {
+    private static PersistentTable getBITableOnlyByTableData(TableData tableData, PersistentTable persistentTable, String tableName) {
 
         DataModel dm = null;
         try {
@@ -248,10 +248,10 @@ public class BIDBUtils {
             jo.put("tableName", tableName);
             int rowcount = dm.getRowCount();
             for (int i = 0; i < cols; i++) {
-                BIColumn column = new BIColumn(dm.getColumnName(i), null, rowcount == 0 ? java.sql.Types.VARCHAR : resloveValue(dm.getValueAt(0, i)), 255, 15);
-                DBTable.addColumn(column);
+                PersistentField column = new PersistentField(dm.getColumnName(i), null, rowcount == 0 ? java.sql.Types.VARCHAR : resloveValue(dm.getValueAt(0, i)), 255, 15);
+                persistentTable.addColumn(column);
             }
-            return DBTable;
+            return persistentTable;
         } catch (Exception e) {
             FRContext.getLogger().error(e.getMessage(), e);
         } finally {
@@ -264,7 +264,7 @@ public class BIDBUtils {
             }
         }
 
-        return DBTable;
+        return persistentTable;
     }
 
     public static Map<String, Set<BIDBTableField>> getAllRelationOfConnection(Connection conn, String schemaName, String tableName) {
@@ -294,10 +294,10 @@ public class BIDBUtils {
         return result;
     }
 
-    private static DBTable getDBTable(com.fr.data.impl.Connection connection, Connection conn, String schema, String table) throws Exception {
+    private static PersistentTable getDBTable(com.fr.data.impl.Connection connection, Connection conn, String schema, String table) throws Exception {
         Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
         String translatedTableName = dialect.getTableCommentName(conn, table, schema, null);
-        DBTable dbTable = new DBTable(schema, table, translatedTableName);
+        PersistentTable dbTable = new PersistentTable(schema, table, translatedTableName);
         List columnList = dialect.getTableFieldsInfor(conn, table, schema, null);
         Iterator iterator = columnList.iterator();
         while (iterator.hasNext()) {
@@ -310,11 +310,11 @@ public class BIDBUtils {
             }
             boolean columnKey = ((Boolean) item.get("column_key")).booleanValue();
             int columnSize = ((Integer) item.get("column_size")).intValue();
-            int decimal_digits = BIColumn.DEFALUTSCALE;
+            int decimal_digits = PersistentField.DEFALUTSCALE;
             if (item.containsKey("DECIMAL_DIGITS")) {
                 decimal_digits = (Integer) item.get("DECIMAL_DIGITS");
             }
-            dbTable.addColumn(new BIColumn(columnName, columnNameText, columnType, columnKey, columnSize, decimal_digits));
+            dbTable.addColumn(new PersistentField(columnName, columnNameText, columnType, columnKey, columnSize, decimal_digits));
         }
         return dbTable;
     }
@@ -351,7 +351,7 @@ public class BIDBUtils {
         return sql;
     }
 
-    public static DBTable getDBTable(String dbName, String tableName) {
+    public static PersistentTable getDBTable(String dbName, String tableName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         String schema = BIConnectionManager.getInstance().getSchema(dbName);
         Connection conn = null;
@@ -373,18 +373,18 @@ public class BIDBUtils {
      * @return BITable
      * @throws Exception
      */
-    public static DBTable getServerBITable(String tableName) {
+    public static PersistentTable getServerBITable(String tableName) {
         if (StringUtils.isNotBlank(tableName)) {
-            DBTable DBTable = new DBTable(null, tableName, null);
+            PersistentTable persistentTable = new PersistentTable(null, tableName, null);
             DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
             TableData tableData = datasourceManager.getTableData(tableName);
             if (tableData == null) {
                 BILogger.getLogger().error("can not find server db :" + tableName);
             }
             if (tableData instanceof DBTableData) {
-                return getServerBITable((DBTableData) tableData, DBTable);
+                return getServerBITable((DBTableData) tableData, persistentTable);
             } else if (tableData != null) {
-                return getBITableOnlyByTableData(tableData, DBTable, tableName);
+                return getBITableOnlyByTableData(tableData, persistentTable, tableName);
             }
         }
         return null;
@@ -397,14 +397,14 @@ public class BIDBUtils {
      * @return BITable
      * @throws Exception
      */
-    public static DBTable getServerBITable(String connection, String sql, String tableName) {
+    public static PersistentTable getServerBITable(String connection, String sql, String tableName) {
         TableData tableData = getServerTableData(connection, sql);
         if (StringUtils.isNotBlank(tableName)) {
-            DBTable DBTable = new DBTable(null, tableName, null);
+            PersistentTable persistentTable = new PersistentTable(null, tableName, null);
             if (tableData instanceof DBTableData) {
-                return getServerBITable((DBTableData) tableData, DBTable);
+                return getServerBITable((DBTableData) tableData, persistentTable);
             } else if (tableData != null) {
-                return getBITableOnlyByTableData(tableData, DBTable, tableName);
+                return getBITableOnlyByTableData(tableData, persistentTable, tableName);
             }
         }
         return null;
@@ -519,12 +519,12 @@ public class BIDBUtils {
     }
 
 
-    private static long dealWithResultSet(ResultSet rs,
-                                          DBField[] columns,
-                                          Traversal<BIDataValue> traversal,
-                                          boolean needCharSetConvert,
-                                          String originalCharSetName,
-                                          String newCharSetName, long row) throws SQLException {
+    private static int dealWithResultSet(ResultSet rs,
+                                         DBField[] columns,
+                                         Traversal<BIDataValue> traversal,
+                                         boolean needCharSetConvert,
+                                         String originalCharSetName,
+                                         String newCharSetName, int row) throws SQLException {
         @SuppressWarnings("rawtypes")
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, columns);
         int ilen = dealers.length;
@@ -539,7 +539,7 @@ public class BIDBUtils {
     }
 
     public static long runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal) {
-        return runSQL(sql, columns, traversal, 0L);
+        return runSQL(sql, columns, traversal, 0);
     }
 
     /**
@@ -547,7 +547,7 @@ public class BIDBUtils {
      *
      * @param traversal
      */
-    public static long runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal, long row) {
+    public static int runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal, int row) {
         com.fr.data.impl.Connection connection = sql.getConn();
         Connection conn = null;
         Statement stmt = null;

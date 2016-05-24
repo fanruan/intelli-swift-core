@@ -25,13 +25,13 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
                 forceNotSelected :true
             }, {
                 el:{
-                    type:"bi.center_adapt",
+                    // type:"bi.center_adapt",
                     height:o.height,
-                    items:[{
+                    // items:[{
                         type:"bi.label",
                         textAlign:"left",
                         text:o.field_name
-                    }]
+                    // }]
                 }
             }, {
                 type:"bi.icon_button",

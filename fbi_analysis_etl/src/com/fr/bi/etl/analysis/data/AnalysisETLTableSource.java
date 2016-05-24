@@ -1,12 +1,14 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.etl.analysis.Constants;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.stable.data.db.*;
+import com.fr.json.JSONArray;
+import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,39 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
 
     private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
 
-    private int invalidIndex;
+    private int invalidIndex = -1;
+
+    private String name;
+    @BICoreField
+    private List<AnalysisETLSourceField> fieldList;
+
+    @Override
+    public List<AnalysisETLSourceField> getFieldsList() {
+        return fieldList;
+    }
+
+    @Override
+    public JSONObject createJSON() throws Exception {
+        JSONObject jo = super.createJSON();
+        if (fieldList != null && !fieldList.isEmpty()){
+            JSONArray ja = new JSONArray();
+            for (AnalysisETLSourceField f : fieldList){
+                ja.put(f.createJSON());
+            }
+            jo.put(Constants.FIELDS, ja);
+        }
+        jo.put("table_name", name);
+        if (invalidIndex != -1){
+            jo.put("invalidIndex", invalidIndex);
+        }
+        JSONArray tables = new JSONArray();
+        for (int i = 0; i < parents.size(); i++) {
+            tables.put(parents.get(i).createJSON());
+        }
+        jo.put(Constants.PARENTS, tables);
+        AnalysisETLOperatorFactory.createJSONByOperators(jo,oprators);
+        return jo;
+    }
 
     public void setInvalidIndex(int invalidIndex) {
         this.invalidIndex = invalidIndex;
@@ -41,10 +75,12 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
      */
     @Override
     public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
-        return 0;
+        throw new RuntimeException("Only UserTableSource can read");
     }
 
-    public AnalysisETLTableSource() {
+    public AnalysisETLTableSource(List<AnalysisETLSourceField> fieldList, String name) {
+        this.fieldList = fieldList;
+        this.name = name;
     }
 
     @Override
