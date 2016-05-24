@@ -48,10 +48,7 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
             set.add(service.getRow(key, i));
         }
         for (Object ob : set){
-            JSONObject value = new JSONObject();
-            value.put("value", ob);
-            value.put("text", getText(ob, filedType));
-            ja.put(value);
+            ja.put(getText(ob, filedType));
         }
         JSONObject result = new JSONObject();
         result.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
