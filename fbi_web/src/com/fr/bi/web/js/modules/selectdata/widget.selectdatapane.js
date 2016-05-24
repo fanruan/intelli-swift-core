@@ -333,7 +333,6 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                                 break;
                         }
                         return {
-                            id: fId.field_id + fId.group.type,
                             name: name,
                             _src: {
                                 id: fId.field_id + fId.group.type,
@@ -344,7 +343,6 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                         }
                     }
                     return {
-                        id: fId,
                         name: BI.Utils.getFieldNameByID(fId),
                         _src: {
                             id: fId,
