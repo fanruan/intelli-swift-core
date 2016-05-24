@@ -3,7 +3,6 @@ package com.fr.bi.field.filtervalue.string.rangefilter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -12,7 +11,6 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
 /**
@@ -20,7 +18,7 @@ import com.fr.json.JSONObject;
  */
 public class StringINUserFilterValue extends StringRangeFilterValue {
 
-    protected BIDataColumn column = null;
+    protected String fieldId;
 
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
@@ -39,14 +37,14 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
 
         StringINUserFilterValue that = (StringINUserFilterValue) o;
 
-        return column != null ? column.equals(that.column) : that.column == null;
+        return fieldId != null ? fieldId.equals(that.fieldId) : that.fieldId == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (column != null ? column.hashCode() : 0);
+        result = 31 * result + (fieldId != null ? fieldId.hashCode() : 0);
         return result;
     }
 
@@ -66,7 +64,7 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
     }
 
     protected void addLogUserInfo() {
-        if (this.column != null && BIConfigureManagerCenter.getCubeConfManager().getLoginInfoField() != null) {
+        if (this.fieldId != null && BIConfigureManagerCenter.getCubeConfManager().getLoginField() != null) {
             try {
                 Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(user.getUserId());
                 if (fieldValue != null) {
@@ -82,15 +80,7 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if(jo.has("filter_value")) {
-            JSONObject filterValue = jo.getJSONObject("filter_value");
-            JSONObject value = filterValue.getJSONObject("value");
-            if(value.has("login_user")) {
-                valueSet.getValues().add(UserControl.getInstance().getUser(userId).getUsername());
-            } else {
-                BIDataColumn dataColumn = new BIDataColumn();
-                dataColumn.parseJSON(value);
-                this.column = dataColumn;
-            }
+            this.fieldId = jo.getString("filter_value");
         }
     }
 }

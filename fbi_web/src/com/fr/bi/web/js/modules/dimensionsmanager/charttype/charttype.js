@@ -39,19 +39,25 @@ BI.ChartType = BI.inherit(BI.Widget, {
             if (BI.isNotEmptyArray(item.children)) {
                 BI.each(item.children, function (i, child) {
                     child.iconClass = child.cls;
+                    child.iconWidth = 20;
+                    child.iconHeight = 20;
                 });
                 result.push(BI.extend({
                     type: "bi.icon_combo",
                     width: 40,
                     iconClass: item.cls,
-                    items: item.children
+                    items: item.children,
+                    iconWidth: 24,
+                    iconHeight: 24
                 }, item, {
                     cls: "chart-type-combo"
                 }));
             } else {
                 result.push(BI.extend({
                     type: "bi.icon_button",
-                    width: 40
+                    width: 40,
+                    iconWidth: 24,
+                    iconHeight: 24
                 }, item, {
                     cls: item.cls + " chart-type-icon"
                 }));

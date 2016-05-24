@@ -46,9 +46,9 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public String getLoginInfoField() {
+    public String getLoginField() {
         try {
-            return getValue(UserControl.getInstance().getSuperManagerID()).getFieldId();
+            return getValue(UserControl.getInstance().getSuperManagerID()).getLoginField();
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
@@ -56,9 +56,9 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public void saveLoginInfoField(String fieldId) {
+    public void saveLoginField(String loginField) {
         try {
-            getValue(UserControl.getInstance().getSuperManagerID()).setFieldId(fieldId);
+            getValue(UserControl.getInstance().getSuperManagerID()).setLoginField(loginField);
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
