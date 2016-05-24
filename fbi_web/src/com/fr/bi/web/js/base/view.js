@@ -394,9 +394,7 @@ BI.View = BI.inherit(BI.V, {
                         height: 30,
                         cls: "loading-background"
                     }],
-                    element: BI.Maskers.create(name, self, {
-                        container: self
-                    })
+                    element: BI.Maskers.make(name, self)
                 });
                 loading.setVisible(true);
             },
@@ -420,9 +418,7 @@ BI.View = BI.inherit(BI.V, {
                         height: 30,
                         cls: "loading-background"
                     }],
-                    element: BI.Maskers.create(name, self, {
-                        container: self
-                    })
+                    element: BI.Maskers.make(name, self)
                 });
                 loading.setVisible(true);
             },
@@ -446,9 +442,7 @@ BI.View = BI.inherit(BI.V, {
                         height: 30,
                         cls: "loading-background"
                     }],
-                    element: BI.Maskers.create(name, self, {
-                        container: self
-                    })
+                    element: BI.Maskers.make(name, self)
                 });
                 loading.setVisible(true);
             },

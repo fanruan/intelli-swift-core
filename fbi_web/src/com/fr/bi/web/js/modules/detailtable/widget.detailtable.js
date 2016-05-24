@@ -1,6 +1,6 @@
 /**
  * @class BI.DetailTable
- * @extend BI.Widget
+ * @extend BI.Pane
  * 明细表的表格
  */
 BI.DetailTable = BI.inherit(BI.Pane, {
@@ -52,7 +52,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         })
     },
 
-
     _onPageChange: function (vPage, callback) {
         var self = this;
         var widgetId = this.options.wId;
@@ -62,6 +61,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         var isUseHyperLinkDimension = [];
         var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
         if (BI.isEmpty(dimensions)) {
+            this.loaded();
             callback([], [], [], []);
             self.pager.setAllPages(0);
             self.pager.setValue(0);
@@ -113,7 +113,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
     populate: function () {
         var self = this;
-        this._onPageChange(0, function (items, header) {
+        this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
             self.table.populate(items, header, [], []);
         });
     },

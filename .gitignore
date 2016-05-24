@@ -1,5 +1,5 @@
-/*.iml
-fbi/*.iml
+.gitignore
+*.iml
 fbi/bin
 fbi_analysis_etl/bin
 fbi_base/bin
@@ -12,9 +12,9 @@ fbi_engine_cache/bin
 fbi_engine_finereport/bin
 fbi_engine_generate/bin
 fbi_engine_support/bin
-/fbi_starter
-/fbi_test
-/fbi_web
+fbi_starter/bin
+fbi_test/bin
+fbi_web/bin
 fbi_web/*.settings
 fbi_web/bin
 fbi_web_base/bin
