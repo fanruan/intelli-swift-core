@@ -349,7 +349,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     getLinkageInfo: function(obj){
         var dId = [], clicked = [];
-        switch (BI.Utils.getWidgetTypeByID(o.wId)) {
+        switch (BI.Utils.getWidgetTypeByID(this.options.wId)) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
@@ -369,7 +369,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: this.seriesDid,
-                        value: [obj.category]
+                        value: [obj.x]
                     })
                 }
                 break;
@@ -377,7 +377,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: this.cataDid,
-                    value: [obj.category]
+                    value: [obj.x]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({

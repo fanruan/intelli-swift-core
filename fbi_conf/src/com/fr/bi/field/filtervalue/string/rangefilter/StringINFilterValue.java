@@ -43,6 +43,6 @@ public class StringINFilterValue extends StringRangeFilterValue {
     
     @Override
     public boolean isMatchValue(String v) {
-    	return valueSet.contains(v);
+    	return v!= null && valueSet.contains(v);
     }
 }

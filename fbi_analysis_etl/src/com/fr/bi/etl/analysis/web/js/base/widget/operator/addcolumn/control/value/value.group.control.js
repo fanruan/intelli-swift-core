@@ -54,7 +54,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
     },
 
     _addCondition : function (field, value, widget, model) {
-        var pane =  widget.pane.addItem(widget.createItem(field, value, this.options.field_type));
+        var pane =  widget.pane.addItem(widget.createItem(field, value, this.options.field_type, model.get(ETLCst.PARENTS)));
         this.childPane[pane.getName()] = pane;
         return pane;
     },

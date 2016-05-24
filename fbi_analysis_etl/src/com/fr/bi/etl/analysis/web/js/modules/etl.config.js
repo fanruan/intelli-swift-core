@@ -98,16 +98,16 @@ BICst.ETL_FILTER_DATE_COMBO = [[{
     text: BI.i18nText("BI-ETL_Date_In_Range"),
     value: BICst.FILTER_DATE.BELONG_DATE_RANGE
 }], [{
-    text: BI.i18nText("BI-More_Than"),
+    text: BI.i18nText("BI-Later_Than") + BI.i18nText('BI-Someone') + BI.i18nText('BI-Time'),
     value: BICst.FILTER_DATE.MORE_THAN
 }, {
-    text: BI.i18nText("BI-Less_Than"),
+    text: BI.i18nText("BI-Sooner_Than") + BI.i18nText('BI-Someone') + BI.i18nText('BI-Time'),
     value: BICst.FILTER_DATE.LESS_THAN
 }], [{
-    text: BI.i18nText("BI-Equal"),
+    text: BI.i18nText("BI-Equal")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Date'),
     value: BICst.FILTER_DATE.EQUAL_TO
 }, {
-    text: BI.i18nText("BI-Not_Equal_To"),
+    text: BI.i18nText("BI-Not_Equal_To")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Date'),
     value: BICst.FILTER_DATE.NOT_EQUAL_TO
 }], [{
     text: BI.i18nText("BI-Formula"),
