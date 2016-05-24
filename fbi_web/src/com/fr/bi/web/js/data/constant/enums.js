@@ -192,10 +192,12 @@ BICst.TARGET_COMBO = {
     CHART_TYPE: 401,
     STYLE_SETTING: 402,
     FILTER: 403,
-    COPY: 404,
-    DELETE: 405,
-    INFO: 406,
-    DEPEND_TYPE: 407
+    DISPLAY: 404,
+    HIDDEN: 405,
+    COPY: 406,
+    DELETE: 407,
+    INFO: 408,
+    DEPEND_TYPE: 409
 };
 
 //明细表维度下拉选项
