@@ -2,11 +2,6 @@
  * create by young
  */
 BI.AuthoritySelectData = BI.inherit(BI.Widget, {
-
-    _const: {
-        perPage: 10
-    },
-
     _defaultConfig: function () {
         return BI.extend(BI.AuthoritySelectData.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-authority-select-data",
@@ -57,7 +52,7 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
     _getSearchResult: function (type, keyword, packageId, callback) {
         var self = this;
         var searchResult = [], matchResult = [];
-        var translations = this.model.getTranslations();
+        var translations = Data.SharingPool.get("translations");
         //选择了所有数据
         if (type & BI.SelectDataSearchSegment.SECTION_ALL) {
             var packages = BI.Utils.getAllPackageIDs4Conf();

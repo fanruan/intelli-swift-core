@@ -29,10 +29,12 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         String newId = WebUtils.getHTTPRequestParameter(req, "new_id");
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
+        String describe = WebUtils.getHTTPRequestParameter(req, "describe");
         AnalysisBusiTable table = null;
         AnalysisTableSource source = null;
         if (StringUtils.isEmpty(newId)){
             table  = new AnalysisBusiTable(tableId, userId);
+            table.setDescribe(describe);
             String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
             JSONObject jo = new JSONObject(tableJSON);
             JSONArray items = jo.getJSONArray(Constants.ITEMS);
@@ -44,6 +46,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction{
             BIConfigureManagerCenter.getAliasManager().setAliasName(newId, tableName, userId);
             AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
             table.setSource(oldTable.getSource());
+            table.setDescribe(oldTable.getDescribe());
             source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByID(oldTable.getID(), new BIUser(userId));
         }
         FRContext.getCurrentEnv().writeResource(BIConfigureManagerCenter.getAliasManager().getTransManager(userId));

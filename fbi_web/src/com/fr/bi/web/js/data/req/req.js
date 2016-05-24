@@ -216,8 +216,8 @@ Data.Req = BIReq = {
         })
     },
 
-    reqSaveLoginInfoInTableField: function (data, callback) {
-        BI.requestAsync("fr_bi_configure", "save_login_info_in_table_field", data, function (res) {
+    reqSaveLoginField: function (data, callback) {
+        BI.requestAsync("fr_bi_configure", "save_login_field", data, function (res) {
             callback();
         })
     },
@@ -281,6 +281,7 @@ Data.Req = BIReq = {
             callback(res);
         });
     },
+
     updateCubeByTable: function(table,callback) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
             connectionName: table.connection_name,

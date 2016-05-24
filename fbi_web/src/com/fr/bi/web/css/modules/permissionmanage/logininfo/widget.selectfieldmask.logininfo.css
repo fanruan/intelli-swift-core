@@ -1,0 +1,16 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-login-info-select-data-with-mask .select-data-mask {
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+  background: #ffffff;
+}
+.bi-login-info-select-data-with-mask .select-data-wrapper {
+  border: 1px solid #d4dadd;
+  background: #ffffff;
+}
+.bi-login-info-select-data-with-mask .select-data-wrapper .select-data-button-group {
+  background: #ffffff;
+  border-top: 1px solid #d4dadd;
+}
