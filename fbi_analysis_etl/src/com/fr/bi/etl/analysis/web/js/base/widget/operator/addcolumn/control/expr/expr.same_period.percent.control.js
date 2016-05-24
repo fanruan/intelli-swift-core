@@ -4,7 +4,7 @@
 BI.AnalysisETLOperatorAddColumnExprSamePeriodPercentController = BI.inherit(BI.AnalysisETLOperatorAddColumnExprSamePeriodController, {
     _populateLabel : function (widget, model) {
         widget.firstDetail.empty();
-        var text = BI.i18nText('BI-Calculate_Target_Last_Include_In_Same', model.get('monthSeason') || '', model.get('field')||'');
+        var text = BI.i18nText('BI-Calculate_Target_Each_Value', model.get('monthSeason') || '', model.get('field')||'');
         widget.firstDetail.addItem(
             BI.createWidget({
                 type : 'bi.label',
