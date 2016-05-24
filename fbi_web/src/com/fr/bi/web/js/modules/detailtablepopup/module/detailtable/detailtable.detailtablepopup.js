@@ -3,9 +3,9 @@
  *
  * Created by GUY on 2016/5/18.
  * @class BI.DetailTablePopupDetailTable
- * @extends BI.Widget
+ * @extends BI.Pane
  */
-BI.DetailTablePopupDetailTable = BI.inherit(BI.Widget, {
+BI.DetailTablePopupDetailTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTablePopupDetailTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detail-table-popup-detail-table"
@@ -17,10 +17,94 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Widget, {
         var self = this;
 
         this.model = new BI.DetailTablePopupDetailTableModel({});
-        this.table = BI.createWidget({
-            type: "bi.table_view",
-            element: this.element
+
+        this.pager = BI.createWidget({
+            type: "bi.all_pager",
+            height: 20
         });
+
+        this.table = BI.createWidget({
+            type: "bi.page_table",
+            el: {
+                el: {
+                    el: {
+                        type: "bi.table_tree_with_number",
+                        showNumber: false
+                    }
+                }
+            },
+            itemsCreator: function (op, populate) {
+                var vPage = op.vpage;
+                self._onPageChange(vPage, function (items, header, crossItems, crossHeader) {
+                    populate.apply(self.table, arguments);
+                })
+            },
+            pager: this.pager
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.table,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }]
+        })
+    },
+
+    _onPageChange: function (vPage, callback) {
+        var self = this;
+        this.loading();
+        var dimensions = this.model.getAllDimensionIDs();
+        if (BI.isEmpty(dimensions)) {
+            callback([], [], [], []);
+            self.pager.setAllPages(0);
+            self.pager.setValue(0);
+            return;
+        }
+        this.model.getData(vPage, function (jsonData) {
+            self.loaded();
+            var json = jsonData.data, row = jsonData.row, size = jsonData.size;
+            if (BI.isNull(json) || BI.isNull(row)) {
+                return;
+            }
+            var header = [], view = self.model.getView();
+            BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
+                self.model.isDimensionUsable(dId) === true &&
+                header.push({
+                    type: "bi.detail_table_popup_detail_table_header",
+                    dId: dId,
+                    text: self.model.getDimensionNameByID(dId),
+                    sortFilterChange: function (v) {
+
+                    }
+                });
+            });
+            var items = [], values = json.value;
+            BI.each(values, function (i, row) {
+                var rowItems = [];
+                BI.each(row, function (j, v) {
+                    var item = {
+                        type: "bi.detail_table_popup_detail_table_cell",
+                        text: v
+                    };
+                    rowItems.push(item);
+                });
+                items.push(rowItems);
+            });
+            var columnSize = BI.makeArray(header.length, "");
+            self.table.setColumnSize(columnSize);
+            self.table.populate(items, [header]);
+
+            self.table.attr("showNumber", BI.Utils.getWidgetSettingsByID(self.options.wId).show_number);
+            self.table.attr("columnSize", columnSize);
+            self.pager.setAllPages(Math.ceil(row / size));
+            self.pager.setValue(vPage);
+            callback(items, header, [], [])
+        }, ob);
     },
 
     populate: function () {

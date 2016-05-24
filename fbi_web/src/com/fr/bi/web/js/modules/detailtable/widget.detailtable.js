@@ -15,10 +15,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         BI.DetailTable.superclass._init.apply(this, arguments);
         var self = this;
 
-        this.wrapper = BI.createWidget({
-            type: "bi.absolute",
-            element: this.element
-        });
         this.pager = BI.createWidget({
             type: "bi.all_pager",
             height: 20
@@ -43,15 +39,17 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             pager: this.pager
         });
 
-        this.wrapper.addItem({
-            el: this.table,
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.table,
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            }]
         })
-
-
     },
 
 
@@ -115,57 +113,9 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
     populate: function () {
         var self = this;
-        var widgetId = this.options.wId;
-        this.loading();
-        this.data = [];
-        var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
-        if (BI.isEmpty(dimensions)) {
-            self.table.populate([], [], [], []);
-            self.pager.setAllPages(0);
-            self.pager.setValue(0);
-            return;
-
-        }
-        this.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-
-        var ob = {};
-        ob.page = this.pageOperator;
-        BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
-            self.loaded();
-            var json = jsonData.data, row = jsonData.row, size = jsonData.size;
-            if (BI.isNull(json) || BI.isNull(row)) {
-                return;
-            }
-            var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
-            BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
-                BI.isNotNull(dId) &&
-                BI.Utils.isDimensionUsable(dId) === true &&
-                header.push({
-                    type: "bi.normal_header_cell",
-                    dId: dId,
-                    text: BI.Utils.getDimensionNameByID(dId),
-                    sortFilterChange: function (v) {
-                        self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-                        self._headerOperatorChange(v, dId);
-                    }
-                });
-            });
-
-
-            var items = [{
-                children: self._createTableItems(json.value)
-            }];
-
-            var columnSize = [];
-            BI.each(header, function (i, item) {
-                columnSize.push("");
-            });
-            self.pager.setAllPages(Math.ceil(row / size));
-            self.pager.setValue(1);
-            self.table.attr("showNumber", BI.Utils.getWidgetSettingsByID(self.options.wId).show_number);
-            self.table.attr("columnSize", columnSize);
+        this._onPageChange(0, function (items, header) {
             self.table.populate(items, header, [], []);
-        }, ob);
+        });
     },
 
 
