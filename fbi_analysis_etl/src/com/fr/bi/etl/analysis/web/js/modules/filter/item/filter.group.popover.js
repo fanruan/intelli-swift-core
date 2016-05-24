@@ -72,6 +72,13 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
                 type : 'bi.label',
                 textAlign : 'left',
                 height : 25,
+                text : BI.i18nText('BI-De')  + o.targetText
+            }))
+        } else {
+            self.labels.addItem(BI.createWidget({
+                type : 'bi.label',
+                textAlign : 'left',
+                height : 25,
                 text : o.targetText
             }))
         }
