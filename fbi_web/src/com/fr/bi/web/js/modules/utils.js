@@ -936,11 +936,6 @@
             });
             return result;
         },
-        
-        exportExcelByWidgetName: function(wname) {
-            Data.Req.reqExportExcelByWidgetName({name: wname}, function(){});
-        },
-
 
         /**
          * 数据相关

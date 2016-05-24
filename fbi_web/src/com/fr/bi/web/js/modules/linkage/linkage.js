@@ -145,8 +145,11 @@ BI.Linkage = BI.inherit(BI.Widget, {
                         type: "bi.icon_button",
                         cls: "close-h-font",
                         width: 20,
-                        height: 26
-
+                        height: 26,
+                        handler: function(){
+                            self.model.deleteLinkage(tId, wId);
+                            self.populate();
+                        }
                     }],
                     hgap: 5,
                     vgap: 2
