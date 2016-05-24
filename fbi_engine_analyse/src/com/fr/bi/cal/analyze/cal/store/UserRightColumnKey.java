@@ -1,9 +1,8 @@
 package com.fr.bi.cal.analyze.cal.store;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.dimension.calculator.AbstractDimensionCalculator;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;
 
@@ -24,9 +23,9 @@ public class UserRightColumnKey extends AbstractDimensionCalculator {
      */
     private static final long serialVersionUID = -7314023318409359365L;
     private final static String ERROR_NAME = "ERROR_NAME";
-    private Table target;
+    private BusinessTable target;
     private GroupValueIndex gvi;
-    public UserRightColumnKey(GroupValueIndex gvi, Table target) {
+    public UserRightColumnKey(GroupValueIndex gvi, BusinessTable target) {
         super();
         this.gvi = gvi;
         this.target = target;

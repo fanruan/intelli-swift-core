@@ -11,7 +11,9 @@ import com.fr.json.JSONObject;
 
 /**
  * 业务包字段，分析时的字段应该继承该类
- * Created by GUY on 2015/4/10.
+ *
+ * @author Connery
+ * @since 4.0
  */
 public class BIBusinessField implements BusinessField {
     /**
@@ -49,6 +51,15 @@ public class BIBusinessField implements BusinessField {
 
     public BIBusinessField() {
 
+    }
+
+    @Override
+    public BIFieldID getFieldID() {
+        return fieldID;
+    }
+
+    public BIBusinessField(BIFieldID fieldID) {
+        this.fieldID = fieldID;
     }
 
     public int getClassType() {

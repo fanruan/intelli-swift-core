@@ -1,6 +1,6 @@
 package com.fr.bi.stable.data.db;
 
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONTransform;
 
 import java.io.Serializable;
@@ -16,7 +16,7 @@ public interface ICubeFieldSource extends Cloneable, Serializable, JSONTransform
 
     int getFieldType();
 
-    void setTableBelongTo(ICubeTableSource tableBelongTo);
+    void setTableBelongTo(CubeTableSource tableBelongTo);
 
     int getClassType();
 
@@ -24,5 +24,7 @@ public interface ICubeFieldSource extends Cloneable, Serializable, JSONTransform
 
     int getFieldSize();
 
-    ICubeTableSource getTableBelongTo();
+    CubeTableSource getTableBelongTo();
+
+    boolean hasSubField();
 }

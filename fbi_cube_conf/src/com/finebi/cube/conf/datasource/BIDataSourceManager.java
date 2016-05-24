@@ -10,7 +10,7 @@ import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
 
@@ -51,17 +51,17 @@ public class BIDataSourceManager extends BISystemDataManager<BIDataSource> imple
     }
 
     @Override
-    public ICubeTableSource getTableSourceByID(BITableID id, BIUser user) {
+    public CubeTableSource getTableSourceByID(BITableID id, BIUser user) {
         return getInstance(user).getTableSourceByID(id);
     }
 
     @Override
-    public ICubeTableSource getTableSourceByCore(BICore core, BIUser user) {
+    public CubeTableSource getTableSourceByCore(BICore core, BIUser user) {
         return getInstance(user).getTableSourceByMD5(core);
     }
 
     @Override
-    public void addCore2SourceRelation(BITableID id, ICubeTableSource source, BIUser user) {
+    public void addCore2SourceRelation(BITableID id, CubeTableSource source, BIUser user) {
         getInstance(user).addTableSource(id, source);
     }
 
@@ -71,7 +71,7 @@ public class BIDataSourceManager extends BISystemDataManager<BIDataSource> imple
     }
 
     @Override
-    public void editCoreAndTable(BITableID id, ICubeTableSource source, BIUser user) {
+    public void editCoreAndTable(BITableID id, CubeTableSource source, BIUser user) {
         getInstance(user).editTableSource(id, source);
     }
 
@@ -88,5 +88,10 @@ public class BIDataSourceManager extends BISystemDataManager<BIDataSource> imple
     @Override
     public ICubeFieldSource findDBField(BIUser user, BusinessField biField) throws BIFieldAbsentException {
         return getInstance(user).findDBField(biField);
+    }
+
+    @Override
+    public void persistData(long userId) {
+        persistUserData(userId);
     }
 }

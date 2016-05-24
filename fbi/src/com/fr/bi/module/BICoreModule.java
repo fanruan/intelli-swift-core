@@ -282,7 +282,7 @@ public class BICoreModule extends AbstractModule {
     }
 
     private static boolean shouldAddTableColumn(Connection cn, String tableName, String columnName) {
-        Table table = new Table(tableName);
+        BusinessTable table = new BusinessTable(tableName);
         Select select = new Select(table, DialectFactory.generateDialect(cn, PlatformDB.getDB().getDriver()));
         PreparedStatement ps = null;
         ResultSet rs = null;

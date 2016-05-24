@@ -1,22 +1,25 @@
 package com.fr.bi.cal.analyze.executor.detail.execute;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.field.target.detailtarget.field.BIEmptyDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
-import com.fr.bi.base.BIUser;
+import com.fr.bi.field.target.detailtarget.field.BIEmptyDetailTarget;
 import com.fr.bi.stable.connection.DirectTableConnectionFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.CollectionKey;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.util.BIConfUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by GUY on 2015/4/21.
@@ -24,7 +27,7 @@ import java.util.*;
 public class DetailParas {
 
     private ICubeDataLoader loader;
-    private transient Table target;
+    private transient BusinessTable target;
     private transient BIDetailTarget[] viewDimension;
     private transient String[] sortTargets;
     protected BIUser biUser;

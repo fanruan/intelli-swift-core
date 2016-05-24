@@ -1,12 +1,14 @@
 package com.fr.bi.cal.stable.relation.uselinkindex;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.relation.LinkIndexLoader;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -16,8 +18,6 @@ import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.general.DateUtils;
@@ -54,8 +54,8 @@ public class LinkColumnUseIndexLoader implements LinkIndexLoader, CubeGenerator,
         if (relations != null && (!relations.isEmpty())) {
             final RelationColumnKey rck = new RelationColumnKey(relations.get(0).getPrimaryKey(), relations);
             long start = System.currentTimeMillis();
-            BIField startKey = relations.get(0).getPrimaryKey();
-            Table endTable = relations.get(relations.size() - 1).getForeignKey().getTableBelongTo();
+            ICubeFieldSource startKey = relations.get(0).getPrimaryKey();
+            CubeTableSource endTable = relations.get(relations.size() - 1).getForeignKey().getTableBelongTo();
             String message = "generate inuse relation from table :" + startKey.toString() + "to table : " + endTable.toString();
             BILogger.getLogger().info(message + " start ");
             final ICubeTableIndexReader reader = cube.getBasicGroupValueIndexArrayReader(relations, manager);

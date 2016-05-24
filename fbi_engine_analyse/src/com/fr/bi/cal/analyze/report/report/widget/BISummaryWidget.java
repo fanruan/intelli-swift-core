@@ -1,10 +1,13 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
-import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -15,9 +18,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
@@ -60,8 +61,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
 
     @Override
-    public List<Table> getUsedTableDefine() {
-        List<Table> result = new ArrayList<Table>();
+    public List<BusinessTable> getUsedTableDefine() {
+        List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
             result.add(dimensions[i].getStatisticElement().getTableBelongTo());
@@ -78,8 +79,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     }
 
     @Override
-    public List<BIField> getUsedFieldDefine() {
-        List<BIField> result = new ArrayList<BIField>();
+    public List<BusinessField> getUsedFieldDefine() {
+        List<BusinessField> result = new ArrayList<BusinessField>();
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
             result.add(dimensions[i].getStatisticElement());
@@ -238,7 +239,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         if (ob instanceof JSONObject) {
                             JSONObject j = (JSONObject) ob;
                             String fieldId = j.getString("field_id");
-                            dimensionMap.put(targetId, BIDataColumnFactory.createBIDataColumnByFieldID(fieldId, new BIUser(userId)));
+                            dimensionMap.put(targetId, new BIBusinessField(new BIFieldID(fieldId)));
                         }
                     }
                     if (tar.has("target_relation")) {

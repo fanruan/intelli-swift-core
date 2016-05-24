@@ -17,7 +17,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -40,19 +40,19 @@ public class BICubeTableAdapter implements ICubeTableService {
     private ICube cube;
     private ICubeTableEntityGetterService primaryTable;
 
-    public BICubeTableAdapter(ICube cube, ICubeTableSource tableSource) {
+    public BICubeTableAdapter(ICube cube, CubeTableSource tableSource) {
         this.cube = cube;
-            primaryTable = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
-        Iterator<Set<ICubeTableSource>> it = tableSource.createGenerateTablesMap().values().iterator();
+        primaryTable = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
+        Iterator<Set<CubeTableSource>> it = tableSource.createGenerateTablesMap().values().iterator();
         while (it.hasNext()) {
-            Iterator<ICubeTableSource> tableSourceIterator = it.next().iterator();
+            Iterator<CubeTableSource> tableSourceIterator = it.next().iterator();
             while (tableSourceIterator.hasNext()) {
                 initial(tableSourceIterator.next());
             }
         }
     }
 
-    private void initial(ICubeTableSource tableSource) {
+    private void initial(CubeTableSource tableSource) {
         ICubeTableEntityGetterService tableEntityGetterService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
         Iterator<BIColumnKey> it = tableEntityGetterService.getCubeColumnInfo().iterator();
     }
@@ -128,8 +128,8 @@ public class BICubeTableAdapter implements ICubeTableService {
         List<ICubeFieldSource> list = primaryTable.getFieldInfo();
         Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
         while (tableFieldIt.hasNext()) {
-            BICubeFieldSource field = tableFieldIt.next();
-            result.put(getColumnIndex(field), field);
+            ICubeFieldSource field = tableFieldIt.next();
+            result.put(getColumnIndex(field.getFieldName()), field);
         }
 
         return result;
@@ -207,7 +207,7 @@ public class BICubeTableAdapter implements ICubeTableService {
                 throw BINonValueUtils.beyondControl();
             }
             BITableSourceRelation startRelation = relations.get(0);
-            BIKey key = getColumnIndex(startRelation.getPrimaryField());
+            BIKey key = getColumnIndex(startRelation.getPrimaryField().getFieldName());
             ICubeRelationEntityGetterService getterService = getTableReader(key).getRelationIndexGetter(BICubePathUtils.convert(relations));
             return new BICubeTableRelationIndexReader(getterService);
         } catch (Exception e) {
@@ -251,7 +251,7 @@ public class BICubeTableAdapter implements ICubeTableService {
         ICubeColumnReaderService columnReaderService;
         try {
             BIColumnKey columnKey;
-            BICubeFieldSource field = getDBField(biKey);
+            ICubeFieldSource field = getDBField(biKey);
             if (biKey instanceof IndexTypeKey) {
                 columnKey = BIColumnKeyAdapter.covert(field, ((IndexTypeKey) biKey).getType());
             } else {
@@ -269,7 +269,7 @@ public class BICubeTableAdapter implements ICubeTableService {
         return primaryTable;
     }
 
-    private BICubeFieldSource getDBField(BIKey biKey) throws BIKeyAbsentException {
+    private ICubeFieldSource getDBField(BIKey biKey) throws BIKeyAbsentException {
         Map<BIKey, ICubeFieldSource> map = getColumns();
         Iterator<BIKey> it = map.keySet().iterator();
         while (it.hasNext()) {

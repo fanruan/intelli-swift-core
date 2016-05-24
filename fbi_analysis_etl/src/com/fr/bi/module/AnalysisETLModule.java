@@ -1,18 +1,22 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
 import com.fr.bi.etl.analysis.manager.*;
-import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.*;
+import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBottomNFilter;
+import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
+import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmallOrEqualsCLFilter;
+import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberTopNFilter;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
-import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.cluster.rpc.RPC;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
+
 
 /**
  * Created by 小灰灰 on 2015/12/11.
@@ -31,8 +35,8 @@ public class AnalysisETLModule extends AbstractModule {
     private void registerResources() {
         StableFactory.registerJavaScriptFiles(ETLResourcesHelper.DEFAULT_JS, ETLResourcesHelper.getDefaultJs());
         StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DEZI_CSS, ETLResourcesHelper.getDefaultCss());
+//        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
+//        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DEZI_CSS, ETLResourcesHelper.getDefaultCss());
     }
 
     /**

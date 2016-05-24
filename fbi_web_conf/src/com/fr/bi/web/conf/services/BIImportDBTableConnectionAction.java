@@ -1,13 +1,13 @@
 package com.fr.bi.web.conf.services;
 
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.fr.bi.stable.relation.BITableRelation;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -74,7 +74,7 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
 		Iterator<String> iterator = jo.keys();
 		while (iterator.hasNext()){
 			String id = iterator.next();
-			ICubeTableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
+			CubeTableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
 			if (source.getType() == BIBaseConstant.TABLETYPE.DB){
 				sources.put(id, (DBTableSource)source);
 			}

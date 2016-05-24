@@ -1,9 +1,10 @@
 package com.fr.bi.etl.analysis.conf;
 
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 
 /**
@@ -11,19 +12,21 @@ import com.fr.bi.stable.utils.code.BILogger;
  */
 public class AnalysisBusiTable extends BIBusinessTable {
 
+    public long userID;
+
     public AnalysisBusiTable(String id, long userId) {
-        super(id, userId);
+        super(id, "");
+        userId = userId;
     }
 
-    public void setSource(ICubeTableSource source){
+    public void setSource(CubeTableSource source) {
         this.source = source;
     }
 
-    @Override
-    public ICubeTableSource getSource() {
+    public CubeTableSource getSource() {
         if (source == null) {
             try {
-                source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByID(getID(), getUser());
+                source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByID(getID(), new BIUser(-999));
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
@@ -34,7 +37,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
         return source;
     }
 
-    protected int getTableType(){
+    protected int getTableType() {
         return Constants.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE;
     }
 

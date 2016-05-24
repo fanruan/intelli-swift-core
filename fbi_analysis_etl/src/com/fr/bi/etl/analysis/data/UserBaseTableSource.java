@@ -6,7 +6,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.HashSet;
@@ -60,7 +60,7 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         int index = 0, step = 1000, total = 0;
         while (total == (index) * step){
             List<List> values = userWidget.createData(index*step, index*step + step);
@@ -82,7 +82,7 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         List<List> values = userWidget.createData(start, end);
         for (int i = 0; i < values.size(); i ++){
             List value = values.get(i);

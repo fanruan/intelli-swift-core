@@ -55,8 +55,8 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
     private void createGroupValueWithParentValues(final List<String> dataList, String[] parentValues, GroupValueIndex filterGvi, int floors, int times) {
         if (floors == parentValues.length) {
             BIDimension dimension = widget.getViewDimensions()[floors];
-            ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable());
-            ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey());
+            ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable().getTableSource());
+            ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
             List<BITableSourceRelation> list = widget.getTableSourceRelationList(dimension, session.getUserId());
             ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), list);
             if (times == -1) {
@@ -94,7 +94,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
             String[] groupValue = new String[1];
             groupValue[0] = parentValues[floors];
             BIDimension dimension = widget.getViewDimensions()[floors];
-            ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey());
+            ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
             final ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
             GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
             createGroupValueWithParentValues(dataList, parentValues, gvi, floors + 1, times);

@@ -2,7 +2,7 @@ package com.finebi.cube.relation;
 
 import com.finebi.cube.location.ICubeSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
@@ -16,7 +16,7 @@ import java.util.Iterator;
  * @author Connery
  * @since 4.0
  */
-public class BITableSourceRelationPath extends BIBasicRelationPath<ICubeTableSource, ICubeFieldSource, BITableSourceRelation> implements ICubeSource {
+public class BITableSourceRelationPath extends BIBasicRelationPath<CubeTableSource, ICubeFieldSource, BITableSourceRelation> implements ICubeSource {
     public BITableSourceRelationPath() {
         super();
     }

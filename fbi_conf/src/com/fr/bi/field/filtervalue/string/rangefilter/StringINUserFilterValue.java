@@ -2,10 +2,9 @@ package com.fr.bi.field.filtervalue.string.rangefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.base.annotation.BICoreField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -18,16 +17,16 @@ import com.fr.json.JSONObject;
  * Created by Young's on 2016/5/20.
  */
 public class StringINUserFilterValue extends StringRangeFilterValue {
-    @BICoreField
+
     protected String fieldId;
 
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         addLogUserInfo();
         GroupValueIndex gvi = super.createFilterIndex(dimension, target, loader, userId);
-        ICubeTableService ti = loader.getTableIndex(target);
+        ICubeTableService ti = loader.getTableIndex(target.getTableSource());
         return gvi == null ? GVIFactory.createAllEmptyIndexGVI()
-                : gvi.NOT(loader.getTableIndex(target).getRowCount()).AND(ti.getAllShowIndex());
+                : gvi.NOT(loader.getTableIndex(target.getTableSource()).getRowCount()).AND(ti.getAllShowIndex());
     }
 
     @Override
@@ -80,7 +79,7 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        if(jo.has("filter_value")) {
+        if (jo.has("filter_value")) {
             this.fieldId = jo.getString("filter_value");
         }
     }

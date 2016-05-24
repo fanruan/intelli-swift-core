@@ -2,7 +2,7 @@ package com.fr.bi.stable.data;
 
 
 import com.fr.bi.base.BIUser;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
@@ -30,7 +30,7 @@ public class BITable implements Serializable, Table {
     protected transient BITableID ID;
     protected List<BIBasicField> fieldArray;
     protected List<String> usedFields = new ArrayList<String>();
-    protected ICubeTableSource source;
+    protected CubeTableSource source;
     protected BIUser user;
 
     public BITable(String id) {

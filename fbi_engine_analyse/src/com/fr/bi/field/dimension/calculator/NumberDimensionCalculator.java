@@ -26,7 +26,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
-        ICubeColumnIndexReader getter = loader.getTableIndex(field).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
+        ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
         Comparator comparator;
         if(getSortType() == BIReportConstant.SORT.NONE || getSortType() == BIReportConstant.SORT.CUSTOM){

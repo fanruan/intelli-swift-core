@@ -3,16 +3,17 @@ package com.fr.bi.cal.stable.index;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.singletable.TableUpdate;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BIRecord;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.*;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -37,7 +38,7 @@ import java.util.TreeSet;
 public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
     private transient ICubeTableService oldTi;
 
-    public SimpleIndexIncreaseGenerator(TableCubeFile cube, ICubeTableSource dataSource, Set<ICubeTableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
+    public SimpleIndexIncreaseGenerator(TableCubeFile cube, CubeTableSource dataSource, Set<CubeTableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
         super(cube, dataSource, derivedDataSources, version, log, loader);
         oldTi = loader.getTableIndex(dataSource);
     }
@@ -56,14 +57,14 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
 
 
     private int writeData(TreeSet<Integer> sortRemovedList, int oldCount) {
-        SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(loader.getUserId()).getSingleTableUpdateAction(dataSource.getPersistentTable());
+        TableUpdate action = BICubeConfigureCenter.getTableUpdateManager().getSingleTableUpdateAction(dataSource.getPersistentTable());
         oldCount = dealWithInsert(action, oldCount);
         oldCount = dealWithModify(action, oldCount, sortRemovedList);
         dealWithRemove(action, sortRemovedList);
         return oldCount;
     }
 
-    private int dealWithInsert(SingleTableUpdateAction action, int rowCount) {
+    private int dealWithInsert(TableUpdate action, int rowCount) {
         String iSql = action.getInsert(loader);
         if (StringUtils.isEmpty(iSql)) {
             return rowCount;
@@ -80,7 +81,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }, rowCount);
     }
 
-    private int dealWithModify(SingleTableUpdateAction action, int rowCount, final TreeSet<Integer> sortRemovedList) {
+    private int dealWithModify(TableUpdate action, int rowCount, final TreeSet<Integer> sortRemovedList) {
         String mSql = action.getModify(loader);
         if (StringUtils.isEmpty(mSql)) {
             return rowCount;
@@ -131,7 +132,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }, rowCount);
     }
 
-    private void dealWithRemove(SingleTableUpdateAction action, final TreeSet<Integer> sortRemovedList) {
+    private void dealWithRemove(TableUpdate action, final TreeSet<Integer> sortRemovedList) {
         String rSql = action.getRemove(loader);
         if (StringUtils.isEmpty(rSql)) {
             return;
@@ -141,8 +142,8 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(rSql);
         String columnName = getColumnName(connection, sqlStatement, rSql);
-        BICubeFieldSource f = null;
-        for (BICubeFieldSource field : cube.getBIField()) {
+        ICubeFieldSource f = null;
+        for (ICubeFieldSource field : cube.getBIField()) {
             if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
                 f = field;
                 break;
@@ -154,7 +155,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }
         BIKey key = new IndexKey(columnName);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
-        BIDBUtils.runSQL(sqlStatement, new BICubeFieldSource[]{f}, new Traversal<BIDataValue>() {
+        BIDBUtils.runSQL(sqlStatement, new ICubeFieldSource[]{f}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 Object[] key = getter.createKey(1);

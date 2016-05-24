@@ -7,7 +7,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -120,13 +120,13 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         return write(travel, ti);
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         return  write(travel, loader.getTableIndex(getSingleParentMD5(parents), start, end));
     }
 

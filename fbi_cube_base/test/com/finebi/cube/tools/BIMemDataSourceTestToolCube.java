@@ -1,15 +1,14 @@
 package com.finebi.cube.tools;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.utils.algorithem.BIRandomUitils;
 import com.fr.json.JSONObject;
@@ -24,7 +23,7 @@ import java.util.*;
  * @author Connery
  * @since 4.0
  */
-public class BIMemDataSourceTestToolCube implements ICubeTableSource {
+public class BIMemDataSourceTestToolCube implements CubeTableSource {
     public List<String> stringData = new ArrayList<String>();
     public List<Long> dateData = new ArrayList<Long>();
     public List<Double> floatData = new ArrayList<Double>();
@@ -563,20 +562,19 @@ public class BIMemDataSourceTestToolCube implements ICubeTableSource {
     }
 
     @Override
-    public Set<ICubeFieldSource> getParentFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<ICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<ICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
         return null;
     }
-
 
 
     public static void main(String[] args) {
@@ -644,7 +642,7 @@ public class BIMemDataSourceTestToolCube implements ICubeTableSource {
     }
 
     @Override
-    public BICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
+    public BICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
         BICubeFieldSource[] fields = new BICubeFieldSource[5];
         fields[0] = DBFieldTestTool.generateDATE();
         fields[1] = DBFieldTestTool.generateSTRING();
@@ -675,17 +673,17 @@ public class BIMemDataSourceTestToolCube implements ICubeTableSource {
     }
 
     @Override
-    public Set<BusinessTable> createTableKeys() {
+    public String getTableName() {
+        return "MemoryTable";
+    }
+
+    @Override
+    public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {
         return null;
     }
 
     @Override
-    public Map<Integer, Set<ICubeTableSource>> createGenerateTablesMap() {
-        return null;
-    }
-
-    @Override
-    public List<Set<ICubeTableSource>> createGenerateTablesList() {
+    public List<Set<CubeTableSource>> createGenerateTablesList() {
         return null;
     }
 
@@ -700,7 +698,7 @@ public class BIMemDataSourceTestToolCube implements ICubeTableSource {
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         for (int i = 0; i < getRowNumber(); i++) {
             travel.actionPerformed(new BIDataValue(i, 0, dateData.get(i)));
             travel.actionPerformed(new BIDataValue(i, 1, stringData.get(i)));
@@ -712,7 +710,7 @@ public class BIMemDataSourceTestToolCube implements ICubeTableSource {
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return 0;
     }
 
@@ -748,12 +746,12 @@ public class BIMemDataSourceTestToolCube implements ICubeTableSource {
     }
 
     @Override
-    public Map<BICore, ICubeTableSource> createSourceMap() {
+    public Map<BICore, CubeTableSource> createSourceMap() {
         return null;
     }
 
     @Override
-    public Set<String> getUsedFields(ICubeTableSource source) {
+    public Set<String> getUsedFields(CubeTableSource source) {
         return null;
     }
 

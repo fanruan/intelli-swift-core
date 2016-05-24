@@ -4,7 +4,7 @@ import com.finebi.cube.api.BICubeManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -28,7 +28,7 @@ public class BIGetPreviewTableDataAction extends AbstractBIDeziAction {
                           String sessionID) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "table_id");
-        ICubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), new BIUser(userId));
+        CubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), new BIUser(userId));
         JSONObject jo = source.createPreviewJSONFromCube(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId));
         WebUtils.printAsJSON(res, jo);
     }

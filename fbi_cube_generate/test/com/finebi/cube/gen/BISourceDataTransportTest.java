@@ -10,7 +10,8 @@ import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.HashSet;
@@ -33,10 +34,10 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         tableSource = new BIMemDataSourceTestToolCube();
     }
 
-    public void transport(ICubeTableSource tableSource) {
+    public void transport(CubeTableSource tableSource) {
         try {
             setUp();
-            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<ICubeTableSource>(), new HashSet<ICubeTableSource>());
+            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>());
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,7 +48,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     public void testTransport() {
         try {
             transport(tableSource);
-            BICubeFieldSource[] fields = tableSource.getFieldsArray(new HashSet<ICubeTableSource>());
+            BICubeFieldSource[] fields = tableSource.getFieldsArray(new HashSet<CubeTableSource>());
             ICubeColumnReaderService col1 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[0]));
             ICubeColumnReaderService col2 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[1]));
             ICubeColumnReaderService col3 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[2]));
@@ -70,10 +71,10 @@ public class BISourceDataTransportTest extends BICubeTestBase {
 
     public void testTransportCompoundTable() {
         try {
-            Set<ICubeTableSource> parents = new HashSet<ICubeTableSource>();
-            new BISourceDataTransport(cube, BIMemoryDataSourceFactory.generateTableA(), new HashSet<ICubeTableSource>(), new HashSet<ICubeTableSource>()).mainTask(null);
+            Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
+            new BISourceDataTransport(cube, BIMemoryDataSourceFactory.generateTableA(), new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>()).mainTask(null);
             parents.add(BIMemoryDataSourceFactory.generateTableA());
-            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<ICubeTableSource>(), parents);
+            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents);
             dataTransport.mainTask(null);
 
 
@@ -82,7 +83,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             assertEquals(size, compoundTable.getFieldInfo().size());
 
             BIMemoryDataSource memoryDataSource = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableA();
-            BICubeFieldSource[] fields = BIMemoryDataSourceFactory.generateTableA().getFieldsArray(new HashSet<ICubeTableSource>());
+            ICubeFieldSource[] fields = BIMemoryDataSourceFactory.generateTableA().getFieldsArray(new HashSet<CubeTableSource>());
             ICubeColumnReaderService col1 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[0]));
             ICubeColumnReaderService col2 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[1]));
             ICubeColumnReaderService col3 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[2]));

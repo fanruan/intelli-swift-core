@@ -10,7 +10,6 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.operation.group.IGroup;
@@ -81,9 +80,9 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
 
-    @Override
+
     public Set<BusinessTable> createTableKeys() {
-        Set set = new HashSet<Table>();
+        Set set = new HashSet<BusinessTable>();
         set.add(new BITable(fetchObjectCore().getIDValue()));
         return set;
     }
@@ -94,7 +93,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         return 0;
     }
 

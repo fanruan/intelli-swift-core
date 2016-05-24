@@ -2,7 +2,7 @@ package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.tools.BICubeRelationTestTool;
@@ -18,8 +18,8 @@ import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
  */
 public class BIRelationIndexBuilderTest extends BICubeTestBase {
     private BIRelationIndexGenerator indexGenerator;
-    ICubeTableSource tableA;
-    ICubeTableSource tableB;
+    CubeTableSource tableA;
+    CubeTableSource tableB;
     BICubeRelation relation;
 
     @Override
@@ -31,11 +31,11 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
         relation = BICubeRelationTestTool.getTaTb();
     }
 
-    public void setTableA(ICubeTableSource tableA) {
+    public void setTableA(CubeTableSource tableA) {
         this.tableA = tableA;
     }
 
-    public void setTableB(ICubeTableSource tableB) {
+    public void setTableB(CubeTableSource tableB) {
         this.tableB = tableB;
     }
 

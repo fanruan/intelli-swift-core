@@ -2,21 +2,16 @@ package com.fr.bi.cal.stable.loader;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.base.BICore;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.memory.MemoryCubeFile;
 import com.fr.bi.cal.stable.tableindex.index.BITableIndex;
 import com.fr.bi.conf.utils.BIModuleManager;
-import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.module.BIModule;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -39,7 +34,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 
     public CubeReadingTableIndexLoader(long userId) {
         user = new BIUser(userId);
-        for (BIModule module: BIModuleManager.getModules()) {
+        for (BIModule module : BIModuleManager.getModules()) {
             try {
                 childLoaderMap.put(module.getModuleName(), module.getCubeDataLoaderCreator().fetchCubeLoader(user));
             } catch (Exception e) {
@@ -76,29 +71,13 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(BITableID id) {
-        return getTableIndex(new BITable(id));
+    public ICubeTableService getTableIndex(CubeTableSource tableSource) {
+        return null;
     }
 
     @Override
-    public ICubeTableService getTableIndex(final Table td) {
-        return BIModuleUtils.getTableIndex(td, user, childLoaderMap);
-    }
-
-    @Override
-    public ICubeTableService getTableIndex(BICore md5Core) {
-        return BIModuleUtils.getTableIndex(md5Core, user, childLoaderMap);
-    }
-
-    @Override
-
-    public ICubeTableService getTableIndex(BIField td) {
-        return getTableIndex(td.getTableBelongTo());
-    }
-
-    @Override
-    public BIKey getFieldIndex(BIField column) {
-        return BIModuleUtils.getFieldIndex(column, user, childLoaderMap);
+    public BIKey getFieldIndex(BusinessField column) {
+        return null;
     }
 
     @Override
@@ -107,7 +86,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     }
 
     @Override
-	public long getUserId() {
+    public long getUserId() {
         return user.getUserId();
     }
 
@@ -131,15 +110,15 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(ICubeTableSource tableSource, int start, int end) {
+    public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
         ICubeTableService ti = getTableIndex(tableSource);
         MemoryCubeFile cube = new MemoryCubeFile(ti.getColumns().values().toArray(new ICubeFieldSource[ti.getColumns().size()]));
         int row = ti.getRowCount();
-        if (row >= start){
+        if (row >= start) {
             int count = Math.min(row, end) - start;
             int col = 0;
-            for (BIKey key : ti.getColumns().keySet()){
-                for (int i = 0; i < count; i ++){
+            for (BIKey key : ti.getColumns().keySet()) {
+                for (int i = 0; i < count; i++) {
                     cube.addDataValue(new BIDataValue(i, col, ti.getRow(key, i + count)));
                 }
                 col++;

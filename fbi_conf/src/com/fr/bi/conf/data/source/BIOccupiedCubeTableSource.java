@@ -9,7 +9,7 @@ import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -31,7 +31,7 @@ import java.util.*;
  * @author Connery
  * @since 4.0
  */
-public class BIOccupiedCubeTableSource implements ICubeTableSource {
+public class BIOccupiedCubeTableSource implements CubeTableSource {
     private String ID;
 
     public BIOccupiedCubeTableSource(String id) {
@@ -49,19 +49,24 @@ public class BIOccupiedCubeTableSource implements ICubeTableSource {
     }
 
     @Override
-    public BICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
+    public String getTableName() {
+        return null;
+    }
+
+    @Override
+    public BICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
         return new BICubeFieldSource[0];
     }
 
 
     @Override
-    public Map<Integer, Set<ICubeTableSource>> createGenerateTablesMap() {
+    public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {
         return null;
     }
 
     @Override
-    public List<Set<ICubeTableSource>> createGenerateTablesList() {
-        return new ArrayList<Set<ICubeTableSource>>();
+    public List<Set<CubeTableSource>> createGenerateTablesList() {
+        return new ArrayList<Set<CubeTableSource>>();
     }
 
     @Override
@@ -75,12 +80,12 @@ public class BIOccupiedCubeTableSource implements ICubeTableSource {
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         return -1;
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return -1;
     }
 
@@ -116,7 +121,7 @@ public class BIOccupiedCubeTableSource implements ICubeTableSource {
     }
 
     @Override
-    public Map<BICore, ICubeTableSource> createSourceMap() {
+    public Map<BICore, CubeTableSource> createSourceMap() {
         return null;
     }
 
@@ -126,7 +131,7 @@ public class BIOccupiedCubeTableSource implements ICubeTableSource {
     }
 
     @Override
-    public Set<String> getUsedFields(ICubeTableSource source) {
+    public Set<String> getUsedFields(CubeTableSource source) {
         return new HashSet<String>();
     }
 
@@ -166,17 +171,17 @@ public class BIOccupiedCubeTableSource implements ICubeTableSource {
     }
 
     @Override
-    public Set<ICubeFieldSource> getParentFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<ICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<ICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
         return null;
     }
 

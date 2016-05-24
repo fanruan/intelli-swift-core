@@ -6,7 +6,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -35,7 +35,7 @@ public class BIGetFieldValueByFieldIdAction extends AbstractBIConfigureAction {
         String tableId = BIIDUtils.getTableIDFromFieldID(fieldId);
         BITableID tId = new BITableID(tableId);
         long userId = ServiceUtils.getCurrentUserID(req);
-        ICubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tId, new BIUser(userId));
+        CubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tId, new BIUser(userId));
         Set set = source.getFieldDistinctNewestValues(BIIDUtils.getFieldNameFromFieldID(fieldId), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
         String filterConfigString = WebUtils.getHTTPRequestParameter(req, "filterConfig");
         String keyword = null;

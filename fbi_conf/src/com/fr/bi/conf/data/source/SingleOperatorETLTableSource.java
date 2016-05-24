@@ -5,7 +5,7 @@ import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Set;
 public class SingleOperatorETLTableSource extends ETLTableSource {
     private IETLOperator operator;
 
-    public SingleOperatorETLTableSource(List<ICubeTableSource> parents, IETLOperator operator) {
+    public SingleOperatorETLTableSource(List<CubeTableSource> parents, IETLOperator operator) {
         this.operator = operator;
         this.parents = parents;
         oprators.add(operator);
@@ -26,7 +26,7 @@ public class SingleOperatorETLTableSource extends ETLTableSource {
     }
 
     @Override
-    public ICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
+    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
         if (isAllAddColumnOperator()) {
             return getAddedField();
         } else {

@@ -8,12 +8,12 @@ import com.finebi.cube.gen.subset.*;
 import com.finebi.cube.gen.subset.watcher.BICubeBuildFinishWatcher4Test;
 import com.finebi.cube.gen.subset.watcher.BIDataSourceBuildFinish4Test;
 import com.finebi.cube.gen.subset.watcher.BIPathBuildFinishWatcher4Test;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.stable.relation.BITableSourceRelationPath;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Set;
 
@@ -24,7 +24,7 @@ import java.util.Set;
  * @since 4.0
  */
 public class BICubeOperationManager4Test extends BICubeOperationManager {
-    public BICubeOperationManager4Test(ICube cube, Set<ICubeTableSource> originalTableSet) {
+    public BICubeOperationManager4Test(ICube cube, Set<CubeTableSource> originalTableSet) {
         super(cube, originalTableSet);
     }
 
@@ -34,13 +34,13 @@ public class BICubeOperationManager4Test extends BICubeOperationManager {
     }
 
     @Override
-    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, ICubeTableSource tableSource, BICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
+    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
         return new BIFieldIndexBuilder4Test(cube, tableSource, BICubeFieldSource, targetColumnKey);
     }
 
 
     @Override
-    protected BISourceDataTransport getDataTransportBuilder(ICube cube, ICubeTableSource tableSource, Set<ICubeTableSource> allSources, Set<ICubeTableSource> parent) {
+    protected BISourceDataTransport getDataTransportBuilder(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent) {
         return new BISourceDataTransport4Test(cube, tableSource, allSources, parent);
     }
 
@@ -50,7 +50,7 @@ public class BICubeOperationManager4Test extends BICubeOperationManager {
     }
 
     @Override
-    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, BICubeFieldSource field, BITableSourceRelationPath tablePath) {
+    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {
         return new BIFieldPathIndexBuilder4Test(cube, field, null);
     }
 

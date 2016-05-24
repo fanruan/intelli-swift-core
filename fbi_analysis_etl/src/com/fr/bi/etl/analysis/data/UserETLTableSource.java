@@ -5,8 +5,8 @@ import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
@@ -40,7 +40,7 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
      * @return
      */
     @Override
-    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         Iterator<IETLOperator> it = oprators.iterator();
         long index = 0;
         while (it.hasNext()) {

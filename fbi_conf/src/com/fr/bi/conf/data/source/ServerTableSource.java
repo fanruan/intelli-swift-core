@@ -134,7 +134,7 @@ public class ServerTableSource extends DBTableSource {
     }
 
     @Override
-    public long read(final Traversal<BIDataValue> travel, BICubeFieldSource[] fields, ICubeDataLoader loader) {
+    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
 
         final long start = System.currentTimeMillis();
         TableData tableData = getTableData();
@@ -172,7 +172,7 @@ public class ServerTableSource extends DBTableSource {
         }
     }
 
-    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, BICubeFieldSource[] fields) {
+    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, ICubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
         sql.setFrom( "(" + query + ") " + "t");
         return BIDBUtils.runSQL(sql, fields, new Traversal<BIDataValue>() {

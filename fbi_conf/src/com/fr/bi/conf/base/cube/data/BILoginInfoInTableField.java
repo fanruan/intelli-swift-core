@@ -1,7 +1,7 @@
 package com.fr.bi.conf.base.cube.data;
 
 import com.fr.bi.conf.data.source.TableSourceFactory;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -10,14 +10,14 @@ import com.fr.json.JSONTransform;
  * Created by Young's on 2016/5/19.
  */
 public class BILoginInfoInTableField implements JSONTransform {
-    private ICubeTableSource table;
+    private CubeTableSource table;
     private String fieldName;
 
-    public ICubeTableSource getTable() {
+    public CubeTableSource getTable() {
         return table;
     }
 
-    public void setTable(ICubeTableSource table) {
+    public void setTable(CubeTableSource table) {
         this.table = table;
     }
 

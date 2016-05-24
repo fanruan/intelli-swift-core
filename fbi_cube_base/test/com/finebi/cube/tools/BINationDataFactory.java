@@ -3,7 +3,7 @@ package com.finebi.cube.tools;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,12 +14,12 @@ import java.util.Map;
  * Created by wuk on 16/5/17.
  */
 public class BINationDataFactory {
-    public static ICubeTableSource createTablePerson(){
-        BINationDataSource source=new BINationDataSource();
-        List<ICubeFieldSource> columns=new ArrayList<ICubeFieldSource>();
-        columns.add(new BICubeFieldSource("persons","id", DBConstant.CLASS.LONG,255));
-        columns.add(new BICubeFieldSource("persons","name", DBConstant.CLASS.STRING,255));
-        columns.add(new BICubeFieldSource("persons","nationId", DBConstant.CLASS.LONG,255));
+    public static CubeTableSource createTablePerson() {
+        BINationDataSource source = new BINationDataSource();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(source, "id", DBConstant.CLASS.LONG, 255));
+        columns.add(new BICubeFieldSource(source, "name", DBConstant.CLASS.STRING, 255));
+        columns.add(new BICubeFieldSource(source, "nationId", DBConstant.CLASS.LONG, 255));
 
         List<Long> id = new ArrayList<Long>();
         id.add(1L);
@@ -36,9 +36,9 @@ public class BINationDataFactory {
         nationId.add(3l);
 
         Map<Integer, List> content = new HashMap<Integer, List>();
-        content.put(0,id);
-        content.put(1,name);
-        content.put(2,nationId);
+        content.put(0, id);
+        content.put(1, name);
+        content.put(2, nationId);
 
         source.setFieldList(columns);
         source.setRowCount(id.size());
@@ -47,11 +47,11 @@ public class BINationDataFactory {
         return source;
     }
 
-    public static ICubeTableSource createTableNation(){
-        BINationDataSource source=new BINationDataSource();
-        List<ICubeFieldSource> columns=new ArrayList<ICubeFieldSource>();
-        columns.add(new BICubeFieldSource("nations","id", DBConstant.CLASS.LONG,255));
-        columns.add(new BICubeFieldSource("nations","name", DBConstant.CLASS.STRING,10));
+    public static CubeTableSource createTableNation() {
+        BINationDataSource source = new BINationDataSource();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(source, "id", DBConstant.CLASS.LONG, 255));
+        columns.add(new BICubeFieldSource(source, "name", DBConstant.CLASS.STRING, 10));
 
         List<Long> id = new ArrayList<Long>();
         id.add(1L);
@@ -62,8 +62,8 @@ public class BINationDataFactory {
         source.setRowCount(id.size());
 
         Map<Integer, List> content = new HashMap<Integer, List>();
-        content.put(0,id);
-        content.put(1,name);
+        content.put(0, id);
+        content.put(1, name);
 
         source.setFieldList(columns);
         source.setContents(content);

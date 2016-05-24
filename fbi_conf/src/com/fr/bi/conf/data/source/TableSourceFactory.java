@@ -2,7 +2,7 @@ package com.fr.bi.conf.data.source;
 
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.AbstractTableSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -21,7 +21,7 @@ public class TableSourceFactory {
             ETLTableSource etlTableSource = new ETLTableSource();
             etlTableSource.parseJSON(jo, userId);
             JSONArray tables = jo.optJSONArray("tables");
-            List<ICubeTableSource> parents = new ArrayList<ICubeTableSource>();
+            List<CubeTableSource> parents = new ArrayList<CubeTableSource>();
             for (int i = 0; i < tables.length(); i++) {
                 parents.add(createTableSource(tables.getJSONObject(i), userId));
             }

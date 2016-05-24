@@ -1,5 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BISimpleRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
@@ -15,11 +19,7 @@ import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BISimpleRelation;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONArray;
@@ -37,7 +37,7 @@ public class BIDetailWidget extends BIAbstractWidget {
     @BICoreField
     private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
     @BICoreField
-    private Table target;//目标表
+    private BusinessTable target;//目标表
     private List<String> parent_widget = new ArrayList<String>();
     private String[] sortTargets = new String[0];
 
@@ -85,8 +85,8 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
     @Override
-    public List<Table> getUsedTableDefine() {
-        List<Table> result = new ArrayList<Table>();
+    public List<BusinessTable> getUsedTableDefine() {
+        List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDetailTarget[] dm = this.getDimensions();
         if (dm != null) {
             for (int i = 0; i < dm.length; i++) {
@@ -98,8 +98,8 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
     @Override
-    public List<BIField> getUsedFieldDefine() {
-        List<BIField> result = new ArrayList<BIField>();
+    public List<BusinessField> getUsedFieldDefine() {
+        List<BusinessField> result = new ArrayList<BusinessField>();
         BIDetailTarget[] dm = this.getDimensions();
         if (dm != null) {
             for (int i = 0; i < dm.length; i++) {
@@ -118,7 +118,7 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     public void setTargetTable(long userID) {
         BITableID targetTableID = dimensions[0].createTableKey().getID();
-        target = new BITable(targetTableID);
+        target = new BIBusinessTable(targetTableID);
         for (int i = 0; i < dimensions.length; i++) {
             List<BISimpleRelation> relations = dimensions[i].getRelationList(null, userID);
             if (!relations.isEmpty()) {
@@ -187,7 +187,7 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
 
-    public Table getTargetDimension() {
+    public BusinessTable getTargetDimension() {
         return target;
     }
 

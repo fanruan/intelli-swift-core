@@ -8,7 +8,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2015/12/24.
  */
-public abstract class AbstractAnalysisIDTableSource<T extends ICubeTableSource> extends AbstractCubeTableSource implements AnalysisCubeTableSource {
+public abstract class AbstractAnalysisIDTableSource<T extends CubeTableSource> extends AbstractCubeTableSource implements AnalysisCubeTableSource {
     protected String tableID;
     protected transient T baseTable;
     private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
@@ -58,7 +58,7 @@ public abstract class AbstractAnalysisIDTableSource<T extends ICubeTableSource> 
      * @return
      */
     @Override
-    public Map<Integer, Set<ICubeTableSource>> createGenerateTablesMap() {
+    public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {
         return baseTable.createGenerateTablesMap();
     }
 
@@ -68,7 +68,7 @@ public abstract class AbstractAnalysisIDTableSource<T extends ICubeTableSource> 
      * @return
      */
     @Override
-    public List<Set<ICubeTableSource>> createGenerateTablesList() {
+    public List<Set<CubeTableSource>> createGenerateTablesList() {
         return baseTable.createGenerateTablesList();
     }
 
@@ -81,7 +81,7 @@ public abstract class AbstractAnalysisIDTableSource<T extends ICubeTableSource> 
      * @return
      */
     @Override
-    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         return 0;
     }
 

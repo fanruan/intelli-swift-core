@@ -1,14 +1,15 @@
 package com.fr.bi.web.conf.utils;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIDBTableField;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.file.DatasourceManager;
 
@@ -26,10 +27,10 @@ public class BIImportDBTableConnectionRelationTool {
 
     public Map< String, DBTableSource> getAllBusinessPackDBSourceMap(long userId) {
         Map<String, DBTableSource> sources = new HashMap<String, DBTableSource>();
-        for (BIBusinessPackage pack : BIConfigureManagerCenter.getPackageManager().getAllPackages(userId)){
+        for (IBusinessPackageGetterService pack : BICubeConfigureCenter.getPackageManager().getAllPackages(userId)){
             for (Object table : pack.getBusinessTables()){
                 BITableID id = ((BIBusinessTable)table).getID();
-                ICubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(id, new BIUser(userId));
+                CubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(id, new BIUser(userId));
                 if (source != null && source.getType() == BIBaseConstant.TABLETYPE.DB){
                     sources.put(id.getIdentityValue(), (DBTableSource)source);
                 }

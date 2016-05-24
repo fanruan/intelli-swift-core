@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * Created by GUY on 2015/3/3.
  */
-public abstract class AbstractTableSource implements ICubeTableSource {
+public abstract class AbstractTableSource implements CubeTableSource {
 
     /**
      *
@@ -38,6 +38,11 @@ public abstract class AbstractTableSource implements ICubeTableSource {
 
     protected AbstractTableSource() {
 
+    }
+
+    @Override
+    public String getTableName() {
+        return getPersistentTable().getTableName();
     }
 
     @Override
@@ -57,17 +62,17 @@ public abstract class AbstractTableSource implements ICubeTableSource {
     }
 
     @Override
-    public Set<ICubeFieldSource> getParentFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
         return new HashSet<ICubeFieldSource>();
     }
 
     @Override
-    public Set<ICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
         return getSelfFields(sources);
     }
 
     @Override
-    public Set<ICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
         Set<ICubeFieldSource> result = new HashSet<ICubeFieldSource>();
         ICubeFieldSource[] fields = getFieldsArray(sources);
         for (ICubeFieldSource field : fields) {
@@ -82,7 +87,7 @@ public abstract class AbstractTableSource implements ICubeTableSource {
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return read(travel, field, loader);
     }
 
@@ -114,9 +119,9 @@ public abstract class AbstractTableSource implements ICubeTableSource {
 
 
     @Override
-    public Map<Integer, Set<ICubeTableSource>> createGenerateTablesMap() {
-        Map<Integer, Set<ICubeTableSource>> generateTable = new HashMap<Integer, Set<ICubeTableSource>>();
-        Set<ICubeTableSource> set = new HashSet<ICubeTableSource>();
+    public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {
+        Map<Integer, Set<CubeTableSource>> generateTable = new HashMap<Integer, Set<CubeTableSource>>();
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
         set.add(this);
         generateTable.put(0, set);
         return generateTable;
@@ -128,9 +133,9 @@ public abstract class AbstractTableSource implements ICubeTableSource {
     }
 
     @Override
-    public List<Set<ICubeTableSource>> createGenerateTablesList() {
-        List<Set<ICubeTableSource>> generateTable = new ArrayList<Set<ICubeTableSource>>();
-        Set<ICubeTableSource> set = new HashSet<ICubeTableSource>();
+    public List<Set<CubeTableSource>> createGenerateTablesList() {
+        List<Set<CubeTableSource>> generateTable = new ArrayList<Set<CubeTableSource>>();
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
         set.add(this);
         generateTable.add(set);
         return generateTable;
@@ -147,7 +152,7 @@ public abstract class AbstractTableSource implements ICubeTableSource {
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, BICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         return 0;
     }
 
@@ -201,7 +206,7 @@ public abstract class AbstractTableSource implements ICubeTableSource {
      * @return 字段
      */
     @Override
-    public ICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
+    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
         return getFields().values().toArray(new ICubeFieldSource[getFields().values().size()]);
     }
 
@@ -228,7 +233,7 @@ public abstract class AbstractTableSource implements ICubeTableSource {
     }
 
     @Override
-    public Set<String> getUsedFields(ICubeTableSource source) {
+    public Set<String> getUsedFields(CubeTableSource source) {
         if (ComparatorUtils.equals(source.fetchObjectCore(), fetchObjectCore())) {
             return getFields().keySet();
         }
@@ -322,8 +327,8 @@ public abstract class AbstractTableSource implements ICubeTableSource {
      * @return
      */
     @Override
-    public Map<BICore, ICubeTableSource> createSourceMap() {
-        Map<BICore, ICubeTableSource> map = new HashMap<BICore, ICubeTableSource>();
+    public Map<BICore, CubeTableSource> createSourceMap() {
+        Map<BICore, CubeTableSource> map = new HashMap<BICore, CubeTableSource>();
         map.put(fetchObjectCore(), this);
         return map;
     }

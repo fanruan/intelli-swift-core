@@ -12,7 +12,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -51,17 +51,17 @@ public class BIModuleUtils {
         return null;
     }
 
-    public static ICubeTableService getTableIndex(ICubeTableSource tableSource, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
+    public static ICubeTableService getTableIndex(CubeTableSource tableSource, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
             return childLoaderMap.get(module.getModuleName()).getTableIndex(tableSource);
         }
         return null;
     }
 
-    public static ICubeTableSource getSourceByCore(BICore md5, BIUser user) {
+    public static CubeTableSource getSourceByCore(BICore md5, BIUser user) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ICubeTableSource source = provider.getTableSourceByCore(md5, user);
+            CubeTableSource source = provider.getTableSourceByCore(md5, user);
             if (source != null) {
                 return source;
             }
@@ -84,10 +84,10 @@ public class BIModuleUtils {
         return set;
     }
 
-    public static ICubeTableSource getSourceByID(BITableID id, BIUser user) {
+    public static CubeTableSource getSourceByID(BITableID id, BIUser user) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ICubeTableSource source = provider.getTableSourceByID(id, user);
+            CubeTableSource source = provider.getTableSourceByID(id, user);
             if (source != null) {
                 return source;
             }

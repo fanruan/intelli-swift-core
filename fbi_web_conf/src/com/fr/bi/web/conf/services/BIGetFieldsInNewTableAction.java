@@ -1,9 +1,9 @@
 package com.fr.bi.web.conf.services;
 
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
+
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -21,11 +21,11 @@ public class BIGetFieldsInNewTableAction extends AbstractBIConfigureAction {
         String tableString = WebUtils.getHTTPRequestParameter(req, BIJSONConstant.JSON_KEYS.TABLE);
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         long userId = ServiceUtils.getCurrentUserID(req);
-        ICubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableString), userId);
-
-        BIBusinessTable table = new BIBusinessTable(tableId, userId);
-        table.setSource(source);
-        WebUtils.printAsJSON(res, table.createJSON());
+        CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableString), userId);
+//
+//        BIBusinessTable table = new BIBusinessTable(tableId, userId);
+//        table.setSource(source);
+//        WebUtils.printAsJSON(res, table.createJSON());
     }
 
     @Override

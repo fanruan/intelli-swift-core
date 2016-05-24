@@ -3,11 +3,10 @@
  */
 package com.fr.bi.cal.generate;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
@@ -23,9 +22,9 @@ import java.util.Set;
  */
 public class SingleTableTask extends AllTask {
 
-    private BITable table;
+    private BusinessTable table;
 
-    public SingleTableTask(BITable table, long userId) {
+    public SingleTableTask(BusinessTable table, long userId) {
         super(userId);
         this.table = table;
     }
@@ -66,8 +65,8 @@ public class SingleTableTask extends AllTask {
     }
 
     @Override
-    protected Map<Integer, Set<ICubeTableSource>> getGenerateTables() {
-        Map<Integer, Set<ICubeTableSource>> generateTable = new HashMap<Integer, Set<ICubeTableSource>>();
+    protected Map<Integer, Set<CubeTableSource>> getGenerateTables() {
+        Map<Integer, Set<CubeTableSource>> generateTable = new HashMap<Integer, Set<CubeTableSource>>();
         BICollectionUtils.mergeSetValueMap(generateTable, BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(table.getID(), biUser).createGenerateTablesMap());
         return generateTable;
     }
@@ -83,8 +82,5 @@ public class SingleTableTask extends AllTask {
         return CubeTaskType.SINGLE;
     }
 
-    public Table getTableKey() {
-        return table;
-    }
 
 }

@@ -11,7 +11,7 @@ import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.CubeTILoaderAdapter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -46,10 +46,10 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
         return persistentTable;
     }
 
-    protected abstract GroupValueIndex createFilterIndex(List<? extends ICubeTableSource> parents, ICubeDataLoader loader);
+    protected abstract GroupValueIndex createFilterIndex(List<? extends CubeTableSource> parents, ICubeDataLoader loader);
 
     @Override
-    public int writeSimpleIndex(final Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(final Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         final ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         IPersistentTable ptable = parents.get(0).getPersistentTable();
         final List<PersistentField> columns = ptable.getFieldList();
@@ -74,7 +74,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
     private static final int STEP = 100;
 
     @Override
-    public int writePartIndex(final Traversal<BIDataValue> travel, List<? extends ICubeTableSource> parents, ICubeDataLoader loader, int startCol, final int start, final int end) {
+    public int writePartIndex(final Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, final int start, final int end) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), 0, STEP);
         int index = 0;
         final FinalInt currentRow = new FinalInt();
@@ -105,7 +105,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
                     return tableIndex;
                 }
 
-                public ICubeTableService getTableIndex(ICubeTableSource tableSource, int start, int end) {
+                public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
                     return tableIndex;
                 }
 

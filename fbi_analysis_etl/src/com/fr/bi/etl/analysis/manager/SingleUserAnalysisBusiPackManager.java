@@ -1,8 +1,8 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.conf.AnalysisPackManager;
 import com.fr.bi.stable.exception.BITableAbsentException;

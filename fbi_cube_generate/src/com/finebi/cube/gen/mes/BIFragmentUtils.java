@@ -2,12 +2,12 @@ package com.finebi.cube.gen.mes;
 
 import com.finebi.cube.impl.router.fragment.BIFragmentID;
 import com.finebi.cube.impl.router.fragment.BIFragmentTag;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.fragment.IFragmentTag;
 import com.finebi.cube.router.topic.ITopicTag;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
@@ -17,7 +17,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  * @since 4.0
  */
 public class BIFragmentUtils {
-    public static IFragmentTag generateFragment(ITopicTag targetTopic, ICubeTableSource tableSource) {
+    public static IFragmentTag generateFragment(ITopicTag targetTopic, CubeTableSource tableSource) {
         return generateFragment(targetTopic, tableSource.getSourceID());
     }
 

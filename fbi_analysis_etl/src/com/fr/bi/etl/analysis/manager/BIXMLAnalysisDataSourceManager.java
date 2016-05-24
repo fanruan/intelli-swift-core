@@ -10,7 +10,7 @@ import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONException;
@@ -118,7 +118,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     public JSONObject createJSON() throws JSONException {
         JSONObject jo = new JSONObject();
         for (Map.Entry<BITableID, BICore> id : idMd5Tables.entrySet()) {
-            ICubeTableSource source = md5Tables.get(id.getValue());
+            CubeTableSource source = md5Tables.get(id.getValue());
             if (source != null) {
                 try {
                     jo.put(id.getKey().getIdentityValue(), source.createJSON());

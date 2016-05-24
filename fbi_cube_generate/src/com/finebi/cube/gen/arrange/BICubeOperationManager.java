@@ -7,6 +7,8 @@ import com.finebi.cube.gen.oper.watcher.BIDataSourceBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BITableSourceBuildWatcher;
 import com.finebi.cube.impl.operate.BIOperation;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.status.IStatusTag;
 import com.finebi.cube.router.topic.ITopicTag;
 import com.finebi.cube.structure.BITableKey;
@@ -15,11 +17,8 @@ import com.finebi.cube.structure.ICubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.stable.relation.BITableSourceRelationPath;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.*;
@@ -35,18 +34,18 @@ public class BICubeOperationManager {
     private BIOperation<Object> cubeBuildFinishOperation;
     private BIOperation<Object> pathBuildFinishWatcher;
     private BIDataSourceBuildFinishWatcher dataSourceBuildFinishWatcher;
-    private Set<ICubeTableSource> registeredTransportTable;
-    private Set<ICubeTableSource> registeredFieldIndex;
+    private Set<CubeTableSource> registeredTransportTable;
+    private Set<CubeTableSource> registeredFieldIndex;
 
-    private Set<ICubeTableSource> originalTableSet;
-    private Map<ICubeTableSource, BIOperation> tableSourceWatchers;
+    private Set<CubeTableSource> originalTableSet;
+    private Map<CubeTableSource, BIOperation> tableSourceWatchers;
 
-    public BICubeOperationManager(ICube cube, Set<ICubeTableSource> originalTableSet) {
+    public BICubeOperationManager(ICube cube, Set<CubeTableSource> originalTableSet) {
         this.cube = cube;
-        registeredTransportTable = new HashSet<ICubeTableSource>();
-        registeredFieldIndex = new HashSet<ICubeTableSource>();
+        registeredTransportTable = new HashSet<CubeTableSource>();
+        registeredFieldIndex = new HashSet<CubeTableSource>();
         this.originalTableSet = originalTableSet;
-        tableSourceWatchers = new HashMap<ICubeTableSource, BIOperation>();
+        tableSourceWatchers = new HashMap<CubeTableSource, BIOperation>();
     }
 
     public void initialWatcher() {
@@ -55,7 +54,7 @@ public class BICubeOperationManager {
         dataSourceBuildFinishWatcher = getDataSourceBuildFinishWatcher();
     }
 
-    public void generateDataSource(Set<List<Set<ICubeTableSource>>> tableSourceSet) {
+    public void generateDataSource(Set<List<Set<CubeTableSource>>> tableSourceSet) {
         registeredTransportTable.clear();
         registeredFieldIndex.clear();
         tableSourceWatchers.clear();
@@ -66,21 +65,21 @@ public class BICubeOperationManager {
         subscribeDataSourceFinish();
     }
 
-    private boolean isGenerated(ICubeTableSource tableSource) {
+    private boolean isGenerated(CubeTableSource tableSource) {
         return registeredTransportTable.contains(tableSource);
 
     }
 
-    private boolean isFieldIndexGenerated(ICubeTableSource tableSource) {
+    private boolean isFieldIndexGenerated(CubeTableSource tableSource) {
         return registeredFieldIndex.contains(tableSource);
 
     }
 
-    private void addGeneratedTable(ICubeTableSource tableSource) {
+    private void addGeneratedTable(CubeTableSource tableSource) {
         registeredTransportTable.add(tableSource);
     }
 
-    private void addGeneratedFieldIndex(ICubeTableSource tableSource) {
+    private void addGeneratedFieldIndex(CubeTableSource tableSource) {
         registeredFieldIndex.add(tableSource);
     }
 
@@ -90,22 +89,22 @@ public class BICubeOperationManager {
      * @param tableSourceSet list是指父类带有序列的集合。list内部的Set是指当前序列可能有多个
      *                       TableSource构成。最外层的Set是指多个List。
      */
-    private void generateTransportBuilder(Set<List<Set<ICubeTableSource>>> tableSourceSet) {
-        Iterator<List<Set<ICubeTableSource>>> it = tableSourceSet.iterator();
+    private void generateTransportBuilder(Set<List<Set<CubeTableSource>>> tableSourceSet) {
+        Iterator<List<Set<CubeTableSource>>> it = tableSourceSet.iterator();
         while (it.hasNext()) {
-            List<Set<ICubeTableSource>> tableSourceList = it.next();
+            List<Set<CubeTableSource>> tableSourceList = it.next();
             generateSingleTransport(tableSourceList);
         }
     }
 
-    private void generateSingleTransport(List<Set<ICubeTableSource>> tableSourceSet) {
-        Iterator<Set<ICubeTableSource>> it = tableSourceSet.iterator();
-        Set<ICubeTableSource> parentTables = null;
+    private void generateSingleTransport(List<Set<CubeTableSource>> tableSourceSet) {
+        Iterator<Set<CubeTableSource>> it = tableSourceSet.iterator();
+        Set<CubeTableSource> parentTables = null;
         while (it.hasNext()) {
-            Set<ICubeTableSource> sameLevelTable = it.next();
-            Iterator<ICubeTableSource> sameLevelTableIt = sameLevelTable.iterator();
+            Set<CubeTableSource> sameLevelTable = it.next();
+            Iterator<CubeTableSource> sameLevelTableIt = sameLevelTable.iterator();
             while (sameLevelTableIt.hasNext()) {
-                ICubeTableSource tableSource = sameLevelTableIt.next();
+                CubeTableSource tableSource = sameLevelTableIt.next();
                 if (!isGenerated(tableSource)) {
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
@@ -116,9 +115,9 @@ public class BICubeOperationManager {
                         if (parentTables == null) {
                             operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
                         } else {
-                            Iterator<ICubeTableSource> parentTablesIt = parentTables.iterator();
+                            Iterator<CubeTableSource> parentTablesIt = parentTables.iterator();
                             while (parentTablesIt.hasNext()) {
-                                ICubeTableSource parentTable = parentTablesIt.next();
+                                CubeTableSource parentTable = parentTablesIt.next();
                                 ITopicTag topicTag = BICubeBuildTopicTag.DATA_SOURCE_TOPIC;
                                 operation.subscribe(BIStatusUtils.generateStatusFinish(topicTag
                                         , parentTable.getSourceID()));
@@ -137,7 +136,7 @@ public class BICubeOperationManager {
         }
     }
 
-    private BIOperation buildTableWatcher(ICubeTableSource tableSource) {
+    private BIOperation buildTableWatcher(CubeTableSource tableSource) {
         BIOperation<Object> operation = new BIOperation<Object>(
                 tableSource.getSourceID(),
                 getTableWatcherBuilder(cube.getCubeTableWriter(new BITableKey(tableSource))));
@@ -147,7 +146,7 @@ public class BICubeOperationManager {
         return operation;
     }
 
-    private BIOperation getTableSourceWatcher(ICubeTableSource tableSource) {
+    private BIOperation getTableSourceWatcher(CubeTableSource tableSource) {
         if (tableSourceWatchers.containsKey(tableSource)) {
             return tableSourceWatchers.get(tableSource);
         } else {
@@ -158,24 +157,24 @@ public class BICubeOperationManager {
     }
 
 
-    private void generateFieldIndexBuilder(Set<List<Set<ICubeTableSource>>> tableSourceSet) {
-        Iterator<List<Set<ICubeTableSource>>> it = tableSourceSet.iterator();
+    private void generateFieldIndexBuilder(Set<List<Set<CubeTableSource>>> tableSourceSet) {
+        Iterator<List<Set<CubeTableSource>>> it = tableSourceSet.iterator();
         while (it.hasNext()) {
             generateSingleFieldIndex(it.next());
         }
     }
 
-    private void generateSingleFieldIndex(List<Set<ICubeTableSource>> tableSourceSet) {
-        Iterator<Set<ICubeTableSource>> it = tableSourceSet.iterator();
+    private void generateSingleFieldIndex(List<Set<CubeTableSource>> tableSourceSet) {
+        Iterator<Set<CubeTableSource>> it = tableSourceSet.iterator();
         while (it.hasNext()) {
-            Set<ICubeTableSource> sameLevelTable = it.next();
-            Iterator<ICubeTableSource> sameLevelTableIt = sameLevelTable.iterator();
+            Set<CubeTableSource> sameLevelTable = it.next();
+            Iterator<CubeTableSource> sameLevelTableIt = sameLevelTable.iterator();
             while (sameLevelTableIt.hasNext()) {
-                ICubeTableSource tableSource = sameLevelTableIt.next();
+                CubeTableSource tableSource = sameLevelTableIt.next();
                 if (!isFieldIndexGenerated(tableSource)) {
-                    BICubeFieldSource[] fields = tableSource.getFieldsArray(originalTableSet);
+                    ICubeFieldSource[] fields = tableSource.getFieldsArray(originalTableSet);
                     for (int i = 0; i < fields.length; i++) {
-                        BICubeFieldSource field = fields[i];
+                        ICubeFieldSource field = fields[i];
                         Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
                         while (columnKeyIterator.hasNext()) {
                             BIColumnKey targetColumnKey = columnKeyIterator.next();
@@ -200,7 +199,7 @@ public class BICubeOperationManager {
         }
     }
 
-    private void watchTable(ICubeTableSource tableSource, IStatusTag tag) {
+    private void watchTable(CubeTableSource tableSource, IStatusTag tag) {
         BIOperation tableWatcher = getTableSourceWatcher(tableSource);
         try {
             tableWatcher.subscribe(tag);
@@ -210,8 +209,8 @@ public class BICubeOperationManager {
     }
 
 
-    private void generateDataSourceFinishBuilder(Set<List<Set<ICubeTableSource>>> tableSourceSet) {
-        Iterator<List<Set<ICubeTableSource>>> it = tableSourceSet.iterator();
+    private void generateDataSourceFinishBuilder(Set<List<Set<CubeTableSource>>> tableSourceSet) {
+        Iterator<List<Set<CubeTableSource>>> it = tableSourceSet.iterator();
         BIOperation<Object> operation = new BIOperation<Object>(
                 BICubeBuildTopicTag.DATA_SOURCE_FINISH_TOPIC.getTopicName(),
                 dataSourceBuildFinishWatcher);
@@ -222,12 +221,12 @@ public class BICubeOperationManager {
         }
     }
 
-    private void generateSingleSourceFinish(List<Set<ICubeTableSource>> tableSourceList, BIOperation<Object> operation) {
-        Iterator<Set<ICubeTableSource>> it = tableSourceList.iterator();
+    private void generateSingleSourceFinish(List<Set<CubeTableSource>> tableSourceList, BIOperation<Object> operation) {
+        Iterator<Set<CubeTableSource>> it = tableSourceList.iterator();
         while (it.hasNext()) {
-            Iterator<ICubeTableSource> sameLevelTable = it.next().iterator();
+            Iterator<CubeTableSource> sameLevelTable = it.next().iterator();
             while (sameLevelTable.hasNext()) {
-                ICubeTableSource tableSource = sameLevelTable.next();
+                CubeTableSource tableSource = sameLevelTable.next();
                 try {
                     IStatusTag tag = BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC,
                             tableSource.getSourceID());
@@ -350,7 +349,7 @@ public class BICubeOperationManager {
             while (it.hasNext()) {
                 Map.Entry<ICubeFieldSource, BITableSourceRelationPath> entry = it.next();
                 try {
-                    BICubeFieldSource field = entry.getKey();
+                    ICubeFieldSource field = entry.getKey();
                     BITableSourceRelationPath path = entry.getValue();
                     String sourceID = BICubeBuildTopicManager.fieldPathFragmentID(path);
                     BIOperation<Object> operation = new BIOperation<Object>(
@@ -377,7 +376,7 @@ public class BICubeOperationManager {
         return new BIRelationIndexGenerator(cube, BICubeRelationUtils.convert(relation));
     }
 
-    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, ICubeTableSource tableSource, BICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
+    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
         return new BIFieldIndexGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
     }
 
@@ -385,7 +384,7 @@ public class BICubeOperationManager {
         return new BITableSourceBuildWatcher(tableEntityService);
     }
 
-    protected BISourceDataTransport getDataTransportBuilder(ICube cube, ICubeTableSource tableSource, Set<ICubeTableSource> allSources, Set<ICubeTableSource> parent) {
+    protected BISourceDataTransport getDataTransportBuilder(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent) {
         return new BISourceDataTransport(cube, tableSource, allSources, parent);
     }
 
@@ -393,7 +392,7 @@ public class BICubeOperationManager {
         return new BITablePathIndexBuilder(cube, BICubePathUtils.convert(tablePath));
     }
 
-    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, BICubeFieldSource field, BITableSourceRelationPath tablePath) {
+    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {
         return new BIFieldPathIndexBuilder(cube, field, BICubePathUtils.convert(tablePath));
     }
 

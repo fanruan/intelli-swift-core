@@ -5,14 +5,14 @@ package com.fr.bi.field.target.filter.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -93,7 +93,7 @@ public class ColumnFieldFilter extends ColumnFilter {
         super.parseJSON(jo, userId);
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-            dataColumn = BIDataColumnFactory.createBIDataColumnByFieldID(fieldJo.getString("field_id"), new BIUser(userId));
+            dataColumn = new BIBusinessField(new BIFieldID(fieldJo.getString("field_id")));
         }
     }
 

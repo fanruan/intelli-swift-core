@@ -305,12 +305,12 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     private void initialField() {
         if (getFieldInfoReader().canRead() && !isFieldInit()) {
-            tableFields = new ArrayList<BICubeFieldSource>();
+            tableFields = new ArrayList<ICubeFieldSource>();
             try {
                 int columnSize = Integer.parseInt(getFieldInfoReader().getSpecificValue(0));
                 for (int pos = 1; pos <= columnSize; pos++) {
                     JSONObject jo = new JSONObject(getFieldInfoReader().getSpecificValue(pos));
-                    BICubeFieldSource field = BICubeFieldSource.getBiEmptyField();
+                    BICubeFieldSource field = new BICubeFieldSource(null, null, 0, 0);
                     field.parseJSON(jo);
                     tableFields.add(field);
                 }
@@ -349,14 +349,14 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
          * 即便是空，也要记录是空数组0的长度。
          */
         if (fields == null) {
-            fields = new ArrayList<BICubeFieldSource>();
+            fields = new ArrayList<ICubeFieldSource>();
         }
         Iterator<ICubeFieldSource> fieldIterator = fields.iterator();
         int position = 0;
         getFieldInfoWriter().recordSpecificValue(position, String.valueOf(fields.size()));//First position records size of columns.
         position++;
         while (fieldIterator.hasNext()) {
-            BICubeFieldSource field = fieldIterator.next();
+            ICubeFieldSource field = fieldIterator.next();
             try {
                 getFieldInfoWriter().recordSpecificValue(position, field.createJSON().toString());
                 position++;
