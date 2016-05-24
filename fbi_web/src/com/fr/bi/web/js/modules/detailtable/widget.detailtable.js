@@ -120,6 +120,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.data = [];
         var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
         if (BI.isEmpty(dimensions)) {
+            self.loaded();
             self.table.populate([], [], [], []);
             self.pager.setAllPages(0);
             self.pager.setValue(0);
