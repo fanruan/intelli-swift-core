@@ -22,7 +22,11 @@ public class BIFormulaCalculateTarget extends BICalculateTarget {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        expression = jo.optJSONObject("_src").optJSONObject("expression").optString("formula_value");
+        JSONObject expressionJo = jo.optJSONObject("_src").optJSONObject("expression");
+        if (expressionJo != null) {
+            expression = expressionJo.optString("formula_value");
+        }
+
     }
 
 
