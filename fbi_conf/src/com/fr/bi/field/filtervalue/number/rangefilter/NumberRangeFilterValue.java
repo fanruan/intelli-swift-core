@@ -97,8 +97,9 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
             jo.put("max", this.max);
             jo.put("closemax", this.closemax);
         }
-
-        return jo;
+        JSONObject resjo = new JSONObject();
+        resjo.put("filter_value", jo);
+        return resjo;
     }
 
     /**
