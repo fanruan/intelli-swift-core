@@ -7,6 +7,12 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
         DATE_MIN_VALUE: "1900-01-01",
         DATE_MAX_VALUE: "2099-12-31"
     },
+    _defaultConfig: function () {
+        var conf = BI.ETLDateRangePane.superclass._defaultConfig.apply(this, arguments);
+        return BI.extend(conf, {
+            extraCls: "bi-filter-time-interval"
+        })
+    },
     _init: function () {
         var self = this;
         BI.ETLDateRangePane.superclass._init.apply(this, arguments);

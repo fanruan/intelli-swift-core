@@ -38,7 +38,7 @@ BI.ETLNumberNFilterPane = BI.inherit(BI.Widget, {
             validationChecker: function(v){
                 return BI.isPositiveInteger(v);
             },
-            errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
+            errorText: BI.i18nText("BI-Please_Input_Integer"),
             height: self._constants.HEIGHT
         });
         self.editor.on(BI.TextEditor.EVENT_CONFIRM, function () {
