@@ -20,7 +20,8 @@ BI.AnalysisETLMainModel = BI.inherit(BI.MVCModel, {
     update : function () {
         var value = {
             id : this.get('id'),
-            name : this.get('name')
+            name : this.get('name'),
+            describe : this.get('describe')
         }
         value[BI.AnalysisETLMainModel.TAB] = this.get(BI.AnalysisETLMainModel.TAB).update();
         return value;
