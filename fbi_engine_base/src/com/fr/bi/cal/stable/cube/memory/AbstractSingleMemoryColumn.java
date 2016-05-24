@@ -14,7 +14,7 @@ import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;

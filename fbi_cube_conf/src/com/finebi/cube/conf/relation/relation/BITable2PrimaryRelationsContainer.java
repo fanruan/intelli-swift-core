@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.relation.relation;
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
 import com.fr.bi.stable.exception.BITableAbsentException;
@@ -24,11 +24,11 @@ public class BITable2PrimaryRelationsContainer extends BITable2RelationsContaine
         }
     }
 
-    public IRelationContainer getTablePrimaryRelationContainer(IBusinessTable table) throws BITableAbsentException {
+    public IRelationContainer getTablePrimaryRelationContainer(BusinessTable table) throws BITableAbsentException {
         return getTableRelationContainer(table);
     }
 
-    public List<BITableRelation> getRelation(IBusinessTable primaryTable, IBusinessTable foreignTable) throws BITableAbsentException {
+    public List<BITableRelation> getRelation(BusinessTable primaryTable, BusinessTable foreignTable) throws BITableAbsentException {
         BIRelationContainerService relationContainer = getTableRelationContainerService(primaryTable);
         List<BITableRelation> relations = relationContainer.getRelationSpecificForeignTable(foreignTable);
         /**

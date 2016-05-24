@@ -1,7 +1,7 @@
 package com.fr.bi.conf.report.widget;
 
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;

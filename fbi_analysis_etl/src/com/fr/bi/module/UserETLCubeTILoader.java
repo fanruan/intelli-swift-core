@@ -13,6 +13,7 @@ import com.fr.bi.etl.analysis.manager.UserETLCubeManagerProvider;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
@@ -103,8 +104,8 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(BICore core, int start, int end) {
-        return getTableIndex(core);
+    public ICubeTableService getTableIndex(ICubeTableSource tableSource, int start, int end) {
+        return getTableIndex(tableSource);
     }
 
     @Override

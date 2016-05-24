@@ -9,7 +9,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIPackUtils;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.index.CubeGenerator;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.DateUtils;
 

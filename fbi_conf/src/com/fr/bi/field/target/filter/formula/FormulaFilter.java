@@ -3,12 +3,11 @@
  */
 package com.fr.bi.field.target.filter.formula;
 
-import com.fr.bi.base.annotation.BICoreField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -33,7 +32,6 @@ public class FormulaFilter extends AbstractTargetFilter {
      */
     private static final long serialVersionUID = 5615839692061360681L;
     private static final String XML_TAG = "FormulaFilter";
-    @BICoreField
     private String expression = StringUtils.EMPTY;
 
 
@@ -107,8 +105,8 @@ public class FormulaFilter extends AbstractTargetFilter {
      * @return 分组索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
-        return createFormulaIndex(loader.getTableIndex(target));
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
+        return createFormulaIndex(loader.getTableIndex(target.getTableSource()));
     }
 
     private GroupValueIndex createFormulaIndex(ICubeTableService ti) {
@@ -161,8 +159,8 @@ public class FormulaFilter extends AbstractTargetFilter {
      * @return
      */
     @Override
-    public GroupValueIndex createFilterIndex(Table target, ICubeDataLoader loader, long userID) {
-        return createFormulaIndex(loader.getTableIndex(target));
+    public GroupValueIndex createFilterIndex(BusinessTable target, ICubeDataLoader loader, long userID) {
+        return createFormulaIndex(loader.getTableIndex(target.getTableSource()));
     }
 
     /**

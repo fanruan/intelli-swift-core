@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.relation.relation;
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.container.BIHashMapContainer;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
@@ -18,18 +18,18 @@ import java.util.Map;
  * 表的关联管理
  * Created by Connery on 2016/1/12.
  */
-public class BITable2RelationsContainer extends BIHashMapContainer<IBusinessTable, BIRelationContainerService> {
+public class BITable2RelationsContainer extends BIHashMapContainer<BusinessTable, BIRelationContainerService> {
     @Override
-    protected Map<IBusinessTable, BIRelationContainerService> initContainer() {
-        return new HashMap<IBusinessTable, BIRelationContainerService>();
+    protected Map<BusinessTable, BIRelationContainerService> initContainer() {
+        return new HashMap<BusinessTable, BIRelationContainerService>();
     }
 
     @Override
-    protected BIRelationContainerService generateAbsentValue(IBusinessTable key) {
+    protected BIRelationContainerService generateAbsentValue(BusinessTable key) {
         return null;
     }
 
-    protected void addRelation(IBusinessTable table, BITableRelation tableRelation) throws BIRelationDuplicateException {
+    protected void addRelation(BusinessTable table, BITableRelation tableRelation) throws BIRelationDuplicateException {
         synchronized (container) {
             if (!containTable(table)) {
                 try {
@@ -50,7 +50,7 @@ public class BITable2RelationsContainer extends BIHashMapContainer<IBusinessTabl
         }
     }
 
-    protected void removeRelation(IBusinessTable table, BITableRelation tableRelation) throws BIRelationAbsentException, BITableAbsentException {
+    protected void removeRelation(BusinessTable table, BITableRelation tableRelation) throws BIRelationAbsentException, BITableAbsentException {
         synchronized (container) {
             if (containTable(table)) {
 
@@ -63,13 +63,13 @@ public class BITable2RelationsContainer extends BIHashMapContainer<IBusinessTabl
         }
     }
 
-    protected IRelationContainer getTableRelationContainer(IBusinessTable table) throws BITableAbsentException {
+    protected IRelationContainer getTableRelationContainer(BusinessTable table) throws BITableAbsentException {
         synchronized (container) {
             return getTableRelationContainerService(table).getRelationContainer();
         }
     }
 
-    protected BIRelationContainerService getTableRelationContainerService(IBusinessTable table) throws BITableAbsentException {
+    protected BIRelationContainerService getTableRelationContainerService(BusinessTable table) throws BITableAbsentException {
         synchronized (container) {
             try {
                 return getValue(table);
@@ -79,7 +79,7 @@ public class BITable2RelationsContainer extends BIHashMapContainer<IBusinessTabl
         }
     }
 
-    public Boolean containTable(IBusinessTable table) {
+    public Boolean containTable(BusinessTable table) {
         synchronized (container) {
             return containsKey(table);
         }
@@ -91,12 +91,12 @@ public class BITable2RelationsContainer extends BIHashMapContainer<IBusinessTabl
         }
     }
 
-    public Map<IBusinessTable, IRelationContainer> getAllTable2Relation() {
-        Map<IBusinessTable, IRelationContainer> result = new HashMap<IBusinessTable, IRelationContainer>();
-        Iterator<Map.Entry<IBusinessTable, BIRelationContainerService>> it = getContainer().entrySet().iterator();
+    public Map<BusinessTable, IRelationContainer> getAllTable2Relation() {
+        Map<BusinessTable, IRelationContainer> result = new HashMap<BusinessTable, IRelationContainer>();
+        Iterator<Map.Entry<BusinessTable, BIRelationContainerService>> it = getContainer().entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<IBusinessTable, BIRelationContainerService> entry = it.next();
-            IBusinessTable table = entry.getKey();
+            Map.Entry<BusinessTable, BIRelationContainerService> entry = it.next();
+            BusinessTable table = entry.getKey();
             BIRelationContainerService service = entry.getValue();
             result.put(table, service.getRelationContainer());
         }

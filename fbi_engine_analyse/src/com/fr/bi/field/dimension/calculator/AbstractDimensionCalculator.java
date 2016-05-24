@@ -1,21 +1,22 @@
 package com.fr.bi.field.dimension.calculator;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.BICoreWrapper;
-import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.Comparator;
@@ -28,9 +29,9 @@ import java.util.List;
 public abstract class AbstractDimensionCalculator implements DimensionCalculator, BICoreService {
     protected List<BITableSourceRelation> relations;
     protected BIDimension dimension;
-    protected BIDataColumn field;
+    protected BusinessField field;
 
-    public AbstractDimensionCalculator(BIDimension dimension, BIDataColumn field, List<BITableSourceRelation> relations) {
+    public AbstractDimensionCalculator(BIDimension dimension, BusinessField field, List<BITableSourceRelation> relations) {
         this.dimension = dimension;
         this.field = field == null ? dimension.getStatisticElement() : field;
         this.relations = relations;
@@ -41,7 +42,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
-	public BIDataColumn getField() {
+    public BusinessField getField() {
         return field;
     }
 
@@ -65,8 +66,8 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
      * @return
      */
     @Override
-    public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(Table target, ICubeDataLoader loader) {
-        ICubeColumnIndexReader getter = loader.getTableIndex(field).loadGroup(createKey(), relations);
+    public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
+        ICubeColumnIndexReader getter = loader.getTableIndex(getTableSourceFromField()).loadGroup(createKey(), relations);
         return dimension.getGroup().createGroupedMap(getter);
     }
 
@@ -78,7 +79,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
      * @return 是否为超级大分组
      */
     @Override
-    public boolean isSupperLargeGroup(Table targetTable, ICubeDataLoader loader) {
+    public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
         return false;
     }
 
@@ -130,39 +131,43 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
-    public Iterator createValueMapIterator(Table table, ICubeDataLoader loader) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader) {
         ICubeColumnIndexReader getter = createNoneSortGroupValueMapGetter(table, loader);
-        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP){
+        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
     }
 
     @Override
-    public Iterator createValueMapIterator(Table table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
-        ICubeColumnIndexReader getter = loader.getTableIndex(field).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
+        ICubeColumnIndexReader getter = loader.getTableIndex(getTableSourceFromField()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
-        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP){
+        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
     }
 
     @Override
-    public ICubeColumnIndexReader createValueMap(Table table, ICubeDataLoader loader) {
+    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader) {
         return createValueMap(table, loader, true, 0);
     }
 
     @Override
-    public ICubeColumnIndexReader createValueMap(Table table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
-        ICubeColumnIndexReader getter = loader.getTableIndex(field).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
+    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
+        ICubeColumnIndexReader getter = loader.getTableIndex(getTableSourceFromField()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
         return dimension.getSort().createGroupedMap(getter);
     }
 
+    private ICubeTableSource getTableSourceFromField() {
+        return field.getTableBelongTo().getTableSource();
+    }
+
     @Override
     public int getBaseTableValueCount(Object value, ICubeDataLoader loader) {
-        GroupValueIndex[] gvis = loader.getTableIndex(field).getIndexes(dimension.createKey(field), new Object[]{value});
+        GroupValueIndex[] gvis = loader.getTableIndex(getTableSourceFromField()).getIndexes(dimension.createKey(field), new Object[]{value});
         if (gvis != null) {
             if (gvis[0] != null) {
                 return (int) gvis[0].getRowsCountWithData();
@@ -174,7 +179,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     @Override
     public Object clone() throws CloneNotSupportedException {
         StringDimensionCalculator sdc = (StringDimensionCalculator) super.clone();
-        sdc.field = (BIDataColumn) this.field.clone();
+        sdc.field = (BusinessField) this.field.clone();
         sdc.dimension = this.dimension;
         sdc.relations = this.relations;
         return sdc;

@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.relation.path;
 
 import com.fr.bi.common.container.BISetContainer;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.exception.BITableDuplicateException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -10,9 +10,9 @@ import java.util.Set;
 /**
  * Created by Connery on 2016/1/13.
  */
-public class BITableContainer extends BISetContainer<IBusinessTable> {
+public class BITableContainer extends BISetContainer<BusinessTable> {
 
-    protected void addBITable(IBusinessTable table) throws BITableDuplicateException {
+    protected void addBITable(BusinessTable table) throws BITableDuplicateException {
         if (!contain(table)) {
             add(table);
         } else {
@@ -21,12 +21,12 @@ public class BITableContainer extends BISetContainer<IBusinessTable> {
     }
 
     @Override
-    protected Boolean contain(IBusinessTable element) {
+    protected Boolean contain(BusinessTable element) {
         return super.contain(element);
     }
 
     @Override
-    public Set<IBusinessTable> getContainer() {
+    public Set<BusinessTable> getContainer() {
         return super.getContainer();
     }
 

@@ -21,7 +21,7 @@ import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.bi.stable.utils.code.BILogger;

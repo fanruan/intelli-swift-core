@@ -1,7 +1,7 @@
 package com.fr.bi.conf.provider;
 
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.fr.bi.stable.relation.BITableRelationPath;
 
 import java.util.Set;
 

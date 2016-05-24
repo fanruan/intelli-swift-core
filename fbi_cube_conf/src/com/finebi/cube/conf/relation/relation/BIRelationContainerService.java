@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.relation.relation;
 
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
 import com.finebi.cube.relation.BITableRelation;
@@ -30,12 +30,12 @@ public interface BIRelationContainerService {
      * @param foreignTable 外键表
      * @return 相应关联
      */
-    List<BITableRelation> getRelationSpecificForeignTable(IBusinessTable foreignTable);
+    List<BITableRelation> getRelationSpecificForeignTable(BusinessTable foreignTable);
     /**
      * 指定主键表，获得相应的关联
      *
      * @param foreignTable 主键表
      * @return 相应关联
      */
-    List<BITableRelation> getRelationSpecificPrimaryTable(IBusinessTable primaryTable);
+    List<BITableRelation> getRelationSpecificPrimaryTable(BusinessTable primaryTable);
 }

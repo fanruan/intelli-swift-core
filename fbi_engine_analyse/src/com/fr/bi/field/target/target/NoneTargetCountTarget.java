@@ -1,5 +1,7 @@
 package com.fr.bi.field.target.target;
 
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITable;
 
@@ -8,12 +10,12 @@ import com.fr.bi.stable.data.BITable;
  */
 public class NoneTargetCountTarget extends BICounterTarget {
     @Override
-    public BITable createTableKey() {
+    public BusinessTable createTableKey() {
         return BITable.BI_EMPTY_TABLE();
     }
 
     @Override
-    public BIField createColumnKey() {
+    public BusinessField createColumnKey() {
         return new BIField(BITable.BI_EMPTY_TABLE(), "pony");
     }
 }

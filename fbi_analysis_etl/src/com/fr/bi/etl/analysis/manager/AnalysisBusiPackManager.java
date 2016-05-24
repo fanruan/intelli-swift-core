@@ -1,7 +1,6 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.conf.base.BISystemDataManager;
 import com.fr.bi.conf.base.pack.data.*;
 import com.fr.bi.conf.base.pack.group.BIBusinessGroup;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;

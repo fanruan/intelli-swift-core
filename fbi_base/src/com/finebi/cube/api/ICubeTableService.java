@@ -1,13 +1,13 @@
 package com.finebi.cube.api;
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.TableIndexAdapter;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
@@ -91,13 +91,13 @@ public interface ICubeTableService extends Release {
      */
     double getDistinctCountValue(GroupValueIndex gvi, BIKey distinct_field);
 
-    Map<BIKey, BICubeFieldSource> getColumns();
+    Map<BIKey, ICubeFieldSource> getColumns();
 
     int getColumnSize();
 
     BIKey getColumnIndex(String fieldName);
 
-    BIKey getColumnIndex(BIField field);
+    BIKey getColumnIndex(BusinessField field);
 
     int getTableVersion(BIKey key);
 

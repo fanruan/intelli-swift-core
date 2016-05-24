@@ -2,6 +2,7 @@ package com.finebi.cube.tools;
 
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class BINationDataFactory {
     public static ICubeTableSource createTablePerson(){
         BINationDataSource source=new BINationDataSource();
-        List<BICubeFieldSource> columns=new ArrayList<BICubeFieldSource>();
+        List<ICubeFieldSource> columns=new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource("persons","id", DBConstant.CLASS.LONG,255));
         columns.add(new BICubeFieldSource("persons","name", DBConstant.CLASS.STRING,255));
         columns.add(new BICubeFieldSource("persons","nationId", DBConstant.CLASS.LONG,255));
@@ -48,7 +49,7 @@ public class BINationDataFactory {
 
     public static ICubeTableSource createTableNation(){
         BINationDataSource source=new BINationDataSource();
-        List<BICubeFieldSource> columns=new ArrayList<BICubeFieldSource>();
+        List<ICubeFieldSource> columns=new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource("nations","id", DBConstant.CLASS.LONG,255));
         columns.add(new BICubeFieldSource("nations","name", DBConstant.CLASS.STRING,10));
 

@@ -13,7 +13,6 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.relation.BISimpleRelation;
 import com.fr.bi.stable.relation.BITableRelation;

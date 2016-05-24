@@ -1,12 +1,11 @@
 package com.fr.bi.field.dimension.filter.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.base.annotation.BICoreField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.fr.bi.field.filtervalue.FilterValueFactory;
 import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -19,9 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DimensionTargetValueFilter extends AbstractDimensionFilter {
-    @BICoreField
+
     private FilterValue filterValue;
-    @BICoreField
     private String target_id;
 
     @Override
@@ -49,7 +47,7 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
 
 
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         return filterValue.createFilterIndex(dimension, target, loader, userId);
     }
 

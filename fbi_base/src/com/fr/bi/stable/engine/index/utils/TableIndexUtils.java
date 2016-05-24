@@ -1,16 +1,16 @@
 package com.fr.bi.stable.engine.index.utils;
 
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ import java.util.*;
  */
 public class TableIndexUtils {
 
-    public static Object[] getDistinctValue(final ICubeTableService ti, BIField field) {
+    public static Object[] getDistinctValue(final ICubeTableService ti, BusinessField field) {
         Set<Object> values = new HashSet<Object>();
         BIKey index = ti.getColumnIndex(field);
         ICubeColumnIndexReader getter = ti.loadGroup(index);
@@ -89,7 +89,7 @@ public class TableIndexUtils {
         if (relations == null || relations.isEmpty()) {
             return null;
         }
-        ICubeTableService eti = loader.getTableIndex(relations.get(relations.size() - 1).getForeignKey());
+        ICubeTableService eti = loader.getTableIndex(relations.get(relations.size() - 1).getForeignField().getTableBelongTo());
         return createLinkNullGVI(start, eti, relations);
     }
 }

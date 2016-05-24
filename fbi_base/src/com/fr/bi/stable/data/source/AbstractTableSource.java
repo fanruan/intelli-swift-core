@@ -11,9 +11,6 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.BIBasicField;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -36,7 +33,7 @@ public abstract class AbstractTableSource implements ICubeTableSource {
      */
     private static final long serialVersionUID = -8657998191260725924L;
     //表的唯一标识
-    protected Map<String, BICubeFieldSource> fields = new LinkedHashMap<String, BICubeFieldSource>();
+    protected Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
     protected PersistentTable dbTable;
 
     protected AbstractTableSource() {
@@ -60,20 +57,20 @@ public abstract class AbstractTableSource implements ICubeTableSource {
     }
 
     @Override
-    public Set<BICubeFieldSource> getParentFields(Set<ICubeTableSource> sources) {
-        return new HashSet<BICubeFieldSource>();
+    public Set<ICubeFieldSource> getParentFields(Set<ICubeTableSource> sources) {
+        return new HashSet<ICubeFieldSource>();
     }
 
     @Override
-    public Set<BICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources) {
+    public Set<ICubeFieldSource> getFacetFields(Set<ICubeTableSource> sources) {
         return getSelfFields(sources);
     }
 
     @Override
-    public Set<BICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources) {
-        Set<BICubeFieldSource> result = new HashSet<BICubeFieldSource>();
-        BICubeFieldSource[] fields = getFieldsArray(sources);
-        for (BICubeFieldSource field : fields) {
+    public Set<ICubeFieldSource> getSelfFields(Set<ICubeTableSource> sources) {
+        Set<ICubeFieldSource> result = new HashSet<ICubeFieldSource>();
+        ICubeFieldSource[] fields = getFieldsArray(sources);
+        for (ICubeFieldSource field : fields) {
             result.add(field);
         }
         return result;
@@ -91,7 +88,7 @@ public abstract class AbstractTableSource implements ICubeTableSource {
 
     @Override
     public JSONObject createPreviewJSONFromCube(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
-        ICubeTableService tableIndex = loader.getTableIndex(fetchObjectCore());
+        ICubeTableService tableIndex = loader.getTableIndex(this);
         return createPreviewJSONFromTableIndex(fields, tableIndex);
     }
 
@@ -127,11 +124,6 @@ public abstract class AbstractTableSource implements ICubeTableSource {
 
     @Override
     public IPersistentTable getPersistentTable() {
-        return null;
-    }
-
-    @Override
-    public Set<Table> createTableKeys() {
         return null;
     }
 
@@ -177,7 +169,7 @@ public abstract class AbstractTableSource implements ICubeTableSource {
     @Override
     public Set getFieldDistinctValuesFromCube(String fieldName, ICubeDataLoader loader, long userId) {
         HashSet set = new HashSet();
-        ICubeTableService tableIndex = loader.getTableIndex(fetchObjectCore());
+        ICubeTableService tableIndex = loader.getTableIndex(this);
         ICubeColumnIndexReader getter = tableIndex.loadGroup(new IndexKey(fieldName));
         if (getter != null) {
             Iterator<Map.Entry> it = getter.iterator();
@@ -193,7 +185,7 @@ public abstract class AbstractTableSource implements ICubeTableSource {
         return new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
     }
 
-    public Map<String, BICubeFieldSource> getFields() {
+    public Map<String, ICubeFieldSource> getFields() {
         try {
             this.fields = synchronousFieldsInforFromDB();
         } catch (Exception e) {
@@ -209,32 +201,26 @@ public abstract class AbstractTableSource implements ICubeTableSource {
      * @return 字段
      */
     @Override
-    public BICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
-        return getFields().values().toArray(new BICubeFieldSource[getFields().values().size()]);
+    public ICubeFieldSource[] getFieldsArray(Set<ICubeTableSource> sources) {
+        return getFields().values().toArray(new ICubeFieldSource[getFields().values().size()]);
     }
 
-    private Map<String, BICubeFieldSource> synchronousFieldsInforFromDB() {
-        Map<String, BICubeFieldSource> fields = new LinkedHashMap<String, BICubeFieldSource>();
+    private Map<String, ICubeFieldSource> synchronousFieldsInforFromDB() {
+        Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
         IPersistentTable bt = getPersistentTable();
         if (bt == null) {
             throw new NullPointerException();
         }
-        List<BICubeFieldSource> list = new ArrayList<BICubeFieldSource>();
+        List<ICubeFieldSource> list = new ArrayList<ICubeFieldSource>();
         for (int i = 0, len = bt.getFieldSize(); i < len; i++) {
             PersistentField column = bt.getField(i);
-            /**
-             * Connery：原来传递的是MD5变量，把MD5当做ID传递了，这个是不对的。
-             */
-
-            BICubeFieldSource field = column.toDBField(new BITable(fetchObjectCore().getIDValue()));
-            field.setCanSetUseable(column.canSetUseable());
+            ICubeFieldSource field = column.toDBField(this);
             list.add(field);
         }
-        for (BICubeFieldSource field : list) {
+        for (ICubeFieldSource field : list) {
             String fieldName = field.getFieldName();
-            BIBasicField old = this.fields.get(fieldName);
+            ICubeFieldSource old = this.fields.get(fieldName);
             boolean isUsable = old == null || old.isUsable();
-            field.setUsable(isUsable);
             fields.put(fieldName, field);
         }
 
@@ -303,20 +289,9 @@ public abstract class AbstractTableSource implements ICubeTableSource {
         List<JSONObject> stringList = new ArrayList<JSONObject>();
         List<JSONObject> numberList = new ArrayList<JSONObject>();
         List<JSONObject> dateList = new ArrayList<JSONObject>();
-        Map<String, BICubeFieldSource> fields = getFields();
-        for (Map.Entry<String, BICubeFieldSource> entry : fields.entrySet()) {
-            BIBasicField field = entry.getValue();
-//            switch (entry.getValue().getFieldType()) {
-//                case DBConstant.COLUMN.STRING:
-//                    stringList.add(field.createJSON());
-//                    break;
-//                case DBConstant.COLUMN.NUMBER:
-//                    numberList.add(field.createJSON());
-//                    break;
-//                case DBConstant.COLUMN.DATE:
-//                    dateList.add(field.createJSON());
-//                    break;
-//            }
+        Map<String, ICubeFieldSource> fields = getFields();
+        for (Map.Entry<String, ICubeFieldSource> entry : fields.entrySet()) {
+            ICubeFieldSource field = entry.getValue();
             stringList.add(field.createJSON());
         }
         ja.put(stringList).put(numberList).put(dateList);

@@ -15,7 +15,7 @@ import com.fr.bi.cal.stable.io.NIOReadGroupMap;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.manager.PlugManager;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.base.FinalLong;
 import com.fr.bi.base.key.BIKey;
@@ -190,7 +190,7 @@ public class ControlShowValueCalculator {
         final Set<String> set = new TreeSet<String>(rank == BIReportConstant.SORT.ASC
                 ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC);
         final ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField());
-        DirectTableConnection c = BIConfUtils.creatDirectTableConnection(relation, sessionIDInfo.getLoader());
+        DirectTableConnection c = BIConfUtils.createDirectTableConnection(relation, sessionIDInfo.getLoader());
         final ConnectionRowGetter getter = new ConnectionRowGetter(c);
         final BIKey index = currentKey.createKey();
         parentIndex.BrokenableTraversal(new BrokenTraversalAction() {
@@ -232,7 +232,7 @@ public class ControlShowValueCalculator {
             final Set<String> set = new TreeSet<String>(rank == BIReportConstant.SORT.ASC
                     ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC);
             final ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField());
-            DirectTableConnection c = BIConfUtils.creatDirectTableConnection(currentKey.getRelationList(), sessionIDInfo.getLoader());
+            DirectTableConnection c = BIConfUtils.createDirectTableConnection(currentKey.getRelationList(), sessionIDInfo.getLoader());
             final ConnectionRowGetter getter = new ConnectionRowGetter(c);
             final BIKey index = currentKey.createKey();
             parentIndex.BrokenableTraversal(new BrokenTraversalAction() {

@@ -5,7 +5,6 @@ import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.cal.generate.BuildCubeTaskIncremental;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BICubeManagerProvider;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.stable.StringUtils;

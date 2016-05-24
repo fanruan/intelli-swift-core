@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.relation;
 
 import com.finebi.cube.conf.relation.relation.*;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
@@ -55,7 +55,7 @@ public class BITableRelationAnalyser implements BITableRelationAnalysisService {
     }
 
     @Override
-    public IRelationContainer getPrimaryRelation(IBusinessTable table) throws BITableAbsentException {
+    public IRelationContainer getPrimaryRelation(BusinessTable table) throws BITableAbsentException {
         synchronized (relationContainerService) {
             if (table2PrimaryRelationsManager.containTable(table)) {
                 return table2PrimaryRelationsManager.getTablePrimaryRelationContainer(table);
@@ -66,7 +66,7 @@ public class BITableRelationAnalyser implements BITableRelationAnalysisService {
     }
 
     @Override
-    public IRelationContainer getForeignRelation(IBusinessTable table) throws BITableAbsentException {
+    public IRelationContainer getForeignRelation(BusinessTable table) throws BITableAbsentException {
         synchronized (relationContainerService) {
                 return table2ForeignRelationsManager.getTableForeignRelationContainer(table);
 
@@ -75,14 +75,14 @@ public class BITableRelationAnalyser implements BITableRelationAnalysisService {
     }
 
     @Override
-    public boolean containTablePrimaryRelation(IBusinessTable table) {
+    public boolean containTablePrimaryRelation(BusinessTable table) {
         synchronized (relationContainerService) {
             return table2PrimaryRelationsManager.containTable(table);
         }
     }
 
     @Override
-    public boolean containTableForeignRelation(IBusinessTable table) {
+    public boolean containTableForeignRelation(BusinessTable table) {
         synchronized (relationContainerService) {
             return table2ForeignRelationsManager.containTable(table);
         }
@@ -108,18 +108,18 @@ public class BITableRelationAnalyser implements BITableRelationAnalysisService {
     }
 
     @Override
-    public List<BITableRelation> getRelation(IBusinessTable primaryTable, IBusinessTable foreignTable) throws BITableAbsentException {
+    public List<BITableRelation> getRelation(BusinessTable primaryTable, BusinessTable foreignTable) throws BITableAbsentException {
         return table2PrimaryRelationsManager.getRelation(primaryTable, foreignTable);
 
     }
 
     @Override
-    public Map<IBusinessTable, IRelationContainer> getAllTable2PrimaryRelation() {
+    public Map<BusinessTable, IRelationContainer> getAllTable2PrimaryRelation() {
         return this.table2PrimaryRelationsManager.getAllTable2Relation();
     }
 
     @Override
-    public Map<IBusinessTable, IRelationContainer> getAllTable2ForeignRelation() {
+    public Map<BusinessTable, IRelationContainer> getAllTable2ForeignRelation() {
         return this.table2ForeignRelationsManager.getAllTable2Relation();
     }
 }

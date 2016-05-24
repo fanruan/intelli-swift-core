@@ -1,9 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
-import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -17,7 +17,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.relation.BISimpleRelation;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
@@ -39,8 +39,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     protected NameObject targetSort;
     @BICoreField
     protected Map<String, DimensionFilter> targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
-    @BICoreField
-    protected Map<String, Map<String, BIDataColumn>> dimensionsMap = new LinkedHashMap<String, Map<String, BIDataColumn>>();
+    protected Map<String, Map<String, BusinessField>> dimensionsMap = new LinkedHashMap<String, Map<String, BusinessField>>();
     @BICoreField
     protected Map<String, Map<String, List<BISimpleRelation>>> relationsMap = new LinkedHashMap<String, Map<String, List<BISimpleRelation>>>();
     protected Object[] clickValue;
@@ -102,13 +101,13 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convertToMD5RelationFromSimpleRelation(relationList, new BIUser(this.getUserId()));
     }
 
-    private BIDataColumn getDimDataColumn(BIDimension dim, String tarId) {
+    private BusinessField getDimDataColumn(BIDimension dim, String tarId) {
         String dimId = dim.getValue();
-        Map<String, BIDataColumn> dimMap = dimensionsMap.get(dimId);
+        Map<String, BusinessField> dimMap = dimensionsMap.get(dimId);
         if (dimMap == null) {
             return dim.getStatisticElement();
         }
-        BIDataColumn column = dimMap.get(tarId);
+        BusinessField column = dimMap.get(tarId);
         return column == null ? dim.getStatisticElement() : column;
     }
 
@@ -232,7 +231,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 while (iterator.hasNext()) {
                     String targetId = (String) iterator.next();
                     JSONObject tar = dimMap.getJSONObject(targetId);
-                    Map<String, BIDataColumn> dimensionMap = new LinkedHashMap<String, BIDataColumn>();
+                    Map<String, BusinessField> dimensionMap = new LinkedHashMap<String, BusinessField>();
                     dimensionsMap.put(dimensionId, dimensionMap);
                     if (tar.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
                         Object ob = tar.get(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);

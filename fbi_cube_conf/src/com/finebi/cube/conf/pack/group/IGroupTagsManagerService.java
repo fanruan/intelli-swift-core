@@ -11,7 +11,10 @@ import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 
 /**
  * 业务包分组提供的服务
- * Created by Connery on 2015/12/22.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 
 public interface IGroupTagsManagerService extends Release, IGroupTagsManagerGetterService {

@@ -19,7 +19,7 @@ import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.*;
 import com.fr.general.NameObject;

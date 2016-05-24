@@ -1,7 +1,6 @@
 package com.fr.bi.web.base.services;
 
 import com.fr.bi.conf.base.trans.BIAliasManager;
-import com.fr.bi.conf.provider.BIAliasManagerProvider;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.base.AbstractBIBaseAction;
 import com.fr.fs.web.service.ServiceUtils;

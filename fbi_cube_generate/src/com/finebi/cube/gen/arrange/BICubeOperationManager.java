@@ -16,8 +16,9 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -343,11 +344,11 @@ public class BICubeOperationManager {
         }
     }
 
-    public void generateFieldRelationPath(Map<BICubeFieldSource, BITableSourceRelationPath> relationPathMap) {
+    public void generateFieldRelationPath(Map<ICubeFieldSource, BITableSourceRelationPath> relationPathMap) {
         if (relationPathMap != null && !relationPathMap.isEmpty()) {
-            Iterator<Map.Entry<BICubeFieldSource, BITableSourceRelationPath>> it = relationPathMap.entrySet().iterator();
+            Iterator<Map.Entry<ICubeFieldSource, BITableSourceRelationPath>> it = relationPathMap.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry<BICubeFieldSource, BITableSourceRelationPath> entry = it.next();
+                Map.Entry<ICubeFieldSource, BITableSourceRelationPath> entry = it.next();
                 try {
                     BICubeFieldSource field = entry.getKey();
                     BITableSourceRelationPath path = entry.getValue();

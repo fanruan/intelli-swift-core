@@ -1,8 +1,8 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.etl.analysis.Constants;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -44,7 +44,7 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
-    public Set<Table> createTableKeys() {
+    public Set<BusinessTable> createTableKeys() {
         throw new RuntimeException(UNSUPPORT);
     }
 

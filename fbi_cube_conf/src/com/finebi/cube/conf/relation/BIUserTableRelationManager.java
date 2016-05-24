@@ -4,7 +4,7 @@ import com.finebi.cube.conf.relation.path.BITableContainer;
 import com.finebi.cube.conf.relation.path.BITableRelationshipManager;
 import com.finebi.cube.conf.relation.path.BITableRelationshipService;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITablePair;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
@@ -101,11 +101,11 @@ public class BIUserTableRelationManager implements Release {
         return tableRelationshipService.contain(tableRelation);
     }
 
-    public boolean containTableForeignRelation(IBusinessTable table) {
+    public boolean containTableForeignRelation(BusinessTable table) {
         return currentAnalyserHandler.containTableForeignRelation(table);
     }
 
-    public boolean containTablePrimaryRelation(IBusinessTable table) {
+    public boolean containTablePrimaryRelation(BusinessTable table) {
         return currentAnalyserHandler.containTablePrimaryRelation(table);
     }
 
@@ -151,13 +151,13 @@ public class BIUserTableRelationManager implements Release {
     }
 
 
-    public Set<BITableRelationPath> getAllPath(IBusinessTable juniorTable, IBusinessTable primaryTable)
+    public Set<BITableRelationPath> getAllPath(BusinessTable juniorTable, BusinessTable primaryTable)
             throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         return tableRelationshipService.getAllPath(new BITablePair(primaryTable, juniorTable));
     }
 
 
-    public Set<BITableRelationPath> getAllAvailablePath(IBusinessTable juniorTable, IBusinessTable primaryTable) throws
+    public Set<BITableRelationPath> getAllAvailablePath(BusinessTable juniorTable, BusinessTable primaryTable) throws
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         Set<BITableRelationPath> set = new HashSet<BITableRelationPath>();
         for (BITableRelationPath path : getAllPath(juniorTable, primaryTable)) {
@@ -169,12 +169,12 @@ public class BIUserTableRelationManager implements Release {
     }
 
 
-    public BITableRelationPath getFirstPath(IBusinessTable juniorTable, IBusinessTable primaryTable) throws BITableUnreachableException {
+    public BITableRelationPath getFirstPath(BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException {
         return null;
     }
 
 
-    public BITableRelationPath getFirstAvailablePath(IBusinessTable primaryTable, IBusinessTable juniorTable) throws BITableUnreachableException {
+    public BITableRelationPath getFirstAvailablePath(BusinessTable primaryTable, BusinessTable juniorTable) throws BITableUnreachableException {
         return null;
     }
 
@@ -183,23 +183,23 @@ public class BIUserTableRelationManager implements Release {
         return null;
     }
 
-    public boolean isReachable(IBusinessTable juniorTable, IBusinessTable primaryTable) {
+    public boolean isReachable(BusinessTable juniorTable, BusinessTable primaryTable) {
         return false;
     }
 
-    public Map<IBusinessTable, IRelationContainer> getAllTable2PrimaryRelation() {
+    public Map<BusinessTable, IRelationContainer> getAllTable2PrimaryRelation() {
         return currentAnalyserHandler.getAllTable2PrimaryRelation();
     }
 
-    public Map<IBusinessTable, IRelationContainer> getAllTable2ForeignRelation() {
+    public Map<BusinessTable, IRelationContainer> getAllTable2ForeignRelation() {
         return currentAnalyserHandler.getAllTable2ForeignRelation();
     }
 
-    public IRelationContainer getPrimaryRelation(IBusinessTable table) throws BITableAbsentException {
+    public IRelationContainer getPrimaryRelation(BusinessTable table) throws BITableAbsentException {
         return currentAnalyserHandler.getPrimaryRelation(table);
     }
 
-    IRelationContainer getForeignRelation(IBusinessTable table) throws BITableAbsentException {
+    IRelationContainer getForeignRelation(BusinessTable table) throws BITableAbsentException {
         return currentAnalyserHandler.getForeignRelation(table);
     }
 

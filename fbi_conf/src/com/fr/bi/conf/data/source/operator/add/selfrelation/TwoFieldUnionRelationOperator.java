@@ -1,18 +1,18 @@
 package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -89,8 +89,8 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
         int rowCount = ti.getRowCount();
         ICubeColumnIndexReader idmap = ti.loadGroup(new IndexKey(idFieldName), new ArrayList<BITableSourceRelation>());
-        BIBasicField idColumn = ti.getColumns().get(new IndexKey(idFieldName));
-        BIBasicField pidColumn = ti.getColumns().get(new IndexKey(parentIdFieldName));
+        ICubeFieldSource idColumn = ti.getColumns().get(new IndexKey(idFieldName));
+        ICubeFieldSource pidColumn = ti.getColumns().get(new IndexKey(parentIdFieldName));
         int columnLength = fields.size();
         if (idColumn != null && pidColumn != null && idColumn.getFieldType() == pidColumn.getFieldType()) {
             for (int i = 0; i < rowCount; i++) {

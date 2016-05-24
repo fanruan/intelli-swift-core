@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.pack.data;
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
@@ -8,9 +8,12 @@ import com.fr.bi.stable.exception.BITableAbsentException;
 import java.util.Set;
 
 /**
- * Created by Connery on 2016/1/20.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
-public interface IBusinessPackageGetterService<T extends IBusinessTable> {
+public interface IBusinessPackageGetterService<T extends BusinessTable> {
 
     BIUser getOwner();
 

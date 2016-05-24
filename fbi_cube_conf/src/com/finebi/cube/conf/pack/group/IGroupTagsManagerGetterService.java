@@ -10,7 +10,10 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import java.util.Set;
 
 /**
- * Created by Connery on 2016/1/20.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 public interface IGroupTagsManagerGetterService {
     Set<BIGroupTagName> getAllGroupTagName();

@@ -16,7 +16,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Created by Connery on 2015/12/28.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 public class BIBusinessGroup implements IBusinessGroupGetterService {
     private BIGroupTagName name;

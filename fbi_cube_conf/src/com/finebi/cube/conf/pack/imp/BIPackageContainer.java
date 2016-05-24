@@ -18,7 +18,10 @@ import java.util.Set;
 
 /**
  * 业务包的容器
- * Created by Connery on 2015/12/28.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = IPackagesManagerService.class)
 public class BIPackageContainer extends BISetContainer<BIBusinessPackage> implements IPackagesManagerService {

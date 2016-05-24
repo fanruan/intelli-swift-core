@@ -5,7 +5,6 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.conf.engine.CubeBuildStuffManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;

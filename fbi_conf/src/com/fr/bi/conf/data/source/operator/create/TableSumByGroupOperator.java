@@ -14,7 +14,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.BIDBUtils;

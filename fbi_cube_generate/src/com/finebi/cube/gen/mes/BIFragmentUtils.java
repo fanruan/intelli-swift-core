@@ -6,7 +6,7 @@ import com.finebi.cube.router.fragment.IFragmentTag;
 import com.finebi.cube.router.topic.ITopicTag;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 

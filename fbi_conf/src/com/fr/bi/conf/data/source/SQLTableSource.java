@@ -4,20 +4,12 @@ import com.fr.base.TableData;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.ServerLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DecryptBi;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
-import com.fr.stable.xml.XMLPrintWriter;
-import com.fr.stable.xml.XMLReadable;
-import com.fr.stable.xml.XMLableReader;
-
-import java.util.Set;
 
 /**
  * Created by GUY on 2015/3/2.
@@ -56,52 +48,17 @@ public class SQLTableSource extends ServerTableSource {
     }
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-        if(jo.has("sql")){
+        if (jo.has("sql")) {
             sql = DecryptBi.decrypt(jo.getString("sql"), "sh");
         }
-        if(jo.has("dataLinkName")){
+        if (jo.has("dataLinkName")) {
             sqlConnection = jo.getString("dataLinkName");
         }
-        if(jo.has("table_name")){
+        if (jo.has("table_name")) {
             sqlName = jo.getString("table_name");
         }
     }
 
-    @Override
-    public void readXML(XMLableReader reader) {
-        super.readXML(reader);
-        this.sql = reader.getAttrAsString("sql", StringUtils.EMPTY);
-        this.sqlConnection = reader.getAttrAsString("sql_connection", StringUtils.EMPTY);
-        this.sqlName = reader.getAttrAsString("table_name", StringUtils.EMPTY);
-        this.fields.clear();
-        reader.readXMLObject(new XMLReadable() {
-            @Override
-            public void readXML(XMLableReader reader) {
-                if (reader.isChildNode()) {
-                    if (reader.getTagName().equals(BIField.XML_TAG)) {
-                        BICubeFieldSource field = BICubeFieldSource.getBiEmptyField();
-                        reader.readXMLObject(field);
-                        fields.put(field.getFieldName(), field);
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
-    public void writeXML(XMLPrintWriter writer) {
-
-        writer.startTAG(XML_TAG);
-        super.writeXML(writer);
-        writer.attr("sql", sql)
-                .attr("sql_connection", sqlConnection)
-                .attr("tablename", sqlName);
-        Set<String> key = fields.keySet();
-        for (String aKey : key) {
-            fields.get(aKey).writeXML(writer);
-        }
-        writer.end();
-    }
 
     @Override
     public IPersistentTable getPersistentTable() {

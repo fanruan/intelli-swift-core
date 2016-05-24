@@ -1,8 +1,8 @@
 package com.finebi.cube.aconfig;
 
+import com.finebi.cube.conf.pack.imp.BIUserPackageConfigurationManager;
 import com.fr.bi.common.persistent.xml.reader.BIBeanXMLReaderWrapper;
 import com.fr.bi.common.persistent.xml.reader.XMLPersistentReader;
-import com.fr.bi.conf.base.pack.BIUserPackageConfigurationManager;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.stable.StableUtils;
 import com.fr.stable.xml.XMLTools;

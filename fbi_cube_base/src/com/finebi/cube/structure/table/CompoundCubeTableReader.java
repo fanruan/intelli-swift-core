@@ -14,7 +14,8 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -32,8 +33,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
      * 上次Table对象
      */
     private ICubeTableEntityService parentTable;
-    protected Map<BICubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<BICubeFieldSource, ICubeTableEntityService>();
-    private List<BICubeFieldSource> compoundFields = new ArrayList<BICubeFieldSource>();
+    protected Map<ICubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, ICubeTableEntityService>();
+    private List<ICubeFieldSource> compoundFields = new ArrayList<ICubeFieldSource>();
 
     public CompoundCubeTableReader(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         hostTable = new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
@@ -49,7 +50,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     private void initialFields() {
         if (hostTable.tableDataAvailable()) {
-            for (BICubeFieldSource field : hostTable.getFieldInfo()) {
+            for (ICubeFieldSource field : hostTable.getFieldInfo()) {
                 if (!compoundFields.contains(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, hostTable);
@@ -78,7 +79,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public void recordTableStructure(List<BICubeFieldSource> fields) {
+    public void recordTableStructure(List<ICubeFieldSource> fields) {
         throw new UnsupportedOperationException();
 
     }
@@ -138,7 +139,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public List<BICubeFieldSource> getFieldInfo() {
+    public List<ICubeFieldSource> getFieldInfo() {
         return compoundFields;
     }
 
@@ -185,7 +186,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
-        BICubeFieldSource field = getSpecificColumn(fieldName);
+        ICubeFieldSource field = getSpecificColumn(fieldName);
         return fieldSource.get(field);
     }
 

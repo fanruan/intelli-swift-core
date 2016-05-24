@@ -9,7 +9,7 @@ import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import junit.framework.TestCase;
 
 import java.util.HashSet;

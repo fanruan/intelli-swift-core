@@ -74,10 +74,10 @@ public abstract class AbstractETLOperator implements IETLOperator {
         return BIBasicCore.EMPTY_CORE;
     }
 
-    protected BICore getSingleParentMD5(List<? extends ICubeTableSource> parents) {
+    protected ICubeTableSource getSingleParentMD5(List<? extends ICubeTableSource> parents) {
         if (parents == null || parents.size() != 1) {
             return null;
         }
-        return parents.get(0).fetchObjectCore();
+        return parents.get(0);
     }
 }

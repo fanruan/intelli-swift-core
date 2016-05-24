@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.relation.path;
 
-import com.finebi.cube.conf.table.IBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.container.BISetContainer;
 import com.fr.bi.stable.exception.BITableDuplicateException;
 import com.fr.general.ComparatorUtils;
@@ -12,9 +12,9 @@ import java.util.Set;
  * Created by Connery on 2016/1/14.
  */
 class BIDirectlyRelativeTableContainer extends BISetContainer<BIDirectlyRelativeTableContainer> {
-    IBusinessTable currentTable;
+    BusinessTable currentTable;
 
-    public BIDirectlyRelativeTableContainer(IBusinessTable currentTable) {
+    public BIDirectlyRelativeTableContainer(BusinessTable currentTable) {
         this.currentTable = currentTable;
     }
 

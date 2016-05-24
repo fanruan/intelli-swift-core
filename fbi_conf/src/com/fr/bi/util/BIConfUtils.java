@@ -1,14 +1,17 @@
 package com.fr.bi.util;
 
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.connection.DirectTableConnection;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.fr.bi.stable.relation.BITableRelation;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.BIUser;
+import com.fr.bi.stable.connection.DirectTableConnection;
+import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.ICubeTableSource;
+import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.general.ComparatorUtils;
 
@@ -16,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BIConfUtils {
-    public static DirectTableConnection creatDirectTableConnection(List<BITableSourceRelation> relation, ICubeDataLoader loader) {
+    public static DirectTableConnection createDirectTableConnection(List<BITableSourceRelation> relation, ICubeDataLoader loader) {
         DirectTableConnection temp = null;
         for (int i = relation.size(); i > 0; i--) {
             DirectTableConnection connection = createConnection(relation.get(i - 1), loader);
@@ -31,7 +34,7 @@ public class BIConfUtils {
         return temp;
     }
 
-    public static DirectTableConnection creatDirectTableConnection(BITableSourceRelation[] relationList, ICubeDataLoader loader) {
+    public static DirectTableConnection createDirectTableConnection(BITableSourceRelation[] relationList, ICubeDataLoader loader) {
         DirectTableConnection temp = null;
         for (int i = relationList.length; i > 0; i--) {
             DirectTableConnection connection = createConnection(relationList[i - 1], loader);
@@ -79,39 +82,36 @@ public class BIConfUtils {
     }
 
     private static DirectTableConnection createConnection(BITableSourceRelation relation, ICubeDataLoader loader) {
-        BIField primaryKey = relation.getPrimaryKey();
-        BIField foreignKey = relation.getForeignKey();
-        return new DirectTableConnection(foreignKey.getTableBelongTo(), loader.getFieldIndex(foreignKey), loader.getTableIndex(foreignKey),
-                primaryKey.getTableBelongTo(), loader.getFieldIndex(primaryKey), loader.getTableIndex(primaryKey));
+        ICubeFieldSource primaryKey = relation.getPrimaryKey();
+        ICubeFieldSource foreignKey = relation.getForeignKey();
+        return new DirectTableConnection(foreignKey.getTableBelongTo(), new IndexKey(foreignKey.getFieldName()), loader.getTableIndex(foreignKey.getTableBelongTo()),
+                primaryKey.getTableBelongTo(), new IndexKey(primaryKey.getFieldName()), loader.getTableIndex(primaryKey.getTableBelongTo()));
     }
 
     private static DirectTableConnection createConnection(DimensionCalculator ck, BITableSourceRelation relation, ICubeDataLoader loader) {
-        BIField primaryKey = relation.getPrimaryKey();
-        BIField foreignKey = relation.getForeignKey();
-        return new DirectTableConnection(foreignKey.getTableBelongTo(), loader.getFieldIndex(foreignKey), loader.getTableIndex(foreignKey),
-                ck.getField().getTableBelongTo(), loader.getTableIndex(ck.getField()).getColumnIndex(primaryKey.getFieldName()), loader.getTableIndex(ck.getField()));
+        ICubeFieldSource primaryKey = relation.getPrimaryKey();
+        ICubeFieldSource foreignKey = relation.getForeignKey();
+        return new DirectTableConnection(foreignKey.getTableBelongTo(), new IndexKey(foreignKey.getFieldName()), loader.getTableIndex(foreignKey.getTableBelongTo()),
+                ck.getField().getTableBelongTo().getTableSource(), loader.getTableIndex(ck.getField().getTableBelongTo().getTableSource()).getColumnIndex(primaryKey.getFieldName()), loader.getTableIndex(ck.getField().getTableBelongTo().getTableSource()));
     }
 
-    public static List<BITableSourceRelation> convert2TableSourceRelation(List<BITableRelation> relations, BIUser user) {
+    public static List<BITableSourceRelation> convert2TableSourceRelation(List<BITableRelation> relations) {
         List<BITableSourceRelation> list = new ArrayList<BITableSourceRelation>();
         for (BITableRelation relation : relations) {
-            BIField pField = relation.getPrimaryField();
-            BIField fField = relation.getForeignField();
+            BusinessField primaryField = relation.getPrimaryField();
+            BusinessField foreignField = relation.getForeignField();
+            ICubeTableSource primaryTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(primaryField.getTableBelongTo().getID(), new BIUser(-999));
+            ICubeTableSource foreignTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(primaryField.getTableBelongTo().getID(), new BIUser(-999));
+            ICubeFieldSource primaryFieldSource = new BICubeFieldSource(primaryTableSource, primaryField.getFieldName(), primaryField.getClassType(), primaryField.getFieldSize());
+            ICubeFieldSource foreignFieldSource = new BICubeFieldSource(foreignTableSource, foreignField.getFieldName(), foreignField.getClassType(), foreignField.getFieldSize());
             list.add(new BITableSourceRelation(
-                    pField,
-                    fField,
-                    BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(pField.getTableID(), user),
-                    BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(fField.getTableID(), user)
+                    primaryFieldSource,
+                    foreignFieldSource,
+                    primaryTableSource,
+                    foreignTableSource
             ));
         }
         return list;
     }
 
-    public static List<BITableSourceRelation> convertToMD5RelationFromSimpleRelation(List<BISimpleRelation> relations, BIUser user) {
-        List<BITableRelation> list = new ArrayList<BITableRelation>();
-        for (BISimpleRelation relation : relations) {
-            list.add(relation.getTableRelation());
-        }
-        return BIConfUtils.convert2TableSourceRelation(list, user);
-    }
 }

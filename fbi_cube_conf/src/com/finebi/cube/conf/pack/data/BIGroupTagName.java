@@ -3,7 +3,10 @@ package com.finebi.cube.conf.pack.data;
 import com.fr.bi.base.BIName;
 
 /**
- * Created by Connery on 2015/12/28.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 public class BIGroupTagName extends BIName implements Comparable,Cloneable {
     public BIGroupTagName(String name) {

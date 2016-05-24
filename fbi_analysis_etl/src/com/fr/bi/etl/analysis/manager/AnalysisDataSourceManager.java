@@ -4,14 +4,13 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.conf.base.BISystemDataManager;
 import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -108,7 +107,7 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
     }
 
     @Override
-    public BICubeFieldSource findDBField(BIUser user, BIField biField) throws BIFieldAbsentException {
+    public ICubeFieldSource findDBField(BIUser user, BIField biField) throws BIFieldAbsentException {
         return null;
     }
 

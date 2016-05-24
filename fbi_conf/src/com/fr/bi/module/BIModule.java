@@ -1,8 +1,8 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.stable.fun.Service;
 
 /**

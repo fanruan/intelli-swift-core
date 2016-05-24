@@ -25,7 +25,10 @@ import java.util.Set;
 
 /**
  * 分组的容器类
- * Created by Connery on 2015/12/28.
+ * This class created on 2016/5/23.
+ *
+ * @author Connery
+ * @since 4.0
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = IGroupTagsManagerService.class)
 public class BIGroupTagContainer extends BITreeMapContainer<BIGroupTagName, BIBusinessGroup> implements IGroupTagsManagerService {

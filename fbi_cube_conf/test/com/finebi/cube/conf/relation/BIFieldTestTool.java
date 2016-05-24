@@ -1,132 +1,132 @@
 package com.finebi.cube.conf.relation;
 
 import com.finebi.cube.conf.field.BIBusinessField;
-import com.finebi.cube.conf.field.IBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
 
 /**
  * Created by Connery on 2016/1/14.
  */
 public class BIFieldTestTool {
-    public static IBusinessField getAa() {
+    public static BusinessField getAa() {
         return new BIBusinessField(BITableTestTool.getA(), "a");
     }
 
-    public static IBusinessField getAb() {
+    public static BusinessField getAb() {
         return new BIBusinessField(BITableTestTool.getA(), "b");
     }
 
-    public static IBusinessField getAc() {
+    public static BusinessField getAc() {
         return new BIBusinessField(BITableTestTool.getA(), "c");
     }
 
-    public static IBusinessField getAd() {
+    public static BusinessField getAd() {
         return new BIBusinessField(BITableTestTool.getA(), "d");
     }
 
-    public static IBusinessField getAe() {
+    public static BusinessField getAe() {
         return new BIBusinessField(BITableTestTool.getA(), "e");
     }
 
-    public static IBusinessField getAf() {
+    public static BusinessField getAf() {
         return new BIBusinessField(BITableTestTool.getA(), "f");
     }
 
-    public static IBusinessField getBa() {
+    public static BusinessField getBa() {
         return new BIBusinessField(BITableTestTool.getB(), "a");
     }
 
-    public static IBusinessField getBb() {
+    public static BusinessField getBb() {
         return new BIBusinessField(BITableTestTool.getB(), "b");
     }
 
-    public static IBusinessField getBc() {
+    public static BusinessField getBc() {
         return new BIBusinessField(BITableTestTool.getB(), "c");
     }
 
-    public static IBusinessField getBd() {
+    public static BusinessField getBd() {
         return new BIBusinessField(BITableTestTool.getB(), "d");
     }
 
-    public static IBusinessField getBe() {
+    public static BusinessField getBe() {
         return new BIBusinessField(BITableTestTool.getB(), "e");
     }
 
-    public static IBusinessField getBf() {
+    public static BusinessField getBf() {
         return new BIBusinessField(BITableTestTool.getB(), "f");
 
     }
 
-    public static IBusinessField getCa() {
+    public static BusinessField getCa() {
         return new BIBusinessField(BITableTestTool.getC(), "a");
     }
 
-    public static IBusinessField getCb() {
+    public static BusinessField getCb() {
         return new BIBusinessField(BITableTestTool.getC(), "b");
     }
 
-    public static IBusinessField getCc() {
+    public static BusinessField getCc() {
         return new BIBusinessField(BITableTestTool.getC(), "c");
     }
 
-    public static IBusinessField getCd() {
+    public static BusinessField getCd() {
         return new BIBusinessField(BITableTestTool.getC(), "d");
     }
 
-    public static IBusinessField getCe() {
+    public static BusinessField getCe() {
         return new BIBusinessField(BITableTestTool.getC(), "e");
     }
 
-    public static IBusinessField getCf() {
+    public static BusinessField getCf() {
         return new BIBusinessField(BITableTestTool.getC(), "f");
 
     }
 
-    public static IBusinessField getDa() {
+    public static BusinessField getDa() {
         return new BIBusinessField(BITableTestTool.getD(), "a");
     }
 
-    public static IBusinessField getDb() {
+    public static BusinessField getDb() {
         return new BIBusinessField(BITableTestTool.getD(), "b");
     }
 
-    public static IBusinessField getDc() {
+    public static BusinessField getDc() {
         return new BIBusinessField(BITableTestTool.getD(), "c");
     }
 
-    public static IBusinessField getDd() {
+    public static BusinessField getDd() {
         return new BIBusinessField(BITableTestTool.getD(), "d");
     }
 
-    public static IBusinessField getDe() {
+    public static BusinessField getDe() {
         return new BIBusinessField(BITableTestTool.getD(), "e");
     }
 
-    public static IBusinessField getDf() {
+    public static BusinessField getDf() {
         return new BIBusinessField(BITableTestTool.getD(), "f");
     }
 
 
-    public static IBusinessField getEa() {
+    public static BusinessField getEa() {
         return new BIBusinessField(BITableTestTool.getE(), "a");
     }
 
-    public static IBusinessField getEb() {
+    public static BusinessField getEb() {
         return new BIBusinessField(BITableTestTool.getE(), "b");
     }
 
-    public static IBusinessField getEc() {
+    public static BusinessField getEc() {
         return new BIBusinessField(BITableTestTool.getE(), "c");
     }
 
-    public static IBusinessField getEd() {
+    public static BusinessField getEd() {
         return new BIBusinessField(BITableTestTool.getE(), "d");
     }
 
-    public static IBusinessField getEe() {
+    public static BusinessField getEe() {
         return new BIBusinessField(BITableTestTool.getE(), "e");
     }
 
-    public static IBusinessField getEf() {
+    public static BusinessField getEf() {
         return new BIBusinessField(BITableTestTool.getE(), "f");
     }
 }

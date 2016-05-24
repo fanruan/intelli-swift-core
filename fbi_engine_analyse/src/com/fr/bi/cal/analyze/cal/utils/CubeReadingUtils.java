@@ -9,7 +9,7 @@ import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -139,7 +139,7 @@ public class CubeReadingUtils {
         System.arraycopy(relationChild, 0, targetRelation, 0, targetRelation.length);
         final TreeSet treeSet = new TreeSet(childkey.getComparator());
         ICubeTableService ti = loader.getTableIndex(currentKey.getField());
-        final ConnectionRowGetter getter = new ConnectionRowGetter(BIConfUtils.creatDirectTableConnection(targetRelation, loader));
+        final ConnectionRowGetter getter = new ConnectionRowGetter(BIConfUtils.createDirectTableConnection(targetRelation, loader));
         Object[] res = getter.getConnectedValues(currentKey.getField(), childkey.getField(), value, loader);
         for (int i = 0; i < res.length; i++) {
             if (res[i] != null) {

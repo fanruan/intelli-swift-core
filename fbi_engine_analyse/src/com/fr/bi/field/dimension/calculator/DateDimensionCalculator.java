@@ -1,11 +1,11 @@
 package com.fr.bi.field.dimension.calculator;
 
-import com.fr.bi.conf.report.widget.BIDataColumn;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 
@@ -17,12 +17,12 @@ import java.util.Map;
  * Created by 小灰灰 on 2015/6/30.
  */
 public class DateDimensionCalculator extends AbstractDimensionCalculator {
-    public DateDimensionCalculator(BIDimension dimension, BIDataColumn column, List<BITableSourceRelation> relations) {
+    public DateDimensionCalculator(BIDimension dimension, BusinessField column, List<BITableSourceRelation> relations) {
         super(dimension, column, relations);
     }
 
     @Override
-    public Iterator createValueMapIterator(Table table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
         ICubeColumnIndexReader getter = loader.getTableIndex(field).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         CubeTreeMap treeMap = new CubeTreeMap(getComparator());
         Iterator it = getter.iterator();
@@ -41,7 +41,7 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
      * @return 是否为超级大分组
      */
     @Override
-    public boolean isSupperLargeGroup(Table targetTable, ICubeDataLoader loader) {
+    public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
         return false;
     }
 

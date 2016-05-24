@@ -3,6 +3,7 @@ package com.finebi.cube.adapter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -17,7 +18,6 @@ import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.conf.utils.BIModuleUtils;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.ICubeTableSource;
@@ -49,7 +49,6 @@ public class BIUserCubeManager implements ICubeDataLoader {
         cube = new BICube(resourceRetrievalService, discovery);
     }
 
-    @Override
     public ICubeTableService getTableIndex(Table td) {
         if (BIIDUtils.isFakeTable(td.getID().getIdentityValue())) {
             return getTableIndex(BIBasicCore.generateValueCore(td.getID().getIdentityValue()));
@@ -59,7 +58,6 @@ public class BIUserCubeManager implements ICubeDataLoader {
     }
 
 
-    @Override
     public ICubeTableService getTableIndex(BICore core) {
         ICubeTableSource source = BIModuleUtils.getSourceByCore(core, user);
         return getTableIndex(source);
@@ -71,16 +69,12 @@ public class BIUserCubeManager implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(BIField td) {
-        return getTableIndex(td.getTableBelongTo());
-    }
-
-    @Override
-    public BIKey getFieldIndex(BIField column) {
+    public BIKey getFieldIndex(BusinessField column) {
         return new IndexKey(column.getFieldName());
+
     }
 
-    @Override
+
     public ICubeTableService getTableIndex(BITableID id) {
         ICubeTableSource source = BIModuleUtils.getSourceByID(id, user);
         return getTableIndex(source);
@@ -112,7 +106,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(BICore core, int start, int end) {
+    public ICubeTableService getTableIndex(ICubeTableSource tableSource, int start, int end) {
         return null;
     }
 

@@ -1,6 +1,7 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -81,7 +82,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
 
     @Override
-    public Set<Table> createTableKeys() {
+    public Set<BusinessTable> createTableKeys() {
         Set set = new HashSet<Table>();
         set.add(new BITable(fetchObjectCore().getIDValue()));
         return set;

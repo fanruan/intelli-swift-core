@@ -20,7 +20,7 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.relation.BISimpleRelation;
 import com.fr.bi.stable.relation.BITableRelation;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.NameObject;

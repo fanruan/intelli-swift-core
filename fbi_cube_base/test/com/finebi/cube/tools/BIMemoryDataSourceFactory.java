@@ -2,6 +2,7 @@ package com.finebi.cube.tools;
 
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.utils.DateUtils;
 
@@ -17,7 +18,7 @@ import java.util.*;
 public class BIMemoryDataSourceFactory {
     public static ICubeTableSource generateTableA() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<BICubeFieldSource> columns = new ArrayList<BICubeFieldSource>();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource("tableA", "id", DBConstant.CLASS.LONG, 2));
         columns.add(new BICubeFieldSource("tableA", "name", DBConstant.CLASS.STRING, 6));
         columns.add(new BICubeFieldSource("tableA", "gender", DBConstant.CLASS.STRING, 6));
@@ -66,7 +67,7 @@ public class BIMemoryDataSourceFactory {
 
     public static ICubeTableSource generateTableB() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<BICubeFieldSource> columns = new ArrayList<BICubeFieldSource>();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource("tableB", "id", DBConstant.CLASS.LONG, 2));
         columns.add(new BICubeFieldSource("tableB", "name", DBConstant.CLASS.STRING, 6));
         columns.add(new BICubeFieldSource("tableB", "lover", DBConstant.CLASS.STRING, 6));
@@ -151,7 +152,7 @@ public class BIMemoryDataSourceFactory {
 
     public static ICubeTableSource generateTableC() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<BICubeFieldSource> columns = new ArrayList<BICubeFieldSource>();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource("tableC", "id", DBConstant.CLASS.LONG, 2));
         columns.add(new BICubeFieldSource("tableC", "name", DBConstant.CLASS.STRING, 6));
         columns.add(new BICubeFieldSource("tableC", "lover", DBConstant.CLASS.STRING, 6));
@@ -202,7 +203,7 @@ public class BIMemoryDataSourceFactory {
 
     public static ICubeTableSource generateTableD() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<BICubeFieldSource> columns = new ArrayList<BICubeFieldSource>();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource("tableA", "id", DBConstant.CLASS.LONG, 2));
 
         memoryDataSource.setFieldList(columns);
@@ -224,7 +225,7 @@ public class BIMemoryDataSourceFactory {
 
     public static ICubeTableSource generateTableDate() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<BICubeFieldSource> columns = new ArrayList<BICubeFieldSource>();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource("tableDate", "date", DBConstant.CLASS.DATE, 10));
 
 

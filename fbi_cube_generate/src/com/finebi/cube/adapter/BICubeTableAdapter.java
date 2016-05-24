@@ -6,6 +6,7 @@ import com.finebi.cube.calculator.bidouble.MaxCalculator;
 import com.finebi.cube.calculator.bidouble.MinCalculator;
 import com.finebi.cube.calculator.bidouble.SumCalculator;
 import com.finebi.cube.calculator.biint.GroupSizeCalculator;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
 import com.finebi.cube.structure.*;
@@ -14,15 +15,15 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.ICubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -121,11 +122,11 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     @Override
-    public Map<BIKey, BICubeFieldSource> getColumns() {
-        Map<BIKey, BICubeFieldSource> result = new HashMap<BIKey, BICubeFieldSource>();
+    public Map<BIKey, ICubeFieldSource> getColumns() {
+        Map<BIKey, ICubeFieldSource> result = new HashMap<BIKey, ICubeFieldSource>();
 
-        List<BICubeFieldSource> list = primaryTable.getFieldInfo();
-        Iterator<BICubeFieldSource> tableFieldIt = list.iterator();
+        List<ICubeFieldSource> list = primaryTable.getFieldInfo();
+        Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
         while (tableFieldIt.hasNext()) {
             BICubeFieldSource field = tableFieldIt.next();
             result.put(getColumnIndex(field), field);
@@ -145,7 +146,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     @Override
-    public BIKey getColumnIndex(BIField field) {
+    public BIKey getColumnIndex(BusinessField field) {
         return getColumnIndex(field.getFieldName());
     }
 
@@ -269,7 +270,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     private BICubeFieldSource getDBField(BIKey biKey) throws BIKeyAbsentException {
-        Map<BIKey, BICubeFieldSource> map = getColumns();
+        Map<BIKey, ICubeFieldSource> map = getColumns();
         Iterator<BIKey> it = map.keySet().iterator();
         while (it.hasNext()) {
             BIKey key = it.next();

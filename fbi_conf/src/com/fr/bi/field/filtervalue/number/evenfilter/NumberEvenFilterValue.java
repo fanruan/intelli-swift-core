@@ -3,13 +3,12 @@
  */
 package com.fr.bi.field.filtervalue.number.evenfilter;
 
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.widget.BIDataColumn;
-import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -29,33 +28,31 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue {
+public abstract class NumberEvenFilterValue implements NumberFilterValue {
     private static final long serialVersionUID = 4162890826727140538L;
-    @BICoreField
-    protected BIDataColumn column = null;
-    @BICoreField
+    protected BusinessField column = null;
     protected BIUser user;
     /**
      * default 0.0
      */
-    @BICoreField
     protected double V = 0.0;
 
     @Override
     public boolean isTopOrBottomFilterValue() {
         return false;
     }
+
     /**
      * 创建索引
      *
      * @return 索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         if (this.column != null && BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(user.getUserId()).getAnylysisUserInfo() != null) {
             try {
                 User frUser = UserControl.getInstance().getUser(user.getUserId());
-                Object fieldValue = BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(user.getUserId()).getAnylysisUserInfo().getFieldValue(frUser.getUsername(), column.createColumnKey(), loader);
+                Object fieldValue = BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(user.getUserId()).getAnylysisUserInfo().getFieldValue(frUser.getUsername(), column, loader);
                 if (fieldValue != null) {
                     V = (Double) fieldValue;
                 }
@@ -64,7 +61,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
             }
         }
         NumberGroupInfo gi = NumberGroupInfo.createGroupInfo(V, true, V, true);
-        ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo());
+        ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource());
         if (dimension.getRelationList() == null) {
             return ti.getAllShowIndex();
         }
@@ -114,7 +111,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
             JSONArray ja = jo.getJSONArray("filter_value");
             if (ja.length() > 0) {
                 JSONObject jsonObject = ja.getJSONObject(0);
-                BIDataColumn column = null;
+                BusinessField column = null;
                 column = new BIDataColumn();
                 column.parseJSON(jsonObject);
                 this.column = column;

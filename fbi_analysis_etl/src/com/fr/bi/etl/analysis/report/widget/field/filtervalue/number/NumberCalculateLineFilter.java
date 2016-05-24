@@ -5,16 +5,13 @@ package com.fr.bi.etl.analysis.report.widget.field.filtervalue.number;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.base.annotation.BICoreField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.index.NumberIndexCreater;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line.AvgLine;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line.CalLineGetter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line.NumberLine;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -33,23 +30,23 @@ import com.fr.stable.xml.XMLableReader;
  * @author Daniel
  *
  */
-public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Number> implements NumberFilterValue{
+public abstract class NumberCalculateLineFilter implements NumberFilterValue{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5289564327012309298L;
-    @BICoreField
+
     private static final int AVGTYPE = 2;
-    @BICoreField
+
     private static final int CLOSE = 1;
-    @BICoreField
+
     protected Operator t;
-	@BIIgnoreField
+	
 	protected CalLineGetter getter = AvgLine.INSTANCE;
-	@BICoreField
+	
 	private BIKey[] dimension;
-	@BICoreField
+	
 	private BIKey key;
 
 
@@ -67,7 +64,7 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
 	}
 
 	@Override
-	public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader,
+	public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader,
                                              long userId) {
 		ICubeTableService ti = loader.getTableIndex(target);
 		GroupValueIndex gvi = ti.getAllShowIndex();
