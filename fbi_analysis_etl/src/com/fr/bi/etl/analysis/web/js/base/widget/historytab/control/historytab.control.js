@@ -58,7 +58,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         var self = this;
         tab.populate(this.findItem(v, widget, model), BI.extend(this.options, {
             checkBeforeSave : function (table) {
-                return self.checkBeforeSave(table)
+                return self.checkBeforeSave(table, widget, model)
             }
         }))
     },

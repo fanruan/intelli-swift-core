@@ -23,7 +23,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
 
     checkBeforeSave : function (table) {
         var res =  this.options.checkBeforeSave(table);
-        if(res[0] === true) {
+        if(res[0] === false) {
             res.push(BI.i18nText("BI-Modify_Step"))
         }
         return res;
@@ -45,7 +45,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
         var self = this;
         self.changeEditState(false, widget);
         widget.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, table);
-        self.refreshPreviewData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
+        self.refreshPreviewData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, widget)
 
     },
 

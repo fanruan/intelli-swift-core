@@ -91,7 +91,7 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             },
 
             checkBeforeSave : function () {
-                return self.checkBeforeSave(self.operatorCard.getShowingCard().update())
+                return self.controller.checkBeforeSave(self.operatorCard.getShowingCard().update())
             }
         })
         this.registerSimpleWidget(this.operatorPane)
@@ -109,7 +109,7 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             },
 
             checkBeforeSave : function () {
-                return self.checkBeforeSave(self.operatorEditPane.getContentWidget().update())
+                return self.controller.checkBeforeSave(self.operatorEditPane.getContentWidget().update())
             }
         })
         this.registerSimpleWidget(this.operatorEditPane)

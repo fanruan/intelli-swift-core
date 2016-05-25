@@ -82,7 +82,7 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
             var m = new modelClass(c);
             var res = m.check();
             if(res[0] === true){
-                return [false, BI.i18nText("BI-Step") + ":" + i + ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[c.operatorType].text  + " "+ res[1] ]
+                return [false, BI.i18nText("BI-Step") + ":" + (i + 1) + ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[c.etlType].text  + " "+ res[1] ]
             }
             p = c;
 

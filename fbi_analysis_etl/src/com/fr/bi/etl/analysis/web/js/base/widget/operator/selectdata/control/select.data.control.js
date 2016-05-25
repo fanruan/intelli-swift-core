@@ -51,16 +51,37 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
     },
 
     changeEditState : function(widget, model) {
-        this._editing = !this._editing;
+        var self = this;
+        var change = function () {
+            self._editing = !self._editing;
 
-        if(this._editing === false){
-            model.save();
-            var v = model.update();
-            widget.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, v);
-        } else {
-            model.cancel();
-            this._refreshState(widget, model);
+            if(self._editing === false){
+                model.save();
+                var v = model.update();
+                widget.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, v);
+            } else {
+                model.cancel();
+                self._refreshState(widget, model);
+            }
         }
+        if(this._editing === true){
+            var res = this.options.checkBeforeSave(model.update4Preview())
+            if(res[0] === false) {
+                BI.Msg.confirm(res[2], res[1], function (v) {
+                    if(v === true) {
+                        change();
+                    }
+                })
+            } else {
+                change();
+            }
+        } else {
+            change()
+        }
+
+
+
+
 
     },
 
@@ -111,9 +132,9 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
     },
     
     populate : function (widget, model) {
-        widget.center.populate(model.update(), {
-            showContent :false
-        })
+        widget.center.populate(model.update(), BI.extend(this.options, {
+            showContent: false,
+        }))
         this._refreshState(widget, model);
         widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.getValue(ETLCst.FIELDS))
     }
