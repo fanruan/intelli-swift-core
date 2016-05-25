@@ -10,12 +10,12 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     populate : function (widget, model) {
         this._check(widget, model);
         var cardName = this.getDefaultCardName(widget, model);
+        this.doCheck(widget);
         widget.title.populate({}, {
             columnNames: this._getAllColumnNames(model)
         })
         widget.allColumnsPane.populate(model.getAddColumns())
         widget.card.showCardByName(cardName);
-        this.doCheck(widget);
         widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, model.isValid() ? widget.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
     },
     
