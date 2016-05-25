@@ -3,6 +3,7 @@
  */
 package com.fr.bi.field.target.filter.formula;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -32,6 +33,7 @@ public class FormulaFilter extends AbstractTargetFilter {
      */
     private static final long serialVersionUID = 5615839692061360681L;
     private static final String XML_TAG = "FormulaFilter";
+    @BICoreField
     private String expression = StringUtils.EMPTY;
 
 
