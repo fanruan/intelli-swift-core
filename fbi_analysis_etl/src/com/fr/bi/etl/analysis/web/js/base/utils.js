@@ -8,8 +8,14 @@ BI.extend(BI.Utils, {
         BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
 
-    afterReNameTable : function (id, name) {
+    afterReNameTable : function (id, name, title) {
         Pool["translations"][id] = name;
+        BI.some(Pool["packages"][ETLCst.PACK_ID]['tables'], function (idx, item) {
+            if(item.id === id) {
+                item.describe = title
+                return true;
+            }
+        })
         BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
 
@@ -27,13 +33,15 @@ BI.extend(BI.Utils, {
         })
         return table.describe;
     },
-    getAllETLTableNames : function () {
+    getAllETLTableNames : function (id) {
         var names = [];
         if (BI.isNull(Pool["packages"][ETLCst.PACK_ID])){
             return names;
         }
         BI.each(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
-            names.push(Pool["translations"][item.id])
+            if(item.id !== id) {
+                names.push(Pool["translations"][item.id])
+            }
         })
         return names;
     },

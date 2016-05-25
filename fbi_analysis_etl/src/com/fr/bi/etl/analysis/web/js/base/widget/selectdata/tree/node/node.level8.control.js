@@ -13,8 +13,8 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         self.renameController = new BI.ETLRenamePopoverController();
     },
 
-    _renameChecker : function (v) {
-        return !BI.Utils.getAllETLTableNames().contains(v);
+    _renameChecker : function (v, id) {
+        return !BI.Utils.getAllETLTableNames(id).contains(v);
     },
 
     setWidget : function( widget) {
@@ -34,6 +34,28 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         BI.Popovers.create("etlRemove", warningPopover, {width : 400, height : 320, container:self.widget.element}).open("etlRemove");
     },
 
+
+    _showRenamePop : function (id, text, title) {
+        var self = this;
+        var namePopover = BI.createWidget({
+            type: "bi.etl_table_name_popover",
+            renameChecker : function (v) {
+                return self._renameChecker(v, id)
+            }
+        });
+        namePopover.on(BI.PopoverSection.EVENT_CLOSE, function () {
+            BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+        })
+        namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v, des) {
+            BI.ETLReq.reqRenameTable({id: id, name : v, describe : des}, BI.emptyFn);
+        });
+        BI.Popovers.remove("etlTableName");
+        BI.Popovers.create("etlTableName", namePopover, {width : 450, height : 370, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
+        BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+        namePopover.populate(text, title);
+        namePopover.setTemplateNameFocus();
+    },
+
     afterClickList : function (v, option) {
         var self = this;
         switch (v){
@@ -47,9 +69,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
                 })
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.RENAME :
-                self.renameController.showPopover(option.text, self._renameChecker, function (value) {
-                    BI.ETLReq.reqRenameTable({id: option.id, name : value}, BI.emptyFn);
-                });
+                self._showRenamePop(option.id, option.text, option.title);
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.DELETE :
                 self._showWarningPop(option.id);
