@@ -155,7 +155,7 @@ public class CubeBuildStuffManager implements Serializable {
     }
 
 
-    private Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> paths) {
+    public Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> paths) {
         Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
         for (BITableRelationPath path : paths) {
 
@@ -299,12 +299,14 @@ public class CubeBuildStuffManager implements Serializable {
             BIConfigureManagerCenter.getPackageManager().startBuildingCube(biUser.getUserId());
             BILoginUserInfo info = BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(biUser.getUserId()).getCurrentUserInfo();
             setUserInfo(info);
+
             setTableRelationSet(BIConfigureManagerCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId()));
             Map<Table, Set<BITableSourceRelation>> primaryKeyMap = new HashMap<Table, Set<BITableSourceRelation>>();
             setPrimaryKeyMap(primaryKeyMap);
             Map<Table, Set<BITableSourceRelation>> foreignKeyMap = new HashMap<Table, Set<BITableSourceRelation>>();
             setForeignKeyMap(foreignKeyMap);
             setRelationPaths(convertPaths(BIConfigureManagerCenter.getTableRelationManager().getAllTablePath(biUser.getUserId())));
+
             rootPath = BIPathUtils.createBasePath();
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);

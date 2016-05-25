@@ -11,7 +11,7 @@ BI.AnalysisETLOperatorAddColumnExprRankController = BI.inherit(BI.AnalysisETLOpe
         var rule = BI.find(ETLCst.ANALYSIS_ADD_COLUMN_EXPR_RANK_TYPE_ITEMS, function (i, item) {
             return item.sortType === model.get('sortType') && item.groupType === model.get('rule');
         })
-        return BI.isNull(rule) ? '' : BI.i18nText(rule.value, model.get('field'))
+        return BI.isNull(rule) ? '' : BI.i18nText(BI.isNotEmptyArray(model.get('group')) ? rule.value : rule.noneGroupText, model.get('field'))
     },
     
     setRule : function (value, widget, model) {
