@@ -88,6 +88,10 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             saveHandler : function (editing) {
                 return BI.isFunction(self.operatorCard.getShowingCard().saveHandler)
                     && self.operatorCard.getShowingCard().saveHandler(editing)
+            },
+
+            checkBeforeSave : function () {
+                return self.controller.checkBeforeSave(self.operatorCard.getShowingCard().update())
             }
         })
         this.registerSimpleWidget(this.operatorPane)
@@ -102,6 +106,10 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             saveHandler : function (editing) {
                 return BI.isFunction(self.operatorEditPane.getContentWidget().saveHandler)
                     && self.operatorEditPane.getContentWidget().saveHandler(editing)
+            },
+
+            checkBeforeSave : function () {
+                return self.controller.checkBeforeSave(self.operatorEditPane.getContentWidget().update())
             }
         })
         this.registerSimpleWidget(this.operatorEditPane)
@@ -114,7 +122,6 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
         })
         this.operatorPane.on(BI.TopPointerSavePane.EVENT_SAVE, function(){
             self.controller.doNewSave();
-            self.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)
         })
         this.operatorEditPane.on(BI.TopPointerSavePane.EVENT_INVALID, function(){
             self.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, arguments)
@@ -135,7 +142,6 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
         })
         this.operatorEditPane.on(BI.TopPointerSavePane.EVENT_SAVE, function(){
             self.controller.doSave();
-            self.controller.refreshPreviewData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
         })
 
         this.operatorEditPane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (model, type) {
