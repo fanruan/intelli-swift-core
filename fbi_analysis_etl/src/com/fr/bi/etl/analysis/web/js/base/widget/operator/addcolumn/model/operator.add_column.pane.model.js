@@ -148,7 +148,7 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
             }
         })
         if (BI.isNotNull(lostField)){
-            msg = BI.i18nText('BI-New_Column_Name') + column.field_name + BI.i18nText('BI-Formula_Valid') + lostField;
+            msg = BI.i18nText('BI-New_Column_Name') + column.field_name + BI.i18nText('BI-Formula_Valid') + lostField + BI.i18nText('BI-Not_Fount');
             found =  true;
         }
         return [found, msg];
