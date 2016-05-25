@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.BIStyleTarget;
@@ -28,11 +29,11 @@ import java.util.Map;
 
 
 public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BIDetailTarget {
-
+    @BICoreField
     protected TargetFilter filter;
     private ICubeTableService cubeTableService;
     protected ISort sort = new NoSort();
-
+    @BICoreField
     protected IGroup group = new NoGroup();
 
     private List<BISimpleRelation> relationList = new ArrayList<BISimpleRelation>();
@@ -173,4 +174,5 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
         result = prime * result + (filter != null ? filter.hashCode() : 0);
         return result;
     }
+
 }

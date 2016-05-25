@@ -21,4 +21,8 @@ public class LargeOrEquals implements Operator {
 		return a >= b;
 	}
 
+    @Override
+    public String toString() {
+        return "LargeOrEquals{}";
+    }
 }

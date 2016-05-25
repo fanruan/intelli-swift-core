@@ -39,4 +39,11 @@ public class IndexKey implements BIKey {
     public int hashCode() {
         return index == null ? 0 : index.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "IndexKey{" +
+                "index='" + index + '\'' +
+                '}';
+    }
 }

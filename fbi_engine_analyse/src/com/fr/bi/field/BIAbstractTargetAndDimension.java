@@ -1,7 +1,10 @@
 package com.fr.bi.field;
 
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.BIID;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.BIDataColumnFactory;
@@ -27,6 +30,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
      *
      */
     private static final long serialVersionUID = -6531968195020108676L;
+    @BICoreField
     protected BIDataColumn column;
     private String hyperLinkExpression = StringUtils.EMPTY;
     private boolean useHyperLink = false;
@@ -132,6 +136,11 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
 
         result = prime * result + (column != null ? column.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 
     @Override

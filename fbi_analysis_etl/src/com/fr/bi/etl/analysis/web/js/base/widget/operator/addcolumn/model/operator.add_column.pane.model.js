@@ -154,7 +154,7 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
         return [found, msg];
     },
 
-    _checkField : function (widget, dates, fields, columnName, type) {
+    _checkField : function (dates, fields, columnName, type) {
         var msg = "";
         var found =  BI.some(dates, function (i, date) {
             var f = BI.find(fields, function (i, field) {

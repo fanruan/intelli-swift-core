@@ -5,13 +5,13 @@ package com.fr.bi.field.target.filter.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.relation.BITableRelationPath;
@@ -30,6 +30,7 @@ public class ColumnFieldFilter extends ColumnFilter {
     /**
      *
      */
+    @BICoreField
     protected BIDataColumn dataColumn;
 
     public ColumnFieldFilter() {

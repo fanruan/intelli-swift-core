@@ -3,6 +3,8 @@
  */
 package com.fr.bi.field.filtervalue.number.nfilter;
 
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
@@ -16,7 +18,7 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 
-public abstract class NumberNFilterValue implements NumberFilterValue {
+public abstract class NumberNFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue {
     /**
 	 * 
 	 */
@@ -25,6 +27,7 @@ public abstract class NumberNFilterValue implements NumberFilterValue {
     /**
      * default 10
      */
+    @BICoreField
     protected int n = 10;
 
     /**
@@ -146,10 +149,6 @@ public abstract class NumberNFilterValue implements NumberFilterValue {
         return false;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     @Override
     public boolean canCreateFilterIndex() {
