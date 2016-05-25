@@ -208,9 +208,9 @@ public class BIReportConstant {
 
         public final static int CONTAINS_DAY = 0x4d;
 
-        public final static int DAY_EQUAL_TO = 0x46;
+        public final static int DAY_EQUAL_TO = 0x4e;
 
-        public final static int DAY_NOT_EQUAL_TO = 0x47;
+        public final static int DAY_NOT_EQUAL_TO = 0x4e;
 
     }
 
