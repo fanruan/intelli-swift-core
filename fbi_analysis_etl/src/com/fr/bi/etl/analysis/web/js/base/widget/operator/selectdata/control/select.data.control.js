@@ -67,7 +67,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
         if(this._editing === true){
             var res = this.options.checkBeforeSave(model.update4Preview())
             if(res[0] === false) {
-                BI.Msg.confirm(res[2], res[1], function (v) {
+                BI.Msg.confirm(BI.i18nText("BI-Modify_Step"), res[1], function (v) {
                     if(v === true) {
                         change();
                     }
