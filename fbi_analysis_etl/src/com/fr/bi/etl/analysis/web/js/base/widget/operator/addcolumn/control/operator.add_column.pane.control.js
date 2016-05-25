@@ -41,36 +41,6 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !found);
     },
 
-    _checkField : function (widget, dates, fields, columnName, type) {
-        return BI.find(dates, function (i, date) {
-            var f = BI.find(fields, function (i, field) {
-                return date === field.field_name;
-            });
-            if (BI.isNull(f)){
-                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-New_Column_Name') + columnName + '' + date + BI.i18nText('BI-Not_Fount'))
-                return true;
-            } else  if (f.field_type !== type){
-                widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-New_Column_Name') + columnName + '' + date + BI.i18nText('BI-Illegal_Field_Type'))
-                return true;
-            }
-        })
-    },
-
-    _checkFormula : function (widget, column, fields) {
-        var fs = BI.Utils.getFieldsFromFormulaValue(column.item.formula);
-        var lostField = BI.find(fs, function (i, field) {
-             if(BI.isNull(BI.find(fields, function (idx, f) {
-                return f.field_name === field;
-                }))){
-                 return field
-             }
-        })
-        if (BI.isNotNull(lostField)){
-            widget.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, BI.i18nText('BI-New_Column_Name') + column.field_name + BI.i18nText('BI-Formula_Valid')) + lostField
-            return true;
-        }
-    },
-
     getDefaultCardName : function (widget, model) {
         this._editing = model.getAddColumns().length === 0;
         return this._editing ? widget._constant.SINGLE_COLUMN_CARD : widget._constant.ALL_COLUMNS_CARD;

@@ -106,14 +106,14 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
                 type : 'bi.label',
                 textAlign : 'left',
                 height : 25,
-                text : self._getTargetText()
+                text : BI.i18nText('BI-De') +  self._getTargetText()
             }))
         } else {
             self.labels.addItem(BI.createWidget({
                 type : 'bi.label',
                 textAlign : 'center',
                 height : 25,
-                text : BI.i18nText('BI-(Empty)')
+                text : self._getTargetText()
             }))
         }
     },

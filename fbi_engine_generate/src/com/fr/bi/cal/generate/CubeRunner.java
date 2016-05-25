@@ -58,17 +58,21 @@ public class CubeRunner {
                 setStatue(Status.LOADING);
                 try {
                     start();
+                    //TODO BY WUK 等重构完了再分离
                     if (cubeTask instanceof BuildCubeTask) {
                         ((BuildCubeTask) cubeTask).setCubeBuildStuffManager(object);
+                    }
+                    if (cubeTask instanceof BuildCubeTaskIncremental) {
+                        ((BuildCubeTaskIncremental) cubeTask).setCubeBuildStuffManager(object);
                     }
                     cubeTask.start();
                     cubeTask.run();
                     cubeTask.end();
 
-                    finish();
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 } finally {
+                    finish();
                     setStatue(Status.LOADED);
                     BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                 }

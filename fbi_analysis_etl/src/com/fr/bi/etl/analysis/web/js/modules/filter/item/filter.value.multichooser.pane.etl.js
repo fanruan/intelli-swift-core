@@ -55,9 +55,9 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
             o.fieldValuesCreator(function (items) {
                 self.items = BI.map(items.value, function (i, v) {
                     return {
-                        text: v.text,
-                        value: v.value,
-                        title: v.text
+                        text: v,
+                        value: v,
+                        title: v
                     }
                 });
                 call();
