@@ -2323,6 +2323,13 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
+        var self = this;
+        BI.each(this.regions, function(name, region) {
+            self.regions[name].el.setVisible(false);
+            self.drops[name].el.setVisible(false);
+            delete self.regions[name];
+            delete self.drops[name];
+        });
         this._populate(items);
         this._renderRegion();
     }

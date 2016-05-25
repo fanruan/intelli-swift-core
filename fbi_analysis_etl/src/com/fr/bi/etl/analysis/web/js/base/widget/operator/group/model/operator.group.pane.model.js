@@ -311,3 +311,4 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
 });
 BI.AnalysisETLOperatorGroupPaneModel.DIMKEY = "dimensions";
 BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY = "view";
+ETLCst.OPERATOR_MODEL_CLASS[ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY] =  BI.AnalysisETLOperatorGroupPaneModel;

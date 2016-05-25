@@ -12,6 +12,7 @@ import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.stable.constant.CellConstant;
@@ -100,15 +101,15 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         if (widget.getViewDimensions().length == 0) {
             return null;
         }
-        long count = gvi.getRowsCountWithData();
+        int count = gvi.getRowsCountWithData();
         paging.setTotalSize(count);
 
         if (paging.getCurrentPage() > paging.getPages()) {
             return null;
         }
 
-        int maxRow = paging.getCurrentSize();
-        CBCell[][] cbcells = new CBCell[viewDimension.length + widget.isOrder()][maxRow + 1];
+//        int maxRow = paging.getCurrentSize();
+        CBCell[][] cbcells = new CBCell[viewDimension.length + widget.isOrder()][count + 1];
         createCellTitle(cbcells, CellConstant.CBCELL.TARGETTITLE_Y);
         return cbcells;
     }
@@ -150,4 +151,25 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         }
     }
 
+    protected void createCellTitle(CBCell[][] cbcells, int cellType) {
+        BIDetailTarget[] viewDimension = widget.getViewDimensions();
+        for (int i = 0; i < viewDimension.length; i++) {
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)viewDimension[i]).getText());
+            cell.setColumn(i + widget.isOrder());
+            cell.setRow(0);
+            cell.setRowSpan(1);
+            cell.setColumnSpan(1);
+            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+            cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, false));
+            List cellList = new ArrayList();
+            cellList.add(cell);
+            CBBoxElement cbox = new CBBoxElement(cellList);
+            cbox.setName(viewDimension[i].getValue());
+            cbox.setType(cellType);
+            cbox.setSortTargetName(viewDimension[i].getValue());
+            cbox.setSortTargetValue("[]");
+            cell.setBoxElement(cbox);
+            cbcells[cell.getColumn()][cell.getRow()] = cell;
+        }
+    }
 }

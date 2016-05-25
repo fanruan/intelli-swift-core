@@ -68,3 +68,4 @@ public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCal
     }
 
 }
+

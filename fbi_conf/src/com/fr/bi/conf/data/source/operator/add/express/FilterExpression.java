@@ -4,11 +4,15 @@
 package com.fr.bi.conf.data.source.operator.add.express;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
@@ -17,10 +21,13 @@ import com.fr.json.JSONTransform;
  *
  */
 public class FilterExpression<T> implements Expression {
-	
+
+    @BICoreField
 	private FilterValue filter;
 	private transient BIKey key;
+    @BICoreField
 	private Field field;
+    @BICoreField
 	private Object value;
 	private int field_type;
 
@@ -50,10 +57,17 @@ public class FilterExpression<T> implements Expression {
 		return jo;
 	}
 
-	@Override
-	public BICore fetchObjectCore() {
-		return null;
-	}
+
+    @Override
+    public BICore fetchObjectCore() {
+
+        try {
+            return new BICoreGenerator(this).fetchObjectCore();
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return BIBasicCore.EMPTY_CORE;
+    }
 
 	@Override
 	public Object get(ICubeTableService ti, int row) {
