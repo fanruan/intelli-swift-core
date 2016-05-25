@@ -105,7 +105,6 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         freezeColumnSize[fl - 1] = tempSize < 80 ? 80 : tempSize;
                         freezeColumnSize [i] = 80;
                     }
-
                 });
                 BI.each(otherSize, function (i, size) {
                     if (size > 200 && i < ol - 1) {
@@ -335,24 +334,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     },
 
     _parseHEXAlpha2HEX: function (hex, alpha) {
-        var r, g, b;
-        r = hex.slice(1, 3);
-        g = hex.slice(3, 5);
-        b = hex.slice(5, 7);
-        r = parseInt(r, 16);
-        g = parseInt(g, 16);
-        b = parseInt(b, 16);
-
-        r = Math.ceil(255 - alpha * (255 - r));
-        g = Math.ceil(255 - alpha * (255 - g));
-        b = Math.ceil(255 - alpha * (255 - b));
-
-        function componentToHex(c) {
-            var hex = c.toString(16);
-            return hex.length == 1 ? "0" + hex : hex;
-        }
-
-        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+        var rgb = BI.DOM.hex2rgb(hex);
+        var rgbJSON = BI.DOM.rgb2json(rgb);
+        rgbJSON.a = alpha;
+        return BI.DOM.rgba2rgb(BI.DOM.json2rgba(rgbJSON));
     },
 
     populate: function () {
