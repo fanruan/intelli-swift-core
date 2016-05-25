@@ -21,3 +21,4 @@ fbi_web_base/bin
 fbi_web_conf/bin
 fbi_web_dezi/bin
 fbi_web_report/bin
+fbi_web/src/com/fr/bi/web/test/node_modules
