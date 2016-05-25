@@ -29,13 +29,13 @@ public class BICoreGenerator implements BICoreService {
         generateBICore();
     }
 
+    public void addAdditionalAttribute(Object attribute) throws UnsupportedDataTypeException, BIAmountLimitUnmetException {
+        targetCore.registerAttribute(attribute);
+    }
+
     @Override
     public BICore fetchObjectCore() {
         return targetCore;
-    }
-
-    public void addAdditionalAttribute(Object attribute) throws UnsupportedDataTypeException, BIAmountLimitUnmetException {
-        targetCore.registerAttribute(attribute);
     }
 
     private void generateBICore() {
