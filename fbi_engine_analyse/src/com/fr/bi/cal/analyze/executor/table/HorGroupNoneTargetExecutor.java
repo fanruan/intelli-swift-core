@@ -8,6 +8,7 @@ import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
@@ -193,7 +194,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
 
     private void generateTitle(CBCell[][] cbcells, int rowLength) {
         for (int i = 0; i < rowLength; i++) {
-            CBCell cell = new CBCell(usedDimensions[i].getValue());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)usedDimensions[i]).getText());
             cell.setColumn(0);
             cell.setRow(i);
             cell.setRowSpan(1);

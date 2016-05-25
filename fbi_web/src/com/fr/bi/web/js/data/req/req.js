@@ -82,12 +82,6 @@ Data.Req = BIReq = {
         });
     },
     
-    reqExportExcelByWidgetName: function(data, callback) {
-        BI.requestAsync("fr_bi_dezi", "bi_export_excel", data, function(res) {
-            callback(res);  
-        });
-    },
-
     reqRelationsByTableIds: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
             callback(res);
