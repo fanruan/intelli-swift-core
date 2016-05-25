@@ -1,6 +1,12 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.bi-summary-table .bi-page-table > div > div > div > table {
-  border-bottom: 1px solid #eaeaea;
+.bi-summary-table .cross-table-target-header {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: bold;
+}
+.bi-summary-table .body-cell-summary {
+  color: #1a1a1a;
+  font-weight: bold;
 }

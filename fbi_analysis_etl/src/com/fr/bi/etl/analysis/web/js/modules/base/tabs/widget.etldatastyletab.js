@@ -6,33 +6,33 @@
  */
 
 BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
-    _init: function () {
+    _init: function(){
         BI.ETLDataStyleTab.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         BI.createWidget({
-            type: "bi.absolute",
-            element: this.element,
-            items: [{
-                el: {
-                    type: 'bi.left_pointer_button',
-                    pointerWidth: ETLCst.ENTERBUTTON.POINTERWIDTH,
-                    title: BI.i18nText("BI-SPA_Detail"),
-                    iconCls: "icon-add",
-                    height: ETLCst.ENTERBUTTON.HEIGHT,
-                    width: ETLCst.ENTERBUTTON.WIDTH,
+            type:"bi.absolute",
+            element:this.element,
+            items:[{
+                el:{
+                    type : 'bi.left_pointer_button',
+                    pointerWidth : ETLCst.ENTERBUTTON.POINTERWIDTH,
+                    title:BI.i18nText("BI-SPA_Detail"),
+                    iconCls : "icon-add",
+                    height : ETLCst.ENTERBUTTON.HEIGHT,
+                    width : ETLCst.ENTERBUTTON.WIDTH,
                     text: BI.i18nText('BI-new_analysis_result_table'),
-                    handler: function () {
-                        BI.createWidget({
-                            type: "bi.analysis_etl_main",
-                            model: self._createMainModel(o.wId),
-                            element: BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body")
-                        })
+                    handler:function () {
+                       BI.createWidget({
+                           type : "bi.analysis_etl_main",
+                           model : self._createMainModel(o.wId),
+                           element:BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body")
+                       })
                     }
                 },
-                left: 0,
-                top: ETLCst.ENTERBUTTON.GAP,
-                bottom: 0,
-                right: 0
+                left:0,
+                top:ETLCst.ENTERBUTTON.GAP,
+                bottom:0,
+                right:0
             }]
         })
     },
@@ -43,30 +43,32 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
             item.remove(id)
         })
     },
-    _createMainModel: function (wId) {
+    _createMainModel : function (wId) {
         var self = this, model = {}, items = [];
         var widget = BI.Utils.getWidgetCalculationByID(wId);
-        widget.view[BICst.REGION.DIMENSION1] = BI.concat(widget.view[BICst.REGION.DIMENSION1], widget.view[BICst.REGION.DIMENSION2] || []);
-        widget.view[BICst.REGION.DIMENSION2] = [];
+        if (BI.isNotEmptyArray(widget.view[BICst.REGION.DIMENSION2])){
+            widget.view[BICst.REGION.DIMENSION1] = BI.concat(widget.view[BICst.REGION.DIMENSION1],widget.view[BICst.REGION.DIMENSION2]);
+            widget.view[BICst.REGION.DIMENSION2] = [];
+        }
         var usedDimensions = {}, hasUsed = false;
         var fields = [];
-        if (BI.isNotNull(widget.view)) {
+        if(BI.isNotNull(widget.view)) {
             BI.each([BICst.REGION.DIMENSION1], function (idx, item) {
                 BI.each(widget.view[item], function (idx, id) {
                     var dimension = widget.dimensions[id];
-                    if (dimension.used === true) {
-                        var field_type = BI.Utils.getFieldTypeByID(dimension._src);
+                    if (dimension.used === true){
+                        var field_type =  BI.Utils.getFieldTypeByID(dimension._src);
                         if (field_type === BICst.COLUMN.DATE
                             && dimension.group.type !== BICst.GROUP.YMD
-                            && dimension.group.type !== BICst.GROUP.YMDHMS) {
+                            && dimension.group.type !== BICst.GROUP.YMDHMS){
                             field_type = BICst.COLUMN.NUMBER;
                         }
-                        if (BI.isNull(field_type)) {
+                        if(BI.isNull(field_type)){
                             field_type = BICst.COLUMN.NUMBER;
                         }
                         fields.push({
-                            field_name: dimension.name,
-                            field_type: field_type
+                            field_name : dimension.name,
+                            field_type : field_type
                         });
                         hasUsed = true;
                     }
@@ -75,27 +77,27 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
             BI.each([BICst.REGION.TARGET1, BICst.REGION.TARGET2, BICst.REGION.TARGET3], function (idx, item) {
                 BI.each(widget.view[item], function (idx, id) {
                     var dimension = widget.dimensions[id];
-                    if (dimension.used === true) {
+                    if (dimension.used === true){
                         fields.push({
-                            field_name: dimension.name,
-                            field_type: BICst.COLUMN.NUMBER
+                            field_name : dimension.name,
+                            field_type : BICst.COLUMN.NUMBER
                         });
                         hasUsed = true;
                     }
                 })
             })
         }
-        if (hasUsed === true) {
+        if (hasUsed === true){
             var table = {
-                value: BI.UUID(),
-                table_name: widget.name,
-                operator: widget,
-                etlType: ETLCst.ETL_TYPE.SELECT_NONE_DATA
+                value : BI.UUID(),
+                table_name : widget.name,
+                operator : widget,
+                etlType : ETLCst.ETL_TYPE.SELECT_NONE_DATA
             }
             table[ETLCst.FIELDS] = fields;
             items.push(table);
         }
-        model[BI.AnalysisETLMainModel.TAB] = {items: items};
+        model[BI.AnalysisETLMainModel.TAB] = {items:items};
         return model;
     }
 })

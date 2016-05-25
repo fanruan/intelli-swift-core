@@ -98,6 +98,18 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     isShowNumber: function () {
         return this.showNumber;
     },
+    
+    getThemeColor: function(){
+        return this.themeColor;
+    },
+    
+    getTableForm: function(){
+        return this.tableForm;  
+    },
+    
+    getTableStyle: function(){
+        return this.tableStyle;  
+    },
 
     setPageOperator: function (pageOperator) {
         this.pageOperator = pageOperator;
@@ -179,7 +191,11 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         this.showColTotal = settings.show_col_total;    //显示列汇总
         this.openRowNode = settings.open_row_node;      //展开所有行表头节点
         this.openColNode = settings.open_col_node;      //展开所有列表头节点
-        this.freezeDim = settings.freeze_dim;
+        this.freezeDim = settings.freeze_dim;           //冻结维度
+        this.themeColor = settings.theme_color;         //主题色
+        this.tableForm = settings.table_form;           //表格类型
+        this.tableStyle = settings.table_style;         //表格风格
+
         this.header = [];
         this.items = [];
         this.crossHeader = [];
@@ -297,7 +313,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                             type: "bi.target_body_normal_cell",
                             text: cs,
                             dId: tId,
-                            clicked: pValues
+                            clicked: pValues,
+                            cls: "body-cell-summary"
                         });
                     });
                     item.children.push({
@@ -305,7 +322,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         text: BI.i18nText("BI-Summary_Values"),
                         tag: BI.UUID(),
                         isSum: true,
-                        values: vs
+                        values: vs,
+                        cls: "body-cell-summary"
                     })
                 }
                 item.isExpanded = true;
@@ -490,7 +508,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             if (BI.isNotNull(tId)) {
                 targetsArray.push({
                     type: "bi.page_table_cell",
-                    text: BI.Utils.getDimensionNameByID(tId)
+                    cls: "cross-table-target-header",
+                    text: BI.Utils.getDimensionNameByID(tId),
+                    title: BI.Utils.getDimensionNameByID(tId)
                 });
             }
         });
@@ -538,11 +558,14 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 } else if (BI.isNotNull(item.isSum)) {
                     //合计
                     item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
+                    item.cls = "cross-table-target-header";
                     self.header.push(item);
                 } else {
                     self.header.push({
                         type: "bi.page_table_cell",
+                        cls: "cross-table-target-header",
                         text: dName,
+                        title: dName,
                         tag: BI.UUID()
                     })
                 }
@@ -567,7 +590,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     outerValues.push({
                         type: "bi.target_body_normal_cell",
                         text: v,
-                        dId: tId
+                        dId: tId,
+                        cls: "body-cell-summary"
                     });
                 });
                 item.children.push({
@@ -575,7 +599,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     text: BI.i18nText("BI-Summary_Values"),
                     tag: BI.UUID(),
                     isSum: true,
-                    values: outerValues
+                    values: outerValues,
+                    cls: "body-cell-summary"
                 })
             } else {
                 //使用第一个值作为一个维度
@@ -691,7 +716,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 text: BI.i18nText("BI-Summary_Values"),
                 tag: BI.UUID(),
                 isSum: true,
-                values: sums
+                values: sums,
+                cls: "body-cell-summary"
             })
         }
 
@@ -805,7 +831,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         type: "bi.page_table_cell",
                         text: BI.i18nText("BI-Summary_Values"),
                         tag: BI.UUID(),
-                        isSum: true
+                        isSum: true,
+                        cls: "body-cell-summary"
                     });
                 });
             }
@@ -833,6 +860,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         });
         this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
         var dtIds = this.dimIds.concat(this.targetIds);
+        this.showNumber === true && dtIds.push("");
         if (this.columnSize.length !== dtIds.length) {
             //重置列宽
             this.columnSize = [];

@@ -191,9 +191,9 @@ BI.ETLFilterViewItemFactory = {
                 return this._createItems([[fieldName ,  this._createItemByCls('more-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-More_Than") + ' :');
             case BICst.FILTER_DATE.LESS_THAN :
                 return this._createItems([[fieldName ,  this._createItemByCls('less-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-Less_Than") + ' :');
-            case BICst.FILTER_DATE.EQUAL_TO :
+            case BICst.FILTER_DATE.DAY_EQUAL_TO :
                 return this._createItems([fieldName + ' = ' +this._getDateText(filterValue)]);
-            case BICst.FILTER_DATE.NOT_EQUAL_TO :
+            case BICst.FILTER_DATE.DAY_NOT_EQUAL_TO :
                 return this._createItems([[fieldName , this._createItemByCls('not-equal-font') , this._getDateText(filterValue)]]);
             default :
                 return[];

@@ -1699,7 +1699,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/templatemanager/tools/share/selecteduser.grouplist.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/share/selecteduser.button.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/share/usersearchresult.pane.css",
-                "com/fr/bi/web/css/components/templatemanager/templatemanager.css"
+                "com/fr/bi/web/css/components/templatemanager/templatemanager.css",
+
+                "com/fr/bi/web/css/components/tablewithnum/number.tabletree.css"
         };
     }
 

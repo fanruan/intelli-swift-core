@@ -48,6 +48,7 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
             deep++;
             header.splice(0, 0, {
                 type: "bi.page_table_cell",
+                cls: "number-header-cell",
                 text: BI.i18nText("BI-Number_Index")
             });
         }
@@ -144,13 +145,15 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
                     item.splice(0, 0, {
                         type: "bi.page_table_cell",
                         text: BI.i18nText("BI-Summary_Values"),
-                        tag: item.tag
+                        tag: item.tag,
+                        cls: "number-body-cell"
                     });
                 } else {
                     count++;
                     item.splice(0, 0, {
                         type: "bi.page_table_cell",
-                        text: count
+                        text: count,
+                        cls: "number-body-cell"
                     })
                 }
             });

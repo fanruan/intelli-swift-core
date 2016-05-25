@@ -210,7 +210,7 @@ public class BIReportConstant {
 
         public final static int DAY_EQUAL_TO = 0x4e;
 
-        public final static int DAY_NOT_EQUAL_TO = 0x4e;
+        public final static int DAY_NOT_EQUAL_TO = 0x4f;
 
     }
 

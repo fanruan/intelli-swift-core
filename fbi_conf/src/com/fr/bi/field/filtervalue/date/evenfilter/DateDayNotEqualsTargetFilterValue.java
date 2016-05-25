@@ -8,7 +8,7 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 /**
  * Created by 小灰灰 on 2016/5/24.
  */
-public class DateDayNotEqualsTargetFilterValue extends DateKeyTargetFilterValue {
+public class DateDayNotEqualsTargetFilterValue extends DateDayTargetFilterValue {
     /**
      * 获取过滤后的索引
      *
