@@ -3,6 +3,8 @@
  */
 package com.fr.bi.field.dimension.filter.formula;
 
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.report.result.LightNode;
@@ -19,8 +21,9 @@ import java.util.*;
 
 
 public class FormulaValueFilter extends AbstractDimensionFilter {
-
+    @BIIgnoreField
     private static Calculator c = Calculator.createCalculator();
+    @BICoreField
     private String expression = StringUtils.EMPTY;
 
     /* (non-Javadoc)

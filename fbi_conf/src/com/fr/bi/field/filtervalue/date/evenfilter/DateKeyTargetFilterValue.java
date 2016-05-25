@@ -1,5 +1,7 @@
 package com.fr.bi.field.filtervalue.date.evenfilter;
 
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.date.BIDateValue;
@@ -24,15 +26,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class DateKeyTargetFilterValue implements DateFilterValue {
+public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implements DateFilterValue {
 
     /**
      *
      */
     private static final long serialVersionUID = -2509778015034905186L;
-
+    @BICoreField
     protected int group;
-
+    @BICoreField
     protected Set<BIDateValue> valueSet;
 
     private JSONObject valueJo;
@@ -159,11 +161,6 @@ public class DateKeyTargetFilterValue implements DateFilterValue {
             BILogger.getLogger().error(e.getMessage(), e);
         }
         writer.end();
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
     @Override

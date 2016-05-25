@@ -4,8 +4,10 @@
 package com.fr.bi.field.filtervalue.number.evenfilter;
 
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.widget.BIDataColumn;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
@@ -27,13 +29,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-public abstract class NumberEvenFilterValue implements NumberFilterValue {
+public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue {
     private static final long serialVersionUID = 4162890826727140538L;
+    @BICoreField
     protected BIDataColumn column = null;
+    @BICoreField
     protected BIUser user;
     /**
      * default 0.0
      */
+    @BICoreField
     protected double V = 0.0;
 
     @Override

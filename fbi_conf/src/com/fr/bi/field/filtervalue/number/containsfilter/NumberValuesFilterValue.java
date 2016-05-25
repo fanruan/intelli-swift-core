@@ -3,7 +3,9 @@
  */
 package com.fr.bi.field.filtervalue.number.containsfilter;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
@@ -29,14 +31,14 @@ import java.util.Set;
 /**
  * @author Daniel
  */
-public abstract class NumberValuesFilterValue implements NumberFilterValue {
+public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue {
 
 
     /**
      *
      */
     private static final long serialVersionUID = 2181210581260108345L;
-
+    @BICoreField
     protected Set<Double> valueSet = new HashSet<Double>();
 
 
@@ -125,10 +127,5 @@ public abstract class NumberValuesFilterValue implements NumberFilterValue {
         return true;
     }
 
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
 }

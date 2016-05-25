@@ -4,6 +4,7 @@
 package com.fr.bi.field.target.filter.tree;
 
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.stable.data.BIField;
@@ -32,10 +33,14 @@ import java.util.Set;
 
 public class TreeColumnFieldsFilter extends AbstractTargetFilter {
     private static String XML_TAG = "TreeColumnFieldsFilter";
+    @BICoreField
     private BIField[] keys;
+    @BICoreField
     private TreeFilterValue[] values;
     private JSONObject valueJo;
+    @BICoreField
     private Table foreignTable;
+    @BICoreField
     private BITableRelation[][] relations;
 
     /**

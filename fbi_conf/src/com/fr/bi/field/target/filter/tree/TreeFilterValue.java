@@ -3,7 +3,11 @@
  */
 package com.fr.bi.field.target.filter.tree;
 
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.BICoreService;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
 import com.fr.bi.stable.data.BIField;
@@ -23,11 +27,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class TreeFilterValue implements JSONParser {
+public class TreeFilterValue implements JSONParser, BICoreService {
     private static String XML_TAG = "TreeFilterValue";
-
+    @BICoreField
     private String value;
-
+    @BICoreField
     private TreeFilterValue[] childs;
 
     /**
@@ -142,5 +146,10 @@ public class TreeFilterValue implements JSONParser {
             }
         }
         return gvi;
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 }

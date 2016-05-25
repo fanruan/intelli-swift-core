@@ -88,4 +88,13 @@ public class BIDay {
         }
         return this.day - day.day;
     }
+
+    @Override
+    public String toString() {
+        return "BIDay{" +
+                "year=" + year +
+                ", month=" + month +
+                ", day=" + day +
+                '}';
+    }
 }

@@ -21,4 +21,8 @@ public class SmallOrEquals implements Operator {
 		return a <= b;
 	}
 
+    @Override
+    public String toString() {
+        return "SmallOrEquals{}";
+    }
 }

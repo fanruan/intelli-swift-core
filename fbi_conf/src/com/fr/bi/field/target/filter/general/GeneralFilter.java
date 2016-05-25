@@ -1,9 +1,9 @@
 package com.fr.bi.field.target.filter.general;
 
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
-import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -133,4 +133,6 @@ public abstract class GeneralFilter extends AbstractTargetFilter {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+
 }
