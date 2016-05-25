@@ -672,6 +672,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/permissionmanage/addrole/authority.singleaddrole.pane.css",
                 "com/fr/bi/web/css/modules/permissionmanage/addrole/authority.batchaddrole.pane.css",
 
+                //另存为
+                "com/fr/bi/web/css/modules/saveas/report.saveas.floatbox.css",
+
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
                 "com/fr/bi/web/css/extend/excelview/excelview.css",
@@ -1297,6 +1300,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.insert.js",
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.popup.js",
 
+                //另存为
+                "com/fr/bi/web/js/modules/saveas/report.saveas.floatbox.js",
+
                 //etl plugin
                 "com/fr/bi/web/js/extend/excel/etl.excel.plugin.js",
                 //sql plugin
@@ -1698,7 +1704,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/templatemanager/tools/share/selecteduser.grouplist.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/share/selecteduser.button.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/share/usersearchresult.pane.css",
-                "com/fr/bi/web/css/components/templatemanager/templatemanager.css"
+                "com/fr/bi/web/css/components/templatemanager/templatemanager.css",
+
+                "com/fr/bi/web/css/components/tablewithnum/number.tabletree.css"
         };
     }
 

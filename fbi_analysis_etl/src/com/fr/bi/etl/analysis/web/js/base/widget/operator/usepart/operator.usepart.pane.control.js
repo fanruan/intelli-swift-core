@@ -15,19 +15,12 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
     },
     
     doCheck  : function (widget, model) {
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.isValid(widget, model))
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.isValid(widget, model), BI.i18nText("BI-Please_Select_Needed_Field"))
     },
 
     _check : function (widget, model) {
-        var parent = model.get(ETLCst.PARENTS)[0];
-        var operator = model.get('operator') || {};
-        var newFields = [];
-        BI.each(parent[ETLCst.FIELDS], function (i, item) {
-            if (BI.indexOf(operator.value, item.field_name) === -1){
-                newFields.push(item);
-            }
-        })
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, newFields)
+        model.check();
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.get(ETLCst.FIELDS))
 
     },
 

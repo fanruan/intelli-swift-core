@@ -15,6 +15,7 @@ import com.fr.stable.xml.XMLableReader;
 public class BIID implements XMLable, JSONTransform, NameProvider {
 
     protected String id = StringUtils.EMPTY;
+    protected String text = StringUtils.EMPTY;  //用于列名
 
     public BIID() {
 
@@ -31,6 +32,14 @@ public class BIID implements XMLable, JSONTransform, NameProvider {
 
     public void setName(String id) {
         this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override
@@ -52,6 +61,7 @@ public class BIID implements XMLable, JSONTransform, NameProvider {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         this.id = jo.optString("did", StringUtils.EMPTY);
+        this.text = jo.optString("name", StringUtils.EMPTY);
     }
 
     @Override

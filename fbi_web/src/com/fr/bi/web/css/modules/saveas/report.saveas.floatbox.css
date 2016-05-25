@@ -1,0 +1,21 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-report-save-as-float-box .template-name-label {
+  font-size: 16px;
+  color: #808080;
+}
+.bi-report-save-as-float-box .template-name-input {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  color: #1a1a1a;
+}
+.bi-report-save-as-float-box .template-location-label {
+  font-size: 16px;
+  color: #808080;
+}
+.bi-report-save-as-float-box .template-location-combo {
+  color: #1a1a1a;
+}

@@ -1,6 +1,7 @@
 package com.fr.bi.field.dimension.filter.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.fr.bi.field.filtervalue.FilterValueFactory;
@@ -18,8 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DimensionTargetValueFilter extends AbstractDimensionFilter {
-
+    @BICoreField
     private FilterValue filterValue;
+    @BICoreField
     private String target_id;
 
     @Override

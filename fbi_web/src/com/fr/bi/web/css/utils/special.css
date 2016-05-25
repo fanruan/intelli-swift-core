@@ -44,3 +44,12 @@ ul.CodeMirror-hints {
   opacity: 0.5;
   z-index: 200000000;
 }
+.ui-resizable-s {
+  bottom: 0;
+}
+.ui-resizable-s:hover {
+  border-bottom: 1px solid #e85050;
+}
+.ui-resizable-e:hover {
+  border-right: 1px solid #e85050;
+}

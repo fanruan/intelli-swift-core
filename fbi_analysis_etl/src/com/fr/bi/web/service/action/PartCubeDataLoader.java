@@ -71,12 +71,12 @@ public class PartCubeDataLoader implements ICubeDataLoader {
             return getTableIndex(((UserETLTableSource) source).getParents().get(0).fetchObjectCore());
         }
         final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(new HashSet<ITableSource>()));
-        cube.writeRowCount(source.read(new Traversal<BIDataValue>() {
+        cube.writeRowCount(source.read4Part(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 cube.addDataValue(data);
             }
-        }, source.getFieldsArray(new HashSet<ITableSource>()), this));
+        }, source.getFieldsArray(new HashSet<ITableSource>()), this, 0, Integer.MAX_VALUE));
         return new BITableIndex(cube);
     }
 

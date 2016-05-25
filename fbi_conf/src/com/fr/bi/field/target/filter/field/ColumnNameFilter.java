@@ -1,5 +1,6 @@
 package com.fr.bi.field.target.filter.field;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.Table;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
  * Created by 小灰灰 on 2016/3/17.
  */
 public class ColumnNameFilter extends ColumnFieldFilter{
+    @BICoreField
     private String columnName;
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);

@@ -157,7 +157,11 @@ BI.SelectDateLevel0Item = BI.inherit(BI.Single, {
         BI.SelectDateLevel0Item.superclass.setEnable.apply(this, arguments)
         this.button.setEnable(v);
         this.previewBtn.setEnable(v);
-        this.button.element.draggable(v ? "enable" : "disable");
+        try {
+            this.button.element.draggable(v ? "enable" : "disable");
+        } catch (e) {
+
+        }
         if (!v) {
             this.setSelected(false);
         }

@@ -99,8 +99,8 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
                         searchResult.push({
                             id: finded.pId,
                             type: "bi.analysis_etl_select_data_level0_node",
-                            text: BI.Utils.getTableNameByID(finded.pId),
-                            title: BI.Utils.getTableNameByID(finded.pId),
+                            text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
+                            title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
                             listener : function () {
                                 self.controller.registerEvents(this, finded.pId)
                             },
@@ -269,7 +269,7 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
                         self.controller.registerEvents(this, tableId)
                     },
                     text: fieldName,
-                    title: fieldName,
+                    title: BI.Utils.getTableNameByID(tableId) + "." + fieldName,
                     value: fid
                 })
             }

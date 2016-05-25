@@ -189,11 +189,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self.filterPane.setVisible(!self.filterPane.isVisible());
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    BI.requestAsync("fr_bi_dezi", "bi_export_excel", {
-                        name: self.model.get("name")
-                    }, function () {
-
-                    });
+                    window.open(FR.servletURL+ "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                        + window.encodeURIComponent(self.model.get("name")));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY:
                     self.model.copy();

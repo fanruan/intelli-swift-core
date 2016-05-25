@@ -693,8 +693,7 @@
             var type = this.getDimensionTypeByID(dId);
             var _set = [BICst.TARGET_TYPE.STRING = 1,
                 BICst.TARGET_TYPE.NUMBER = 2,
-                BICst.TARGET_TYPE.DATE = 3,
-                BICst.TARGET_TYPE.COUNTER = 4];
+                BICst.TARGET_TYPE.DATE = 3];
             var region = 0;
             BI.some(views, function (reg, view) {
                 if (view.contains(dId)) {
@@ -936,11 +935,6 @@
             });
             return result;
         },
-        
-        exportExcelByWidgetName: function(wname) {
-            Data.Req.reqExportExcelByWidgetName({name: wname}, function(){});
-        },
-
 
         /**
          * 数据相关

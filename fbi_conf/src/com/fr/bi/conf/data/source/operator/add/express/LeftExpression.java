@@ -3,8 +3,12 @@
  */
 package com.fr.bi.conf.data.source.operator.add.express;
 
+import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
 
 /**
@@ -12,9 +16,10 @@ import com.fr.json.JSONObject;
  *
  */
 public class LeftExpression implements Expression {
-	
+
+    @BICoreField
 	private boolean isUnitLeft = false;
-	
+	@BICoreField
 	private Object value;
 
 	@Override
@@ -33,11 +38,16 @@ public class LeftExpression implements Expression {
 		return jo;
 	}
 
-	@Override
-	public BICore fetchObjectCore() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public BICore fetchObjectCore() {
+
+        try {
+            return new BICoreGenerator(this).fetchObjectCore();
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return BIBasicCore.EMPTY_CORE;
+    }
 
 	@Override
 	public Object get(ICubeTableService ti, int row) {

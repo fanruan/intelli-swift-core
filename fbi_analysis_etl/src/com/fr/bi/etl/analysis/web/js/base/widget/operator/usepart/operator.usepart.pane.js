@@ -10,6 +10,10 @@ BI.AnalysisETLOperatorUsePartPane = FR.extend(BI.MVCWidget, {
         return BI.AnalysisETLOperatorUsePartPaneController;
     },
 
+    _initModel : function () {
+        return BI.AnalysisETLOperatorUsePartPaneModel;
+    },
+
     _initView: function () {
         this.fieldList = BI.createWidget({
             type: "bi.select_part_field_list",
@@ -17,7 +21,7 @@ BI.AnalysisETLOperatorUsePartPane = FR.extend(BI.MVCWidget, {
         var self = this;
         this.fieldList.on(BI.SelectPartFieldList.EVENT_CHANGE, function () {
             self.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, self.controller, self.options.value.operatorType)
-            self.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, self.controller.isValid())
+            self.controller.doCheck();
         })
         BI.createWidget({
             type:"bi.vtape",

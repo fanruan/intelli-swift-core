@@ -58,6 +58,8 @@ BI.DynamicTabButton = FR.extend(BI.Widget, {
             title: BI.i18nText("BI-merge_sheet")
         })
 
+        this.mergeSheetButton.setWarningTitle(BI.i18nText("BI-Need_Two_Tables_Or_Above_For_Merge"))
+
         this.mergeSheetButton.on(BI.Button.EVENT_CHANGE, function(v){
             self.fireEvent(BI.DynamicTabButton.MERGE_SHEET, v)
         })
