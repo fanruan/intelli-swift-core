@@ -391,7 +391,9 @@ var _JS = [
     "detail/mvc.columncharts.js",
     "detail/mvc.othercharts.js",
     "detail/mvc.barcharts.js",
-    "detail/mvc.areacharts.js"
+    "detail/mvc.areacharts.js",
+
+    "detail/mvc.selectcolorcombo.js"
 ];
 
 
@@ -594,7 +596,8 @@ var _Routes = {
     "/column_charts": "ColumnChartsView",
     "/bar_charts": "BarChartsView",
     "/area_charts": "AreaChartsView",
-    "/other_charts": "OtherChartsView"
+    "/other_charts": "OtherChartsView",
+    "/select_color_combo": "SelectColorComboView"
 };
 
 var _Models = {};
@@ -1373,6 +1376,10 @@ _Models.detail = [{
         pId: 30,
         text: "bi.simple_searcher",
         value: "simple_searcher"
+    },{
+        pId: 31,
+        text: "选色",
+        value: "select_color_combo"
     }, {
         pId: 31,
         text: "bi.detail_chart",

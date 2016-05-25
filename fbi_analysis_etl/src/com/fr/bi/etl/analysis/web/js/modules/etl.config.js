@@ -105,10 +105,10 @@ BICst.ETL_FILTER_DATE_COMBO = [[{
     value: BICst.FILTER_DATE.LESS_THAN
 }], [{
     text: BI.i18nText("BI-Equal")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Date'),
-    value: BICst.FILTER_DATE.EQUAL_TO
+    value: BICst.FILTER_DATE.DAY_EQUAL_TO
 }, {
     text: BI.i18nText("BI-Not_Equal_To")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Date'),
-    value: BICst.FILTER_DATE.NOT_EQUAL_TO
+    value: BICst.FILTER_DATE.DAY_NOT_EQUAL_TO
 }], [{
     text: BI.i18nText("BI-Formula"),
     value: BICst.FILTER_TYPE.FORMULA
