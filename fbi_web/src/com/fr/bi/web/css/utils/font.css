@@ -2677,93 +2677,93 @@
 }
 .table-no-sort-no-filter-font .b-font:before {
   content: "\e66a";
-  color: #808080;
+  color: #ffffff;
 }
 .table-no-sort-no-filter-font:hover .b-font:before,
 .table-no-sort-no-filter-font:focus .b-font:before,
 .table-no-sort-no-filter-font.hover .b-font:before {
   content: "\e66a";
-  color: #808080;
+  color: #ffffff;
 }
 .table-no-sort-no-filter-font.native .b-font:before,
 .table-no-sort-no-filter-font.disabled .b-font:before {
   content: "\e66a";
-  color: #808080;
+  color: #ffffff;
 }
 .table-no-sort-filter-font .b-font:before {
   content: "\e66b";
-  color: #808080;
+  color: #ffffff;
 }
 .table-no-sort-filter-font:hover .b-font:before,
 .table-no-sort-filter-font:focus .b-font:before,
 .table-no-sort-filter-font.hover .b-font:before {
   content: "\e66b";
-  color: #808080;
+  color: #ffffff;
 }
 .table-no-sort-filter-font.native .b-font:before,
 .table-no-sort-filter-font.disabled .b-font:before {
   content: "\e66b";
-  color: #808080;
+  color: #ffffff;
 }
 .table-descending-filter-font .b-font:before {
   content: "\e667";
-  color: #808080;
+  color: #ffffff;
 }
 .table-descending-filter-font:hover .b-font:before,
 .table-descending-filter-font:focus .b-font:before,
 .table-descending-filter-font.hover .b-font:before {
   content: "\e667";
-  color: #808080;
+  color: #ffffff;
 }
 .table-descending-filter-font.native .b-font:before,
 .table-descending-filter-font.disabled .b-font:before {
   content: "\e667";
-  color: #808080;
+  color: #ffffff;
 }
 .table-ascending-filter-font .b-font:before {
   content: "\e669";
-  color: #808080;
+  color: #ffffff;
 }
 .table-ascending-filter-font:hover .b-font:before,
 .table-ascending-filter-font:focus .b-font:before,
 .table-ascending-filter-font.hover .b-font:before {
   content: "\e669";
-  color: #808080;
+  color: #ffffff;
 }
 .table-ascending-filter-font.native .b-font:before,
 .table-ascending-filter-font.disabled .b-font:before {
   content: "\e669";
-  color: #808080;
+  color: #ffffff;
 }
 .table-descending-no-filter-font .b-font:before {
   content: "\e666";
-  color: #808080;
+  color: #ffffff;
 }
 .table-descending-no-filter-font:hover .b-font:before,
 .table-descending-no-filter-font:focus .b-font:before,
 .table-descending-no-filter-font.hover .b-font:before {
   content: "\e666";
-  color: #808080;
+  color: #ffffff;
 }
 .table-descending-no-filter-font.native .b-font:before,
 .table-descending-no-filter-font.disabled .b-font:before {
   content: "\e666";
-  color: #808080;
+  color: #ffffff;
 }
 .table-ascending-no-filter-font .b-font:before {
   content: "\e668";
-  color: #808080;
+  color: #ffffff;
 }
 .table-ascending-no-filter-font:hover .b-font:before,
 .table-ascending-no-filter-font:focus .b-font:before,
 .table-ascending-no-filter-font.hover .b-font:before {
   content: "\e668";
-  color: #808080;
+  color: #ffffff;
 }
 .table-ascending-no-filter-font.native .b-font:before,
 .table-ascending-no-filter-font.disabled .b-font:before {
   content: "\e668";
-  color: #808080;
+  color: #ffffff;
 }
 .table-no-sort-font .b-font:before {
   content: "\e66c";

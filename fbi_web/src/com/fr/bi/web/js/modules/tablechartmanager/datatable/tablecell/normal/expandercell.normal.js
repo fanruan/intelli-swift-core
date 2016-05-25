@@ -39,12 +39,19 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
             var date = new Date(BI.parseInt(text));
             text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
         }
+        
+        var cls = "expander-cell-text";
+        //交叉表的item
+        var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
+        if(regionType === BICst.REGION.DIMENSION2) {
+            cls += " cross-item-cell"
+        }
         items.push({
             el: {
                 type: "bi.label",
                 text: text,
                 title: text,
-                cls: "expander-cell-text",
+                cls: cls,
                 height: 30,
                 whiteSpace: "nowrap",
                 textAlign: "left",
