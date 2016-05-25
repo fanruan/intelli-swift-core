@@ -11,8 +11,9 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
     },
     
     _init : function () {
-        BI.ColumnButton.superclass._init.apply(this, arguments);
         var o = this.options;
+        o.title = o.field_name
+        BI.ColumnButton.superclass._init.apply(this, arguments);
         var self = this;
         BI.createWidget({
             type:"bi.htape",
