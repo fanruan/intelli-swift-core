@@ -15,7 +15,7 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
     },
     
     doCheck  : function (widget, model) {
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.isValid(widget, model))
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.isValid(widget, model), BI.i18nText("BI-Please_Select_Needed_Field"))
     },
 
     _check : function (widget, model) {

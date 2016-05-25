@@ -1,4 +1,4 @@
-BI.AnalysisETLOperatorUsePartPaneModel = BI.extend(BI.MVCModel, {
+BI.AnalysisETLOperatorUsePartPaneModel = BI.inherit(BI.MVCModel, {
     
     check : function () {
         var parent = this.get(ETLCst.PARENTS)[0];

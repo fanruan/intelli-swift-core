@@ -11,9 +11,10 @@ BI.ETLReq = {
     },
 
     reqRenameTable: function(data, callback){
+        var d = BI.deepClone(data);
         data.sessionID = Data.SharingPool.get("sessionID");
         BI.requestAsync("fr_bi_analysis_etl", "rename_table", data, function(){
-            BI.Utils.afterReNameTable(data.id, data.name);
+            BI.Utils.afterReNameTable(d.id, d.name, d.describe);
             callback();
         })
     },
