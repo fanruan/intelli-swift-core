@@ -1,6 +1,10 @@
 package com.fr.bi.conf.data.source.operator.create;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -22,7 +26,9 @@ import java.util.List;
 public class TableMergeOperator extends AbstractCreateTableETLOperator{
     public static final String XML_TAG = "TableMergeOperator";
     private static final int MERGE_TYPE_UNION = 5;
+    @BICoreField
     private int mergeType;
+    @BICoreField
     private List<MergeColumn> columns;
     private transient IETLOperator transOp;
     @Override
@@ -104,9 +110,12 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
         }
     }
 
-    private class MergeColumn implements JSONTransform{
+    private class MergeColumn implements JSONTransform, BICoreService{
+        @BICoreField
         private String name;
+        @BICoreField
         private int type;
+        @BICoreField
         private SingleColumn[] columns ;
 
         @Override
@@ -140,6 +149,11 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
         public boolean isLeft() {
             return columns[0].index == 0;
         }
+
+        @Override
+        public BICore fetchObjectCore() {
+            return new BICoreGenerator(this).fetchObjectCore();
+        }
     }
 
     private class SingleColumn implements JSONTransform{
@@ -160,6 +174,15 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
             this.name = jo.getString("field_name");
             this.type = jo.getInt("field_type");
             this.index = jo.getInt("table_index");
+        }
+
+        @Override
+        public String toString() {
+            return "SingleColumn{" +
+                    "name='" + name + '\'' +
+                    ", type=" + type +
+                    ", index=" + index +
+                    '}';
         }
     }
 }
