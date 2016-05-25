@@ -30,7 +30,7 @@ public class BINumberFieldMaxMinValueAction extends AbstractBIConfigureAction {
         String fieldName = WebUtils.getHTTPRequestParameter(req, "fieldName");
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, "table")), userId);
         ICubeDataLoader tiLoader = BICubeManager.getInstance().fetchCubeLoader(userId);
-        ICubeTableService ti = tiLoader.getTableIndex( source.fetchObjectCore());
+        ICubeTableService ti = tiLoader.getTableIndex(source);
         JSONObject jo = new JSONObject();
 
         if (BIWebConfUtils.checkCubeVersion(source, userId)) {

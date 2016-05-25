@@ -6,7 +6,6 @@ import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.base.TemplateUtils;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -67,7 +66,6 @@ public class ResourceHelper {
             translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
             relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
-            source = BIConfigureManagerCenter.getDataSourceManager().createJSON(new BIUser(userId));
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
             for (IBusinessPackageGetterService p : packs) {
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {

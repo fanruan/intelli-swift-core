@@ -1,5 +1,8 @@
 package com.fr.bi.cal.loader;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
@@ -9,7 +12,7 @@ import com.fr.bi.cal.stable.engine.index.loader.CubeAbstractLoader;
 import com.fr.bi.cal.stable.tableindex.index.BIMultiTableIndex;
 import com.fr.bi.cal.stable.tableindex.index.BITableIndex;
 import com.fr.bi.common.inter.ValueCreator;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITable;
@@ -17,13 +20,12 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
 
@@ -75,15 +77,16 @@ public class CubeGeneratingTableIndexLoader extends CubeAbstractLoader {
     }
 
     public ICubeTableService getTableIndex(final Table td) {
-        return getTableIndexByPath(BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(td.getID(), biUser).getSourceFile());
+        try {
+            return getTableIndexByPath(BICubeConfigureCenter.getDataSourceManager().getTableSource(td.getID()).getSourceFile());
+        } catch (BIKeyAbsentException e) {
+            e.printStackTrace();
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 
     public ICubeTableService getTableIndex(BITableID id) {
         return getTableIndex(new BITable(id));
-    }
-
-    public ICubeTableService getTableIndex(BICore md5Core) {
-        return getTableIndexByPath(BIModuleUtils.getSourceByCore(md5Core, biUser).getSourceFile());
     }
 
 

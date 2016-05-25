@@ -223,7 +223,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public void addTable(AnalysisBusiTable table) {
-        getUserAnalysisBusiPackManager(table.userID).addTable(table);
+        getUserAnalysisBusiPackManager(table.getUserId()).addTable(table);
     }
 
     @Override

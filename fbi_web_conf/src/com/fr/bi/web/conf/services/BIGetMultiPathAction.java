@@ -6,7 +6,6 @@ package com.fr.bi.web.conf.services;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -64,13 +63,13 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
 
     private Set<Table> getRelatedTables(long userId) {
         Set<Table> relatedTables = new HashSet<Table>();
-        Iterator<Map.Entry<Table, IRelationContainer>> primaryIt = BICubeConfigureCenter.getTableRelationManager().getAllTable2PrimaryRelation(userId).entrySet().iterator();
+        Iterator<Map.Entry<BusinessTable, IRelationContainer>> primaryIt = BICubeConfigureCenter.getTableRelationManager().getAllTable2PrimaryRelation(userId).entrySet().iterator();
         while (primaryIt.hasNext()) {
             Map.Entry entry = primaryIt.next();
             relatedTables.add((Table) entry.getKey());
         }
 
-        Iterator<Map.Entry<Table, IRelationContainer>> foreignIt = BICubeConfigureCenter.getTableRelationManager().getAllTable2ForeignRelation(userId).entrySet().iterator();
+        Iterator<Map.Entry<BusinessTable, IRelationContainer>> foreignIt = BICubeConfigureCenter.getTableRelationManager().getAllTable2ForeignRelation(userId).entrySet().iterator();
         while (foreignIt.hasNext()) {
             Map.Entry entry = foreignIt.next();
             relatedTables.add((Table) entry.getKey());
@@ -147,7 +146,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
             BITableRelationPath path = (BITableRelationPath) it.next();
             List relationList = path.getAllRelations();
             for (int i = 0; i < relationList.size(); i++) {
-                BISimpleRelation relation = ((BITableRelation) relationList.get(i)).getSimpleRelation();
+                BITableRelation relation = ((BITableRelation) relationList.get(i));
                 multiRelationJa.put(relation.createJSON());
             }
             multiPathJa.put(multiRelationJa);

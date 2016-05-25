@@ -1,6 +1,6 @@
 package com.fr.bi.web.service.action;
 
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.fs.web.service.ServiceUtils;
@@ -21,7 +21,7 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         JSONObject jo = new JSONObject();
         jo.put("id", tableId);
-        jo.put("name", BIConfigureManagerCenter.getAliasManager().getAliasName(tableId, userId));
+        jo.put("name", BICubeConfigureCenter.getAliasManager().getAliasName(tableId, userId));
         JSONObject source = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId).getSource().createJSON();
         JSONObject table;
         JSONArray items ;

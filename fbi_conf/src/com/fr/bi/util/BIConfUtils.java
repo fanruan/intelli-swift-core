@@ -8,12 +8,14 @@ import com.finebi.cube.relation.BISimpleRelation;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.connection.DirectTableConnection;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
@@ -107,8 +109,14 @@ public class BIConfUtils {
     public static BITableSourceRelation convert2TableSourceRelation(BITableRelation relation) {
         BusinessField primaryField = relation.getPrimaryField();
         BusinessField foreignField = relation.getForeignField();
-        CubeTableSource primaryTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(primaryField.getTableBelongTo().getID(), new BIUser(-999));
-        CubeTableSource foreignTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(primaryField.getTableBelongTo().getID(), new BIUser(-999));
+        CubeTableSource primaryTableSource = null;
+        CubeTableSource foreignTableSource = null;
+        try {
+            primaryTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(primaryField.getTableBelongTo().getID());
+            foreignTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(primaryField.getTableBelongTo().getID());
+        } catch (BIKeyAbsentException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
         ICubeFieldSource primaryFieldSource = new BICubeFieldSource(primaryTableSource, primaryField.getFieldName(), primaryField.getClassType(), primaryField.getFieldSize());
         ICubeFieldSource foreignFieldSource = new BICubeFieldSource(foreignTableSource, foreignField.getFieldName(), foreignField.getClassType(), foreignField.getFieldSize());
         return new BITableSourceRelation(

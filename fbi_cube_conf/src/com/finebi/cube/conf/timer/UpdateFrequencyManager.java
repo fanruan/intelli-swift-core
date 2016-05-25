@@ -24,8 +24,8 @@ import java.util.List;
 public class UpdateFrequencyManager implements XMLable, JSONTransform, Release {
     public static String XML_TAG = "UpdateFrequencyManager";
 
-    public UpdateFrequencyManager(long userId) {
-        biUser = new BIUser(userId);
+    public UpdateFrequencyManager() {
+
     }
 
     public Iterator<UpdateFrequency> getUpdateListIterator() {

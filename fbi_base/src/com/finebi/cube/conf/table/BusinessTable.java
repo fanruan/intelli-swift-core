@@ -15,7 +15,7 @@ import java.util.List;
  * @author Connery
  * @since 4.0
  */
-public interface BusinessTable extends JSONTransform {
+public interface BusinessTable extends JSONTransform, Cloneable {
     BITableID getID();
 
     Object clone() throws CloneNotSupportedException;
@@ -26,5 +26,5 @@ public interface BusinessTable extends JSONTransform {
 
     CubeTableSource getTableSource();
 
-    JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader);
+    JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader)throws Exception;
 }

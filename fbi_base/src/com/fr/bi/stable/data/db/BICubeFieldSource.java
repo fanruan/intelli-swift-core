@@ -27,6 +27,8 @@ public class BICubeFieldSource implements ICubeFieldSource {
         this.fieldName = fieldName;
         this.fieldType = BIDBUtils.checkColumnTypeFromClass(classType);
         this.fieldSize = fieldSize;
+        this.fieldID = new BIFieldID(fieldName);
+        this.classType = classType;
     }
 
     @Override
@@ -119,6 +121,9 @@ public class BICubeFieldSource implements ICubeFieldSource {
         if (jo.has("is_usable")) {
             usable = jo.optBoolean("is_usable", true);
         }
+        if (jo.has("class_type")) {
+            classType = jo.getInt("class_type");
+        }
     }
 
     /**
@@ -135,7 +140,9 @@ public class BICubeFieldSource implements ICubeFieldSource {
         jo.put("table_id", getTableBelongTo().getSourceID());
         jo.put("field_type", fieldType)
                 .put("field_size", fieldSize)
-                .put("is_usable", isUsable());
+                .put("is_usable", isUsable())
+                .put("class_type", classType);
+
         return jo;
     }
 

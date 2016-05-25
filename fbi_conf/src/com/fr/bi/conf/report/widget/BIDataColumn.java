@@ -1,6 +1,7 @@
 package com.fr.bi.conf.report.widget;
 
 import com.finebi.cube.conf.field.BIBusinessField;
+import com.fr.bi.stable.data.BIFieldID;
 
 import java.io.Serializable;
 
@@ -20,7 +21,7 @@ public class BIDataColumn extends BIBusinessField implements Serializable {
     }
 
     public BIDataColumn(BIBusinessField fieldKey) {
-        super(fieldKey.getTableBelongTo(), fieldKey.getFieldName(), fieldKey.getClassType(), fieldKey.getFieldSize());
+        super(fieldKey.getTableBelongTo(), new BIFieldID(""), fieldKey.getFieldName(), fieldKey.getClassType(), fieldKey.getFieldSize());
     }
 
 

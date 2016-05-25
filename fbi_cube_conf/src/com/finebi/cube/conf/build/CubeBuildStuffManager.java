@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
@@ -78,18 +79,23 @@ public class CubeBuildStuffManager implements Serializable {
     public Set<BITableRelation> getTableRelationSet() {
         Set<BITableRelation> set = new HashSet<BITableRelation>();
         for (BITableRelation relation : tableRelationSet) {
-            CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getPrimaryField().getTableBelongTo().getID(), biUser);
-            CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getForeignField().getTableBelongTo().getID(), biUser);
-            ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
-            ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
-            if (tableSourceRelationSet.contains(
-                    new BITableSourceRelation(
-                            primaryField,
-                            foreignField,
-                            primaryTable,
-                            foreignTable
-                    ))) {
-                set.add(relation);
+            try {
+                CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo().getID());
+                CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo().getID());
+                ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
+                ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
+                if (tableSourceRelationSet.contains(
+                        new BITableSourceRelation(
+                                primaryField,
+                                foreignField,
+                                primaryTable,
+                                foreignTable
+                        ))) {
+                    set.add(relation);
+                }
+            } catch (BIKeyAbsentException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
             }
         }
         return set;
@@ -136,8 +142,14 @@ public class CubeBuildStuffManager implements Serializable {
     private BITableSourceRelation convert(BITableRelation relation) {
 
 
-        CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getPrimaryField().getTableBelongTo().getID(), biUser);
-        CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSourceByID(relation.getForeignField().getTableBelongTo().getID(), biUser);
+        CubeTableSource primaryTable = null;
+        CubeTableSource foreignTable = null;
+        try {
+            primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo().getID());
+            foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo().getID());
+        } catch (BIKeyAbsentException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         if (primaryField == null || foreignField == null) {

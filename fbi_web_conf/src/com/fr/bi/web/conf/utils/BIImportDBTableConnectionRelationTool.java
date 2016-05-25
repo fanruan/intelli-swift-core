@@ -3,9 +3,8 @@ package com.fr.bi.web.conf.utils;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.data.source.DBTableSource;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIDBTableField;
@@ -24,29 +23,33 @@ import java.util.Set;
 public class BIImportDBTableConnectionRelationTool {
 
 
-
-    public Map< String, DBTableSource> getAllBusinessPackDBSourceMap(long userId) {
+    public Map<String, DBTableSource> getAllBusinessPackDBSourceMap(long userId) {
         Map<String, DBTableSource> sources = new HashMap<String, DBTableSource>();
-        for (IBusinessPackageGetterService pack : BICubeConfigureCenter.getPackageManager().getAllPackages(userId)){
-            for (Object table : pack.getBusinessTables()){
-                BITableID id = ((BIBusinessTable)table).getID();
-                CubeTableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(id, new BIUser(userId));
-                if (source != null && source.getType() == BIBaseConstant.TABLETYPE.DB){
-                    sources.put(id.getIdentityValue(), (DBTableSource)source);
+        for (IBusinessPackageGetterService pack : BICubeConfigureCenter.getPackageManager().getAllPackages(userId)) {
+            for (Object table : pack.getBusinessTables()) {
+                BITableID id = ((BIBusinessTable) table).getID();
+                CubeTableSource source = null;
+                try {
+                    source = BICubeConfigureCenter.getDataSourceManager().getTableSource(id);
+                } catch (BIKeyAbsentException e) {
+                    e.printStackTrace();
+                }
+                if (source != null && source.getType() == BIBaseConstant.TABLETYPE.DB) {
+                    sources.put(id.getIdentityValue(), (DBTableSource) source);
                 }
             }
         }
         return sources;
     }
 
-    public  Map<String, Set<BIDBTableField>> getAllRelationOfConnection(Connection conn, String schemaName, String tableName) {
-        return BIDBUtils.getAllRelationOfConnection(conn, schemaName,tableName);
+    public Map<String, Set<BIDBTableField>> getAllRelationOfConnection(Connection conn, String schemaName, String tableName) {
+        return BIDBUtils.getAllRelationOfConnection(conn, schemaName, tableName);
     }
 
     public boolean putConnection(String connectionName, Map<String, java.sql.Connection> connMap) throws Exception {
-        if(!connMap.containsKey(connectionName)) {
+        if (!connMap.containsKey(connectionName)) {
             com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
-            if (dbc == null){
+            if (dbc == null) {
                 return false;
             }
             connMap.put(connectionName, dbc.createConnection());
@@ -54,7 +57,6 @@ public class BIImportDBTableConnectionRelationTool {
         }
         return true;
     }
-
 
 
 }

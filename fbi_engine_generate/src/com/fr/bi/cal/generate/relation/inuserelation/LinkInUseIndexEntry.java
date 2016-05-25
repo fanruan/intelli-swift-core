@@ -5,7 +5,6 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
@@ -13,6 +12,7 @@ import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.cal.stable.index.utils.BIVersionUtils;
 import com.fr.bi.cal.stable.relation.uselinkindex.LinkColumnUseIndexLoader;
 import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -26,6 +26,7 @@ import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 
@@ -47,18 +48,27 @@ public class LinkInUseIndexEntry implements CubeGenerator {
         long start = System.currentTimeMillis();
         List<LinkColumnUseIndexLoader> threadList = new ArrayList<LinkColumnUseIndexLoader>();
         Set<BusinessField> fields = new UseFieldGetter(user).getUsedField();
-        Map<BICore, Set<String>> usedFiledsMap = new HashMap<BICore, Set<String>>();
+        Map<CubeTableSource, Set<String>> usedFiledsMap = new HashMap<CubeTableSource, Set<String>>();
         for (BusinessField field : fields) {
-            BICore md5 = BICubeConfigureCenter.getDataSourceManager().getCoreByTableID(field.getTableBelongTo().getID(), user);
-            Set<String> fieldsSet = usedFiledsMap.get(md5);
+            CubeTableSource cubeTableSource = null;
+            try {
+                if (field.getTableBelongTo() != null) {
+                    cubeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(field.getTableBelongTo().getID());
+                } else {
+                    continue;
+                }
+            } catch (BIKeyAbsentException e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
+            Set<String> fieldsSet = usedFiledsMap.get(cubeTableSource);
             if (fieldsSet == null) {
                 fieldsSet = new HashSet<String>();
-                usedFiledsMap.put(md5, fieldsSet);
+                usedFiledsMap.put(cubeTableSource, fieldsSet);
             }
             fieldsSet.add(field.getFieldName());
         }
-        for (Map.Entry<BICore, Set<String>> entry : usedFiledsMap.entrySet()) {
-            creatLoader(threadList, new TableCubeFile(BIPathUtils.createTableTempPath(entry.getKey().getIDValue(),
+        for (Map.Entry<CubeTableSource, Set<String>> entry : usedFiledsMap.entrySet()) {
+            creatLoader(threadList, new TableCubeFile(BIPathUtils.createTableTempPath(entry.getKey().getSourceID(),
                     user.getUserId())), entry.getValue(),
                     /**
                      * TODO

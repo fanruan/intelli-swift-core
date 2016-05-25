@@ -3,9 +3,10 @@
  */
 package com.fr.bi.cal.generate;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.BICollectionUtils;
@@ -67,7 +68,11 @@ public class SingleTableTask extends AllTask {
     @Override
     protected Map<Integer, Set<CubeTableSource>> getGenerateTables() {
         Map<Integer, Set<CubeTableSource>> generateTable = new HashMap<Integer, Set<CubeTableSource>>();
-        BICollectionUtils.mergeSetValueMap(generateTable, BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(table.getID(), biUser).createGenerateTablesMap());
+        try {
+            BICollectionUtils.mergeSetValueMap(generateTable, BICubeConfigureCenter.getDataSourceManager().getTableSource(table.getID()).createGenerateTablesMap());
+        } catch (BIKeyAbsentException e) {
+            e.printStackTrace();
+        }
         return generateTable;
     }
 

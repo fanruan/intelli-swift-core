@@ -1,7 +1,9 @@
 package com.finebi.cube.conf.field;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.data.BIFieldID;
+import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
 /**
@@ -28,5 +30,7 @@ public interface BusinessField extends JSONTransform, Cloneable {
     BusinessTable getTableBelongTo();
 
     Object clone() throws CloneNotSupportedException;
+
+    JSONObject createJSON(ICubeDataLoader loader) throws Exception;
 
 }

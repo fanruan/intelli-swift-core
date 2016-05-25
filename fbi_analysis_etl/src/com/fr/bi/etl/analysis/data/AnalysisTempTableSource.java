@@ -1,19 +1,17 @@
 package com.fr.bi.etl.analysis.data;
 
-import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/4/12.
@@ -43,10 +41,6 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
         throw new RuntimeException(UNSUPPORT);
     }
 
-    @Override
-    public Set<BusinessTable> createTableKeys() {
-        throw new RuntimeException(UNSUPPORT);
-    }
 
     @Override
     public int getType() {
