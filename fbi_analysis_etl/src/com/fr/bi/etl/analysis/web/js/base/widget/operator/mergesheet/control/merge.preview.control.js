@@ -27,11 +27,14 @@ BI.AnalysisETLMergeSheetPreviewController    = BI.inherit(BI.MVCController, {
         widget.first = true;
         var merge = model.get("merge")
         if(BI.isNotNull(merge)) {
+            widget.mergeCard.showCardByName(widget._constants.NORMAL)
             BI.Utils.buildData(merge, widget.merge, function (merge_data) {
                 merge_data.push(merge["leftColumns"])
                 merge_data.push(merge["mergeColumns"])
                 widget.merge.populate.apply(widget.merge, merge_data);
             });
+        } else {
+            widget.mergeCard.showCardByName(widget._constants.ERROR)
         }
 
     }
