@@ -148,13 +148,13 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
             }
         })
         if (BI.isNotNull(lostField)){
-            msg = BI.i18nText('BI-New_Column_Name') + column.field_name + BI.i18nText('BI-Formula_Valid') + lostField;
+            msg = BI.i18nText('BI-New_Column_Name') + column.field_name + BI.i18nText('BI-Formula_Valid') + lostField + BI.i18nText('BI-Not_Fount');
             found =  true;
         }
         return [found, msg];
     },
 
-    _checkField : function (widget, dates, fields, columnName, type) {
+    _checkField : function (dates, fields, columnName, type) {
         var msg = "";
         var found =  BI.some(dates, function (i, date) {
             var f = BI.find(fields, function (i, field) {
@@ -183,3 +183,4 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
 
 })
 BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY = "columns"
+ETLCst.OPERATOR_MODEL_CLASS[ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN] = BI.AnalysisETLOperatorAddColumnPaneModel;

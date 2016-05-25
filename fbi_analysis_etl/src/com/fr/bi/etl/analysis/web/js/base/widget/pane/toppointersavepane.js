@@ -54,8 +54,24 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
             text:BI.i18nText("BI-Save"),
             handler : function(e){
                 if(!o.saveHandler(self.controller.isEditing())) {
-                    self.controller.changeEditingState()
-                    self.controller.fireSaveOrEditEvent();
+                    var change  = function () {
+                        self.controller.changeEditingState()
+                        self.controller.fireSaveOrEditEvent();
+                    }
+                    if(self.controller.isEditing()){
+                         var res = o.checkBeforeSave();
+                        if(res[0] === false) {
+                            BI.Msg.confirm(res[2], res[1], function (v) {
+                                if(v === true) {
+                                    change();
+                                }
+                            })
+                        } else {
+                            change();
+                        }
+                    } else {
+                        change();
+                    }
                 }
             }
         });

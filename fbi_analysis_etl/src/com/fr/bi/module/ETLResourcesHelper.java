@@ -157,6 +157,7 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/mergesheet/control/operator.merge.pane.control.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/usepart/operator.usepart.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/usepart/operator.usepart.pane.js",
+				"com/fr/bi/etl/analysis/web/js/base/widget/operator/usepart/operator.usepart.pane.model.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/usepart/operator.usepart.control.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/usepart/operator.usepart.pane.control.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/operator/selectnonedata/select.none.data.js",
