@@ -44,6 +44,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         if(BI.Utils.isControlWidgetByWidgetType(old.type)) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
+        this._refreshButtons();
     },
 
     duplicate: function (copy, key1, key2) {
@@ -51,6 +52,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             this.dashboard.copyRegion(key2, copy);
             this._refreshWidgets();
         }
+        this._refreshButtons();
     },
 
     local: function () {
@@ -90,16 +92,6 @@ BIDezi.PaneView = BI.inherit(BI.View, {
 
     _createNorth: function () {
         var self = this;
-        var saveAs = BI.createWidget({
-            type: "bi.icon_text_item",
-            cls: "toolbar-save-font",
-            text: BI.i18nText("BI-Save_As"),
-            height: 30,
-            width: 70
-        });
-        saveAs.on(BI.IconTextItem.EVENT_CHANGE, function(){
-
-        });
 
         this.undoButton = BI.createWidget({
             type: "bi.icon_text_item",
@@ -124,10 +116,17 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             self.model.set("redo", true);
         });
         return BI.createWidget({
-            type: "bi.left",
+            type: "bi.absolute",
             cls: "dashboard-toolbar",
-            items: [saveAs, this.undoButton, this.redoButton],
-            lgap: 20
+            items: [{
+                el: this.undoButton,
+                top: 0,
+                left: 110
+            }, {
+                el: this.redoButton,
+                top: 0,
+                left: 190
+            }]
         })
     },
 

@@ -1,8 +1,11 @@
 package com.fr.bi.cal.analyze.session;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
+import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
@@ -12,6 +15,8 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
+import com.fr.bi.stable.constant.BIExcutorConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -144,6 +149,18 @@ public class BISession extends BIAbstractSession {
         BIWidget widget = report.getWidgetByName(name);
         if (widget != null) {
             widget = (BIWidget) widget.clone();
+            switch (widget.getType()) {
+                case BIReportConstant.WIDGET.TABLE:
+                case BIReportConstant.WIDGET.CROSS_TABLE:
+                case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                    ((TableWidget)widget).setComplexExpander(new ComplexAllExpalder());
+                    ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
+                    break;
+                case BIReportConstant.WIDGET.DETAIL:
+                    ((BIDetailWidget)widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
+                    break;
+            }
+
             widget.setWidgetName(widget.getWidgetName() + Math.random());
             TemplateWorkBook workBook = widget.createWorkBook(this);
             return ((BIWorkBook) workBook).execute4BI(getParameterMap4Execute());

@@ -39,12 +39,16 @@ public class BIAddReportAction extends ActionNoSessionCMD {
         String reportName = WebUtils.getHTTPRequestParameter(req, "reportName");
         String reportLocation = WebUtils.getHTTPRequestParameter(req, "reportLocation");
         String realTime = WebUtils.getHTTPRequestParameter(req, "realTime");
+        String popConfig = WebUtils.getHTTPRequestParameter(req, "popConfig");
         long userId = ServiceUtils.getCurrentUserID(req);
         //构造一个空的report
-        JSONObject reportJO = new JSONObject();
-        reportJO.put("widgets", new JSONObject());
-        reportJO.put("layoutType", 0);
-        BIDesignReport report = new BIDesignReport(new BIDesignSetting(reportJO.toString()));
+        if(popConfig == null) {
+            JSONObject reportJO = new JSONObject();
+            reportJO.put("widgets", new JSONObject());
+            reportJO.put("layoutType", 0);
+            popConfig = reportJO.toString();
+        }
+        BIDesignReport report = new BIDesignReport(new BIDesignSetting(popConfig));
         long reportId = BIFSReportUtils.createNewBIReport(report, userId, reportName, realTime == null ? "" : realTime);
 
         //保存到文件夹

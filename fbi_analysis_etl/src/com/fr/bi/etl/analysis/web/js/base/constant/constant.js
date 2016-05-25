@@ -176,21 +176,25 @@ ETLCst.ANALYSIS_ADD_COLUMN_CONVERT_ACCEPT_FIELDS[BICst.COLUMN.DATE] = [BICst.COL
 ETLCst.ANALYSIS_ADD_COLUMN_EXPR_RANK_TYPE_ITEMS = [{
     text: BI.i18nText("BI-Rank_In_Asc"),
     value :  'BI-Calculate_Target_Rank_ASC',
+    noneGroupText :'BI-Calculate_Target_Rank_ASC',
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC,
     groupType : BICst.TARGET_TYPE.RANK
 }, {
     text: BI.i18nText("BI-Rank_In_Des"),
     value: 'BI-Calculate_Target_Rank_DESC',
+    noneGroupText : 'BI-Calculate_Target_Rank_DESC',
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.DESC,
     groupType : BICst.TARGET_TYPE.RANK
 },{
     text: BI.i18nText("BI-Asc_Group")+ BI.i18nText('BI-Ranging'),
     value: 'BI-Calculate_Target_Rank_Group_ASC',
+    noneGroupText :'BI-Calculate_Target_Rank_No_Group_ASC',
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC,
     groupType : BICst.TARGET_TYPE.RANK_IN_GROUP
 }, {
     text: BI.i18nText("BI-Des_Group") + BI.i18nText('BI-Ranging'),
     value: 'BI-Calculate_Target_Rank_Group_DESC',
+    noneGroupText :'BI-Calculate_Target_Rank_No_Group_DESC',
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.DESC,
     groupType : BICst.TARGET_TYPE.RANK_IN_GROUP
 }]
