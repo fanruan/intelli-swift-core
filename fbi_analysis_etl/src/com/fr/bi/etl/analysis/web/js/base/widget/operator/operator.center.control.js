@@ -21,17 +21,32 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
         this._getTitle(widget).setSaveButtonEnabled(true)
     },
 
+    checkBeforeSave : function (table) {
+        var res =  this.options.checkBeforeSave(table);
+        if(res[0] === true) {
+            res.push(BI.i18nText("BI-Modify_Step"))
+        }
+        return res;
+    },
+
     doNewSave :function (widget){
         var showingCard = this._getOperatorPane(widget).getContentWidget().getShowingCard();
-        this.changeEditState(false, widget)
-        this.clearOperator(widget)
-        widget.fireEvent(BI.Controller.EVENT_CHANGE, this._editing, showingCard.update());
+        var table = showingCard.update();
+        var self = this;
+        self.changeEditState(false, widget)
+        self.clearOperator(widget)
+        widget.fireEvent(BI.Controller.EVENT_CHANGE, self._editing, table);
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)
     },
 
     doSave : function(widget){
         var showingCard = this._getOperatorEditPane(widget).getContentWidget();
-        this.changeEditState(false, widget);
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, showingCard.update());
+        var table = showingCard.update();
+        var self = this;
+        self.changeEditState(false, widget);
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, table);
+        self.refreshPreviewData(ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
+
     },
 
     showOperatorPane : function(v, widget, model){

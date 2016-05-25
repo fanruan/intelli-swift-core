@@ -71,6 +71,25 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         return newItem;
     },
 
+    checkBeforeSave : function (table, index) {
+        index++;
+        var items = this.get(ETLCst.ITEMS);
+        var p = table;
+        for(var i = index; i < items.length; i++){
+            var c = BI.deepClone(items[index]);
+            c.parents = [p];
+            var modelClass = ETLCst.OPERATOR_MODEL_CLASS[c.operatorType];
+            var m = new modelClass(c);
+            var res = m.check();
+            if(res[0] === true){
+                return [false, BI.i18nText("BI-Step") + ":" + i + ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[c.operatorType].text  + " "+ res[1] ]
+            }
+            p = c;
+
+        }
+        return [true]
+    },
+
     saveItem : function (table) {
         var index = this.getIndexByValue(table.value);
         var items = this.get(ETLCst.ITEMS);

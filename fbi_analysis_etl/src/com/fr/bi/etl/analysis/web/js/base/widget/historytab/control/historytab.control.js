@@ -35,6 +35,12 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         return model.findItem(v);
     },
 
+    checkBeforeSave : function (table, widget, model) {
+        var v = this._getTabButtonGroup(widget).getValue()[0];
+        var position = model.getIndexByValue(v);
+        return model.checkBeforeSave(table, position);
+    },
+
     addNewSheet : function (table, widget, model) {
         this.cancelTempAddButton(widget, model);
         var operator = ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[table.etlType];
@@ -49,7 +55,12 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
 
     populateOneTab : function (v, widget, model) {
         var tab = widget.tab.getTab(v)
-        tab.populate(this.findItem(v, widget, model), this.options)
+        var self = this;
+        tab.populate(this.findItem(v, widget, model), BI.extend(this.options, {
+            checkBeforeSave : function (table) {
+                return self.checkBeforeSave(table)
+            }
+        }))
     },
 
     _refreshAfterSheets : function (table, widget, model) {

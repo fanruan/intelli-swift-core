@@ -46,3 +46,4 @@ BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.MVCModel, {
         return [invalid, msg]
     }
 })
+ETLCst.OPERATOR_MODEL_CLASS[ETLCst.ANALYSIS_ETL_PAGES.FILTER] =  BI.AnalysisETLOperatorFilterPaneModel
