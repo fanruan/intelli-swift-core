@@ -3,8 +3,6 @@ package com.fr.bi.web.conf.utils;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Iterator;
@@ -14,7 +12,7 @@ import java.util.Iterator;
  */
 public class BIWebConfUtils {
     public static boolean checkCubeVersion(CubeTableSource source, long userId) {
-        if (source == null || BIConfigureManagerCenter.getDataSourceManager().getTableSourceByCore(source.fetchObjectCore(), new BIUser(userId)) == null) {
+        if (source == null) {
             return false;
         }
         ICubeDataLoader loader = BICubeManager.getInstance().fetchCubeLoader(userId);
@@ -23,7 +21,7 @@ public class BIWebConfUtils {
 
         while (it.hasNext()) {
             CubeTableSource key = it.next();
-            ICubeTableService cube =   loader.getTableIndex(key);
+            ICubeTableService cube = loader.getTableIndex(key);
 //            if (!cube.getTableVersion()) {
 //                return false;
 //            }

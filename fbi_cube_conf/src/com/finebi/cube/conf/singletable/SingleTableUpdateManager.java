@@ -2,7 +2,6 @@ package com.finebi.cube.conf.singletable;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.common.factory.BIFactory;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.utils.code.BILogDelegate;
@@ -25,9 +24,9 @@ public class SingleTableUpdateManager implements JSONTransform, Release {
     private BIUser user;
     public static String XML_TAG = "SingleTableUpdateManager";
 
-    public SingleTableUpdateManager(long userId) {
+    public SingleTableUpdateManager() {
         try {
-            user = (BIUser) BIFactory.getInstance().getObject(BIUser.class.getName(), userId);
+
         } catch (Exception ex) {
             BILogDelegate.errorDelegate(ex.getMessage(), ex);
         }

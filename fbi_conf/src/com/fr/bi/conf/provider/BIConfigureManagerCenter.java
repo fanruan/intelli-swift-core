@@ -10,15 +10,6 @@ import com.fr.stable.bridge.StableFactory;
  */
 public class BIConfigureManagerCenter {
 
-    /**
-     * 获得数据源的配置接口
-     *
-     * @return 数据源的配置接口
-     */
-    public static BIDataSourceManagerProvider getDataSourceManager() {
-        return StableFactory.getMarkedObject(BIDataSourceManagerProvider.XML_TAG, BIDataSourceManagerProvider.class);
-    }
-
 
     /**
      * 获取角色权限接口

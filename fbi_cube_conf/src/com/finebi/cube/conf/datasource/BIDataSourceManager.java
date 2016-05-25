@@ -3,16 +3,17 @@ package com.finebi.cube.conf.datasource;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.field.BusinessField;
-import com.fr.bi.base.BICore;
-import com.fr.bi.base.BIUser;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.exception.BIKeyDuplicateException;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.json.JSONObject;
+import com.fr.general.ComparatorUtils;
 
 /**
  * This class created on 2016/5/23.
@@ -20,25 +21,25 @@ import com.fr.json.JSONObject;
  * @author Connery
  * @since 4.0
  */
-public class BIDataSourceManager extends BISystemDataManager<BIDataSource> implements BIDataSourceManagerProvider {
+public class BIDataSourceManager extends BISystemDataManager<DataSourceCompound> implements BIDataSourceManagerProvider {
     @Override
-    public BIDataSource constructUserManagerValue(Long userId) {
-        return BIFactoryHelper.getObject(BIDataSource.class, userId);
+    public DataSourceCompound constructUserManagerValue(Long userId) {
+        return BIFactoryHelper.getObject(DataSourceCompound.class);
     }
 
     @Override
     public String managerTag() {
-        return null;
+        return BIDataSourceManagerProvider.XML_TAG;
     }
 
     @Override
     public String persistUserDataName(long key) {
-        return null;
+        return managerTag();
     }
 
-    public BIDataSource getInstance(BIUser user) {
+    public DataSourceCompound getInstance() {
         try {
-            return getValue(user.getUserId());
+            return getValue(-999L);
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);
         }
@@ -46,48 +47,62 @@ public class BIDataSourceManager extends BISystemDataManager<BIDataSource> imple
 
 
     @Override
-    public BICore getCoreByTableID(BITableID id, BIUser user) {
-        return getInstance(user).getCoreByID(id);
-    }
-
-    @Override
-    public CubeTableSource getTableSourceByID(BITableID id, BIUser user) {
-        return getInstance(user).getTableSourceByID(id);
-    }
-
-    @Override
-    public CubeTableSource getTableSourceByCore(BICore core, BIUser user) {
-        return getInstance(user).getTableSourceByMD5(core);
-    }
-
-    @Override
-    public void addCore2SourceRelation(BITableID id, CubeTableSource source, BIUser user) {
-        getInstance(user).addTableSource(id, source);
-    }
-
-    @Override
-    public void removeCore2SourceRelation(BITableID id, BIUser userId) {
-        getInstance(userId).removeTableSource(id);
-    }
-
-    @Override
-    public void editCoreAndTable(BITableID id, CubeTableSource source, BIUser user) {
-        getInstance(user).editTableSource(id, source);
+    public ICubeFieldSource findDBField(BusinessField businessField) throws BIFieldAbsentException {
+        BusinessTable table = businessField.getTableBelongTo();
+        CubeTableSource tableSource = table.getTableSource();
+        ICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(null);
+        for (int i = 0; i < BICubeFieldSources.length; i++) {
+            if (ComparatorUtils.equals(businessField.getFieldName(), BICubeFieldSources[i].getFieldName())) {
+                return BICubeFieldSources[i];
+            }
+        }
+        throw new BIFieldAbsentException("the field is:" + businessField != null ? businessField.getFieldName() : "null");
     }
 
     @Override
     public void envChanged() {
-        clear();
+        getInstance().envChanged();
     }
 
     @Override
-    public JSONObject createJSON(BIUser user) throws Exception {
-        return getInstance(user).createJSON();
+    public BusinessTable getBusinessTable(BIFieldID id) throws BIKeyAbsentException {
+        return getInstance().getBusinessTable(id);
     }
 
     @Override
-    public ICubeFieldSource findDBField(BIUser user, BusinessField biField) throws BIFieldAbsentException {
-        return getInstance(user).findDBField(biField);
+    public void addBusinessTable(BIFieldID id, BusinessTable source) throws BIKeyDuplicateException {
+        getInstance().addBusinessTable(id, source);
+    }
+
+    @Override
+    public void removeBusinessTable(BIFieldID id) throws BIKeyAbsentException {
+        getInstance().removeBusinessTable(id);
+    }
+
+    @Override
+    public void editBusinessTable(BIFieldID id, BusinessTable source) throws BIKeyDuplicateException, BIKeyAbsentException {
+        getInstance().editBusinessTable(id, source);
+    }
+
+    @Override
+    public CubeTableSource getTableSource(BITableID id) throws BIKeyAbsentException {
+        return getInstance().getTableSource(id);
+    }
+
+    @Override
+    public void addTableSource(BITableID id, CubeTableSource source) throws BIKeyDuplicateException {
+        getInstance().addTableSource(id, source);
+    }
+
+    @Override
+    public void removeTableSource(BITableID id) throws BIKeyAbsentException {
+        getInstance().removeTableSource(id);
+    }
+
+    @Override
+    public void editTableSource(BITableID id, CubeTableSource source) throws BIKeyDuplicateException, BIKeyAbsentException {
+        getInstance().editTableSource(id, source);
+
     }
 
     @Override

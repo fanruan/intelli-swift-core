@@ -81,18 +81,19 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         JSONObject excelViewJO = excelViews != null ? new JSONObject(excelViews) : new JSONObject();
         JSONObject updateSettingJO = updateSettings != null ? new JSONObject(updateSettings) : new JSONObject();
 
-        BIBusinessPackage pack = (BIBusinessPackage) EditPackageConfiguration(packageName, groupName, packageId, userId);
-        pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO));
 
         for (int i = 0; i < tableIdsJO.length(); i++) {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
             JSONObject tableJson = tableDataJO.optJSONObject(tableId);
             if (tableJson != null) {
-                BIConfigureManagerCenter.getDataSourceManager().addCore2SourceRelation(new BITableID(tableId), TableSourceFactory.createTableSource(tableJson, userId), new BIUser(userId));
+                BICubeConfigureCenter.getDataSourceManager().addTableSource(new BITableID(tableId), TableSourceFactory.createTableSource(tableJson, userId));
             } else {
                 BILogger.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }
         }
+        BIBusinessPackage pack = (BIBusinessPackage) EditPackageConfiguration(packageName, groupName, packageId, userId);
+        pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO));
+
         saveTranslations(translationsJO, userId);
         saveRelations(relationsJO, userId);
         saveExcelView(excelViewJO, userId);

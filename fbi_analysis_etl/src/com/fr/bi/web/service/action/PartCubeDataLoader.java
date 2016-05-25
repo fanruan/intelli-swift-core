@@ -79,9 +79,6 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         return new BITableIndex(cube);
     }
 
-    public ICubeTableService getTableIndex(BIField td) {
-        return getTableIndex(td.getTableBelongTo());
-    }
 
     public BIKey getFieldIndex(BIField column) {
         return new IndexKey(column.getFieldName());

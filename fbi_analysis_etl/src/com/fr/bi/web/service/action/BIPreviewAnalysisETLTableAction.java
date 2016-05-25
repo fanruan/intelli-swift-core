@@ -23,28 +23,29 @@ import java.util.List;
 /**
  * Created by 小灰灰 on 2016/5/16.
  */
-public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction{
+public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         String itemArray = WebUtils.getHTTPRequestParameter(req, Constants.ITEMS);
         JSONArray items = new JSONArray(itemArray);
+
         AnalysisCubeTableSource source = AnalysisETLSourceFactory.createTableSource(items, userId);
-        List<AnalysisETLSourceField> fields =  source.getFieldsList();
+        List<AnalysisETLSourceField> fields = source.getFieldsList();
         UserCubeTableSource userTableSource = source.createUserTableSource(userId);
-        ICubeTableService service = PartCubeDataLoader.getInstance(userId, userTableSource).getTableIndex(userTableSource.fetchObjectCore(), 0, 20);
+        ICubeTableService service = PartCubeDataLoader.getInstance(userId, userTableSource).getTableIndex(userTableSource, 0, 20);
         JSONArray values = new JSONArray();
-        for (int i = 0; i < service.getRowCount(); i++){
+        for (int i = 0; i < service.getRowCount(); i++) {
             JSONArray ja = new JSONArray();
-            for (AnalysisETLSourceField f : fields){
+            for (AnalysisETLSourceField f : fields) {
                 Object ob = service.getRowValue(new IndexKey(f.getFieldName()), i);
                 JSONObject jo = new JSONObject();
-                if(ComparatorUtils.equals(ob, Double.POSITIVE_INFINITY)){
+                if (ComparatorUtils.equals(ob, Double.POSITIVE_INFINITY)) {
                     ob = "∞";
-                } else if(ComparatorUtils.equals(ob, Double.NEGATIVE_INFINITY)){
+                } else if (ComparatorUtils.equals(ob, Double.NEGATIVE_INFINITY)) {
                     ob = "-∞";
                 }
-                jo.put("text", ob instanceof Date ? getDateString((Date)ob) :ob);
+                jo.put("text", ob instanceof Date ? getDateString((Date) ob) : ob);
                 ja.put(jo);
             }
             values.put(ja);
@@ -54,7 +55,7 @@ public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction{
         WebUtils.printAsJSON(res, result);
     }
 
-    private String getDateString(Date date){
+    private String getDateString(Date date) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         return c.get(Calendar.YEAR) + "/" + insertZero(c.get(Calendar.MONTH) + 1) + "/" + insertZero(c.get(Calendar.DAY_OF_MONTH)).toString();

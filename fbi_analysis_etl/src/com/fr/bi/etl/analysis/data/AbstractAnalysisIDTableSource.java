@@ -1,12 +1,14 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.*;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -42,15 +44,6 @@ public abstract class AbstractAnalysisIDTableSource<T extends CubeTableSource> e
         return baseTable.fetchObjectCore();
     }
 
-    /**
-     * 获取所有相关基础表
-     *
-     * @return
-     */
-    @Override
-    public Set<BusinessTable> createTableKeys() {
-        return baseTable.createTableKeys();
-    }
 
     /**
      * key为层次

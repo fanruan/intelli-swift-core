@@ -192,7 +192,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
 
     public Map<String, ICubeFieldSource> getFields() {
         try {
-            this.fields = synchronousFieldsInforFromDB();
+            this.fields = getFieldFromPersistentTable();
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
@@ -210,7 +210,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return getFields().values().toArray(new ICubeFieldSource[getFields().values().size()]);
     }
 
-    private Map<String, ICubeFieldSource> synchronousFieldsInforFromDB() {
+    private Map<String, ICubeFieldSource> getFieldFromPersistentTable() {
         Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
         IPersistentTable bt = getPersistentTable();
         if (bt == null) {

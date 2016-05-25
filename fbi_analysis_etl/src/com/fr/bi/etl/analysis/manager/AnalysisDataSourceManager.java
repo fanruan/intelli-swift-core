@@ -1,6 +1,7 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.conf.BISystemDataManager;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -9,7 +10,6 @@ import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -107,14 +107,15 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
         return getInstance(user).createJSON();
     }
 
-    @Override
-    public ICubeFieldSource findDBField(BIUser user, BIField biField) throws BIFieldAbsentException {
-        return null;
-    }
 
     @Override
     public void addSource(AnalysisCubeTableSource source, long userId) {
         getInstance(new BIUser(userId)).addCoreSource(source);
+    }
+
+    @Override
+    public ICubeFieldSource findDBField(BIUser user, BusinessField biField) throws BIFieldAbsentException {
+        return null;
     }
 
     @Override

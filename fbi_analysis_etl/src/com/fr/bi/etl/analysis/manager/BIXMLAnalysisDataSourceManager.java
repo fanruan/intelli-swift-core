@@ -1,13 +1,13 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.exception.BIFieldAbsentException;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -43,7 +43,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
         GeneralContext.addEnvChangedListener(new EnvChangedListener() {
             @Override
             public void envChanged() {
-                BIConfigureManagerCenter.getDataSourceManager().envChanged();
+                BICubeConfigureCenter.getDataSourceManager().envChanged();
             }
         });
     }
@@ -87,7 +87,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     @Override
     public void addTableSource(BITableID id, AnalysisCubeTableSource source) {
         synchronized (this) {
-            BICore bimd5Core =  source.fetchObjectCore();
+            BICore bimd5Core = source.fetchObjectCore();
             md5Tables.put(bimd5Core, source);
             idMd5Tables.put(id, bimd5Core);
         }
@@ -104,7 +104,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     @Override
     public void editTableSource(BITableID id, AnalysisCubeTableSource source) {
         synchronized (this) {
-            BICore md5Name =  source.fetchObjectCore();
+            BICore md5Name = source.fetchObjectCore();
             BICore oldMD5 = idMd5Tables.get(id);
             idMd5Tables.put(id, md5Name);
             md5Tables.put(md5Name, source);
@@ -136,14 +136,14 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     }
 
     @Override
-    public ICubeFieldSource findDBField(BIField biField) throws BIFieldAbsentException {
+    public ICubeFieldSource findDBField(BusinessField businessField) throws BIFieldAbsentException {
         return null;
     }
 
     @Override
     public void addCoreSource(AnalysisCubeTableSource source) {
         synchronized (this) {
-            BICore bimd5Core =  source.fetchObjectCore();
+            BICore bimd5Core = source.fetchObjectCore();
             md5Tables.put(bimd5Core, source);
         }
     }

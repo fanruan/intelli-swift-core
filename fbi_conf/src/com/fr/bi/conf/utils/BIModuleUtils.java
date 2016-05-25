@@ -2,17 +2,18 @@ package com.fr.bi.conf.utils;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -58,16 +59,6 @@ public class BIModuleUtils {
         return null;
     }
 
-    public static CubeTableSource getSourceByCore(BICore md5, BIUser user) {
-        for (BIModule module : BIModuleManager.getModules()) {
-            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            CubeTableSource source = provider.getTableSourceByCore(md5, user);
-            if (source != null) {
-                return source;
-            }
-        }
-        return null;
-    }
 
     public static BIKey getFieldIndex(BusinessField column, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         ICubeTableService ti = getTableIndex(column.getTableBelongTo(), user, childLoaderMap);
@@ -87,7 +78,12 @@ public class BIModuleUtils {
     public static CubeTableSource getSourceByID(BITableID id, BIUser user) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            CubeTableSource source = provider.getTableSourceByID(id, user);
+            CubeTableSource source = null;
+            try {
+                source = provider.getTableSource(id);
+            } catch (BIKeyAbsentException e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
             if (source != null) {
                 return source;
             }

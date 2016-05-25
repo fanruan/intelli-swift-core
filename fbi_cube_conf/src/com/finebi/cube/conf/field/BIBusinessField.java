@@ -1,8 +1,14 @@
 package com.finebi.cube.conf.field;
 
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.common.factory.IFactoryService;
+import com.fr.bi.common.factory.annotation.BIMandatedObject;
+import com.fr.bi.stable.constant.BIJSONConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -15,6 +21,7 @@ import com.fr.json.JSONObject;
  * @author Connery
  * @since 4.0
  */
+@BIMandatedObject(factory = IFactoryService.CONF_XML, implement = BusinessField.class)
 public class BIBusinessField implements BusinessField {
     /**
      *
@@ -37,9 +44,10 @@ public class BIBusinessField implements BusinessField {
     private boolean canSetUsable = true;
     protected BusinessTable tableBelongTo;
 
-    public BIBusinessField(BusinessTable tableBelongTo, String fieldName, int classType, int fieldSize) {
+    public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize) {
         this.tableBelongTo = tableBelongTo;
         this.fieldName = fieldName;
+        this.fieldID = fieldID;
         this.fieldType = BIDBUtils.checkColumnTypeFromClass(classType);
         this.fieldSize = fieldSize;
         this.classType = classType;
@@ -67,7 +75,7 @@ public class BIBusinessField implements BusinessField {
     }
 
     public BIBusinessField(BusinessTable tableBelongTo, String fieldName) {
-        this(tableBelongTo, fieldName, 0, 0);
+        this(tableBelongTo, new BIFieldID(""),fieldName, 0, 0);
     }
 
     public void setFieldName(String fieldName) {
@@ -102,6 +110,21 @@ public class BIBusinessField implements BusinessField {
     @Override
     public BusinessTable getTableBelongTo() {
         return tableBelongTo;
+    }
+
+    public JSONObject createJSON(ICubeDataLoader loader) throws Exception {
+        JSONObject jo = createJSON();
+        if (getFieldType() == DBConstant.COLUMN.NUMBER) {
+            ICubeTableService ti = null;
+            try {
+                ti = loader.getTableIndex(getTableBelongTo().getTableSource());
+            } catch (Exception e) {
+
+            }
+            jo.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, ti != null ? ti.getMAXValue(loader.getFieldIndex(this)) : 0);
+            jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? ti.getMINValue(loader.getFieldIndex(this)) : 0);
+        }
+        return jo;
     }
 
     /**

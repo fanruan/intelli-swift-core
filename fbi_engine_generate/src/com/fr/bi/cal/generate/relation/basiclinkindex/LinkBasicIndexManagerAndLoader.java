@@ -5,15 +5,14 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.cal.stable.index.utils.BIVersionUtils;
 import com.fr.bi.cal.stable.relation.LinkIndexLoader;
 import com.fr.bi.conf.log.BIRecord;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.file.IndexFile;
@@ -49,9 +48,14 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
     public LinkBasicIndexManagerAndLoader(CubeTableSource start, long userId) {
         biUser = new BIUser(userId);
         this.start = start;
-        BICore core = BIConfigureManagerCenter.getDataSourceManager().getCoreByTableID(new BITableID(start.getSourceID()), new BIUser(userId));
-        oldCube = new TableCubeFile(BIPathUtils.createTablePath(core.getIDValue(), userId));
-        currentCube = new TableCubeFile(BIPathUtils.createTableTempPath(core.getIDValue(), userId));
+        CubeTableSource cubeTableSource = null;
+        try {
+            cubeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(new BITableID(start.getSourceID()));
+        } catch (BIKeyAbsentException e) {
+            e.printStackTrace();
+        }
+        oldCube = new TableCubeFile(BIPathUtils.createTablePath(cubeTableSource.getSourceID(), userId));
+        currentCube = new TableCubeFile(BIPathUtils.createTableTempPath(cubeTableSource.getSourceID(), userId));
 
     }
 
@@ -198,10 +202,6 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
             t.add(fieldName);
             judge.put(tableName, t);
         }
-    }
-
-    protected String getCore(String id) {
-        return BIConfigureManagerCenter.getDataSourceManager().getCoreByTableID(new BITableID(id), biUser).getID().getIdentityValue();
     }
 
 

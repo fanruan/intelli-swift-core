@@ -1,9 +1,9 @@
 package com.finebi.cube.relation;
 
-import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.constant.BIValueConstant;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
@@ -12,7 +12,7 @@ import com.fr.json.JSONTransform;
  *
  * @author Daniel-pc
  */
-public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessField> implements JSONTransform{
+public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessField> implements JSONTransform {
     public BITableRelation() {
     }
 
@@ -23,19 +23,23 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
 
     public BITableRelation(String keyTableID, String keyFieldName,
                            String foreignKeyTableID, String foreignKeyFieldName) {
-        this(new BIBusinessField(keyTableID, keyFieldName), new BIBusinessField(foreignKeyTableID, foreignKeyFieldName));
+        this(BIFactoryHelper.getObject(BusinessField.class, keyTableID, keyFieldName),
+                BIFactoryHelper.getObject(BusinessField.class, foreignKeyTableID, foreignKeyFieldName));
     }
 
+    BusinessField generateField(String keyTableID, String keyFieldName) {
+        return BIFactoryHelper.getObject(BusinessField.class, keyTableID, keyFieldName);
+    }
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("primaryKey")) {
-            this.primaryField = new BIBusinessField(BIValueConstant.EMPTY, BIValueConstant.EMPTY);
+            this.primaryField = generateField(BIValueConstant.EMPTY, BIValueConstant.EMPTY);
             this.primaryField.parseJSON(jo.getJSONObject("primaryKey"));
             this.primaryTable = this.primaryField.getTableBelongTo();
         }
         if (jo.has("foreignKey")) {
-            this.foreignField = new BIBusinessField(BIValueConstant.EMPTY, BIValueConstant.EMPTY);
+            this.foreignField = generateField(BIValueConstant.EMPTY, BIValueConstant.EMPTY);
             this.foreignField.parseJSON(jo.getJSONObject("foreignKey"));
             this.foreignTable = foreignField.getTableBelongTo();
         }

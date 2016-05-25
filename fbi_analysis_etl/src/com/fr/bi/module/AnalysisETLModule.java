@@ -1,10 +1,11 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
-import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
 import com.fr.bi.etl.analysis.manager.*;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBottomNFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
@@ -56,6 +57,11 @@ public class AnalysisETLModule extends AbstractModule {
 
     @Override
     public BIDataSourceManagerProvider getDataSourceManagerProvider() {
+        return BICubeConfigureCenter.getDataSourceManager();
+    }
+
+    @Override
+    public BIAnalysisDataSourceManagerProvider getAnalysisDataSourceManagerProvider() {
         return BIAnalysisETLManagerCenter.getDataSourceManager();
     }
 
@@ -66,7 +72,7 @@ public class AnalysisETLModule extends AbstractModule {
 
     @Override
     public ICubeDataLoaderCreator getCubeDataLoaderCreator() {
-        return  StableFactory.getMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), ICubeDataLoaderCreator.class);
+        return StableFactory.getMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), ICubeDataLoaderCreator.class);
     }
 
 
@@ -112,7 +118,7 @@ public class AnalysisETLModule extends AbstractModule {
     @Override
     public Service[] service4Register() {
         return new Service[]{
-            new Service4AnalysisETL()
+                new Service4AnalysisETL()
         };
     }
 }

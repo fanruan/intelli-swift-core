@@ -9,8 +9,6 @@ import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.ICube;
-import com.fr.bi.base.BIBasicCore;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -19,11 +17,9 @@ import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.utils.BIIDUtils;
 
 /**
  * This class created on 2016/4/15.
@@ -49,19 +45,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
         cube = new BICube(resourceRetrievalService, discovery);
     }
 
-    public ICubeTableService getTableIndex(Table td) {
-        if (BIIDUtils.isFakeTable(td.getID().getIdentityValue())) {
-            return getTableIndex(BIBasicCore.generateValueCore(td.getID().getIdentityValue()));
-        } else {
-            return getTableIndex(td.getID());
-        }
-    }
 
-
-    public ICubeTableService getTableIndex(BICore core) {
-        CubeTableSource source = BIModuleUtils.getSourceByCore(core, user);
-        return getTableIndex(source);
-    }
 
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
 
