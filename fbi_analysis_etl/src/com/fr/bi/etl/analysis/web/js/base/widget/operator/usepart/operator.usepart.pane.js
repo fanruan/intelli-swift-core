@@ -10,6 +10,10 @@ BI.AnalysisETLOperatorUsePartPane = FR.extend(BI.MVCWidget, {
         return BI.AnalysisETLOperatorUsePartPaneController;
     },
 
+    _initModel : function () {
+        return BI.AnalysisETLOperatorUsePartPaneModel;
+    },
+
     _initView: function () {
         this.fieldList = BI.createWidget({
             type: "bi.select_part_field_list",

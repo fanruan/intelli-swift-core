@@ -59,7 +59,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
                 if (x != null) {
                     return x;
                 }
-                fillOneLine(cells, (int) row.getRow(), row.getValues());
+                //row + 1 ? 不然覆盖掉了列名
+                fillOneLine(cells, (int) row.getRow() + 1, row.getValues());
                 return false;
             }
         };
@@ -132,7 +133,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         if (paging.getStartRow() > row.getRow()) {
             return false;
         }
-        if (paging.getEndRow() <= row.getRow()) {
+        if (paging.getTotalSize() <= row.getRow()) {
             return true;
         }
         return null;

@@ -44,6 +44,13 @@ public class BIDetailWidget extends BIAbstractWidget {
     //page from 1~ max
     private int page = 1;
 
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
 
     @Override
     public BIDetailTarget[] getDimensions() {

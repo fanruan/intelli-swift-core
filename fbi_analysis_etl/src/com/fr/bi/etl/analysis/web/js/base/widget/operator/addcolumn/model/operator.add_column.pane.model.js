@@ -183,3 +183,4 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
 
 })
 BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY = "columns"
+ETLCst.OPERATOR_MODEL_CLASS[ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN] = BI.AnalysisETLOperatorAddColumnPaneModel;

@@ -128,6 +128,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     var settings = self.model.get("settings");
                     settings.show_name = !settings.show_name;
                     self.model.set("settings", settings);
+                    self._refreshLayout();
                     break;
                 case BICst.DASHBOARD_WIDGET_RENAME:
                     self.title.focus();
@@ -169,7 +170,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self.filterPane.setVisible(!self.filterPane.isVisible());
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    BI.Utils.exportExcelByWidgetName(self.model.get("name"));
+                    window.open(FR.servletURL+ "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                        + window.encodeURIComponent(self.model.get("name")));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY :
                     self.model.copy();
