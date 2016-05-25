@@ -1169,14 +1169,14 @@
                                 if (BI.isNumeric(year)) {
                                     filterValues.push({
                                         filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                                        filter_value: {type: BICst.GROUP.Y, value: year},
+                                        filter_value: {type: BICst.GROUP.Y, values: year},
                                         _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                     });
                                 }
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.M, value: month};
+                                fValue = {type: BICst.GROUP.M, values: month};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1189,14 +1189,14 @@
                                 if (BI.isNumeric(year)) {
                                     filterValues.push({
                                         filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                                        filter_value: {type: BICst.GROUP.Y, value: year},
+                                        filter_value: {type: BICst.GROUP.Y, values: year},
                                         _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                     });
                                 }
                                 if (!BI.isNumeric(quarter)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.S, value: quarter};
+                                fValue = {type: BICst.GROUP.S, values: quarter};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1205,7 +1205,7 @@
                                 break;
                             case BICst.WIDGET.YEAR:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
-                                fValue = {type: BICst.GROUP.Y, value: fValue};
+                                fValue = {type: BICst.GROUP.Y, values: fValue};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1214,7 +1214,7 @@
                                 break;
                             case BICst.WIDGET.YMD:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
-                                fValue = {type: BICst.GROUP.YMD, value: parseComplexDate(fValue)};
+                                fValue = {type: BICst.GROUP.YMD, values: parseComplexDate(fValue)};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
