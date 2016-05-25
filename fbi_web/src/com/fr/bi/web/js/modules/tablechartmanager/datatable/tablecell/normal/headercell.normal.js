@@ -64,7 +64,7 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
                     height: 36
                 },
                 width: 25
-            }],
+            }]
         });
     },
 

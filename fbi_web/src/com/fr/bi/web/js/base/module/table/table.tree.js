@@ -266,7 +266,7 @@ BI.extend(BI.TableTree, {
                 if (BI.isNotEmptyArray(node.values)) {
                     var id = BI.UUID();
                     for (var i = next.length; i < deep; i++) {
-                        next.push({text: BI.i18nText("BI-Summary_Values"), tag: id});
+                        next.push({text: BI.i18nText("BI-Summary_Values"), tag: id, cls: "summary-cell"});
                     }
                     if (!isCross) {
                         next = next.concat(node.values);
