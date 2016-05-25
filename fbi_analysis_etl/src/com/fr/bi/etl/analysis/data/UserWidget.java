@@ -87,12 +87,12 @@ public class UserWidget {
     private void createTableData(int end) {
         List<List> v;
         int rowCount = tempValue.size();
-        if (rowCount == 0){
-            v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
-        } else {
-            v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
-        }
         while (rowCount < end){
+            if (rowCount == 0){
+                v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
+            } else {
+                v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
+            }
             for (int i = 0; i < v.size(); i++){
                 tempValue.put(rowCount, v.get(i));
                 rowCount ++;
@@ -101,7 +101,6 @@ public class UserWidget {
                 maxRow = rowCount;
                 break;
             }
-            v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
         }
     }
 
