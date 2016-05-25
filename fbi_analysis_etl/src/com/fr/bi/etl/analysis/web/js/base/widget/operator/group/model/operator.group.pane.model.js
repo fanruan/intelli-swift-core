@@ -175,6 +175,9 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
 
     _getFieldType : function (dimension, idx) {
         if(idx === BICst.REGION.TARGET1) {
+            if(BI.isNotNull(dimension.group) && dimension.group.type === BICst.SUMMARY_TYPE.APPEND){
+                 return BICst.COLUMN.STRING;
+            }
             return BICst.COLUMN.NUMBER;
         } else {
             //TODO FIX其他类型等分组ok
@@ -299,9 +302,9 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                 if (BI.isNull(f)){
                     msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
                     return true;
-                } else if (f.field_type !== BICst.COLUMN.NUMBER && dimension.group.type !== BICst.SUMMARY_TYPE.COUNT ){
-                    msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
-                    return true;
+                } else if(dimension.group.type !== BICst.SUMMARY_TYPE.COUNT &&  f.field_type !== dimension._src.field_type) {
+                     msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
+                     return true;
                 }
             })
         }
