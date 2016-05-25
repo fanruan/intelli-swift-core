@@ -20,26 +20,15 @@ import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.engine.CubeBuildStuffManager;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BITableRelationConfigurationProvider;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.exception.BITableRelationConfusionException;
-import com.fr.bi.stable.relation.BITableRelation;
-import com.fr.bi.stable.relation.BITableRelationPath;
 import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -61,7 +50,7 @@ public class BuildCubeTask implements CubeTask {
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
     /*单表更新*/
-    private BITable biTable;
+//    private BITable biTable;
 
     public BuildCubeTask(BIUser biUser) {
 
@@ -74,14 +63,14 @@ public class BuildCubeTask implements CubeTask {
 //        cubeBuildStuffManager.initialCubeStuff();
     }
     /*单表更新*/
-    public BuildCubeTask(BIUser biUser, BITable biTable) {
-        this.biUser = biUser;
-        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-        retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        this.biTable=biTable;
-
-    }
+//    public BuildCubeTask(BIUser biUser, BITable biTable) {
+//        this.biUser = biUser;
+//        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+//        retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
+//        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+//        this.biTable=biTable;
+//
+//    }
 
 
     public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {
@@ -120,50 +109,6 @@ public class BuildCubeTask implements CubeTask {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuffManager.getSources());
         operationManager.initialWatcher();
-            /*单表更新*/
-        if(null!=biTable){
-        Set<ITableSource> tableSourceSet = new HashSet<ITableSource>();
-        for (ITableSource iTableSource : cubeBuildStuffManager.getAllSingleSources()) {
-            if(ComparatorUtils.equals(iTableSource,BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(biTable.getID(),biUser))){
-                tableSourceSet.add(iTableSource);
-                cubeBuildStuffManager.setAllSingleSources(tableSourceSet);
-                Set<List<Set<ITableSource>>> calculateTableSource = cubeBuildStuffManager.calculateTableSource(tableSourceSet);
-                cubeBuildStuffManager.setDependTableResource(calculateTableSource);
-                BITableRelationConfigurationProvider tableRelationManager = BIConfigureManagerCenter.getTableRelationManager();
-
-                Set<BITableRelation> allTableRelation = tableRelationManager.getAllTableRelation(biUser.getUserId());
-                Set<BITableRelation> tableRelationSet = new HashSet<BITableRelation>();
-                for (BITableRelation biTableRelation : allTableRelation) {
-                    if (ComparatorUtils.equals(biTableRelation.getPrimaryTable().getID(),biTable.getID())) {
-                        tableRelationSet.add(biTableRelation);
-                    }
-                }
-                cubeBuildStuffManager.setTableRelationSet(tableRelationSet);
-                try {
-                    Set<BITableRelationPath> allTablePath = BIConfigureManagerCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
-                    Set<BITableRelationPath> tablePath = new HashSet<BITableRelationPath>();
-                    for (BITableRelationPath biTableRelationPath : allTablePath) {
-                            if(ComparatorUtils.equals(biTableRelationPath.getFirstRelation().getPrimaryTable(),biTable.getID())){
-                            tablePath.add(biTableRelationPath);
-                        }
-                    }
-                    cubeBuildStuffManager.setRelationPaths(cubeBuildStuffManager.convertPaths(tablePath));
-                } catch (BITableRelationConfusionException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
-                } catch (BITablePathConfusionException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
-                } catch (BITablePathEmptyException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
-                }finally {
-
-                }
-
-                break;
-            }
-        }
-
-
-        }
 
         manager.registerDataSource(cubeBuildStuffManager.getAllSingleSources());
         manager.registerRelation(cubeBuildStuffManager.getTableSourceRelationSet());

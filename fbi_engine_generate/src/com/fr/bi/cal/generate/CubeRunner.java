@@ -58,13 +58,13 @@ public class CubeRunner {
                 setStatue(Status.LOADING);
                 try {
                     start();
-                    //TODO BY WUK 等重构完了再分离
                     if (cubeTask instanceof BuildCubeTask) {
                         ((BuildCubeTask) cubeTask).setCubeBuildStuffManager(object);
                     }
                     if (cubeTask instanceof BuildCubeTaskIncremental) {
                         ((BuildCubeTaskIncremental) cubeTask).setCubeBuildStuffManager(object);
                     }
+                    
                     cubeTask.start();
                     cubeTask.run();
                     cubeTask.end();
