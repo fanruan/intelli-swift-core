@@ -296,5 +296,18 @@ Data.Req = BIReq = {
         }, function(res) {
             callback(res);
         });
+    },
+    reqGenerateCubeByTable: function(tableId, callback) {
+        BI.requestAsync("fr_bi_configure", "set_cube_generate", {
+            tableId:tableId
+        }, function(res) {
+            callback(res);
+        });
+    },
+
+    reqPrimaryTablesByTable: function(table, callback) {
+        BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function(res){
+            callback(res);
+        });
     }
 };
