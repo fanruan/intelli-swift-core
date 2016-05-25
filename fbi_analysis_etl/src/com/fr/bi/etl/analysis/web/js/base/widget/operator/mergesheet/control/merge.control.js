@@ -69,6 +69,10 @@ BI.AnalysisETLMergeSheetController = BI.inherit(BI.MVCController, {
         if(isValid === true) {
             model.refreshColumnName()
             widget.preview.populate(model.createPreviewData(),{})
+        } else {
+            var data = model.createPreviewData();
+            delete data["merge"]
+            widget.preview.populate(data,{})
         }
         widget.saveButton.setEnable(isValid)
     },

@@ -1,5 +1,6 @@
 package com.fr.bi.field.dimension.filter.general;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class GeneralDimensionFilter extends AbstractDimensionFilter {
-
+    @BICoreField
     protected DimensionFilter[] childs;
 
     @Override

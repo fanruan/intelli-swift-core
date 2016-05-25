@@ -150,4 +150,12 @@ public class DateRange implements JSONParser, JSONCreator, XMLable {
 
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "DateRange{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
+    }
 }

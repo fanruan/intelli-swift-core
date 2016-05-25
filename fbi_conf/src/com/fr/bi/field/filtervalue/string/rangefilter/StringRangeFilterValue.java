@@ -7,7 +7,9 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.data.Table;
@@ -30,13 +32,13 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.List;
 
 
-public abstract class StringRangeFilterValue implements StringFilterValue {
+public abstract class StringRangeFilterValue extends AbstractFilterValue<String> implements StringFilterValue {
     /**
      *
      */
     private static final long serialVersionUID = -8598939332490484510L;
     private static String XML_TAG = "StringRangeFilterValue";
-
+    @BICoreField
     protected StringValueSet valueSet = new StringValueSet();
     //TODO 这个保存着实在太J了
     protected JSONObject valueJo = new JSONObject();
@@ -193,10 +195,6 @@ public abstract class StringRangeFilterValue implements StringFilterValue {
         return hasValue ? (valueSet.isContains() ? sgvi : sgvi.NOT(eti.getRowCount())) : null;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     @Override
     public boolean canCreateFilterIndex() {

@@ -3,7 +3,9 @@
  */
 package com.fr.bi.field.filtervalue.date.rangefilter;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.filter.NullFilterDealer;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.Table;
@@ -24,12 +26,13 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 
-public abstract class DateRangeFilterValue implements DateFilterValue, NullFilterDealer {
+public abstract class DateRangeFilterValue extends AbstractFilterValue<Long> implements DateFilterValue, NullFilterDealer {
 
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 924801123261384205L;
+    @BICoreField
 	protected DateRange range;
 
     /**
@@ -176,11 +179,6 @@ public abstract class DateRangeFilterValue implements DateFilterValue, NullFilte
         return true;
     }
 
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     @Override
     public boolean canCreateFilterIndex() {
