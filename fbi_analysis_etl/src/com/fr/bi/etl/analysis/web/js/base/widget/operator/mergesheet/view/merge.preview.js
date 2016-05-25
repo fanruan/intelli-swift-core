@@ -1,4 +1,9 @@
 BI.AnalysisETLMergeSheetPreview = BI.inherit(BI.MVCWidget, {
+
+    _constants : {
+        ERROR:"error",
+        NORMAL:"normal"
+    },
     
     
     _defaultConfig : function () {
@@ -48,6 +53,7 @@ BI.AnalysisETLMergeSheetPreview = BI.inherit(BI.MVCWidget, {
             leftColumns:[],
             mergeColumns:[]
         })
+
         this.merge = BI.createWidget({
             type:"bi.analysis_etl_merge_preview_table",
             rename:true,
@@ -57,7 +63,23 @@ BI.AnalysisETLMergeSheetPreview = BI.inherit(BI.MVCWidget, {
             mergeColumns:[],
             nameValidationController:o.nameValidationController
         });
-
+        this.mergeCard = BI.createWidget({
+            type:"bi.card",
+            items:[{
+                el: this.merge,
+                cardName: this._constants.NORMAL
+            }, {
+                el:  {
+                    type : "bi.center_adapt",
+                    items : [{
+                        type:"bi.label",
+                        cls: "warning",
+                        text: BI.i18nText("BI-Please_Set_Right")
+                    }]
+                },
+                cardName: this._constants.ERROR
+            }]
+        })
         this.merge.on(BI.AnalysisETLMergePreviewTable.EVENT_RENAME, function () {
             self.fireEvent(BI.AnalysisETLMergePreviewTable.EVENT_RENAME, arguments)
         })
@@ -131,7 +153,7 @@ BI.AnalysisETLMergeSheetPreview = BI.inherit(BI.MVCWidget, {
             }, {
                 type:"bi.layout",
                 height:20
-            }, this.merge, {
+            }, this.mergeCard, {
                 type:"bi.layout",
                 height:20
             }]

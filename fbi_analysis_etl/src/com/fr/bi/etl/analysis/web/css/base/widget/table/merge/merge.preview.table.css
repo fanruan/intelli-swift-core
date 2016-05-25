@@ -3,24 +3,29 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.bi-analysis-etl-merge-preview-table {
+.bi-analysis-etl-merge-preview .bi-analysis-etl-merge-preview-table {
   font-size: 12px;
 }
-.bi-analysis-etl-merge-preview-table .bi-adaptive-layout > table {
+.bi-analysis-etl-merge-preview .bi-analysis-etl-merge-preview-table .bi-adaptive-layout > table {
   border-left: 1px solid #eaeaea;
 }
-.bi-analysis-etl-merge-preview-table .left {
+.bi-analysis-etl-merge-preview .bi-analysis-etl-merge-preview-table .left {
   background: #fef6df;
 }
-.bi-analysis-etl-merge-preview-table .merge {
+.bi-analysis-etl-merge-preview .bi-analysis-etl-merge-preview-table .merge {
   background: #d8f2fd;
 }
-.bi-analysis-etl-merge-preview-table .merge-info {
+.bi-analysis-etl-merge-preview .bi-analysis-etl-merge-preview-table .merge-info {
   color: #7f7f7f;
 }
-.bi-analysis-etl-merge-preview-table .right {
+.bi-analysis-etl-merge-preview .bi-analysis-etl-merge-preview-table .right {
   background: #e1f4e7;
 }
-.bi-analysis-etl-merge-p-t-h-cell .bi-editor {
+.bi-analysis-etl-merge-preview .bi-analysis-etl-merge-p-t-h-cell .bi-editor {
   background: #ffffff;
+}
+.bi-analysis-etl-merge-preview .warning {
+  font-size: 16px;
+  zoom: 2;
+  color: #e85050;
 }
