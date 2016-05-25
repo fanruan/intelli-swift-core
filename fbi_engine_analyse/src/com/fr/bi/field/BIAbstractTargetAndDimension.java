@@ -34,6 +34,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
     protected BIDataColumn column;
     private String hyperLinkExpression = StringUtils.EMPTY;
     private boolean useHyperLink = false;
+    @BICoreField
     private boolean used = true;
 
     @Override
