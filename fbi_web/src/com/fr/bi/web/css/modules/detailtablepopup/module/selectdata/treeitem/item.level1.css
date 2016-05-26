@@ -1,0 +1,53 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button:hover,
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button.hover {
+  color: #009de3;
+  background-color: #f4f4f4;
+}
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button:active,
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button.active {
+  color: #ffffff;
+  background-color: #009de3;
+}
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button:active .bi-high-light,
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button.active .bi-high-light {
+  color: #ffffff;
+}
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button.disabled,
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button.disabled:hover,
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button.disabled:active {
+  color: #c4c6c6 !important;
+  background-color: #ffffff !important;
+}
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button.disabled .bi-high-light,
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button.disabled:hover .bi-high-light,
+.bi-detail-table-popup-select-data-level1-item .detail-table-popup-select-date-level1-item-button.disabled:active .bi-high-light {
+  color: #c4c6c6 !important;
+}
+.bi-detail-table-popup-select-data-level1-item .select-data-top-line,
+.bi-detail-table-popup-select-data-level1-item .select-data-bottom-line {
+  background-color: #009de3;
+}
+.bi-detail-table-popup-select-data-level1-item.select-data-item-top .select-date-level1-item-button {
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topright: 0;
+  -webkit-border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.bi-detail-table-popup-select-data-level1-item.select-data-item-bottom .detail-table-popup-select-date-level1-item-button {
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  -webkit-border-bottom-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
