@@ -197,7 +197,7 @@ $(function () {
         },
 
         json2rgba: function (rgba) {
-            return "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + rgb.a + ")";
+            return "rgba(" + rgba.r + "," + rgba.g + "," + rgba.b + "," + rgba.a + ")";
         },
 
         int2hex: function (strNum) {
@@ -242,9 +242,9 @@ $(function () {
             var B = BI.parseFloat(rgbValues[2]);
             var A = BI.parseFloat(rgbValues[3]);
 
-            return "rgb(" + Math.floor(255 * (BGcolur * (1 - A ) + R * A)) + "," +
-                Math.floor(255 * (BGcolur * (1 - A ) + G * A)) + "," +
-                Math.floor(255 * (BGcolur * (1 - A ) + B * A)) + ")";
+            return "rgb(" + Math.floor(255 * (BGcolur * (1 - A )) + R * A) + "," +
+                Math.floor(255 * (BGcolur * (1 - A )) + G * A) + "," +
+                Math.floor(255 * (BGcolur * (1 - A )) + B * A) + ")";
         },
 
         getTextSizeWidth: function (text, fontSize) {
