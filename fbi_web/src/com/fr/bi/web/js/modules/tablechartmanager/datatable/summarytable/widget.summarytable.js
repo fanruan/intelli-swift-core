@@ -38,6 +38,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 self.model.setPageOperator(pageOperator);
                 self._onPageChange(function (items, header, crossItems, crossHeader) {
                     populate.apply(self.table, arguments);
+                    self._setStyleAndColor();
                 })
             },
             pager: {

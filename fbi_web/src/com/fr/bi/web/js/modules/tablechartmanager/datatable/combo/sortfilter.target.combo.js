@@ -14,7 +14,7 @@ BI.SortFilterTargetCombo = BI.inherit(BI.Widget, {
 
     _defaultConfig: function(){
         return BI.extend(BI.SortFilterTargetCombo.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-sort-filter-target-combo"
+            baseCls: "bi-sort-filter-combo"
         })
     },
 
