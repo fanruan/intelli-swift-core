@@ -30,7 +30,7 @@ BI.SelectTableETLPane = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 el: {
-                    type: "bi.float_center_adapt",
+                    type: "bi.center_adapt",
                     cls: "etl-tables",
                     scrollable: true,
                     items: items
