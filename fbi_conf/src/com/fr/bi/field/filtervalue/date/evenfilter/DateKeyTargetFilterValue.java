@@ -1,17 +1,19 @@
 package com.fr.bi.field.filtervalue.date.evenfilter;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDateValueFactory;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -24,15 +26,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class DateKeyTargetFilterValue implements DateFilterValue {
+public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implements DateFilterValue {
 
     /**
      *
      */
     private static final long serialVersionUID = -2509778015034905186L;
-
+    @BICoreField
     protected int group;
-
+    @BICoreField
     protected Set<BIDateValue> valueSet;
 
     private JSONObject valueJo;
@@ -162,11 +164,6 @@ public class DateKeyTargetFilterValue implements DateFilterValue {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
     public boolean canCreateFilterIndex() {
         return false;
     }
@@ -205,11 +202,11 @@ public class DateKeyTargetFilterValue implements DateFilterValue {
         return result;
     }
 
-    @Override
-    public boolean isMatchValue(Long v) {
-        if (v == null) {
+	@Override
+	public boolean isMatchValue(Long v) {
+		if(v == null){
 
-        }
-        return false;
-    }
+		}
+		return false;
+	}
 }

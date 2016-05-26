@@ -3,6 +3,7 @@ package com.fr.bi.field.filtervalue.string.rangefilter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -17,7 +18,7 @@ import com.fr.json.JSONObject;
  * Created by Young's on 2016/5/20.
  */
 public class StringINUserFilterValue extends StringRangeFilterValue {
-
+    @BICoreField
     protected String fieldId;
 
     @Override

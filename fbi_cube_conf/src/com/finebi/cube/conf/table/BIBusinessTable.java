@@ -46,7 +46,7 @@ public class BIBusinessTable implements BusinessTable {
     }
 
     public BIBusinessTable(BITableID ID, String tableName) {
-        setID(new BITableID(ID));
+        setID(ID);
         this.tableName = tableName;
     }
 
@@ -120,11 +120,10 @@ public class BIBusinessTable implements BusinessTable {
 
     public void initialSource() {
         try {
-            if (source == null) {
+            if (source == null && getID() != null) {
                 source = BICubeConfigureCenter.getDataSourceManager().getTableSource(getID());
             }
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
             source = null;
         }
     }

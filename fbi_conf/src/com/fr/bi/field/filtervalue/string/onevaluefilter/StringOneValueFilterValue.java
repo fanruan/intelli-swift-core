@@ -1,16 +1,17 @@
 package com.fr.bi.field.filtervalue.string.onevaluefilter;
 
-import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
-import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
+import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
+import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -19,7 +20,7 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.Iterator;
 import java.util.Map;
 
-public abstract class StringOneValueFilterValue implements StringFilterValue {
+public abstract class StringOneValueFilterValue extends AbstractFilterValue<String> implements StringFilterValue {
     /**
      *
      */
@@ -149,11 +150,6 @@ public abstract class StringOneValueFilterValue implements StringFilterValue {
         writer.startTAG(XML_TAG);
         writer.attr("filter_value", this.value);
         writer.end();
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
     @Override
