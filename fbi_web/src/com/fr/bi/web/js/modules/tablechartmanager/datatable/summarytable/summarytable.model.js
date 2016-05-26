@@ -116,15 +116,14 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     },
 
     getExtraInfo: function () {
-        var settings = BI.Utils.getWidgetSettingsByID(this.wId) || BICst.DEFAULT_CHART_SETTING;
         var op = {};
         op.expander = {
             x: {
-                type: settings.open_col_node,
+                type: BI.Utils.getWSOpenColNodeByID(this.wId),
                 value: [this._formatExpanderTree(this.crossETree.toJSONWithNode())]
             },
             y: {
-                type: settings.open_row_node,
+                type: BI.Utils.getWSOpenRowNodeByID(this.wId),
                 value: [this._formatExpanderTree(this.eTree.toJSONWithNode())]
             }
         };
@@ -184,24 +183,23 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
      * 重置部分数据，用于无后台请求
      */
     _resetPartAttrs: function () {
-        var widgetId = this.options.wId;
-        var settings = BI.Utils.getWidgetSettingsByID(widgetId);
-        this.showNumber = settings.show_number;         //显示行号
-        this.showRowTotal = settings.show_row_total;    //显示行汇总
-        this.showColTotal = settings.show_col_total;    //显示列汇总
-        this.openRowNode = settings.open_row_node;      //展开所有行表头节点
-        this.openColNode = settings.open_col_node;      //展开所有列表头节点
-        this.freezeDim = settings.freeze_dim;           //冻结维度
-        this.themeColor = settings.theme_color;         //主题色
-        this.tableForm = settings.table_form;           //表格类型
-        this.tableStyle = settings.table_style;         //表格风格
+        var wId = this.options.wId;
+        this.showNumber = BI.Utils.getWSShowNumberByID(wId);         //显示行号
+        this.showRowTotal = BI.Utils.getWSShowRowTotalByID(wId);    //显示行汇总
+        this.showColTotal = BI.Utils.getWSShowColTotalByID(wId);    //显示列汇总
+        this.openRowNode = BI.Utils.getWSOpenRowNodeByID(wId);      //展开所有行表头节点
+        this.openColNode = BI.Utils.getWSOpenColNodeByID(wId);      //展开所有列表头节点
+        this.freezeDim = BI.Utils.getWSFreezeDimByID(wId);           //冻结维度
+        this.themeColor = BI.Utils.getWSThemeColorByID(wId);         //主题色
+        this.tableForm = BI.Utils.getWSTableFormByID(wId);           //表格类型
+        this.tableStyle = BI.Utils.getWSTableStyleByID(wId);         //表格风格
 
         this.header = [];
         this.items = [];
         this.crossHeader = [];
         this.crossItems = [];
         this.mergeCols = [];
-        this.columnSize = settings.column_size || [];
+        this.columnSize = BI.Utils.getWSColumnSizeByID(wId);
 
     },
 

@@ -148,7 +148,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
 
         data_style_tab.on(BI.DataStyleTab.EVENT_CHANGE, function(){
             if(this.getSelect() === BICst.DETAIL_TAB_STYLE){
-                self.chartSetting.populate(self.model.get("type"), self.model.get("settings"));
+                self.chartSetting.populate();
             }
         });
 
@@ -202,9 +202,9 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         var self = this;
         this.chartSetting = BI.createWidget({
             type: "bi.chart_setting",
-            chartType: this.model.get("type"),
-            settings: this.model.get("settings")
+            wId: this.model.get("id")
         });
+        this.chartSetting.populate();
         this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
             self.model.set("settings", BI.extend(self.model.get("settings"), v));
         });
