@@ -5,6 +5,7 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.structure.ICubeTableEntityService;
@@ -13,8 +14,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -32,8 +32,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
      * 上次Table对象
      */
     private ICubeTableEntityService parentTable;
-    protected Map<DBField, ICubeTableEntityService> fieldSource = new HashMap<DBField, ICubeTableEntityService>();
-    private List<DBField> compoundFields = new ArrayList<DBField>();
+    protected Map<ICubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, ICubeTableEntityService>();
+    private List<ICubeFieldSource> compoundFields = new ArrayList<ICubeFieldSource>();
 
     public CompoundCubeTableReader(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         hostTable = new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
@@ -49,7 +49,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     private void initialFields() {
         if (hostTable.tableDataAvailable()) {
-            for (DBField field : hostTable.getFieldInfo()) {
+            for (ICubeFieldSource field : hostTable.getFieldInfo()) {
                 if (!compoundFields.contains(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, hostTable);
@@ -59,7 +59,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
             throw BINonValueUtils.beyondControl("Please generate Cube firstly");
         }
         if (isParentAvailable()) {
-            for (DBField field : parentTable.getFieldInfo()) {
+            for (ICubeFieldSource field : parentTable.getFieldInfo()) {
                 if (!compoundFields.contains(field) && isInFacedFields(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, parentTable);
@@ -69,7 +69,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         }
     }
 
-    private boolean isInFacedFields(DBField field) {
+    private boolean isInFacedFields(ICubeFieldSource field) {
         return getFieldNamesFromParent().contains(field.getFieldName());
     }
 
@@ -78,7 +78,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public void recordTableStructure(List<DBField> fields) {
+    public void recordTableStructure(List<ICubeFieldSource> fields) {
         throw new UnsupportedOperationException();
 
     }
@@ -138,7 +138,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public List<DBField> getFieldInfo() {
+    public List<ICubeFieldSource> getFieldInfo() {
         return compoundFields;
     }
 
@@ -170,8 +170,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public DBField getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        for (DBField field : compoundFields) {
+    public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
+        for (ICubeFieldSource field : compoundFields) {
             if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
                 return field;
             }
@@ -185,7 +185,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
-        DBField field = getSpecificColumn(fieldName);
+        ICubeFieldSource field = getSpecificColumn(fieldName);
         return fieldSource.get(field);
     }
 

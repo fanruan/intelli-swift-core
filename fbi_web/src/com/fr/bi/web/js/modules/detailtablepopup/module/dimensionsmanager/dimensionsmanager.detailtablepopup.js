@@ -31,12 +31,12 @@ BI.DetailTablePopupDimensionsManager = BI.inherit(BI.Widget, {
     _createDimensionRegion: function () {
         var self = this, o = this.options;
         var region = BI.createWidget({
-            type: "bi.dimension_region",
+            type: "bi.detail_table_popup_dimension_region",
             dimensionCreator: o.dimensionCreator,
             titleName: BI.i18nText("BI-Data"),
             regionType: BICst.REGION.DIMENSION1
         });
-        region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
+        region.on(BI.DetailTablePopupRegion.EVENT_CHANGE, function () {
             self.fireEvent(BI.DetailTablePopupDimensionsManager.EVENT_CHANGE);
         });
         region.getSortableCenter().element.sortable({

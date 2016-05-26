@@ -5,6 +5,8 @@ package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
@@ -12,7 +14,7 @@ import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.etl.analysis.manager.UserETLCubeManagerProvider;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
@@ -49,27 +51,22 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
         return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
     }
 
-    @Override
-    public ICubeTableService getTableIndex(Table td) {
+    public ICubeTableService getTableIndex(BusinessTable td) {
         return getTableIndex(new BITableID(td.getID()));
     }
 
-    @Override
     public ICubeTableService getTableIndex(BICore core) {
         return getCubeManager().getTableIndex(core, user);
     }
 
-    @Override
     public ICubeTableService getTableIndex(BIField td) {
         return getTableIndex(td.getTableID());
     }
 
-    @Override
     public BIKey getFieldIndex(BIField column) {
         return new IndexKey(column.getFieldName());
     }
 
-    @Override
     public ICubeTableService getTableIndex(BITableID id) {
         return getCubeManager().getTableIndex(BIAnalysisETLManagerCenter.getDataSourceManager().getCoreByTableID(id, user), user);
     }
@@ -103,8 +100,18 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(BICore core, int start, int end) {
-        return getTableIndex(core);
+    public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
+        return getTableIndex(tableSource);
+    }
+
+    @Override
+    public ICubeTableService getTableIndex(CubeTableSource tableSource) {
+        return null;
+    }
+
+    @Override
+    public BIKey getFieldIndex(BusinessField column) {
+        return null;
     }
 
     @Override

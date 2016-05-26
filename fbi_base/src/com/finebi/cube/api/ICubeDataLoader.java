@@ -1,11 +1,9 @@
 package com.finebi.cube.api;
 
-import com.fr.bi.base.BICore;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 
 public interface ICubeDataLoader extends Release {
@@ -16,17 +14,12 @@ public interface ICubeDataLoader extends Release {
      * @param td
      * @return
      */
-    ICubeTableService getTableIndex(Table td);
 
-    ICubeTableService getTableIndex(BICore core);
+    ICubeTableService getTableIndex(CubeTableSource tableSource);
 
-    ICubeTableService getTableIndex(BIField td);
 
-    BIKey getFieldIndex(BIField column);
+    BIKey getFieldIndex(BusinessField column);
 
-//    TableIndex getTableIndexByPath(BITableID td);
-
-    ICubeTableService getTableIndex(BITableID id);
 
     /**
      * 这里的userId不能乱用，只能访问公共属性的时候可以用这个userId
@@ -44,5 +37,5 @@ public interface ICubeDataLoader extends Release {
 
     void releaseCurrentThread();
 
-    ICubeTableService getTableIndex(BICore core, int start, int end);
+    ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end);
 }

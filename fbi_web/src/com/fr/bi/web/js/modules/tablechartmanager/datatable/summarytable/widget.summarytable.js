@@ -24,7 +24,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             el: {
                 el: {
                     el: {
-                        type: "bi.table_tree_with_number",
+                        type: "bi.table_tree",
                         showNumber: false
                     }
                 }
@@ -311,8 +311,17 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             case BICst.TABLE_STYLE.NORMAL:
                 //是否冻结
                 if(this.model.isNeed2Freeze()) {
-                    $table.find(".top-left > div > div > table").css("background", themeColor);
-                    $table.find(".top-right > div > div > table").css("background", themeColor);
+                    $table.find(".top-left > div > div > table").css("color", "#808080");
+                    $table.find(".top-right > div > div > table").css("color", "#808080");
+                    return;
+                }
+                $table.find(".bi-table-tree > div > div table > thead > tr").css("color", "#808080");
+                break;
+            case BICst.TABLE_STYLE.INTERVAL:
+                //是否冻结
+                if(this.model.isNeed2Freeze()) {
+                    $table.find(".top-left > div > div > table").css("background", themeColor).css("color", "white");
+                    $table.find(".top-right > div > div > table").css("background", themeColor).css("color", "white");
                     $table.find(".bottom-left > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
                     $table.find(".bottom-left > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
                     $table.find(".bottom-right > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
@@ -321,14 +330,21 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                     $table.find(".bottom-right > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
                     return;
                 }
-                $table.find(".bi-number-table-tree > div > div table > thead > tr").css("background", themeColor);
-                $table.find(".bi-number-table-tree > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
-                $table.find(".bi-number-table-tree > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
-                $table.find(".bi-number-table-tree > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
-                break;
-            case BICst.TABLE_STYLE.INTERVAL:
+                $table.find(".bi-table-tree > div > div table > thead > tr").css("background", themeColor).css("color", "white");
+                $table.find(".bi-table-tree > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
+                $table.find(".bi-table-tree > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
+                $table.find(".bi-table-tree > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
                 break;
             case BICst.TABLE_STYLE.BLUE:
+                if(this.model.isNeed2Freeze()) {
+                    $table.find(".top-left > div > div > table").css("background", themeColor).css("color", "white");
+                    $table.find(".top-right > div > div > table").css("background", themeColor).css("color", "white");
+                    $table.find(".bottom-left > div > div > table .last-summary-cell").css("color", themeColor);
+                    $table.find(".bottom-right > div > div > table .last-summary-cell").css("color", themeColor);
+                    return;
+                }
+                $table.find(".bi-table-tree > div > div table > thead > tr").css("background", themeColor).css("color", "white");
+                $table.find(".bi-table-tree > div > div > table .last-summary-cell").css("color", themeColor);
                 break;
         }
     },

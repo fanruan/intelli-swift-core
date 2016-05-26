@@ -589,7 +589,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         type: "bi.target_body_normal_cell",
                         text: v,
                         dId: tId,
-                        cls: "body-cell-summary"
+                        cls: "body-cell-summary last-summary-cell"
                     });
                 });
                 item.children.push({
@@ -598,7 +598,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     tag: BI.UUID(),
                     isSum: true,
                     values: outerValues,
-                    cls: "body-cell-summary"
+                    cls: "body-cell-summary last-summary-cell"
                 })
             } else {
                 //使用第一个值作为一个维度

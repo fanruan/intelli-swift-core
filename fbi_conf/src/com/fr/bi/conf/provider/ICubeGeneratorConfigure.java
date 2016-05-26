@@ -1,7 +1,7 @@
 package com.fr.bi.conf.provider;
 
-import com.fr.bi.stable.data.source.ITableSource;
-import com.fr.bi.stable.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableRelationPath;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Set;
 
@@ -14,7 +14,7 @@ import java.util.Set;
 public interface ICubeGeneratorConfigure {
     String XML_TAG = "ICubeGeneratorConfigure";
 
-    Set<ITableSource> getAllTableData(long userId);
+    Set<CubeTableSource> getAllTableData(long userId);
 
     Set<BITableRelationPath> getAllPathsData(long userId);
 }

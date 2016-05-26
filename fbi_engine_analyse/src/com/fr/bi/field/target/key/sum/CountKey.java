@@ -1,10 +1,10 @@
 package com.fr.bi.field.target.key.sum;
 
 
-import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BIField;
 import com.fr.general.ComparatorUtils;
 
 /**
@@ -24,10 +24,11 @@ public class CountKey extends SummaryKey {
     private static final long serialVersionUID = 3447669947358786022L;
     private BIKey distinct_field;
 
-    public CountKey(BIField ck, TargetFilter filter) {
+    public CountKey(BusinessField ck, TargetFilter filter) {
         this(ck, filter, null);
     }
-    public CountKey(BIField ck, TargetFilter filter, BIKey distinct_field) {
+
+    public CountKey(BusinessField ck, TargetFilter filter, BIKey distinct_field) {
         super(ck, filter);
         this.distinct_field = distinct_field;
     }

@@ -1,11 +1,11 @@
 package com.fr.bi.cal.stable.tableindex;
 
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractTableIndex implements ICubeTableService {
 
     protected transient Date lastTime;
-    protected transient Map<BIKey, DBField> columns = new ConcurrentHashMap<BIKey, DBField>();
+    protected transient Map<BIKey, ICubeFieldSource> columns = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
     protected transient int tableVersion = 0;
     protected transient int rowCount;
     protected transient Map<BIKey, Long> groupCount = new ConcurrentHashMap<BIKey, Long>();
@@ -83,8 +83,8 @@ public abstract class AbstractTableIndex implements ICubeTableService {
      */
     protected void loadMain() {
         try {
-            DBField[] fields = cube.getBIField();
-            for (DBField column : fields) {
+            ICubeFieldSource[] fields = cube.getBIField();
+            for (ICubeFieldSource column : fields) {
                 this.columns.put(new IndexKey(column.getFieldName()), column);
             }
         } catch (Exception e) {
@@ -109,7 +109,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
     }
 
     @Override
-    public Map<BIKey, DBField> getColumns() {
+    public Map<BIKey, ICubeFieldSource> getColumns() {
         return columns;
     }
 

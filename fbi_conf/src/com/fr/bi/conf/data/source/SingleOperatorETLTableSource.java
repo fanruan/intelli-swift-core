@@ -1,11 +1,11 @@
 package com.fr.bi.conf.data.source;
 
 import com.fr.bi.conf.data.source.operator.IETLOperator;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.db.PersistentField;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Set;
 public class SingleOperatorETLTableSource extends ETLTableSource {
     private IETLOperator operator;
 
-    public SingleOperatorETLTableSource(List<ITableSource> parents, IETLOperator operator) {
+    public SingleOperatorETLTableSource(List<CubeTableSource> parents, IETLOperator operator) {
         this.operator = operator;
         this.parents = parents;
         oprators.add(operator);
@@ -26,7 +26,7 @@ public class SingleOperatorETLTableSource extends ETLTableSource {
     }
 
     @Override
-    public DBField[] getFieldsArray(Set<ITableSource> sources) {
+    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
         if (isAllAddColumnOperator()) {
             return getAddedField();
         } else {
@@ -34,12 +34,12 @@ public class SingleOperatorETLTableSource extends ETLTableSource {
         }
     }
 
-    public DBField[] getAddedField() {
+    public BICubeFieldSource[] getAddedField() {
         if (isAllAddColumnOperator()) {
             IPersistentTable dbTable = createBITable();
             IPersistentTable[] ptables = new IPersistentTable[parents.size()];
             for (int i = 0; i < ptables.length; i++) {
-                ptables[i] = parents.get(i).getDbTable();
+                ptables[i] = parents.get(i).getPersistentTable();
             }
             for (int i = 0; i < oprators.size(); i++) {
                 IPersistentTable ctable = oprators.get(i).getBITable(ptables);
@@ -49,16 +49,16 @@ public class SingleOperatorETLTableSource extends ETLTableSource {
                     dbTable.addColumn(column);
                 }
             }
-            DBField[] result = new DBField[dbTable.getFieldSize()];
+            BICubeFieldSource[] result = new BICubeFieldSource[dbTable.getFieldSize()];
 
             Iterator<PersistentField> it = dbTable.getFieldList().iterator();
             int count = 0;
             while (it.hasNext()) {
-                result[count++] = (it.next().toDBField(new BITable(this.getSourceID())));
+                result[count++] = (it.next().toDBField(this));
             }
             return result;
         }
-        return new DBField[0];
+        return new BICubeFieldSource[0];
 
     }
 

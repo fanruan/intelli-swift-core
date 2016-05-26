@@ -1,7 +1,7 @@
 package com.fr.bi.conf.base.auth;
 
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 

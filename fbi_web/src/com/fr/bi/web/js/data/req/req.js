@@ -18,12 +18,6 @@ Data.Req = BIReq = {
         })
     },
 
-    reqFieldsByTableId: function (tableId, callback) {
-        BI.requestAsync("fr_bi_configure", "get_fields_4_relation_in_table", {id: tableId}, function (res) {
-            callback(res);
-        })
-    },
-
     reqTablesDetailInfoByPackId: function (packName, callback) {
         BI.requestAsync("fr_bi_configure", "get_detail_tables_of_one_package", {name: packName}, function (res) {
             callback(res);
@@ -81,7 +75,7 @@ Data.Req = BIReq = {
             callback(res);
         });
     },
-    
+
     reqRelationsByTableIds: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
             callback(res);
@@ -246,48 +240,48 @@ Data.Req = BIReq = {
         })
     },
 
-    reqUpdatePreviewSqlResult: function(data, callback){
+    reqUpdatePreviewSqlResult: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "get_preview_table_update", data, function (res) {
             callback(res);
         })
     },
 
-    reqModifyGlobalUpdateSetting: function(data, callback) {
-        BI.requestAsync("fr_bi_configure", "modify_global_update_setting_action", data, function(res){
+    reqModifyGlobalUpdateSetting: function (data, callback) {
+        BI.requestAsync("fr_bi_configure", "modify_global_update_setting_action", data, function (res) {
             callback(res);
         })
     },
 
-    reqCubeLog: function(callback) {
-        BI.requestAsync("fr_bi_configure", "get_cube_log", {}, function(res){
+    reqCubeLog: function (callback) {
+        BI.requestAsync("fr_bi_configure", "get_cube_log", {}, function (res) {
             callback(res);
         })
     },
-    
+
     reqSavePackageAuthority: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "save_package_authority", data, function (res) {
             callback(res);
         });
     },
 
-    reqAllBusinessPackages: function(callback) {
-        BI.requestAsync("fr_bi_configure", "get_all_business_packages", {}, function(res) {
+    reqAllBusinessPackages: function (callback) {
+        BI.requestAsync("fr_bi_configure", "get_all_business_packages", {}, function (res) {
             callback(res);
         });
     },
 
-    getTableNamesOfAllPackages: function(callback) {
-        BI.requestAsync("fr_bi_configure", "get_table_names_of_all_packages", {}, function(res) {
+    getTableNamesOfAllPackages: function (callback) {
+        BI.requestAsync("fr_bi_configure", "get_table_names_of_all_packages", {}, function (res) {
             callback(res);
         });
     },
-    
-    updateCubeByTable: function(table,callback) {
+
+    updateCubeByTable: function (table, callback) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
             connectionName: table.connection_name,
-            tableName:table.table_name,
-            tableId:table.id
-        }, function(res) {
+            tableName: table.table_name,
+            tableId: table.id
+        }, function (res) {
             callback(res);
         });
     },

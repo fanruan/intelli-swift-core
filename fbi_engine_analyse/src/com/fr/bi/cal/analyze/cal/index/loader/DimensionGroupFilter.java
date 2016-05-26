@@ -1,4 +1,7 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
+
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.NormalIteratorManager;
 import com.fr.bi.cal.analyze.cal.result.*;
@@ -16,16 +19,15 @@ import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTarg
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.manager.PlugManager;
 import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.*;
 import com.fr.general.NameObject;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * This class created on 2016/3/9.
  *
@@ -284,7 +286,7 @@ public class DimensionGroupFilter {
                     GeneralANDDimensionFilter resultFilter = (GeneralANDDimensionFilter) rowDimension[deep].getFilter();
                     if (resultFilter.canCreateDirectFilter()) {
                         DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
-                        Table t = (mergerInfoList.get(i).getRoot().getTableKey() == BITable.BI_EMPTY_TABLE()) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
+                        BusinessTable t = (mergerInfoList.get(i).getRoot().getTableKey() == BITable.BI_EMPTY_TABLE()) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
                         GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
                         ret[i] = and(ret[i], filterIndex);
                     }
@@ -674,6 +676,7 @@ public class DimensionGroupFilter {
     }
 
     private RootDimensionGroup[] mergerRootDimensionGroup = null;
+
     private GroupConnectionValue[] next() {
         checkInRuntime();
         getIteratorManager().moveNext();
@@ -682,7 +685,8 @@ public class DimensionGroupFilter {
     }
 
     private IteratorManager iteratorManager = null;
-    private IteratorManager getIteratorManager(){
+
+    private IteratorManager getIteratorManager() {
         if (iteratorManager == null) {
             iteratorManager = new NormalIteratorManager(getRootDimensionGroups());
         }

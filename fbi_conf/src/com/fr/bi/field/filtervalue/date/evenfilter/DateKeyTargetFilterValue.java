@@ -1,19 +1,19 @@
 package com.fr.bi.field.filtervalue.date.evenfilter;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDateValueFactory;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -51,17 +51,16 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     /**
      * 获取过滤后的索引
      *
-     *
      * @param target
      * @param loader loader对象
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         if (valueSet == null || valueSet.isEmpty()) {
             return getGroupValueIndexWhenNull(target, loader);
         }
-        ICubeColumnIndexReader getter = loader.getTableIndex(dimension.getField()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), group), dimension.getRelationList());
+        ICubeColumnIndexReader getter = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), group), dimension.getRelationList());
         Iterator<BIDateValue> it = valueSet.iterator();
         GroupValueIndex gvi = null;
         while (it.hasNext()) {
@@ -78,7 +77,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
         return gvi == null ? GVIFactory.createAllEmptyIndexGVI() : gvi;
     }
 
-    private GroupValueIndex getGroupValueIndexWhenNull(Table targetKey, ICubeDataLoader loader) {
+    private GroupValueIndex getGroupValueIndexWhenNull(BusinessTable targetKey, ICubeDataLoader loader) {
         return null;
     }
 
@@ -86,6 +85,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     public boolean isTopOrBottomFilterValue() {
         return false;
     }
+
     public Set<BIDateValue> getValues() {
         return valueSet;
     }
@@ -100,7 +100,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         this.valueSet = new HashSet<BIDateValue>();
-        if(jo.has("filter_value")){
+        if (jo.has("filter_value")) {
             JSONObject filterValue = jo.getJSONObject("filter_value");
             this.valueSet.add(BIDateValueFactory.createDateValue(filterValue.getInt("type"), filterValue.getLong("values")));
             this.group = filterValue.getInt("type");
@@ -205,7 +205,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
 	@Override
 	public boolean isMatchValue(Long v) {
 		if(v == null){
-			
+
 		}
 		return false;
 	}

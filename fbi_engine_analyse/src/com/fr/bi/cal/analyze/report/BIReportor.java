@@ -2,12 +2,13 @@ package com.fr.bi.cal.analyze.report;
 
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -26,7 +27,7 @@ import java.util.List;
 public class BIReportor implements BIReport {
     private List<BIWidget> widgets = new ArrayList<BIWidget>();
 
-    private List<BIField> controlColumns = new ArrayList<BIField>();
+    private List<BusinessField> controlColumns = new ArrayList<BusinessField>();
 
     public int getWidgetsCount() {
         return widgets.size();
@@ -129,14 +130,14 @@ public class BIReportor implements BIReport {
     }
 
     @Override
-    public List<Table> getUsedTableDefine() {
-        List<Table> result = new ArrayList<Table>();
+    public List<BusinessTable> getUsedTableDefine() {
+        List<BusinessTable> result = new ArrayList<BusinessTable>();
         for (BIWidget widget : widgets) {
             result.addAll(widget.getUsedTableDefine());
         }
         if (controlColumns != null) {
 
-            Iterator<BIField> it = controlColumns.iterator();
+            Iterator<BusinessField> it = controlColumns.iterator();
             while (it.hasNext()) {
                 result.add(it.next().getTableBelongTo());
             }
@@ -145,8 +146,8 @@ public class BIReportor implements BIReport {
     }
 
     @Override
-    public List<BIField> getUsedFieldDefine() {
-        List<BIField> result = new ArrayList<BIField>();
+    public List<BusinessField> getUsedFieldDefine() {
+        List<BusinessField> result = new ArrayList<BusinessField>();
         for (BIWidget widget : widgets) {
             result.addAll(widget.getUsedFieldDefine());
         }
@@ -193,7 +194,7 @@ public class BIReportor implements BIReport {
                 if (cj.has("config")) {
                     JSONArray columnJa = cj.getJSONArray("config");
                     for (int j = 0; j < columnJa.length(); j++) {
-                        BIField c = new BIField();
+                        BusinessField c = new BIBusinessField();
                         c.parseJSON(columnJa.getJSONObject(j));
                         controlColumns.add(c);
                     }
@@ -203,7 +204,7 @@ public class BIReportor implements BIReport {
     }
 
     @Override
-    public List<BIField> getControlColumns() {
+    public List<BusinessField> getControlColumns() {
         return controlColumns;
     }
 

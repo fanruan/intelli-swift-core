@@ -52,7 +52,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
             columnSize: ["", 30]
         });
 
-        if (BI.Utils.isTargetByDimensionID(dId)) {
+        if (BI.Utils.isTargetByDimensionID(dId) || BI.Utils.isCalculateTargetByDimensionID(dId)) {
             this.element.hover(function () {
                 var button = self._createPopupButton();
                 button.setVisible(true);

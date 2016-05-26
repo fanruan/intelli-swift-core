@@ -2,6 +2,8 @@ package com.fr.bi.web.service.action;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.key.BIKey;
@@ -9,13 +11,12 @@ import com.fr.bi.cal.stable.cube.memory.MemoryCubeFile;
 import com.fr.bi.cal.stable.tableindex.index.BITableIndex;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserETLTableSource;
-import com.fr.bi.etl.analysis.data.UserTableSource;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
@@ -35,62 +36,54 @@ public class PartCubeDataLoader implements ICubeDataLoader {
     private static Map<Long, PartCubeDataLoader> userMap = new ConcurrentHashMap<Long, PartCubeDataLoader>();
 
 
-    private transient Map<BICore, ITableSource> sourceMap = new ConcurrentHashMap<BICore, ITableSource>();
+    private transient Map<BICore, CubeTableSource> sourceMap = new ConcurrentHashMap<BICore, CubeTableSource>();
 
     public PartCubeDataLoader(long userId) {
         this.userId = userId;
     }
 
-    public static PartCubeDataLoader getInstance(long userId, UserTableSource source) {
+    public static PartCubeDataLoader getInstance(long userId, UserCubeTableSource source) {
         PartCubeDataLoader loader = BIConstructorUtils.constructObject(userId, PartCubeDataLoader.class, userMap, false);
         loader.registSource(source);
         return loader;
     }
 
-    private void registSource(ITableSource source){
+    private void registSource(CubeTableSource source) {
         BICore core = source.fetchObjectCore();
-        if (!sourceMap.containsKey(core)){
+        if (!sourceMap.containsKey(core)) {
             sourceMap.put(source.fetchObjectCore(), source);
-            if ( source.getType() == Constants.TABLE_TYPE.USER_ETL ){
-                for (ITableSource s :((UserETLTableSource)source).getParents()){
+            if (source.getType() == Constants.TABLE_TYPE.USER_ETL) {
+                for (CubeTableSource s : ((UserETLTableSource) source).getParents()) {
                     registSource(s);
                 }
             }
         }
     }
 
-    @Override
-    public ICubeTableService getTableIndex(Table td) {
+    public ICubeTableService getTableIndex(BusinessTable td) {
         return getTableIndex(BIBasicCore.generateValueCore(td.getID().getIdentityValue()));
     }
 
-    @Override
     public ICubeTableService getTableIndex(BICore core) {
-        ITableSource source = sourceMap.get(core);
-        if (isParentTableIndex(source)){
+        CubeTableSource source = sourceMap.get(core);
+        if (isParentTableIndex(source)) {
             return getTableIndex(((UserETLTableSource) source).getParents().get(0).fetchObjectCore());
         }
-        final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(new HashSet<ITableSource>()));
-        cube.writeRowCount(source.read4Part(new Traversal<BIDataValue>() {
+        final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(new HashSet<CubeTableSource>()));
+        cube.writeRowCount(source.read(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 cube.addDataValue(data);
             }
-        }, source.getFieldsArray(new HashSet<ITableSource>()), this, 0, Integer.MAX_VALUE));
+        }, source.getFieldsArray(new HashSet<CubeTableSource>()), this));
         return new BITableIndex(cube);
     }
 
-    @Override
-    public ICubeTableService getTableIndex(BIField td) {
-        return getTableIndex(td.getTableBelongTo());
-    }
 
-    @Override
     public BIKey getFieldIndex(BIField column) {
         return new IndexKey(column.getFieldName());
     }
 
-    @Override
     public ICubeTableService getTableIndex(BITableID id) {
         throw new RuntimeException(EXCEPTION);
     }
@@ -121,29 +114,39 @@ public class PartCubeDataLoader implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(BICore core, int start, int end) {
-        ITableSource source = sourceMap.get(core);
-        if (isParentTableIndex(source)){
-            return getTableIndex(((UserETLTableSource) source).getParents().get(0).fetchObjectCore(), start, end);
+    public ICubeTableService getTableIndex(CubeTableSource tableSource) {
+        return null;
+    }
+
+    @Override
+    public BIKey getFieldIndex(BusinessField column) {
+        return null;
+    }
+
+    @Override
+    public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
+        CubeTableSource source = sourceMap.get(tableSource);
+        if (isParentTableIndex(source)) {
+            return getTableIndex(((UserETLTableSource) source).getParents().get(0), start, end);
         }
-        final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(new HashSet<ITableSource>()));
+        final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(new HashSet<CubeTableSource>()));
         cube.writeRowCount(source.read4Part(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 cube.addDataValue(data);
             }
-        }, source.getFieldsArray(new HashSet<ITableSource>()), this, start, end));
+        }, source.getFieldsArray(new HashSet<CubeTableSource>()), this, start, end));
         return new BITableIndex(cube);
     }
 
-    private boolean isParentTableIndex(ITableSource source) {
-        return source.getType() == Constants.TABLE_TYPE.USER_ETL && (((UserETLTableSource)source).hasTableFilterOperator()|| ((UserETLTableSource)source).getETLOperators().isEmpty());
+    private boolean isParentTableIndex(CubeTableSource source) {
+        return source.getType() == Constants.TABLE_TYPE.USER_ETL && (((UserETLTableSource) source).hasTableFilterOperator() || ((UserETLTableSource) source).getETLOperators().isEmpty());
     }
 
     @Override
     public void clear() {
         synchronized (this) {
-            if(userMap != null){
+            if (userMap != null) {
                 userMap.clear();
             }
         }

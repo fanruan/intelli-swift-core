@@ -1,13 +1,13 @@
 package com.fr.bi.conf.report.widget.field.target.detailtarget;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BISimpleRelation;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.operation.sort.ISort;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ public interface BIDetailTarget extends BITargetAndDimension, Release {
      * @param loader loader对象
      * @return 索引map
      */
-    ICubeColumnIndexReader createGroupValueMapGetter(Table target, ICubeDataLoader loader, long userId);
+    ICubeColumnIndexReader createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId);
 
     /**
      * 计算值
@@ -34,14 +34,13 @@ public interface BIDetailTarget extends BITargetAndDimension, Release {
      */
     Object createDetailValue(Long row, Map<String, Object> values, ICubeDataLoader loader, long userId);
 
-
     /**
      * 创建显示值
      *
      * @param value 值
      * @return object对象
      */
-    public Object createShowValue(Object value);
+    Object createShowValue(Object value);
 
     /**
      * 是不是计算指标
@@ -58,7 +57,7 @@ public interface BIDetailTarget extends BITargetAndDimension, Release {
      */
     boolean isReady4Calculate(Map<String, Object> values);
 
-    List<BISimpleRelation> getRelationList(Table target, long userId);
+    List<BISimpleRelation> getRelationList(BusinessTable target, long userId);
 
 
     void setRelationList(List<BISimpleRelation> relationList);

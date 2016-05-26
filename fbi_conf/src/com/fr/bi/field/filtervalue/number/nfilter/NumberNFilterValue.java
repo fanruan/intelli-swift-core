@@ -3,11 +3,11 @@
  */
 package com.fr.bi.field.filtervalue.number.nfilter;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -103,7 +103,6 @@ public abstract class NumberNFilterValue extends AbstractFilterValue<Number> imp
     @Override
     public void readXML(XMLableReader reader) {
         if (reader.getTagName().equals("filter_value")) {
-
             try {
                 JSONObject jo = new JSONObject(reader.getAttrAsString("filter_value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
@@ -134,7 +133,7 @@ public abstract class NumberNFilterValue extends AbstractFilterValue<Number> imp
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         return null;
     }
 

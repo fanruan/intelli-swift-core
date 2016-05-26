@@ -5,8 +5,8 @@ import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
@@ -17,11 +17,11 @@ import java.util.Set;
 /**
  * Created by 小灰灰 on 2015/12/24.
  */
-public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, UserTableSource> implements UserTableSource{
+public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, UserCubeTableSource> implements UserCubeTableSource {
     private long userId;
 
 
-    public UserETLTableSource(List<IETLOperator> operators, List<UserTableSource> parents, long userId) {
+    public UserETLTableSource(List<IETLOperator> operators, List<UserCubeTableSource> parents, long userId) {
         super(operators, parents);
         this.userId = userId;
     }
@@ -40,7 +40,7 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
      * @return
      */
     @Override
-    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         Iterator<IETLOperator> it = oprators.iterator();
         long index = 0;
         while (it.hasNext()) {
@@ -65,7 +65,7 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     @Override
     public Set<String> getSourceUsedMD5() {
         Set<String> set = new HashSet<String>();
-        for (UserTableSource source : getParents()){
+        for (UserCubeTableSource source : getParents()){
             if (source.getType() == Constants.TABLE_TYPE.USER_BASE){
                 set.addAll(source.getSourceUsedMD5());
             }
@@ -75,7 +75,7 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
 
     @Override
     public boolean containsIDParentsWithMD5(String md5) {
-        for (UserTableSource source : getParents()){
+        for (UserCubeTableSource source : getParents()){
             if (ComparatorUtils.equals(md5, source.fetchObjectCore().getID().getIdentityValue())){
                 return true;
             }

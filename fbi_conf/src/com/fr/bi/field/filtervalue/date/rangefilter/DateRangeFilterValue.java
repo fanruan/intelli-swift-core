@@ -3,19 +3,19 @@
  */
 package com.fr.bi.field.filtervalue.date.rangefilter;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.filter.NullFilterDealer;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.data.key.date.DateRange;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.control.UserControl;
@@ -29,7 +29,7 @@ import com.fr.stable.xml.XMLableReader;
 public abstract class DateRangeFilterValue extends AbstractFilterValue<Long> implements DateFilterValue, NullFilterDealer {
 
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 924801123261384205L;
     @BICoreField
@@ -38,28 +38,28 @@ public abstract class DateRangeFilterValue extends AbstractFilterValue<Long> imp
     /**
      * 获取过滤后的索引
      *
-     *
      * @param target
      * @param loader loader对象
      * @return 过滤索引
      * FIXME 需要实现
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
 
         if (range == null || (range.getEnd() == null && range.getStart() == null)) {
             return getGroupValueIndexWhenNull(target, loader);
         }
-        ICubeColumnIndexReader yearMap = loader.getTableIndex(dimension.getField()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(),  BIReportConstant.GROUP.Y), dimension.getRelationList());
-        ICubeColumnIndexReader monthMap = loader.getTableIndex(dimension.getField()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(),  BIReportConstant.GROUP.M), dimension.getRelationList());
-        ICubeColumnIndexReader dayMapMap = loader.getTableIndex(dimension.getField()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(),  BIReportConstant.GROUP.MD), dimension.getRelationList());
+        ICubeColumnIndexReader yearMap = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), BIReportConstant.GROUP.Y), dimension.getRelationList());
+        ICubeColumnIndexReader monthMap = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), BIReportConstant.GROUP.M), dimension.getRelationList());
+        ICubeColumnIndexReader dayMapMap = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), BIReportConstant.GROUP.MD), dimension.getRelationList());
         return BIDateUtils.createFilterIndex(yearMap, monthMap, dayMapMap, range.getStart(), range.getEnd());
 
     }
 
-    private GroupValueIndex getGroupValueIndexWhenNull(Table targetKey, ICubeDataLoader loader) {
-        return loader.getTableIndex(targetKey).getAllShowIndex();
+    private GroupValueIndex getGroupValueIndexWhenNull(BusinessTable targetKey, ICubeDataLoader loader) {
+        return loader.getTableIndex(targetKey.getTableSource()).getAllShowIndex();
     }
+
     @Override
     public boolean isTopOrBottomFilterValue() {
         return false;
@@ -137,6 +137,7 @@ public abstract class DateRangeFilterValue extends AbstractFilterValue<Long> imp
         }
         writer.end();
     }
+
     /**
      * 重写code
      *
@@ -184,7 +185,7 @@ public abstract class DateRangeFilterValue extends AbstractFilterValue<Long> imp
     public boolean canCreateFilterIndex() {
         return false;
     }
-    
+
 	@Override
 	public boolean isMatchValue(Long v) {
 		if(v == null){
@@ -193,6 +194,6 @@ public abstract class DateRangeFilterValue extends AbstractFilterValue<Long> imp
         BIDay key = new BIDay(v);
 		return inRange(key);
 	}
-	
+
 	 protected abstract boolean inRange(BIDay key);
 }
