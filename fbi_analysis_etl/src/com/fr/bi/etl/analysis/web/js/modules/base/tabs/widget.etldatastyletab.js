@@ -62,6 +62,9 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
                             && dimension.group.type !== BICst.GROUP.YMD
                             && dimension.group.type !== BICst.GROUP.YMDHMS){
                             field_type = BICst.COLUMN.NUMBER;
+                        } else if(field_type === BICst.COLUMN.NUMBER
+                                && dimension.group.type !== BICst.GROUP.ID_GROUP) {
+                            field_type = BICst.COLUMN.STRING;
                         }
                         if(BI.isNull(field_type)){
                             field_type = BICst.COLUMN.NUMBER;

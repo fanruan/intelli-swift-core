@@ -1,0 +1,21 @@
+@import "../../../../bibase";
+
+.bi-chart-setting-select-color-item{
+  border: 1px solid @color-bi-background-default;
+  .border-radius(2px);
+  &:hover, &.hover {
+    border-color: @color-bi-border-normal;
+  }
+  &:active, &.active {
+    border-color: @color-bi-border-highlight;
+  }
+  &.disabled {
+    &, &:hover, &:active {
+      color: @color-bi-text-disabled !important;
+      background-color: @color-bi-background-default !important;
+      & .bi-high-light {
+        color: @color-bi-text-disabled !important;
+      }
+    }
+  }
+}

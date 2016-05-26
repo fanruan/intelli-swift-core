@@ -32,10 +32,8 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
 
     _doChartItemClick: function(obj){
         var self = this, o = this.options;
-        var linkageInfo = this.model.getLinkageInfo();
+        var linkageInfo = this.model.getLinkageInfo(obj);
         var dId = linkageInfo.dId, clicked = linkageInfo.clicked;
-        BI.Msg.toast("category: " + obj.category + " seriesName: " + obj.seriesName + " value: " + obj.value + " size: " + obj.size
-            + " targetIds: " + obj.options.targetIds);
         BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
             if (BI.contains(dId, link.from)) {
                 BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
@@ -69,6 +67,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         var selectedTab = this.tab.getSelectedTab();
         this.model.getWidgetData(type, function(types, data){
             selectedTab.setTypes(types);
+            selectedTab.setOptions(BI.Utils.getWidgetSettingsByID(o.wId));
             selectedTab.populate(data);
         });
     },

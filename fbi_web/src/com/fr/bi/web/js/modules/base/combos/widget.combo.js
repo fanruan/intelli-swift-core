@@ -100,8 +100,8 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
 
     _createWidgetComboItems: function () {
         var wId = this.options.wId;
-        var isShowName = BI.Utils.isShowWidgetNameByID(wId);
-        var namePos = BI.Utils.getWidgetNamePositionByID(wId);
+        var isShowName = BI.Utils.getWSShowNameByID(wId);
+        var namePos = BI.Utils.getWSNamePosByID(wId);
         return [
             [{
                 text: BI.i18nText("BI-Link_To_Dots"),
@@ -160,8 +160,8 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
 
     _createDetailWidgetComboItems: function () {
         var wId = this.options.wId;
-        var isShowName = BI.Utils.isShowWidgetNameByID(wId);
-        var namePos = BI.Utils.getWidgetNamePositionByID(wId);
+        var isShowName = BI.Utils.getWSShowNameByID(wId);
+        var namePos = BI.Utils.getWSNamePosByID(wId);
         return [
             [{
                 text: BI.i18nText("BI-Show_Title"),

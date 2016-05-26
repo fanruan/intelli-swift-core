@@ -14,6 +14,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _init: function () {
         BI.DetailTable.superclass._init.apply(this, arguments);
         var self = this;
+        var o = this.options;
 
         this.pager = BI.createWidget({
             type: "bi.all_pager",
@@ -38,6 +39,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 })
             },
             pager: this.pager
+        });
+
+        this.table.on(BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+            self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: self.table.getColumnSize()})});
         });
 
         BI.createWidget({
@@ -100,7 +105,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 children: self._createTableItems(json.value)
             }];
 
-            self.table.attr("showNumber", BI.Utils.getWidgetSettingsByID(self.options.wId).show_number);
+            self.table.attr("showNumber", BI.Utils.getWSShowNumberByID(self.options.wId));
             self.pager.setAllPages(Math.ceil(row / size));
             self.pager.setValue(vPage);
             callback(items, header, [], [])
@@ -110,10 +115,17 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
-            var columnSize = BI.makeArray(header.length, "");
-            self.table.attr("columnSize", columnSize);
+            self.table.attr("columnSize", self._getColumnSize(header));
             self.table.populate(items, header, [], []);
         });
+    },
+
+    _getColumnSize: function (header) {
+        var columnSize = BI.Utils.getWidgetSettingsByID(this.options.wId).column_size;
+        if (BI.isNull(columnSize)) {
+            columnSize = BI.makeArray(header.length, "");
+        }
+        return columnSize;
     },
 
 

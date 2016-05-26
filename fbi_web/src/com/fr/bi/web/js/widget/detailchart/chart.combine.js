@@ -5,6 +5,13 @@
  */
 BI.CombineChart = BI.inherit(BI.Widget, {
 
+    constants: {
+        NORMAL: 1,
+        ZERO2POINT: 2,
+        ONE2POINT: 3,
+        TWO2POINT: 4
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.CombineChart.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-combine-chart",
@@ -16,6 +23,9 @@ BI.CombineChart = BI.inherit(BI.Widget, {
     _init: function () {
         BI.CombineChart.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+
+        //图可配置属性
+        this.colors = [];
         this.CombineChart = BI.createWidget({
             type: "bi.chart",
             element: this.element
@@ -122,11 +132,53 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 break;
 
         }
+        addOptionsToConfig();
         return [result, config];
+
+        function addOptionsToConfig(){
+            if(BI.isNotEmptyArray(self.chart_color)){
+                config.colors = self.chart_color;
+            }
+            if(config.yAxis.length === 1){
+                config.yAxis[0].reversed = self.left_y_axis_reversed;
+                config.yAxis[0].text = self.show_left_y_axis_title === true ? self.left_y_axis_title : "";
+                config.yAxis[0].formatter = formatTickInYaxis(self.left_y_axis_style);
+            }
+            if(config.yAxis.length === 2){
+                config.yAxis[1].text = self.show_right_y_axis_title === true ? self.right_y_axis_title : "";
+                config.yAxis[1].formatter = formatTickInYaxis(self.right_y_axis_style);
+                config.yAxis[1].reversed = self.right_y_axis_reversed;
+            }
+        }
+
+        function formatTickInYaxis(type){
+            switch (type) {
+                case self.constants.NORMAL:
+                    return "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}";
+                case self.constants.ZERO2POINT:
+                    return "function(){return window.FR ? FR.contentFormat(arguments[0], '#0') : arguments[0]}";
+                case self.constants.ONE2POINT:
+                    return "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.0#') : arguments[0]}";
+                case self.constants.TWO2POINT:
+                    return "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.00') : arguments[0]}";
+            }
+        }
     },
 
     setTypes: function(types){
         this.options.types = types||[[]];
+    },
+
+    setOptions: function(options){
+        this.left_y_axis_title = options.left_y_axis_title || "";
+        this.right_y_axis_title = options.right_y_axis_title || "";
+        this.chart_color = options.chart_color || [];
+        this.left_y_axis_style = options.left_y_axis_style;
+        this.right_y_axis_style = options.right_y_axis_style;
+        this.show_left_y_axis_title = options.show_left_y_axis_title;
+        this.show_right_y_axis_title = options.show_right_y_axis_title;
+        this.left_y_axis_reversed = options.left_y_axis_reversed;
+        this.right_y_axis_reversed = options.right_y_axis_reversed;
     },
 
     populate: function (items, types) {

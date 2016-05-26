@@ -51,6 +51,21 @@ BI.NumberStatisticDimension = BI.inherit(BI.AbstractDimension, {
                     o.model.setDimensionGroupById(o.dId, {type: BICst.SUMMARY_TYPE.COUNT});
                     self.checkStatus();
                     break;
+                case BICst.STATISTICS_GROUP_NUMBER_COMBO.RECORD_COUNT:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.SUMMARY_TYPE.RECORD_COUNT});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_NUMBER_COMBO.DISPLAY:
+                    o.model.setDimensionUsedById(o.dId, true);
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_NUMBER_COMBO.HIDDEN:
+                    o.model.setDimensionUsedById(o.dId, false);
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_NUMBER_COMBO.RENAME:
+                    self.nameEditor.focus();
+                    break;
                 case BICst.STATISTICS_GROUP_NUMBER_COMBO.DELETE:
                     self.fireEvent(BI.AbstractDimension.EVENT_DESTROY);
                     break;
