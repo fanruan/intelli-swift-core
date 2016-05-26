@@ -88,7 +88,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (!this.title) {
             this.title = BI.createWidget({
                 type: "bi.shelter_editor",
-                cls: BI.Utils.getWidgetNamePositionByID(id) === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
+                cls: BI.Utils.getWSNamePosByID(id) === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
                     "dashboard-title-left" : "dashboard-title-center",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
@@ -220,7 +220,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _refreshLayout: function () {
-        var showTitle = BI.Utils.isShowWidgetNameByID(this.model.get("id"));
+        var showTitle = BI.Utils.getWSShowNameByID(this.model.get("id"));
         if (showTitle === false) {
             this.title.setVisible(false);
             this.widget.attr("items")[0].top = 0;
@@ -234,7 +234,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _refreshTitlePosition: function () {
-        var pos = BI.Utils.getWidgetNamePositionByID(this.model.get("id"));
+        var pos = BI.Utils.getWSNamePosByID(this.model.get("id"));
         var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
             "dashboard-title-center" : "dashboard-title-left";
         this.title.element.removeClass("dashboard-title-left")

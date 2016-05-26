@@ -6,8 +6,7 @@ BIDezi.DateRangeModel = BI.inherit(BI.Model, {
             type: BICst.WIDGET.DATE,
             dimensions: {},
             view: {},
-            value: {},
-            settings: BICst.DEFAULT_CONTROL_SETTING
+            value: {}
         })
     },
 

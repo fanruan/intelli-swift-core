@@ -279,6 +279,19 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             transfer_filter: this.transferFilter.isSelected()
         }
     },
+    
+    populate: function(){
+        var wId = this.options.wId;
+        this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
+        this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
+        this.tableSyleGroup.setValue(BI.Utils.getWSThemeColorByID(wId));
+        this.showNumber.setSelected(BI.Utils.getWSShowNumberByID(wId));
+        this.showRowTotal.setSelected(BI.Utils.getWSShowRowTotalByID(wId));
+        this.openRowNode.setSelected(BI.Utils.getWSOpenRowNodeByID(wId));
+        this.maxRow.setValue(BI.Utils.getWSMaxRowByID(wId));
+        this.freezeDim.setSelected(BI.Utils.getWSFreezeDimByID(wId));
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+    },
 
     setValue: function(v){
         this.tableFormGroup.setValue(v.table_form);

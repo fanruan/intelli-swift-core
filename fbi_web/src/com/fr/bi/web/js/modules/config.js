@@ -919,12 +919,6 @@ BICst.DEFAULT_CHART_SETTING = {
     name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
 };
 
-BICst.DEFAULT_CONTROL_SETTING = {
-    show_name: true,
-    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
-};
-
-
 BICst.CAL_TARGET_TYPE = [{
     text: BI.i18nText("BI-Formula"),
     value: BICst.TARGET_TYPE.FORMULA

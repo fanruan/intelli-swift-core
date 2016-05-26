@@ -100,7 +100,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 children: self._createTableItems(json.value)
             }];
 
-            self.table.attr("showNumber", BI.Utils.getWidgetSettingsByID(self.options.wId).show_number);
+            self.table.attr("showNumber", BI.Utils.getWSShowNumberByID(self.options.wId));
             self.pager.setAllPages(Math.ceil(row / size));
             self.pager.setValue(vPage);
             callback(items, header, [], [])

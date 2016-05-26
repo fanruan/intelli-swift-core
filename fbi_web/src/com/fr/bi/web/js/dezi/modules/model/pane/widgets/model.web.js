@@ -4,8 +4,7 @@
 BIDezi.WebWidgetModel = BI.inherit(BI.Model, {
     _defaultConfig: function() {
         return BI.extend(BIDezi.WebWidgetModel.superclass._defaultConfig.apply(this,arguments), {
-            url: "",
-            settings: BICst.DEFAULT_CONTROL_SETTING
+            url: ""
         });
     },
 
