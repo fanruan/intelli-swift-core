@@ -139,12 +139,12 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             if(BI.isNotEmptyArray(self.chart_color)){
                 config.colors = self.chart_color;
             }
-            if(config.yAxis.length === 1){
+            if(BI.has(config, "yAxis") && config.yAxis.length === 1){
                 config.yAxis[0].reversed = self.left_y_axis_reversed;
                 config.yAxis[0].text = self.show_left_y_axis_title === true ? self.left_y_axis_title : "";
                 config.yAxis[0].formatter = formatTickInYaxis(self.left_y_axis_style);
             }
-            if(config.yAxis.length === 2){
+            if(BI.has(config, "yAxis") && config.yAxis.length === 2){
                 config.yAxis[1].text = self.show_right_y_axis_title === true ? self.right_y_axis_title : "";
                 config.yAxis[1].formatter = formatTickInYaxis(self.right_y_axis_style);
                 config.yAxis[1].reversed = self.right_y_axis_reversed;

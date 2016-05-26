@@ -55,6 +55,10 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                     (this.panel.isValid() ? this.fireEvent(BI.NumberIntervalCustomGroupTab.EVENT_VALID) : this.fireEvent(BI.NumberIntervalCustomGroupTab.EVENT_ERROR)));
                 break;
             case BI.NumberIntervalCustomGroupCombo.Type_Auto:
+                if(BI.isNull(this.space)){
+                    this.space = this._checkInterval();
+                    this.editor.setValue(this.space);
+                }
                 this.fireEvent(BI.NumberIntervalCustomGroupTab.EVENT_VALID);
                 break;
         }
@@ -113,6 +117,9 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                         }
                         return true;
                     }
+                });
+                this.editor.on(BI.Editor.EVENT_CONFIRM, function(){
+                    self.space = this.getValue();
                 });
                 return BI.createWidget({
                     type:"bi.htape",
@@ -285,7 +292,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                 break;
             case BI.NumberIntervalCustomGroupTab.Type_Group_Auto:
                 group["type"] = BI.NumberIntervalCustomGroupTab.Type_Group_Auto;
-                value["group_interval"] = this.editor.getValue();
+                value["group_interval"] = this.space;
                 value["min"] = this.min;
                 value["max"] = this.max;
                 break;
