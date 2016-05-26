@@ -116,7 +116,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
         }
         self.editor =  BI.createWidget({
             type: "bi.text_editor",
-            allowBlank : true,
+            allowBlank : field_type === BICst.COLUMN.STRING,
             watermark: BI.i18nText("BI-Please_Enter_Value"),
             errorText: errorText,
             validationChecker : function (v) {
