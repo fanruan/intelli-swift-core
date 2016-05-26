@@ -91,7 +91,6 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
     checkStatus: function(){
         var o = this.options;
         this.nameEditor.setState(o.model.getTextByType(o.dId, o.groupOrSummary, o.fieldType));
-        this.usedCheck.setSelected(o.model.getDimensionUsedById(o.dId));
     },
 
     populate: function(){
