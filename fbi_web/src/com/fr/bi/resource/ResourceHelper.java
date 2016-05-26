@@ -1305,6 +1305,10 @@ public class ResourceHelper {
                 //另存为
                 "com/fr/bi/web/js/modules/saveas/report.saveas.floatbox.js",
 
+                //图表钻取
+                "com/fr/bi/web/js/modules/chartdrill/widget.chartdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
+
                 //etl plugin
                 "com/fr/bi/web/js/extend/excel/etl.excel.plugin.js",
                 //sql plugin

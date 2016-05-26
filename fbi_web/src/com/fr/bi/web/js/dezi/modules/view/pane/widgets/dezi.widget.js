@@ -43,6 +43,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var self = this;
         this._buildWidgetTitle();
+        this._buildChartDrill();
         this._createTools();
 
         this.tableChart = BI.createWidget({
@@ -72,6 +73,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 right: 10,
                 top: 50,
                 bottom: 10
+            }, {
+                el: this.chartDrill,
+                left: 0,
+                top: 12,
+                right: 0
             }]
         });
         this.widget.element.hover(function () {
@@ -105,6 +111,14 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         } else {
             this.title.setValue(BI.Utils.getWidgetNameByID(id));
         }
+    },
+
+    _buildChartDrill: function(){
+        this.chartDrill = BI.createWidget({
+            type: "bi.chart_drill",
+            wId: this.model.get("id")
+        });
+        this.chartDrill.populate();
     },
 
     _createTools: function () {
