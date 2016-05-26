@@ -11,7 +11,7 @@ import com.fr.bi.stable.data.BIFieldID;
  * @author Connery
  * @since 4.0
  */
-public interface FieldDataSourceService {
+public interface BusinessTableSourceService {
     void envChanged();
 
     BusinessTable getBusinessTable(BIFieldID id) throws BIKeyAbsentException;
@@ -21,4 +21,6 @@ public interface FieldDataSourceService {
     void removeBusinessTable(BIFieldID id) throws BIKeyAbsentException;
 
     void editBusinessTable(BIFieldID id, BusinessTable source) throws BIKeyDuplicateException, BIKeyAbsentException;
+
+    boolean containFieldID(BIFieldID id);
 }

@@ -6,6 +6,6 @@ package com.finebi.cube.conf.datasource;
  * @author Connery
  * @since 4.0
  */
-public interface BIDataSource {
+public interface DataSourceCompoundService {
 
 }

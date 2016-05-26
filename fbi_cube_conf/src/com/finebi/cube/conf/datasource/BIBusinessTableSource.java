@@ -17,8 +17,8 @@ import com.fr.general.ComparatorUtils;
  * @author Connery
  * @since 4.0
  */
-@BIMandatedObject(factory = IFactoryService.CONF_XML, implement = FieldDataSourceService.class)
-public class BIFieldDataSource extends BIBasicDataSource<BIFieldID, BusinessTable> implements FieldDataSourceService {
+@BIMandatedObject(factory = IFactoryService.CONF_XML, implement = BusinessTableSourceService.class)
+public class BIBusinessTableSource extends BIBasicDataSource<BIFieldID, BusinessTable> implements BusinessTableSourceService {
 
 
     @Override
@@ -56,5 +56,9 @@ public class BIFieldDataSource extends BIBasicDataSource<BIFieldID, BusinessTabl
         editSource(id, source);
     }
 
+    @Override
+    public boolean containFieldID(BIFieldID id) {
+        return contain(id);
+    }
 
 }
