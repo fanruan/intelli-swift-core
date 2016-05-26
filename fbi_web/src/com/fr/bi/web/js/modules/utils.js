@@ -353,91 +353,91 @@
         },
 
         //settings  ---- start ----
-        getWSTableFormByID: function(wid) {
+        getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.table_form) ? ws.table_form :
-                    BICst.DEFAULT_CHART_SETTING.table_form;  
+                BICst.DEFAULT_CHART_SETTING.table_form;
         },
 
-        getWSThemeColorByID: function(wid) {
+        getWSThemeColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.theme_color) ? ws.theme_color :
                 BICst.DEFAULT_CHART_SETTING.theme_color;
         },
 
-        getWSTableStyleByID: function(wid) {
+        getWSTableStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.table_style) ? ws.table_style :
                 BICst.DEFAULT_CHART_SETTING.table_style;
         },
 
-        getWSShowNumberByID: function(wid) {
+        getWSShowNumberByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_number) ? ws.show_number :
                 BICst.DEFAULT_CHART_SETTING.show_number;
         },
 
-        getWSShowRowTotalByID: function(wid) {
+        getWSShowRowTotalByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_row_total) ? ws.show_row_total :
                 BICst.DEFAULT_CHART_SETTING.show_row_total;
         },
 
-        getWSShowColTotalByID: function(wid) {
+        getWSShowColTotalByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_col_total) ? ws.show_col_total :
                 BICst.DEFAULT_CHART_SETTING.show_col_total;
         },
 
-        getWSOpenRowNodeByID: function(wid) {
+        getWSOpenRowNodeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.open_row_node) ? ws.open_row_node :
                 BICst.DEFAULT_CHART_SETTING.open_row_node;
         },
 
-        getWSOpenColNodeByID: function(wid) {
+        getWSOpenColNodeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.open_col_node) ? ws.open_col_node :
                 BICst.DEFAULT_CHART_SETTING.open_col_node;
         },
 
-        getWSMaxRowByID: function(wid) {
+        getWSMaxRowByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.max_row) ? ws.max_row :
                 BICst.DEFAULT_CHART_SETTING.max_row;
         },
 
-        getWSMaxColByID: function(wid) {
+        getWSMaxColByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.max_col) ? ws.max_col :
                 BICst.DEFAULT_CHART_SETTING.max_col;
         },
 
-        getWSFreezeDimByID: function(wid) {
+        getWSFreezeDimByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.freeze_dim) ? ws.freeze_dim :
                 BICst.DEFAULT_CHART_SETTING.freeze_dim;
         },
 
-        getWSTransferFilterByID: function(wid) {
+        getWSTransferFilterByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.transfer_filter) ? ws.transfer_filter :
                 BICst.DEFAULT_CHART_SETTING.transfer_filter;
         },
 
-        getWSShowNameByID: function(wid) {
+        getWSShowNameByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_name) ? ws.show_name :
                 BICst.DEFAULT_CHART_SETTING.show_name;
         },
 
-        getWSNamePosByID: function(wid) {
+        getWSNamePosByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.name_pos) ? ws.name_pos :
                 BICst.DEFAULT_CHART_SETTING.name_pos;
         },
-        
-        getWSColumnSizeByID: function(wid) {
+
+        getWSColumnSizeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.column_size) ? ws.column_size : [];
         },
@@ -480,7 +480,7 @@
         },
 
         getWidgetFilterValueByID: function (wid) {
-            if(this.isWidgetExistByID(wid)) {
+            if (this.isWidgetExistByID(wid)) {
                 return Data.SharingPool.get("widgets", wid, "filter_value");
             }
         },
@@ -489,7 +489,7 @@
             if (!wid) {
                 return BI.keys(Data.SharingPool.get("dimensions"))
             }
-            if(this.isWidgetExistByID(wid)) {
+            if (this.isWidgetExistByID(wid)) {
                 return BI.keys(Data.SharingPool.get("widgets", wid, "dimensions"));
             }
         },
@@ -725,7 +725,7 @@
         getExpressionValuesByDimensionID: function (dId) {
             var expression = this.getExpressionByDimensionID(dId);
             if (BI.isNotNull(expression)) {
-                return expression.ids;
+                return expression.ids || [];
             }
             return [];
         },
@@ -762,9 +762,51 @@
             var wId = this.getWidgetIDByDimensionID(dId);
             var views = this.getWidgetViewByID(wId);
             var type = this.getDimensionTypeByID(dId);
-            var _set = [BICst.TARGET_TYPE.STRING = 1,
-                BICst.TARGET_TYPE.NUMBER = 2,
-                BICst.TARGET_TYPE.DATE = 3];
+            var _set = [BICst.TARGET_TYPE.STRING,
+                BICst.TARGET_TYPE.NUMBER,
+                BICst.TARGET_TYPE.DATE];
+            var region = 0;
+            BI.some(views, function (reg, view) {
+                if (view.contains(dId)) {
+                    region = reg;
+                    return true;
+                }
+            });
+            return BI.parseInt(region) >= BI.parseInt(BICst.REGION.TARGET1) && _set.contains(type);
+        },
+
+        isCalculateTargetByDimensionID: function (dId) {
+            var wId = this.getWidgetIDByDimensionID(dId);
+            var views = this.getWidgetViewByID(wId);
+            var type = this.getDimensionTypeByID(dId);
+            var _set = [BICst.TARGET_TYPE.FORMULA,
+                BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE,
+                BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE,
+                BICst.TARGET_TYPE.RANK,
+                BICst.TARGET_TYPE.RANK_IN_GROUP,
+                BICst.TARGET_TYPE.SUM_OF_ABOVE,
+                BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP,
+                BICst.TARGET_TYPE.SUM_OF_ALL,
+                BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP,
+                BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE,
+                BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE
+            ];
+            var region = 0;
+            BI.some(views, function (reg, view) {
+                if (view.contains(dId)) {
+                    region = reg;
+                    return true;
+                }
+            });
+            return BI.parseInt(region) >= BI.parseInt(BICst.REGION.TARGET1) && _set.contains(type);
+        },
+
+        isCounterTargetByDimensionID: function (dId) {
+            var wId = this.getWidgetIDByDimensionID(dId);
+            var views = this.getWidgetViewByID(wId);
+            var type = this.getDimensionTypeByID(dId);
+            var _set = [BICst.TARGET_TYPE.COUNTER
+            ];
             var region = 0;
             BI.some(views, function (reg, view) {
                 if (view.contains(dId)) {
@@ -1393,7 +1435,7 @@
                             var tempRegionType = self.getRegionTypeByDimensionID(drill.dId);
                             var dIndex = widget.view[drillRegionType].indexOf(drId);
                             BI.remove(widget.view[tempRegionType], drill.dId);
-                            if(drillRegionType === tempRegionType) {
+                            if (drillRegionType === tempRegionType) {
                                 widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
                             } else {
                                 widget.view[drillRegionType].push(drill.dId);
