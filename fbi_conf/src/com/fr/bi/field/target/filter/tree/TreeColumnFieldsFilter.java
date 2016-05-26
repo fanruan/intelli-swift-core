@@ -11,6 +11,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -32,10 +33,14 @@ import java.util.Set;
 
 public class TreeColumnFieldsFilter extends AbstractTargetFilter {
     private static String XML_TAG = "TreeColumnFieldsFilter";
+    @BICoreField
     private BusinessField[] keys;
+    @BICoreField
     private TreeFilterValue[] values;
     private JSONObject valueJo;
+    @BICoreField
     private BusinessTable foreignTable;
+    @BICoreField
     private BITableRelation[][] relations;
 
     /**

@@ -1,4 +1,4 @@
-package com.fr.bi.stable.relation;
+package com.finebi.cube.relation;
 
 import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.code.BILogger;

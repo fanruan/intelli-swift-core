@@ -6,7 +6,9 @@ package com.fr.bi.field.filtervalue.date.rangefilter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.filter.NullFilterDealer;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
@@ -24,13 +26,14 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 
-public abstract class DateRangeFilterValue implements DateFilterValue, NullFilterDealer {
+public abstract class DateRangeFilterValue extends AbstractFilterValue<Long> implements DateFilterValue, NullFilterDealer {
 
     /**
-     *
-     */
-    private static final long serialVersionUID = 924801123261384205L;
-    protected DateRange range;
+	 *
+	 */
+	private static final long serialVersionUID = 924801123261384205L;
+    @BICoreField
+	protected DateRange range;
 
     /**
      * 获取过滤后的索引
@@ -97,7 +100,10 @@ public abstract class DateRangeFilterValue implements DateFilterValue, NullFilte
      */
     @Override
     public JSONObject createJSON() throws Exception {
-        return range.createJSON();
+		JSONObject jo = range.createJSON();
+        JSONObject resjo = new JSONObject();
+        resjo.put("filter_value", jo);
+        return resjo;
     }
 
     /**
@@ -176,23 +182,18 @@ public abstract class DateRangeFilterValue implements DateFilterValue, NullFilte
 
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
     public boolean canCreateFilterIndex() {
         return false;
     }
 
-    @Override
-    public boolean isMatchValue(Long v) {
-        if (v == null) {
-            return dealWithNullValue();
-        }
+	@Override
+	public boolean isMatchValue(Long v) {
+		if(v == null){
+			return dealWithNullValue();
+		}
         BIDay key = new BIDay(v);
-        return inRange(key);
-    }
+		return inRange(key);
+	}
 
-    protected abstract boolean inRange(BIDay key);
+	 protected abstract boolean inRange(BIDay key);
 }

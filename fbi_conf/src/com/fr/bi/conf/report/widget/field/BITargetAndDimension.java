@@ -6,9 +6,10 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.base.provider.NameProvider;
 import com.fr.bi.base.provider.ParseJSONWithUID;
+import com.fr.bi.common.BICoreService;
 import com.fr.js.NameJavaScriptGroup;
 
-public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider {
+public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BICoreService {
 
     boolean useHyperLink();
 

@@ -9,7 +9,9 @@ import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -28,13 +30,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-public abstract class NumberEvenFilterValue implements NumberFilterValue {
+public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue {
     private static final long serialVersionUID = 4162890826727140538L;
+    @BICoreField
     protected BusinessField column = null;
+    @BICoreField
     protected BIUser user;
     /**
      * default 0.0
      */
+    @BICoreField
     protected double V = 0.0;
 
     @Override

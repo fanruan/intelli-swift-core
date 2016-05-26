@@ -3,10 +3,11 @@
  */
 package com.fr.bi.field.filtervalue.number.nonefilter;
 
-import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
+import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -15,7 +16,7 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 
-public abstract class NumberNoneValueFilterValue implements NumberFilterValue {
+public abstract class NumberNoneValueFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue {
 
     /**
      *
@@ -115,10 +116,6 @@ public abstract class NumberNoneValueFilterValue implements NumberFilterValue {
         return false;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     @Override
     public boolean canCreateFilterIndex() {
