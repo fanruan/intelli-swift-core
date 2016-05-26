@@ -38,14 +38,6 @@ BI.NumberGroupDimension = BI.inherit(BI.AbstractDimension, {
                 case BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_SETTING:
                     self._setGroups();
                     break;
-                case BICst.STATISTICS_GROUP_NUMBER_COMBO.DISPLAY:
-                    o.model.setDimensionUsedById(o.dId, true);
-                    self.checkStatus();
-                    break;
-                case BICst.STATISTICS_GROUP_NUMBER_COMBO.HIDDEN:
-                    o.model.setDimensionUsedById(o.dId, false);
-                    self.checkStatus();
-                    break;
                 case BICst.STATISTICS_GROUP_NUMBER_COMBO.RENAME:
                     self.nameEditor.focus();
                     break;

@@ -37,14 +37,6 @@ BI.StringStatisticDimension = BI.inherit(BI.AbstractDimension, {
                     o.model.setDimensionGroupById(o.dId, {type: BICst.SUMMARY_TYPE.RECORD_COUNT});
                     self.checkStatus();
                     break;
-                case BICst.STATISTICS_GROUP_STRING_COMBO.DISPLAY:
-                    o.model.setDimensionUsedById(o.dId, true);
-                    self.checkStatus();
-                    break;
-                case BICst.STATISTICS_GROUP_STRING_COMBO.HIDDEN:
-                    o.model.setDimensionUsedById(o.dId, false);
-                    self.checkStatus();
-                    break;
                 case BICst.STATISTICS_GROUP_STRING_COMBO.RENAME:
                     self.nameEditor.focus();
                     break;

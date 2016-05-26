@@ -51,14 +51,6 @@ BI.DateGroupDimension = BI.inherit(BI.AbstractDimension, {
                     o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.W});
                     self.checkStatus();
                     break;
-                case BICst.STATISTICS_GROUP_DATE_COMBO.DISPLAY:
-                    o.model.setDimensionUsedById(o.dId, true);
-                    self.checkStatus();
-                    break;
-                case BICst.STATISTICS_GROUP_DATE_COMBO.HIDDEN:
-                    o.model.setDimensionUsedById(o.dId, false);
-                    self.checkStatus();
-                    break;
                 case BICst.STATISTICS_GROUP_DATE_COMBO.RENAME:
                     self.nameEditor.focus();
                     break;

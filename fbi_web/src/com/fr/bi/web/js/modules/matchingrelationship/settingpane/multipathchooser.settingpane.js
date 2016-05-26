@@ -160,12 +160,12 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        this.path = v;
-        this.pathChooser.setValue(this._unpackValueByValue(v));
+        this.path = v[0];
+        this.pathChooser.setValue(this._unpackValueByValue(v[0]));
     },
 
     getValue: function () {
-        return this.path;
+        return [this.path];
     }
 });
 $.shortcut('bi.multi_path_chooser', BI.MultiPathChooser);
