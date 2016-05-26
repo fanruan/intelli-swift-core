@@ -2,17 +2,18 @@ package com.fr.bi.conf.utils;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.base.BICore;
+import com.finebi.cube.conf.BIDataSourceManagerProvider;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.module.BIModule;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -39,52 +40,34 @@ public class BIModuleUtils {
         JSONObject jo = new JSONObject();
         for (BIModule module : BIModuleManager.getModules()) {
             BISystemPackageConfigurationProvider provider = module.getBusiPackManagerProvider();
-            jo.join( provider.createGroupJSON(userId));
+            jo.join(provider.createGroupJSON(userId));
         }
         return jo;
     }
 
-    public static ICubeTableService getTableIndex(Table td, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
+    public static ICubeTableService getTableIndex(BusinessTable td, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
-            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            BICore core = provider.getCoreByTableID(td.getID(), user);
-            if (core != null) {
-                return childLoaderMap.get(module.getModuleName()).getTableIndex(core);
-            }
+            return childLoaderMap.get(module.getModuleName()).getTableIndex(td.getTableSource());
         }
         return null;
     }
 
-    public static ICubeTableService getTableIndex(BICore core, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
+    public static ICubeTableService getTableIndex(CubeTableSource tableSource, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
-            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByCore(core, user);
-            if (source != null) {
-                return childLoaderMap.get(module.getModuleName()).getTableIndex(core);
-            }
+            return childLoaderMap.get(module.getModuleName()).getTableIndex(tableSource);
         }
         return null;
     }
 
-    public static ITableSource getSourceByCore(BICore md5, BIUser user) {
-        for (BIModule module : BIModuleManager.getModules()) {
-            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByCore(md5, user);
-            if (source != null) {
-                return source;
-            }
-        }
-        return null;
-    }
 
-    public static BIKey getFieldIndex(BIField column, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
+    public static BIKey getFieldIndex(BusinessField column, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         ICubeTableService ti = getTableIndex(column.getTableBelongTo(), user, childLoaderMap);
         return ti == null ? null : ti.getColumnIndex(column);
     }
 
 
-    public static Set<BIBusinessPackage> getAllPacks(long userId) {
-        Set<BIBusinessPackage> set = new HashSet<BIBusinessPackage>();
+    public static Set<IBusinessPackageGetterService> getAllPacks(long userId) {
+        Set<IBusinessPackageGetterService> set = new HashSet<IBusinessPackageGetterService>();
         for (BIModule module : BIModuleManager.getModules()) {
             BISystemPackageConfigurationProvider provider = module.getBusiPackManagerProvider();
             set.addAll(provider.getAllPackages(userId));
@@ -92,10 +75,15 @@ public class BIModuleUtils {
         return set;
     }
 
-    public static ITableSource getSourceByID(BITableID id, BIUser user) {
+    public static CubeTableSource getSourceByID(BITableID id, BIUser user) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByID(id, user);
+            CubeTableSource source = null;
+            try {
+                source = provider.getTableSource(id);
+            } catch (BIKeyAbsentException e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
             if (source != null) {
                 return source;
             }

@@ -7,7 +7,7 @@ import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 
@@ -21,7 +21,7 @@ public class SimpleIndexGenerator extends AbstractIndexGenerator {
     protected int version;
     protected ICubeDataLoader loader;
 
-    public SimpleIndexGenerator(TableCubeFile cube, ITableSource dataSource, Set<ITableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
+    public SimpleIndexGenerator(TableCubeFile cube, CubeTableSource dataSource, Set<CubeTableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
         super(cube, dataSource, derivedDataSources, log);
         this.version = version;
         this.loader = loader;
@@ -47,7 +47,7 @@ public class SimpleIndexGenerator extends AbstractIndexGenerator {
 
     protected long writeSimpleIndex() {
         final long start = System.currentTimeMillis();
-        final IPersistentTable table = this.dataSource.getDbTable();
+        final IPersistentTable table = this.dataSource.getPersistentTable();
         return this.dataSource.read(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {

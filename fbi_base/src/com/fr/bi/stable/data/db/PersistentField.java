@@ -1,7 +1,7 @@
 package com.fr.bi.stable.data.db;
 
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.IPersistentField;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
@@ -12,7 +12,7 @@ import com.fr.json.JSONObject;
  *
  * @author Daniel-pc
  */
-public class PersistentField extends BIDBObject implements IPersistentField {
+public class PersistentField implements IPersistentField {
     /**
      *
      */
@@ -29,19 +29,20 @@ public class PersistentField extends BIDBObject implements IPersistentField {
     private String remark;
     private boolean isPrimaryKey;
     private int column_size;
-    private int bitype;
+    private int biType;
+    private boolean canSetUsable;
     //小数位数
     private int scale = DEFALUTSCALE;
 
     public PersistentField(String columnName, String remark, int type, boolean isPrimaryKey, int column_size, int scale) {
         this.setType(type);
         this.setColumnName(columnName);
-        this.bitype = BIDBUtils.sqlType2BI(type, column_size, scale);
+        this.biType = BIDBUtils.sqlType2BI(type, column_size, scale);
         this.remark = remark;
         this.isPrimaryKey = isPrimaryKey;
         //FIXME 临时处理大于8K长度的字段，比如sqlserver TEXT; 截取前255
         this.column_size = column_size > 8000 ? 255 : column_size;
-        if (scale==0){
+        if (scale == 0) {
             System.out.println("find");
         }
         this.scale = scale;
@@ -104,7 +105,7 @@ public class PersistentField extends BIDBObject implements IPersistentField {
      * @return java.sql.Types
      */
     public int getBIType() {
-        return bitype;
+        return biType;
     }
 
     public void setColumn_size(int column_size) {
@@ -193,8 +194,8 @@ public class PersistentField extends BIDBObject implements IPersistentField {
         return scale;
     }
 
-    public DBField toDBField(Table table) {
-        return new DBField(table.getID().getIdentityValue(), getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getType(), getColumnSize(), getScale()), getColumnSize());
+    public BICubeFieldSource toDBField(CubeTableSource tableBelongTo) {
+        return new BICubeFieldSource(tableBelongTo, getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getType(), getColumnSize(), getScale()), getColumnSize());
     }
 
     /**
@@ -216,7 +217,7 @@ public class PersistentField extends BIDBObject implements IPersistentField {
                 && ((PersistentField) o2).isPrimaryKey() == this.isPrimaryKey();
     }
 
-    public boolean canSetUseable() {
-        return true;
+    public boolean canSetUsable() {
+        return canSetUsable;
     }
 }

@@ -1,25 +1,25 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.cal.Executor.ExecutorPartner;
 import com.fr.bi.cal.analyze.cal.result.NewRootNodeChild;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.exception.TooManySummaryException;
+import com.fr.bi.common.inter.Release;
 import com.fr.bi.field.dimension.calculator.CombinationDateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.CombinationDimensionCalculator;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.SummaryCalculator;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.report.result.TargetCalculator;
-import com.fr.bi.common.inter.Release;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -36,7 +36,7 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     protected volatile Node node;
 
     //当前计算的那个表的指标
-    protected Table tableKey;
+    protected BusinessTable tableKey;
 
     protected ICubeDataLoader loader;
 
@@ -50,13 +50,13 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     /**
      * Group计算的构造函数
      */
-    protected NoneDimensionGroup(Table tableKey, GroupValueIndex gvi, ICubeDataLoader loader) {
+    protected NoneDimensionGroup(BusinessTable tableKey, GroupValueIndex gvi, ICubeDataLoader loader) {
         this.loader = loader;
         this.tableKey = tableKey;
         initRoot(gvi);
     }
 
-    public static NoneDimensionGroup createDimensionGroup(final Table tableKey, final GroupValueIndex gvi, final ICubeDataLoader loader) {
+    public static NoneDimensionGroup createDimensionGroup(final BusinessTable tableKey, final GroupValueIndex gvi, final ICubeDataLoader loader) {
 
 
         return new NoneDimensionGroup(tableKey, gvi, loader);
@@ -74,7 +74,7 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
             if (key == null) {
                 return calList;
             }
-            ICubeTableService summaryIndex = getLoader().getTableIndex(key.createTableKey());
+            ICubeTableService summaryIndex = getLoader().getTableIndex(key.createTableKey().getTableSource());
             if (node.getSummaryValue(key) == null) {
                 calList.add(key.createSummaryCalculator(summaryIndex, node));
             }
@@ -120,7 +120,6 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     /**
      * 计算根节点 第一个维度 用于分页
      *
-     * @param key 指标
      * @return 分页的node
      */
     public Node getRoot() {
@@ -147,7 +146,7 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
         return isPageFinished;
     }
 
-    public Table getTableKey() {
+    public BusinessTable getTableKey() {
         return tableKey;
     }
 

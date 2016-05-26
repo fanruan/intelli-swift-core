@@ -1,9 +1,6 @@
 package com.fr.bi.web.conf.services;
 
 import com.fr.base.FRContext;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
@@ -77,7 +74,7 @@ public class BIRemoveTableFromBusinessPackageAction extends AbstractBIConfigureA
             /**
              * Todo 又是packageName了
              */
-            BIConfigureManagerCenter.getPackageManager().removeTable(userId, new BIPackageID(packageName), new BITableID(id));
+//            BusinessTable.getPackageManager().removeTable(userId, new BIPackageID(packageName), new BITableID(id));
             /**
              * Todo 保存资源
              */

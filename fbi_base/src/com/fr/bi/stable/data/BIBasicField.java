@@ -1,10 +1,9 @@
 package com.fr.bi.stable.data;
 
-import com.fr.bi.common.constant.BIValueConstant;
-import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.common.constant.BIValueConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -121,12 +120,12 @@ public class BIBasicField extends BIField implements JSONTransform, Cloneable, S
         if (getFieldType() ==  DBConstant.COLUMN.NUMBER){
             ICubeTableService ti = null;
             try{
-                 ti = loader.getTableIndex(this);
+//                 ti = loader.getTableIndex(getTableBelongTo());
             } catch (Exception e){
 
             }
-            jo.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, ti != null ? ti.getMAXValue(loader.getFieldIndex(this)) : 0);
-            jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? ti.getMINValue(loader.getFieldIndex(this)) : 0 );
+//            jo.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, ti != null ? ti.getMAXValue(loader.getFieldIndex(this)) : 0);
+//            jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? ti.getMINValue(loader.getFieldIndex(this)) : 0 );
         }
         return jo;
     }

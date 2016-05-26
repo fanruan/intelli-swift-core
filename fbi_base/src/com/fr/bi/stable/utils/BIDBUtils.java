@@ -5,7 +5,6 @@ import com.fr.base.TableData;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.dbdealer.*;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -449,7 +448,7 @@ public class BIDBUtils {
         return sql;
     }
 
-    private static String createSqlString(Dialect dialect, BIBasicField[] columns) {
+    private static String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
         StringBuffer sb = new StringBuffer();
         ArrayList<String> list = new ArrayList<String>();
         for (int i = 0; i < columns.length; i++) {
@@ -477,10 +476,10 @@ public class BIDBUtils {
 
     @SuppressWarnings("rawtypes")
     private static DBDealer[] createDBDealer(boolean needCharSetConvert, String originalCharSetName,
-                                             String newCharSetName, DBField[] columns) {
+                                             String newCharSetName, ICubeFieldSource[] columns) {
         List<DBDealer> res = new ArrayList<DBDealer>();
         for (int i = 0, ilen = columns.length; i < ilen; i++) {
-            DBField field = columns[i];
+            ICubeFieldSource field = columns[i];
             if (field.isUsable()) {
                 DBDealer object = null;
                 int rsColumn = i + 1;
@@ -520,7 +519,7 @@ public class BIDBUtils {
 
 
     private static int dealWithResultSet(ResultSet rs,
-                                         DBField[] columns,
+                                         ICubeFieldSource[] columns,
                                          Traversal<BIDataValue> traversal,
                                          boolean needCharSetConvert,
                                          String originalCharSetName,
@@ -538,7 +537,7 @@ public class BIDBUtils {
         return row;
     }
 
-    public static long runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal) {
+    public static long runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal) {
         return runSQL(sql, columns, traversal, 0);
     }
 
@@ -547,7 +546,7 @@ public class BIDBUtils {
      *
      * @param traversal
      */
-    public static int runSQL(SQLStatement sql, DBField[] columns, Traversal<BIDataValue> traversal, int row) {
+    public static int runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal, int row) {
         com.fr.data.impl.Connection connection = sql.getConn();
         Connection conn = null;
         Statement stmt = null;
@@ -589,7 +588,7 @@ public class BIDBUtils {
     /**
      * 执行sql语句，获取数据
      */
-    public static ResultSet runQuerySQL(SQLStatement sql, DBField[] columns) {
+    public static ResultSet runQuerySQL(SQLStatement sql, BICubeFieldSource[] columns) {
         com.fr.data.impl.Connection connection = sql.getConn();
         Connection conn = null;
         Statement stmt = null;

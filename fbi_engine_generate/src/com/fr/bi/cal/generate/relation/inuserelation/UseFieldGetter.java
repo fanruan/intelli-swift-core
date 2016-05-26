@@ -1,10 +1,10 @@
 package com.fr.bi.cal.generate.relation.inuserelation;
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.utils.BIReportUtils;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
-import com.fr.bi.stable.data.BIField;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,8 +21,8 @@ public class UseFieldGetter {
         this.user = user;
     }
 
-    public Set<BIField> getUsedField() {
-        Set<BIField> fields = new HashSet<BIField>();
+    public Set<BusinessField> getUsedField() {
+        Set<BusinessField> fields = new HashSet<BusinessField>();
         try {
             //Todo 权限过滤用到的字段
             List<BIReportNode> sysNodeList = BIDAOUtils.findByUserID(user.getUserId());
@@ -33,7 +33,7 @@ public class UseFieldGetter {
 
     }
 
-    private void dealWithBIReportNodeList(List<BIReportNode> ilist, Set<BIField> relationInUse, long userId) {
+    private void dealWithBIReportNodeList(List<BIReportNode> ilist, Set<BusinessField> relationInUse, long userId) {
         Iterator<BIReportNode> iter = ilist.iterator();
         while (iter.hasNext()) {
             BIReportNode node = iter.next();

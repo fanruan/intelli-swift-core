@@ -1,6 +1,13 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.conf.*;
+import com.finebi.cube.conf.datasource.BIDataSourceManager;
+import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
+import com.finebi.cube.conf.relation.BISystemTableRelationManager;
+import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
+import com.finebi.cube.conf.timer.UpdateFrequencyManager;
+import com.finebi.cube.conf.trans.BIAliasManager;
 import com.fr.base.FRContext;
 import com.fr.bi.DemoService;
 import com.fr.bi.cal.BICubeManager;
@@ -11,14 +18,11 @@ import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
-import com.fr.bi.conf.base.datasource.BIDataSourceManager;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
-import com.fr.bi.conf.base.pack.BISystemPackageConfigurationManager;
-import com.fr.bi.conf.base.relation.BISystemTableRelationManager;
-import com.fr.bi.conf.base.trans.BIAliasManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
+import com.fr.bi.etl.analysis.manager.BIAnalysisDataSourceManagerProvider;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.HSQLBIReportDAO;
@@ -83,6 +87,10 @@ public class BICoreModule extends AbstractModule {
         return StableFactory.getMarkedObject(ICubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
     }
 
+    @Override
+    public BIAnalysisDataSourceManagerProvider getAnalysisDataSourceManagerProvider() {
+        return null;
+    }
 
     private void registProviders() {
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
@@ -97,6 +105,9 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, new BIExcelViewManager());
         StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, new BISystemCubeConfManager());
+        StableFactory.registerMarkedObject(UpdateFrequencyManager.XML_TAG, new UpdateFrequencyManager());
+        StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
+
 
     }
 

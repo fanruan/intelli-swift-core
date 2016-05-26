@@ -1,8 +1,8 @@
 package com.fr.bi.cal.analyze.cal.store;
 
-import com.fr.bi.field.dimension.calculator.AbstractDimensionCalculator;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.field.dimension.calculator.AbstractDimensionCalculator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;
 
@@ -23,9 +23,9 @@ public class UserRightColumnKey extends AbstractDimensionCalculator {
      */
     private static final long serialVersionUID = -7314023318409359365L;
     private final static String ERROR_NAME = "ERROR_NAME";
-    private Table target;
+    private BusinessTable target;
     private GroupValueIndex gvi;
-    public UserRightColumnKey(GroupValueIndex gvi, Table target) {
+    public UserRightColumnKey(GroupValueIndex gvi, BusinessTable target) {
         super();
         this.gvi = gvi;
         this.target = target;
@@ -81,7 +81,7 @@ public class UserRightColumnKey extends AbstractDimensionCalculator {
      * @return 迭代器
      */
     @Override
-    public Iterator createValueMapIterator(Table table, ICubeDataLoader loader) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader) {
         Map<String, GroupValueIndex> vMap = new HashMap<String, GroupValueIndex>();
         vMap.put(ERROR_NAME, gvi);
         return vMap.entrySet().iterator();
@@ -101,7 +101,7 @@ public class UserRightColumnKey extends AbstractDimensionCalculator {
      * @return 是否为超级大分组
      */
     @Override
-    public boolean isSupperLargeGroup(Table targetTable, ICubeDataLoader loader) {
+    public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
         return false;
     }
 

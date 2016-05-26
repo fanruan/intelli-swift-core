@@ -1,14 +1,14 @@
 package com.fr.bi.field.dimension.calculator;
 
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.operation.group.IGroup;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -19,15 +19,15 @@ import java.util.List;
  */
 public class NoneDimensionCalculator implements DimensionCalculator {
     protected List<BITableSourceRelation> relations;
-    private BIField field;
+    private BusinessField field;
 
-    public NoneDimensionCalculator(BIField column, List<BITableSourceRelation> relations) {
+    public NoneDimensionCalculator(BusinessField column, List<BITableSourceRelation> relations) {
         this.field = column;
         this.relations = relations;
     }
 
     @Override
-	public BIField getField() {
+    public BusinessField getField() {
         return field;
     }
 
@@ -39,8 +39,8 @@ public class NoneDimensionCalculator implements DimensionCalculator {
      * @return
      */
     @Override
-    public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(Table target, ICubeDataLoader loader) {
-        return loader.getTableIndex(field).loadGroup(createKey(), relations);
+    public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
+        return loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(createKey(), relations);
     }
 
     /**
@@ -51,7 +51,7 @@ public class NoneDimensionCalculator implements DimensionCalculator {
      * @return 是否为超级大分组
      */
     @Override
-    public boolean isSupperLargeGroup(Table targetTable, ICubeDataLoader loader) {
+    public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
         return false;
     }
 
@@ -104,22 +104,22 @@ public class NoneDimensionCalculator implements DimensionCalculator {
     }
 
     @Override
-    public Iterator createValueMapIterator(Table table, ICubeDataLoader loader) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader) {
         return createNoneSortGroupValueMapGetter(table, loader).iterator();
     }
 
     @Override
-    public Iterator createValueMapIterator(Table table, ICubeDataLoader loader, boolean useReallData, int groupLimit) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit) {
         return null;
     }
 
     @Override
-    public ICubeColumnIndexReader createValueMap(Table table, ICubeDataLoader loader) {
+    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader) {
         return createNoneSortGroupValueMapGetter(table, loader);
     }
 
     @Override
-    public ICubeColumnIndexReader createValueMap(Table table, ICubeDataLoader loader, boolean useReallData, int groupLimit) {
+    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit) {
         return createNoneSortGroupValueMapGetter(table, loader);
     }
 

@@ -6,17 +6,17 @@ package com.fr.bi.field.filtervalue.string.rangefilter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -59,6 +59,7 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
     public boolean isTopOrBottomFilterValue() {
         return false;
     }
+
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -155,12 +156,12 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         if (valueSet.getValues().isEmpty()) {
             return null;
         }
         return createFilterIndexByRelations(dimension.getRelationList(), dimension.createNoneSortGroupValueMapGetter(target, loader),
-                loader.getTableIndex(dimension.getField()), loader.getTableIndex(target), dimension.createKey());
+                loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()), loader.getTableIndex(target.getTableSource()), dimension.createKey());
     }
 
     private GroupValueIndex createFilterIndexByRelations(List<BITableSourceRelation> relations, ICubeColumnIndexReader sgm, ICubeTableService cti, ICubeTableService eti, BIKey ckey) {
@@ -200,7 +201,7 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
     public boolean canCreateFilterIndex() {
         return true;
     }
-    
+
     /**
      * 是否显示记录
      *

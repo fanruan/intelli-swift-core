@@ -1,33 +1,32 @@
 package com.fr.bi.web.conf.utils;
 
-import com.fr.bi.base.BIUser;
-import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/22.
  */
 public class BIWebConfUtils {
-    public static boolean checkCubeVersion(ITableSource source, long userId) {
-        if (source == null || BIConfigureManagerCenter.getDataSourceManager().getTableSourceByCore(source.fetchObjectCore(), new BIUser(userId)) == null) {
+    public static boolean checkCubeVersion(CubeTableSource source, long userId) {
+        if (source == null) {
             return false;
         }
-        Set<Table> keys = source.createTableKeys();
-        Iterator<Table> it = keys.iterator();
+        ICubeDataLoader loader = BICubeManager.getInstance().fetchCubeLoader(userId);
+
+        Iterator<CubeTableSource> it = source.createSourceMap().values().iterator();
+
         while (it.hasNext()) {
-            Table key = it.next();
-            TableCubeFile cube = new TableCubeFile(BIPathUtils.createTablePath(key.getID().getIdentityValue(), userId));
-            if (!cube.checkCubeVersion()) {
-                return false;
-            }
+            CubeTableSource key = it.next();
+            ICubeTableService cube = loader.getTableIndex(key);
+//            if (!cube.getTableVersion()) {
+//                return false;
+//            }
         }
+
         return true;
     }
 }

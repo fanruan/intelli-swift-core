@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.packs;
 
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
 import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -32,15 +32,16 @@ public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
 
     /**
      * 保存业务包权限
+     *
      * @param packageIds 业务包名字
-     * @param roles     权限的字符串
+     * @param roles      权限的字符串
      * @throws Exception
      */
     private void savePackageAuthority(String packageIds, String roles, long userId) throws Exception {
         JSONArray rolesJA = new JSONArray(roles);
         JSONArray pIdsJA = new JSONArray(packageIds);
         List<BIPackageAuthority> authorities = new ArrayList<BIPackageAuthority>();
-        for(int i = 0; i < rolesJA.length(); i++) {
+        for (int i = 0; i < rolesJA.length(); i++) {
             BIPackageAuthority authority = new BIPackageAuthority();
             authority.parseJSON(rolesJA.getJSONObject(i));
             authorities.add(authority);

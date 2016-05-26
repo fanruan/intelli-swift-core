@@ -1,13 +1,13 @@
 package com.fr.bi.cal.analyze.executor.detail.execute;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIRowValue;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
@@ -29,7 +29,7 @@ public abstract class AbstractGVIRunner implements GVIRunner {
     protected ICubeDataLoader loader;
     protected transient BIDetailTarget[] viewDimension;
     protected transient String[] sortTargets;
-    protected transient Table target;
+    protected transient BusinessTable target;
     protected transient Map<String, TargetFilter> filterMap;
     protected BIUser biUser;
     public AbstractGVIRunner(GroupValueIndex gvi, BIDetailWidget widget, ICubeDataLoader loader, long userId) {

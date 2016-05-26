@@ -99,7 +99,7 @@ public class CrossCalculator {
                     calculator.calculateFilterIndex(loader);
 //	                if (node.getSummaryValue(key) == null) {
                     //TODO 改成多线程
-                    SummaryCalculator sc = calculator.createSummaryCalculator(loader.getTableIndex(calculator.createTableKey()), node);
+                    SummaryCalculator sc = calculator.createSummaryCalculator(loader.getTableIndex(calculator.createTableKey().getTableSource()), node);
                     sc.setTargetGettingKey(calculator.createTargetGettingKey());
                     Future futureValue = EvaluateSummaryValuePool.evaluateValue(sc);
                     try {

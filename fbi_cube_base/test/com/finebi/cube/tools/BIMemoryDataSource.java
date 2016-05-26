@@ -4,12 +4,12 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractTableSource;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -26,7 +26,7 @@ import java.util.*;
 public class BIMemoryDataSource extends AbstractTableSource {
 
     public String sourceID;
-    public List<DBField> fieldList;
+    public List<ICubeFieldSource> fieldList;
     public int rowCount;
     public Map<Integer, List> contents;
 
@@ -34,7 +34,7 @@ public class BIMemoryDataSource extends AbstractTableSource {
         this.sourceID = sourceID;
     }
 
-    public void setFieldList(List<DBField> fieldList) {
+    public void setFieldList(List<ICubeFieldSource> fieldList) {
         this.fieldList = fieldList;
     }
 
@@ -47,7 +47,7 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
-    public IPersistentTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         return null;
     }
 
@@ -57,19 +57,13 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
-    public DBField[] getFieldsArray(Set<ITableSource> sources) {
-        DBField[] result = new DBField[fieldList.size()];
+    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
+        ICubeFieldSource[] result = new BICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
             result[i] = fieldList.get(i);
         }
         return result;
     }
-
-    @Override
-    public Set<Table> createTableKeys() {
-        return null;
-    }
-
 
     @Override
     public int getLevel() {
@@ -82,7 +76,7 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         for (int i = 0; i < rowCount; i++) {
             Iterator<Map.Entry<Integer, List>> it = contents.entrySet().iterator();
             while (it.hasNext()) {
@@ -96,7 +90,7 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return 0;
     }
 
@@ -137,12 +131,12 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
-    public Map<BICore, ITableSource> createSourceMap() {
+    public Map<BICore, CubeTableSource> createSourceMap() {
         return null;
     }
 
     @Override
-    public Set<String> getUsedFields(ITableSource source) {
+    public Set<String> getUsedFields(CubeTableSource source) {
         return null;
     }
 

@@ -3,10 +3,10 @@ package com.fr.bi.cal.stable.index;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.log.BIRecord;
-import com.fr.bi.stable.data.BIField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONException;
 
@@ -18,12 +18,12 @@ import java.util.Map.Entry;
  */
 public class BeforeIndexGenerator extends AbstractIndexGenerator {
 
-    public BeforeIndexGenerator(TableCubeFile cube, ITableSource dataSource, Set<ITableSource> derivedDataSources, BIRecord log) {
+    public BeforeIndexGenerator(TableCubeFile cube, CubeTableSource dataSource, Set<CubeTableSource> derivedDataSources, BIRecord log) {
         super(cube, dataSource, derivedDataSources, log);
     }
 
 
-    private DBField[] getFieldsArray() {
+    private ICubeFieldSource[] getFieldsArray() {
         return dataSource.getFieldsArray(derivedDataSources);
     }
 
@@ -38,11 +38,11 @@ public class BeforeIndexGenerator extends AbstractIndexGenerator {
         long start = System.currentTimeMillis();
 
         try {
-            DBField[] columns = getFieldsArray();
+            ICubeFieldSource[] columns = getFieldsArray();
             List<String> columnList = new ArrayList<String>();
             Map<String, Integer> columnNameSet = new HashMap<String, Integer>();
-            for (DBField col : columns) {
-                BIField field = new DBField(dataSource.fetchObjectCore().getID().getIdentityValue(), col.getFieldName(), col.getClassType(), col.getFieldSize());
+            for (ICubeFieldSource col : columns) {
+                ICubeFieldSource field = new BICubeFieldSource(dataSource, col.getFieldName(), col.getClassType(), col.getFieldSize());
                 try {
                     columnList.add(field.createJSON().toString());
                 } catch (JSONException e) {

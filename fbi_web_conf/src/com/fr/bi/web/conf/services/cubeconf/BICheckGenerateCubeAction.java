@@ -5,7 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.TableSourceFactory;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -23,10 +23,10 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String tableJson = WebUtils.getHTTPRequestParameter(req, "table");
         long userId = ServiceUtils.getCurrentUserID(req);
-        ITableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
+        CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
         JSONObject jo = new JSONObject();
         ICubeDataLoader dataLoader = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId));
-        ICubeTableService tableService = dataLoader.getTableIndex(source.fetchObjectCore());
+        ICubeTableService tableService = dataLoader.getTableIndex(source);
         jo.put("isGenerated", tableService.isDataAvailable());
         WebUtils.printAsJSON(res, jo);
     }

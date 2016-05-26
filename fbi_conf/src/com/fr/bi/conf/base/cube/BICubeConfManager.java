@@ -1,10 +1,9 @@
 package com.fr.bi.conf.base.cube;
 
 import com.finebi.cube.api.BICubeManager;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
@@ -34,22 +33,22 @@ public class BICubeConfManager {
         this.loginField = loginField;
     }
 
-    public JSONObject createJSON() throws Exception{
+    public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        if(cubePath != null) {
+        if (cubePath != null) {
             jo.put("cube_path", cubePath);
         }
-        if(loginField != null) {
+        if (loginField != null) {
             jo.put("login_field", loginField);
         }
-        return  jo;
+        return jo;
     }
 
     public Object getFieldValue(long userId) {
         try {
             String tableId = BIIDUtils.getTableIDFromFieldID(loginField);
             BITableID tId = new BITableID(tableId);
-            ITableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tId, new BIUser(userId));
+            CubeTableSource source = BICubeConfigureCenter.getDataSourceManager().getTableSource(tId);
             Set set = source.getFieldDistinctNewestValues(BIIDUtils.getFieldNameFromFieldID(loginField), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
             return set;
         } catch (Exception e) {

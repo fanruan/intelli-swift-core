@@ -4,7 +4,7 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.etl.analysis.data.UserTableSource;
+import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.tableobj.UserETLIndexGenerator;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -28,7 +28,7 @@ public class UserETLUpdateTask implements CubeTask {
 	private static final long serialVersionUID = 8163408533936978327L;
 	private String path = UUID.randomUUID().toString();
 	
-	private UserTableSource source;
+	private UserCubeTableSource source;
 	
 	private UserETLIndexGenerator generator;
 	
@@ -38,7 +38,7 @@ public class UserETLUpdateTask implements CubeTask {
 	/**
 	 * @param source
 	 */
-	public UserETLUpdateTask(UserTableSource source) {
+	public UserETLUpdateTask(UserCubeTableSource source) {
 		this.source = source;
 		generator = new UserETLIndexGenerator(source, getTableVersion(), path);
 	}

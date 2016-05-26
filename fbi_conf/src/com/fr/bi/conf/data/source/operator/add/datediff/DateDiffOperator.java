@@ -67,8 +67,8 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if (jo.has("item")){
-            JSONObject jsonObject= jo.getJSONObject("item");
+        if (jo.has("item")) {
+            JSONObject jsonObject = jo.getJSONObject("item");
             if (jsonObject.has("firstField")) {
                 field1 = jsonObject.getString("firstField");
             }
@@ -87,11 +87,11 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
         void check();
     }
 
-    private class SystemTimeValueGetter implements  ValueGetter {
+    private class SystemTimeValueGetter implements ValueGetter {
 
-        long  t;
+        long t;
 
-        SystemTimeValueGetter(long t){
+        SystemTimeValueGetter(long t) {
             this.t = t;
         }
 
@@ -113,18 +113,18 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
         }
 
         public long getTime(int row) {
-            return (Long)ti.getRow(key, row);
+            return (Long) ti.getRow(key, row);
         }
 
         public void check() {
-            BIDateUtils.checkDatefieldType(ti.getColumns(), key);
+            BIDateUtils.checkDateFieldType(ti.getColumns(), key);
         }
     }
 
 
-    private ValueGetter createValueGetter (String field,  ICubeTableService ti, long systemTime) {
+    private ValueGetter createValueGetter(String field, ICubeTableService ti, long systemTime) {
         ValueGetter vg = null;
-        if(ComparatorUtils.equals(field, BIReportConstant.SYSTEM_TIME)){
+        if (ComparatorUtils.equals(field, BIReportConstant.SYSTEM_TIME)) {
             vg = new SystemTimeValueGetter(systemTime);
         } else {
             vg = new DataValueGetter(ti, new IndexKey(field));
@@ -132,7 +132,6 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
         vg.check();
         return vg;
     }
-
 
 
     @Override
@@ -184,7 +183,6 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
         } catch (Exception e) {
         }
         writer.end();
-
     }
 
     private static DateDiffCalculator getDiffCalculator(int unit) {

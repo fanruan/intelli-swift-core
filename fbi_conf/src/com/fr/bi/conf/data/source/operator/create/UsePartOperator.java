@@ -7,7 +7,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -80,13 +80,13 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         return ti.getRowCount();
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), start, end);
         return ti.getRowCount();
     }
