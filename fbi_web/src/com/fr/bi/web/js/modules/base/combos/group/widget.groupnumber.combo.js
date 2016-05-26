@@ -8,12 +8,27 @@ BI.GroupNumberCombo = BI.inherit(BI.Widget, {
         return [
             [{
                 text: BI.i18nText("BI-Same_Value_A_Group"),
-                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_BY_VALUE
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_BY_VALUE,
+                cls: "dot-ha-font"
             },{
                 text: BI.i18nText("BI-Grouping_Setting"),
-                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_SETTING
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_SETTING,
+                cls: "dot-ha-font"
             }],
             [{
+                text: BI.i18nText("BI-Display"),
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.DISPLAY,
+                selected: true,
+                cls: "dot-ha-font"
+            }, {
+                text: BI.i18nText("BI-Hidden"),
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.HIDDEN,
+                cls: "dot-ha-font"
+            }],
+            [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.RENAME
+            }, {
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.STATISTICS_GROUP_NUMBER_COMBO.DELETE
             }]
@@ -43,7 +58,7 @@ BI.GroupNumberCombo = BI.inherit(BI.Widget, {
 
         this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function(){
             var selectedValue = self._createValueByGroup(o.dimension.group);
-            this.setValue([selectedValue]);
+            this.setValue([selectedValue, self._createValueByUsed(o.dimension.used)]);
         });
     },
 
@@ -68,6 +83,14 @@ BI.GroupNumberCombo = BI.inherit(BI.Widget, {
                 break;
         }
         return groupValue;
+    },
+
+    _createValueByUsed: function(used){
+        if(used === true){
+            return {value: BICst.STATISTICS_GROUP_NUMBER_COMBO.DISPLAY};
+        }else{
+            return {value: BICst.STATISTICS_GROUP_NUMBER_COMBO.HIDDEN};
+        }
     },
 
     getValue:function(){

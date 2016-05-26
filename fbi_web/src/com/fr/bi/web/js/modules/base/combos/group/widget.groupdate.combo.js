@@ -8,21 +8,39 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
         return [
             [{
                 text: BI.i18nText("BI-Date"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.DATE
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.DATE,
+                cls: "dot-ha-font"
             }, {
                 text: BI.i18nText("BI-Year_Fen"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.YEAR
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.YEAR,
+                cls: "dot-ha-font"
             }, {
                 text: BI.i18nText("BI-Quarter"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.QUARTER
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.QUARTER,
+                cls: "dot-ha-font"
             }, {
                 text: BI.i18nText("BI-Month_Fen"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.MONTH
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.MONTH,
+                cls: "dot-ha-font"
             }, {
                 text: BI.i18nText("BI-Week_XingQi"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.WEEK
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.WEEK,
+                cls: "dot-ha-font"
             }],
             [{
+                text: BI.i18nText("BI-Display"),
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.DISPLAY,
+                selected: true,
+                cls: "dot-ha-font"
+            }, {
+                text: BI.i18nText("BI-Hidden"),
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.HIDDEN,
+                cls: "dot-ha-font"
+            }],
+            [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.RENAME
+            }, {
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.STATISTICS_GROUP_DATE_COMBO.DELETE
             }]
@@ -53,7 +71,7 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
 
         this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function(){
             var selectedValue = self._createValueByGroup(o.dimension.group);
-            this.setValue([selectedValue]);
+            this.setValue([selectedValue, self._createValueByUsed(o.dimension.used)]);
         });
     },
 
@@ -86,6 +104,14 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
                 break;
         }
         return groupValue;
+    },
+
+    _createValueByUsed: function(used){
+        if(used === true){
+            return {value: BICst.STATISTICS_GROUP_DATE_COMBO.DISPLAY};
+        }else{
+            return {value: BICst.STATISTICS_GROUP_DATE_COMBO.HIDDEN};
+        }
     },
 
     getValue:function(){

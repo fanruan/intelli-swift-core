@@ -67,6 +67,8 @@ public class SumByGroupTarget implements JSONTransform {
                 return ti.getSUMValue(gvi, new IndexKey(name));
             case BIReportConstant.SUMMARY_TYPE.APPEND:
                 return getAppendString(ti, gvi);
+            case BIReportConstant.SUMMARY_TYPE.RECORD_COUNT:
+                return (double)gvi.getRowsCountWithData();
         }
         return null;
     }
