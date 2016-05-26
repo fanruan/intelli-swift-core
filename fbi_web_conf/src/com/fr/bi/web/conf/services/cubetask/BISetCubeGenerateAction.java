@@ -2,7 +2,7 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
-import com.fr.bi.cal.generate.BuildCubeTaskIncremental;
+import com.fr.bi.cal.generate.BuildCubeTaskSingleTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BICubeManagerProvider;
 import com.fr.bi.stable.data.BITable;
@@ -33,7 +33,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
             cubeManager.addTask(new BuildCubeTask(new BIUser(userId)), userId);
         }else{
             BITable biTable=new BITable(tableId);
-            cubeManager.addTask(new BuildCubeTaskIncremental(new BIUser(userId),biTable), userId);
+            cubeManager.addTask(new BuildCubeTaskSingleTable(new BIUser(userId),biTable), userId);
         }
     }
 

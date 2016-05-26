@@ -40,6 +40,9 @@ import java.util.concurrent.Future;
  *
  * edit by wuk
  * 增加单表更新功能
+ * 
+ * edit by wuk
+ * 分离单表更新功能
  */
 public class BuildCubeTask implements CubeTask {
 
@@ -49,8 +52,6 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
-    /*单表更新*/
-//    private BITable biTable;
 
     public BuildCubeTask(BIUser biUser) {
 
@@ -62,15 +63,6 @@ public class BuildCubeTask implements CubeTask {
 //        cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
 //        cubeBuildStuffManager.initialCubeStuff();
     }
-    /*单表更新*/
-//    public BuildCubeTask(BIUser biUser, BITable biTable) {
-//        this.biUser = biUser;
-//        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-//        retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-//        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-//        this.biTable=biTable;
-//
-//    }
 
 
     public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {

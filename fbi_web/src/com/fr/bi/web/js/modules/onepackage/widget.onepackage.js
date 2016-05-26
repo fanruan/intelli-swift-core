@@ -473,6 +473,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 self._refreshTablesInPackage();
                 BI.Layers.remove(self._constant.ETL_LAYER);
             });
+
             etl.on(BI.ETL.EVENT_CANCEL, function(){
                 BI.Layers.remove(self._constant.ETL_LAYER);
             });

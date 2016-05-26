@@ -61,8 +61,8 @@ public class CubeRunner {
                     if (cubeTask instanceof BuildCubeTask) {
                         ((BuildCubeTask) cubeTask).setCubeBuildStuffManager(object);
                     }
-                    if (cubeTask instanceof BuildCubeTaskIncremental) {
-                        ((BuildCubeTaskIncremental) cubeTask).setCubeBuildStuffManager(object);
+                    if (cubeTask instanceof BuildCubeTaskSingleTable) {
+                        ((BuildCubeTaskSingleTable) cubeTask).setCubeBuildStuffManager(object);
                     }
                     
                     cubeTask.start();

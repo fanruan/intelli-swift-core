@@ -70,12 +70,16 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             type: "bi.button",
             text: BI.i18nText("BI-Update_Table_Immedi"),
             height: 30,
+            
+            //效果:保存(新增)该表所在业务包的所有操作并更新对应cube
             handler: function () {
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                
                 BI.Utils.generateCubeByTable(self.model.table.id, function () {
                     self._createCheckInterval();
                 });
+                
             }
         });
 

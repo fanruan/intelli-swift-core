@@ -39,11 +39,10 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 /**
- * Created by wuk on 16/5/24.
- * //todo
+ * Created by wuk on 16/5/26.
  * 单表更新
  */
-public class BuildCubeTaskIncremental implements CubeTask {
+public class BuildCubeTaskSingleTable implements CubeTask {
 
     private CubeBuildStuffManager cubeBuildStuffManager;
     private BIUser biUser;
@@ -54,7 +53,7 @@ public class BuildCubeTaskIncremental implements CubeTask {
     /*单表更新*/
     private BITable biTable;
 
-    public BuildCubeTaskIncremental(BIUser biUser, BITable biTable) {
+    public BuildCubeTaskSingleTable(BIUser biUser, BITable biTable) {
         this.biUser = biUser;
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
@@ -99,43 +98,6 @@ public class BuildCubeTaskIncremental implements CubeTask {
 
         BITableRelationConfigurationProvider tableRelationManager = BIConfigureManagerCenter.getTableRelationManager();
         Table table = new BITable(biTable);
-//        try {
-//            Set<BITableRelation> tableRelationSet = new HashSet<BITableRelation>();
-//            if (tableRelationManager.containTablePrimaryRelation(biUser.getUserId(), biTable)) {
-//                IRelationContainer primaryRelation = tableRelationManager.getPrimaryRelation(biUser.getUserId(), table);
-//                tableRelationSet.addAll(primaryRelation.getContainer());
-//            }
-//            if (tableRelationManager.containTableForeignRelation(biUser.getUserId(), biTable)) {
-//                IRelationContainer foreignRelation = tableRelationManager.getForeignRelation(biUser.getUserId(), table);
-//                tableRelationSet.addAll(foreignRelation.getContainer());
-//            }
-//
-//            Set<BITableRelationPath> allTablePath = BIConfigureManagerCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
-//            Set<BITableRelationPath> tablePath = new HashSet<BITableRelationPath>();
-//            for (BITableRelationPath biTableRelationPath : allTablePath) {
-//                for (BITableRelation biTableRelation : tableRelationSet) {
-//                    if (biTableRelationPath.getAllRelations().contains(biTableRelation)) {
-//                        tablePath.add(biTableRelationPath);
-//                        tableRelationSet.addAll(biTableRelationPath.getAllRelations());
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            cubeBuildStuffManager.setTableRelationSet(tableRelationSet);
-//            if (tablePath.isEmpty()) {
-//                cubeBuildStuffManager.setRelationPaths(new HashSet<BITableSourceRelationPath>());
-//            } else {
-//                BIConfigureManagerCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
-//                cubeBuildStuffManager.setRelationPaths(cubeBuildStuffManager.convertPaths(tablePath));
-//            }
-//        } catch (BITableAbsentException e) {
-//            BILogger.getLogger().error(e.getMessage(), e);
-//        } catch (BITablePathConfusionException e) {
-//            BILogger.getLogger().error(e.getMessage(), e);
-//        } catch (BITableRelationConfusionException e) {
-//            BILogger.getLogger().error(e.getMessage(), e);
-//        }
 
         Set<ITableSource> currentTableSet = new HashSet<ITableSource>();
         currentTableSet.add(BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(biTable.getID(), biUser));
