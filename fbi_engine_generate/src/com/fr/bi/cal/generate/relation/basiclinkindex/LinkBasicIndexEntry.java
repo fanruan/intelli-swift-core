@@ -1,10 +1,12 @@
 package com.fr.bi.cal.generate.relation.basiclinkindex;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -34,9 +36,9 @@ public class LinkBasicIndexEntry implements CubeGenerator {
         BILogger.getLogger().info("Prepare Basic Relations");
         long start = System.currentTimeMillis();
         List<LinkBasicIndexManagerAndLoader> threadList = new ArrayList<LinkBasicIndexManagerAndLoader>();
-        Set<Table> tableSet = BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap().keySet();
+        Set<CubeTableSource> tableSet = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap().keySet();
         BIRecord log = BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId());
-        for (Table key : tableSet) {
+        for (CubeTableSource key : tableSet) {
             try {
                 LinkBasicIndexManagerAndLoader loader = new LinkBasicIndexManagerAndLoader(key, biUser.getUserId());
                 loader.setLog(log);

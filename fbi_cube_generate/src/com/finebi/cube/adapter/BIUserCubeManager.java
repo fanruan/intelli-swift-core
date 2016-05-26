@@ -3,13 +3,12 @@ package com.finebi.cube.adapter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.ICube;
-import com.fr.bi.base.BIBasicCore;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -17,13 +16,10 @@ import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.conf.utils.BIModuleUtils;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.utils.BIIDUtils;
 
 /**
  * This class created on 2016/4/15.
@@ -49,40 +45,22 @@ public class BIUserCubeManager implements ICubeDataLoader {
         cube = new BICube(resourceRetrievalService, discovery);
     }
 
-    @Override
-    public ICubeTableService getTableIndex(Table td) {
-        if (BIIDUtils.isFakeTable(td.getID().getIdentityValue())) {
-            return getTableIndex(BIBasicCore.generateValueCore(td.getID().getIdentityValue()));
-        } else {
-            return getTableIndex(td.getID());
-        }
-    }
 
 
-    @Override
-    public ICubeTableService getTableIndex(BICore core) {
-        ITableSource source = BIModuleUtils.getSourceByCore(core, user);
-        return getTableIndex(source);
-    }
-
-    public ICubeTableService getTableIndex(ITableSource tableSource) {
+    public ICubeTableService getTableIndex(CubeTableSource tableSource) {
 
         return new BICubeTableAdapter(cube, tableSource);
     }
 
     @Override
-    public ICubeTableService getTableIndex(BIField td) {
-        return getTableIndex(td.getTableBelongTo());
-    }
-
-    @Override
-    public BIKey getFieldIndex(BIField column) {
+    public BIKey getFieldIndex(BusinessField column) {
         return new IndexKey(column.getFieldName());
+
     }
 
-    @Override
+
     public ICubeTableService getTableIndex(BITableID id) {
-        ITableSource source = BIModuleUtils.getSourceByID(id, user);
+        CubeTableSource source = BIModuleUtils.getSourceByID(id, user);
         return getTableIndex(source);
     }
 
@@ -112,7 +90,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
     }
 
     @Override
-    public ICubeTableService getTableIndex(BICore core, int start, int end) {
+    public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
         return null;
     }
 

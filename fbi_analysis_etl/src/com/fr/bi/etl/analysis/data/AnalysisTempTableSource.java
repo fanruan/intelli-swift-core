@@ -1,35 +1,33 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.etl.analysis.Constants;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/4/12.
  */
-public class AnalysisTempTableSource extends AbstractCubeTableSource implements AnalysisTableSource {
+public class AnalysisTempTableSource extends AbstractCubeTableSource implements AnalysisCubeTableSource {
 
     private static final String UNSUPPORT = "Temp Source do not support";
 
-    private List<AnalysisTableSource> sourceList;
+    private List<AnalysisCubeTableSource> sourceList;
 
-    public AnalysisTempTableSource(List<AnalysisTableSource> sourceList) {
+    public AnalysisTempTableSource(List<AnalysisCubeTableSource> sourceList) {
         this.sourceList = sourceList;
     }
 
     @Override
-    public UserTableSource createUserTableSource(long userId) {
+    public UserCubeTableSource createUserTableSource(long userId) {
         throw new RuntimeException(UNSUPPORT);
     }
 
@@ -39,14 +37,10 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
-    public IPersistentTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         throw new RuntimeException(UNSUPPORT);
     }
 
-    @Override
-    public Set<Table> createTableKeys() {
-        throw new RuntimeException(UNSUPPORT);
-    }
 
     @Override
     public int getType() {
@@ -56,7 +50,7 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     @Override
     public JSONObject createJSON() throws Exception {
         JSONArray ja = new JSONArray();
-        for (AnalysisTableSource source : this.sourceList){
+        for (AnalysisCubeTableSource source : this.sourceList){
             ja.put(source.createJSON());
         }
         JSONObject table = new JSONObject();
@@ -65,7 +59,7 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         throw new RuntimeException(UNSUPPORT);
     }
 }

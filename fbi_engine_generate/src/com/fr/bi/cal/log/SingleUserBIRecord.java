@@ -4,7 +4,7 @@ package com.fr.bi.cal.log;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -376,9 +376,31 @@ public class SingleUserBIRecord implements BIRecord {
         for (ArrayKey<BITableSourceRelation> relation : loop_error) {
             BITableSourceRelation[] re = relation.toArray();
             JSONArray ja = new JSONArray();
-            for (BITableSourceRelation r : re) {
-                ja.put(r.createJSON());
-            }
+            /**
+             * Connery：我一直想我用来生成cube的relation为何被动强制着要一个createjson呢？
+             * 改到这里，终于明白该放手。。。。
+             * 当这种createJson和parseJson接口，并且有人调用的的时候，整个代码已经
+             * 开始出现问题了。当有一个createJson，势必导致属性要有create，以此往复
+             * 很快就会蔓延开。parseJson同样如此。
+             *
+             * 对象的封闭性就此丢失。肆意修改内容，获得内容。如同幽灵一般，到处传递，
+             * 只需摇身一变create成为String，传入函数后再parse回来。这样的代码越写越夸张越来越不可控
+             *
+             * 这类问题造成的bug，一般是矛盾的，也就是会改好A bug，会出现另外一个B bug，改了B bug
+             * 然而A bug又出现。但是这类bug往往又是好改，但是改动很多，彻底改完便很难出现。
+             *
+             *
+             * 去除Table的公共父类，已经做了2天了，身心俱疲。这里我特别后悔，当初没有狠下决心
+             * 改得彻底。
+             * 也就是为了能够限制对象的随便传递，强制使用者来思考。
+             * 同时也强制接口提供者来给认真给使用者提供唯一可控的参数选择，而非一个父类
+             * 让使用者去猜测应该传一个什么子类，甚至要看源码才能明白需要传递什么。
+             *
+             * 倘若来人改到这里，恳请细细想想。
+             */
+//            for (BITableSourceRelation r : re) {
+//                ja.put(r.createJSON());
+//            }
             loop.put(new JSONObject().put("loops", ja));
         }
     }

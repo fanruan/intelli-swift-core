@@ -71,7 +71,7 @@ public class RootNodeChild extends Node {
         if (key == null) {
             return;
         }
-        ICubeTableService si = loader.getTableIndex(key.createTableKey());
+        ICubeTableService si = loader.getTableIndex(key.createTableKey().getTableSource());
         key.calculateFilterIndex(loader);
 
         List threadList = new ArrayList();

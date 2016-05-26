@@ -30,11 +30,15 @@ BI.DetailTablePopup = BI.inherit(BI.Widget, {
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var dimensionsIds = BI.Utils.getAllDimDimensionIDs(wId);
         var data = {};
+        var currentId = o.dId;
+        if(BI.Utils.isCalculateTargetByDimensionID(currentId)){
+            currentId = BI.Utils.getExpressionValuesByDimensionID(currentId);
+        }
         data.id = id;
         data.dimensions = {};
         data.view = {};
-        data.view[BICst.REGION.DIMENSION1] = dimensionsIds.concat(o.dId);
-        BI.each(dimensionsIds.concat(o.dId), function (i, dId) {
+        data.view[BICst.REGION.DIMENSION1] = dimensionsIds.concat(currentId);
+        BI.each(dimensionsIds.concat(currentId), function (i, dId) {
             var name = BI.Utils.getDimensionNameByID(dId);
             data.dimensions[dId] = {
                 name: name,

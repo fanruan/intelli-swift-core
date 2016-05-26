@@ -42,11 +42,7 @@
             })
         },
 
-        getFieldsByTableId: function (tableId, callback) {
-            BIReq.reqFieldsByTableId(tableId, function (res) {
-                callback(res);
-            })
-        },
+
 
         getTableByConnSchemaTName: function (table, callback) {
             var self = this, connName = table.connection_name, schemaName = table.schema_name, tableName = table.table_name;

@@ -1,6 +1,6 @@
 package com.fr.bi.stable.report.result;
 
-import com.fr.bi.stable.data.BITable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.report.key.SummaryCalculator;
@@ -67,7 +67,7 @@ public interface TargetCalculator extends Serializable {
 
     public BITargetKey createTargetKey();
 
-    public BITable createTableKey();
+    public BusinessTable createTableKey();
 
     /**
      * 创建 SummaryCalculator

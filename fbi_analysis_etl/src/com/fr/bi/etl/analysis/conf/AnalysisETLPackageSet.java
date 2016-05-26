@@ -1,7 +1,8 @@
 package com.fr.bi.etl.analysis.conf;
 
-import com.fr.bi.conf.base.pack.BIPackageContainer;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
+
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.pack.imp.BIPackageContainer;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.etl.analysis.Constants;

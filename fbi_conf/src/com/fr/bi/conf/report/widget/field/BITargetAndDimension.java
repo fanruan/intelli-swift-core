@@ -1,13 +1,12 @@
 package com.fr.bi.conf.report.widget.field;
 
 
-import com.fr.bi.common.BICoreService;
-import com.fr.bi.conf.report.widget.BIDataColumn;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.base.provider.NameProvider;
 import com.fr.bi.base.provider.ParseJSONWithUID;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITable;
+import com.fr.bi.common.BICoreService;
 import com.fr.js.NameJavaScriptGroup;
 
 public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BICoreService {
@@ -21,29 +20,29 @@ public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BI
      *
      * @return
      */
-    BIDataColumn getStatisticElement();
+    BusinessField getStatisticElement();
 
     /**
      * 索引键值
      *
-     * @return
      * @param column
+     * @return
      */
-    BIKey createKey(BIField column);
+    BIKey createKey(BusinessField column);
 
     /**
      * 所在表
      *
      * @return
      */
-    BITable createTableKey();
+    BusinessTable createTableKey();
 
     /**
      * 所在字段
      *
      * @return
      */
-    BIField createColumnKey();
+    BusinessField createColumnKey();
 
     boolean isUsed();
 }

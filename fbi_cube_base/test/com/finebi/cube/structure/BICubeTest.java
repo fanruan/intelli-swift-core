@@ -4,7 +4,7 @@ import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;
 import com.finebi.cube.tools.DBFieldTestTool;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class BICubeTest extends BICubeTestBase {
 
     public void testMainData() {
 
-        List<DBField> fields = new ArrayList<DBField>();
+        List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
         fields.add(DBFieldTestTool.generateDATE());
         tableEntity.recordTableStructure(fields);
         assertTrue(tableEntity.tableDataAvailable());
@@ -28,7 +28,7 @@ public class BICubeTest extends BICubeTestBase {
 
     public void testFieldData() {
         try {
-            List<DBField> fields = new ArrayList<DBField>();
+            List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
 
             fields.clear();
             fields.add(DBFieldTestTool.generateDATE());

@@ -1,6 +1,6 @@
 package com.fr.bi.field.filtervalue.number.evenfilter;
 
-import com.fr.bi.stable.data.Table;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -44,7 +44,7 @@ public class NumberNotEqualFilterValue extends NumberEvenFilterValue {
      * @return 索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         return super.createFilterIndex(dimension, target, loader, userId);
     }
 

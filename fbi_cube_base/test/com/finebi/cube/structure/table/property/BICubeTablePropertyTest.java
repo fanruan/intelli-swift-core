@@ -12,7 +12,7 @@ import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import junit.framework.TestCase;
@@ -211,7 +211,7 @@ public class BICubeTablePropertyTest extends TestCase {
                 assertFalse(property.isFieldWriterAvailable());
                 assertFalse(property.isFieldReaderAvailable());
 
-                List<DBField> fields = new ArrayList<DBField>();
+                List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
                 fields.add(DBFieldTestTool.generateSTRING());
                 property.recordTableStructure(fields);
 
@@ -224,7 +224,7 @@ public class BICubeTablePropertyTest extends TestCase {
                 assertFalse(property.isTimeStampWriterAvailable());
                 assertFalse(property.isFieldReaderAvailable());
                 assertTrue(property.isFieldWriterAvailable());
-                List<DBField> fields1 = property.getFieldInfo();
+                List<ICubeFieldSource> fields1 = property.getFieldInfo();
 
                 assertEquals(fields1.size(), 1);
                 assertEquals(fields1.get(0), fields.get(0));
@@ -307,7 +307,7 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 assertFalse(property.isPropertyExist());
                 assertTrue(property.isFieldReaderAvailable());
-                List<DBField> fields = new ArrayList<DBField>();
+                List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
                 fields.add(DBFieldTestTool.generateSTRING());
                 property.recordTableStructure(fields);
 

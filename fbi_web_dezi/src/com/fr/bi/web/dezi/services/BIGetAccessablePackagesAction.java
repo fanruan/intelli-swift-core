@@ -1,7 +1,7 @@
 package com.fr.bi.web.dezi.services;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
@@ -21,7 +21,7 @@ public class BIGetAccessablePackagesAction extends AbstractBIDeziAction {
                           String sessionID) throws Exception {
         BISession session = (BISession) SessionDealWith.getSessionIDInfor(sessionID);
         long userId = session.getUserIdFromSession(req);
-        WebUtils.printAsJSON(res, BIConfigureManagerCenter.getPackageManager().createPackageJSON(userId));
+        WebUtils.printAsJSON(res, BICubeConfigureCenter.getPackageManager().createPackageJSON(userId));
     }
 
 }

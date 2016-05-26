@@ -272,7 +272,7 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
                 fieldStructure.push({
                     id: fid,
                     pId: tableId,
-                    type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
+                    type: isRelation ? "bi.detail_table_popup_select_data_level1_item" : "bi.detail_table_popup_select_data_level0_item",
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: fieldName,
@@ -381,7 +381,7 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
         return [{
             id: fieldId + BICst.GROUP.Y,
             pId: fieldId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            type: isRelation ? "bi.detail_table_popup_select_data_level2_item" : "bi.detail_table_popup_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Year_Fen"),
             title: BI.i18nText("BI-Year_Fen"),
@@ -393,7 +393,7 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.S,
             pId: fieldId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            type: isRelation ? "bi.detail_table_popup_select_data_level2_item" : "bi.detail_table_popup_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Quarter"),
             title: BI.i18nText("BI-Quarter"),
@@ -405,7 +405,7 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.M,
             pId: fieldId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            type: isRelation ? "bi.detail_table_popup_select_data_level2_item" : "bi.detail_table_popup_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Multi_Date_Month"),
             title: BI.i18nText("BI-Multi_Date_Month"),
@@ -417,7 +417,7 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.W,
             pId: fieldId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            type: isRelation ? "bi.detail_table_popup_select_data_level2_item" : "bi.detail_table_popup_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Week_XingQi"),
             title: BI.i18nText("BI-Week_XingQi"),
@@ -429,7 +429,7 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.YMD,
             pId: fieldId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            type: isRelation ? "bi.detail_table_popup_select_data_level2_item" : "bi.detail_table_popup_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Date"),
             title: BI.i18nText("BI-Date"),
@@ -441,7 +441,7 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.YMDHMS,
             pId: fieldId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            type: isRelation ? "bi.detail_table_popup_select_data_level2_item" : "bi.detail_table_popup_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Time_ShiKe"),
             title: BI.i18nText("BI-Time_ShiKe"),

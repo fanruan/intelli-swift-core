@@ -6,8 +6,6 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
-import com.fr.stable.xml.XMLPrintWriter;
-import com.fr.stable.xml.XMLableReader;
 
 /**
  * BI的Field基本类型。其他Field都继承此类型
@@ -15,7 +13,7 @@ import com.fr.stable.xml.XMLableReader;
  * TODO clone方法
  * Created by Connery on 2015/12/15.
  */
-public class BIField implements BIFieldOperation {
+public class BIField implements IField {
     private static final long serialVersionUID = 2624628196039867893L;
     private static BIField BI_EMPTY_FIELD = new BIField(BIValueConstant.EMPTY, BIValueConstant.EMPTY);
     protected String fieldName = StringUtils.EMPTY;
@@ -149,22 +147,6 @@ public class BIField implements BIFieldOperation {
         return jo;
     }
 
-
-    @Override
-    public void writeXML(XMLPrintWriter writer) {
-
-        writer.startTAG(XML_TAG);
-        writer.attr("field_name", fieldName).attr("id", tableBelongTo.getID().getIdentityValue());
-        writer.end();
-    }
-
-    @Override
-    public void readXML(XMLableReader reader) {
-        if (reader.isAttr()) {
-            this.fieldName = reader.getAttrAsString("field_name", StringUtils.EMPTY);
-            this.tableBelongTo = new BITable(new BITableID(reader.getAttrAsString("id", "__FINE_BI_EMPTY__")));
-        }
-    }
 
     @Override
     public String toString() {

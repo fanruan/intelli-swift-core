@@ -1,17 +1,16 @@
 package com.fr.bi.cal.analyze.cal.store;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.sssecret.CrossCalculator;
 import com.fr.bi.cal.analyze.cal.sssecret.FilterSingleDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.NoneDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.SingleDimensionGroup;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
+import com.fr.bi.common.inter.ValueCreator;
 import com.fr.bi.conf.report.widget.field.dimension.filter.ResultFilter;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.lru.LRUWithKHashMap;
-import com.fr.bi.common.inter.ValueCreator;
-
 import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.fs.control.UserControl;
 
@@ -118,7 +117,7 @@ public class GroupManager {
         return singleDimensionGroup.get(key, creater);
     }
 
-    public FilterSingleDimensionGroup getFilterSingleDimensionGroup(Table key, DimensionCalculator[] columnKey, ResultFilter resultFilter, Map<String, TargetGettingKey> targetGettingKeyMap, ValueCreator<FilterSingleDimensionGroup> creater) {
+    public FilterSingleDimensionGroup getFilterSingleDimensionGroup(BusinessTable key, DimensionCalculator[] columnKey, ResultFilter resultFilter, Map<String, TargetGettingKey> targetGettingKeyMap, ValueCreator<FilterSingleDimensionGroup> creater) {
         FilterGroupKey filterGroupKey = new FilterGroupKey(key, columnKey);
         filterGroupKey.setResultFilter(resultFilter);
         filterGroupKey.setTargetsMap(targetGettingKeyMap);
@@ -126,7 +125,7 @@ public class GroupManager {
         return filterSingleDimensionGroup.get(filterGroupKey, creater);
     }
 
-    public NoneDimensionGroup getNoneDimensionGroup(Table key, DimensionCalculator[] columnKey, ValueCreator<NoneDimensionGroup> creater) {
+    public NoneDimensionGroup getNoneDimensionGroup(BusinessTable key, DimensionCalculator[] columnKey, ValueCreator<NoneDimensionGroup> creater) {
         return noneDimensionGroup.get(new GroupKey(key, columnKey), creater);
     }
 

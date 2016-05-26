@@ -1,14 +1,14 @@
 package com.fr.bi.cal.stable.utils;
 
+import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.base.BaseUtils;
 import com.fr.base.BaseXMLUtils;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.fs.BIDesignSetting;
 import com.fr.bi.fs.BIFileRepository;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.BIField;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -61,26 +61,26 @@ public class BIReportUtils {
         if (widget.has("dimensions")) {
             JSONObject ja = widget.getJSONObject("dimensions");
             Iterator it = ja.keys();
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 res.put(ja.get(it.next().toString()));
             }
         }
         return res;
     }
 
-    public static Set<BIField> getUsedFieldByReportNode(BIReportNode node, long userId) throws Exception {
+    public static Set<BusinessField> getUsedFieldByReportNode(BIReportNode node, long userId) throws Exception {
         JSONObject reportSetting = getBIReportNodeJSON(node);
         JSONObject widgets = reportSetting.getJSONObject("widgets");
-        Set<BIField> fields = new HashSet<BIField>();
+        Set<BusinessField> fields = new HashSet<BusinessField>();
         Iterator it = widgets.keys();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             JSONObject widget = widgets.getJSONObject(it.next().toString());
             JSONArray targets = getAllFields(widget);
             for (int j = 0; j < targets.length(); j++) {
                 JSONObject target = targets.getJSONObject(j);
                 if (target.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
                     JSONObject fieldJo = target.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-                    BIField field = BIDataColumnFactory.createBIDataColumnByFieldID(fieldJo.getString("field_id"), new BIUser(userId));
+                    BusinessField field = new BIBusinessField(new BIFieldID(fieldJo.getString("field_id")));
                     fields.add(field);
                 }
             }

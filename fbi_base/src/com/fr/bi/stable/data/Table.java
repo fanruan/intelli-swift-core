@@ -1,6 +1,6 @@
 package com.fr.bi.stable.data;
 
-import com.fr.json.JSONObject;
+import com.fr.json.JSONTransform;
 
 /**
  * This class created on 2016/3/9.
@@ -8,7 +8,7 @@ import com.fr.json.JSONObject;
  * @author Connery
  * @since 4.0
  */
-public interface Table extends Cloneable {
+public interface Table extends Cloneable, JSONTransform {
     BITableID getID();
 
     void setID(BITableID id);
@@ -17,9 +17,6 @@ public interface Table extends Cloneable {
 
     void setTableName(String tableName);
 
-    JSONObject createJSON() throws Exception;
-
-    void parseJSON(JSONObject jo) throws Exception;
 
     Object clone() throws CloneNotSupportedException;
 }

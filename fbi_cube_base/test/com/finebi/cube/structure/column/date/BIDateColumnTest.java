@@ -11,7 +11,7 @@ import com.finebi.cube.structure.column.ICubeTableColumnManagerService;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class BIDateColumnTest extends BICubeTestBase {
     private ICubeTableColumnManagerService managerService;
-    private List<DBField> fields = new ArrayList<DBField>();
+    private List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
     private Long time = 1460014759867l;
 
     @Override
