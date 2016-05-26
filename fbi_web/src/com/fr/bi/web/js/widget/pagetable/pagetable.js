@@ -189,17 +189,19 @@ BI.PageTable = BI.inherit(BI.Widget, {
         });
 
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_INIT);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-
+            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
         });
 
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
-
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             self._hideCurrentColumn();
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
@@ -338,6 +340,10 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     getCalculateRegionColumnSize: function () {
         return this.table.getCalculateRegionColumnSize();
+    },
+
+    getVerticalScroll: function () {
+        return this.table.getVerticalScroll();
     },
 
     attr: function () {
