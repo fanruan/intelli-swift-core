@@ -8,12 +8,17 @@ BI.GroupStringCombo = BI.inherit(BI.Widget, {
         return [
             [{
                 text: BI.i18nText("BI-Same_Value_A_Group"),
-                value: BICst.STATISTICS_GROUP_STRING_COMBO.GROUP_BY_VALUE
+                value: BICst.STATISTICS_GROUP_STRING_COMBO.GROUP_BY_VALUE,
+                cls: "dot-ha-font"
             }, {
                 text: BI.i18nText("BI-Custom_Grouping_Dot"),
-                value: BICst.STATISTICS_GROUP_STRING_COMBO.GROUP_BY_CUSTOM
+                value: BICst.STATISTICS_GROUP_STRING_COMBO.GROUP_BY_CUSTOM,
+                cls: "dot-ha-font"
             }],
             [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.STATISTICS_GROUP_STRING_COMBO.RENAME
+            },{
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.STATISTICS_GROUP_STRING_COMBO.DELETE
             }]

@@ -95,12 +95,12 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
             s += pArray[0].field_id;
             return s;
         };
-        if(BI.isArray(path)){
-            res = getMD5Result(path);
-        }else{
+        if(BI.isArray(path[0])){
             BI.each(path, function(idx, p){
                 res += getMD5Result(p);
             })
+        }else{
+            res = getMD5Result(path);
         }
         return BI.MD5.hex_md5(res);
     },

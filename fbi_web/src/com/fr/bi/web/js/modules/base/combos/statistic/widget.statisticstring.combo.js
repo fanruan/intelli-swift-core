@@ -8,13 +8,21 @@ BI.StatisticStringCombo = BI.inherit(BI.Widget, {
         return [
             [{
                 text: BI.i18nText("BI-No_Repeat_Count"),
-                value: BICst.STATISTICS_GROUP_STRING_COMBO.No_Repeat_Count
-            }],
-            [{
+                value: BICst.STATISTICS_GROUP_STRING_COMBO.No_Repeat_Count,
+                cls: "dot-ha-font"
+            }, {
+                text: BI.i18nText("BI-Record_Count"),
+                value: BICst.STATISTICS_GROUP_STRING_COMBO.RECORD_COUNT,
+                cls: "dot-ha-font"
+            }, {
                 text: BI.i18nText("BI-String_Summary_By_Connection"),
-                value: BICst.STATISTICS_GROUP_STRING_COMBO.APPEND
+                value: BICst.STATISTICS_GROUP_STRING_COMBO.APPEND,
+                cls: "dot-ha-font"
             }],
             [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.STATISTICS_GROUP_STRING_COMBO.RENAME
+            }, {
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.STATISTICS_GROUP_STRING_COMBO.DELETE
             }]
@@ -62,6 +70,9 @@ BI.StatisticStringCombo = BI.inherit(BI.Widget, {
                 break;
             case BICst.SUMMARY_TYPE.APPEND:
                 summaryValue.value = BICst.STATISTICS_GROUP_STRING_COMBO.APPEND;
+                break;
+            case BICst.SUMMARY_TYPE.RECORD_COUNT:
+                summaryValue.value = BICst.STATISTICS_GROUP_STRING_COMBO.RECORD_COUNT;
                 break;
         }
         return summaryValue;
