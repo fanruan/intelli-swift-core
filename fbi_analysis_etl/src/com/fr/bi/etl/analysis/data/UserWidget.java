@@ -124,7 +124,7 @@ public class UserWidget {
                 while (temp.getParent() != null) {
                     Object data = temp.getData();
                     BIDimension dim = rows[--i];
-                    Object v = dim.toString(data);
+                    Object v = dim.getValueByType(data);
                     rowList.add(0, v);
                     temp = temp.getParent();
                 }
