@@ -418,7 +418,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     var scrollTop = otherElement[0].scrollTop - delta * self._const.delta;
                     otherElement[0].scrollTop = scrollTop;
                     scrollElement[0].scrollTop = scrollTop;
-                    self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
+                    self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
                     if (Math.abs(old - scrollElement[0].scrollTop) > 0.1) {
                         event.stopPropagation();
                         return false;
@@ -808,8 +808,8 @@ BI.Table = BI.inherit(BI.Widget, {
         this.scrollContainer.element.mousewheel(function (event, delta, deltaX, deltaY) {
             if (deltaY === -1 || deltaY === 1) {
                 var old = self.scrollContainer.element[0].scrollTop;
-                self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * self._const.delta;
-                self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
+                var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * self._const.delta;
+                self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
                 if (Math.abs(old - self.scrollContainer.element[0].scrollTop) > 0.1) {
                     event.stopPropagation();
                     return false;

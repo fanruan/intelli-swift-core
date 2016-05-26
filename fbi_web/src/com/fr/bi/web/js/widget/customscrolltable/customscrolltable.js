@@ -100,7 +100,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
@@ -353,6 +353,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
 
             var scrollTop = this.topScrollBar.getScrollTop();
             this.table.setVerticalScroll(scrollTop / ratio);
+            this.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop / ratio);
         }
     },
 
@@ -402,6 +403,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
 
             var scrollTop = this.topScrollBar.getScrollTop();
             this.table.setVerticalScroll(scrollTop / ratio);
+            this.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop / ratio);
         }
     },
 
