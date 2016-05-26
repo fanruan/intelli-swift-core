@@ -1,10 +1,14 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+
+import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
-import com.fr.bi.conf.report.widget.BIDataColumn;
-import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -14,10 +18,7 @@ import com.fr.bi.field.target.BITargetFactory;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
@@ -40,7 +41,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     @BICoreField
     protected Map<String, DimensionFilter> targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
     @BICoreField
-    protected Map<String, Map<String, BIDataColumn>> dimensionsMap = new LinkedHashMap<String, Map<String, BIDataColumn>>();
+    protected Map<String, Map<String, BusinessField>> dimensionsMap = new LinkedHashMap<String, Map<String, BusinessField>>();
     @BICoreField
     protected Map<String, Map<String, List<BISimpleRelation>>> relationsMap = new LinkedHashMap<String, Map<String, List<BISimpleRelation>>>();
     protected Object[] clickValue;
@@ -61,8 +62,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
 
     @Override
-    public List<Table> getUsedTableDefine() {
-        List<Table> result = new ArrayList<Table>();
+    public List<BusinessTable> getUsedTableDefine() {
+        List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
             result.add(dimensions[i].getStatisticElement().getTableBelongTo());
@@ -79,8 +80,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     }
 
     @Override
-    public List<BIField> getUsedFieldDefine() {
-        List<BIField> result = new ArrayList<BIField>();
+    public List<BusinessField> getUsedFieldDefine() {
+        List<BusinessField> result = new ArrayList<BusinessField>();
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
             result.add(dimensions[i].getStatisticElement());
@@ -102,13 +103,13 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convertToMD5RelationFromSimpleRelation(relationList, new BIUser(this.getUserId()));
     }
 
-    private BIDataColumn getDimDataColumn(BIDimension dim, String tarId) {
+    private BusinessField getDimDataColumn(BIDimension dim, String tarId) {
         String dimId = dim.getValue();
-        Map<String, BIDataColumn> dimMap = dimensionsMap.get(dimId);
+        Map<String, BusinessField> dimMap = dimensionsMap.get(dimId);
         if (dimMap == null) {
             return dim.getStatisticElement();
         }
-        BIDataColumn column = dimMap.get(tarId);
+        BusinessField column = dimMap.get(tarId);
         return column == null ? dim.getStatisticElement() : column;
     }
 
@@ -232,14 +233,14 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 while (iterator.hasNext()) {
                     String targetId = (String) iterator.next();
                     JSONObject targetRelationJo = dimMap.getJSONObject(targetId);
-                    Map<String, BIDataColumn> dimensionMap = new LinkedHashMap<String, BIDataColumn>();
+                    Map<String, BusinessField> dimensionMap = new LinkedHashMap<String, BusinessField>();
                     dimensionsMap.put(dimensionId, dimensionMap);
                     if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
                         Object ob = targetRelationJo.get(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
                         if (ob instanceof JSONObject) {
                             JSONObject j = (JSONObject) ob;
                             String fieldId = j.getString("field_id");
-                            dimensionMap.put(targetId, BIDataColumnFactory.createBIDataColumnByFieldID(fieldId, new BIUser(userId)));
+                            dimensionMap.put(targetId, new BIBusinessField(new BIFieldID(fieldId)));
                         }
                     }
                     if (targetRelationJo.has("target_relation")) {

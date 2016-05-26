@@ -51,6 +51,7 @@ public class BIBusinessField implements BusinessField {
         this.fieldType = BIDBUtils.checkColumnTypeFromClass(classType);
         this.fieldSize = fieldSize;
         this.classType = classType;
+        this.isUsable = true;
     }
 
     public BIBusinessField(String tableID, String fieldName) {
