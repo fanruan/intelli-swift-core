@@ -439,7 +439,7 @@
         
         getWSColumnSizeByID: function(wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.columnSize) ? ws.columnSize : [];
+            return BI.isNotNull(ws.column_size) ? ws.column_size : [];
         },
         //settings  ---- end ----
 
