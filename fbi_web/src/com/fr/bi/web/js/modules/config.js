@@ -921,20 +921,20 @@ BICst.TABLE_FORM_GROUP = [{
 //表格（分组表、交叉表和复杂表）风格
 BICst.TABLE_STYLE_GROUP = [{
     cls: "table-style1-icon",
-    value: BICst.TABLE_STYLE.NORMAL
+    value: BICst.TABLE_STYLE.INTERVAL
 }, {
     cls: "table-style2-icon",
     value: BICst.TABLE_STYLE.BLUE
 }, {
     cls: "table-style3-icon",
-    value: BICst.TABLE_STYLE.INTERVAL
+    value: BICst.TABLE_STYLE.NORMAL
 }];
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_COL,
     theme_color: "#65bce7",
-    table_style: BICst.TABLE_STYLE.NORMAL,
+    table_style: BICst.TABLE_STYLE.INTERVAL,
     show_number: false,
     show_row_total: true,
     show_col_total: true,
