@@ -5,6 +5,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.AbstractGroup;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
+import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 
 import java.math.BigDecimal;
@@ -104,7 +105,7 @@ public class AutoGroup extends AbstractGroup {
     }
 
     private int checkMagnifyCount(double number) {
-        String numText = number + "";
+        String numText = GeneralUtils.objectToString(number);
         String dotText = numText.split("\\.")[0];
         return dotText.length();
     }
@@ -123,8 +124,9 @@ public class AutoGroup extends AbstractGroup {
             minBuilder.append("0");
             minCount++;
         }
-        String min = String.valueOf(minV);
-        min = min.substring(min.indexOf(".")).matches("\\.0+$") ? min.substring(0, min.indexOf(".")) : min.replace(".", "");
+        String min = GeneralUtils.objectToString(minV);
+        int minIndex = min.indexOf(".");
+        min = minIndex == -1 ? min : (min.substring(minIndex).matches("\\.0+$") ? min.substring(0, minIndex) : min.replace(".", ""));
         minBuilder.append(min);
 
         StringBuilder maxBuilder = new StringBuilder("0.");
@@ -132,8 +134,9 @@ public class AutoGroup extends AbstractGroup {
             maxBuilder.append("0");
             maxCount++;
         }
-        String max = String.valueOf(maxV);
-        max = max.substring(max.indexOf(".")).matches("\\.0+$") ? max.substring(0, max.indexOf(".")) : max.replace(".", "");
+        String max = GeneralUtils.objectToString(maxV);
+        int maxIndex = max.indexOf(".");
+        max = maxIndex == -1 ? max : (max.substring(maxIndex).matches("\\.0+$") ? max.substring(0, maxIndex) : max.replace(".", ""));
         maxBuilder.append(max);
 
         //后面补零对齐

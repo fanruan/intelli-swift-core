@@ -871,13 +871,28 @@ BICst.CONF_STATISTIC_NUMBER = [{
 //选色
 BICst.CHART_COLORS = [{
     text: BI.i18nText("BI-Default"),
-    value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "6ed3c9"]
+    value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
 }, {
     text: BI.i18nText("BI-Bright"),
-    value: ["#9193ac", "#779ae3", "#e6a469", "#eddc80", "9889d0"]
+    value: ["#9193ac", "#779ae3", "#e6a469", "#eddc80", "#9889d0"]
 }, {
     text: BI.i18nText("BI-Elegant"),
     value: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"]
+}];
+
+//图值轴格式
+BICst.CHART_VALUE_AXIS_STYLE = [{
+    text: BI.i18nText("BI-Normal"),
+    value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
+}, {
+    text: "0",
+    value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
+}, {
+    text: "0.0",
+    value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
+}, {
+    text: "0.00",
+    value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
 }];
 
 //表格（分组表、交叉表和复杂表）类型
@@ -916,7 +931,20 @@ BICst.DEFAULT_CHART_SETTING = {
     freeze_dim: true,
     transfer_filter: true,
     show_name: true,
-    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
+    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
+
+    //图
+    chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+    left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
+    right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
+    left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    left_y_axis_unit: "",
+    right_y_axis_unit: "",
+    show_left_y_axis_title: false,
+    show_right_y_axis_title: false,
+    left_y_axis_reversed: false,
+    right_y_axis_reversed: false
 };
 
 BICst.CAL_TARGET_TYPE = [{
