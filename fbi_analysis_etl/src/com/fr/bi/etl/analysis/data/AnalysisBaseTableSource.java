@@ -9,6 +9,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.*;
@@ -58,7 +59,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
             for (int i = 0; i < fieldList.size(); i++){
                 AnalysisETLSourceField c = fieldList.get(i);
-                int sqlType = i < widget.getViewDimensions().length? getSqlTypeByGroupType(getGroup(i)) : BIDBUtils.biTypeToSql(c.getFieldType());
+                int sqlType = i < widget.getViewDimensions().length? getSqlType(i) : BIDBUtils.biTypeToSql(c.getFieldType());
                 dbTable.addColumn(new PersistentField(c.getFieldName(), sqlType));
             }
 
@@ -66,15 +67,33 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         return dbTable;
     }
 
-    public IGroup getGroup(int index){
+    private int getSqlType(int index) {
         if (widget.getType() == BIReportConstant.WIDGET.TABLE){
-            return ((BIDimension)widget.getDimensions()[index]).getGroup();
+            return getTableWidgetSqlType(index);
         } else {
-            return ((BIAbstractDetailTarget)widget.getDimensions()[index]).getGroup();
+            return getDetailWidgetSqlType(index);
         }
     }
 
-    private int getSqlTypeByGroupType(IGroup group) {
+    private int getDetailWidgetSqlType(int index) {
+        BIAbstractDetailTarget target = (BIAbstractDetailTarget) widget.getDimensions()[index];
+        if (target.isCalculateTarget() || target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER){
+            return Types.NUMERIC ;
+        } else {
+            return getTypeByGroup(target.getGroup());
+        }
+    }
+
+    private int getTableWidgetSqlType(int index){
+        BIDimension dim = (BIDimension) widget.getDimensions()[index];
+        if (dim.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER){
+            return dim.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP ? Types.NUMERIC : Types.VARCHAR;
+        } else {
+            return getTypeByGroup(dim.getGroup());
+        }
+    }
+
+    private int getTypeByGroup(IGroup group) {
         switch (group.getType()){
             case BIReportConstant.GROUP.Y:
             case BIReportConstant.GROUP.M:
@@ -82,6 +101,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             case BIReportConstant.GROUP.MD:
                 return Types.INTEGER;
             case BIReportConstant.GROUP.YMD:
+            case BIReportConstant.GROUP.YMDHMS:
                 return Types.DATE;
             default:
                 return Types.VARCHAR;
