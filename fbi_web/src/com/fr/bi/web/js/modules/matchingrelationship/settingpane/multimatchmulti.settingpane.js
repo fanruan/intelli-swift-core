@@ -225,28 +225,21 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
     },
 
     _assertValue: function (v) {
-        v = v || {};
-        v.lpath = v.lpath || [];
-        v.rpath = v.rpath || [];
+        v = v || [];
+        v[0] = v[0] || [];
+        v[1] = v[1] || [];
         return v;
     },
 
     setValue: function (v) {
-        //lpath, rpath
-        //todo 待多路径后台确定需要信息
         v = this._assertValue(v);
-        this.lpath = v.lpath;
-        this.lpath = v.rpath;
+        this.lpath = v[0];
+        this.lpath = v[1];
         this.pathChooser.setValue(this._unpackValueByValue(v));
     },
 
     getValue: function () {
-        //lpath, rpath
-        //todo 待多路径后台确定需要信息
-        return {
-            lpath: this.lpath,
-            rpath: this.rpath
-        };
+        return [this.lpath, this.rpath];
     }
 });
 $.shortcut('bi.multi_match_multi_path_chooser', BI.MultiMatchMultiPathChooser);
