@@ -9,6 +9,11 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
             field_name:"aaa",
         })
     },
+
+    _initOpts : function () {
+        var o = this.options;
+        o.title = o.field_name
+    },
     
     _init : function () {
         BI.ColumnButton.superclass._init.apply(this, arguments);

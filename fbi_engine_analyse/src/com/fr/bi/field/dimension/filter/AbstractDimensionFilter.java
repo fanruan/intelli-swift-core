@@ -1,6 +1,8 @@
 package com.fr.bi.field.dimension.filter;
 
 
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
@@ -39,4 +41,8 @@ public abstract class AbstractDimensionFilter implements DimensionFilter {
         return false;
     }
 
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
+    }
 }

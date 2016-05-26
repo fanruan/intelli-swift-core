@@ -1,6 +1,7 @@
 package com.fr.bi.conf.report.widget.field;
 
 
+import com.fr.bi.common.BICoreService;
 import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.base.provider.NameProvider;
@@ -9,7 +10,7 @@ import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITable;
 import com.fr.js.NameJavaScriptGroup;
 
-public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider {
+public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BICoreService {
 
     boolean useHyperLink();
 

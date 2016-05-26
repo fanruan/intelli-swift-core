@@ -190,7 +190,7 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
                     return self.controller.getValuesForCustomGroup.apply(self.controller, [dm._src.field_name, function(res){
                         var items =[];
                         BI.each(res.value, function (i, item) {
-                            items.push(item.value);
+                            items.push(item);
                         })
                         callback(items)
                     }])

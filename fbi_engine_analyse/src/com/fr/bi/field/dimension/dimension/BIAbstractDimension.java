@@ -1,5 +1,6 @@
 package com.fr.bi.field.dimension.dimension;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -23,8 +24,10 @@ import java.util.Map;
 
 public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension implements BIDimension {
 
+    @BICoreField
     protected DimensionFilter filter;
     protected ISort sort = new NoSort();
+    @BICoreField
     protected IGroup group = new NoGroup();
     private String sort_target;
 

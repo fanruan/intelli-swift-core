@@ -95,4 +95,11 @@ public class BIUser implements XMLable, Cloneable {
     public int hashCode() {
         return userId.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "BIUser{" +
+                "userId=" + userId +
+                '}';
+    }
 }

@@ -14,6 +14,14 @@ public class BISimpleRelation {
 
     }
 
+    @Override
+    public String toString() {
+        return "BISimpleRelation{" +
+                "primaryId='" + primaryId + '\'' +
+                ", foreignId='" + foreignId + '\'' +
+                '}';
+    }
+
     public BISimpleRelation(String primaryId, String foreignId) {
         this.primaryId = primaryId;
         this.foreignId = foreignId;

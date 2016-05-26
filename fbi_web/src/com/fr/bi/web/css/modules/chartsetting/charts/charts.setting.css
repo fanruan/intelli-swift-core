@@ -1,0 +1,20 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-charts-setting .single-line-settings {
+  border-top: 1px solid #eaeaea;
+}
+.bi-charts-setting .single-line-settings .line-title {
+  font-size: 14px;
+  color: #808080;
+}
+.bi-charts-setting .single-line-settings .attr-names {
+  font-size: 14px;
+  color: #1a1a1a;
+}
+.bi-charts-setting .single-line-settings .unit-input {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}

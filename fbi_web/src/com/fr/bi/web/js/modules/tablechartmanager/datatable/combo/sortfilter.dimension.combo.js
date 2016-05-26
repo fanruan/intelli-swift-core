@@ -36,14 +36,17 @@ BI.SortFilterDimensionCombo = BI.inherit(BI.Widget, {
             items: [
                 [{
                     text: this.isFirstDimensionBydId(dId) ? BI.i18nText("BI-Ascend") : BI.i18nText("BI-Asc_Group"),
-                    value: BICst.SORT.ASC
+                    value: BICst.SORT.ASC,
+                    cls: "dot-e-font"
                 }, {
                     text: this.isFirstDimensionBydId(dId) ? BI.i18nText("BI-Descend") : BI.i18nText("BI-Des_Group"),
-                    value: BICst.SORT.DESC
+                    value: BICst.SORT.DESC,
+                    cls: "dot-e-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Filter_Number_Summary"),
-                    value: BI.SortFilterDimensionCombo.FILTER_ITEM
+                    value: BI.SortFilterDimensionCombo.FILTER_ITEM,
+                    cls: "dot-e-font"
                 }]
             ]
         });

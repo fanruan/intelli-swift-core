@@ -106,6 +106,11 @@ BI.ETLTableNamePopover = BI.inherit(BI.ETLTableRenamePopover, {
         })
     },
 
+    populate: function (name, des) {
+        this.name.setValue(name);
+        this.describe.setValue(des)
+    },
+
 
     end: function(){
         this.fireEvent(BI.ETLTableNamePopover.EVENT_CHANGE, this.name.getValue(), this.describe.getValue());

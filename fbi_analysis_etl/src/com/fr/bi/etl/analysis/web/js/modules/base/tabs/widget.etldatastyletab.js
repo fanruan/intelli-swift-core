@@ -46,11 +46,14 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
     _createMainModel : function (wId) {
         var self = this, model = {}, items = [];
         var widget = BI.Utils.getWidgetCalculationByID(wId);
-        widget['page'] = BICst.TABLE_PAGE_OPERATOR.REFRESH;
+        var dim1 = widget.view[BICst.REGION.DIMENSION1] || [];
+        var dim2 = widget.view[BICst.REGION.DIMENSION2] || [];
+        widget.view[BICst.REGION.DIMENSION1] = BI.concat(dim1, dim2);
+        widget.view[BICst.REGION.DIMENSION2] = [];
         var usedDimensions = {}, hasUsed = false;
         var fields = [];
         if(BI.isNotNull(widget.view)) {
-            BI.each([BICst.REGION.DIMENSION1, BICst.REGION.DIMENSION2], function (idx, item) {
+            BI.each([BICst.REGION.DIMENSION1], function (idx, item) {
                 BI.each(widget.view[item], function (idx, id) {
                     var dimension = widget.dimensions[id];
                     if (dimension.used === true){
@@ -58,6 +61,13 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
                         if (field_type === BICst.COLUMN.DATE
                             && dimension.group.type !== BICst.GROUP.YMD
                             && dimension.group.type !== BICst.GROUP.YMDHMS){
+                            field_type = BICst.COLUMN.NUMBER;
+                        }
+                        if(field_type === BICst.COLUMN.NUMBER
+                            && dimension.group.type !== BICst.GROUP.ID_GROUP) {
+                            field_type = BICst.COLUMN.STRING;
+                        }
+                        if(BI.isNull(field_type)){
                             field_type = BICst.COLUMN.NUMBER;
                         }
                         fields.push({

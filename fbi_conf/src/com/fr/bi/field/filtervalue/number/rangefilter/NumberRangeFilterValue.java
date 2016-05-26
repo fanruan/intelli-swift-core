@@ -2,7 +2,9 @@ package com.fr.bi.field.filtervalue.number.rangefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.filter.NullFilterDealer;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -21,7 +23,7 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.Iterator;
 import java.util.Map;
 
-public abstract class NumberRangeFilterValue implements NumberFilterValue, NullFilterDealer {
+public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue, NullFilterDealer {
     /**
 	 * 
 	 */
@@ -29,10 +31,13 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
 
 	private static String XML_TAG = "NumberRangeFilterValue";
 
+    @BICoreField
     protected double min;
+    @BICoreField
     protected boolean closemin;
-
+    @BICoreField
     protected double max;
+    @BICoreField
     protected boolean closemax;
     @Override
     public boolean isTopOrBottomFilterValue() {

@@ -1,7 +1,9 @@
 package com.fr.bi.field.target.filter.field;
 
 import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.ValueCreator;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.key.NumberSummaryFilterKey;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -36,9 +38,11 @@ public class SummaryNumberFilter extends ColumnFieldFilter {
     private static final long serialVersionUID = 399517487692690993L;
     private static final int CACHE_SIZE = 16;
     private static String XML_TAG = "SummaryNumberFilter";
+    @BIIgnoreField
     private LRUWithKHashMap<NumberSummaryFilterKey, GroupValueIndex> numberSummaryIndexMap = new LRUWithKHashMap<NumberSummaryFilterKey, GroupValueIndex>(CACHE_SIZE);
-
+    @BICoreField
     private int SUMMARY_TYPE;
+    @BICoreField
     private TargetFilter filter;
 
 

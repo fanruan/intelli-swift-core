@@ -19,7 +19,8 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
         var f = model.getFieldByValue(v);
         this._addCondition(f, {}, widget, model);
         this._buildItems(model);
-        this.checkValid(widget, model)
+        this.checkValid(widget, model);
+        widget.pane.element.scrollTop(BI.MAX)
     },
 
     clickCheckBox : function (widget, model) {

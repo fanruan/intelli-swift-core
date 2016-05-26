@@ -693,8 +693,7 @@
             var type = this.getDimensionTypeByID(dId);
             var _set = [BICst.TARGET_TYPE.STRING = 1,
                 BICst.TARGET_TYPE.NUMBER = 2,
-                BICst.TARGET_TYPE.DATE = 3,
-                BICst.TARGET_TYPE.COUNTER = 4];
+                BICst.TARGET_TYPE.DATE = 3];
             var region = 0;
             BI.some(views, function (reg, view) {
                 if (view.contains(dId)) {
@@ -1164,14 +1163,14 @@
                                 if (BI.isNumeric(year)) {
                                     filterValues.push({
                                         filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                                        filter_value: {type: BICst.GROUP.Y, value: year},
+                                        filter_value: {type: BICst.GROUP.Y, values: year},
                                         _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                     });
                                 }
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.M, value: month};
+                                fValue = {type: BICst.GROUP.M, values: month};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1184,14 +1183,14 @@
                                 if (BI.isNumeric(year)) {
                                     filterValues.push({
                                         filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                                        filter_value: {type: BICst.GROUP.Y, value: year},
+                                        filter_value: {type: BICst.GROUP.Y, values: year},
                                         _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                     });
                                 }
                                 if (!BI.isNumeric(quarter)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.S, value: quarter};
+                                fValue = {type: BICst.GROUP.S, values: quarter};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1200,7 +1199,7 @@
                                 break;
                             case BICst.WIDGET.YEAR:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
-                                fValue = {type: BICst.GROUP.Y, value: fValue};
+                                fValue = {type: BICst.GROUP.Y, values: fValue};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1209,7 +1208,7 @@
                                 break;
                             case BICst.WIDGET.YMD:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
-                                fValue = {type: BICst.GROUP.YMD, value: parseComplexDate(fValue)};
+                                fValue = {type: BICst.GROUP.YMD, values: parseComplexDate(fValue)};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,

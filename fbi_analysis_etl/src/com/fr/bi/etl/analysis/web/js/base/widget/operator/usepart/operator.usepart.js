@@ -9,6 +9,10 @@ BI.AnalysisETLOperatorUsePart = FR.extend(BI.AnalysisETLOperatorAbstractPane, {
 
     _initController : function () {
         return BI.AnalysisETLOperatorUsePartController;
+    },
+
+    _initModel : function () {
+        return BI.AnalysisETLOperatorUsePartPaneModel;
     }
 })
 

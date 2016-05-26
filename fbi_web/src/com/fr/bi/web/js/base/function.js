@@ -182,8 +182,22 @@ $(function () {
             };
         },
 
+        rgba2json: function (rgbColour) {
+            var rgbValues = rgbColour.match(/\d+(\.\d+)?/g);
+            return {
+                r: BI.parseInt(rgbValues[0]),
+                g: BI.parseInt(rgbValues[1]),
+                b: BI.parseInt(rgbValues[2]),
+                a: BI.parseFloat(rgbValues[3])
+            };
+        },
+
         json2rgb: function (rgb) {
             return "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
+        },
+
+        json2rgba: function (rgba) {
+            return "rgba(" + rgba.r + "," + rgba.g + "," + rgba.b + "," + rgba.a + ")";
         },
 
         int2hex: function (strNum) {
@@ -210,6 +224,27 @@ $(function () {
             tempValue += colorArray[2] + ")";
 
             return tempValue;
+        },
+
+        rgba2rgb: function (rgbColour, BGcolur) {
+            if (BI.isNull(BGcolur)) {
+                BGcolur = 1;
+            }
+            if (rgbColour.substr(0, 4) != "rgba") {
+                return "";
+            }
+            var rgbValues = rgbColour.match(/\d+(\.\d+)?/g);
+            if (rgbValues.length < 4) {
+                return "";
+            }
+            var R = BI.parseFloat(rgbValues[0]);
+            var G = BI.parseFloat(rgbValues[1]);
+            var B = BI.parseFloat(rgbValues[2]);
+            var A = BI.parseFloat(rgbValues[3]);
+
+            return "rgb(" + Math.floor(255 * (BGcolur * (1 - A )) + R * A) + "," +
+                Math.floor(255 * (BGcolur * (1 - A )) + G * A) + "," +
+                Math.floor(255 * (BGcolur * (1 - A )) + B * A) + ")";
         },
 
         getTextSizeWidth: function (text, fontSize) {

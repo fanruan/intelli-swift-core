@@ -64,7 +64,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.on(BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: this.getColumnSize()})});
         });
-        this.table.on(BI.PageTable.EVENT_TABLE_AFTER_INIT, function(){
+        this.table.on(BI.PageTable.EVENT_TABLE_AFTER_INIT, function () {
             self._resizeTableColumnSize();
         });
         if (this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_NEXT || this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_PRE) {
@@ -79,54 +79,53 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         })
     },
 
-    _resizeTableColumnSize: function() {
+    _resizeTableColumnSize: function () {
         var cs = this.table.getColumnSize();
         var isValid = true;
-        BI.some(cs, function(i, size){
-            if(!BI.isNumeric(size)) {
+        BI.some(cs, function (i, size) {
+            if (!BI.isNumeric(size)) {
                 isValid = false;
                 return true;
             }
         });
-        if(!isValid) {
+        if (!isValid) {
             var columnSize = this.table.getCalculateColumnSize();
-            if(this.model.isNeed2Freeze()) {
+            if (this.model.isNeed2Freeze()) {
                 var freezeCols = this.model.getFreezeCols;
                 var freezeColumnSize = columnSize.slice(0, freezeCols.length);
                 var otherSize = columnSize.slice(freezeCols.length);
-                var fl= freezeColumnSize.length, ol = otherSize.length;
-                BI.each(freezeColumnSize, function(i, size){
-                    if(size > 200 && i < fl - 1) {
+                var fl = freezeColumnSize.length, ol = otherSize.length;
+                BI.each(freezeColumnSize, function (i, size) {
+                    if (size > 200 && i < fl - 1) {
                         freezeColumnSize[fl - 1] = freezeColumnSize[fl - 1] + freezeColumnSize[i] - 200;
                         freezeColumnSize[i] = 200;
                     }
-                    if(size < 80 && i < fl - 1) {
+                    if (size < 80 && i < fl - 1) {
                         var tempSize = freezeColumnSize[fl - 1] - (80 - freezeColumnSize[i]);
-                        freezeColumnSize[fl-1] = tempSize < 80 ? 80 : tempSize;
+                        freezeColumnSize[fl - 1] = tempSize < 80 ? 80 : tempSize;
                         freezeColumnSize [i] = 80;
                     }
-
                 });
-                BI.each(otherSize, function(i, size){
-                    if(size > 200 && i < ol - 1) {
+                BI.each(otherSize, function (i, size) {
+                    if (size > 200 && i < ol - 1) {
                         otherSize[ol - 1] = otherSize[ol - 1] + otherSize[i] - 200;
                         otherSize[i] = 200;
                     }
-                    if(size < 80 && i < ol - 1) {
+                    if (size < 80 && i < ol - 1) {
                         var tempSize = otherSize[ol - 1] - (80 - otherSize[i]);
-                        otherSize[ol-1] = tempSize < 80 ? 80 : tempSize;
+                        otherSize[ol - 1] = tempSize < 80 ? 80 : tempSize;
                         otherSize [i] = 80;
                     }
                 });
                 columnSize = freezeColumnSize.concat(otherSize);
             } else {
                 var cl = columnSize.length;
-                BI.each(columnSize, function(i, size){
-                    if(size > 200 && i < cl - 1) {
+                BI.each(columnSize, function (i, size) {
+                    if (size > 200 && i < cl - 1) {
                         columnSize[cl - 1] = columnSize[cl - 1] + columnSize[i] - 200;
                         columnSize[i] = 200;
                     }
-                    if(size < 80 && i < cl - 1) {
+                    if (size < 80 && i < cl - 1) {
                         var tempSize = columnSize[cl - 1] - (80 - columnSize[i]);
                         columnSize[cl - 1] = tempSize < 80 ? 80 : tempSize;
                         columnSize [i] = 80;
@@ -291,6 +290,54 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
         this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
+
+        //css
+        this._setStyleAndColor();
+    },
+
+    /**
+     * 风格1、2、3
+     *
+     */
+    _setStyleAndColor: function () {
+        var wId = this.options.wId;
+        var $table = this.table.element;
+
+        //表头
+        var themeColor = this.model.getThemeColor();
+        var tableStyle = this.model.getTableStyle();
+        //先不考虑类型2的情况
+        switch (tableStyle) {
+            case BICst.TABLE_STYLE.NORMAL:
+                //是否冻结
+                if(this.model.isNeed2Freeze()) {
+                    $table.find(".top-left > div > div > table").css("background", themeColor);
+                    $table.find(".top-right > div > div > table").css("background", themeColor);
+                    $table.find(".bottom-left > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
+                    $table.find(".bottom-left > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
+                    $table.find(".bottom-right > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
+                    $table.find(".bottom-right > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
+                    $table.find(".bottom-left > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
+                    $table.find(".bottom-right > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
+                    return;
+                }
+                $table.find(".bi-number-table-tree > div > div table > thead > tr").css("background", themeColor);
+                $table.find(".bi-number-table-tree > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
+                $table.find(".bi-number-table-tree > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
+                $table.find(".bi-number-table-tree > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
+                break;
+            case BICst.TABLE_STYLE.INTERVAL:
+                break;
+            case BICst.TABLE_STYLE.BLUE:
+                break;
+        }
+    },
+
+    _parseHEXAlpha2HEX: function (hex, alpha) {
+        var rgb = BI.DOM.hex2rgb(hex);
+        var rgbJSON = BI.DOM.rgb2json(rgb);
+        rgbJSON.a = alpha;
+        return BI.DOM.rgba2rgb(BI.DOM.json2rgba(rgbJSON));
     },
 
     populate: function () {

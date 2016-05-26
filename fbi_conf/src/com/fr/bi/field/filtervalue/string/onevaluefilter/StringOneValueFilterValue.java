@@ -1,5 +1,7 @@
 package com.fr.bi.field.filtervalue.string.onevaluefilter;
 
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.data.Table;
@@ -19,14 +21,14 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.Iterator;
 import java.util.Map;
 
-public abstract class StringOneValueFilterValue implements StringFilterValue {
+public abstract class StringOneValueFilterValue extends AbstractFilterValue<String> implements StringFilterValue {
     /**
      *
      */
     private static final long serialVersionUID = 360509300932967000L;
 
     private static String XML_TAG = "StringOneValueFilterValue";
-
+    @BICoreField
     protected String value;
 
     /**
@@ -149,11 +151,6 @@ public abstract class StringOneValueFilterValue implements StringFilterValue {
         writer.startTAG(XML_TAG);
         writer.attr("filter_value", this.value);
         writer.end();
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
     @Override
