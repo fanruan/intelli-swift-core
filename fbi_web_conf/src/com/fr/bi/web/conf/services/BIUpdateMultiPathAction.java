@@ -2,7 +2,6 @@ package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -94,9 +93,9 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
     private BITableRelationPath createPath(JSONArray pathJa) throws Exception {
         BITableRelationPath newPath = new BITableRelationPath();
         for (int i = 0; i < pathJa.length(); i++) {
-            BISimpleRelation re = new BISimpleRelation();
+            BITableRelation re = new BITableRelation();
             re.parseJSON(pathJa.getJSONObject(i));
-            newPath.addRelationAtTail(re.getTableRelation());
+            newPath.addRelationAtTail(re);
         }
         return newPath;
     }

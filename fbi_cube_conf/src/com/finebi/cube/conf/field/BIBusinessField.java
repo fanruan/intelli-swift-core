@@ -3,10 +3,12 @@ package com.finebi.cube.conf.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
@@ -51,6 +53,7 @@ public class BIBusinessField implements BusinessField {
         this.fieldType = BIDBUtils.checkColumnTypeFromClass(classType);
         this.fieldSize = fieldSize;
         this.classType = classType;
+        this.isUsable = true;
     }
 
     public BIBusinessField(String tableID, String fieldName) {
@@ -68,6 +71,7 @@ public class BIBusinessField implements BusinessField {
 
     public BIBusinessField(BIFieldID fieldID) {
         this.fieldID = fieldID;
+        magicInitial();
     }
 
     public int getClassType() {
@@ -75,7 +79,7 @@ public class BIBusinessField implements BusinessField {
     }
 
     public BIBusinessField(BusinessTable tableBelongTo, String fieldName) {
-        this(tableBelongTo, new BIFieldID(""),fieldName, 0, 0);
+        this(tableBelongTo, new BIFieldID(""), fieldName, 0, 0);
     }
 
     public void setFieldName(String fieldName) {
@@ -125,6 +129,21 @@ public class BIBusinessField implements BusinessField {
             jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? ti.getMINValue(loader.getFieldIndex(this)) : 0);
         }
         return jo;
+    }
+
+    @Override
+    public void magicInitial() {
+        initialTable();
+    }
+
+    private void initialTable() {
+        try {
+            if (getFieldID() == null) {
+                tableBelongTo = BICubeConfigureCenter.getDataSourceManager().getBusinessTable(getFieldID());
+            }
+        } catch (BIKeyAbsentException e) {
+            tableBelongTo = null;
+        }
     }
 
     /**

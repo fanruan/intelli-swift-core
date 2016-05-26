@@ -22,7 +22,6 @@ import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
-import com.fr.bi.etl.analysis.manager.BIAnalysisDataSourceManagerProvider;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.HSQLBIReportDAO;
@@ -87,10 +86,6 @@ public class BICoreModule extends AbstractModule {
         return StableFactory.getMarkedObject(ICubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
     }
 
-    @Override
-    public BIAnalysisDataSourceManagerProvider getAnalysisDataSourceManagerProvider() {
-        return null;
-    }
 
     private void registProviders() {
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());

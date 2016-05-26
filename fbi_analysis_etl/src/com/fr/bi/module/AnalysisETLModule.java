@@ -60,10 +60,6 @@ public class AnalysisETLModule extends AbstractModule {
         return BICubeConfigureCenter.getDataSourceManager();
     }
 
-    @Override
-    public BIAnalysisDataSourceManagerProvider getAnalysisDataSourceManagerProvider() {
-        return BIAnalysisETLManagerCenter.getDataSourceManager();
-    }
 
     @Override
     public BISystemPackageConfigurationProvider getBusiPackManagerProvider() {

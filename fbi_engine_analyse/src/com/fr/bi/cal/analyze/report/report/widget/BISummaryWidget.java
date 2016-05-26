@@ -3,7 +3,8 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
@@ -42,7 +43,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     @BICoreField
     protected Map<String, Map<String, BusinessField>> dimensionsMap = new LinkedHashMap<String, Map<String, BusinessField>>();
     @BICoreField
-    protected Map<String, Map<String, List<BISimpleRelation>>> relationsMap = new LinkedHashMap<String, Map<String, List<BISimpleRelation>>>();
+    protected Map<String, Map<String, List<BITableRelation>>> relationsMap = new LinkedHashMap<String, Map<String, List<BITableRelation>>>();
     protected Object[] clickValue;
 
     protected ComplexExpander complexExpander = new ComplexExpander();
@@ -94,11 +95,11 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     }
 
     private List<BITableSourceRelation> getDimRelations(String dimId, String tarId) {
-        Map<String, List<BISimpleRelation>> relMap = relationsMap.get(dimId);
+        Map<String, List<BITableRelation>> relMap = relationsMap.get(dimId);
         if (relMap == null) {
             return new ArrayList<BITableSourceRelation>();
         }
-        List<BISimpleRelation> relationList = relMap.get(tarId);
+        List<BITableRelation> relationList = relMap.get(tarId);
         return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convertToMD5RelationFromSimpleRelation(relationList, new BIUser(this.getUserId()));
     }
 
@@ -243,13 +244,13 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         }
                     }
                     if (tar.has("target_relation")) {
-                        Map<String, List<BISimpleRelation>> relationMap = new LinkedHashMap<String, List<BISimpleRelation>>();
+                        Map<String, List<BITableRelation>> relationMap = new LinkedHashMap<String, List<BITableRelation>>();
                         relationsMap.put(dimensionId, relationMap);
                         Object t = tar.get("target_relation");
                         if (t instanceof JSONArray) {
                             JSONArray rel = (JSONArray) t;
                             int lens = rel.length();
-                            List<BISimpleRelation> relationList = new ArrayList<BISimpleRelation>();
+                            List<BITableRelation> relationList = new ArrayList<BITableRelation>();
                             if (lens == 1) {
                                 String primaryFieldId = rel.optJSONObject(0).optJSONObject("primaryKey").optString("field_id");
                                 String foreignFieldId = rel.optJSONObject(0).optJSONObject("foreignKey").optString("field_id");
@@ -259,7 +260,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                                 }
                             }
                             for (int j = 0; j < lens; j++) {
-                                BISimpleRelation relation = new BISimpleRelation();
+                                BITableRelation relation = new BITableRelation();
                                 relation.parseJSON(rel.optJSONObject(j));
                                 relationList.add(relation);
                             }

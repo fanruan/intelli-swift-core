@@ -2,8 +2,8 @@ package com.fr.bi.web.conf.services.packs;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.pack.data.*;
-import com.finebi.cube.relation.BISimpleRelation;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
@@ -14,6 +14,7 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -146,8 +147,11 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             JSONObject r = relationConn.getJSONObject(k);
             JSONObject pKeyJO = r.getJSONObject("primaryKey");
             JSONObject fKeyJO = r.getJSONObject("foreignKey");
-            BISimpleRelation simpleRelation = new BISimpleRelation(pKeyJO.getString("field_id"), fKeyJO.getString("field_id"));
-            BITableRelation tableRelation = simpleRelation.getTableRelation();
+            BIBusinessField primaryField = new BIBusinessField(new BIFieldID(pKeyJO.getString("field_id")));
+            BIBusinessField foreignField = new BIBusinessField(new BIFieldID(fKeyJO.getString("field_id")));
+
+            BITableRelation simpleRelation = new BITableRelation(primaryField, foreignField);
+            BITableRelation tableRelation = simpleRelation;
             relationsSet.add(tableRelation);
         }
         BICubeConfigureCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);

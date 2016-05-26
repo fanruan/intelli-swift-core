@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
@@ -127,11 +127,8 @@ public class BIConfUtils {
         );
     }
 
-    public static List<BITableSourceRelation> convertToMD5RelationFromSimpleRelation(List<BISimpleRelation> relations, BIUser user) {
-        List<BITableRelation> list = new ArrayList<BITableRelation>();
-        for (BISimpleRelation relation : relations) {
-            list.add(relation.getTableRelation());
-        }
-        return BIConfUtils.convert2TableSourceRelation(list);
+    public static List<BITableSourceRelation> convertToMD5RelationFromSimpleRelation(List<BITableRelation> relations, BIUser user) {
+
+        return BIConfUtils.convert2TableSourceRelation(relations);
     }
 }

@@ -3,7 +3,6 @@ package com.fr.bi.module;
 import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
-import com.fr.bi.etl.analysis.manager.BIAnalysisDataSourceManagerProvider;
 import com.fr.stable.fun.Service;
 
 /**
@@ -19,8 +18,6 @@ public interface BIModule {
 
     BIDataSourceManagerProvider getDataSourceManagerProvider();
     //TODO Connery Analysis 这种大模块间的就别继承了。改动代价远大于写几行代码
-
-    BIAnalysisDataSourceManagerProvider getAnalysisDataSourceManagerProvider();
 
     BISystemPackageConfigurationProvider getBusiPackManagerProvider();
 

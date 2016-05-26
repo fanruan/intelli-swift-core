@@ -4,7 +4,8 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
@@ -36,7 +37,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     @BICoreField
     protected IGroup group = new NoGroup();
 
-    private List<BISimpleRelation> relationList = new ArrayList<BISimpleRelation>();
+    private List<BITableRelation> relationList = new ArrayList<BITableRelation>();
 
 
     public TargetFilter getFilter() {
@@ -77,12 +78,12 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     }
 
     @Override
-    public List<BISimpleRelation> getRelationList(BusinessTable target, long userId) {
+    public List<BITableRelation> getRelationList(BusinessTable target, long userId) {
         return relationList;
     }
 
 
-    public void setRelationList(List<BISimpleRelation> relationList) {
+    public void setRelationList(List<BITableRelation> relationList) {
         this.relationList = relationList;
     }
 
