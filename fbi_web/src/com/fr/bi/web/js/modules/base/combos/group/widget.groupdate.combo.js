@@ -28,16 +28,6 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
                 cls: "dot-ha-font"
             }],
             [{
-                text: BI.i18nText("BI-Display"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.DISPLAY,
-                selected: true,
-                cls: "dot-ha-font"
-            }, {
-                text: BI.i18nText("BI-Hidden"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.HIDDEN,
-                cls: "dot-ha-font"
-            }],
-            [{
                 text: BI.i18nText("BI-Rename"),
                 value: BICst.STATISTICS_GROUP_DATE_COMBO.RENAME
             }, {
@@ -71,7 +61,7 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
 
         this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function(){
             var selectedValue = self._createValueByGroup(o.dimension.group);
-            this.setValue([selectedValue, self._createValueByUsed(o.dimension.used)]);
+            this.setValue([selectedValue]);
         });
     },
 
@@ -104,14 +94,6 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
                 break;
         }
         return groupValue;
-    },
-
-    _createValueByUsed: function(used){
-        if(used === true){
-            return {value: BICst.STATISTICS_GROUP_DATE_COMBO.DISPLAY};
-        }else{
-            return {value: BICst.STATISTICS_GROUP_DATE_COMBO.HIDDEN};
-        }
     },
 
     getValue:function(){
