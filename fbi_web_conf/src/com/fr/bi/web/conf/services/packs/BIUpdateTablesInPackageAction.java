@@ -4,6 +4,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.pack.data.*;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
@@ -87,7 +88,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
             JSONObject tableJson = tableDataJO.optJSONObject(tableId);
             if (tableJson != null) {
-                BICubeConfigureCenter.getDataSourceManager().addTableSource(new BITableID(tableId), TableSourceFactory.createTableSource(tableJson, userId));
+                BICubeConfigureCenter.getDataSourceManager().addTableSource(new BIBusinessTable(new BITableID(tableId)), TableSourceFactory.createTableSource(tableJson, userId));
             } else {
                 BILogger.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }

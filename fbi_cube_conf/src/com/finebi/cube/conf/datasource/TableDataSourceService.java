@@ -1,8 +1,8 @@
 package com.finebi.cube.conf.datasource;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 /**
@@ -14,11 +14,13 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 public interface TableDataSourceService {
     void envChanged();
 
-    CubeTableSource getTableSource(BITableID id) throws BIKeyAbsentException;
+    CubeTableSource getTableSource(BusinessTable businessTable) throws BIKeyAbsentException;
 
-    void addTableSource(BITableID id, CubeTableSource source) throws BIKeyDuplicateException;
+    void addTableSource(BusinessTable businessTable, CubeTableSource source) throws BIKeyDuplicateException;
 
-    void removeTableSource(BITableID id) throws BIKeyAbsentException;
+    void removeTableSource(BusinessTable businessTable) throws BIKeyAbsentException;
 
-    void editTableSource(BITableID id, CubeTableSource source) throws BIKeyDuplicateException, BIKeyAbsentException;
+    void editTableSource(BusinessTable businessTable, CubeTableSource source) throws BIKeyDuplicateException, BIKeyAbsentException;
+
+    boolean containTableSource(BusinessTable businessTable);
 }

@@ -15,7 +15,7 @@ public abstract class SummaryKey extends BIField implements BITargetKey {
     private TargetFilter filter;
 
     protected SummaryKey(BusinessField ck, TargetFilter filter) {
-        super(ck.getTableBelongTo().getID().getIdentityValue(), ck.getFieldName());
+        super(ck.getFieldID().getIdentity(), ck.getFieldName());
         this.filter = filter;
     }
 
