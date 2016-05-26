@@ -7,6 +7,7 @@ import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.Table;
@@ -57,12 +58,20 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
             for (int i = 0; i < fieldList.size(); i++){
                 AnalysisETLSourceField c = fieldList.get(i);
-                int sqlType = (widget.getType() == BIReportConstant.WIDGET.TABLE && i < widget.getViewDimensions().length) ? getSqlTypeByGroupType(((BIDimension)widget.getViewDimensions()[i]).getGroup()) : BIDBUtils.biTypeToSql(c.getFieldType());
+                int sqlType = i < widget.getViewDimensions().length? getSqlTypeByGroupType(getGroup(i)) : BIDBUtils.biTypeToSql(c.getFieldType());
                 dbTable.addColumn(new PersistentField(c.getFieldName(), sqlType));
             }
 
         }
         return dbTable;
+    }
+
+    public IGroup getGroup(int index){
+        if (widget.getType() == BIReportConstant.WIDGET.TABLE){
+            return ((BIDimension)widget.getDimensions()[index]).getGroup();
+        } else {
+            return ((BIAbstractDetailTarget)widget.getDimensions()[index]).getGroup();
+        }
     }
 
     private int getSqlTypeByGroupType(IGroup group) {

@@ -8,6 +8,7 @@ import com.fr.bi.stable.operation.sort.BISortFactory;
 import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.List;
 
@@ -51,4 +52,12 @@ public class BINumberDimension extends BIAbstractDimension {
         return new NumberDimensionCalculator(this, column, relations);
     }
 
+
+    @Override
+    public Object getValueByType(Object data) {
+        if (group.getType() == BIReportConstant.GROUP.ID_GROUP){
+            return data == null ? null : Long.parseLong(data.toString());
+        }
+        return data == null ? StringUtils.EMPTY : data.toString();
+    }
 }
