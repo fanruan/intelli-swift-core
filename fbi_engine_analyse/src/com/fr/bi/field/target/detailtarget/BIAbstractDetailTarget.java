@@ -176,4 +176,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
         return result;
     }
 
+    public IGroup getGroup() {
+        return group;
+    }
 }

@@ -441,6 +441,67 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.column_size) ? ws.column_size : [];
         },
+        
+        getWSChartColorByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_color) ? ws.chart_color :
+                BICst.DEFAULT_CHART_SETTING.chart_color;
+        },
+
+        getWSLeftYAxisStyleByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.left_y_axis_style) ? ws.left_y_axis_style :
+                BICst.DEFAULT_CHART_SETTING.left_y_axis_style;
+        },
+
+        getWSRightYAxisStyleByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.right_y_axis_style) ? ws.right_y_axis_style :
+                BICst.DEFAULT_CHART_SETTING.right_y_axis_style;
+        },
+
+        getWSRightYAxisNumLevelByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.right_y_axis_number_level) ? ws.right_y_axis_number_level :
+                BICst.DEFAULT_CHART_SETTING.right_y_axis_number_level;
+        },
+
+        getWSLeftYAxisUnitByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.left_y_axis_unit) ? ws.left_y_axis_unit :
+                BICst.DEFAULT_CHART_SETTING.left_y_axis_unit;
+        },
+
+        getWSRightYAxisUnitByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.right_y_axis_unit) ? ws.right_y_axis_unit :
+                BICst.DEFAULT_CHART_SETTING.right_y_axis_unit;
+        },
+
+        getWSShowLeftYAxisTitleByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_left_y_axis_title) ? ws.show_left_y_axis_title :
+                BICst.DEFAULT_CHART_SETTING.show_left_y_axis_title;
+        },
+
+        getWSShowRightYAxisTitleByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_right_y_axis_title) ? ws.show_right_y_axis_title :
+                BICst.DEFAULT_CHART_SETTING.show_right_y_axis_title;
+        },
+
+        getWSLeftYAxisReversedByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.left_y_axis_reversed) ? ws.left_y_axis_reversed :
+                BICst.DEFAULT_CHART_SETTING.left_y_axis_reversed;
+        },
+
+        getWSRightYAxisReversedByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.right_y_axis_reversed) ? ws.right_y_axis_reversed :
+                BICst.DEFAULT_CHART_SETTING.right_y_axis_reversed;
+        },
+
         //settings  ---- end ----
 
         getWidgetSettingsByID: function (wid) {

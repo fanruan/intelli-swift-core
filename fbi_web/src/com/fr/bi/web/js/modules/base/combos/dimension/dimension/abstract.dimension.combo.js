@@ -54,8 +54,8 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         }
         ascend.children = [];                //再重置儿子的属性
         descend.children = [];
-        ascend.children.push({text: BI.Utils.getDimensionNameByID(o.dId), value: o.dId});
-        descend.children.push({text: BI.Utils.getDimensionNameByID(o.dId), value: o.dId});
+        ascend.children.push({text: BI.Utils.getDimensionNameByID(o.dId), value: o.dId, cls: "dot-e-font"});
+        descend.children.push({text: BI.Utils.getDimensionNameByID(o.dId), value: o.dId, cls: "dot-e-font"});
 
         if(BI.isNull(this.widgetId)){
             this.widgetId = BI.Utils.getWidgetIDByDimensionID(o.dId);
@@ -67,8 +67,8 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         });
 
         BI.each(targets,function(idx,target){
-            ascend.children.push({text: target.value, value: target.id});
-            descend.children.push({text: target.value, value: target.id});
+            ascend.children.push({text: target.value, value: target.id, cls: "dot-e-font"});
+            descend.children.push({text: target.value, value: target.id, cls: "dot-e-font"});
         });
 
         if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
