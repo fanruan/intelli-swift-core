@@ -3,12 +3,10 @@ package com.finebi.cube.conf.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
@@ -71,7 +69,6 @@ public class BIBusinessField implements BusinessField {
 
     public BIBusinessField(BIFieldID fieldID) {
         this.fieldID = fieldID;
-        magicInitial();
     }
 
     public int getClassType() {
@@ -84,6 +81,11 @@ public class BIBusinessField implements BusinessField {
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
+    }
+
+    @Override
+    public void setTableBelongTo(BusinessTable tableBelongTo) {
+        this.tableBelongTo = tableBelongTo;
     }
 
     @Override
@@ -131,20 +133,6 @@ public class BIBusinessField implements BusinessField {
         return jo;
     }
 
-    @Override
-    public void magicInitial() {
-        initialTable();
-    }
-
-    private void initialTable() {
-        try {
-            if (getFieldID() == null) {
-                tableBelongTo = BICubeConfigureCenter.getDataSourceManager().getBusinessTable(getFieldID());
-            }
-        } catch (BIKeyAbsentException e) {
-            tableBelongTo = null;
-        }
-    }
 
     /**
      * 转成JSON

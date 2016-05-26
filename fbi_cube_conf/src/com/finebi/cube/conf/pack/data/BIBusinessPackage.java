@@ -1,6 +1,7 @@
 package com.finebi.cube.conf.pack.data;
 
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.container.BISetContainer;
 import com.fr.bi.stable.data.BITableID;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
 /**
  * This class created on 2016/5/23.
  *
@@ -33,7 +35,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
     protected BIPackageID ID;
 
 
-    public BIBusinessPackage(BIPackageID ID, BIPackageName name, BIUser owner,long position) {
+    public BIBusinessPackage(BIPackageID ID, BIPackageName name, BIUser owner, long position) {
         this.ID = ID;
         this.name = name;
         this.owner = owner;
@@ -64,7 +66,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
     }
 
     public BIBusinessPackage(BIPackageID id) {
-        this(id, BIPackageName.DEFAULT, BIUser.DEFALUT,System.currentTimeMillis());
+        this(id, BIPackageName.DEFAULT, BIUser.DEFALUT, System.currentTimeMillis());
     }
 
     protected abstract T createTable();
@@ -72,6 +74,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
     protected Collection initCollection() {
         return new LinkedHashSet<T>();
     }
+
     @Override
     public boolean isNeed2BuildCube(BIBusinessPackage targetPackage) {
         if (size() == targetPackage.size()) {
@@ -169,6 +172,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
         for (int i = 0; i < ja.length(); i++) {
             T table = createTable();
             table.parseJSON(ja.optJSONObject(i));
+            table = (T) BusinessTableHelper.getBusinessTable(table.getID());
             add(table);
         }
     }

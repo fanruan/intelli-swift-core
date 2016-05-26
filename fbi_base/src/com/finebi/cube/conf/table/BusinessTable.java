@@ -10,6 +10,9 @@ import com.fr.json.JSONTransform;
 import java.util.List;
 
 /**
+ * 业务包表，多用组合，谨慎继承
+ * 通过DataSource的支持，
+ * <p/>
  * This class created on 2016/5/21.
  *
  * @author Connery
@@ -22,11 +25,14 @@ public interface BusinessTable extends JSONTransform, Cloneable {
 
     List<BusinessField> getFields();
 
+    void setSource(CubeTableSource source);
+
     String getTableName();
 
     CubeTableSource getTableSource();
 
-    JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader)throws Exception;
+    void setFields(List<BusinessField> fields);
 
-    void magicInitial();
+    JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader) throws Exception;
+
 }

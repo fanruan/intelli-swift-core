@@ -41,7 +41,8 @@ public class BIStringUtils {
 
     /**
      * 指定字符开始，并且是唯一字符开始。
-     * @param target 目标字符串
+     *
+     * @param target    目标字符串
      * @param startChar 以相应字符开始
      * @return 处理起始后的字符串
      */
@@ -109,5 +110,8 @@ public class BIStringUtils {
         }
     }
 
+    public static String emptyString() {
+        return "__FINE_BI_EMPTY__";
+    }
 
 }

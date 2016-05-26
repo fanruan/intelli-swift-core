@@ -5,7 +5,6 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.exception.BIKeyAbsentException;
@@ -112,8 +111,8 @@ public class BIConfUtils {
         CubeTableSource primaryTableSource = null;
         CubeTableSource foreignTableSource = null;
         try {
-            primaryTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(primaryField.getTableBelongTo().getID());
-            foreignTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(primaryField.getTableBelongTo().getID());
+            primaryTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(primaryField.getTableBelongTo());
+            foreignTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(primaryField.getTableBelongTo());
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);
         }

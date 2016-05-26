@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.session;
 
+import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
@@ -9,7 +10,6 @@ import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
-import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
@@ -18,7 +18,6 @@ import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
@@ -241,7 +240,7 @@ public class BISession extends BIAbstractSession {
     public ICubeDataLoader getLoader() {
         synchronized (this) {
             if (!isRealTime()) {
-                return CubeReadingTableIndexLoader.getInstance(accessUserId);
+                return BICubeManager.getInstance().fetchCubeLoader(accessUserId);
             } else {
 
                 if (loader == null) {

@@ -7,9 +7,6 @@ import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -40,7 +37,6 @@ public class BIBusinessTable implements BusinessTable {
 
     protected BITableID ID;
     protected String tableName;
-    @BIIgnoreField
     protected List<BusinessField> fields;
     protected CubeTableSource source;
 
@@ -64,14 +60,17 @@ public class BIBusinessTable implements BusinessTable {
 
     public void setID(BITableID ID) {
         this.ID = ID;
-        initialSource();
     }
 
 
     @Override
     public List<BusinessField> getFields() {
-        initialFields();
         return BICollectionUtils.unmodifiedCollection(fields);
+    }
+
+    @Override
+    public void setSource(CubeTableSource source) {
+        this.source = source;
     }
 
     @Override
@@ -117,18 +116,13 @@ public class BIBusinessTable implements BusinessTable {
 
     @Override
     public CubeTableSource getTableSource() {
-        initialSource();
         return source;
     }
 
-    public void initialSource() {
-        try {
-            if (source == null && getID() != null) {
-                source = BICubeConfigureCenter.getDataSourceManager().getTableSource(getID());
-            }
-        } catch (BIKeyAbsentException e) {
-            source = null;
-        }
+
+    @Override
+    public void setFields(List<BusinessField> fields) {
+        this.fields = fields;
     }
 
     @Override
@@ -173,14 +167,6 @@ public class BIBusinessTable implements BusinessTable {
                 BIFieldID fieldID = new BIFieldID(java.util.UUID.randomUUID().toString());
                 fields.add(new BIBusinessField(this,
                         fieldID, field.getFieldName(), field.getClassType(), field.getFieldSize()));
-                try {
-                    /**
-                     *
-                     */
-                    BICubeConfigureCenter.getDataSourceManager().addBusinessTable(fieldID, this);
-                } catch (BIKeyDuplicateException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
@@ -195,11 +181,6 @@ public class BIBusinessTable implements BusinessTable {
 
     }
 
-    @Override
-    public void magicInitial() {
-        initialSource();
-        initialFields();
-    }
 
     private JSONObject createCountField() throws Exception {
         JSONObject jo = new JSONObject();

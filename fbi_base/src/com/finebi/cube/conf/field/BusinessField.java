@@ -13,6 +13,8 @@ import com.fr.json.JSONTransform;
  * @since 4.0
  */
 public interface BusinessField extends JSONTransform, Cloneable {
+    void setTableBelongTo(BusinessTable tableBelongTo);
+
     String getFieldName();
 
     int getFieldType();
@@ -33,6 +35,5 @@ public interface BusinessField extends JSONTransform, Cloneable {
 
     JSONObject createJSON(ICubeDataLoader loader) throws Exception;
 
-    void magicInitial();
 
 }
