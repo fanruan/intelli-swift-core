@@ -9,21 +9,42 @@ BI.StatisticNumberCombo = BI.inherit(BI.Widget, {
         return [
             [{
                 text: BI.i18nText("BI-Qiu_Sum"),
-                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.SUM
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.SUM,
+                cls: "dot-ha-font"
             },{
                 text: BI.i18nText("BI-Qiu_Avg"),
-                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.AVG
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.AVG,
+                cls: "dot-ha-font"
             },{
                 text: BI.i18nText("BI-Qiu_Max"),
-                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.MAX
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.MAX,
+                cls: "dot-ha-font"
             },{
                 text: BI.i18nText("BI-Qiu_Min"),
-                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.MIN
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.MIN,
+                cls: "dot-ha-font"
             },{
                 text: BI.i18nText("BI-No_Repeat_Count"),
-                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.No_Repeat_Count
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.No_Repeat_Count,
+                cls: "dot-ha-font"
+            }, {
+                text: BI.i18nText("BI-Record_Count"),
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.RECORD_COUNT,
+                cls: "dot-ha-font"
             }],
             [{
+                text: BI.i18nText("BI-Display"),
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.DISPLAY,
+                cls: "dot-ha-font"
+            }, {
+                text: BI.i18nText("BI-Hidden"),
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.HIDDEN,
+                cls: "dot-ha-font"
+            }],
+            [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.STATISTICS_GROUP_NUMBER_COMBO.RENAME
+            }, {
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.STATISTICS_GROUP_NUMBER_COMBO.DELETE
             }]
@@ -53,7 +74,7 @@ BI.StatisticNumberCombo = BI.inherit(BI.Widget, {
 
         this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW,function(){
             var selectedValue = self._createValueBySummary(o.dimension.group);
-            this.setValue([selectedValue]);
+            this.setValue([selectedValue, self._createValueByUsed(o.dimension.used)]);
         });
     },
 
@@ -82,8 +103,19 @@ BI.StatisticNumberCombo = BI.inherit(BI.Widget, {
             case BICst.SUMMARY_TYPE.COUNT:
                 summaryValue.value = BICst.STATISTICS_GROUP_NUMBER_COMBO.No_Repeat_Count;
                 break;
+            case BICst.SUMMARY_TYPE.RECORD_COUNT:
+                summaryValue.value = BICst.STATISTICS_GROUP_NUMBER_COMBO.RECORD_COUNT;
+                break;
         }
         return summaryValue;
+    },
+
+    _createValueByUsed: function(used){
+        if(used === true){
+            return {value: BICst.STATISTICS_GROUP_NUMBER_COMBO.DISPLAY};
+        }else{
+            return {value: BICst.STATISTICS_GROUP_NUMBER_COMBO.HIDDEN};
+        }
     },
 
     getValue:function(){
