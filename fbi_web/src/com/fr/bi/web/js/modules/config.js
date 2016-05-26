@@ -850,6 +850,9 @@ BICst.CONF_STATISTIC_STRING = [{
 }, {
     text: BI.i18nText("BI-String_Summary_By_Connection"),
     value: BICst.SUMMARY_TYPE.APPEND
+}, {
+    text: BI.i18nText("BI-Record_Count"),
+    value: BICst.SUMMARY_TYPE.RECORD_COUNT
 }];
 
 BICst.CONF_STATISTIC_NUMBER = [{
@@ -867,6 +870,17 @@ BICst.CONF_STATISTIC_NUMBER = [{
 }, {
     text: BI.i18nText("BI-No_Repeat_Count"),
     value: BICst.SUMMARY_TYPE.COUNT
+}, {
+    text: BI.i18nText("BI-Record_Count"),
+    value: BICst.SUMMARY_TYPE.RECORD_COUNT
+}];
+
+BICst.CONF_STATISTIC_DATE = [{
+    text: BI.i18nText("BI-No_Repeat_Count"),
+    value: BICst.SUMMARY_TYPE.COUNT
+}, {
+    text: BI.i18nText("BI-Record_Count"),
+    value: BICst.SUMMARY_TYPE.RECORD_COUNT
 }];
 //选色
 BICst.CHART_COLORS = [{
@@ -946,12 +960,6 @@ BICst.DEFAULT_CHART_SETTING = {
     left_y_axis_reversed: false,
     right_y_axis_reversed: false
 };
-
-BICst.DEFAULT_CONTROL_SETTING = {
-    show_name: true,
-    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
-};
-
 
 BICst.CAL_TARGET_TYPE = [{
     text: BI.i18nText("BI-Formula"),

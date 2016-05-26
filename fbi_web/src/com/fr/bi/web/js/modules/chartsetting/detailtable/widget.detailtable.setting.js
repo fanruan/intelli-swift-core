@@ -118,6 +118,13 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
             hgap: 10
         })
     },
+    
+    populate: function(){
+        var wId = this.options.wId;
+        this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
+        this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
+        this.showNumber.setSelected(BI.Utils.getWSShowNumberByID(wId));
+    },
 
     getValue: function () {
         return {

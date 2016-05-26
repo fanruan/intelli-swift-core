@@ -6,8 +6,7 @@ BIDezi.StringWidgetModel = BI.inherit(BI.Model, {
             type: BICst.WIDGET.STRING,
             dimensions: {},
             view: {},
-            value: {},
-            settings: BICst.DEFAULT_CONTROL_SETTING
+            value: {}
         })
     },
 

@@ -337,6 +337,22 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
         })
     },
 
+    populate: function(){
+        var wId = this.options.wId;
+        this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
+        this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
+        this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
+        this.showNumber.setSelected(BI.Utils.getWSShowNumberByID(wId));
+        this.showRowTotal.setSelected(BI.Utils.getWSShowRowTotalByID(wId));
+        this.showColTotal.setSelected(BI.Utils.getWSShowColTotalByID(wId));
+        this.openRowNode.setSelected(BI.Utils.getWSOpenRowNodeByID(wId));
+        this.openColNode.setSelected(BI.Utils.getWSOpenColNodeByID(wId));
+        this.maxRow.setValue(BI.Utils.getWSMaxRowByID(wId));
+        this.maxCol.setValue(BI.Utils.getWSMaxColByID(wId));
+        this.freezeDim.setSelected(BI.Utils.getWSFreezeDimByID(wId));
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+    },
+
     getValue: function(){
         return {
             table_form: this.tableFormGroup.getValue()[0],

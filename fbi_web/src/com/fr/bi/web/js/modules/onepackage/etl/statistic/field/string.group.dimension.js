@@ -32,6 +32,9 @@ BI.StringGroupDimension = BI.inherit(BI.AbstractDimension, {
                 case BICst.STATISTICS_GROUP_STRING_COMBO.GROUP_BY_CUSTOM:
                     self._setGroups();
                     break;
+                case BICst.STATISTICS_GROUP_STRING_COMBO.RENAME:
+                    self.nameEditor.focus();
+                    break;
                 case BICst.STATISTICS_GROUP_STRING_COMBO.DELETE:
                     self.fireEvent(BI.AbstractDimension.EVENT_DESTROY);
                     break;

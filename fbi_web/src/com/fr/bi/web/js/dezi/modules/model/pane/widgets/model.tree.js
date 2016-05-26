@@ -9,8 +9,7 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
             type: BICst.WIDGET.TREE,
             dimensions: {},
             view: {},
-            value: {},
-            settings: BICst.DEFAULT_CONTROL_SETTING
+            value: {}
         })
     },
 
@@ -30,7 +29,6 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
                     dimensions: this.get("dimensions"),
                     view: this.get("view"),
                     type: this.get("type"),
-                    settings: this.get("settings"),
                     value: this.get("value")
                 }
             }, {
@@ -48,7 +46,6 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
                 dimensions: this.get("dimensions"),
                 view: this.get("view"),
                 type: this.get("type"),
-                settings: this.get("settings"),
                 value: this.get("value")
             }
         }, {
