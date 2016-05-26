@@ -587,6 +587,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/grouptable/widget.grouptable.setting.css",
                 "com/fr/bi/web/css/modules/chartsetting/crosstable/widget.crosstable.setting.css",
 
+                //图样式
+                "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",
+
                 //带参数的日期控件
                 "com/fr/bi/web/css/modules/multidatecombowithparam/multidate.parampopup.css",
                 "com/fr/bi/web/css/modules/multidatecombowithparam/multidate.parampane.css",
@@ -1196,6 +1200,7 @@ public class ResourceHelper {
 
                 //表格属性设置
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/combo.selectcolor.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/wrap.item.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/popup.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.js",
