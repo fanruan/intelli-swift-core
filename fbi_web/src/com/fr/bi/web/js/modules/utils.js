@@ -281,26 +281,6 @@
             }
         },
 
-        isShowWidgetNameByID: function (wid) {
-            var widget = Data.SharingPool.get("widgets", wid);
-            if (BI.isNotNull(widget)) {
-                var settings = widget.settings;
-                if (BI.isNotNull(settings)) {
-                    return settings.show_name
-                }
-            }
-        },
-
-        getWidgetNamePositionByID: function (wid) {
-            var widget = Data.SharingPool.get("widgets", wid);
-            if (BI.isNotNull(widget)) {
-                var settings = widget.settings;
-                if (BI.isNotNull(settings)) {
-                    return settings.name_pos
-                }
-            }
-        },
-
         getAllLinkageFromIdsByID: function (wid) {
             var self = this, fromIds = [];
             var linkages = this.getWidgetLinkageByID(wid);
@@ -371,6 +351,97 @@
         getWidgetSortSequenceByID: function (wid) {
             return Data.SharingPool.get("widgets", wid, "sort_sequence") || [];
         },
+
+        //settings  ---- start ----
+        getWSTableFormByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.table_form) ? ws.table_form :
+                    BICst.DEFAULT_CHART_SETTING.table_form;  
+        },
+
+        getWSThemeColorByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.theme_color) ? ws.theme_color :
+                BICst.DEFAULT_CHART_SETTING.theme_color;
+        },
+
+        getWSTableStyleByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.table_style) ? ws.table_style :
+                BICst.DEFAULT_CHART_SETTING.table_style;
+        },
+
+        getWSShowNumberByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_number) ? ws.show_number :
+                BICst.DEFAULT_CHART_SETTING.show_number;
+        },
+
+        getWSShowRowTotalByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_row_total) ? ws.show_row_total :
+                BICst.DEFAULT_CHART_SETTING.show_row_total;
+        },
+
+        getWSShowColTotalByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_col_total) ? ws.show_col_total :
+                BICst.DEFAULT_CHART_SETTING.show_col_total;
+        },
+
+        getWSOpenRowNodeByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.open_row_node) ? ws.open_row_node :
+                BICst.DEFAULT_CHART_SETTING.open_row_node;
+        },
+
+        getWSOpenColNodeByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.open_col_node) ? ws.open_col_node :
+                BICst.DEFAULT_CHART_SETTING.open_col_node;
+        },
+
+        getWSMaxRowByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.max_row) ? ws.max_row :
+                BICst.DEFAULT_CHART_SETTING.max_row;
+        },
+
+        getWSMaxColByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.max_col) ? ws.max_col :
+                BICst.DEFAULT_CHART_SETTING.max_col;
+        },
+
+        getWSFreezeDimByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.freeze_dim) ? ws.freeze_dim :
+                BICst.DEFAULT_CHART_SETTING.freeze_dim;
+        },
+
+        getWSTransferFilterByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.transfer_filter) ? ws.transfer_filter :
+                BICst.DEFAULT_CHART_SETTING.transfer_filter;
+        },
+
+        getWSShowNameByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_name) ? ws.show_name :
+                BICst.DEFAULT_CHART_SETTING.show_name;
+        },
+
+        getWSNamePosByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.name_pos) ? ws.name_pos :
+                BICst.DEFAULT_CHART_SETTING.name_pos;
+        },
+        
+        getWSColumnSizeByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.columnSize) ? ws.columnSize : [];
+        },
+        //settings  ---- end ----
 
         getWidgetSettingsByID: function (wid) {
             return Data.SharingPool.get("widgets", wid, "settings") || {};
