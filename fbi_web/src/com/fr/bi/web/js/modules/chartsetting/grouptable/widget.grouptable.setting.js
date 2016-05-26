@@ -284,7 +284,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
         this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
-        this.tableSyleGroup.setValue(BI.Utils.getWSThemeColorByID(wId));
+        this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
         this.showNumber.setSelected(BI.Utils.getWSShowNumberByID(wId));
         this.showRowTotal.setSelected(BI.Utils.getWSShowRowTotalByID(wId));
         this.openRowNode.setSelected(BI.Utils.getWSOpenRowNodeByID(wId));
