@@ -30,9 +30,7 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
             self.populate(data);
             self.loaded();
         });
-        BI.defer(function () {
-            self.loading();
-        });
+        self.loading();
     },
 
     populate: function (data) {
