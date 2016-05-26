@@ -1,7 +1,7 @@
 package com.fr.bi.field.target.filter.general;
 
 
-import com.fr.bi.stable.data.Table;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -19,7 +19,7 @@ public class GeneralANDFilter extends GeneralFilter {
      * @return 分组索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         GroupValueIndex res = null;
         if (childs == null){
             return res;
@@ -47,7 +47,7 @@ public class GeneralANDFilter extends GeneralFilter {
      * @return
      */
     @Override
-    public GroupValueIndex createFilterIndex(Table target, ICubeDataLoader loader, long userID) {
+    public GroupValueIndex createFilterIndex(BusinessTable target, ICubeDataLoader loader, long userID) {
         GroupValueIndex res = null;
         for (int i = 0, len = childs.length; i < len; i++) {
             if(childs[i] == null){

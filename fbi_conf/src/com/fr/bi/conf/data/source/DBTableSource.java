@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
@@ -11,14 +12,11 @@ import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.CubeConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractTableSource;
-import com.fr.bi.stable.data.source.ITableSource;
-import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.data.core.db.dialect.Dialect;
@@ -52,6 +50,7 @@ public class DBTableSource extends AbstractTableSource {
     protected String dbName;
     @BICoreField
     protected String tableName;
+
     public DBTableSource() {
         super();
     }
@@ -99,7 +98,7 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     @Override
-    public IPersistentTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
             dbTable = BIDBUtils.getDBTable(dbName, tableName);
         }
@@ -113,31 +112,25 @@ public class DBTableSource extends AbstractTableSource {
      * @return 字段
      */
     @Override
-    public DBField[] getFieldsArray(Set<ITableSource> sources) {
-        DBField[] allFIelds = super.getFieldsArray(sources);
+    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
+        ICubeFieldSource[] allFields = super.getFieldsArray(sources);
         if (sources == null || sources.isEmpty()) {
-            return allFIelds;
+            return allFields;
         }
-        Iterator<ITableSource> it = sources.iterator();
-        Set<String> userdFields = new HashSet<String>();
+        Iterator<CubeTableSource> it = sources.iterator();
+        Set<String> usedFields = new HashSet<String>();
         while (it.hasNext()) {
-            userdFields.addAll(((it.next())).getUsedFields(this));
+            usedFields.addAll(((it.next())).getUsedFields(this));
         }
-        ArrayList<BIField> fields = new ArrayList<BIField>();
-        for (BIField field : allFIelds) {
-            if (userdFields.contains(field.getFieldName())) {
+        ArrayList<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
+        for (ICubeFieldSource field : allFields) {
+            if (usedFields.contains(field.getFieldName())) {
                 fields.add(field);
             }
         }
-        return fields.toArray(new DBField[fields.size()]);
+        return fields.toArray(new ICubeFieldSource[fields.size()]);
     }
 
-    @Override
-    public Set<com.fr.bi.stable.data.Table> createTableKeys() {
-        Set<com.fr.bi.stable.data.Table> set = new HashSet<com.fr.bi.stable.data.Table>();
-        set.add(new BITable(fetchObjectCore().getID().getIdentityValue()));
-        return set;
-    }
 
     @Override
     public int getType() {
@@ -155,7 +148,7 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     @Override
-    public long read(final Traversal<BIDataValue> travel, DBField[] fields, ICubeDataLoader loader) {
+    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
         long rowCount = 0;
         try {
             rowCount = BIDBUtils.runSQL(BIDBUtils.getSQLStatement(dbName, tableName), fields, new Traversal<BIDataValue>() {
@@ -189,11 +182,11 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public Set getFieldDistinctNewestValues(String fieldName, ICubeDataLoader loader, long userId) {
         final HashSet set = new HashSet();
-        DBField field = getFields().get(fieldName);
+        ICubeFieldSource field = getFields().get(fieldName);
         if (field == null) {
             return set;
         }
-        BIDBUtils.runSQL(BIDBUtils.getDistinctSQLStatement(dbName, tableName, fieldName), new DBField[]{field}, new Traversal<BIDataValue>() {
+        BIDBUtils.runSQL(BIDBUtils.getDistinctSQLStatement(dbName, tableName, fieldName), new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 set.add(data.getValue());

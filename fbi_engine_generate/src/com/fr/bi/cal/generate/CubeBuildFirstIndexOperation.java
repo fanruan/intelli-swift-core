@@ -3,7 +3,7 @@ package com.fr.bi.cal.generate;
 import com.fr.bi.cal.generate.relation.RelationsGetter;
 import com.fr.bi.cal.generate.relation.firstlinkindex.LinkFirstIndexEntry;
 import com.fr.bi.stable.index.CubeGenerator;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 
 import java.util.Set;
 

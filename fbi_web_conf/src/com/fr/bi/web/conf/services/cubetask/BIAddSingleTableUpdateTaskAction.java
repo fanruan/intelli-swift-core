@@ -3,9 +3,10 @@
  */
 package com.fr.bi.web.conf.services.cubetask;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.generate.SingleTableTask;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -31,19 +32,19 @@ public class BIAddSingleTableUpdateTaskAction extends AbstractBIConfigureAction 
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject out = new JSONObject();
         if (tableString != null) {
-            BITable table = new BITable();
+            BusinessTable table = new BIBusinessTable("", "");
             table.parseJSON(new JSONObject(tableString));
-            BITable biTable = table;
+            BusinessTable biTable = table;
 
             out.put("status", "success");
 
             if (isAdd) {
-                boolean added =  BIConfigureManagerCenter.getCubeManager().addTask(new SingleTableTask(biTable, userId), userId);
+                boolean added = BICubeConfigureCenter.getCubeManager().addTask(new SingleTableTask(biTable, userId), userId);
                 out.put("hasTask", added);
                 WebUtils.printAsJSON(res, out);
 
             } else {
-                boolean hasTask =  BIConfigureManagerCenter.getCubeManager().hasTask(new SingleTableTask(biTable, userId), userId);
+                boolean hasTask = BICubeConfigureCenter.getCubeManager().hasTask(new SingleTableTask(biTable, userId), userId);
                 out.put("hasTask", hasTask);
                 WebUtils.printAsJSON(res, out);
             }

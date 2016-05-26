@@ -1,12 +1,11 @@
 package com.fr.bi.field.dimension.dimension;
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.conf.report.widget.BIDataColumn;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.stable.StringUtils;
 
@@ -49,12 +48,12 @@ public class BIDateDimension extends BIAbstractDimension {
 
 
     @Override
-    public BIKey createKey(BIField column) {
+    public BIKey createKey(BusinessField column) {
         return new IndexTypeKey(column.getFieldName(), group.getType());
     }
 
     @Override
-    public DimensionCalculator createCalculator(BIDataColumn column, List<BITableSourceRelation> relations) {
+    public DimensionCalculator createCalculator(BusinessField column, List<BITableSourceRelation> relations) {
         return new DateDimensionCalculator(this, column, relations);
     }
 

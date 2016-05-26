@@ -1,19 +1,21 @@
 package com.fr.bi.stable.data;
 
 
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.base.BIUser;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
-import com.fr.json.JSONTransform;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * BI的Table基本类型。其他Table都继承此类型
  * TODO clone方法
  * Created by Connery on 2015/12/15.
  */
-public class BITable implements Serializable, JSONTransform, Table {
+public class BITable implements Serializable, Table {
 
     /**
      *
@@ -26,7 +28,10 @@ public class BITable implements Serializable, JSONTransform, Table {
 
     protected String tableName;
     protected transient BITableID ID;
-    protected ITableSource tableSource;
+    protected List<BIBasicField> fieldArray;
+    protected List<String> usedFields = new ArrayList<String>();
+    protected CubeTableSource source;
+    protected BIUser user;
 
     public BITable(String id) {
         this(id, null);
@@ -40,6 +45,7 @@ public class BITable implements Serializable, JSONTransform, Table {
     public BITable(BITableID table) {
         this(table.getIdentityValue());
     }
+
 
     public BITable() {
     }

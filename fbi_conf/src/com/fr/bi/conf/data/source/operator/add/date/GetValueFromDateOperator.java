@@ -77,7 +77,7 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
         int rowCount = ti.getRowCount();
         DateGetter dg = getDateGetter(type);
         BIKey key = new IndexKey(field);
-        BIDateUtils.checkDatefieldType(ti.getColumns(), key);
+        BIDateUtils.checkDateFieldType(ti.getColumns(), key);
         for (int row = 0; row < rowCount; row++) {
             Object value = dg.get((Long)ti.getRow(key, row));
             try {

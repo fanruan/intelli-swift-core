@@ -1,6 +1,7 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -11,7 +12,6 @@ import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.operation.group.IGroup;
@@ -30,9 +30,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2015/12/21.
  */
-public class AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisTableSource {
+public class AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeTableSource {
     @BIIgnoreField
-    private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
+    private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
     @BICoreField
     protected BIWidget widget;
     private int etlType;
@@ -54,7 +54,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
 
     @Override
-    public IPersistentTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
             dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
             for (int i = 0; i < fieldList.size(); i++){
@@ -109,9 +109,9 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
 
-    @Override
-    public Set<Table> createTableKeys() {
-        Set set = new HashSet<Table>();
+
+    public Set<BusinessTable> createTableKeys() {
+        Set set = new HashSet<BusinessTable>();
         set.add(new BITable(fetchObjectCore().getIDValue()));
         return set;
     }
@@ -122,16 +122,16 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         return 0;
     }
 
     @Override
-    public UserTableSource createUserTableSource(long userId) {
-        UserTableSource source = userBaseTableMap.get(userId);
+    public UserCubeTableSource createUserTableSource(long userId) {
+        UserCubeTableSource source = userBaseTableMap.get(userId);
         if (source == null){
             synchronized (userBaseTableMap){
-                UserTableSource tmp = userBaseTableMap.get(userId);
+                UserCubeTableSource tmp = userBaseTableMap.get(userId);
                 if (tmp == null){
                     source = new UserBaseTableSource(widget, etlType, userId, fieldList, name);
                     userBaseTableMap.put(userId, source);

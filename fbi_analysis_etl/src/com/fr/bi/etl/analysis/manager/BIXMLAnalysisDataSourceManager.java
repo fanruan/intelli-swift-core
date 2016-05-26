@@ -1,16 +1,16 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisDataSource;
-import com.fr.bi.etl.analysis.data.AnalysisTableSource;
 import com.fr.bi.exception.BIFieldAbsentException;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONException;
@@ -28,7 +28,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
 
     private static final String XML_TAG = "DataSourceManager";
 
-    private Map<BICore, AnalysisTableSource> md5Tables = new ConcurrentHashMap<BICore, AnalysisTableSource>();
+    private Map<BICore, AnalysisCubeTableSource> md5Tables = new ConcurrentHashMap<BICore, AnalysisCubeTableSource>();
 
     private Map<BITableID, BICore> idMd5Tables = new ConcurrentHashMap<BITableID, BICore>();
 
@@ -43,7 +43,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
         GeneralContext.addEnvChangedListener(new EnvChangedListener() {
             @Override
             public void envChanged() {
-                BIConfigureManagerCenter.getDataSourceManager().envChanged();
+                BICubeConfigureCenter.getDataSourceManager().envChanged();
             }
         });
     }
@@ -65,7 +65,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     }
 
     @Override
-    public AnalysisTableSource getTableSourceByID(BITableID id) {
+    public AnalysisCubeTableSource getTableSourceByID(BITableID id) {
         if (id == null) {
             return null;
         }
@@ -77,7 +77,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     }
 
     @Override
-    public AnalysisTableSource getTableSourceByMD5(BICore core) {
+    public AnalysisCubeTableSource getTableSourceByMD5(BICore core) {
         return md5Tables.get(core);
     }
 
@@ -85,9 +85,9 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
      * 增加md5表
      */
     @Override
-    public void addTableSource(BITableID id, AnalysisTableSource source) {
+    public void addTableSource(BITableID id, AnalysisCubeTableSource source) {
         synchronized (this) {
-            BICore bimd5Core =  source.fetchObjectCore();
+            BICore bimd5Core = source.fetchObjectCore();
             md5Tables.put(bimd5Core, source);
             idMd5Tables.put(id, bimd5Core);
         }
@@ -102,9 +102,9 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
      * 修改md5表
      */
     @Override
-    public void editTableSource(BITableID id, AnalysisTableSource source) {
+    public void editTableSource(BITableID id, AnalysisCubeTableSource source) {
         synchronized (this) {
-            BICore md5Name =  source.fetchObjectCore();
+            BICore md5Name = source.fetchObjectCore();
             BICore oldMD5 = idMd5Tables.get(id);
             idMd5Tables.put(id, md5Name);
             md5Tables.put(md5Name, source);
@@ -118,7 +118,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     public JSONObject createJSON() throws JSONException {
         JSONObject jo = new JSONObject();
         for (Map.Entry<BITableID, BICore> id : idMd5Tables.entrySet()) {
-            ITableSource source = md5Tables.get(id.getValue());
+            CubeTableSource source = md5Tables.get(id.getValue());
             if (source != null) {
                 try {
                     jo.put(id.getKey().getIdentityValue(), source.createJSON());
@@ -136,14 +136,14 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     }
 
     @Override
-    public DBField findDBField(BIField biField) throws BIFieldAbsentException {
+    public ICubeFieldSource findDBField(BusinessField businessField) throws BIFieldAbsentException {
         return null;
     }
 
     @Override
-    public void addCoreSource(AnalysisTableSource source) {
+    public void addCoreSource(AnalysisCubeTableSource source) {
         synchronized (this) {
-            BICore bimd5Core =  source.fetchObjectCore();
+            BICore bimd5Core = source.fetchObjectCore();
             md5Tables.put(bimd5Core, source);
         }
     }

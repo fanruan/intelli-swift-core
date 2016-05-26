@@ -5,10 +5,12 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.*;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.List;
@@ -19,10 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2015/12/24.
  */
-public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> extends AbstractCubeTableSource implements AnalysisTableSource {
+public abstract class AbstractAnalysisIDTableSource<T extends CubeTableSource> extends AbstractCubeTableSource implements AnalysisCubeTableSource {
     protected String tableID;
     protected transient T baseTable;
-    private transient Map<Long, UserTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserTableSource>();
+    private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
 
     public AbstractAnalysisIDTableSource() {
     }
@@ -42,15 +44,6 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
         return baseTable.fetchObjectCore();
     }
 
-    /**
-     * 获取所有相关基础表
-     *
-     * @return
-     */
-    @Override
-    public Set<Table> createTableKeys() {
-        return baseTable.createTableKeys();
-    }
 
     /**
      * key为层次
@@ -58,7 +51,7 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
      * @return
      */
     @Override
-    public Map<Integer, Set<ITableSource>> createGenerateTablesMap() {
+    public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {
         return baseTable.createGenerateTablesMap();
     }
 
@@ -68,7 +61,7 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
      * @return
      */
     @Override
-    public List<Set<ITableSource>> createGenerateTablesList() {
+    public List<Set<CubeTableSource>> createGenerateTablesList() {
         return baseTable.createGenerateTablesList();
     }
 
@@ -81,14 +74,14 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
      * @return
      */
     @Override
-    public long read(Traversal<BIDataValue> travel, DBField[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         return 0;
     }
 
     @Override
-    public IPersistentTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
-            IPersistentTable ptable = baseTable.getDbTable();
+            IPersistentTable ptable = baseTable.getPersistentTable();
             dbTable = createBITable();
             for (PersistentField column : ptable.getFieldList()) {
                 dbTable.addColumn(column);
@@ -98,11 +91,11 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
     }
 
     @Override
-    public UserTableSource createUserTableSource(long userId) {
-        UserTableSource source = userBaseTableMap.get(userId);
+    public UserCubeTableSource createUserTableSource(long userId) {
+        UserCubeTableSource source = userBaseTableMap.get(userId);
         if (source == null) {
             synchronized (userBaseTableMap) {
-                UserTableSource tmp = userBaseTableMap.get(userId);
+                UserCubeTableSource tmp = userBaseTableMap.get(userId);
                 if (tmp == null) {
                     source = createNewUserSource(userId);
                     userBaseTableMap.put(userId, source);
@@ -114,5 +107,5 @@ public abstract class AbstractAnalysisIDTableSource<T extends ITableSource> exte
         return source;
     }
 
-    public abstract UserTableSource createNewUserSource(long userId);
+    public abstract UserCubeTableSource createNewUserSource(long userId);
 }

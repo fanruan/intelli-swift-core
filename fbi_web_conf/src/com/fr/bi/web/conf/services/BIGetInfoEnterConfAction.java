@@ -1,13 +1,13 @@
 package com.fr.bi.web.conf.services;
 
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
-import com.fr.bi.conf.base.relation.relation.IRelationContainer;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.relation.relation.IRelationContainer;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BIBasicField;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -29,7 +29,7 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject relations = createJSONWithTableName(userId);
-        JSONObject translations = BIConfigureManagerCenter.getAliasManager().getTransManager(userId).createJSON();
+        JSONObject translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
         JSONObject jo = new JSONObject();
         jo.put("relations", relations);
         jo.put("translations", translations);
@@ -45,14 +45,14 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
 
     private JSONObject getAllFields(long userId) {
         JSONObject fields = new JSONObject();
-        Set<BIBusinessPackage> packs = BIConfigureManagerCenter.getPackageManager().getAllPackages(userId);
+        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(userId);
         try {
-            for (BIBusinessPackage p : packs) {
+            for (IBusinessPackageGetterService p : packs) {
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
-                    Iterator<BIBasicField> iterator = t.getFieldsIterator();
+                    Iterator<BusinessField> iterator = t.getFields().iterator();
                     while (iterator.hasNext()) {
-                        BIBasicField field = iterator.next();
-                        fields.put(field.getTableID().getIdentity() + field.getFieldName(), field.createJSON());
+                        BusinessField field = iterator.next();
+                        fields.put(field.getTableBelongTo().getID().getIdentity() + field.getFieldName(), field.createJSON());
                     }
                 }
             }
@@ -63,15 +63,14 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
     }
 
     private JSONObject createJSONWithTableName(long userId) throws Exception {
-        Set<BITableRelation> connectionSet = BIConfigureManagerCenter.getTableRelationManager().getAllTableRelation(userId);
-        Map<Table, IRelationContainer> primKeyMap = BIConfigureManagerCenter.getTableRelationManager().getAllTable2PrimaryRelation(userId);
-        Map<Table, IRelationContainer> foreignKeyMap = BIConfigureManagerCenter.getTableRelationManager().getAllTable2ForeignRelation(userId);
-        Iterator<Map.Entry<Table, IRelationContainer>> primIter = primKeyMap.entrySet().iterator();
-        Iterator<Map.Entry<Table, IRelationContainer>> foreignIter = foreignKeyMap.entrySet().iterator();
+        Set<BITableRelation> connectionSet = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
+        Map<BusinessTable, IRelationContainer> primKeyMap = BICubeConfigureCenter.getTableRelationManager().getAllTable2PrimaryRelation(userId);
+        Map<BusinessTable, IRelationContainer> foreignKeyMap = BICubeConfigureCenter.getTableRelationManager().getAllTable2ForeignRelation(userId);
+        Iterator<Map.Entry<BusinessTable, IRelationContainer>> primIter = primKeyMap.entrySet().iterator();
+        Iterator<Map.Entry<BusinessTable, IRelationContainer>> foreignIter = foreignKeyMap.entrySet().iterator();
         JSONArray setJO = new JSONArray();
         for (BITableRelation relation : connectionSet) {
-            BISimpleRelation simpleRelation = relation.getSimpleRelation();
-            setJO.put(simpleRelation.createJSON());
+            setJO.put(relation.createJSON());
         }
         JSONObject jo = new JSONObject();
         jo.put("connectionSet", setJO);
@@ -80,38 +79,37 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         return jo;
     }
 
-    private JSONObject getPrimKeyMap(Iterator<Map.Entry<Table, IRelationContainer>> it) throws Exception {
+    private JSONObject getPrimKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it) throws Exception {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
-            Map.Entry<Table, IRelationContainer> entry = it.next();
+            Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
             JSONArray ja = new JSONArray();
             String primaryId = null;
             Set<BITableRelation> relations = entry.getValue().getContainer();
             for (BITableRelation relation : relations) {
-                BISimpleRelation simpleRelation = relation.getSimpleRelation();
-                primaryId = simpleRelation.getPrimaryId();
-                ja.put(simpleRelation.createJSON());
+
+                primaryId = relation.getPrimaryField().getFieldID().getIdentityValue();
+                ja.put(relation.createJSON());
             }
-            if(primaryId != null) {
+            if (primaryId != null) {
                 jo.put(primaryId, ja);
             }
         }
         return jo;
     }
 
-    private JSONObject getForKeyMap(Iterator<Map.Entry<Table, IRelationContainer>> it) throws Exception {
+    private JSONObject getForKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it) throws Exception {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
-            Map.Entry<Table, IRelationContainer> entry = it.next();
+            Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
             JSONArray ja = new JSONArray();
             String foreignId = null;
             Set<BITableRelation> relations = entry.getValue().getContainer();
             for (BITableRelation relation : relations) {
-                BISimpleRelation simpleRelation = relation.getSimpleRelation();
-                foreignId = simpleRelation.getForeignId();
-                ja.put(simpleRelation.createJSON());
+                foreignId = relation.getForeignField().getFieldID().getIdentity();
+                ja.put(relation.createJSON());
             }
-            if(foreignId != null) {
+            if (foreignId != null) {
                 jo.put(foreignId, ja);
             }
         }

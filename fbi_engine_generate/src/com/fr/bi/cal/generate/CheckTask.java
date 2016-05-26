@@ -2,7 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.json.JSONObject;
@@ -44,7 +44,7 @@ public class CheckTask extends AllTask {
     }
 
     @Override
-    protected IndexGenerator createGenerator(ITableSource source) {
+    protected IndexGenerator createGenerator(CubeTableSource source) {
         TableCubeFile cube = new TableCubeFile(BIPathUtils.createTablePath(source.fetchObjectCore().getID().getIdentityValue(), biUser.getUserId()));
         if (!checkCubeVersion(cube)) {
             return new IndexGenerator(source, biUser.getUserId(), cube.getTableVersion() + 1);

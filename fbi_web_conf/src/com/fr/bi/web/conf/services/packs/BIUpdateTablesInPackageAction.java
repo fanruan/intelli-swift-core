@@ -1,10 +1,11 @@
 package com.fr.bi.web.conf.services.packs;
 
-import com.fr.base.FRContext;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.pack.data.*;
+import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.datasource.BIDataSourceManager;
-import com.fr.bi.conf.base.datasource.BIXMLDataSource;
-import com.fr.bi.conf.base.pack.data.*;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
@@ -13,10 +14,7 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -46,12 +44,12 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
     private void writeResource(long userId) {
         try {
-            BIConfigureManagerCenter.getPackageManager().persistData(userId);
-            BIConfigureManagerCenter.getTableRelationManager().persistData(userId);
+            BICubeConfigureCenter.getPackageManager().persistData(userId);
+            BICubeConfigureCenter.getTableRelationManager().persistData(userId);
             BIConfigureManagerCenter.getExcelViewManager().persistData(userId);
             BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
-            FRContext.getCurrentEnv().writeResource(BIConfigureManagerCenter.getAliasManager().getTransManager(userId));
-            FRContext.getCurrentEnv().writeResource((BIXMLDataSource) ((BIDataSourceManager) (BIConfigureManagerCenter.getDataSourceManager())).getInstance(new BIUser(userId)));
+            BICubeConfigureCenter.getAliasManager().persistData(userId);
+            BICubeConfigureCenter.getDataSourceManager().persistData(userId);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
@@ -83,18 +81,19 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         JSONObject excelViewJO = excelViews != null ? new JSONObject(excelViews) : new JSONObject();
         JSONObject updateSettingJO = updateSettings != null ? new JSONObject(updateSettings) : new JSONObject();
 
-        BIBusinessPackage pack = (BIBusinessPackage) EditPackageConfiguration(packageName, groupName, packageId, userId);
-        pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO));
 
         for (int i = 0; i < tableIdsJO.length(); i++) {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
             JSONObject tableJson = tableDataJO.optJSONObject(tableId);
             if (tableJson != null) {
-                BIConfigureManagerCenter.getDataSourceManager().addCore2SourceRelation(new BITableID(tableId), TableSourceFactory.createTableSource(tableJson, userId), new BIUser(userId));
+                BICubeConfigureCenter.getDataSourceManager().addTableSource(new BITableID(tableId), TableSourceFactory.createTableSource(tableJson, userId));
             } else {
                 BILogger.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }
         }
+        BIBusinessPackage pack = (BIBusinessPackage) EditPackageConfiguration(packageName, groupName, packageId, userId);
+        pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO));
+
         saveTranslations(translationsJO, userId);
         saveRelations(relationsJO, userId);
         saveExcelView(excelViewJO, userId);
@@ -102,10 +101,10 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         writeResource(userId);
     }
 
-    private BIBusinessPackageGetterService EditPackageConfiguration(String packageName, String groupName, String packageId, long userId) throws BIPackageDuplicateException, BIPackageAbsentException, BIGroupDuplicateException, BIGroupAbsentException {
+    private IBusinessPackageGetterService EditPackageConfiguration(String packageName, String groupName, String packageId, long userId) throws BIPackageDuplicateException, BIPackageAbsentException, BIGroupDuplicateException, BIGroupAbsentException {
         BIPackageID packageID = new BIPackageID(packageId);
-        BISystemPackageConfigurationProvider packageConfigProvider = BIConfigureManagerCenter.getPackageManager();
-        BIBusinessPackageGetterService pack;
+        BISystemPackageConfigurationProvider packageConfigProvider = BICubeConfigureCenter.getPackageManager();
+        IBusinessPackageGetterService pack;
         if (!packageConfigProvider.containPackageID(userId, packageID)) {
             BIBusinessPackage biBasicBusinessPackage = new BIBasicBusinessPackage(new BIPackageID(packageId), new BIPackageName(packageName), new BIUser(userId), System.currentTimeMillis());
             packageConfigProvider.addPackage(userId, biBasicBusinessPackage);
@@ -113,7 +112,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         } else {
             pack = packageConfigProvider.getPackage(userId, packageID);
             if (!ComparatorUtils.equals(packageName, pack.getName().getValue())) {
-                BIConfigureManagerCenter.getPackageManager().renamePackage(userId, packageID, new BIPackageName(packageName));
+                BICubeConfigureCenter.getPackageManager().renamePackage(userId, packageID, new BIPackageName(packageName));
             }
         }
         if (!"".equals(groupName)) {
@@ -131,16 +130,16 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
     private void saveTranslations(JSONObject translations, long userId) throws Exception {
         Iterator<String> tranIds = translations.keys();
-        BIConfigureManagerCenter.getAliasManager().getTransManager(userId).clear();
+        BICubeConfigureCenter.getAliasManager().getTransManager(userId).clear();
         while (tranIds.hasNext()) {
             String tranId = tranIds.next();
             String tranName = translations.optString(tranId);
-            BIConfigureManagerCenter.getAliasManager().getTransManager(userId).setTransName(tranId, tranName);
+            BICubeConfigureCenter.getAliasManager().getTransManager(userId).setTransName(tranId, tranName);
         }
     }
 
     private void saveRelations(JSONObject relationsJO, long userId) throws Exception {
-        BIConfigureManagerCenter.getTableRelationManager().clear(userId);
+        BICubeConfigureCenter.getTableRelationManager().clear(userId);
         Set<BITableRelation> relationsSet = new HashSet<BITableRelation>();
         JSONArray relationConn = relationsJO.getJSONArray("connectionSet");
         for (int k = 0; k < relationConn.length(); k++) {
@@ -151,7 +150,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             BITableRelation tableRelation = simpleRelation.getTableRelation();
             relationsSet.add(tableRelation);
         }
-        BIConfigureManagerCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);
+        BICubeConfigureCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);
     }
 
     private void saveExcelView(JSONObject excelViewJO, long userId) throws Exception {

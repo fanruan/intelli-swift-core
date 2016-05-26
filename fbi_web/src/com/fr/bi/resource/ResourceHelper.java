@@ -1,13 +1,13 @@
 package com.fr.bi.resource;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.base.TemplateUtils;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleUtils;
-import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -61,14 +61,13 @@ public class ResourceHelper {
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
         try {
-            groups = BIConfigureManagerCenter.getPackageManager().createGroupJSON(userId);
+            groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             packages = BIModuleUtils.createPackJSON(userId, req.getLocale());
-            translations = BIConfigureManagerCenter.getAliasManager().getTransManager(userId).createJSON();
-            relations = BIConfigureManagerCenter.getTableRelationManager().createRelationsPathJSON(userId);
+            translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
+            relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
-            source = BIConfigureManagerCenter.getDataSourceManager().createJSON(new BIUser(userId));
-            Set<BIBusinessPackage> packs = BIModuleUtils.getAllPacks(userId);
-            for (BIBusinessPackage p : packs) {
+            Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
+            for (IBusinessPackageGetterService p : packs) {
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
                     JSONObject jo = t.createJSONWithFieldsInfo(BICubeManager.getInstance().fetchCubeLoader(userId));
                     JSONObject tableFields = jo.getJSONObject("tableFields");
@@ -77,7 +76,7 @@ public class ResourceHelper {
                     fields.join(fieldsInfo);
                 }
             }
-            Set<BITableRelation> connectionSet = BIConfigureManagerCenter.getTableRelationManager().getAllTableRelation(userId);
+            Set<BITableRelation> connectionSet = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
             JSONArray connectionJA = new JSONArray();
             for (BITableRelation connection : connectionSet) {
                 connectionJA.put(connection.createJSON());

@@ -1,8 +1,8 @@
 package com.finebi.cube.tools;
 
-import com.fr.bi.stable.data.source.ITableSource;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.fr.bi.stable.relation.BITableSourceRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -53,9 +53,9 @@ public class BITableSourceRelationPathTestTool {
     public static List<BITableSourceRelation> getABCList() {
         try {
             List<BITableSourceRelation> path = new ArrayList<BITableSourceRelation>();
-            ITableSource A = BIMemoryDataSourceFactory.generateTableA();
-            ITableSource B = BIMemoryDataSourceFactory.generateTableB();
-            ITableSource C = BIMemoryDataSourceFactory.generateTableC();
+            CubeTableSource A = BIMemoryDataSourceFactory.generateTableA();
+            CubeTableSource B = BIMemoryDataSourceFactory.generateTableB();
+            CubeTableSource C = BIMemoryDataSourceFactory.generateTableC();
             BITableSourceRelation a2b = new BITableSourceRelation(A.getFieldsArray(null)[1], B.getFieldsArray(null)[2],
                     A, B);
             BITableSourceRelation b2c = new BITableSourceRelation(B.getFieldsArray(null)[1], C.getFieldsArray(null)[2],

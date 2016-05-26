@@ -1,12 +1,11 @@
 package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.api.BICubeManager;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -35,7 +34,7 @@ public class BIGetFieldValueByFieldIdAction extends AbstractBIConfigureAction {
         String tableId = BIIDUtils.getTableIDFromFieldID(fieldId);
         BITableID tId = new BITableID(tableId);
         long userId = ServiceUtils.getCurrentUserID(req);
-        ITableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(tId, new BIUser(userId));
+        CubeTableSource source = BICubeConfigureCenter.getDataSourceManager().getTableSource(tId);
         Set set = source.getFieldDistinctNewestValues(BIIDUtils.getFieldNameFromFieldID(fieldId), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
         String filterConfigString = WebUtils.getHTTPRequestParameter(req, "filterConfig");
         String keyword = null;

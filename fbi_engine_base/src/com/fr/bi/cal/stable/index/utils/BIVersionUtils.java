@@ -2,9 +2,9 @@ package com.fr.bi.cal.stable.index.utils;
 
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.data.BIField;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.relation.BIBasicRelation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,25 +22,25 @@ public class BIVersionUtils {
      * @param relations 关联数组
      * @return int值
      */
-    public static int createRelationVersionValue(ICubeDataLoader loader, List<? extends BIBasicRelation> relations) {
+    public static int createRelationVersionValue(ICubeDataLoader loader, List<? extends BITableSourceRelation> relations) {
         List<Integer> res = new ArrayList<Integer>();
-        BIField start = getRelationPrimField(relations);
+        ICubeFieldSource start = getRelationPrimField(relations);
         if (start == null) {
             return 0;
         }
-        res.add(loader.getTableIndex(start).getTableVersion(new IndexKey(start.getFieldName())));
+        res.add(loader.getTableIndex(start.getTableBelongTo()).getTableVersion(new IndexKey(start.getFieldName())));
 
-        for (BIBasicRelation relation : relations) {
-            BIField t = (BIField) relation.getForeignKey();
-            res.add(loader.getTableIndex(t).getTableVersion(new IndexKey(t.getFieldName())));
+        for (BITableSourceRelation relation : relations) {
+            ICubeFieldSource t = relation.getForeignKey();
+            res.add(loader.getTableIndex(t.getTableBelongTo()).getTableVersion(new IndexKey(t.getFieldName())));
         }
         return Arrays.hashCode(res.toArray());
     }
 
-    public static BIField getRelationPrimField(List<? extends BIBasicRelation> relations) {
+    public static ICubeFieldSource getRelationPrimField(List<? extends BITableSourceRelation> relations) {
         if (relations == null || relations.isEmpty()) {
             return null;
         }
-        return (BIField) relations.get(0).getPrimaryKey();
+        return relations.get(0).getPrimaryKey();
     }
 }

@@ -11,7 +11,7 @@ public class UnionRelationPersistentField extends PersistentField {
     }
 
     @Override
-    public boolean canSetUseable() {
+    public boolean canSetUsable() {
         return false;
     }
 
