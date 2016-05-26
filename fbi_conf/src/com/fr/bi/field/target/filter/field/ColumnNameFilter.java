@@ -1,12 +1,11 @@
 package com.fr.bi.field.target.filter.field;
 
-import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -16,13 +15,14 @@ import java.util.ArrayList;
 /**
  * Created by 小灰灰 on 2016/3/17.
  */
-public class ColumnNameFilter extends ColumnFieldFilter{
-    @BICoreField
+public class ColumnNameFilter extends ColumnFieldFilter {
     private String columnName;
+
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         this.columnName = jo.optString("field_name", StringUtils.EMPTY);
     }
+
     /**
      * 指标上加的过滤
      *
@@ -32,9 +32,9 @@ public class ColumnNameFilter extends ColumnFieldFilter{
      * @return
      */
     @Override
-    public GroupValueIndex createFilterIndex(Table target, ICubeDataLoader loader, long userID) {
+    public GroupValueIndex createFilterIndex(BusinessTable target, ICubeDataLoader loader, long userID) {
         if (filterValue != null) {
-            return filterValue.createFilterIndex(new NoneDimensionCalculator(new BIField(target, columnName) , new ArrayList<BITableSourceRelation>()), target, loader, userID);
+            return filterValue.createFilterIndex(new NoneDimensionCalculator(new BIBusinessField(target, columnName), new ArrayList<BITableSourceRelation>()), target, loader, userID);
         }
         return null;
     }

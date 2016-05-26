@@ -1,8 +1,8 @@
 package com.fr.bi.conf.base.auth;
 
-import com.fr.bi.conf.base.BISystemDataManager;
+import com.finebi.cube.conf.BISystemDataManager;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
 import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;

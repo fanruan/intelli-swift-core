@@ -11,10 +11,10 @@ import java.util.UUID;
  * Created by GUY on 2015/3/3.
  */
 public class TableFactory {
-    private static Map<Table, ITableSource> storeKey = new HashMap<Table, ITableSource>();
-    private static Map<ITableSource, Table> storeData = new HashMap<ITableSource, Table>();
+    private static Map<Table, CubeTableSource> storeKey = new HashMap<Table, CubeTableSource>();
+    private static Map<CubeTableSource, Table> storeData = new HashMap<CubeTableSource, Table>();
 
-    public static Table createKey(ITableSource source) {
+    public static Table createKey(CubeTableSource source) {
         if (storeData.containsKey(source)) {
             return storeData.get(source);
         }
@@ -24,7 +24,7 @@ public class TableFactory {
         return key;
     }
 
-    public static ITableSource getSource(Table key) {
+    public static CubeTableSource getSource(Table key) {
         if (storeKey.containsKey(key)) {
             return storeKey.get(key);
         }

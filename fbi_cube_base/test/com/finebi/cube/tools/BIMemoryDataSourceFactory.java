@@ -1,8 +1,9 @@
 package com.finebi.cube.tools;
 
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.DateUtils;
 
 import java.text.ParseException;
@@ -15,13 +16,13 @@ import java.util.*;
  * @since 4.0
  */
 public class BIMemoryDataSourceFactory {
-    public static ITableSource generateTableA() {
+    public static CubeTableSource generateTableA() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<DBField> columns = new ArrayList<DBField>();
-        columns.add(new DBField("tableA", "id", DBConstant.CLASS.LONG, 2));
-        columns.add(new DBField("tableA", "name", DBConstant.CLASS.STRING, 6));
-        columns.add(new DBField("tableA", "gender", DBConstant.CLASS.STRING, 6));
-        columns.add(new DBField("tableA", "age", DBConstant.CLASS.DOUBLE, 6));
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(memoryDataSource, "id", DBConstant.CLASS.LONG, 2));
+        columns.add(new BICubeFieldSource(memoryDataSource, "name", DBConstant.CLASS.STRING, 6));
+        columns.add(new BICubeFieldSource(memoryDataSource, "gender", DBConstant.CLASS.STRING, 6));
+        columns.add(new BICubeFieldSource(memoryDataSource, "age", DBConstant.CLASS.DOUBLE, 6));
 
         memoryDataSource.setFieldList(columns);
         memoryDataSource.setRowCount(5);
@@ -64,12 +65,12 @@ public class BIMemoryDataSourceFactory {
         return memoryDataSource;
     }
 
-    public static ITableSource generateTableB() {
+    public static CubeTableSource generateTableB() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<DBField> columns = new ArrayList<DBField>();
-        columns.add(new DBField("tableB", "id", DBConstant.CLASS.LONG, 2));
-        columns.add(new DBField("tableB", "name", DBConstant.CLASS.STRING, 6));
-        columns.add(new DBField("tableB", "lover", DBConstant.CLASS.STRING, 6));
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(memoryDataSource, "id", DBConstant.CLASS.LONG, 2));
+        columns.add(new BICubeFieldSource(memoryDataSource, "name", DBConstant.CLASS.STRING, 6));
+        columns.add(new BICubeFieldSource(memoryDataSource, "lover", DBConstant.CLASS.STRING, 6));
 
         memoryDataSource.setFieldList(columns);
         memoryDataSource.setRowCount(7);
@@ -112,49 +113,49 @@ public class BIMemoryDataSourceFactory {
         return memoryDataSource;
     }
 
-    public static Set<ITableSource> getDataSourceSet() {
-        Set<ITableSource> result = new HashSet<ITableSource>();
+    public static Set<CubeTableSource> getDataSourceSet() {
+        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
         result.add(generateTableA());
         result.add(generateTableB());
         result.add(generateTableC());
         return result;
     }
 
-    public static Set<List<Set<ITableSource>>> getDataSourceSetMap() {
-        Set<List<Set<ITableSource>>> result = new HashSet<List<Set<ITableSource>>>();
+    public static Set<List<Set<CubeTableSource>>> getDataSourceSetMap() {
+        Set<List<Set<CubeTableSource>>> result = new HashSet<List<Set<CubeTableSource>>>();
         result.add(generate(generateTableA()));
         result.add(generate(generateTableB()));
         result.add(generate(generateTableC()));
         return result;
     }
 
-    public static Set<List<Set<ITableSource>>> getDataSourceSetMap_Line() {
-        Set<List<Set<ITableSource>>> result = new HashSet<List<Set<ITableSource>>>();
-        List<Set<ITableSource>> list = generate(generateTableA());
-        Set<ITableSource> set = new HashSet<ITableSource>();
+    public static Set<List<Set<CubeTableSource>>> getDataSourceSetMap_Line() {
+        Set<List<Set<CubeTableSource>>> result = new HashSet<List<Set<CubeTableSource>>>();
+        List<Set<CubeTableSource>> list = generate(generateTableA());
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
         set.add(generateTableB());
         list.add(set);
-        Set<ITableSource> set_two = new HashSet<ITableSource>();
+        Set<CubeTableSource> set_two = new HashSet<CubeTableSource>();
         set_two.add(generateTableC());
         list.add(set_two);
         result.add(list);
         return result;
     }
 
-    public static List<Set<ITableSource>> generate(ITableSource tableSource) {
-        List<Set<ITableSource>> list = new ArrayList<Set<ITableSource>>();
-        Set<ITableSource> set = new HashSet<ITableSource>();
+    public static List<Set<CubeTableSource>> generate(CubeTableSource tableSource) {
+        List<Set<CubeTableSource>> list = new ArrayList<Set<CubeTableSource>>();
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
         set.add(tableSource);
         list.add(set);
         return list;
     }
 
-    public static ITableSource generateTableC() {
+    public static CubeTableSource generateTableC() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<DBField> columns = new ArrayList<DBField>();
-        columns.add(new DBField("tableC", "id", DBConstant.CLASS.LONG, 2));
-        columns.add(new DBField("tableC", "name", DBConstant.CLASS.STRING, 6));
-        columns.add(new DBField("tableC", "lover", DBConstant.CLASS.STRING, 6));
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(memoryDataSource, "id", DBConstant.CLASS.LONG, 2));
+        columns.add(new BICubeFieldSource(memoryDataSource, "name", DBConstant.CLASS.STRING, 6));
+        columns.add(new BICubeFieldSource(memoryDataSource, "lover", DBConstant.CLASS.STRING, 6));
 
         memoryDataSource.setFieldList(columns);
         memoryDataSource.setRowCount(8);
@@ -200,10 +201,10 @@ public class BIMemoryDataSourceFactory {
         return memoryDataSource;
     }
 
-    public static ITableSource generateTableD() {
+    public static CubeTableSource generateTableD() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<DBField> columns = new ArrayList<DBField>();
-        columns.add(new DBField("tableA", "id", DBConstant.CLASS.LONG, 2));
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(memoryDataSource, "id", DBConstant.CLASS.LONG, 2));
 
         memoryDataSource.setFieldList(columns);
         memoryDataSource.setRowCount(5);
@@ -222,10 +223,10 @@ public class BIMemoryDataSourceFactory {
         return memoryDataSource;
     }
 
-    public static ITableSource generateTableDate() {
+    public static CubeTableSource generateTableDate() {
         BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
-        List<DBField> columns = new ArrayList<DBField>();
-        columns.add(new DBField("tableDate", "date", DBConstant.CLASS.DATE, 10));
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(memoryDataSource, "date", DBConstant.CLASS.DATE, 10));
 
 
         memoryDataSource.setFieldList(columns);

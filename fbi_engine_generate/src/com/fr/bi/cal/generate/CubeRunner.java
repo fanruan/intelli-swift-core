@@ -1,12 +1,12 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.conf.engine.CubeBuildStuffManager;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -162,8 +162,8 @@ public class CubeRunner {
         BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-        BIConfigureManagerCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-        BIConfigureManagerCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
+        BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
+        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         renameToCurrentDirect();

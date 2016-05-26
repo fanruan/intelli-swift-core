@@ -1,8 +1,7 @@
 package com.fr.bi.field.target.detailtarget.formula;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.BIFormularUtils;
@@ -47,7 +46,7 @@ public abstract class AbstractFormularDetailTarget extends BIAbstractDetailTarge
     }
 
     @Override
-    public BITable createTableKey() {
+    public BusinessTable createTableKey() {
         return null;
     }
 
@@ -89,7 +88,7 @@ public abstract class AbstractFormularDetailTarget extends BIAbstractDetailTarge
      * @return 空
      */
     @Override
-    public ICubeColumnIndexReader createGroupValueMapGetter(Table target, ICubeDataLoader loader, long userId) {
+    public ICubeColumnIndexReader createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId) {
         return null;
     }
 

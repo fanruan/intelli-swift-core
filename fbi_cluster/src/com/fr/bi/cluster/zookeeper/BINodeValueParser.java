@@ -1,7 +1,7 @@
 package com.fr.bi.cluster.zookeeper;
 
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;

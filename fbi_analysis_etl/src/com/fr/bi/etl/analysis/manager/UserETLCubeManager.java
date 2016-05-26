@@ -7,8 +7,8 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.etl.analysis.data.AnalysisTableSource;
-import com.fr.bi.etl.analysis.data.UserTableSource;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
+import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.file.XMLFileManager;
 import com.fr.general.GeneralContext;
@@ -63,7 +63,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 
 	@Override
 	public ICubeTableService getTableIndex(BICore core, BIUser user){
-		UserTableSource ut = getUserSource(core, user.getUserId());
+		UserCubeTableSource ut = getUserSource(core, user.getUserId());
 		String md5Key = ut.fetchObjectCore().getID().getIdentityValue();
 		SingleUserETLTableCubeManager manager = threadMap.get(md5Key);
 		if(manager == null){
@@ -90,9 +90,9 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 		
 	}
 	
-	private UserTableSource getUserSource(BICore core, long userId){
+	private UserCubeTableSource getUserSource(BICore core, long userId){
 		AnalysisDataSourceManager ds = StableFactory.getMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, AnalysisDataSourceManager.class);
-        AnalysisTableSource ts = null;
+        AnalysisCubeTableSource ts = null;
         try {
             ts = ds.getTableSourceByCore(core, new BIUser(userId));
         } catch (Exception e) {

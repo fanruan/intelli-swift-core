@@ -1,13 +1,13 @@
 package com.fr.bi.web.conf.services;
 
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.source.ITableSource;
-import com.fr.bi.stable.relation.BITableRelation;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -61,7 +61,7 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
 		JSONArray relations = new JSONArray();
 		Iterator<BITableRelation> relationIterator=relationsSet.iterator();
 		while(relationIterator.hasNext()){
-			relations.put(relationIterator.next().getSimpleRelation().createJSON());//生成JSON并放入JSONARRAY中
+			relations.put(relationIterator.next().createJSON());//生成JSON并放入JSONARRAY中
 		}
 		return relations;
 	}
@@ -74,7 +74,7 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
 		Iterator<String> iterator = jo.keys();
 		while (iterator.hasNext()){
 			String id = iterator.next();
-			ITableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
+			CubeTableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
 			if (source.getType() == BIBaseConstant.TABLETYPE.DB){
 				sources.put(id, (DBTableSource)source);
 			}
@@ -97,7 +97,7 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
 		Iterator<Map.Entry<String, DBTableSource>> it = sourceTables.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, DBTableSource> entry = it.next();
-			IPersistentTable table = entry.getValue().getDbTable();
+			IPersistentTable table = entry.getValue().getPersistentTable();
 			if (!StringUtils.isEmpty(table.getRemark())) {
 				tableTrans.put(entry.getKey(), table.getRemark());
 			}

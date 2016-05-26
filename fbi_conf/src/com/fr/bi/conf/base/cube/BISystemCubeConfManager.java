@@ -1,6 +1,6 @@
 package com.fr.bi.conf.base.cube;
 
-import com.fr.bi.conf.base.BISystemDataManager;
+import com.finebi.cube.conf.BISystemDataManager;
 import com.fr.bi.conf.provider.BICubeConfManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;

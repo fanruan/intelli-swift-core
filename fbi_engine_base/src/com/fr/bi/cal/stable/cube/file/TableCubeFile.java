@@ -1,5 +1,7 @@
 package com.fr.bi.cal.stable.cube.file;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.ValueConverter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.AbstractCubeFile;
@@ -12,8 +14,8 @@ import com.fr.bi.cal.stable.index.file.VersionFile;
 import com.fr.bi.cal.stable.relation.uselinkindex.LinkColumnUseIndexLoader;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.file.ColumnFile;
@@ -25,9 +27,7 @@ import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.array.ArrayKey;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
@@ -44,22 +44,22 @@ public class TableCubeFile extends AbstractCubeFile {
     private String path;
 
     @SuppressWarnings("unused")
-	private VersionFile currentVersion;
+    private VersionFile currentVersion;
 
     @SuppressWarnings("unused")
-	private VersionFile cubeVersion;
+    private VersionFile cubeVersion;
 
     @SuppressWarnings("unused")
-	private CubeMainFile mainFile;
+    private CubeMainFile mainFile;
 
     @SuppressWarnings("unused")
-	private CubeOtherFile rowCountFile;
+    private CubeOtherFile rowCountFile;
 
     @SuppressWarnings("unused")
-	private CubeLastTimeFile lastTimeFile;
+    private CubeLastTimeFile lastTimeFile;
 
     @SuppressWarnings("unused")
-	private IntegerColumnFile removeFile;
+    private IntegerColumnFile removeFile;
 
     private Map<ArrayKey<BITableSourceRelation>, IndexFile> basicRelationMap = new ConcurrentHashMap<ArrayKey<BITableSourceRelation>, IndexFile>();
 
@@ -108,7 +108,7 @@ public class TableCubeFile extends AbstractCubeFile {
     public void copyDetailValue(BITableCubeFile oldCube, SingleUserNIOReadManager manager, long rowCount) {
         initColumns();
         TableCubeFile cube = (TableCubeFile) oldCube;
-        BIField[] fields = getBIField();
+        ICubeFieldSource[] fields = getBIField();
         for (int i = 0; i < fields.length; i++) {
             columns.getColumnFile(i).copyDetailValue(BIPathUtils.createSingleFieldBasePath(cube.path, fields[i].getFieldName()), cube.getColumnFile(fields[i].getFieldName()), manager, rowCount);
         }
@@ -156,13 +156,13 @@ public class TableCubeFile extends AbstractCubeFile {
     }
 
     @Override
-    public DBField[] getBIField() {
+    public ICubeFieldSource[] getBIField() {
         List<String> columnString = getCubeMainFile().read();
-        DBField[] fields = new DBField[columnString.size()];
+        ICubeFieldSource[] fields = new ICubeFieldSource[columnString.size()];
         for (int i = 0, ilen = columnString.size(); i < ilen; i++) {
             try {
                 JSONObject jo = new JSONObject(columnString.get(i));
-                DBField field = DBField.getBiEmptyField();
+                BICubeFieldSource field = new BICubeFieldSource(null, null, 0, 0);
                 field.parseJSON(jo);
                 fields[i] = field;
             } catch (Exception e) {
@@ -176,9 +176,9 @@ public class TableCubeFile extends AbstractCubeFile {
     public void createDetailDataWriter() {
         ColumnFiles columns = initColumns();
         for (int i = 0, ilen = columns.size(); i < ilen; i++) {
-        	ColumnFile<?> cf = columns.getColumnFile(i);
-            if (cf!= null) {
-            	cf.createDetailDataWriter();
+            ColumnFile<?> cf = columns.getColumnFile(i);
+            if (cf != null) {
+                cf.createDetailDataWriter();
             }
         }
     }
@@ -189,11 +189,11 @@ public class TableCubeFile extends AbstractCubeFile {
         }
         synchronized (this) {
             if (columns == null) {
-                DBField[] fields = getBIField();
+                ICubeFieldSource[] fields = getBIField();
                 ColumnFile<?>[] columns = new ColumnFile[fields.length];
                 Map<String, Integer> colIndexMap = new HashMap<String, Integer>(fields.length);
                 for (int i = 0, ilen = fields.length; i < ilen; i++) {
-                    DBField field = fields[i];
+                    ICubeFieldSource field = fields[i];
                     colIndexMap.put(field.getFieldName(), i);
                     String fieldPath = BIPathUtils.createSingleFieldBasePath(path, field.getFieldName());
                     switch (field.getFieldType()) {
@@ -228,9 +228,9 @@ public class TableCubeFile extends AbstractCubeFile {
     @SuppressWarnings("rawtypes")
     public void releaseDetailDataWriter() {
         if (columns != null) {
-        	for (int i = 0, ilen = columns.size(); i < ilen; i++) {
-            	ColumnFile cf = columns.getColumnFile(i);
-                if (cf!= null) {
+            for (int i = 0, ilen = columns.size(); i < ilen; i++) {
+                ColumnFile cf = columns.getColumnFile(i);
+                if (cf != null) {
                     cf.releaseDetailDataWriter();
                 }
             }
@@ -242,9 +242,9 @@ public class TableCubeFile extends AbstractCubeFile {
         long rowCount = getRowCount();
         List<GroupIndexCreator> giclist = new ArrayList<GroupIndexCreator>();
         ColumnFiles columns = initColumns();
-        BIField[] fields = getBIField();
+        ICubeFieldSource[] fields = getBIField();
         for (int i = 0; i < columns.size(); i++) {
-            giclist.add((GroupIndexCreator)columns.getColumnFile(i).createGroupIndexCreator(new IndexKey(fields[i].getFieldName()), ValueConverter.DEFAULT, version, rowCount));
+            giclist.add((GroupIndexCreator) columns.getColumnFile(i).createGroupIndexCreator(new IndexKey(fields[i].getFieldName()), ValueConverter.DEFAULT, version, rowCount));
         }
         return giclist.toArray(new GroupIndexCreator[giclist.size()]);
     }
@@ -268,9 +268,9 @@ public class TableCubeFile extends AbstractCubeFile {
     public void releaseGroupValueIndexCreator() {
         if (columns != null) {
             for (int i = 0; i < columns.size(); i++) {
-            	ColumnFile<?> cf = columns.getColumnFile(i);
-                if (cf!= null) {
-                	cf.releaseGroupValueIndexCreator();
+                ColumnFile<?> cf = columns.getColumnFile(i);
+                if (cf != null) {
+                    cf.releaseGroupValueIndexCreator();
                 }
             }
         }
@@ -345,9 +345,9 @@ public class TableCubeFile extends AbstractCubeFile {
 
     private void checkIndex(BIKey key, List<BITableSourceRelation> relationList, SingleUserNIOReadManager manager) {
         ColumnFile cf = getColumnFile(key);
-        if (!cf.checkVersion(getTableVersion())){
-            synchronized (cf){
-                if (!cf.checkVersion(getTableVersion())){
+        if (!cf.checkVersion(getTableVersion())) {
+            synchronized (cf) {
+                if (!cf.checkVersion(getTableVersion())) {
                     CubeGenerator generator = cf.createGroupIndexCreator(manager, cf.createDetailNIOReader(manager), key, ValueConverter.DEFAULT, getTableVersion(), getRowCount(), false);
                     generator.generateCube();
                 }
@@ -356,8 +356,8 @@ public class TableCubeFile extends AbstractCubeFile {
         if (relationList != null && !relationList.isEmpty()) {
             IndexFile iF = cf.getLinkIndexFile(key, relationList);
             if (!iF.checkVersion(getLinkIndexFile(relationList).getVersion())) {
-                synchronized (iF){
-                    if (!iF.checkVersion(getLinkIndexFile(relationList).getVersion())){
+                synchronized (iF) {
+                    if (!iF.checkVersion(getLinkIndexFile(relationList).getVersion())) {
                         new LinkColumnUseIndexLoader(this, key, relationList, manager).generateCube();
                     }
                 }

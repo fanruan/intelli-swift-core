@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.session;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
@@ -17,7 +18,7 @@ import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.Table;
+
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
@@ -99,26 +100,27 @@ public class BISession extends BIAbstractSession {
 
     /**
      * 半推半就
+     *
      * @param isEdit
      * @return
      */
     public boolean setEdit(boolean isEdit) {
-    	BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-    	if(isEdit){
-    		isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId());
-    	} else {
-    		releaseLock();
-    	}
-    	this.isEdit = isEdit;
-		return isEdit;
+        BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        if (isEdit) {
+            isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId());
+        } else {
+            releaseLock();
+        }
+        this.isEdit = isEdit;
+        return isEdit;
     }
-    
-    private void releaseLock(){
-    	BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-    	BIReportNodeLock lock = lockDAO.getLock(this.sessionID, node.getUserId(), node.getId());
-    	if(lock != null){
-    		lockDAO.release(lock);
-    	}
+
+    private void releaseLock() {
+        BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        BIReportNodeLock lock = lockDAO.getLock(this.sessionID, node.getUserId(), node.getId());
+        if (lock != null) {
+            lockDAO.release(lock);
+        }
     }
 
     public CubeGenerateStatusProvider getProvider() {
@@ -167,7 +169,6 @@ public class BISession extends BIAbstractSession {
         }
         return null;
     }
-
 
 
     @Override
@@ -227,10 +228,10 @@ public class BISession extends BIAbstractSession {
 
     @Override
     public void release() {
-        synchronized (detailIndexMap){
+        synchronized (detailIndexMap) {
             detailIndexMap.clear();
         }
-        synchronized (detailValueMap){
+        synchronized (detailValueMap) {
             detailValueMap.clear();
         }
         releaseLock();
@@ -264,7 +265,7 @@ public class BISession extends BIAbstractSession {
 
     }
 
-    public boolean hasPackageAccessiblePrivilege(Table key) {
+    public boolean hasPackageAccessiblePrivilege(BusinessTable key) {
         return true;
     }
 
@@ -305,15 +306,15 @@ public class BISession extends BIAbstractSession {
         return null;
     }
 
-    public GroupValueIndex createFilterGvi(Table key) {
-        return getLoader().getTableIndex(key).getAllShowIndex();
+    public GroupValueIndex createFilterGvi(BusinessTable key) {
+        return getLoader().getTableIndex(key.getTableSource()).getAllShowIndex();
     }
 
     public Long getReportId() {
         return node.getId();
     }
 
-    public int getDetailLastIndex (DetailSortKey key, int page) {
+    public int getDetailLastIndex(DetailSortKey key, int page) {
         int index = 0;
         ConcurrentHashMap<Integer, Integer> imap = detailIndexMap.get(key);
         if (imap != null && imap.containsKey(page)) {
@@ -322,7 +323,7 @@ public class BISession extends BIAbstractSession {
         return index;
     }
 
-    public Object[] getDetailLastValue (DetailSortKey key, int page) {
+    public Object[] getDetailLastValue(DetailSortKey key, int page) {
         ConcurrentHashMap<Integer, Object[]> vmap = detailValueMap.get(key);
         if (vmap != null && vmap.containsKey(page)) {
             return vmap.get(page);
@@ -330,32 +331,32 @@ public class BISession extends BIAbstractSession {
         return new Object[0];
     }
 
-    public void setDetailIndexMap (DetailSortKey key, int page,  int lastIndex) {
+    public void setDetailIndexMap(DetailSortKey key, int page, int lastIndex) {
         ConcurrentHashMap<Integer, Integer> imap = detailIndexMap.get(key);
         if (imap != null) {
             imap.put(page, lastIndex);
         } else {
             imap = new ConcurrentHashMap<Integer, Integer>();
-            detailIndexMap.put(key ,imap);
+            detailIndexMap.put(key, imap);
             imap.put(page, lastIndex);
         }
     }
 
-    public void setDetailValueMap (DetailSortKey key, int page, Object[] value) {
+    public void setDetailValueMap(DetailSortKey key, int page, Object[] value) {
         ConcurrentHashMap<Integer, Object[]> vmap = detailValueMap.get(key);
         if (vmap != null) {
             vmap.put(page, value);
         } else {
             vmap = new ConcurrentHashMap<Integer, Object[]>();
-            detailValueMap.put(key ,vmap);
+            detailValueMap.put(key, vmap);
             vmap.put(page, value);
         }
     }
 
-	/**
-	 * @return
-	 */
-	public BIReportNode getReportNode() {
-		return node;
-	}
+    /**
+     * @return
+     */
+    public BIReportNode getReportNode() {
+        return node;
+    }
 }

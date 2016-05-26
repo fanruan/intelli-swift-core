@@ -37,7 +37,7 @@ public abstract class AbstractCubeTableSource extends AbstractTableSource {
     @Override
     public TableData createTableData(List<String> fields, ICubeDataLoader loader, long userId) throws Exception {
         EmbeddedTableData td = new EmbeddedTableData();
-        ICubeTableService tableIndex = loader.getTableIndex(fetchObjectCore());
+        ICubeTableService tableIndex = loader.getTableIndex(this);
         if (tableIndex == null || tableIndex.getRowCount() == 0) {
             return null;
         }

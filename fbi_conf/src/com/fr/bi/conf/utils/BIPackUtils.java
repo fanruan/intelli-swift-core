@@ -1,11 +1,12 @@
 package com.fr.bi.conf.utils;
 
-import com.fr.bi.conf.base.pack.data.BIBasicBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
-import com.fr.bi.conf.engine.CubeBuildStuffManager;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.build.CubeBuildStuffManager;
+import com.finebi.cube.conf.pack.data.BIBasicBusinessPackage;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 
@@ -27,9 +28,9 @@ public class BIPackUtils {
         return null;
     }
 
-    public static Set<Table> getAllBusiTableKeys(Set<BIBusinessPackage> packs) {
-        Set<Table> keys = new HashSet<Table>();
-        Iterator<BIBusinessPackage> itPacks = packs.iterator();
+    public static Set<BusinessTable> getAllBusiTableKeys(Set<IBusinessPackageGetterService> packs) {
+        Set<BusinessTable> keys = new HashSet<BusinessTable>();
+        Iterator<IBusinessPackageGetterService> itPacks = packs.iterator();
 
         while (itPacks.hasNext()) {
             Set<BIBusinessTable> busiTable = itPacks.next().getBusinessTables();
@@ -53,13 +54,13 @@ public class BIPackUtils {
 
     public static int getPackageChangeCounts(long userId) {
         int count = 0;
-        if (BIConfigureManagerCenter.getPackageManager().isPackageDataChanged(userId)) {
+        if (BICubeConfigureCenter.getPackageManager().isPackageDataChanged(userId)) {
             count++;
         }
         if (count > 0) {
             return count;
         }
-        count += BIConfigureManagerCenter.getTableRelationManager().isChanged(userId) ? 1 : 0;
+        count += BICubeConfigureCenter.getTableRelationManager().isChanged(userId) ? 1 : 0;
         if (count > 0) {
             return count;
         }
@@ -74,22 +75,23 @@ public class BIPackUtils {
 
     public static int getGeneratingChangeCounts(long userId) {
         int count = 0;
-        CubeBuildStuffManager object = BIConfigureManagerCenter.getCubeManager().getGeneratingObject(userId);
+        CubeBuildStuffManager object = BICubeConfigureCenter.getCubeManager().getGeneratingObject(userId);
         if (object == null) {
             return count;
         }
 //        BIPackageSet set = new BIPackageSet(userId);
 //        set.setAllPackages(object.getPacks());
 //        set.setAllGroups(object.getUsedGroupMap());
-        if (BIConfigureManagerCenter.getPackageManager().isPackageDataChanged(userId)) {
+        if (BICubeConfigureCenter.getPackageManager().isPackageDataChanged(userId)) {
             return 1;
         }
 
-        count += BIConfigureManagerCenter.getTableRelationManager().isChanged(userId) ? 1 : 0;
+        count += BICubeConfigureCenter.getTableRelationManager().isChanged(userId) ? 1 : 0;
         if (count > 0) {
             return count;
         }
-        count += BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(userId).compareLoginUserInfo(object.getUserInfo());
+        //TODO Connery
+//        count += BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(userId).compareLoginUserInfo(object.getUserInfo());
         return count;
     }
 

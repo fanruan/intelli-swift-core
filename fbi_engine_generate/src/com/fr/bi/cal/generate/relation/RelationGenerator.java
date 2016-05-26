@@ -1,15 +1,15 @@
 package com.fr.bi.cal.generate.relation;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.relation.basiclinkindex.LinkBasicIndexEntry;
 import com.fr.bi.cal.generate.relation.firstlinkindex.LinkFirstIndexEntry;
 import com.fr.bi.cal.generate.relation.inuserelation.LinkInUseIndexEntry;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIPackUtils;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.index.CubeGenerator;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.DateUtils;
 
@@ -53,8 +53,8 @@ public class RelationGenerator implements CubeGenerator {
         }
     }
 
-    public Set<Table> fetchTableKeys() {
-        Set<BIBusinessPackage> packs = BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()
+    public Set<BusinessTable> fetchTableKeys() {
+        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()
         ).getPacks();
         return BIPackUtils.getAllBusiTableKeys(packs);
     }

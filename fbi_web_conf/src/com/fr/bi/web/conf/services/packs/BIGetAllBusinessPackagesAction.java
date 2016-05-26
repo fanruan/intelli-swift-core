@@ -1,9 +1,9 @@
 package com.fr.bi.web.conf.services.packs;
 
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BIBasicField;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -27,12 +27,12 @@ public class BIGetAllBusinessPackagesAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject jo = new JSONObject();
-        Set<BIBusinessPackage> packs = BIConfigureManagerCenter.getPackageManager().getAllPackages(userId);
-        for(BIBusinessPackage pack : packs) {
+        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(userId);
+        for (IBusinessPackageGetterService pack : packs) {
             Set<BIBusinessTable> tables = pack.getBusinessTables();
             JSONObject tableJO = new JSONObject();
-            for(BIBusinessTable table : tables) {
-                Iterator<BIBasicField> fields = table.getFieldsIterator();
+            for (BIBusinessTable table : tables) {
+                Iterator<BusinessField> fields = table.getFields().iterator();
                 JSONArray fieldsJA = new JSONArray();
                 while (fields.hasNext()) {
                     fieldsJA.put(fields.next().createJSON());

@@ -3,13 +3,13 @@ package com.fr.bi.stable.engine.index;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Delete;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
@@ -35,7 +35,7 @@ public interface BITableCubeFile extends Delete {
 
     void writeRemovedLine(TreeSet<Integer> removedLine);
 
-    DBField[] getBIField();
+    ICubeFieldSource[] getBIField();
 
     void createDetailDataWriter();
 

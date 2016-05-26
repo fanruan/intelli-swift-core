@@ -1,6 +1,8 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.adapter.GroupCache;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
@@ -14,10 +16,8 @@ import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.lru.FIFOHashMap;
@@ -134,7 +134,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
     }
 
-    private Table getRealTableKey4Calculate(DimensionCalculator column, Table tableKey) {
+    private BusinessTable getRealTableKey4Calculate(DimensionCalculator column, BusinessTable tableKey) {
         return tableKey == BITable.BI_EMPTY_TABLE() ? column.getField().getTableBelongTo() : tableKey;
     }
 
@@ -606,7 +606,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     private class TreeIterator implements NodeDimensionIterator {
         private int[] index;
         private int[] tempIndex;
-        private Map<Table, GroupValueIndex> controlFilters = new ConcurrentHashMap<Table, GroupValueIndex>();
+        private Map<BusinessTable, GroupValueIndex> controlFilters = new ConcurrentHashMap<BusinessTable, GroupValueIndex>();
 
         /**
          * TODO 先放内存看看再说

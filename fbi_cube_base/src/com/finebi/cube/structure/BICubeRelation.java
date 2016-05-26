@@ -1,7 +1,8 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.relation.BIBasicRelation;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.fr.bi.stable.relation.BIBasicRelation;
+
 
 /**
  * This class created on 2016/4/10.

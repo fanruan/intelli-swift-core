@@ -1,5 +1,6 @@
 package com.fr.bi.web.base.utils;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.base.ConfigManager;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.base.CubeIndexManager;
@@ -170,11 +171,11 @@ public class BIWebUtils {
             return;
         }
         long userId = ServiceUtils.getCurrentUserID(req);
-        if (BIConfigureManagerCenter.getPackageManager().isPackagesEmpty(userId)) {
+        if (BICubeConfigureCenter.getPackageManager().isPackagesEmpty(userId)) {
             dealWithEmptyPack(req, res, sessionID, locale);
             return;
         }
-        if (BIConfigureManagerCenter.getPackageManager().isPackagesEmpty(userId)) {
+        if (BICubeConfigureCenter.getPackageManager().isPackagesEmpty(userId)) {
             dealWithNORightPack(req, res, sessionID, locale);
             return;
         }

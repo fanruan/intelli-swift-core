@@ -1,7 +1,7 @@
 package com.fr.bi.conf.report.key;
 
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.general.ComparatorUtils;
 
 import java.util.List;

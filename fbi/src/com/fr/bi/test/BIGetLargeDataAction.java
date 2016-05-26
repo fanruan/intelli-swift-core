@@ -1,11 +1,15 @@
 package com.fr.bi.test;
 
-import com.fr.bi.stable.data.db.*;
-import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.bi.base.FinalLong;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
@@ -15,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by Root on 2015/9/6.
@@ -41,9 +44,13 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
         IPersistentTable table = BIDBUtils.getDBTable("important", "items");
         List<PersistentField> columns = table.getFieldList();
 
-        DBField[] fields = new DBField[1];
-
-        fields[0] = new DBField(UUID.randomUUID().toString(), columns.get(0).getFieldName(),
+        BICubeFieldSource[] fields = new BICubeFieldSource[1];
+        /**
+         * Connery
+         * 原来是        UUID.randomUUID().toString()
+         * 现在改成空TableSource
+         */
+        fields[0] = new BICubeFieldSource(new DBTableSource("", ""), columns.get(0).getFieldName(),
                 BIDBUtils.checkColumnClassTypeFromSQL(columns.get(0).getType(), columns.get(0).getColumnSize(), columns.get(0).getScale()),
                 columns.get(0).getColumnSize());
 
