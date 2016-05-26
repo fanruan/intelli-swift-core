@@ -40,7 +40,7 @@ public class StringValueSet implements BICoreService{
     }
 
     public boolean contains(String s){
-        return isContains() ? values.contains(s) : !values.contains(s);
+        return isContains() ? (values.isEmpty() || values.contains(s))  : !values.contains(s);
     }
 
     @Override
