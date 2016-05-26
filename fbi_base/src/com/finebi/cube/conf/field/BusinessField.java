@@ -33,4 +33,6 @@ public interface BusinessField extends JSONTransform, Cloneable {
 
     JSONObject createJSON(ICubeDataLoader loader) throws Exception;
 
+    void magicInitial();
+
 }

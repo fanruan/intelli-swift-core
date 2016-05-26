@@ -27,4 +27,6 @@ public interface BusinessTable extends JSONTransform, Cloneable {
     CubeTableSource getTableSource();
 
     JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader)throws Exception;
+
+    void magicInitial();
 }

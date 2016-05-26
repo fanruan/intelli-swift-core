@@ -7,7 +7,9 @@ import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -38,6 +40,7 @@ public class BIBusinessTable implements BusinessTable {
 
     protected BITableID ID;
     protected String tableName;
+    @BIIgnoreField
     protected List<BusinessField> fields;
     protected CubeTableSource source;
 
@@ -167,8 +170,17 @@ public class BIBusinessTable implements BusinessTable {
             while (it.hasNext()) {
                 Map.Entry<String, ICubeFieldSource> entry = it.next();
                 ICubeFieldSource field = entry.getValue();
+                BIFieldID fieldID = new BIFieldID(java.util.UUID.randomUUID().toString());
                 fields.add(new BIBusinessField(this,
-                        new BIFieldID(java.util.UUID.randomUUID().toString()), field.getFieldName(), field.getClassType(), field.getFieldSize()));
+                        fieldID, field.getFieldName(), field.getClassType(), field.getFieldSize()));
+                try {
+                    /**
+                     *
+                     */
+                    BICubeConfigureCenter.getDataSourceManager().addBusinessTable(fieldID, this);
+                } catch (BIKeyDuplicateException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -181,6 +193,12 @@ public class BIBusinessTable implements BusinessTable {
             throw new RuntimeException("Please check connection");
         }
 
+    }
+
+    @Override
+    public void magicInitial() {
+        initialSource();
+        initialFields();
     }
 
     private JSONObject createCountField() throws Exception {
