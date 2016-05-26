@@ -235,6 +235,22 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             hgap: 10
         })
     },
+    
+    populate: function(){
+        var wId = this.options.wId;
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+        this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
+        this.rYAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
+        //this.numberLevellY.setValue(v.left_y_axis_number_level);
+        //this.numberLevelrY.setValue(v.right_y_axis_number_level);
+        //this.LYUnit.setValue(v.left_y_axis_unit);
+        //this.RYUnit.setValue(v.right_y_axis_unit);
+        this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.isShowTitleRY.setSelected(BI.Utils.getWSShowRightYAxisTitleByID(wId));
+        this.reversedLY.setSelected(BI.Utils.getWSLeftYAxisReversedByID(wId));
+        this.reversedRY.setSelected(BI.Utils.getWSRightYAxisReversedByID(wId));
+    },
 
     getValue: function(){
         return {
