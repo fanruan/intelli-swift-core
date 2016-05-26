@@ -115,7 +115,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
-            self.table.attr("columnSize", self._getColumnSize());
+            self.table.attr("columnSize", self._getColumnSize(header));
             self.table.populate(items, header, [], []);
         });
     },
