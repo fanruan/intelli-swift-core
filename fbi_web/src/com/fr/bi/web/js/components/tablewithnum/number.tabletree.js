@@ -71,7 +71,7 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
         var vDeep = o.crossHeader.length;
         var header = this._createHeader(deep, vDeep);
         var items = BI.TableTree.formatItems(o.items, deep);
-        this._formatItemsAndMergeCols(items, mergeCols);
+        this._formatItemsAndMergeCols(items);
 
         this.table = BI.createWidget({
             type: "bi.table_view",
@@ -127,9 +127,11 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
         });
     },
 
-    _formatItemsAndMergeCols: function (items, mergeCols) {
+    _formatItemsAndMergeCols: function (items) {
         //处理序号 mergeCol也要处理，index向后+1
         var showNumber = this.options.showNumber;
+        var mergeCols = BI.deepClone(this.options.mergeCols);
+        var freezeCols = BI.deepClone(this.options.freezeCols);
         if (showNumber === true) {
             var count = 0;
             BI.each(items, function (i, item) {
@@ -160,8 +162,10 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
             BI.each(mergeCols, function (i, col) {
                 mergeCols[i]++;
             });
+            freezeCols.push(freezeCols.length);
         }
         BI.isNotNull(this.table) && this.table.attr("mergeCols", mergeCols);
+        BI.isNotNull(this.table) && this.table.attr("freezeCols", freezeCols);
     },
 
     resize: function () {
@@ -169,31 +173,56 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
     },
 
     setColumnSize: function (columnSize) {
+        if(this.options.showNumber) {
+            columnSize.splice(0, 0, 80);
+        }
         this.table.setColumnSize(columnSize);
     },
 
     getColumnSize: function () {
-        return this.table.getColumnSize();
+        var columnSize = this.table.getColumnSize();
+        if(this.options.showNumber) {
+            return columnSize.slice(1);
+        }
+        return columnSize;
     },
 
     getCalculateColumnSize: function () {
-        return this.table.getCalculateColumnSize();
+        var columnSize = this.table.getCalculateColumnSize();
+        if(this.options.showNumber) {
+            return columnSize.slice(1);
+        }
+        return columnSize;
     },
 
     setHeaderColumnSize: function (columnSize) {
+        if(this.options.showNumber) {
+            columnSize.splice(0, 0, 80);
+        }
         this.table.setHeaderColumnSize(columnSize);
     },
 
     setRegionColumnSize: function (columnSize) {
+        if(this.options.showNumber) {
+            columnSize[0] += 80;
+        }
         this.table.setRegionColumnSize(columnSize);
     },
 
     getRegionColumnSize: function () {
-        return this.table.getRegionColumnSize();
+        var regionColumnSize = this.table.getRegionColumnSize();
+        if(this.options.showNumber) {
+            regionColumnSize[0] -= 80;
+        }
+        return regionColumnSize;
     },
 
     getCalculateRegionColumnSize: function () {
-        return this.table.getCalculateRegionColumnSize();
+        var regionColumnSize = this.table.getCalculateRegionColumnSize();
+        if(this.options.showNumber) {
+            regionColumnSize[0] -= 80;
+        }
+        return regionColumnSize;
     },
 
     getCalculateRegionRowSize: function () {
@@ -201,11 +230,20 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
     },
 
     getClientRegionColumnSize: function () {
-        return this.table.getClientRegionColumnSize();
+        var regionColumnSize = this.table.getClientRegionColumnSize();
+        if(this.options.showNumber) {
+            regionColumnSize[0] -= 80;
+        }
+        return regionColumnSize;
+
     },
 
     getScrollRegionColumnSize: function () {
-        return this.table.getScrollRegionColumnSize();
+        var regionColumnSize = this.table.getScrollRegionColumnSize();
+        if(this.options.showNumber) {
+            regionColumnSize[0] -= 80;
+        }
+        return regionColumnSize;
     },
 
     getScrollRegionRowSize: function () {
@@ -244,9 +282,25 @@ BI.TableTreeWithNumber = BI.inherit(BI.Widget, {
         return this.table.getColumns();
     },
 
-    attr: function () {
+    attr: function (key, value) {
         BI.TableTreeWithNumber.superclass.attr.apply(this, arguments);
-        this.table.attr.apply(this.table, arguments);
+        value = BI.clone(value);
+        if(this.options.showNumber) {
+            switch (key) {
+                case "columnSize":
+                    value.splice(0, 0, 80);
+                    break;
+                case "freezeCols":
+                    value.push(value.length);
+                    break;
+                case "mergeCols":
+                    BI.each(value, function(i, v) {
+                        value[i]++;
+                    });
+                    break;
+            }
+        }
+        this.table.attr.apply(this.table, [key, value]);
     },
 
     populate: function (items, header, crossItems, crossHeader) {

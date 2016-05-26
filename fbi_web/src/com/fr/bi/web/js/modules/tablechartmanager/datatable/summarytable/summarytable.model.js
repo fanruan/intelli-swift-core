@@ -858,9 +858,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             self.mergeCols.push(i);
             self.freezeCols.push(i);
         });
-        this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
+        // this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
         var dtIds = this.dimIds.concat(this.targetIds);
-        this.showNumber === true && dtIds.push("");
         if (this.columnSize.length !== dtIds.length) {
             //重置列宽
             this.columnSize = [];
@@ -880,7 +879,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             self.mergeCols.push(i);
             self.freezeCols.push(i);
         });
-        this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
+        // this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
         BI.each(this.header, function (i, id) {
             cSize.push("");
         });

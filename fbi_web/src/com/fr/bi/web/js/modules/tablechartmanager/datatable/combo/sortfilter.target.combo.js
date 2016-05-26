@@ -36,17 +36,21 @@ BI.SortFilterTargetCombo = BI.inherit(BI.Widget, {
             items: [
                 [{
                     text: BI.i18nText("BI-Ascend"),
-                    value: BICst.SORT.ASC
+                    value: BICst.SORT.ASC,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Descend"),
-                    value: BICst.SORT.DESC
+                    value: BICst.SORT.DESC,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Unsorted"),
-                    value: BICst.SORT.NONE
+                    value: BICst.SORT.NONE,
+                    cls: "dot-e-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Filter"),
-                    value: BI.SortFilterTargetCombo.FILTER_ITEM
+                    value: BI.SortFilterTargetCombo.FILTER_ITEM,
+                    cls: "dot-e-font"
                 }]
             ]
         });

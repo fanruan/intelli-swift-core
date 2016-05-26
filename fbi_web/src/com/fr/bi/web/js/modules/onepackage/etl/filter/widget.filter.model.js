@@ -123,6 +123,16 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
                 self.parseFilter(value);
             });
         }
+        if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
+            var start = filterValue.start, end = filterValue.end;
+            if (BI.isNull(start)) {
+                delete filterValue.start;
+            }
+            if (BI.isNull(end)) {
+                delete filterValue.end;
+            }
+        }
+
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
             filterValue.values = parseComplexDate(filterValue);
             filterValue.type = filterValue.type || BICst.MULTI_DATE_CALENDAR

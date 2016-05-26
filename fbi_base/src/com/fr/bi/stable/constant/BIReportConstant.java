@@ -26,6 +26,8 @@ public class BIReportConstant {
 
         public final static int APPEND = 0x5;
 
+        public final static int RECORD_COUNT = 0x6;
+
     }
 
 

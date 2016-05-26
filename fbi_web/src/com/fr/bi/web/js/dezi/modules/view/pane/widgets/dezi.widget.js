@@ -257,7 +257,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     change: function (changed) {
         if (BI.has(changed, "bounds")) {
-            //this.tableChart.resize();
+            this.tableChart.resize();
         }
         if (BI.has(changed, "dimensions") ||
             BI.has(changed, "sort") ||
