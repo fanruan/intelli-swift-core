@@ -263,7 +263,7 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
                     list = BICst.CONF_STATISTIC_NUMBER;
                     break;
                 case BICst.COLUMN.DATE:
-                    return BI.i18nText("BI-No_Repeat_Count");
+                    list = BICst.CONF_STATISTIC_DATE;
             }
         }
         if(groupOrSummary ===  0){
