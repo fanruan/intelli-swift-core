@@ -112,13 +112,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         }, ob);
     },
 
-    populate: function () {
-        var self = this;
-        this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
-            self.table.attr("columnSize", self._getColumnSize(header));
-            self.table.populate(items, header, [], []);
-        });
-    },
 
     _getColumnSize: function (header) {
         var columnSize = BI.Utils.getWidgetSettingsByID(this.options.wId).column_size;
@@ -204,6 +197,49 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             }
         });
         return rowItem;
+    },
+
+
+    // /**
+    //  * 风格1、2、3
+    //  *
+    //  */
+    // _setStyleAndColor: function () {
+    //     var wId = this.options.wId;
+    //     var $table = this.table.element;
+    //
+    //     //表头
+    //     var themeColor = this.model.getThemeColor();
+    //     var tableStyle = this.model.getTableStyle();
+    //     //先不考虑类型2的情况
+    //     switch (tableStyle) {
+    //         case BICst.TABLE_STYLE.NORMAL:
+    //             $table.find(".bi-number-table-tree > div > div table > thead > tr").css("background", themeColor);
+    //             $table.find(".bi-number-table-tree > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
+    //             $table.find(".bi-number-table-tree > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
+    //             $table.find(".bi-number-table-tree > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
+    //             break;
+    //         case BICst.TABLE_STYLE.INTERVAL:
+    //             break;
+    //         case BICst.TABLE_STYLE.BLUE:
+    //             break;
+    //     }
+    // },
+    //
+    // _parseHEXAlpha2HEX: function (hex, alpha) {
+    //     var rgb = BI.DOM.hex2rgb(hex);
+    //     var rgbJSON = BI.DOM.rgb2json(rgb);
+    //     rgbJSON.a = alpha;
+    //     return BI.DOM.rgba2rgb(BI.DOM.json2rgba(rgbJSON));
+    // },
+
+
+    populate: function () {
+        var self = this;
+        this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
+            self.table.attr("columnSize", self._getColumnSize(header));
+            self.table.populate(items, header, [], []);
+        });
     }
 
 });
