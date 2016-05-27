@@ -113,12 +113,13 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
 
-        BI.createWidget({
+        this.htape = BI.createWidget({
             type: "bi.htape",
             element: this.element,
             items: [{
                 el: {
                     type: "bi.vtape",
+                    cls: "sequence-table-wrapper",
                     items: [{
                         el: this.sequence
                     }, {
@@ -160,6 +161,22 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         BI.SequenceTable.superclass.attr.apply(this, arguments);
         this.table.attr.apply(this.table, arguments);
         this.sequence.attr.apply(this.table, arguments);
+    },
+
+    showSequence: function () {
+        var items = this.htape.attr("items");
+        items[0].width = 60;
+        this.htape.attr("items", items);
+        this.htape.resize();
+        this.table.resize();
+    },
+
+    hideSequence: function () {
+        var items = this.htape.attr("items");
+        items[0].width = 0;
+        this.htape.attr("items", items);
+        this.htape.resize();
+        this.table.resize();
     },
 
     populate: function (items) {
