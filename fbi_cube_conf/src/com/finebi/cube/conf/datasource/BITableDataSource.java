@@ -11,6 +11,8 @@ import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.general.ComparatorUtils;
 
+import java.util.Set;
+
 /**
  * This class created on 2016/5/23.
  *
@@ -53,6 +55,11 @@ public class BITableDataSource extends BIBasicDataSource<BusinessTable, CubeTabl
     @Override
     public boolean containTableSource(BusinessTable businessTable) {
         return contain(businessTable);
+    }
+
+    @Override
+    public Set<BusinessTable> getAllBusinessTable() {
+        return container.keySet();
     }
 
     @Override
