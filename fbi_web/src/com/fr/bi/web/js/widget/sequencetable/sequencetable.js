@@ -139,6 +139,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.table.resize();
+        this.sequence.setVerticalScroll(this.table.getVerticalScroll());
     },
 
     setColumnSize: function (size) {
@@ -182,6 +183,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
         this.sequence.populate.apply(this.sequence, arguments);
+        this.sequence.setVerticalScroll(this.table.getVerticalScroll());
     },
 
     destroy: function () {

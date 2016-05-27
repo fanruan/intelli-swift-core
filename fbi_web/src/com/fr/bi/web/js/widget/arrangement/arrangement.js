@@ -14,7 +14,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.Arrangement.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-arrangement",
-            layoutType: BI.Arrangement.LAYOUT_TYPE.ADAPTIVE,
+            layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             items: []
         });
     },
