@@ -7,7 +7,6 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.report.result.TargetCalculator;
-import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
@@ -31,14 +30,14 @@ public class BICounterTarget extends BISummaryTarget {
             /**
              * Connery：
              */
-            BusinessField field = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(BIIDUtils.getTableIDFromFieldID(distinct_field_id)));
+            BusinessField field = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(distinct_field_id));
             IPersistentTable table = field.getTableBelongTo().getTableSource().getPersistentTable();
-            PersistentField c = table.getField(BIIDUtils.getFieldNameFromFieldID(distinct_field_id));
+            PersistentField c = table.getField(field.getFieldName());
             if (c == null) {
                 this.distinct_field_name = null;
                 return;
             }
-            this.distinct_field_name = BIIDUtils.getFieldNameFromFieldID(distinct_field_id);
+            this.distinct_field_name = field.getFieldName();
         }
     }
 

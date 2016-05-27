@@ -1,12 +1,12 @@
-TableWithNumView = BI.inherit(BI.View, {
+Style1TableView = BI.inherit(BI.View, {
     _defaultConfig: function () {
-        return BI.extend(TableWithNumView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-mvc-table-width-num bi-mvc-layout"
+        return BI.extend(Style1TableView.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-mvc-style1-table bi-mvc-layout"
         })
     },
 
     _init: function () {
-        TableWithNumView.superclass._init.apply(this, arguments);
+        Style1TableView.superclass._init.apply(this, arguments);
     },
 
     _render: function (vessel) {
@@ -353,7 +353,23 @@ TableWithNumView = BI.inherit(BI.View, {
         }];
 
         var table1 = BI.createWidget({
-            type: "bi.table_tree_with_number",
+            type: "bi.style1_table",
+            color: "#0088cc",
+            el: {
+                type: "bi.sequence_table",
+                sequence: {
+                    type: "bi.sequence_table_tree_number"
+                },
+                el: {
+                    el: {
+                        el: {
+                            el: {
+                                type: "bi.table_tree"
+                            }
+                        }
+                    }
+                }
+            },
             isNeedFreeze: true,
             freezeCols: [0, 1, 2],
             columnSize: ["", "", "", "", "", "", "", "", "", ""],
@@ -386,4 +402,4 @@ TableWithNumView = BI.inherit(BI.View, {
     }
 });
 
-TableWithNumModel = BI.inherit(BI.Model, {});
+Style1TableModel = BI.inherit(BI.Model, {});

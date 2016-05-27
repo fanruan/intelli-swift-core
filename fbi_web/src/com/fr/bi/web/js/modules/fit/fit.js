@@ -315,7 +315,10 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this;
-        var layoutType = Data.SharingPool.get("layoutType") || BI.Arrangement.LAYOUT_TYPE.ADAPTIVE;
+        var layoutType = Data.SharingPool.get("layoutType");
+        if (BI.isNull(layoutType)) {
+            layoutType = BI.Arrangement.LAYOUT_TYPE.FREE;
+        }
         var result = [];
         var widgets = Data.SharingPool.cat("widgets");
         BI.each(widgets, function (id, widget) {
