@@ -15,7 +15,7 @@ BI.SortFilterDimensionCombo = BI.inherit(BI.Widget, {
 
     _defaultConfig: function(){
         return BI.extend(BI.SortFilterDimensionCombo.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-sort-filter-dimension-combo"
+            baseCls: "bi-sort-filter-combo"
         })
     },
 

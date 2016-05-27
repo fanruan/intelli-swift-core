@@ -83,7 +83,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
             case BICst.WIDGET.GIS_MAP:
                 this.chartSetting = BI.createWidget({
                     type: "bi.charts_setting",
-                    settings: settings
+                    wId: wId
                 });
                 this.chartSetting.on(BI.ChartsSetting.EVENT_CHANGE, function () {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
