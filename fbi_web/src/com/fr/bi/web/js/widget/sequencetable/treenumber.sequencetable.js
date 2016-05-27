@@ -104,13 +104,19 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         }
         var numbers = this._formatNumber(o.items);
         result = result.concat(BI.map(numbers, function (i, num) {
+            var cls = "";
+            if (BI.isNumber(num)) {
+                cls = "sequence-table-number";
+            } else {
+                cls = "sequence-table-summary";
+            }
             return {
                 type: "bi.label",
                 height: o.rowSize,
                 textAlign: "left",
                 hgap: 5,
                 text: num,
-                cls: "sequence-table-number" + (i === numbers.length - 1 ? " last" : "")
+                cls: cls + (i === numbers.length - 1 ? " last" : "")
             }
         }));
 
