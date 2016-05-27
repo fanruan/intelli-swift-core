@@ -94,18 +94,6 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
 
-        this.table.on(BI.CustomScrollTable.EVENT_RIGHT_SCROLL, function () {
-            var dot = self.table.getRightHorizontalScroll();
-            self.dots.push(dot);
-            self.lock();
-            if (dot < 50 && dot >= 0) {
-                //显示页码
-                self._showCurrentColumn();
-            } else {
-                self._hideCurrentColumn();
-            }
-        });
-
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_INIT);
         });
@@ -125,12 +113,13 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
 
-        BI.createWidget({
+        this.htape = BI.createWidget({
             type: "bi.htape",
             element: this.element,
             items: [{
                 el: {
                     type: "bi.vtape",
+                    cls: "sequence-table-wrapper",
                     items: [{
                         el: this.sequence
                     }, {
@@ -174,8 +163,25 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         this.sequence.attr.apply(this.table, arguments);
     },
 
+    showSequence: function () {
+        var items = this.htape.attr("items");
+        items[0].width = 60;
+        this.htape.attr("items", items);
+        this.htape.resize();
+        this.table.resize();
+    },
+
+    hideSequence: function () {
+        var items = this.htape.attr("items");
+        items[0].width = 0;
+        this.htape.attr("items", items);
+        this.htape.resize();
+        this.table.resize();
+    },
+
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
+        this.sequence.populate.apply(this.sequence, arguments);
     },
 
     destroy: function () {

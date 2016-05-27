@@ -76,11 +76,16 @@ public class BIBusinessField implements BusinessField {
     }
 
     public BIBusinessField(BusinessTable tableBelongTo, String fieldName) {
-        this(tableBelongTo, new BIFieldID(""),fieldName, 0, 0);
+        this(tableBelongTo, new BIFieldID(""), fieldName, 0, 0);
     }
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
+    }
+
+    @Override
+    public void setTableBelongTo(BusinessTable tableBelongTo) {
+        this.tableBelongTo = tableBelongTo;
     }
 
     @Override
@@ -127,6 +132,7 @@ public class BIBusinessField implements BusinessField {
         }
         return jo;
     }
+
 
     /**
      * 转成JSON

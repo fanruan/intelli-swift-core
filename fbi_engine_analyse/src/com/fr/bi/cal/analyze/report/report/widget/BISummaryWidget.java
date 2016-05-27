@@ -1,10 +1,10 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
@@ -43,7 +43,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     @BICoreField
     protected Map<String, Map<String, BusinessField>> dimensionsMap = new LinkedHashMap<String, Map<String, BusinessField>>();
     @BICoreField
-    protected Map<String, Map<String, List<BISimpleRelation>>> relationsMap = new LinkedHashMap<String, Map<String, List<BISimpleRelation>>>();
+    protected Map<String, Map<String, List<BITableRelation>>> relationsMap = new LinkedHashMap<String, Map<String, List<BITableRelation>>>();
     protected Object[] clickValue;
 
     protected ComplexExpander complexExpander = new ComplexExpander();
@@ -95,11 +95,11 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     }
 
     private List<BITableSourceRelation> getDimRelations(String dimId, String tarId) {
-        Map<String, List<BISimpleRelation>> relMap = relationsMap.get(dimId);
+        Map<String, List<BITableRelation>> relMap = relationsMap.get(dimId);
         if (relMap == null) {
             return new ArrayList<BITableSourceRelation>();
         }
-        List<BISimpleRelation> relationList = relMap.get(tarId);
+        List<BITableRelation> relationList = relMap.get(tarId);
         return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convertToMD5RelationFromSimpleRelation(relationList, new BIUser(this.getUserId()));
     }
 
@@ -232,44 +232,42 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 Iterator iterator = dimMap.keys();
                 while (iterator.hasNext()) {
                     String targetId = (String) iterator.next();
-                    JSONObject targetRelationJo = dimMap.getJSONObject(targetId);
+                    JSONObject tar = dimMap.getJSONObject(targetId);
                     Map<String, BusinessField> dimensionMap = new LinkedHashMap<String, BusinessField>();
                     dimensionsMap.put(dimensionId, dimensionMap);
-                    if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
-                        Object ob = targetRelationJo.get(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+                    if (tar.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
+                        Object ob = tar.get(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
                         if (ob instanceof JSONObject) {
                             JSONObject j = (JSONObject) ob;
                             String fieldId = j.getString("field_id");
                             dimensionMap.put(targetId, new BIBusinessField(new BIFieldID(fieldId)));
                         }
                     }
-                    if (targetRelationJo.has("target_relation")) {
-                        Map<String, List<BISimpleRelation>> relationMap = new LinkedHashMap<String, List<BISimpleRelation>>();
+                    if (tar.has("target_relation")) {
+                        Map<String, List<BITableRelation>> relationMap = new LinkedHashMap<String, List<BITableRelation>>();
                         relationsMap.put(dimensionId, relationMap);
-                        JSONArray targetPathsJa = targetRelationJo.optJSONArray("target_relation");
-                        if (targetPathsJa != null) {
-                            List<BISimpleRelation> relationList = new ArrayList<BISimpleRelation>();
-
-                            for (int j = 0; j < targetPathsJa.length(); j++) {
-                                JSONArray targetPathJa = targetPathsJa.getJSONArray(j);
-                                if (targetPathJa.length() == 1) {
-                                    String primaryFieldId = targetPathJa.optJSONObject(0).optJSONObject("primaryKey").optString("field_id");
-                                    String foreignFieldId = targetPathJa.optJSONObject(0).optJSONObject("foreignKey").optString("field_id");
-                                    if (ComparatorUtils.equals(BIIDUtils.getTableIDFromFieldID(primaryFieldId), BIIDUtils.getTableIDFromFieldID(foreignFieldId))) {
-                                        relationMap.put(targetId, relationList);
-                                        continue;
-                                    }
+                        Object t = tar.get("target_relation");
+                        if (t instanceof JSONArray) {
+                            JSONArray rel = (JSONArray) t;
+                            int lens = rel.length();
+                            List<BITableRelation> relationList = new ArrayList<BITableRelation>();
+                            if (lens == 1) {
+                                String primaryFieldId = rel.optJSONObject(0).optJSONObject("primaryKey").optString("field_id");
+                                String foreignFieldId = rel.optJSONObject(0).optJSONObject("foreignKey").optString("field_id");
+                                if (ComparatorUtils.equals(BIIDUtils.getTableIDFromFieldID(primaryFieldId), BIIDUtils.getTableIDFromFieldID(foreignFieldId))) {
+                                    relationMap.put(targetId, relationList);
+                                    continue;
                                 }
-                                for (int i = 0; i < targetPathJa.length(); i++) {
-                                    BISimpleRelation relation = new BISimpleRelation();
-                                    relation.parseJSON(targetPathJa.optJSONObject(i));
-                                    relationList.add(relation);
-                                }
+                            }
+                            for (int j = 0; j < lens; j++) {
+                                BITableRelation relation = new BITableRelation();
+                                relation.parseJSON(rel.optJSONObject(j));
+                                relationList.add(relation);
                             }
                             relationMap.put(targetId, relationList);
                         }
                     } else {
-                        BILogger.getLogger().error("error missing field:" + targetRelationJo.toString() + this.getClass().getName());
+                        BILogger.getLogger().error("error missing field:" + tar.toString() + this.getClass().getName());
                     }
                 }
             }

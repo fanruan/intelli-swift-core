@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
 
+import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -881,7 +882,8 @@ public class CubeIndexLoader {
             row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), new ArrayList<BITableSourceRelation>());
         }
         TargetCalculator summary = CountCalculator.NONE_TARGET_COUNT_CAL;
-        GroupValueIndex gvi = widget.createFilterGVI(row, row[0].getField().getTableBelongTo(), session.getLoader(), session.getUserId()).AND(session.createFilterGvi(row[0].getField().getTableBelongTo()));
+        BusinessTable tableBelongTo = BusinessFieldHelper.getBusinessTable(row[0].getField());
+        GroupValueIndex gvi = widget.createFilterGVI(row, tableBelongTo, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(tableBelongTo));
         NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(new BIBusinessTable(null), gvi, session.getLoader());
         RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, rowDimension, expander, session, summary, widget, useRealData);
         MergerInfo mergerInfo = new MergerInfo(null, gvi, rootDimensionGroup, root, summary, summary.createTargetGettingKey(), session, rowDimension, expander, null, widget);

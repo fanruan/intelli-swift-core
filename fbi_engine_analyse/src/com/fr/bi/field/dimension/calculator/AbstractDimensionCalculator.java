@@ -33,7 +33,8 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
 
     public AbstractDimensionCalculator(BIDimension dimension, BusinessField field, List<BITableSourceRelation> relations) {
         this.dimension = dimension;
-        this.field = field == null ? dimension.getStatisticElement() : field;
+        field = field == null ? dimension.getStatisticElement() : field;
+        this.field = field;
         this.relations = relations;
     }
 

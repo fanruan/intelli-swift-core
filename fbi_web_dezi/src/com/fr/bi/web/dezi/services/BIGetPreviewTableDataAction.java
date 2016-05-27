@@ -1,7 +1,7 @@
 package com.fr.bi.web.dezi.services;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
@@ -27,7 +27,7 @@ public class BIGetPreviewTableDataAction extends AbstractBIDeziAction {
                           String sessionID) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "table_id");
-        CubeTableSource source = BICubeConfigureCenter.getDataSourceManager().getTableSource(new BITableID(tableId));
+        CubeTableSource source = BusinessTableHelper.getTableDataSource(new BITableID(tableId));
         JSONObject jo = source.createPreviewJSONFromCube(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId));
         WebUtils.printAsJSON(res, jo);
     }
