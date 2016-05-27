@@ -794,13 +794,14 @@ BI.Table = BI.inherit(BI.Widget, {
             type: "bi.adaptive",
             width: "100%",
             height: "100%",
-            cls: "scroll-table",
+            cls: "scroll-bottom-right",
             scrollable: true,
             items: [this.tableContainer]
         });
 
         BI.createWidget({
             type: "bi.adaptive",
+            cls: "bottom-right",
             element: this.element,
             scrollable: false,
             items: [this.scrollContainer]

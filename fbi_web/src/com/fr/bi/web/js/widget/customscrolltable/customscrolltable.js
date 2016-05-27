@@ -409,7 +409,19 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
 
 
     resize: function () {
+        var self = this, o = this.options;
         this.table.resize();
+        if (o.isNeedFreeze === true) {
+            BI.defer(function () {
+                self._resizeFreezeScroll();
+                self._scrollFreezeScroll();
+            });
+        } else if (o.isNeedFreeze === false) {
+            BI.defer(function () {
+                self._resizeScroll();
+                self._scrollScroll();
+            });
+        }
     },
 
     setColumnSize: function (columnSize) {
