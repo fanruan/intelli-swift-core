@@ -4,6 +4,7 @@ import com.fr.bi.common.container.BIMapContainer;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,10 +82,20 @@ public abstract class BIBasicDataSource<T, V> extends BIMapContainer<T, V> {
         synchronized (container) {
             initialSourceCache();
             if (cacheContainSource(source)) {
-                putKeyValue(id, getSpecificCacheSource(source));
+                storeSource(id, getSpecificCacheSource(source));
             } else {
-                putKeyValue(id, source);
+                storeSource(id, source);
                 addSourceCache(source);
+            }
+        }
+    }
+
+    protected void storeSource(T id, V source) {
+        if (!contain(id)) {
+            try {
+                putKeyValue(id, source);
+            } catch (BIKeyDuplicateException e) {
+                throw BINonValueUtils.beyondControl(e);
             }
         }
     }
