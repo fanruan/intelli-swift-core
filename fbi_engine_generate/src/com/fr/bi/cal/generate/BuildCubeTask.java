@@ -22,7 +22,6 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.engine.CubeBuildStuffManager;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
