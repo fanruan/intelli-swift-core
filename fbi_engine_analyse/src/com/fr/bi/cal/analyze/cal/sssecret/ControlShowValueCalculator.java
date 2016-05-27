@@ -36,12 +36,12 @@ public class ControlShowValueCalculator {
     private final static int MAX_STRING_ROW = 100;
 
 
-    private static boolean isValueValid(String value, boolean isBlank, String kw) {
+    private static boolean isValueValid(String value, boolean isBlank, String kw, boolean isSmallGroup) {
         if (value == null) {
             return false;
         }
         boolean valueValid = isBlank || value.toUpperCase().indexOf(kw) > -1;
-        if (!valueValid && PlugManager.getPerformancePlugManager().isSearchPinYin()) {
+        if (!valueValid && PlugManager.getPerformancePlugManager().isSearchPinYin() && isSmallGroup) {
             String py = PinyinHelper.getShortPinyin(value);
             valueValid = py.toUpperCase().indexOf(kw) > -1;
         }
@@ -62,7 +62,7 @@ public class ControlShowValueCalculator {
         }
         boolean isAllShow = parentIndex.getRowsCountWithData() == rowCount;
         if (isAllShow) {
-            return getWhenAllShow(session, selectValues, calculator, start, keyWord);
+            return getWhenAllShow(session, selectValues, calculator, start, keyWord, !calculator.isSupperLargeGroup(session.getLoader()));
         } else if (calculator.isSupperLargeGroup(session.getLoader())) {
             return getWhenSupperLargeGroup(session, selectValues, calculator, parentIndex, start, keyWord);
         } else {
@@ -78,7 +78,7 @@ public class ControlShowValueCalculator {
         while (iter.hasNext()) {
             Entry<String, GroupValueIndex> entry = iter.next();
             String rowValue = entry.getKey();
-            if (isValueValid(rowValue, isBlank, keyWord)) {
+            if (isValueValid(rowValue, isBlank, keyWord, true)) {
                 GroupValueIndex v = entry.getValue();
                 if (v != null && v.hasSameValue(parentIndex)) {
                     if (selectValues.contains(rowValue) || start > count++) {
@@ -106,7 +106,7 @@ public class ControlShowValueCalculator {
             @Override
             public boolean actionPerformed(int rowIndex) {
                 String rowValue = (String) ti.getRow(index, rowIndex);
-                if (isValueValid(rowValue, isBlank, keyWord)) {
+                if (isValueValid(rowValue, isBlank, keyWord, false)) {
                     if (selectValues.contains(rowValue) || start > count.value++) {
                         return false;
                     }
@@ -119,14 +119,14 @@ public class ControlShowValueCalculator {
         return resultList;
     }
 
-    private static List<String> getWhenAllShow(BISession session, List selectValues, DimensionCalculator calculator, int start, String keyWord) {
+    private static List<String> getWhenAllShow(BISession session, List selectValues, DimensionCalculator calculator, int start, String keyWord, boolean isSmallGroup) {
         List<String> resultList = new ArrayList<String>();
         boolean isBlank = StringUtils.isBlank(keyWord);
         int count = 0;
         Iterator<Entry<String, GroupValueIndex>> iter = calculator.createValueMapIterator(calculator.getField().getTableBelongTo(), session.getLoader());
         while (iter.hasNext()) {
             String rowValue = iter.next().getKey();
-            if (isValueValid(rowValue, isBlank, keyWord)) {
+            if (isValueValid(rowValue, isBlank, keyWord, isSmallGroup)) {
                 if (selectValues.contains(rowValue) || start > count++) {
                     continue;
                 }
