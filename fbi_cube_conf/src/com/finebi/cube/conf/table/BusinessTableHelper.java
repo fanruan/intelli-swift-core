@@ -18,6 +18,7 @@ import java.util.Map;
 
 /**
  * This class created on 2016/5/26.
+ * 参数必须要的ID必须可用
  *
  * @author Connery
  * @since 4.0
@@ -36,7 +37,9 @@ public class BusinessTableHelper {
                         fieldSource.getFieldName(), fieldSource.getClassType(), fieldSource.getFieldSize());
                 fields.add(field);
             }
-            table.setFields(fields);
+            if (!(table instanceof BIBusinessTableGetter)) {
+                table.setFields(fields);
+            }
         }
         return fields;
     }
