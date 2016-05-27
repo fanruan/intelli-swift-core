@@ -20,16 +20,16 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         this.upDrill.on(BI.IconTextItem.EVENT_CHANGE, function(){
             self.fireEvent(BI.ChartDrillCell.EVENT_DRILL_UP); 
         });
-        
+
+        this.downTrigger = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "down-drill-button chart-drill-down",
+            text: BI.i18nText("BI-Drill_down"),
+            height: 25
+        });
         this.downDrill = BI.createWidget({
             type: "bi.down_list_combo",
-            iconCls: "chart-drill-down ",
-            el: {
-                type: "bi.icon_text_item",
-                cls: "down-drill-button",
-                text: BI.i18nText("BI-Drill_down"),
-                height: 25
-            }
+            el: this.downTrigger
         });
         this.downDrill.on(BI.DownListCombo.EVENT_CHANGE, function(v){
             self.fireEvent(BI.ChartDrillCell.EVENT_DRILL_DOWN, v); 
@@ -97,6 +97,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         }
         if(BI.isEmptyArray(downChildren)) {
             this.downDrill.setEnable(false);
+            this.downTrigger.setEnable(false);
         } else {
             this.downDrill.populate([downChildren]);
         }
