@@ -133,9 +133,11 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             var maxWidth = this.table.element.width();
             if (!regionColumnSize[0] || regionColumnSize[0] > maxWidth) {
                 var freezeCols = o.freezeCols;
-                var width = freezeCols.length * this._const.perColumnSize;
-                width = width > maxWidth * 1.0 / 3 ? maxWidth * 1.0 / 3 : width;
-                this.table.setRegionColumnSize([width, "fill"]);
+                if (freezeCols.length > 0) {
+                    this.table.setRegionColumnSize([maxWidth * 1.0 / 3, "fill"]);
+                } else {
+                    this.table.setRegionColumnSize([0, "fill"]);
+                }
             }
         }
     },
