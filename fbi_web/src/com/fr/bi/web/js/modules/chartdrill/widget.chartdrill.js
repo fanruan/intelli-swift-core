@@ -21,6 +21,9 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         var pushButton = BI.createWidget({
             type: "bi.drill_push_button"
         });
+        pushButton.on(BI.DrillPushButton.EVENT_CHANGE, function(){
+            self._onClickPush();
+        });
         this.outerWrapper = BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -29,7 +32,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 top: 0
             }, {
                 el: pushButton,
-                top: 35
+                top: 0
             }]
         })
     },
@@ -76,52 +79,112 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         }
     },
 
-    populate: function () {
+    populate: function (obj) {
+        var self = this;
         this._initShowChartDrill();
-        this.outerWrapper.setVisible(this.showDrill);
-        if(this.showDrill === false) {
+        this.outerWrapper.setVisible(this.showDrill && BI.isNotNull(obj));
+        if(this.showDrill === false || BI.isNull(obj)) {
             return;
         }
         var wId = this.options.wId;
-        var dims = BI.Utils.getAllDimDimensionIDs(wId);
+        var dims = BI.Utils.getAllUsableDimDimensionIDs(wId);
         var classification = null, series = null;
         BI.each(dims, function (i, dim) {
-            if (BI.Utils.isDimensionUsable(dim)) {
-                if (BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION1) {
-                    classification = dim;
-                }
-                if (BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION2) {
-                    series = dim;
-                }
+            if (BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION1) {
+                classification = dim;
+            }
+            if (BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION2) {
+                series = dim;
             }
         });
         this.wrapper.empty();
         if (BI.isNotNull(classification)) {
             var cDrill = BI.createWidget({
                 type: "bi.chart_drill_cell",
-                dId: classification
+                dId: classification,
+                value: obj.x
+            });
+            cDrill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function(){
+                self._onClickDrill(classification, obj.x);
+            });
+            cDrill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function(drillId){
+                self._onClickDrill(classification, obj.x, drillId);
             });
             this.wrapper.addItem(cDrill);
         }
         if (BI.isNotNull(series)) {
             var sDrill = BI.createWidget({
                 type: "bi.chart_drill_cell",
-                dId: series
+                dId: series,
+                value: obj.seriesName
+            });
+            sDrill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function(){
+                self._onClickDrill(series, obj.seriesName);
+            });
+            sDrill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function(drillId){
+                self._onClickDrill(series, obj.seriesName, drillId);
             });
             this.wrapper.addItem(sDrill);
         }
         var bounds = BI.Utils.getWidgetBoundsByID(wId);
         var hgap = 0, w = bounds.width;
-        if (w < 400 && w > 200) {
-            hgap = Math.ceil((w - 200) / 2);
-        } else if (w >= 400) {
-            hgap = Math.ceil((w - 400) / 2);
+        this.buttonTop = 35;
+        //单个
+        if(BI.isNull(classification) || BI.isNull(series)) {
+            if(w > 200) {
+                hgap = Math.ceil((w - 200) / 2);
+            }
+        } else {
+            if (w < 400 && w > 200) {
+                hgap = Math.ceil((w - 200) / 2);
+                this.buttonTop = 70;
+            } else if (w >= 400) {
+                hgap = Math.ceil((w - 400) / 2);
+            }
         }
+        this.wrapper.setVisible(true);
         this.outerWrapper.attr("items")[0].left = hgap;
         this.outerWrapper.attr("items")[0].right = hgap;
-        this.outerWrapper.attr("items")[1].left = Math.ceil((w - 50) / 2);
+        this.outerWrapper.attr("items")[1].left = Math.ceil((w - 60) / 2);
+        this.outerWrapper.attr("items")[1].top = this.buttonTop;
         this.outerWrapper.resize();
-    }
+    },
 
+    _onClickPush: function(){
+        var isVisible = !this.wrapper.isVisible();
+        this.wrapper.setVisible(isVisible);
+        this.outerWrapper.attr("items")[1].top = isVisible ? this.buttonTop : 0;
+        this.outerWrapper.resize();
+    },
+
+    _onClickDrill: function(dId, value, drillId){
+        var wId = this.options.wId;
+        var drillMap = BI.Utils.getDrillByID(wId);
+        //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
+        //当前钻取的根节点
+        var rootId = dId;
+        BI.each(drillMap, function (drId, ds) {
+            if (dId === drId || (ds.length > 0 && ds[ds.length - 1].dId === dId)) {
+                rootId = drId;
+            }
+        });
+
+        var drillOperators = drillMap[rootId] || [];
+        //上钻
+        if (BI.isNull(drillId)) {
+            drillOperators.pop();
+        } else {
+            drillOperators.push({
+                dId: drillId,
+                values: [{
+                    dId: dId,
+                    value: [value]
+                }]
+            });
+        }
+        drillMap[rootId] = drillOperators;
+        this.fireEvent(BI.ChartDrill.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
+    }
 });
+BI.ChartDrill.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.chart_drill", BI.ChartDrill);

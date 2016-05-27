@@ -16,7 +16,7 @@
 }
 .bi-chart-drill-cell .up-drill-button.disabled {
   color: #c4c6c6;
-  background: #c4c6c6;
+  background: #f4f4f4;
 }
 .bi-chart-drill-cell .down-drill-button {
   background: #009de3;
@@ -30,7 +30,7 @@
 }
 .bi-chart-drill-cell .down-drill-button.disabled {
   color: #c4c6c6;
-  background: #c4c6c6;
+  background: #f4f4f4;
 }
 .bi-chart-drill-cell .dimension-name {
   color: #808080;

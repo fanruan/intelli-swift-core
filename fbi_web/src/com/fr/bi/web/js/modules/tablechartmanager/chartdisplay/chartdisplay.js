@@ -56,6 +56,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         var chart = BI.createWidget({type: "bi.combine_chart"});
         chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
             self._doChartItemClick(obj);
+            self.fireEvent(BI.ChartDisplay.EVENT_CHANGE, arguments);
         });
         return chart;
     },
@@ -76,4 +77,5 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         this.tab.getSelectedTab().resize();
     }
 });
+BI.ChartDisplay.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.chart_display', BI.ChartDisplay);

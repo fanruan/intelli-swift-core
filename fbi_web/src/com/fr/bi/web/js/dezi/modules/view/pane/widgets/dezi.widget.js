@@ -54,6 +54,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
+        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function(obj){
+            self._onClickChart(obj);
+        });
 
         this.widget = BI.createWidget({
             type: "bi.absolute",
@@ -82,7 +85,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
-            self.widget.attr("items")[3].top = 8;
+            self.widget.attr("items")[3].top = 6;
             self.widget.resize();
         }, function () {
             self.tools.setVisible(false);
@@ -118,11 +121,19 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _buildChartDrill: function(){
+        var self = this;
         this.chartDrill = BI.createWidget({
             type: "bi.chart_drill",
             wId: this.model.get("id")
         });
+        this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function(widget){
+            self.model.set(widget);
+        });
         this.chartDrill.populate();
+    },
+
+    _onClickChart: function(obj){
+        this.chartDrill.populate(obj);
     },
 
     _createTools: function () {
@@ -222,6 +233,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     break;
             }
         });
+        combo.on(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW, function(){
+            self.chartDrill.populate();
+        });
 
         this.tools = BI.createWidget({
             type: "bi.left",
@@ -286,6 +300,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
+        }
+        if(BI.has(changed, "type")) {
+            this.tableChart.resize();
         }
     },
 
