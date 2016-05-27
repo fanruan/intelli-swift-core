@@ -481,6 +481,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 }
                 self.scrollTopLeft.element[0].scrollLeft = self.scrollBottomLeft.element[0].scrollLeft;
                 self.scrollTopRight.element[0].scrollLeft = self.scrollBottomRight.element[0].scrollLeft;
+                self.scrollBottomLeft.element[0].scrollTop = self.scrollBottomRight.element[0].scrollTop;
                 //调整拖拽handle的高度
                 if (o.isNeedResize) {
                     handle && handle.css("height", self.bottomLeft.element.height() + headerHeight);
