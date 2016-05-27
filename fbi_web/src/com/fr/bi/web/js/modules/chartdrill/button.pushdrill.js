@@ -2,23 +2,31 @@
  * Created by Young's on 2016/5/27.
  */
 BI.DrillPushButton = BI.inherit(BI.BasicButton, {
-    _defaultConfig: function(){
-        return BI.extend(BI.DrillPushButton.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-drill-push-button"
+    _defaultConfig: function () {
+        var conf = BI.DrillPushButton.superclass._defaultConfig.apply(this, arguments);
+        return BI.extend(conf, {
+            baseCls: (conf.baseCls || "") + " bi-drill-push-button"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.DrillPushButton.superclass._init.apply(this, arguments);
-        BI.createWidget({
-            type: "bi.htape",
+        var svg = BI.createWidget({
+            type: "bi.svg",
             element: this.element,
-            items: [{
-                el: {
-                    type: "bi."
-                }
-            }]
+            width: 60,
+            height: 10
         });
+        svg.path("M0,0L60,0 L50,10 L10,10 Z")
+            .attr({stroke: "#d4dadd", fill: "#ffffff"});
+    },
+
+    doClick: function () {
+        BI.DrillPushButton.superclass.doClick.apply(this, arguments);
+        if (this.isValid()) {
+            this.fireEvent(BI.DrillPushButton.EVENT_CHANGE);
+        }
     }
 });
+BI.DrillPushButton.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.drill_push_button", BI.DrillPushButton);

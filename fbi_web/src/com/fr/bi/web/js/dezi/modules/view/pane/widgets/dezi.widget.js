@@ -76,14 +76,18 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             }, {
                 el: this.chartDrill,
                 left: 0,
-                top: 12,
+                top: 0,
                 right: 0
             }]
         });
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
+            self.widget.attr("items")[3].top = 8;
+            self.widget.resize();
         }, function () {
             self.tools.setVisible(false);
+            self.widget.attr("items")[3].top = 0;
+            self.widget.resize();
         });
 
     },
@@ -231,6 +235,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
+        this.chartDrill.populate();
     },
 
     _refreshLayout: function () {

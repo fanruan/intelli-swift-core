@@ -1312,6 +1312,7 @@ public class ResourceHelper {
                 //图表钻取
                 "com/fr/bi/web/js/modules/chartdrill/widget.chartdrill.js",
                 "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/button.pushdrill.js",
 
                 //etl plugin
                 "com/fr/bi/web/js/extend/excel/etl.excel.plugin.js",

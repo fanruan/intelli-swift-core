@@ -2,16 +2,44 @@
  * Created by Young's on 2016/5/26.
  */
 BI.ChartDrill = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.ChartDrill.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-chart-drill"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.ChartDrill.superclass._init.apply(this, arguments);
         var self = this, wId = this.options.wId;
+
+        this.wrapper = BI.createWidget({
+            type: "bi.left",
+            cls: "drill-wrapper",
+            hgap: 5,
+            vgap: 5
+        });
+        var pushButton = BI.createWidget({
+            type: "bi.drill_push_button"
+        });
+        this.outerWrapper = BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.wrapper,
+                top: 0
+            }, {
+                el: pushButton,
+                top: 35
+            }]
+        })
+    },
+
+    _initShowChartDrill: function(){
+        var wId = this.options.wId;
+        this.showDrill = false;
         var wType = BI.Utils.getWidgetTypeByID(wId);
+        var allDims = BI.Utils.getAllDimDimensionIDs(wId);
+        var allUsableDims = BI.Utils.getAllUsableDimDimensionIDs(wId);
         switch (wType) {
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
@@ -31,58 +59,51 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
+                if(allDims.length > allUsableDims.length && allUsableDims.length > 0) {
+                    this.showDrill = true;
+                }
                 break;
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
+                if(allDims.length > allUsableDims.length && allUsableDims.length > 0) {
+                    this.showDrill = true;
+                }
                 break;
 
         }
-
-        this.wrapper = BI.createWidget({
-            type: "bi.left",
-            cls: "drill-wrapper",
-            hgap: 5,
-            vgap: 5
-        });
-        var pushButton = BI.createWidget({
-            type: "bi."
-        });
-        this.outerWrapper = BI.createWidget({
-            type: "bi.absolute",
-            element: this.element,
-            items: [{
-                el: this.wrapper,
-                top: 0
-            }]
-        })
     },
 
-    populate: function(){
+    populate: function () {
+        this._initShowChartDrill();
+        this.outerWrapper.setVisible(this.showDrill);
+        if(this.showDrill === false) {
+            return;
+        }
         var wId = this.options.wId;
         var dims = BI.Utils.getAllDimDimensionIDs(wId);
         var classification = null, series = null;
-        BI.each(dims, function(i, dim){
-            if(BI.Utils.isDimensionUsable(dim)) {
-                if(BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION1) {
+        BI.each(dims, function (i, dim) {
+            if (BI.Utils.isDimensionUsable(dim)) {
+                if (BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION1) {
                     classification = dim;
                 }
-                if(BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION2) {
+                if (BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION2) {
                     series = dim;
                 }
             }
         });
         this.wrapper.empty();
-        if(BI.isNotNull(classification)) {
+        if (BI.isNotNull(classification)) {
             var cDrill = BI.createWidget({
                 type: "bi.chart_drill_cell",
                 dId: classification
             });
             this.wrapper.addItem(cDrill);
         }
-        if(BI.isNotNull(series)) {
+        if (BI.isNotNull(series)) {
             var sDrill = BI.createWidget({
                 type: "bi.chart_drill_cell",
                 dId: series
@@ -91,13 +112,14 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         }
         var bounds = BI.Utils.getWidgetBoundsByID(wId);
         var hgap = 0, w = bounds.width;
-        if(w < 400 && w > 200) {
+        if (w < 400 && w > 200) {
             hgap = Math.ceil((w - 200) / 2);
-        } else if(w >= 400) {
+        } else if (w >= 400) {
             hgap = Math.ceil((w - 400) / 2);
         }
         this.outerWrapper.attr("items")[0].left = hgap;
         this.outerWrapper.attr("items")[0].right = hgap;
+        this.outerWrapper.attr("items")[1].left = Math.ceil((w - 50) / 2);
         this.outerWrapper.resize();
     }
 
