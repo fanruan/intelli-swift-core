@@ -117,6 +117,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                 hgap: 5,
                 text: num,
                 cls: cls + (i === numbers.length - 1 ? " last" : "")
+                + (BI.isOdd(i) ? " even" : " odd")
             }
         }));
 
