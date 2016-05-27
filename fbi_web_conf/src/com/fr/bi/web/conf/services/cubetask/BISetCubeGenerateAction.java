@@ -2,10 +2,11 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.cal.generate.BuildCubeTaskSingleTable;
-import com.fr.bi.stable.data.BITable;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.stable.StringUtils;
@@ -32,8 +33,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         if (StringUtils.isEmpty(tableId)){
             cubeManager.addTask(new BuildCubeTask(new BIUser(userId)), userId);
         }else{
-            BITable biTable=new BITable(tableId);
-            cubeManager.addTask(new BuildCubeTaskSingleTable(new BIUser(userId),biTable), userId);
+            cubeManager.addTask(new BuildCubeTaskSingleTable(new BIUser(userId),new BIBusinessTable(new BITableID(tableId))),userId);
         }
     }
 

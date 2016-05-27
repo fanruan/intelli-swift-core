@@ -91,7 +91,6 @@ public class BIBusinessTable implements BusinessTable {
         return jo;
     }
 
-
     @Override
     public List<String> getUsedFieldNames() {
         return usedFieldNames;

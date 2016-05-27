@@ -3,6 +3,8 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.build.CubeBuildStuffManager;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BIBusinessTableGetter;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BIDeliverFailureException;
 import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
@@ -21,9 +23,6 @@ import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -49,17 +48,21 @@ public class BuildCubeTaskSingleTable implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
-    private BITable biTable;
+    private BIBusinessTableGetter biBusinessTableGetter;
 
-    public BuildCubeTaskSingleTable(BIUser biUser, BITable biTable) {
+    public BuildCubeTaskSingleTable(BIUser biUser, BIBusinessTable biBusinessTable) {
         this.biUser = biUser;
+        this.biBusinessTableGetter=new BIBusinessTableGetter(biBusinessTable);
+        init();
+
+    }
+
+    private void init() {
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        this.biTable = biTable;
-
     }
-    
+
 
     @Override
     public String getUUID() {
@@ -91,14 +94,11 @@ public class BuildCubeTaskSingleTable implements CubeTask {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuffManager.getSources());
         operationManager.initialWatcher();
-        if (null == biTable) {
-            return;
-        }
-        
-        Table table = new BITable(biTable);
-        Set<CubeTableSource> allTableData = BIConfigureManagerCenter.getCubeGeneratorCofiguration().getAllTableData(biUser.getUserId());
 
-        manager.registerDataSource(cubeBuildStuffManager.getAllSingleSources());
+        Set<CubeTableSource> tableSourceSet=new HashSet<CubeTableSource>();
+        tableSourceSet.add(biBusinessTableGetter.getTableSource());
+        
+        manager.registerDataSource(tableSourceSet);
         manager.registerRelation(cubeBuildStuffManager.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuffManager.getRelationPaths());
         manager.registerTableRelationPath(relationPathSet);
