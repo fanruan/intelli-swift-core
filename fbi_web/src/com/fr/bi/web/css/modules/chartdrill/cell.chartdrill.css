@@ -1,0 +1,39 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-chart-drill-cell {
+  max-width: 180px;
+}
+.bi-chart-drill-cell .up-drill-button {
+  background: #009de3;
+  color: #ffffff;
+  -moz-border-radius-topleft: 2px;
+  -webkit-border-top-left-radius: 2px;
+  -moz-border-radius-bottomleft: 2px;
+  -webkit-border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+.bi-chart-drill-cell .up-drill-button.disabled {
+  color: #c4c6c6;
+  background: #c4c6c6;
+}
+.bi-chart-drill-cell .down-drill-button {
+  background: #009de3;
+  -moz-border-radius-topright: 2px;
+  -webkit-border-top-right-radius: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  color: #ffffff;
+}
+.bi-chart-drill-cell .down-drill-button.disabled {
+  color: #c4c6c6;
+  background: #c4c6c6;
+}
+.bi-chart-drill-cell .dimension-name {
+  color: #808080;
+  border-top: 1px solid #d4dadd;
+  border-bottom: 1px solid #d4dadd;
+}

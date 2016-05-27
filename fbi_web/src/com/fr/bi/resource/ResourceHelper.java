@@ -675,6 +675,10 @@ public class ResourceHelper {
                 //另存为
                 "com/fr/bi/web/css/modules/saveas/report.saveas.floatbox.css",
 
+                //图表钻取
+                "com/fr/bi/web/css/modules/chartdrill/widget.chartdrill.css",
+                "com/fr/bi/web/css/modules/chartdrill/cell.chartdrill.css",
+
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
                 "com/fr/bi/web/css/extend/excelview/excelview.css",

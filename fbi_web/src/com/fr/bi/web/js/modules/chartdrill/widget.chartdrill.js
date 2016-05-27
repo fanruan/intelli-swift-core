@@ -40,24 +40,22 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 break;
 
         }
-        var bounds = BI.Utils.getWidgetBoundsByID(wId);
-        var hgap = 0, w = bounds.width;
-        if(w < 400 && w > 200) {
-            hgap = Math.ceil((w - 200) / 2);
-        } else if(w >= 400) {
-            hgap = Math.ceil((w - 400) / 2);
-        }
+
         this.wrapper = BI.createWidget({
-            type: "bi.left"
+            type: "bi.left",
+            cls: "drill-wrapper",
+            hgap: 5,
+            vgap: 5
         });
-        BI.createWidget({
+        var pushButton = BI.createWidget({
+            type: "bi."
+        });
+        this.outerWrapper = BI.createWidget({
             type: "bi.absolute",
             element: this.element,
             items: [{
                 el: this.wrapper,
-                top: 0,
-                left: hgap,
-                right: hgap
+                top: 0
             }]
         })
     },
@@ -76,6 +74,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 }
             }
         });
+        this.wrapper.empty();
         if(BI.isNotNull(classification)) {
             var cDrill = BI.createWidget({
                 type: "bi.chart_drill_cell",
@@ -90,6 +89,16 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             });
             this.wrapper.addItem(sDrill);
         }
+        var bounds = BI.Utils.getWidgetBoundsByID(wId);
+        var hgap = 0, w = bounds.width;
+        if(w < 400 && w > 200) {
+            hgap = Math.ceil((w - 200) / 2);
+        } else if(w >= 400) {
+            hgap = Math.ceil((w - 400) / 2);
+        }
+        this.outerWrapper.attr("items")[0].left = hgap;
+        this.outerWrapper.attr("items")[0].right = hgap;
+        this.outerWrapper.resize();
     }
 
 });

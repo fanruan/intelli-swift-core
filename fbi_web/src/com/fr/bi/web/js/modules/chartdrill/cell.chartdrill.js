@@ -13,13 +13,15 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.upDrill = BI.createWidget({
             type: "bi.icon_text_item",
-            cls: "close-font",
-            text: BI.i18nText("BI-Up_Drill")
+            cls: "close-font up-drill-button",
+            text: BI.i18nText("BI-Drill_up"),
+            height: 25
         });
         this.downDrill = BI.createWidget({
             type: "bi.icon_text_item",
-            cls: "close-font",
-            text: BI.i18nText("BI-Down_Drill")
+            cls: "close-font down-drill-button",
+            text: BI.i18nText("BI-Drill_down"),
+            height: 25
         });
 
         BI.createWidget({
@@ -27,18 +29,21 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 el: this.upDrill,
-                width: 50
+                width: 60
             }, {
                 el: {
                     type: "bi.label",
                     text: BI.Utils.getDimensionNameByID(o.dId),
-                    cls: "drill-dimension-name"
+                    cls: "dimension-name",
+                    height: 23
                 },
                 width: "fill"
             }, {
                 el: this.downDrill,
-                width: 50
-            }]
+                width: 60
+            }],
+            width: "100%",
+            height: 25
         });
     }
 });
