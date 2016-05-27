@@ -108,7 +108,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             if (BI.isNumber(num)) {
                 cls = "sequence-table-number";
             } else {
-                cls = "sequence-table-summary";
+                cls = "sequence-table-number sequence-table-summary";
             }
             return {
                 type: "bi.label",
@@ -117,6 +117,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                 hgap: 5,
                 text: num,
                 cls: cls + (i === numbers.length - 1 ? " last" : "")
+                + (BI.isOdd(i) ? " even" : " odd")
             }
         }));
 

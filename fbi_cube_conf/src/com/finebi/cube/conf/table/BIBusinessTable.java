@@ -39,6 +39,7 @@ public class BIBusinessTable implements BusinessTable {
     protected String tableName;
     protected List<BusinessField> fields;
     protected CubeTableSource source;
+    protected List<String> usedFieldNames;
 
     public BIBusinessTable(BITableID ID) {
         this(ID, "FINEBI_EMPTY");
@@ -82,9 +83,24 @@ public class BIBusinessTable implements BusinessTable {
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("id", ID.getIdentityValue());
+        JSONArray array = new JSONArray();
+        for (String name : getUsedFieldNames()){
+            array.put(name);
+        }
+        jo.put("used_fields",array);
         return jo;
     }
 
+
+    @Override
+    public List<String> getUsedFieldNames() {
+        return usedFieldNames;
+    }
+
+    @Override
+    public void setUsedFieldNames(List<String> usedFieldNames) {
+        this.usedFieldNames = usedFieldNames;
+    }
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
@@ -92,6 +108,7 @@ public class BIBusinessTable implements BusinessTable {
             this.setID(new BITableID(jo.getString("id")));
         }
     }
+
 
     @Override
     public Object clone() throws CloneNotSupportedException {

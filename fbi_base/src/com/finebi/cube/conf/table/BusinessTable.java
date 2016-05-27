@@ -21,6 +21,10 @@ import java.util.List;
 public interface BusinessTable extends JSONTransform, Cloneable {
     BITableID getID();
 
+    List<String> getUsedFieldNames();
+
+    void setUsedFieldNames(List<String> usedFieldNames);
+
     Object clone() throws CloneNotSupportedException;
 
     List<BusinessField> getFields();
