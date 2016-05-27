@@ -5,6 +5,8 @@ import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
+import java.util.Set;
+
 /**
  * This class created on 2016/5/25.
  *
@@ -23,4 +25,7 @@ public interface TableDataSourceService {
     void editTableSource(BusinessTable businessTable, CubeTableSource source) throws BIKeyDuplicateException, BIKeyAbsentException;
 
     boolean containTableSource(BusinessTable businessTable);
+
+
+    Set<BusinessTable> getAllBusinessTable();
 }

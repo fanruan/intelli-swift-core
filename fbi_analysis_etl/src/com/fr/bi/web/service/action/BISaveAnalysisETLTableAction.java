@@ -2,15 +2,11 @@ package com.fr.bi.web.service.action;
 
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.fr.base.FRContext;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
-import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
-import com.fr.bi.etl.analysis.manager.AnalysisDataSourceManager;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -32,7 +28,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
         String describe = WebUtils.getHTTPRequestParameter(req, "describe");
         AnalysisBusiTable table = null;
-        AnalysisCubeTableSource source = null;
+        CubeTableSource source = null;
         if (StringUtils.isEmpty(newId)) {
             table = new AnalysisBusiTable(tableId, userId);
             table.setDescribe(describe);
@@ -48,13 +44,13 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
             AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
             table.setSource(oldTable.getSource());
             table.setDescribe(oldTable.getDescribe());
-            source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByID(oldTable.getID(), new BIUser(userId));
+            source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(oldTable);
         }
         BICubeConfigureCenter.getAliasManager().persistData(userId);
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
-        BIAnalysisETLManagerCenter.getDataSourceManager().addCore2SourceRelation(table.getID(), source, new BIUser(userId));
+        BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
         BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-        ((AnalysisDataSourceManager) BIAnalysisETLManagerCenter.getDataSourceManager()).persistUserData(userId);
+        BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
         JSONObject result = new JSONObject();
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
         JSONObject translations = new JSONObject();

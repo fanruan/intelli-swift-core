@@ -39,17 +39,18 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     @BICoreField
     private List<AnalysisETLSourceField> fieldList;
     private String name;
-
+    private String widgetTableId;
     public BIWidget getWidget() {
         return widget;
     }
 
 
-    public AnalysisBaseTableSource(BIWidget widget, int etlType, List<AnalysisETLSourceField> fieldList, String name) {
+    public AnalysisBaseTableSource(BIWidget widget, int etlType, List<AnalysisETLSourceField> fieldList, String name, String widgetTableId) {
         this.widget = widget;
         this.etlType = etlType;
         this.fieldList = fieldList;
         this.name = name;
+        this.widgetTableId = widgetTableId;
     }
 
 
@@ -133,7 +134,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             synchronized (userBaseTableMap){
                 UserCubeTableSource tmp = userBaseTableMap.get(userId);
                 if (tmp == null){
-                    source = new UserBaseTableSource(widget, etlType, userId, fieldList, name);
+                    source = new UserBaseTableSource(widget, etlType, userId, fieldList, name, widgetTableId);
                     userBaseTableMap.put(userId, source);
                 } else {
                     source = tmp;
@@ -153,7 +154,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         JSONObject jo =  super.createJSON();
         JSONObject widget = new JSONObject();
         if (etlType == Constants.ETL_TYPE.SELECT_NONE_DATA){
-            widget.put("core", fetchObjectCore().getIDValue());
+            widget.put("widgetTableId", widgetTableId);
         }
         if (fieldList != null && !fieldList.isEmpty()){
             JSONArray ja = new JSONArray();
