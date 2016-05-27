@@ -10,31 +10,36 @@ import com.fr.json.JSONObject;
 import java.util.List;
 
 /**
- * 工具类
+ * 工具类，在DataSource记录下来Id和BusinessTable对应TableSource
+ * 的情况下，通过Helper类实现只有tableId的情况下，来获得table其他属性。
+ *
+ * 使用方法：必须提供一个带Id的BusinessTable实现，并且此BusinessTable必须不是
+ * 一个BIBusinessTableGetter。
+ * 此外只读不可写
  * This class created on 2016/5/26.
  *
  * @author Connery
  * @since 4.0
  */
-public class BIBusinessTableWrapper implements BusinessTable {
+public class BIBusinessTableGetter implements BusinessTable {
     private BusinessTable table;
 
-    public BIBusinessTableWrapper() {
+    public BIBusinessTableGetter() {
     }
 
     public void setTable(BusinessTable table) {
-        if (table.getID() != null && !(table instanceof BIBusinessTableWrapper)) {
+        if (table.getID() != null && !(table instanceof BIBusinessTableGetter)) {
             this.table = table;
         } else {
             throw BINonValueUtils.beyondControl();
         }
     }
 
-    public BIBusinessTableWrapper(BusinessTable table) {
+    public BIBusinessTableGetter(BusinessTable table) {
         setTable(table);
     }
 
-    public BIBusinessTableWrapper(BITableID tableID) {
+    public BIBusinessTableGetter(BITableID tableID) {
         this(new BIBusinessTable(tableID));
     }
 

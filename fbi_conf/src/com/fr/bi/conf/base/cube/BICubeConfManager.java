@@ -1,10 +1,10 @@
 package com.fr.bi.conf.base.cube;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.table.BusinessTableHelper;
-import com.fr.bi.stable.data.BITableID;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.field.BusinessFieldHelper;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
 
@@ -46,10 +46,9 @@ public class BICubeConfManager {
 
     public Object getFieldValue(long userId) {
         try {
-            String tableId = BIIDUtils.getTableIDFromFieldID(loginField);
-            BITableID tId = new BITableID(tableId);
-            CubeTableSource source = BusinessTableHelper.getBusinessTable(tId).getTableSource();
-            Set set = source.getFieldDistinctNewestValues(BIIDUtils.getFieldNameFromFieldID(loginField), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
+            BusinessField field = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(loginField));
+            CubeTableSource source = field.getTableBelongTo().getTableSource();
+            Set set = source.getFieldDistinctNewestValues(field.getFieldName(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
             return set;
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
