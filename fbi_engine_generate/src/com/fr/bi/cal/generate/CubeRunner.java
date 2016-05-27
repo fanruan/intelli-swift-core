@@ -57,14 +57,7 @@ public class CubeRunner {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
                 try {
-                    start();
-                    if (cubeTask instanceof BuildCubeTask) {
-                        ((BuildCubeTask) cubeTask).setCubeBuildStuffManager(object);
-                    }
-                    if (cubeTask instanceof BuildCubeTaskSingleTable) {
-                        ((BuildCubeTaskSingleTable) cubeTask).setCubeBuildStuffManager(object);
-                    }
-                    
+                    backup();
                     cubeTask.start();
                     cubeTask.run();
                     cubeTask.end();
@@ -145,13 +138,6 @@ public class CubeRunner {
         addTask(new CheckTask(biUser.getUserId()));
     }
 
-    private void start() {
-        backup();
-        if (object == null) {
-            object = new CubeBuildStuffManager(biUser);
-        }
-        object.initialCubeStuff();
-    }
 
     private void backup() {
         BackUpUtils.backup();

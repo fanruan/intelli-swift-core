@@ -21,7 +21,6 @@ import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -41,6 +40,7 @@ import java.util.concurrent.Future;
  * <p/>
  * edit by wuk
  * 增加单表更新功能
+ * 移除单表更新功能
  */
 public class BuildCubeTask implements CubeTask {
 
@@ -50,31 +50,20 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
-    /*单表更新*/
-    private BITable biTable;
+
+    
 
     public BuildCubeTask(BIUser biUser) {
-
         this.biUser = biUser;
-        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-        retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-
+        init();
     }
 
-    /*单表更新*/
-    public BuildCubeTask(BIUser biUser, BITable biTable) {
-        this.biUser = biUser;
+    private void init() {
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        this.biTable = biTable;
-
-    }
-
-
-    public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {
-        this.cubeBuildStuffManager = cubeBuildStuffManager;
+        this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        this.cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
+        this.cubeBuildStuffManager.initialCubeStuff();
     }
 
     @Override
@@ -97,8 +86,6 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             BILogger.getLogger().info(result.get());
-//            BIFileUtils.moveFile(BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId())).getRootURI().getPath(),
-//                    BICubeConfiguration.getConf(Long.toString(biUser.getUserId())).getRootURI().getPath());
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
