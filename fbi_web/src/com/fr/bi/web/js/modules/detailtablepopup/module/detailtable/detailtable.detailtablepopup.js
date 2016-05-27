@@ -24,15 +24,21 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Pane, {
             height: 18
         });
 
-        this.table = BI.createWidget({
-            type: "bi.page_table",
-            itemsCreator: function (op, populate) {
-                var vPage = op.vpage;
-                self._onPageChange(vPage, function (items, header) {
-                    populate.apply(self.table, arguments);
-                })
-            },
-            pager: this.pager
+        this.table =BI.createWidget({
+            type: "bi.style1_table",
+            color: "#0088cc",
+            el: {
+                el: {
+                    type: "bi.page_table",
+                    itemsCreator: function (op, populate) {
+                        var vPage = op.vpage;
+                        self._onPageChange(vPage, function (items, header) {
+                            populate.apply(self.table, arguments);
+                        })
+                    },
+                    pager: this.pager
+                }
+            }
         });
 
         BI.createWidget({
@@ -63,6 +69,7 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Pane, {
             self.loaded();
             var json = jsonData.data, row = jsonData.row, size = jsonData.size;
             if (BI.isNull(json) || BI.isNull(row)) {
+                callback([], [], [], []);
                 return;
             }
             var header = [], view = self.model.getView();
@@ -102,38 +109,6 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Pane, {
             self.table.attr("columnSize", columnSize);
             self.table.populate(items, header);
         });
-    },
-
-    _headerOperatorChange: function (v, dId) {
-        switch (v) {
-            case BICst.SORT.ASC:
-            case BICst.SORT.DESC:
-            case BICst.SORT.NONE:
-                this._onClickHeaderSort(dId, v);
-                break;
-            default :
-                break;
-        }
-    },
-
-    _onClickHeaderSort: function (dId, v) {
-        var ob = {};
-        var dimensions = BI.Utils.getWidgetDimensionsByID(this.options.wId);
-        dimensions[dId].sort = {sort_target: dId, type: v};
-        ob.dimensions = dimensions;
-        var sortSequence = BI.Utils.getWidgetSortSequenceByID(this.options.wId);
-        switch (v) {
-            case BICst.SORT.ASC:
-            case BICst.SORT.DESC:
-                if (!sortSequence.contains(dId)) {
-                    sortSequence.push(dId);
-                }
-                break;
-            case BICst.SORT.NONE:
-                BI.remove(sortSequence, dId);
-        }
-        ob.sort_sequence = sortSequence;
-        this.fireEvent(BI.DetailTablePopupDetailTable.EVENT_CHANGE, ob);
     }
 });
 BI.DetailTablePopupDetailTable.EVENT_CHANGE = "EVENT_CHANGE";
