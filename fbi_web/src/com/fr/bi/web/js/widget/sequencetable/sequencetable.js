@@ -176,6 +176,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
+        this.sequence.populate.apply(this.sequence, arguments);
     },
 
     destroy: function () {
