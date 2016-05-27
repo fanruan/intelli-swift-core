@@ -3,11 +3,11 @@
  */
 package com.finebi.cube.conf.datasource;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.general.ComparatorUtils;
 
@@ -18,7 +18,7 @@ import com.fr.general.ComparatorUtils;
  * @since 4.0
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = TableDataSourceService.class)
-public class BITableDataSource extends BIBasicDataSource<BITableID, CubeTableSource> implements TableDataSourceService {
+public class BITableDataSource extends BIBasicDataSource<BusinessTable, CubeTableSource> implements TableDataSourceService {
 
     @Override
     boolean isEqual(CubeTableSource firstSource, CubeTableSource secondSource) {
@@ -26,28 +26,33 @@ public class BITableDataSource extends BIBasicDataSource<BITableID, CubeTableSou
     }
 
     @Override
-    protected CubeTableSource generateAbsentValue(BITableID key) {
+    protected CubeTableSource generateAbsentValue(BusinessTable key) {
         return null;
     }
 
     @Override
-    public CubeTableSource getTableSource(BITableID tableID) throws BIKeyAbsentException {
+    public CubeTableSource getTableSource(BusinessTable tableID) throws BIKeyAbsentException {
         return getSource(tableID);
     }
 
     @Override
-    public void addTableSource(BITableID tableID, CubeTableSource cubeTableSource) throws BIKeyDuplicateException {
+    public void addTableSource(BusinessTable tableID, CubeTableSource cubeTableSource) throws BIKeyDuplicateException {
         addSource(tableID, cubeTableSource);
     }
 
     @Override
-    public void editTableSource(BITableID tableID, CubeTableSource cubeTableSource) throws BIKeyDuplicateException, BIKeyAbsentException {
+    public void editTableSource(BusinessTable tableID, CubeTableSource cubeTableSource) throws BIKeyDuplicateException, BIKeyAbsentException {
         editSource(tableID, cubeTableSource);
     }
 
     @Override
-    public void removeTableSource(BITableID id) throws BIKeyAbsentException {
-        removeSource(id);
+    public void removeTableSource(BusinessTable businessTable) throws BIKeyAbsentException {
+        removeSource(businessTable);
+    }
+
+    @Override
+    public boolean containTableSource(BusinessTable businessTable) {
+        return contain(businessTable);
     }
 
     @Override

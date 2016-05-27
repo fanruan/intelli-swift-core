@@ -80,8 +80,8 @@ public class CubeBuildStuffManager implements Serializable {
         Set<BITableRelation> set = new HashSet<BITableRelation>();
         for (BITableRelation relation : tableRelationSet) {
             try {
-                CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo().getID());
-                CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo().getID());
+                CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
+                CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
                 ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
                 ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
                 if (tableSourceRelationSet.contains(
@@ -145,8 +145,8 @@ public class CubeBuildStuffManager implements Serializable {
         CubeTableSource primaryTable = null;
         CubeTableSource foreignTable = null;
         try {
-            primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo().getID());
-            foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo().getID());
+            primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
+            foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);
         }

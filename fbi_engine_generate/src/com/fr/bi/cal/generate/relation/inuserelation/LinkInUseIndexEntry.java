@@ -53,7 +53,7 @@ public class LinkInUseIndexEntry implements CubeGenerator {
             CubeTableSource cubeTableSource = null;
             try {
                 if (field.getTableBelongTo() != null) {
-                    cubeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(field.getTableBelongTo().getID());
+                    cubeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(field.getTableBelongTo());
                 } else {
                     continue;
                 }

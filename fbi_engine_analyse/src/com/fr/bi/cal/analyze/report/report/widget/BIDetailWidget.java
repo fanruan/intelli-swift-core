@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
@@ -120,9 +120,9 @@ public class BIDetailWidget extends BIAbstractWidget {
         BITableID targetTableID = dimensions[0].createTableKey().getID();
         target = new BIBusinessTable(targetTableID);
         for (int i = 0; i < dimensions.length; i++) {
-            List<BISimpleRelation> relations = dimensions[i].getRelationList(null, userID);
+            List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
             if (!relations.isEmpty()) {
-                target = relations.get(relations.size() - 1).getTableRelation().getForeignTable();
+                target = relations.get(relations.size() - 1).getForeignTable();
                 break;
             }
         }
@@ -175,9 +175,9 @@ public class BIDetailWidget extends BIAbstractWidget {
             JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
             Iterator it = dimensionMap.keys();
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
-            List<BISimpleRelation> relationList = new ArrayList<BISimpleRelation>();
+            List<BITableRelation> relationList = new ArrayList<BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
-                BISimpleRelation viewRelation = new BISimpleRelation();
+                BITableRelation viewRelation = new BITableRelation();
                 viewRelation.parseJSON(relationJa.getJSONObject(j));
                 relationList.add(viewRelation);
             }

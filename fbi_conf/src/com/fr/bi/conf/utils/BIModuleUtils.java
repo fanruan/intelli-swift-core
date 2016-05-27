@@ -7,13 +7,12 @@ import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -79,11 +78,8 @@ public class BIModuleUtils {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
             CubeTableSource source = null;
-            try {
-                source = provider.getTableSource(id);
-            } catch (BIKeyAbsentException e) {
-                throw BINonValueUtils.beyondControl(e);
-            }
+            source = BusinessTableHelper.getTableDataSource(id);
+
             if (source != null) {
                 return source;
             }

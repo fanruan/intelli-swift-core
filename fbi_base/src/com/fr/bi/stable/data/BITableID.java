@@ -1,6 +1,7 @@
 package com.fr.bi.stable.data;
 
 import com.fr.bi.base.BIBasicIdentity;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONObject;
 
 import java.io.Serializable;
@@ -22,6 +23,11 @@ public class BITableID extends BIBasicIdentity implements Serializable {
     public BITableID(BITableID id) {
         super(id.getIdentityValue());
     }
+    public BITableID() {
+        super(BIStringUtils.emptyString());
+    }
+
+
 
 
     /**
