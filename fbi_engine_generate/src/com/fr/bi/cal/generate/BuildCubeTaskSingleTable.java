@@ -50,7 +50,6 @@ public class BuildCubeTaskSingleTable implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
-    /*单表更新*/
     private BITable biTable;
 
     public BuildCubeTaskSingleTable(BIUser biUser, BITable biTable) {
