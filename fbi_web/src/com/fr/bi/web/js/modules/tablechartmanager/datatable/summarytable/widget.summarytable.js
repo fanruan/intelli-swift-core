@@ -19,53 +19,62 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             element: this.element
         });
         this.table = BI.createWidget({
-            type: "bi.page_table",
-            isNeedFreeze: null,
+            type: "bi.style_table",
             el: {
                 el: {
                     el: {
-                        type: "bi.table_tree",
-                        showNumber: false
+                        type: "bi.page_table",
+                        isNeedFreeze: null,
+                        el: {
+                            el: {
+                                el: {
+                                    type: "bi.table_tree"
+                                }
+                            }
+                        },
+                        itemsCreator: function (op, populate) {
+                            var vPage = op.vpage, hPage = op.hpage;
+                            var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                            if (BI.isNotNull(vPage)) {
+                                pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            }
+                            self.model.setPageOperator(pageOperator);
+                            self._onPageChange(function (items, header, crossItems, crossHeader) {
+                                populate.apply(self.table, arguments);
+                                self._setStyleAndColor();
+                            })
+                        },
+                        pager: {
+                            pages: false,
+                            curr: 1,
+                            hasNext: function () {
+                                return self.model.getPage()[1] === 1;
+                            },
+                            hasPrev: function () {
+                                return self.model.getPage()[0] === 1;
+                            },
+                            firstPage: 1
+                        },
+                        hasHNext: function () {
+                            return self.model.getPage()[3] === 1;
+                        },
+                        isNeedMerge: true,
+                        regionColumnSize: this.model.getStoredRegionColumnSize()
                     }
-                }
-            },
-            itemsCreator: function (op, populate) {
-                var vPage = op.vpage, hPage = op.hpage;
-                var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                if (BI.isNotNull(vPage)) {
-                    pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
-                }
-                self.model.setPageOperator(pageOperator);
-                self._onPageChange(function (items, header, crossItems, crossHeader) {
-                    populate.apply(self.table, arguments);
-                    self._setStyleAndColor();
-                })
-            },
-            pager: {
-                pages: false,
-                curr: 1,
-                hasNext: function () {
-                    return self.model.getPage()[1] === 1;
                 },
-                hasPrev: function () {
-                    return self.model.getPage()[0] === 1;
-                },
-                firstPage: 1
-            },
-            hasHNext: function () {
-                return self.model.getPage()[3] === 1;
-            },
-            isNeedMerge: true,
-            regionColumnSize: this.model.getStoredRegionColumnSize()
+                sequence: {
+                    type: "bi.sequence_table_tree_number"
+                }
+            }
         });
-        this.table.on(BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             var columnSize = this.getCalculateRegionColumnSize();
             self.model.setStoredRegionColumnSize(columnSize[0]);
         });
-        this.table.on(BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: this.getColumnSize()})});
         });
-        this.table.on(BI.PageTable.EVENT_TABLE_AFTER_INIT, function () {
+        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_INIT, function () {
             self._resizeTableColumnSize();
         });
         if (this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_NEXT || this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_PRE) {
@@ -285,76 +294,19 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _populateTable: function () {
         this.table.setVisible(true);
-        this.table.attr("showNumber", this.model.isShowNumber());
         this.table.attr("isNeedFreeze", this.model.isNeed2Freeze());
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
         this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
 
-        //css
-        this._setStyleAndColor();
-    },
-
-    /**
-     * 风格1、2、3
-     *
-     */
-    _setStyleAndColor: function () {
-        var wId = this.options.wId;
-        var $table = this.table.element;
-
-        //表头
-        var themeColor = this.model.getThemeColor();
-        var tableStyle = this.model.getTableStyle();
-        //先不考虑类型2的情况
-        switch (tableStyle) {
-            case BICst.TABLE_STYLE.NORMAL:
-                //是否冻结
-                if(this.model.isNeed2Freeze()) {
-                    $table.find(".top-left > div > div > table").css("color", "#808080");
-                    $table.find(".top-right > div > div > table").css("color", "#808080");
-                    return;
-                }
-                $table.find(".bi-table-tree > div > div table > thead > tr").css("color", "#808080");
-                break;
-            case BICst.TABLE_STYLE.INTERVAL:
-                //是否冻结
-                if(this.model.isNeed2Freeze()) {
-                    $table.find(".top-left > div > div > table").css("background", themeColor).css("color", "white");
-                    $table.find(".top-right > div > div > table").css("background", themeColor).css("color", "white");
-                    $table.find(".bottom-left > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
-                    $table.find(".bottom-left > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
-                    $table.find(".bottom-right > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
-                    $table.find(".bottom-right > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
-                    $table.find(".bottom-left > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
-                    $table.find(".bottom-right > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
-                    return;
-                }
-                $table.find(".bi-table-tree > div > div table > thead > tr").css("background", themeColor).css("color", "white");
-                $table.find(".bi-table-tree > div > div > table > tbody > tr.odd").css("background", this._parseHEXAlpha2HEX(themeColor, 0.2));
-                $table.find(".bi-table-tree > div > div > table > tbody > tr.even").css("background", this._parseHEXAlpha2HEX(themeColor, 0.05));
-                $table.find(".bi-table-tree > div > div > table .body-cell-summary").css("background", this._parseHEXAlpha2HEX(themeColor, 0.4));
-                break;
-            case BICst.TABLE_STYLE.BLUE:
-                if(this.model.isNeed2Freeze()) {
-                    $table.find(".top-left > div > div > table").css("background", themeColor).css("color", "white");
-                    $table.find(".top-right > div > div > table").css("background", themeColor).css("color", "white");
-                    $table.find(".bottom-left > div > div > table .last-summary-cell").css("color", themeColor);
-                    $table.find(".bottom-right > div > div > table .last-summary-cell").css("color", themeColor);
-                    return;
-                }
-                $table.find(".bi-table-tree > div > div table > thead > tr").css("background", themeColor).css("color", "white");
-                $table.find(".bi-table-tree > div > div > table .last-summary-cell").css("color", themeColor);
-                break;
+        if (this.model.isShowNumber()) {
+            this.table.showSequence();
+        } else {
+            this.table.hideSequence();
         }
-    },
-
-    _parseHEXAlpha2HEX: function (hex, alpha) {
-        var rgb = BI.DOM.hex2rgb(hex);
-        var rgbJSON = BI.DOM.rgb2json(rgb);
-        rgbJSON.a = alpha;
-        return BI.DOM.rgba2rgb(BI.DOM.json2rgba(rgbJSON));
+        //css
+        this.table.setStyleAndColor(this.model.getTableStyle(), this.model.getThemeColor());
     },
 
     populate: function () {

@@ -2400,7 +2400,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/treevaluechooser/combo.treevaluechooser.js",
 
                 //带样式表格
-                "com/fr/bi/web/js/components/styletable/style1table.js",
+                "com/fr/bi/web/js/components/styletable/styletable.js",
 
                 //模板管理
                 "com/fr/bi/web/js/components/templatemanager/liststyleitems/report.listview.item.js",
