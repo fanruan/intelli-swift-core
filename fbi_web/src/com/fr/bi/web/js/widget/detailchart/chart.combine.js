@@ -95,8 +95,6 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FUNNEL:
-            case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
                 config.xAxis = [];
                 var newxAxis  = this._axisConfig();
                 newxAxis.position = "bottom";
@@ -111,9 +109,11 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     var newYAxis = self._axisConfig();
                     newYAxis.position = idx > 0 ? "right" : "left";
                     newYAxis.gridLineWidth = idx > 0 ? 0 : 1;
-                    newYAxis.reversed = items[idx][0].reversed || false;
-                    if(items[idx][0].name === ""){
-                        config.legend.enabled = false;
+                    if(BI.isNotEmptyArray(items)){
+                        newYAxis.reversed = items[idx][0].reversed || false;
+                        if(items[idx][0].name === ""){
+                            config.legend.enabled = false;
+                        }
                     }
                     config.yAxis.push(newYAxis);
                 });

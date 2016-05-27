@@ -33,6 +33,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForMap: function (da) {
         this._getShowTarget();
         var data = this._formatDataForCommon(da);
+        if(BI.isEmptyArray(data)){
+            return [];
+        }
+
     },
 
     _formatDataForAxis: function (da) {
@@ -282,6 +286,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return [result];
     },
 
+    _formatDataForForceBubble: function (data) {
+        var items = this._formatDataForCommon(data);
+        return BI.isEmptyArray(items) ? items : [items];
+    },
+
     parseChartData: function (data) {
         var self = this, o = this.options;
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
@@ -324,7 +333,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
-                return [this._formatDataForCommon(data)];
+                return this._formatDataForForceBubble(data);
         }
     },
 
@@ -348,6 +357,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
                 types.push(t);
             });
+            if(BI.isEmptyArray(types)){
+                types.push([type]);
+            }
             callback(types, data);
         });
     },

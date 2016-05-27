@@ -149,6 +149,17 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
+        //横轴文本方向
+        this.text_direction = BI.createWidget({
+            type: "bi.sign_editor",
+            width: this.constant.EDITOR_WIDTH,
+            height: this.constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            value: "0"
+        });
+//labelRotation" -> "90
+        this.text_direction.on();
+
         var lYAxis = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
