@@ -31,6 +31,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
         var header = BI.createWidget({
             type: "bi.label",
             cls: "sequence-table-title",
+            textAlign: "left",
             forceCenter: true,
             text: BI.i18nText("BI-Number_Index"),
             hgap: 5
@@ -68,6 +69,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
             result.push({
                 type: "bi.label",
                 cls: "sequence-table-title",
+                textAlign: "left",
                 forceCenter: true,
                 height: o.header.length * (o.headerRowSize || o.rowSize),
                 text: BI.i18nText("BI-Number_Index"),
@@ -78,6 +80,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
             result.push({
                 type: "bi.label",
                 height: o.rowSize,
+                textAlign: "left",
                 hgap: 5,
                 text: num,
                 cls: "sequence-table-number" + (num === o.startSequence + o.items.length - 1 ? " last" : "")

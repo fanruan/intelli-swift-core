@@ -379,6 +379,8 @@ var _JS = [
 
     "detail/mvc.sequencetable.js",
 
+    "detail/mvc.sequencetable2.js",
+
     "detail/mvc.uploadimage.js",
 
     "detail/mvc.webpage.js",
@@ -589,6 +591,7 @@ var _Routes = {
     "/page_table2": "PageTable2View",
     "/page_table3": "PageTable3View",
     "/sequence_table": "SequenceTableView",
+    "/sequence_table2": "SequenceTable2View",
     "/upload_image": "UploadImageView",
     "/web_page": "WebPageView",
 
@@ -1363,6 +1366,10 @@ _Models.detail = [{
         pId: 32,
         text: "bi.sequence_table",
         value: "sequence_table"
+    }, {
+        pId: 32,
+        text: "bi.sequence_table(带有汇总)",
+        value: "sequence_table2"
     }, {
         pId: 28,
         text: "bi.upload_image",
