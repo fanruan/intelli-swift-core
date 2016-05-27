@@ -129,6 +129,11 @@ public class DataSourceCompound implements DataSourceCompoundService {
     }
 
     @Override
+    public Set<BusinessTable> getAllBusinessTable() {
+        return tableDataSource.getAllBusinessTable();
+    }
+
+    @Override
     public boolean containBusinessTable(BITableID id) {
         return businessTabledDataSource.containBusinessTable(id);
     }
@@ -163,5 +168,10 @@ public class DataSourceCompound implements DataSourceCompoundService {
         for (BusinessTable table : tables) {
             addBusinessTable(table);
         }
+    }
+
+    @Override
+    public void initialAll() {
+        initialDataSource(tableDataSource.getAllBusinessTable());
     }
 }

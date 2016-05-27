@@ -1,14 +1,16 @@
 package com.fr.bi.etl.analysis.data;
 
-import com.fr.bi.base.BIBasicCore;
-import com.fr.bi.base.BIUser;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
+import com.fr.stable.core.UUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +46,12 @@ public class AnalysisETLSourceFactory {
         String name = jo.optString("table_name", StringUtils.EMPTY);
         switch (type){
             case Constants.ETL_TYPE.SELECT_DATA :
-                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name);
+                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, StringUtils.EMPTY);
             case Constants.ETL_TYPE.SELECT_NONE_DATA :
-                AnalysisBaseTableSource baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name);
-                BIAnalysisETLManagerCenter.getDataSourceManager().addSource(baseSource, userId);
+                AnalysisBusiTable table = new AnalysisBusiTable(UUID.randomUUID().toString(), userId);
+                AnalysisBaseTableSource baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, table.getID().getIdentity());
+                table.setSource(baseSource);
+                BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, baseSource);
                 return baseSource;
             default :
                 AnalysisETLTableSource source = new AnalysisETLTableSource(fieldList, name);
@@ -66,8 +70,9 @@ public class AnalysisETLSourceFactory {
     }
 
     private static BIWidget createWidget(JSONObject jo, long userId) throws Exception {
-        if (jo.has("core")){
-            AnalysisCubeTableSource source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByCore(BIBasicCore.generateValueCore(jo.getString("core")), new BIUser(userId));
+        if (jo.has("widgetTableId")){
+            BusinessTable talbe = BIAnalysisETLManagerCenter.getDataSourceManager().getBusinessTable(new BITableID(jo.getString("widgetTableId")));
+            AnalysisCubeTableSource source = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(talbe);
             if (source.getType() == Constants.TABLE_TYPE.BASE){
                 return ((AnalysisBaseTableSource)source).getWidget();
             }

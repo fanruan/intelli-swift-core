@@ -3,8 +3,6 @@ package com.fr.bi.web.service.action;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.memory.MemoryCubeFile;
@@ -13,8 +11,6 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserETLTableSource;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -60,34 +56,6 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         }
     }
 
-    public ICubeTableService getTableIndex(BusinessTable td) {
-        return getTableIndex(BIBasicCore.generateValueCore(td.getID().getIdentityValue()));
-    }
-
-    public ICubeTableService getTableIndex(BICore core) {
-        CubeTableSource source = sourceMap.get(core);
-        if (isParentTableIndex(source)) {
-            return getTableIndex(((UserETLTableSource) source).getParents().get(0).fetchObjectCore());
-        }
-        final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(new HashSet<CubeTableSource>()));
-        cube.writeRowCount(source.read(new Traversal<BIDataValue>() {
-            @Override
-            public void actionPerformed(BIDataValue data) {
-                cube.addDataValue(data);
-            }
-        }, source.getFieldsArray(new HashSet<CubeTableSource>()), this));
-        return new BITableIndex(cube);
-    }
-
-
-    public BIKey getFieldIndex(BIField column) {
-        return new IndexKey(column.getFieldName());
-    }
-
-    public ICubeTableService getTableIndex(BITableID id) {
-        throw new RuntimeException(EXCEPTION);
-    }
-
     @Override
     public long getUserId() {
         return userId;
@@ -115,17 +83,28 @@ public class PartCubeDataLoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
-        return null;
+        CubeTableSource source = sourceMap.get(tableSource.fetchObjectCore());
+        if (isParentTableIndex(source)) {
+            return getTableIndex(((UserETLTableSource) source).getParents().get(0));
+        }
+        final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(new HashSet<CubeTableSource>()));
+        cube.writeRowCount(source.read(new Traversal<BIDataValue>() {
+            @Override
+            public void actionPerformed(BIDataValue data) {
+                cube.addDataValue(data);
+            }
+        }, source.getFieldsArray(new HashSet<CubeTableSource>()), this));
+        return new BITableIndex(cube);
     }
 
     @Override
     public BIKey getFieldIndex(BusinessField column) {
-        return null;
+        return new IndexKey(column.getFieldName());
     }
 
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
-        CubeTableSource source = sourceMap.get(tableSource);
+        CubeTableSource source = sourceMap.get(tableSource.fetchObjectCore());
         if (isParentTableIndex(source)) {
             return getTableIndex(((UserETLTableSource) source).getParents().get(0), start, end);
         }

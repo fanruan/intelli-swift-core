@@ -153,6 +153,11 @@ public class BIDataSourceManager extends BISystemDataManager<DataSourceCompoundS
         return getInstance().containTableSource(businessTable);
     }
 
+    @Override
+    public Set<BusinessTable> getAllBusinessTable() {
+        return getInstance().getAllBusinessTable();
+    }
+
 
     @Override
     public void persistData(long userId) {
