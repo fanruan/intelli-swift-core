@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.table.BIBusinessTableWrapper;
+import com.finebi.cube.conf.table.BIBusinessTableGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
@@ -118,7 +118,7 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     public void setTargetTable(long userID) {
         BITableID targetTableID = dimensions[0].createTableKey().getID();
-        target = new BIBusinessTableWrapper(targetTableID);
+        target = new BIBusinessTableGetter(targetTableID);
         for (int i = 0; i < dimensions.length; i++) {
             List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
             if (!relations.isEmpty()) {
