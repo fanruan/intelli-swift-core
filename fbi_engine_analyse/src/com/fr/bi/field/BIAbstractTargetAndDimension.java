@@ -11,7 +11,6 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIFieldID;
-import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -31,7 +30,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
      */
     private static final long serialVersionUID = -6531968195020108676L;
     @BICoreField
-    protected CubeFieldSource column;
+    protected BusinessField column;
     private String hyperLinkExpression = StringUtils.EMPTY;
     private boolean useHyperLink = false;
     private boolean used = true;
@@ -47,7 +46,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
     }
 
     @Override
-    public CubeFieldSource createColumnKey() {
+    public BusinessField createColumnKey() {
         return column;
     }
 

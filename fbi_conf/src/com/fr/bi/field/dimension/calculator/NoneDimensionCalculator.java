@@ -2,11 +2,10 @@ package com.fr.bi.field.dimension.calculator;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.db.CubeFieldSource;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -20,15 +19,15 @@ import java.util.List;
  */
 public class NoneDimensionCalculator implements DimensionCalculator {
     protected List<BITableSourceRelation> relations;
-    private CubeFieldSource field;
+    private BusinessField field;
 
-    public NoneDimensionCalculator(CubeFieldSource column, List<BITableSourceRelation> relations) {
+    public NoneDimensionCalculator(BusinessField column, List<BITableSourceRelation> relations) {
         this.field = column;
         this.relations = relations;
     }
 
     @Override
-    public CubeFieldSource getField() {
+    public BusinessField getField() {
         return field;
     }
 
@@ -40,8 +39,8 @@ public class NoneDimensionCalculator implements DimensionCalculator {
      * @return
      */
     @Override
-    public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(CubeTableSource target, ICubeDataLoader loader) {
-        return loader.getTableIndex(field.getTableBelongTo()).loadGroup(createKey(), relations);
+    public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
+        return loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(createKey(), relations);
     }
 
     /**
@@ -105,7 +104,7 @@ public class NoneDimensionCalculator implements DimensionCalculator {
     }
 
     @Override
-    public Iterator createValueMapIterator(CubeTableSource table, ICubeDataLoader loader) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader) {
         return createNoneSortGroupValueMapGetter(table, loader).iterator();
     }
 

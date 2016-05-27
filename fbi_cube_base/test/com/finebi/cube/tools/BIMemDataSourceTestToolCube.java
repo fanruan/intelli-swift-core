@@ -6,7 +6,7 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
@@ -562,17 +562,17 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     }
 
     @Override
-    public Set<CubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
+    public Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<CubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
+    public Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
         return null;
     }
 
     @Override
-    public Set<CubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
+    public Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
         return null;
     }
 
@@ -698,7 +698,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         for (int i = 0; i < getRowNumber(); i++) {
             travel.actionPerformed(new BIDataValue(i, 0, dateData.get(i)));
             travel.actionPerformed(new BIDataValue(i, 1, stringData.get(i)));
@@ -710,7 +710,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return 0;
     }
 

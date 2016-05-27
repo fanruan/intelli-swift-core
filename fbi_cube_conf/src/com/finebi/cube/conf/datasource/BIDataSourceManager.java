@@ -11,7 +11,7 @@ import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -90,10 +90,10 @@ public class BIDataSourceManager extends BISystemDataManager<DataSourceCompoundS
 
 
     @Override
-    public CubeFieldSource findDBField(BusinessField businessField) throws BIFieldAbsentException {
+    public ICubeFieldSource findDBField(BusinessField businessField) throws BIFieldAbsentException {
         BusinessTable table = businessField.getTableBelongTo();
         CubeTableSource tableSource = table.getTableSource();
-        CubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(null);
+        ICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(null);
         for (int i = 0; i < BICubeFieldSources.length; i++) {
             if (ComparatorUtils.equals(businessField.getFieldName(), BICubeFieldSources[i].getFieldName())) {
                 return BICubeFieldSources[i];

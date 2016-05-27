@@ -5,7 +5,7 @@ import com.finebi.cube.conf.datasource.BusinessTableSourceService;
 import com.finebi.cube.conf.datasource.TableDataSourceService;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.exception.BIFieldAbsentException;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 
 /**
  * This class created on 2016/5/23.
@@ -23,7 +23,7 @@ public interface BIDataSourceManagerProvider extends BusinessTableSourceService,
      * @return
      * @throws BIFieldAbsentException
      */
-    CubeFieldSource findDBField(BusinessField biField) throws BIFieldAbsentException;
+    ICubeFieldSource findDBField(BusinessField biField) throws BIFieldAbsentException;
 
 
     @Deprecated

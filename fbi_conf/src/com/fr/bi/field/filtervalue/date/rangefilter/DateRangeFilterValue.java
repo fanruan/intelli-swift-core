@@ -13,7 +13,6 @@ import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.data.key.date.DateRange;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -45,7 +44,7 @@ public abstract class DateRangeFilterValue extends AbstractFilterValue<Long> imp
      * FIXME 需要实现
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
 
         if (range == null || (range.getEnd() == null && range.getStart() == null)) {
             return getGroupValueIndexWhenNull(target, loader);

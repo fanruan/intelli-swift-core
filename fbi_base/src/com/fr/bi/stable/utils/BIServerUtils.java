@@ -4,7 +4,7 @@ import com.fr.base.TableData;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.cal.DimensionCalculatorDealer;
 import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -16,7 +16,7 @@ import com.fr.script.Calculator;
  */
 public class BIServerUtils {
 
-    public static long runServer(TableData data, CubeFieldSource[] columns, Traversal<BIDataValue> back) {
+    public static long runServer(TableData data, ICubeFieldSource[] columns, Traversal<BIDataValue> back) {
         DataModel dm = null;
         long rowCount = 0;
         try {

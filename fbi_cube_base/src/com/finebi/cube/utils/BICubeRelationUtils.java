@@ -4,7 +4,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 
 /**
  * This class created on 2016/4/11.
@@ -14,8 +14,8 @@ import com.fr.bi.stable.data.db.CubeFieldSource;
  */
 public class BICubeRelationUtils {
     public static BICubeRelation convert(BITableSourceRelation sourceRelation) {
-        CubeFieldSource primaryField = sourceRelation.getPrimaryField();
-        CubeFieldSource foreignField = sourceRelation.getForeignField();
+        ICubeFieldSource primaryField = sourceRelation.getPrimaryField();
+        ICubeFieldSource foreignField = sourceRelation.getForeignField();
 //        try {
 //            /**
 //             * Connery：环境依赖了

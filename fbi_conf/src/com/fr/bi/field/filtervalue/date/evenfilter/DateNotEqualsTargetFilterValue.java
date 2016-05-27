@@ -1,7 +1,7 @@
 package com.fr.bi.field.filtervalue.date.evenfilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.data.source.CubeTableSource;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
@@ -18,7 +18,7 @@ public class DateNotEqualsTargetFilterValue extends DateKeyTargetFilterValue {
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         GroupValueIndex gvi = super.createFilterIndex(dimension, target, loader, userId);
         if (gvi == null) {
             return loader.getTableIndex(target.getTableSource()).getAllShowIndex();

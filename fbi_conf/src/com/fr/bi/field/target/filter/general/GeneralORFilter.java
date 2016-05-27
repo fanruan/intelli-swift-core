@@ -3,7 +3,6 @@ package com.fr.bi.field.target.filter.general;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
@@ -20,7 +19,7 @@ public class GeneralORFilter extends GeneralFilter {
      * @return 分组索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         GroupValueIndex res = null;
         for (int i = 0, len = childs.length; i < len; i++) {
             if(childs[i] == null) {

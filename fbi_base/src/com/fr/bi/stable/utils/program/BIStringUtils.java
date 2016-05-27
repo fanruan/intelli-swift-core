@@ -114,6 +114,4 @@ public class BIStringUtils {
         return "__FINE_BI_EMPTY__";
     }
 
-    public static String BI_EMPTY = "__FINE_BI_EMPTY__";
-
 }

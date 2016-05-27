@@ -11,7 +11,7 @@ import com.fr.general.DateUtils;
  */
 public class BIExcelUtils {
 
-    public static long runExcel(BIExcelTableData excel, CubeFieldSource[] columns, Traversal<BIDataValue> back) {
+    public static long runExcel(BIExcelTableData excel, ICubeFieldSource[] columns, Traversal<BIDataValue> back) {
         BIExcelDataModel dataModel = null;
         long res = 0;
         BILogger.getLogger().info("start extracting data from the excel file");
@@ -22,7 +22,7 @@ public class BIExcelUtils {
             String[] columnNames = dataModel.onlyGetColumnNames();
             for (int i = 0; i < dataModel.getRowCount(); i++) {
                 for (int j = 0; j < columns.length; j++) {
-                    CubeFieldSource field = columns[j];
+                    ICubeFieldSource field = columns[j];
                     int index = findIndex(columnNames, field.getFieldName());
                     if (index >= 0) {
                         if (!columns[j].isUsable()) {

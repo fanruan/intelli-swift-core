@@ -11,7 +11,7 @@ import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -114,7 +114,7 @@ public class AnalysisDataSourceManager extends BISystemDataManager<AnalysisDataS
     }
 
     @Override
-    public CubeFieldSource findDBField(BIUser user, BusinessField biField) throws BIFieldAbsentException {
+    public ICubeFieldSource findDBField(BIUser user, BusinessField biField) throws BIFieldAbsentException {
         return null;
     }
 

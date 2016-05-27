@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,8 +51,8 @@ public class DirectTableConnectionFactory {
 
 
     private static DirectTableConnection createConnection(BITableSourceRelation relation, ICubeDataLoader loader) {
-        CubeFieldSource primaryKey = relation.getPrimaryKey();
-        CubeFieldSource foreignKey = relation.getForeignKey();
+        ICubeFieldSource primaryKey = relation.getPrimaryKey();
+        ICubeFieldSource foreignKey = relation.getForeignKey();
         BIKey primaryIndex = getFieldIndex(loader, primaryKey);
         BIKey foreignIndex = getFieldIndex(loader, foreignKey);
         if (primaryIndex != null && foreignIndex != null) {
@@ -67,7 +67,7 @@ public class DirectTableConnectionFactory {
         }
     }
 
-    private static BIKey getFieldIndex(ICubeDataLoader loader, CubeFieldSource foreignKey) {
+    private static BIKey getFieldIndex(ICubeDataLoader loader, ICubeFieldSource foreignKey) {
         ICubeTableService ti = loader.getTableIndex(foreignKey.getTableBelongTo());
         if (ti != null) {
             return ti.getColumnIndex(foreignKey.getFieldName());

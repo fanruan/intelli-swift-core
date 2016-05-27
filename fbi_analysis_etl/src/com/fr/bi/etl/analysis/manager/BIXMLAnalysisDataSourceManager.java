@@ -9,7 +9,7 @@ import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisDataSource;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.GeneralContext;
@@ -136,7 +136,7 @@ public class BIXMLAnalysisDataSourceManager implements AnalysisDataSource {
     }
 
     @Override
-    public CubeFieldSource findDBField(BusinessField businessField) throws BIFieldAbsentException {
+    public ICubeFieldSource findDBField(BusinessField businessField) throws BIFieldAbsentException {
         return null;
     }
 

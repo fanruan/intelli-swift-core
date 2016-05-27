@@ -4,7 +4,7 @@ package com.fr.bi.cal.stable.tableindex.index;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
@@ -26,7 +26,7 @@ public class BIMultiTableIndex implements ICubeTableService {
 
     private Map<BIKey, ICubeTableService> childs = new ConcurrentHashMap<BIKey, ICubeTableService>();
 
-    private Map<BIKey, CubeFieldSource> columns = new ConcurrentHashMap<BIKey, CubeFieldSource>();
+    private Map<BIKey, ICubeFieldSource> columns = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
 
     public BIMultiTableIndex(ICubeTableService[] childs) {
         cs = childs;
@@ -35,7 +35,7 @@ public class BIMultiTableIndex implements ICubeTableService {
 
     private void init(ICubeTableService[] childs) {
         for (ICubeTableService ti : childs) {
-            Map<BIKey, CubeFieldSource> c = ti.getColumns();
+            Map<BIKey, ICubeFieldSource> c = ti.getColumns();
             for (BIKey key : c.keySet()) {
                 this.childs.put(key, ti);
             }
@@ -147,7 +147,7 @@ public class BIMultiTableIndex implements ICubeTableService {
     }
 
     @Override
-    public Map<BIKey, CubeFieldSource> getColumns() {
+    public Map<BIKey, ICubeFieldSource> getColumns() {
         return columns;
     }
 

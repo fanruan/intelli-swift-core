@@ -4,7 +4,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.DateUtils;
@@ -23,7 +23,7 @@ public class BeforeIndexGenerator extends AbstractIndexGenerator {
     }
 
 
-    private CubeFieldSource[] getFieldsArray() {
+    private ICubeFieldSource[] getFieldsArray() {
         return dataSource.getFieldsArray(derivedDataSources);
     }
 
@@ -38,11 +38,11 @@ public class BeforeIndexGenerator extends AbstractIndexGenerator {
         long start = System.currentTimeMillis();
 
         try {
-            CubeFieldSource[] columns = getFieldsArray();
+            ICubeFieldSource[] columns = getFieldsArray();
             List<String> columnList = new ArrayList<String>();
             Map<String, Integer> columnNameSet = new HashMap<String, Integer>();
-            for (CubeFieldSource col : columns) {
-                CubeFieldSource field = new BICubeFieldSource(dataSource, col.getFieldName(), col.getClassType(), col.getFieldSize());
+            for (ICubeFieldSource col : columns) {
+                ICubeFieldSource field = new BICubeFieldSource(dataSource, col.getFieldName(), col.getClassType(), col.getFieldSize());
                 try {
                     columnList.add(field.createJSON().toString());
                 } catch (JSONException e) {

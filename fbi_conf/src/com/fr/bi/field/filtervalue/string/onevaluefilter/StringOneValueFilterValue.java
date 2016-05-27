@@ -3,10 +3,10 @@ package com.fr.bi.field.filtervalue.string.onevaluefilter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -36,7 +36,7 @@ public abstract class StringOneValueFilterValue extends AbstractFilterValue<Stri
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         ICubeTableService ti = loader.getTableIndex(target.getTableSource());
         if (value == null || value.isEmpty()) {
             return ti.getAllShowIndex();

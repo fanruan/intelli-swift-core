@@ -13,7 +13,6 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -187,7 +186,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
      * @return 分组索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         GroupValueIndex resgvi = null;
         if (values == null || values.length == 0) {
             return resgvi;

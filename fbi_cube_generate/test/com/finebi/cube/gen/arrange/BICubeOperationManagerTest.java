@@ -13,7 +13,7 @@ import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.BITableSourceRelationTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.HashSet;
@@ -121,7 +121,7 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
     }
 
     private void checkTable(BIMemoryDataSource biMemoryDataSource, Map<String, Integer> map) {
-        CubeFieldSource[] fields = biMemoryDataSource.getFieldsArray(null);
+        ICubeFieldSource[] fields = biMemoryDataSource.getFieldsArray(null);
         for (int i = 0; i < fields.length; i++) {
             assertTrue(map.containsKey(fields[i].getFieldName() + biMemoryDataSource.getSourceID()));
         }

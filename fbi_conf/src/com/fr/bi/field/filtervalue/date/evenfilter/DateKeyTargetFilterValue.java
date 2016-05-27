@@ -8,7 +8,6 @@ import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDateValueFactory;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -57,7 +56,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         if (valueSet == null || valueSet.isEmpty()) {
             return getGroupValueIndexWhenNull(target, loader);
         }

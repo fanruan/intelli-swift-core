@@ -84,8 +84,8 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
     }
 
     @Override
-    public long read(final Traversal<BIDataValue> travel, CubeFieldSource[] fields, ICubeDataLoader loader) {
-        final CubeFieldSource[] columns = fields;
+    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
+        final ICubeFieldSource[] columns = fields;
         return BIExcelUtils.runExcel(createExcelTableData(), columns, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
@@ -143,12 +143,12 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
      */
     @Override
     public Set getFieldDistinctNewestValues(String fieldName, ICubeDataLoader loader, long userId) {
-        CubeFieldSource field = getFields().get(fieldName);
+        ICubeFieldSource field = getFields().get(fieldName);
         final HashSet set = new HashSet();
         if (field == null) {
             return set;
         }
-        BIExcelUtils.runExcel(createExcelTableData(), new CubeFieldSource[]{field}, new Traversal<BIDataValue>() {
+        BIExcelUtils.runExcel(createExcelTableData(), new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 set.add(data.getValue());

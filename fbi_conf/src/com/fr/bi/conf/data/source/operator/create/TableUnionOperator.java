@@ -124,7 +124,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
         int index = 0;
         for (int i = 0; i < tis.size(); i++) {
             ICubeTableService ti = tis.get(i);
-            CubeFieldSource[] cIndex = new CubeFieldSource[lists.size()];
+            ICubeFieldSource[] cIndex = new ICubeFieldSource[lists.size()];
             for (int j = 0; j < cIndex.length; j++) {
                 cIndex[j] = ti.getColumns().get(new IndexKey(lists.get(j).get(i + 1)));
             }

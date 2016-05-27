@@ -11,7 +11,7 @@ import com.fr.base.TemplateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.conf.utils.BIPackUtils;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.Inter;
@@ -61,8 +61,8 @@ public class RelationsGetter {
         Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getForeignKeyMap();
         ICubeDataLoader loader = CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId());
         for (BITableSourceRelation tableSourceRelation : BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableSourceRelationSet()) {
-            CubeFieldSource primaryKey = tableSourceRelation.getPrimaryKey();
-            CubeFieldSource foreignKey = tableSourceRelation.getForeignKey();
+            ICubeFieldSource primaryKey = tableSourceRelation.getPrimaryKey();
+            ICubeFieldSource foreignKey = tableSourceRelation.getForeignKey();
             CubeTableSource primaryTableSource = tableSourceRelation.getPrimaryTable();
             CubeTableSource foreignTableSource = tableSourceRelation.getForeignTable();
             ICubeTableService primaryCubeTable = loader.getTableIndex(primaryKey.getTableBelongTo());

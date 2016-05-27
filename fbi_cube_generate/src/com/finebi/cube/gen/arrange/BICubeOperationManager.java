@@ -17,7 +17,7 @@ import com.finebi.cube.structure.ICubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -172,9 +172,9 @@ public class BICubeOperationManager {
             while (sameLevelTableIt.hasNext()) {
                 CubeTableSource tableSource = sameLevelTableIt.next();
                 if (!isFieldIndexGenerated(tableSource)) {
-                    CubeFieldSource[] fields = tableSource.getFieldsArray(originalTableSet);
+                    ICubeFieldSource[] fields = tableSource.getFieldsArray(originalTableSet);
                     for (int i = 0; i < fields.length; i++) {
-                        CubeFieldSource field = fields[i];
+                        ICubeFieldSource field = fields[i];
                         Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
                         while (columnKeyIterator.hasNext()) {
                             BIColumnKey targetColumnKey = columnKeyIterator.next();
@@ -343,13 +343,13 @@ public class BICubeOperationManager {
         }
     }
 
-    public void generateFieldRelationPath(Map<CubeFieldSource, BITableSourceRelationPath> relationPathMap) {
+    public void generateFieldRelationPath(Map<ICubeFieldSource, BITableSourceRelationPath> relationPathMap) {
         if (relationPathMap != null && !relationPathMap.isEmpty()) {
-            Iterator<Map.Entry<CubeFieldSource, BITableSourceRelationPath>> it = relationPathMap.entrySet().iterator();
+            Iterator<Map.Entry<ICubeFieldSource, BITableSourceRelationPath>> it = relationPathMap.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry<CubeFieldSource, BITableSourceRelationPath> entry = it.next();
+                Map.Entry<ICubeFieldSource, BITableSourceRelationPath> entry = it.next();
                 try {
-                    CubeFieldSource field = entry.getKey();
+                    ICubeFieldSource field = entry.getKey();
                     BITableSourceRelationPath path = entry.getValue();
                     String sourceID = BICubeBuildTopicManager.fieldPathFragmentID(path);
                     BIOperation<Object> operation = new BIOperation<Object>(
@@ -376,7 +376,7 @@ public class BICubeOperationManager {
         return new BIRelationIndexGenerator(cube, BICubeRelationUtils.convert(relation));
     }
 
-    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, CubeTableSource tableSource, CubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
+    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
         return new BIFieldIndexGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
     }
 
@@ -392,7 +392,7 @@ public class BICubeOperationManager {
         return new BITablePathIndexBuilder(cube, BICubePathUtils.convert(tablePath));
     }
 
-    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, CubeFieldSource field, BITableSourceRelationPath tablePath) {
+    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {
         return new BIFieldPathIndexBuilder(cube, field, BICubePathUtils.convert(tablePath));
     }
 

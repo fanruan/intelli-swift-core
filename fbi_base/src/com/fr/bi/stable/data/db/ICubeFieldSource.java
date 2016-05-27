@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Connery
  * @since 4.0
  */
-public interface CubeFieldSource extends Cloneable, Serializable, JSONTransform {
+public interface ICubeFieldSource extends Cloneable, Serializable, JSONTransform {
     String getFieldName();
 
     int getFieldType();

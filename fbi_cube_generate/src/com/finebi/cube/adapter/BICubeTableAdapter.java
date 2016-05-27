@@ -15,7 +15,8 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
@@ -121,13 +122,13 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     @Override
-    public Map<BIKey, CubeFieldSource> getColumns() {
-        Map<BIKey, CubeFieldSource> result = new HashMap<BIKey, CubeFieldSource>();
+    public Map<BIKey, ICubeFieldSource> getColumns() {
+        Map<BIKey, ICubeFieldSource> result = new HashMap<BIKey, ICubeFieldSource>();
 
-        List<CubeFieldSource> list = primaryTable.getFieldInfo();
-        Iterator<CubeFieldSource> tableFieldIt = list.iterator();
+        List<ICubeFieldSource> list = primaryTable.getFieldInfo();
+        Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
         while (tableFieldIt.hasNext()) {
-            CubeFieldSource field = tableFieldIt.next();
+            ICubeFieldSource field = tableFieldIt.next();
             result.put(getColumnIndex(field.getFieldName()), field);
         }
 
@@ -250,7 +251,7 @@ public class BICubeTableAdapter implements ICubeTableService {
         ICubeColumnReaderService columnReaderService;
         try {
             BIColumnKey columnKey;
-            CubeFieldSource field = getDBField(biKey);
+            ICubeFieldSource field = getDBField(biKey);
             if (biKey instanceof IndexTypeKey) {
                 columnKey = BIColumnKeyAdapter.covert(field, ((IndexTypeKey) biKey).getType());
             } else {
@@ -268,8 +269,8 @@ public class BICubeTableAdapter implements ICubeTableService {
         return primaryTable;
     }
 
-    private CubeFieldSource getDBField(BIKey biKey) throws BIKeyAbsentException {
-        Map<BIKey, CubeFieldSource> map = getColumns();
+    private ICubeFieldSource getDBField(BIKey biKey) throws BIKeyAbsentException {
+        Map<BIKey, ICubeFieldSource> map = getColumns();
         Iterator<BIKey> it = map.keySet().iterator();
         while (it.hasNext()) {
             BIKey key = it.next();

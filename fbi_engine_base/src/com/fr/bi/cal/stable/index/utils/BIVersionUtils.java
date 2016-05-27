@@ -3,7 +3,7 @@ package com.fr.bi.cal.stable.index.utils;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 
 import java.util.ArrayList;
@@ -24,20 +24,20 @@ public class BIVersionUtils {
      */
     public static int createRelationVersionValue(ICubeDataLoader loader, List<? extends BITableSourceRelation> relations) {
         List<Integer> res = new ArrayList<Integer>();
-        CubeFieldSource start = getRelationPrimField(relations);
+        ICubeFieldSource start = getRelationPrimField(relations);
         if (start == null) {
             return 0;
         }
         res.add(loader.getTableIndex(start.getTableBelongTo()).getTableVersion(new IndexKey(start.getFieldName())));
 
         for (BITableSourceRelation relation : relations) {
-            CubeFieldSource t = relation.getForeignKey();
+            ICubeFieldSource t = relation.getForeignKey();
             res.add(loader.getTableIndex(t.getTableBelongTo()).getTableVersion(new IndexKey(t.getFieldName())));
         }
         return Arrays.hashCode(res.toArray());
     }
 
-    public static CubeFieldSource getRelationPrimField(List<? extends BITableSourceRelation> relations) {
+    public static ICubeFieldSource getRelationPrimField(List<? extends BITableSourceRelation> relations) {
         if (relations == null || relations.isEmpty()) {
             return null;
         }

@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -67,7 +67,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
         int rowCount = ti.getRowCount();
         int columnLength = fields.size();
-        CubeFieldSource column = ti.getColumns().get(new IndexKey(idFieldName));
+        ICubeFieldSource column = ti.getColumns().get(new IndexKey(idFieldName));
         if (column != null) {
             if (column.getFieldType() == DBConstant.COLUMN.STRING) {
                 int[] groupLength = new int[columnLength];

@@ -5,7 +5,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.constant.DateConstant;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -113,8 +113,8 @@ public class BIDateUtils {
         return DateUtils.DATETIMEFORMAT2.format(new Date());
     }
 
-	public static void checkDateFieldType(Map<BIKey, ? extends CubeFieldSource> map, BIKey key) {
-        CubeFieldSource field = map.get(key);
+	public static void checkDateFieldType(Map<BIKey, ? extends ICubeFieldSource> map, BIKey key) {
+        ICubeFieldSource field = map.get(key);
 		if(field == null || field.getFieldType() != DBConstant.COLUMN.DATE){
 			throw NOT_DATE_FIELD_EXCEPTION;
 		}

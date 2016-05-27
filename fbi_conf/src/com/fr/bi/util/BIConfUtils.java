@@ -10,7 +10,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.connection.DirectTableConnection;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -84,15 +84,15 @@ public class BIConfUtils {
     }
 
     private static DirectTableConnection createConnection(BITableSourceRelation relation, ICubeDataLoader loader) {
-        CubeFieldSource primaryKey = relation.getPrimaryKey();
-        CubeFieldSource foreignKey = relation.getForeignKey();
+        ICubeFieldSource primaryKey = relation.getPrimaryKey();
+        ICubeFieldSource foreignKey = relation.getForeignKey();
         return new DirectTableConnection(foreignKey.getTableBelongTo(), new IndexKey(foreignKey.getFieldName()), loader.getTableIndex(foreignKey.getTableBelongTo()),
                 primaryKey.getTableBelongTo(), new IndexKey(primaryKey.getFieldName()), loader.getTableIndex(primaryKey.getTableBelongTo()));
     }
 
     private static DirectTableConnection createConnection(DimensionCalculator ck, BITableSourceRelation relation, ICubeDataLoader loader) {
-        CubeFieldSource primaryKey = relation.getPrimaryKey();
-        CubeFieldSource foreignKey = relation.getForeignKey();
+        ICubeFieldSource primaryKey = relation.getPrimaryKey();
+        ICubeFieldSource foreignKey = relation.getForeignKey();
         return new DirectTableConnection(foreignKey.getTableBelongTo(), new IndexKey(foreignKey.getFieldName()), loader.getTableIndex(foreignKey.getTableBelongTo()),
                 ck.getField().getTableBelongTo().getTableSource(), loader.getTableIndex(ck.getField().getTableBelongTo().getTableSource()).getColumnIndex(primaryKey.getFieldName()), loader.getTableIndex(ck.getField().getTableBelongTo().getTableSource()));
     }
@@ -116,8 +116,8 @@ public class BIConfUtils {
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);
         }
-        CubeFieldSource primaryFieldSource = new BICubeFieldSource(primaryTableSource, primaryField.getFieldName(), primaryField.getClassType(), primaryField.getFieldSize());
-        CubeFieldSource foreignFieldSource = new BICubeFieldSource(foreignTableSource, foreignField.getFieldName(), foreignField.getClassType(), foreignField.getFieldSize());
+        ICubeFieldSource primaryFieldSource = new BICubeFieldSource(primaryTableSource, primaryField.getFieldName(), primaryField.getClassType(), primaryField.getFieldSize());
+        ICubeFieldSource foreignFieldSource = new BICubeFieldSource(foreignTableSource, foreignField.getFieldName(), foreignField.getClassType(), foreignField.getFieldSize());
         return new BITableSourceRelation(
                 primaryFieldSource,
                 foreignFieldSource,

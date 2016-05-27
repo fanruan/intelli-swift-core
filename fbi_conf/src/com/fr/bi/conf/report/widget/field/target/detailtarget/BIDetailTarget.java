@@ -4,10 +4,10 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.operation.sort.ISort;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public interface BIDetailTarget extends BITargetAndDimension, Release {
      */
     boolean isReady4Calculate(Map<String, Object> values);
 
-    List<BITableRelation> getRelationList(CubeTableSource target, long userId);
+    List<BITableRelation> getRelationList(BusinessTable target, long userId);
 
 
     void setRelationList(List<BITableRelation> relationList);
