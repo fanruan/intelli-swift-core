@@ -153,6 +153,28 @@ SequenceTableView = BI.inherit(BI.View, {
                 left: 10,
                 right: 10,
                 top: 10,
+                bottom: 50
+            }, {
+                el: {
+                    type: "bi.button",
+                    height: 25,
+                    text: "showSequence",
+                    handler: function () {
+                        table1.showSequence();
+                    }
+                },
+                left: 10,
+                bottom: 10
+            }, {
+                el: {
+                    type: "bi.button",
+                    height: 25,
+                    text: "hideSequence",
+                    handler: function () {
+                        table1.hideSequence();
+                    }
+                },
+                right: 10,
                 bottom: 10
             }]
         })
