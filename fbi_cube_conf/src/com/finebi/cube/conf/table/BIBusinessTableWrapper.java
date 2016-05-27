@@ -92,4 +92,14 @@ public class BIBusinessTableWrapper implements BusinessTable {
     public void parseJSON(JSONObject jsonObject) throws Exception {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public List<String> getUsedFieldNames() {
+        return null;
+    }
+
+    @Override
+    public void setUsedFieldNames(List<String> usedFieldNames) {
+
+    }
 }

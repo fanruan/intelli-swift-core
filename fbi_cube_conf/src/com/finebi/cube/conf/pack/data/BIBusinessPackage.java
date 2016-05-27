@@ -12,10 +12,7 @@ import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 import com.fr.stable.FCloneable;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class created on 2016/5/23.
@@ -171,8 +168,17 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
         clear();
         for (int i = 0; i < ja.length(); i++) {
             T table = createTable();
-            table.parseJSON(ja.optJSONObject(i));
+            JSONObject tableJson = ja.optJSONObject(i);
+            table.parseJSON(tableJson);
+            List<String> fieldNames = new ArrayList<String>();
+            if (tableJson.has("used_fields")){
+                JSONArray array = tableJson.getJSONArray("used_fields");
+                for (int j = 0;j<array.length();j++){
+                    fieldNames.add(array.getString(j));
+                }
+            }
             table = (T) BusinessTableHelper.getBusinessTable(table.getID());
+            table.setUsedFieldNames(fieldNames);
             add(table);
         }
     }
