@@ -55,6 +55,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             handles: "e, s, se",
             minWidth: 100,
             minHeight: 60,
+            autoHide: true,
             helper: "bi-resizer",
             start: function () {
                 item.element.css("zIndex", ++self.zIndex);
