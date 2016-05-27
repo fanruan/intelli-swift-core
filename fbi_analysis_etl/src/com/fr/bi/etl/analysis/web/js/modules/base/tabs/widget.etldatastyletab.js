@@ -46,6 +46,7 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
     _createMainModel : function (wId) {
         var self = this, model = {}, items = [];
         var widget = BI.Utils.getWidgetCalculationByID(wId);
+        widget.view = widget.view || {};
         var dim1 = widget.view[BICst.REGION.DIMENSION1] || [];
         var dim2 = widget.view[BICst.REGION.DIMENSION2] || [];
         widget.view[BICst.REGION.DIMENSION1] = BI.concat(dim1, dim2);
