@@ -2,8 +2,8 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
@@ -260,9 +260,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                                 }
                             }
                             for (int j = 0; j < lens; j++) {
-                                BITableRelation relation = new BITableRelation();
-                                relation.parseJSON(rel.optJSONObject(j));
-                                relationList.add(relation);
+                                relationList.add(BITableRelationHelper.getRelation(rel.optJSONObject(j)));
                             }
                             relationMap.put(targetId, relationList);
                         }
