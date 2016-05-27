@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -305,7 +305,7 @@ public class TreeWidget extends BIAbstractWidget {
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
             Map<BusinessTable, BITableRelation> relationMap = new HashMap<BusinessTable, BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
-                BISimpleRelation viewRelation = new BISimpleRelation();
+                BITableRelation viewRelation = new BITableRelation();
                 viewRelation.parseJSON(relationJa.getJSONObject(j));
                 BITableRelation tableRelation = new BITableRelation();
                 tableRelation.parseJSON(viewRelation.createJSON());

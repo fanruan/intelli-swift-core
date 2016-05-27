@@ -14,6 +14,8 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
                 type: "bi.page_table"
             },
 
+            sequence: {},
+
             isNeedResize: true,
             isResizeAdapt: false,
 
@@ -49,6 +51,20 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         BI.SequenceTable.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
+        this.sequence = BI.createWidget(o.sequence, {
+            type: "bi.sequence_table_list_number",
+            startSequence: o.startSequence,
+            isNeedFreeze: o.isNeedFreeze,
+            header: o.header,
+            footer: o.footer,
+            items: o.items,
+            crossHeader: o.crossHeader,
+            crossItems: o.crossItems,
+            headerRowSize: o.headerRowSize,
+            footerRowSize: o.footerRowSize,
+            rowSize: o.rowSize,
+            width: 60
+        });
         this.table = BI.createWidget(o.el, {
             type: "bi.page_table",
             pageSpace: 95,
@@ -78,18 +94,6 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
 
-        this.table.on(BI.CustomScrollTable.EVENT_RIGHT_SCROLL, function () {
-            var dot = self.table.getRightHorizontalScroll();
-            self.dots.push(dot);
-            self.lock();
-            if (dot < 50 && dot >= 0) {
-                //显示页码
-                self._showCurrentColumn();
-            } else {
-                self._hideCurrentColumn();
-            }
-        });
-
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_INIT);
         });
@@ -97,8 +101,10 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
         });
 
-        this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
-
+        this.table.on(BI.Table.EVENT_TABLE_SCROLL, function (scrollTop) {
+            if (BI.isNotNull(scrollTop)) {
+                self.sequence.setVerticalScroll(scrollTop);
+            }
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_REGION_RESIZE);
@@ -107,103 +113,28 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
 
-        BI.createWidget({
+        this.htape = BI.createWidget({
             type: "bi.htape",
             element: this.element,
             items: [{
-                el: this.pager,
-                right: 0,
-                bottom: 0
+                el: {
+                    type: "bi.vtape",
+                    cls: "sequence-table-wrapper",
+                    items: [{
+                        el: this.sequence
+                    }, {
+                        el: {
+                            type: "bi.layout",
+                            cls: "sequence-table-scroll"
+                        },
+                        height: 18
+                    }]
+                },
+                width: 60
+            }, {
+                el: this.table
             }]
         })
-    },
-
-    _loading: function () {
-        if (!this.loading) {
-            this.loading = BI.Maskers.make(this.getName(), this);
-            BI.createWidget({
-                type: "bi.absolute",
-                element: this.loading,
-                items: [{
-                    el: {
-                        type: "bi.label",
-                        cls: "page-table-loading-text",
-                        text: BI.i18nText("BI-Loading"),
-                        whiteSpace: "normal",
-                        width: this._const.scrollWidth
-                    },
-                    right: 0,
-                    top: 0,
-                    bottom: this._const.scrollWidth
-                }]
-            })
-        }
-        BI.Maskers.show(this.getName());
-    },
-
-    _loaded: function () {
-        BI.Maskers.hide(this.getName());
-        this._hideCurrentColumn();
-    },
-
-    _showCurrentColumn: function () {
-        var self = this, o = this.options;
-        this._hideCurrentColumn();
-        /**
-         * 暂时不用显示分页信息
-         */
-        //this._currentColumn = BI.createWidget({
-        //    type: "bi.text_button",
-        //    cls: "page-table-current-column",
-        //    text: BI.i18nText("BI-Di_A_Col", ((this.hpage - 1) * 20 + 1)),
-        //    hgap: 15,
-        //    height: 20,
-        //    handler: function () {
-        //        self._hideCurrentColumn();
-        //    }
-        //});
-        //if (BI.isNotNull(o.isNeedFreeze)) {
-        //    var regionSize = this.table.getRegionColumnSize();
-        //    BI.createWidget({
-        //        type: "bi.absolute",
-        //        element: this.element,
-        //        items: [{
-        //            el: this._currentColumn,
-        //            left: regionSize[0] + 2,
-        //            bottom: this._const.scrollWidth + 2
-        //        }]
-        //    })
-        //} else {
-        //    BI.createWidget({
-        //        type: "bi.absolute",
-        //        element: this.element,
-        //        items: [{
-        //            el: this._currentColumn,
-        //            left: 2,
-        //            bottom: this._const.scrollWidth + 2
-        //        }]
-        //    })
-        //}
-    },
-
-    _hideCurrentColumn: function () {
-        this._currentColumn && this._currentColumn.destroy();
-    },
-
-    setHPage: function (v) {
-        this.hpage = v;
-    },
-
-    setVPage: function (v) {
-        this.pager.setValue(v);
-    },
-
-    getHPage: function () {
-        return this.hpage;
-    },
-
-    getVPage: function () {
-        return this.pager.getCurrentPage();
     },
 
     resize: function () {
@@ -228,14 +159,29 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
     attr: function () {
         BI.SequenceTable.superclass.attr.apply(this, arguments);
-        this._hideCurrentColumn();
         this.table.attr.apply(this.table, arguments);
+        this.sequence.attr.apply(this.table, arguments);
+    },
+
+    showSequence: function () {
+        var items = this.htape.attr("items");
+        items[0].width = 60;
+        this.htape.attr("items", items);
+        this.htape.resize();
+        this.table.resize();
+    },
+
+    hideSequence: function () {
+        var items = this.htape.attr("items");
+        items[0].width = 0;
+        this.htape.attr("items", items);
+        this.htape.resize();
+        this.table.resize();
     },
 
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
-        this._hideCurrentColumn();
-        this.pager.populate();
+        this.sequence.populate.apply(this.sequence, arguments);
     },
 
     destroy: function () {

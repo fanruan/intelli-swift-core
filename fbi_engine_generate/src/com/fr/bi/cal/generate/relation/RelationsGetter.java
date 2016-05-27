@@ -5,16 +5,15 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.conf.utils.BIPackUtils;
-import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.Inter;
 
 import java.util.HashSet;
@@ -49,11 +48,8 @@ public class RelationsGetter {
 //        }
         Set<String> genereteTableMD5s = new HashSet<String>();
         for (BusinessTable table : generateTable) {
-            try {
-                genereteTableMD5s.add(BICubeConfigureCenter.getDataSourceManager().getTableSource(table.getID()).getSourceID());
-            } catch (BIKeyAbsentException e) {
-                throw BINonValueUtils.beyondControl(e);
-            }
+            genereteTableMD5s.add(BusinessTableHelper.getTableDataSource(table).getSourceID());
+
         }
         return genereteTableMD5s;
     }

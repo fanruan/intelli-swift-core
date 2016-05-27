@@ -44,12 +44,3 @@
 .bi-dashboard-widget .dashboard-title.active {
   cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
 }
-.bi-dashboard-widget .ui-resizable-s {
-  bottom: 0;
-}
-.bi-dashboard-widget .ui-resizable-s:hover {
-  border-bottom: 1px solid #e85050;
-}
-.bi-dashboard-widget .ui-resizable-e:hover {
-  border-right: 1px solid #e85050;
-}

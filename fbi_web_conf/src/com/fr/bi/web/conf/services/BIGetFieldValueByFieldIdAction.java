@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
@@ -27,14 +27,14 @@ public class BIGetFieldValueByFieldIdAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String fieldId = WebUtils.getHTTPRequestParameter(req, "field_id");
-        if(StringUtils.isEmpty(fieldId)){
+        if (StringUtils.isEmpty(fieldId)) {
             WebUtils.printAsJSON(res, new JSONObject());
             return;
         }
         String tableId = BIIDUtils.getTableIDFromFieldID(fieldId);
         BITableID tId = new BITableID(tableId);
         long userId = ServiceUtils.getCurrentUserID(req);
-        CubeTableSource source = BICubeConfigureCenter.getDataSourceManager().getTableSource(tId);
+        CubeTableSource source = BusinessTableHelper.getTableDataSource(tId);
         Set set = source.getFieldDistinctNewestValues(BIIDUtils.getFieldNameFromFieldID(fieldId), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
         String filterConfigString = WebUtils.getHTTPRequestParameter(req, "filterConfig");
         String keyword = null;
@@ -43,29 +43,29 @@ public class BIGetFieldValueByFieldIdAction extends AbstractBIConfigureAction {
         int type = -2;
         if (filterConfigString != null) {
             JSONObject filterConfig = new JSONObject(filterConfigString);
-            if(filterConfig.has("keyword")){
+            if (filterConfig.has("keyword")) {
                 keyword = filterConfig.optString("keyword");
             }
-            if(filterConfig.has("times")){
+            if (filterConfig.has("times")) {
                 times = filterConfig.optInt("times");
             }
-            if(filterConfig.has("type")){
+            if (filterConfig.has("type")) {
                 type = filterConfig.optInt("type");
             }
             String selectedValueString = filterConfig.optString("selected_value");
-            if(selectedValueString != null && StringUtils.isNotEmpty(selectedValueString)){
+            if (selectedValueString != null && StringUtils.isNotEmpty(selectedValueString)) {
                 JSONArray selectedValueArray = new JSONArray(selectedValueString);
                 selected_value = Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray));
             }
             set = getSearchResult(set, keyword, selected_value);
         }
-        if(type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH){
+        if (type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
             JSONObject jo = new JSONObject();
             jo.put(BIJSONConstant.JSON_KEYS.VALUE, set.size());
             WebUtils.printAsJSON(res, jo);
             return;
         }
-        if(type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA){
+        if (type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA) {
             JSONArray ja = new JSONArray(set);
             JSONObject jo = new JSONObject();
             jo.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
@@ -84,36 +84,36 @@ public class BIGetFieldValueByFieldIdAction extends AbstractBIConfigureAction {
     }
 
     private Set getItemsByTimes(Set items, int times) {
-        if(times == -1){
+        if (times == -1) {
             return items;
         }
         Set result = new HashSet();
         int i = 0;
         Iterator it = items.iterator();
-        while (it.hasNext() && i < (times - 1) * 100){
+        while (it.hasNext() && i < (times - 1) * 100) {
             it.next();
             ++i;
         }
-        while (it.hasNext() && i < times * 100){
+        while (it.hasNext() && i < times * 100) {
             result.add(it.next());
             i++;
         }
         return result;
     }
 
-    private Set getSearchResult(Set source, String keyword, List<String> selectedValue){
-        if(keyword != null && StringUtils.isNotEmpty(keyword)){
+    private Set getSearchResult(Set source, String keyword, List<String> selectedValue) {
+        if (keyword != null && StringUtils.isNotEmpty(keyword)) {
             Set<String> find = new HashSet<String>();
             Set<String> match = new HashSet<String>();
 
             keyword = keyword.toUpperCase();
             Iterator it = source.iterator();
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 String str = String.valueOf(it.next());
-                if(str.contains(keyword) && !selectedValue.contains(str)){
-                    if(ComparatorUtils.equals(keyword, str)){
+                if (str.contains(keyword) && !selectedValue.contains(str)) {
+                    if (ComparatorUtils.equals(keyword, str)) {
                         match.add(str);
-                    }else{
+                    } else {
                         find.add(str);
                     }
                 }

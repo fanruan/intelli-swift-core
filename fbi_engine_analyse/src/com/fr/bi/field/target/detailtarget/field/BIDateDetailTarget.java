@@ -26,7 +26,8 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
             int r = row.intValue();
             if (r > -1) {
                 ICubeTableService ti = loader.getTableIndex(this.createTableKey().getTableSource());
-                return ti.getRowValue(this.createKey(getStatisticElement()), r);
+                Object ob =  ti.getRowValue(this.createKey(getStatisticElement()), r);
+                return group.getType() == BIReportConstant.GROUP.M ? (Integer)ob + 1 : ob;
             }
         }
         return null;

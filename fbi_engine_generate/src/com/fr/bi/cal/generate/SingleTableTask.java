@@ -69,7 +69,7 @@ public class SingleTableTask extends AllTask {
     protected Map<Integer, Set<CubeTableSource>> getGenerateTables() {
         Map<Integer, Set<CubeTableSource>> generateTable = new HashMap<Integer, Set<CubeTableSource>>();
         try {
-            BICollectionUtils.mergeSetValueMap(generateTable, BICubeConfigureCenter.getDataSourceManager().getTableSource(table.getID()).createGenerateTablesMap());
+            BICollectionUtils.mergeSetValueMap(generateTable, BICubeConfigureCenter.getDataSourceManager().getTableSource(table).createGenerateTablesMap());
         } catch (BIKeyAbsentException e) {
             e.printStackTrace();
         }

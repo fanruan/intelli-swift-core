@@ -1,8 +1,9 @@
 package com.fr.bi.field.target.target;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
-import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.report.result.TargetCalculator;
@@ -27,7 +28,11 @@ public class BICounterTarget extends BISummaryTarget {
         if (jo.has("_src")) {
             JSONObject obj = jo.optJSONObject("_src");
             String distinct_field_id = obj.getString("field_id");
-            IPersistentTable table = BICubeConfigureCenter.getDataSourceManager().getTableSource(new BITableID(BIIDUtils.getTableIDFromFieldID(distinct_field_id))).getPersistentTable();
+            /**
+             * Connery：
+             */
+            BusinessField field = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(BIIDUtils.getTableIDFromFieldID(distinct_field_id)));
+            IPersistentTable table = field.getTableBelongTo().getTableSource().getPersistentTable();
             PersistentField c = table.getField(BIIDUtils.getFieldNameFromFieldID(distinct_field_id));
             if (c == null) {
                 this.distinct_field_name = null;

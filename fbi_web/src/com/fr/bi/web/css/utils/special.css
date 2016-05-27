@@ -48,8 +48,8 @@ ul.CodeMirror-hints {
   bottom: 0;
 }
 .ui-resizable-s:hover {
-  border-bottom: 1px solid #e85050;
+  border-bottom: 1px solid #808080;
 }
 .ui-resizable-e:hover {
-  border-right: 1px solid #e85050;
+  border-right: 1px solid #808080;
 }

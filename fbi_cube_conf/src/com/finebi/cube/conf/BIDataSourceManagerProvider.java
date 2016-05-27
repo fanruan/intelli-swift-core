@@ -1,6 +1,7 @@
 package com.finebi.cube.conf;
 
-import com.finebi.cube.conf.datasource.FieldDataSourceService;
+import com.finebi.cube.conf.datasource.BusinessFieldSourceService;
+import com.finebi.cube.conf.datasource.BusinessTableSourceService;
 import com.finebi.cube.conf.datasource.TableDataSourceService;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.exception.BIFieldAbsentException;
@@ -12,7 +13,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
  * @author Connery
  * @since 4.0
  */
-public interface BIDataSourceManagerProvider extends FieldDataSourceService, TableDataSourceService {
+public interface BIDataSourceManagerProvider extends BusinessTableSourceService, TableDataSourceService, BusinessFieldSourceService {
 
     String XML_TAG = "BIDataSourceManager";
 
@@ -23,6 +24,7 @@ public interface BIDataSourceManagerProvider extends FieldDataSourceService, Tab
      * @throws BIFieldAbsentException
      */
     ICubeFieldSource findDBField(BusinessField biField) throws BIFieldAbsentException;
+
 
     @Deprecated
     void persistData(long userId);
