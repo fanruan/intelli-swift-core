@@ -108,7 +108,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             if (BI.isNumber(num)) {
                 cls = "sequence-table-number";
             } else {
-                cls = "sequence-table-summary";
+                cls = "sequence-table-number sequence-table-summary";
             }
             return {
                 type: "bi.label",
