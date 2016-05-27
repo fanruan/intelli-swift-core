@@ -2,7 +2,6 @@ package com.fr.bi.field.dimension.calculator;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.conf.field.BIBusinessFieldWrapper;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -35,7 +34,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     public AbstractDimensionCalculator(BIDimension dimension, BusinessField field, List<BITableSourceRelation> relations) {
         this.dimension = dimension;
         field = field == null ? dimension.getStatisticElement() : field;
-        this.field = new BIBusinessFieldWrapper(field);
+        this.field = field;
         this.relations = relations;
     }
 
