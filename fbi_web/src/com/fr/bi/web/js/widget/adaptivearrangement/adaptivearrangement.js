@@ -17,7 +17,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         return BI.extend(BI.AdaptiveArrangement.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-adaptive-arrangement",
             resizable: true,
-            layoutType: BI.Arrangement.LAYOUT_TYPE.ADAPTIVE,
+            layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             items: []
         });
     },

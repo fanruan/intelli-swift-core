@@ -1765,6 +1765,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/xml.js",
                 "com/fr/bi/web/js/base/utils/chinesePY.js",
                 "com/fr/bi/web/js/base/utils/array.js",
+                "com/fr/bi/web/js/base/utils/number.js",
                 "com/fr/bi/web/js/base/utils/date.js",
                 "com/fr/bi/web/js/base/utils/queue.js",
                 "com/fr/bi/web/js/base/utils/linkedHashMap.js",
