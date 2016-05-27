@@ -370,9 +370,9 @@ BICst.TABLE_FORM = {
 };
 
 BICst.TABLE_STYLE = {
-    NORMAL: 1,      //普通风格
-    BLUE: 2,        //蓝色表头的
-    INTERVAL: 3     //内容间隔色
+    STYLE1: 1,      //普通风格
+    STYLE2: 2,        //蓝色表头的
+    STYLE3: 3     //内容间隔色
 };
 
 BICst.TABLE_MAX_ROW = 20;
