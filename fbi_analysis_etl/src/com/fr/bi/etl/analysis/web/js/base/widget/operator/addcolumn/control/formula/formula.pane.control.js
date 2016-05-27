@@ -1,7 +1,8 @@
 BI.AnalysisETLOperatorAddColumnFormulaPaneController = BI.inherit(BI.MVCController, {
 
     _checkCanSave : function (widget, model) {
-        if (BI.isNull(model.get('formula'))){
+        var value = model.get('formula');
+        if (BI.isNull(value) || BI.isEmptyString(value)){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Formula_Valid'));
         } else {
             widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
