@@ -83,7 +83,9 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
                 textAlign: "left",
                 hgap: 5,
                 text: num,
-                cls: "sequence-table-number" + (num === o.startSequence + o.items.length - 1 ? " last" : "")
+                cls: "sequence-table-number"
+                + (num === o.startSequence + o.items.length - 1 ? " last" : "")
+                + (BI.isOdd(num - o.startSequence) ? " even" : " odd")
             })
         });
         return result;

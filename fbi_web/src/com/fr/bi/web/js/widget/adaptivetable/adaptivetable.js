@@ -245,6 +245,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.table.resize();
+        this._resizeHeader();
     },
 
     setColumnSize: function (columnSize) {
