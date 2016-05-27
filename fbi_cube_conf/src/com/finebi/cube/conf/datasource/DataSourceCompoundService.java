@@ -13,4 +13,6 @@ import java.util.Set;
 public interface DataSourceCompoundService extends BusinessTableSourceService, TableDataSourceService, BusinessFieldSourceService {
 
     void initialDataSource(Set<BusinessTable> tables);
+
+    void initialAll();
 }

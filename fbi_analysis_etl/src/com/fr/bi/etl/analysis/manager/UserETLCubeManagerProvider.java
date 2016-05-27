@@ -3,10 +3,10 @@
  */
 package com.fr.bi.etl.analysis.manager;
 
-import com.fr.bi.base.BICore;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.Release;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 
 /**
  * @author Daniel
@@ -19,7 +19,7 @@ public interface UserETLCubeManagerProvider extends Release{
 	/**
 	 * @return
 	 */
-	ICubeTableService getTableIndex(BICore core, BIUser user);
+	ICubeTableService getTableIndex(AnalysisCubeTableSource core, BIUser user);
 
 	/**
 	 * @param md5

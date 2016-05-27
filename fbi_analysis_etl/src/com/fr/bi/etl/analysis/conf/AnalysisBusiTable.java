@@ -1,7 +1,6 @@
 package com.fr.bi.etl.analysis.conf;
 
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -32,7 +31,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
     public CubeTableSource getSource() {
         if (source == null) {
             try {
-                source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSourceByID(getID(), new BIUser(-999));
+                source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(this);
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }

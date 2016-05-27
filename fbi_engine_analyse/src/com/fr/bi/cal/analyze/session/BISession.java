@@ -242,7 +242,6 @@ public class BISession extends BIAbstractSession {
             if (!isRealTime()) {
                 return BICubeManager.getInstance().fetchCubeLoader(accessUserId);
             } else {
-
                 if (loader == null) {
                     loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getUserId()));
                 }
