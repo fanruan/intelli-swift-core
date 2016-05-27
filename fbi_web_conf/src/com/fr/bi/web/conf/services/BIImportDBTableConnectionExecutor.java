@@ -1,9 +1,15 @@
 package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.exception.BIFieldAbsentException;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIDBTableField;
 import com.fr.bi.web.conf.utils.BIImportDBTableConnectionRelationTool;
 import com.fr.data.core.db.DBUtils;
@@ -74,6 +80,7 @@ public class BIImportDBTableConnectionExecutor {
         }
         return relationsSet;
     }
+
 
     private boolean isEqual(DBTableSource source, BIDBTableField field, String connName) {
         return ComparatorUtils.equals(source.getDbName(), connName)

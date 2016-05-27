@@ -3,6 +3,7 @@ package com.finebi.cube.conf.table;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
+import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
@@ -10,6 +11,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +30,7 @@ public class BusinessTableHelper {
         List<BusinessField> fields = table.getFields();
         if (fields == null) {
             fields = new ArrayList<BusinessField>();
-            Iterator<Map.Entry<String, ICubeFieldSource>> it = ((AbstractTableSource) table.getTableSource()).getFields().entrySet().iterator();
+            Iterator<Map.Entry<String, ICubeFieldSource>> it = ((AbstractTableSource) getTableDataSource(table)).getFields().entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, ICubeFieldSource> entry = it.next();
                 ICubeFieldSource fieldSource = entry.getValue();
@@ -71,5 +73,16 @@ public class BusinessTableHelper {
             }
         }
         return table.getTableSource();
+    }
+
+    public static BusinessField getSpecificField(BusinessTable table, String fieldName) throws BIFieldAbsentException {
+        BINonValueUtils.checkNull(fieldName);
+        List<BusinessField> fields = getTableFields(table);
+        for (BusinessField field : fields) {
+            if (ComparatorUtils.equals(fieldName, field.getFieldName())) {
+                return field;
+            }
+        }
+        throw new BIFieldAbsentException("The field the name is:" + fieldName + " is absent in table:" + table.getTableName());
     }
 }
