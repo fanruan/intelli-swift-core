@@ -245,6 +245,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.table.resize();
+        this._resizeHeader();
     },
 
     setColumnSize: function (columnSize) {
@@ -262,6 +263,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     setHeaderColumnSize: function (columnSize) {
         this.table.setHeaderColumnSize(columnSize);
+        this._resizeHeader();
     },
 
     setRegionColumnSize: function (columnSize) {

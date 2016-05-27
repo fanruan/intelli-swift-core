@@ -1767,6 +1767,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/xml.js",
                 "com/fr/bi/web/js/base/utils/chinesePY.js",
                 "com/fr/bi/web/js/base/utils/array.js",
+                "com/fr/bi/web/js/base/utils/number.js",
                 "com/fr/bi/web/js/base/utils/date.js",
                 "com/fr/bi/web/js/base/utils/queue.js",
                 "com/fr/bi/web/js/base/utils/linkedHashMap.js",
@@ -2392,6 +2393,8 @@ public class ResourceHelper {
                 //树选值
                 "com/fr/bi/web/js/components/treevaluechooser/combo.treevaluechooser.js",
 
+                //带样式表格
+                "com/fr/bi/web/js/components/styletable/style1table.js",
 
                 //模板管理
                 "com/fr/bi/web/js/components/templatemanager/liststyleitems/report.listview.item.js",

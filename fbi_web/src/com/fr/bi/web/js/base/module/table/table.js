@@ -479,6 +479,9 @@ BI.Table = BI.inherit(BI.Widget, {
                 } else {
                     self.scrollTopLeft.element.css("overflow-y", "hidden");
                 }
+                self.scrollTopLeft.element[0].scrollLeft = self.scrollBottomLeft.element[0].scrollLeft;
+                self.scrollTopRight.element[0].scrollLeft = self.scrollBottomRight.element[0].scrollLeft;
+                self.scrollBottomLeft.element[0].scrollTop = self.scrollBottomRight.element[0].scrollTop;
                 //调整拖拽handle的高度
                 if (o.isNeedResize) {
                     handle && handle.css("height", self.bottomLeft.element.height() + headerHeight);
@@ -794,13 +797,14 @@ BI.Table = BI.inherit(BI.Widget, {
             type: "bi.adaptive",
             width: "100%",
             height: "100%",
-            cls: "scroll-table",
+            cls: "scroll-bottom-right",
             scrollable: true,
             items: [this.tableContainer]
         });
 
         BI.createWidget({
             type: "bi.adaptive",
+            cls: "bottom-right",
             element: this.element,
             scrollable: false,
             items: [this.scrollContainer]
@@ -1033,6 +1037,8 @@ BI.Table = BI.inherit(BI.Widget, {
             this.bottomLeftContainer.element.width(isRight ? rw : lw);
             this.topRightContainer.element.width(isRight ? lw : rw);
             this.bottomRightContainer.element.width(isRight ? lw : rw);
+            this.scrollTopLeft.element[0].scrollLeft = this.scrollBottomLeft.element[0].scrollLeft;
+            this.scrollTopRight.element[0].scrollLeft = this.scrollBottomRight.element[0].scrollLeft;
             if (o.isNeedResize && o.isResizeAdapt) {
                 var leftWidth = BI.sum(o.freezeCols, function (i, col) {
                     return o.columnSize[col] > 1 ? o.columnSize[col] + 1 : o.columnSize[col];
@@ -1365,6 +1371,8 @@ BI.Table = BI.inherit(BI.Widget, {
             }
             this.topLeftContainer.element.width(isRight ? rw : lw);
             this.topRightContainer.element.width(isRight ? lw : rw);
+            this.scrollTopLeft.element[0].scrollLeft = this.scrollBottomLeft.element[0].scrollLeft;
+            this.scrollTopRight.element[0].scrollLeft = this.scrollBottomRight.element[0].scrollLeft;
             if (o.isNeedResize && o.isResizeAdapt) {
                 var leftWidth = BI.sum(o.freezeCols, function (i, col) {
                     return o.columnSize[col] > 1 ? o.columnSize[col] + 1 : o.columnSize[col];

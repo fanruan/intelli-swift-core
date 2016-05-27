@@ -82,6 +82,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             self.loaded();
             var json = jsonData.data, row = jsonData.row, size = jsonData.size;
             if (BI.isNull(json) || BI.isNull(row)) {
+                callback([], [], [], []);
                 return;
             }
             var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
