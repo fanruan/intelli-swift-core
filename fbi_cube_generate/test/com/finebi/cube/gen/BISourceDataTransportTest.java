@@ -10,7 +10,7 @@ import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 
@@ -83,7 +83,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             assertEquals(size, compoundTable.getFieldInfo().size());
 
             BIMemoryDataSource memoryDataSource = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableA();
-            ICubeFieldSource[] fields = BIMemoryDataSourceFactory.generateTableA().getFieldsArray(new HashSet<CubeTableSource>());
+            CubeFieldSource[] fields = BIMemoryDataSourceFactory.generateTableA().getFieldsArray(new HashSet<CubeTableSource>());
             ICubeColumnReaderService col1 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[0]));
             ICubeColumnReaderService col2 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[1]));
             ICubeColumnReaderService col3 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[2]));

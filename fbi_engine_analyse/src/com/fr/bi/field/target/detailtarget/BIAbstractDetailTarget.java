@@ -5,7 +5,6 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
@@ -13,6 +12,7 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
@@ -78,7 +78,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     }
 
     @Override
-    public List<BITableRelation> getRelationList(BusinessTable target, long userId) {
+    public List<BITableRelation> getRelationList(CubeTableSource target, long userId) {
         return relationList;
     }
 

@@ -42,13 +42,13 @@ public class ServerTableSource extends DBTableSource {
         final HashSet set = new HashSet();
         TableData tableData = getTableData();
         if(tableData instanceof DBTableData){
-            ICubeFieldSource field = getFields().get(fieldName);
+            CubeFieldSource field = getFields().get(fieldName);
             if (field == null){
                 return set;
             }
             SqlSettedStatement settedStatement = new SqlSettedStatement(((DBTableData) tableData).getDatabase());
             settedStatement.setSql("SELECT distinct " + fieldName + " FROM " + "(" +((DBTableData) tableData).getQuery() + ") " + "t");
-            BIDBUtils.runSQL(settedStatement, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
+            BIDBUtils.runSQL(settedStatement, new CubeFieldSource[]{field}, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue data) {
                     set.add(data.getValue());
@@ -62,12 +62,12 @@ public class ServerTableSource extends DBTableSource {
     }
 
     private HashSet getDistinctValuesOnlyByTableData(TableData tableData, String fieldName) {
-        ICubeFieldSource field = getFields().get(fieldName);
+        CubeFieldSource field = getFields().get(fieldName);
         final HashSet set = new HashSet();
         if (field == null){
             return set;
         }
-        BIServerUtils.runServer(tableData, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
+        BIServerUtils.runServer(tableData, new CubeFieldSource[]{field}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 set.add(data.getValue());
@@ -134,7 +134,7 @@ public class ServerTableSource extends DBTableSource {
     }
 
     @Override
-    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
+    public long read(final Traversal<BIDataValue> travel, CubeFieldSource[] fields, ICubeDataLoader loader) {
 
         final long start = System.currentTimeMillis();
         TableData tableData = getTableData();
@@ -142,7 +142,7 @@ public class ServerTableSource extends DBTableSource {
         if (tableData instanceof DBTableData) {
             return writeDBSimpleIndex(travel, ((DBTableData) tableData).getDatabase(), ((DBTableData) tableData).getQuery(), fields);
         } else {
-            final ICubeFieldSource[] columns = fields;
+            final CubeFieldSource[] columns = fields;
             return BIServerUtils.runServer(tableData, columns, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue data) {
@@ -172,7 +172,7 @@ public class ServerTableSource extends DBTableSource {
         }
     }
 
-    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, ICubeFieldSource[] fields) {
+    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, CubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
         sql.setFrom( "(" + query + ") " + "t");
         return BIDBUtils.runSQL(sql, fields, new Traversal<BIDataValue>() {

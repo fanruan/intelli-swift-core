@@ -6,7 +6,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
@@ -74,7 +74,7 @@ public abstract class AbstractAnalysisIDTableSource<T extends CubeTableSource> e
      * @return
      */
     @Override
-    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader) {
         return 0;
     }
 

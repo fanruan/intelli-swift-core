@@ -1,9 +1,10 @@
 package com.fr.bi.stable.report.result;
 
-import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public interface DimensionCalculator extends FCloneable {
 
-     BusinessField getField();
+     CubeFieldSource getField();
 
     /**
      * 获取维度到维度/指标的分组索引
@@ -27,7 +28,7 @@ public interface DimensionCalculator extends FCloneable {
      * @param loader
      * @return
      */
-    ICubeColumnIndexReader createNoneSortGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader);
+    ICubeColumnIndexReader createNoneSortGroupValueMapGetter(CubeTableSource target, ICubeDataLoader loader);
 
     /**
      * 是否为超级大分组
@@ -59,7 +60,7 @@ public interface DimensionCalculator extends FCloneable {
     int getSortType();
 
 
-    Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader);
+    Iterator createValueMapIterator(CubeTableSource table, ICubeDataLoader loader);
 
     Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit);
 

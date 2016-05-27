@@ -100,7 +100,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             return rowCount;
         }
         int index = -1;
-        ICubeFieldSource[] fields = cube.getBIField();
+        CubeFieldSource[] fields = cube.getBIField();
         for (int i = 0; i < fields.length; i++) {
             if (ComparatorUtils.equals(fields[i].getFieldName(), columnName)) {
                 index = i;
@@ -142,8 +142,8 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(rSql);
         String columnName = getColumnName(connection, sqlStatement, rSql);
-        ICubeFieldSource f = null;
-        for (ICubeFieldSource field : cube.getBIField()) {
+        CubeFieldSource f = null;
+        for (CubeFieldSource field : cube.getBIField()) {
             if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
                 f = field;
                 break;
@@ -155,7 +155,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }
         BIKey key = new IndexKey(columnName);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
-        BIDBUtils.runSQL(sqlStatement, new ICubeFieldSource[]{f}, new Traversal<BIDataValue>() {
+        BIDBUtils.runSQL(sqlStatement, new CubeFieldSource[]{f}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 Object[] key = getter.createKey(1);

@@ -15,7 +15,7 @@ import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
@@ -117,7 +117,7 @@ public class LinkInUseIndexEntry implements CubeGenerator {
 
     private Set<BIKey> createKeys(TableCubeFile cube, String field) {
         Set<BIKey> set = new HashSet<BIKey>();
-        for (ICubeFieldSource f : cube.getBIField()) {
+        for (CubeFieldSource f : cube.getBIField()) {
             if (ComparatorUtils.equals(f.getFieldName(), field)) {
                 if (f.getFieldType() == DBConstant.COLUMN.DATE) {
                     set.add(new IndexTypeKey(field, BIReportConstant.GROUP.Y));

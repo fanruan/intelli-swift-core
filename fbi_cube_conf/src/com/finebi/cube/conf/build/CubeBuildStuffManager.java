@@ -10,7 +10,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -41,7 +41,7 @@ public class CubeBuildStuffManager implements Serializable {
     private Set<BITableSourceRelation> tableSourceRelationSet;
     private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private Set<BITableRelation> tableRelationSet;
-    private Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
+    private Map<CubeTableSource, Map<String, CubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, CubeFieldSource>>();
     private Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap;
     private Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap;
     private BIUser biUser;
@@ -82,8 +82,8 @@ public class CubeBuildStuffManager implements Serializable {
             try {
                 CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
                 CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
-                ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
-                ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
+                CubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
+                CubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
                 if (tableSourceRelationSet.contains(
                         new BITableSourceRelation(
                                 primaryField,
@@ -150,8 +150,8 @@ public class CubeBuildStuffManager implements Serializable {
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);
         }
-        ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
-        ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
+        CubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
+        CubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         if (primaryField == null || foreignField == null) {
             throw new NullPointerException();
         }
@@ -233,10 +233,10 @@ public class CubeBuildStuffManager implements Serializable {
         Iterator<CubeTableSource> tableSourceIterator = sources.iterator();
         while (tableSourceIterator.hasNext()) {
             CubeTableSource tableSource = tableSourceIterator.next();
-            ICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(sources);
-            Map<String, ICubeFieldSource> name2Field = new HashMap<String, ICubeFieldSource>();
+            CubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(sources);
+            Map<String, CubeFieldSource> name2Field = new HashMap<String, CubeFieldSource>();
             for (int i = 0; i < BICubeFieldSources.length; i++) {
-                ICubeFieldSource field = BICubeFieldSources[i];
+                CubeFieldSource field = BICubeFieldSources[i];
                 name2Field.put(field.getFieldName(), field);
             }
             tableDBFieldMaps.put(tableSource, name2Field);

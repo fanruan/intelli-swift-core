@@ -12,7 +12,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Set;
@@ -34,7 +34,7 @@ public class BICubeOperationManager4Test extends BICubeOperationManager {
     }
 
     @Override
-    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
+    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, CubeTableSource tableSource, CubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
         return new BIFieldIndexBuilder4Test(cube, tableSource, BICubeFieldSource, targetColumnKey);
     }
 
@@ -50,7 +50,7 @@ public class BICubeOperationManager4Test extends BICubeOperationManager {
     }
 
     @Override
-    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {
+    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, CubeFieldSource field, BITableSourceRelationPath tablePath) {
         return new BIFieldPathIndexBuilder4Test(cube, field, null);
     }
 

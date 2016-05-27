@@ -7,7 +7,7 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
@@ -35,7 +35,7 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources generatingobjects 的packs的sources
      * @return 字段
      */
-    ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources);
+    CubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources);
 
     /**
      * 当前TableSource父类的全部可用字段。
@@ -43,7 +43,7 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources
      * @return
      */
-    Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources);
+    Set<CubeFieldSource> getParentFields(Set<CubeTableSource> sources);
 
     /**
      * 当前TableSource最终全部可用字段。
@@ -55,7 +55,7 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources
      * @return
      */
-    Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources);
+    Set<CubeFieldSource> getFacetFields(Set<CubeTableSource> sources);
 
     /**
      * 当前TableSource自身的字段。
@@ -63,7 +63,7 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
      * @param sources
      * @return
      */
-    Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources);
+    Set<CubeFieldSource> getSelfFields(Set<CubeTableSource> sources);
 
 
     /**
@@ -89,9 +89,9 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
      *
      * @return
      */
-    long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader);
+    long read(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader);
 
-    long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end);
+    long read4Part(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader, int start, int end);
 
     /**
      * 获取某个字段的distinct值

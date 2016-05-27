@@ -83,7 +83,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         int startCol = 0;
         if (isAllAddColumnOperator()) {
             for (CubeTableSource p : getParents()) {
@@ -108,8 +108,8 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
     }
 
     @Override
-    public Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
-        Set<ICubeFieldSource> result = new HashSet<ICubeFieldSource>();
+    public Set<CubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
+        Set<CubeFieldSource> result = new HashSet<CubeFieldSource>();
         Iterator<PersistentField> it = getPersistentTable().getFieldList().iterator();
         while (it.hasNext()) {
             PersistentField column = it.next();
@@ -119,8 +119,8 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
     }
 
     @Override
-    public Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
-        Set<ICubeFieldSource> result = new HashSet<ICubeFieldSource>();
+    public Set<CubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
+        Set<CubeFieldSource> result = new HashSet<CubeFieldSource>();
         for (CubeTableSource tableSource : parents) {
             result.addAll(tableSource.getFacetFields(sources));
         }
@@ -183,7 +183,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader) {
         return 0;
     }
 
@@ -233,7 +233,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
     }
 
     @Override
-    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
+    public CubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
         if (hasTableFilterOperator()) {
             return new BICubeFieldSource[0];
         } else {

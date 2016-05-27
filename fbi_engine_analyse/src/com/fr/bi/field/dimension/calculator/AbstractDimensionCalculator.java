@@ -14,6 +14,7 @@ import com.fr.bi.common.BICoreWrapper;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
@@ -44,7 +45,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
-    public BusinessField getField() {
+    public CubeFieldSource getField() {
         return field;
     }
 
@@ -68,7 +69,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
      * @return
      */
     @Override
-    public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
+    public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(CubeTableSource target, ICubeDataLoader loader) {
         ICubeColumnIndexReader getter = loader.getTableIndex(getTableSourceFromField()).loadGroup(createKey(), relations);
         return dimension.getGroup().createGroupedMap(getter);
     }
@@ -133,7 +134,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
-    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader) {
+    public Iterator createValueMapIterator(CubeTableSource table, ICubeDataLoader loader) {
         ICubeColumnIndexReader getter = createNoneSortGroupValueMapGetter(table, loader);
         if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();

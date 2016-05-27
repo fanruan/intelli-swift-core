@@ -1,9 +1,9 @@
 package com.fr.bi.conf.report.filter;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.provider.ParseJSONWithUID;
 import com.fr.bi.common.BICoreService;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONCreator;
@@ -22,5 +22,5 @@ public interface FieldFilter extends ParseJSONWithUID, JSONCreator,BICoreService
      * @param loader loader 对象
      * @return 分组索引
      */
-     GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId);
+     GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId);
 }

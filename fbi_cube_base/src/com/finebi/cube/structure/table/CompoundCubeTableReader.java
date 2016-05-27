@@ -14,7 +14,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -32,8 +32,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
      * 上次Table对象
      */
     private ICubeTableEntityService parentTable;
-    protected Map<ICubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, ICubeTableEntityService>();
-    private List<ICubeFieldSource> compoundFields = new ArrayList<ICubeFieldSource>();
+    protected Map<CubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<CubeFieldSource, ICubeTableEntityService>();
+    private List<CubeFieldSource> compoundFields = new ArrayList<CubeFieldSource>();
 
     public CompoundCubeTableReader(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         hostTable = new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
@@ -49,7 +49,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     private void initialFields() {
         if (hostTable.tableDataAvailable()) {
-            for (ICubeFieldSource field : hostTable.getFieldInfo()) {
+            for (CubeFieldSource field : hostTable.getFieldInfo()) {
                 if (!compoundFields.contains(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, hostTable);
@@ -59,7 +59,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
             throw BINonValueUtils.beyondControl("Please generate Cube firstly");
         }
         if (isParentAvailable()) {
-            for (ICubeFieldSource field : parentTable.getFieldInfo()) {
+            for (CubeFieldSource field : parentTable.getFieldInfo()) {
                 if (!compoundFields.contains(field) && isInFacedFields(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, parentTable);
@@ -69,7 +69,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         }
     }
 
-    private boolean isInFacedFields(ICubeFieldSource field) {
+    private boolean isInFacedFields(CubeFieldSource field) {
         return getFieldNamesFromParent().contains(field.getFieldName());
     }
 
@@ -78,7 +78,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public void recordTableStructure(List<ICubeFieldSource> fields) {
+    public void recordTableStructure(List<CubeFieldSource> fields) {
         throw new UnsupportedOperationException();
 
     }
@@ -138,7 +138,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public List<ICubeFieldSource> getFieldInfo() {
+    public List<CubeFieldSource> getFieldInfo() {
         return compoundFields;
     }
 
@@ -170,8 +170,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        for (ICubeFieldSource field : compoundFields) {
+    public CubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
+        for (CubeFieldSource field : compoundFields) {
             if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
                 return field;
             }
@@ -185,7 +185,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
-        ICubeFieldSource field = getSpecificColumn(fieldName);
+        CubeFieldSource field = getSpecificColumn(fieldName);
         return fieldSource.get(field);
     }
 

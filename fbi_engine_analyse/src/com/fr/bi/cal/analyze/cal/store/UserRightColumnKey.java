@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.cal.store;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.dimension.calculator.AbstractDimensionCalculator;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;
 
@@ -81,7 +82,7 @@ public class UserRightColumnKey extends AbstractDimensionCalculator {
      * @return 迭代器
      */
     @Override
-    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader) {
+    public Iterator createValueMapIterator(CubeTableSource table, ICubeDataLoader loader) {
         Map<String, GroupValueIndex> vMap = new HashMap<String, GroupValueIndex>();
         vMap.put(ERROR_NAME, gvi);
         return vMap.entrySet().iterator();

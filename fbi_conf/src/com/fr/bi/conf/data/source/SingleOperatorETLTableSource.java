@@ -2,7 +2,7 @@ package com.fr.bi.conf.data.source;
 
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -26,7 +26,7 @@ public class SingleOperatorETLTableSource extends ETLTableSource {
     }
 
     @Override
-    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
+    public CubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
         if (isAllAddColumnOperator()) {
             return getAddedField();
         } else {

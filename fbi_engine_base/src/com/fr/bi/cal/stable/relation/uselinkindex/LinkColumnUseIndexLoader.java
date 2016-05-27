@@ -7,7 +7,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.relation.LinkIndexLoader;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.file.IndexFile;
@@ -54,7 +54,7 @@ public class LinkColumnUseIndexLoader implements LinkIndexLoader, CubeGenerator,
         if (relations != null && (!relations.isEmpty())) {
             final RelationColumnKey rck = new RelationColumnKey(relations.get(0).getPrimaryKey(), relations);
             long start = System.currentTimeMillis();
-            ICubeFieldSource startKey = relations.get(0).getPrimaryKey();
+            CubeFieldSource startKey = relations.get(0).getPrimaryKey();
             CubeTableSource endTable = relations.get(relations.size() - 1).getForeignKey().getTableBelongTo();
             String message = "generate inuse relation from table :" + startKey.toString() + "to table : " + endTable.toString();
             BILogger.getLogger().info(message + " start ");

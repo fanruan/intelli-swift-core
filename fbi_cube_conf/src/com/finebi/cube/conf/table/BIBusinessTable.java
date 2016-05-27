@@ -12,7 +12,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -160,10 +160,10 @@ public class BIBusinessTable implements BusinessTable {
     public void initialFields() {
         if (fields == null) {
             fields = new ArrayList<BusinessField>();
-            Iterator<Map.Entry<String, ICubeFieldSource>> it = getSourceFields().entrySet().iterator();
+            Iterator<Map.Entry<String, CubeFieldSource>> it = getSourceFields().entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry<String, ICubeFieldSource> entry = it.next();
-                ICubeFieldSource field = entry.getValue();
+                Map.Entry<String, CubeFieldSource> entry = it.next();
+                CubeFieldSource field = entry.getValue();
                 BIFieldID fieldID = new BIFieldID(java.util.UUID.randomUUID().toString());
                 fields.add(new BIBusinessField(this,
                         fieldID, field.getFieldName(), field.getClassType(), field.getFieldSize()));
@@ -171,7 +171,7 @@ public class BIBusinessTable implements BusinessTable {
         }
     }
 
-    private Map<String, ICubeFieldSource> getSourceFields() {
+    private Map<String, CubeFieldSource> getSourceFields() {
         try {
             return ((AbstractTableSource) getTableSource()).getFields();
         } catch (Exception e) {

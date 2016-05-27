@@ -1,10 +1,7 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.field.BIBusinessField;
-import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
@@ -22,13 +19,15 @@ import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.stable.constant.CellConstant;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,7 @@ import java.util.Map;
 public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObject> {
 
 
-    protected transient BusinessTable target;
+    protected transient CubeTableSource target;
     protected transient BIDetailTarget[] viewDimension;
     protected transient String[] sortTargets;
     protected transient long userId;
@@ -48,7 +47,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
 
     public AbstractDetailExecutor(BIDetailWidget widget, Paging paging, BISession session) {
         super(widget, paging, session);
-        this.target = widget.getTargetDimension();
+        this.target = BusinessTableHelper.getTableDataSource(widget.getTargetDimension());
         this.widget = widget;
         this.session = session;
 
@@ -58,13 +57,13 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     }
 
     protected GroupValueIndex createDetailViewGvi() {
-        ICubeTableService ti = getLoader().getTableIndex(target.getTableSource());
+        ICubeTableService ti = getLoader().getTableIndex(target);
         GroupValueIndex gvi = ti.getAllShowIndex();
         for (int i = 0; i < this.viewDimension.length; i++) {
             BIDetailTarget target = this.viewDimension[i];
             TargetFilter filterValue = target.getFilter();
             if (filterValue != null) {
-                BusinessField dataColumn = target.createColumnKey();
+                CubeFieldSource dataColumn = target.createColumnKey();
                 List<BITableRelation> simpleRelations = target.getRelationList(this.target, this.userId);
                 gvi = GVIUtils.AND(gvi, filterValue.createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convertToMD5RelationFromSimpleRelation(simpleRelations, new BIUser(this.userId))), this.target, getLoader(), this.userId));
             }
@@ -74,13 +73,13 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             String targetId = entry.getKey();
             BIDetailTarget target = getTargetById(targetId);
             if (target != null) {
-                BusinessField dataColumn = target.createColumnKey();
+                CubeFieldSource dataColumn = target.createColumnKey();
                 List<BITableRelation> simpleRelations = target.getRelationList(this.target, this.userId);
                 gvi = GVIUtils.AND(gvi, entry.getValue().createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convertToMD5RelationFromSimpleRelation(simpleRelations, new BIUser(this.userId))), this.target, getLoader(), this.userId));
             }
         }
         gvi = GVIUtils.AND(gvi,
-                widget.createFilterGVI(new DimensionCalculator[]{new NoneDimensionCalculator(new BIBusinessField(this.target, StringUtils.EMPTY),
+                widget.createFilterGVI(new DimensionCalculator[]{new NoneDimensionCalculator(new BICubeFieldSource(this.target),
                         new ArrayList<BITableSourceRelation>())}, this.target, getLoader(), this.userId));
         return gvi;
     }
@@ -156,7 +155,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     protected void createCellTitle(CBCell[][] cbcells, int cellType) {
         BIDetailTarget[] viewDimension = widget.getViewDimensions();
         for (int i = 0; i < viewDimension.length; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)viewDimension[i]).getText());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) viewDimension[i]).getText());
             cell.setColumn(i + widget.isOrder());
             cell.setRow(0);
             cell.setRowSpan(1);

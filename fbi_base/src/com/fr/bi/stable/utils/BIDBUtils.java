@@ -448,7 +448,7 @@ public class BIDBUtils {
         return sql;
     }
 
-    private static String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
+    private static String createSqlString(Dialect dialect, CubeFieldSource[] columns) {
         StringBuffer sb = new StringBuffer();
         ArrayList<String> list = new ArrayList<String>();
         for (int i = 0; i < columns.length; i++) {
@@ -476,10 +476,10 @@ public class BIDBUtils {
 
     @SuppressWarnings("rawtypes")
     private static DBDealer[] createDBDealer(boolean needCharSetConvert, String originalCharSetName,
-                                             String newCharSetName, ICubeFieldSource[] columns) {
+                                             String newCharSetName, CubeFieldSource[] columns) {
         List<DBDealer> res = new ArrayList<DBDealer>();
         for (int i = 0, ilen = columns.length; i < ilen; i++) {
-            ICubeFieldSource field = columns[i];
+            CubeFieldSource field = columns[i];
             if (field.isUsable()) {
                 DBDealer object = null;
                 int rsColumn = i + 1;
@@ -519,7 +519,7 @@ public class BIDBUtils {
 
 
     private static int dealWithResultSet(ResultSet rs,
-                                         ICubeFieldSource[] columns,
+                                         CubeFieldSource[] columns,
                                          Traversal<BIDataValue> traversal,
                                          boolean needCharSetConvert,
                                          String originalCharSetName,
@@ -537,7 +537,7 @@ public class BIDBUtils {
         return row;
     }
 
-    public static long runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal) {
+    public static long runSQL(SQLStatement sql, CubeFieldSource[] columns, Traversal<BIDataValue> traversal) {
         return runSQL(sql, columns, traversal, 0);
     }
 
@@ -546,7 +546,7 @@ public class BIDBUtils {
      *
      * @param traversal
      */
-    public static int runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal, int row) {
+    public static int runSQL(SQLStatement sql, CubeFieldSource[] columns, Traversal<BIDataValue> traversal, int row) {
         com.fr.data.impl.Connection connection = sql.getConn();
         Connection conn = null;
         Statement stmt = null;

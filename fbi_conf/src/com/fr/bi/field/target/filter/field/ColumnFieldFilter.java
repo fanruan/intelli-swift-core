@@ -13,6 +13,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -131,7 +132,7 @@ public class ColumnFieldFilter extends ColumnFilter {
      * @return 分组索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId) {
         if (dataColumn != null && filterValue != null) {
             if (ComparatorUtils.equals(dimension.getField(), dataColumn)) {
                 return filterValue.createFilterIndex(dimension, target, loader, userId);

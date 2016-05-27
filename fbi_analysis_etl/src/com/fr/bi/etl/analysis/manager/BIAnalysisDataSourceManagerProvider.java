@@ -7,7 +7,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.json.JSONObject;
 
 /**
@@ -49,7 +49,7 @@ public interface BIAnalysisDataSourceManagerProvider {
 
     JSONObject createJSON(BIUser user) throws Exception;
 
-    ICubeFieldSource findDBField(BIUser user, BusinessField biField) throws BIFieldAbsentException;
+    CubeFieldSource findDBField(BIUser user, BusinessField biField) throws BIFieldAbsentException;
 
     @Deprecated
     void persistData(long userId);

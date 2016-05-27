@@ -3,7 +3,7 @@ package com.fr.bi.stable.engine.index;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Delete;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -35,7 +35,7 @@ public interface BITableCubeFile extends Delete {
 
     void writeRemovedLine(TreeSet<Integer> removedLine);
 
-    ICubeFieldSource[] getBIField();
+    CubeFieldSource[] getBIField();
 
     void createDetailDataWriter();
 

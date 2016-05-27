@@ -85,7 +85,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
      * @return
      */
     @Override
-    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader) {
         throw new RuntimeException("Only UserTableSource can read");
     }
 

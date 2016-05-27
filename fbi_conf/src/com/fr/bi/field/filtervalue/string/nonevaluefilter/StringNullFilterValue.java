@@ -2,7 +2,7 @@ package com.fr.bi.field.filtervalue.string.nonevaluefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -50,7 +50,7 @@ public class StringNullFilterValue extends StringNoneValueFilterValue {
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId) {
         ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource());
         List<BITableSourceRelation> relations = dimension.getRelationList();
         ICubeColumnIndexReader getter = ti.loadGroup(dimension.createKey(), relations);

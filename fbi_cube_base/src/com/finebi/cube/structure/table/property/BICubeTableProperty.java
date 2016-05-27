@@ -13,7 +13,7 @@ import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ICubeTablePropertyService;
 import com.finebi.cube.structure.ITableKey;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -34,7 +34,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private static String TIMESTAMP_DATA = "timestamp";
     private static String SUPER_TABLES = "st";
 
-    private List<ICubeFieldSource> tableFields = null;
+    private List<CubeFieldSource> tableFields = null;
     private List<ITableKey> parentTable = null;
 
     private ICubeResourceDiscovery discovery;
@@ -305,7 +305,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     private void initialField() {
         if (getFieldInfoReader().canRead() && !isFieldInit()) {
-            tableFields = new ArrayList<ICubeFieldSource>();
+            tableFields = new ArrayList<CubeFieldSource>();
             try {
                 int columnSize = Integer.parseInt(getFieldInfoReader().getSpecificValue(0));
                 for (int pos = 1; pos <= columnSize; pos++) {
@@ -344,19 +344,19 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
-    public void recordTableStructure(List<ICubeFieldSource> fields) {
+    public void recordTableStructure(List<CubeFieldSource> fields) {
         /**
          * 即便是空，也要记录是空数组0的长度。
          */
         if (fields == null) {
-            fields = new ArrayList<ICubeFieldSource>();
+            fields = new ArrayList<CubeFieldSource>();
         }
-        Iterator<ICubeFieldSource> fieldIterator = fields.iterator();
+        Iterator<CubeFieldSource> fieldIterator = fields.iterator();
         int position = 0;
         getFieldInfoWriter().recordSpecificValue(position, String.valueOf(fields.size()));//First position records size of columns.
         position++;
         while (fieldIterator.hasNext()) {
-            ICubeFieldSource field = fieldIterator.next();
+            CubeFieldSource field = fieldIterator.next();
             try {
                 getFieldInfoWriter().recordSpecificValue(position, field.createJSON().toString());
                 position++;
@@ -437,7 +437,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
-    public List<ICubeFieldSource> getFieldInfo() {
+    public List<CubeFieldSource> getFieldInfo() {
         initialField();
         return tableFields;
     }

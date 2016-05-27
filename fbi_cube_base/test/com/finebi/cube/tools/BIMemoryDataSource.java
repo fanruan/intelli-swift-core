@@ -6,7 +6,7 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -26,7 +26,7 @@ import java.util.*;
 public class BIMemoryDataSource extends AbstractTableSource {
 
     public String sourceID;
-    public List<ICubeFieldSource> fieldList;
+    public List<CubeFieldSource> fieldList;
     public int rowCount;
     public Map<Integer, List> contents;
 
@@ -34,7 +34,7 @@ public class BIMemoryDataSource extends AbstractTableSource {
         this.sourceID = sourceID;
     }
 
-    public void setFieldList(List<ICubeFieldSource> fieldList) {
+    public void setFieldList(List<CubeFieldSource> fieldList) {
         this.fieldList = fieldList;
     }
 
@@ -57,8 +57,8 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
-    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
-        ICubeFieldSource[] result = new BICubeFieldSource[fieldList.size()];
+    public CubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
+        CubeFieldSource[] result = new BICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
             result[i] = fieldList.get(i);
         }
@@ -76,7 +76,7 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader) {
         for (int i = 0; i < rowCount; i++) {
             Iterator<Map.Entry<Integer, List>> it = contents.entrySet().iterator();
             while (it.hasNext()) {
@@ -90,7 +90,7 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return 0;
     }
 

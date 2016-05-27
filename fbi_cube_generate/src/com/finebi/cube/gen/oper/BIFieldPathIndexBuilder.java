@@ -7,7 +7,7 @@ import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -22,7 +22,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
     private BIColumnKey field;
 
-    public BIFieldPathIndexBuilder(ICube cube, ICubeFieldSource field, BICubeTablePath relationPath) {
+    public BIFieldPathIndexBuilder(ICube cube, CubeFieldSource field, BICubeTablePath relationPath) {
         this(cube, BIColumnKey.covertColumnKey(field), relationPath);
     }
 

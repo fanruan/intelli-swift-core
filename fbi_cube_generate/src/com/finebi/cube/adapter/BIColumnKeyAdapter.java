@@ -3,14 +3,14 @@ package com.finebi.cube.adapter;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
  * Created by Young's on 2016/4/23.
  */
 public class BIColumnKeyAdapter {
-    public static final BIColumnKey covert(ICubeFieldSource field, int type) {
+    public static final BIColumnKey covert(CubeFieldSource field, int type) {
         BIColumnKey columnKey;
         switch (type) {
             case BIReportConstant.GROUP.Y:

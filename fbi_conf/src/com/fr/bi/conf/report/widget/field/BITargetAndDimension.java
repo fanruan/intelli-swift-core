@@ -7,6 +7,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.base.provider.NameProvider;
 import com.fr.bi.base.provider.ParseJSONWithUID;
 import com.fr.bi.common.BICoreService;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.js.NameJavaScriptGroup;
 
 public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BICoreService {
@@ -42,7 +43,7 @@ public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BI
      *
      * @return
      */
-    BusinessField createColumnKey();
+    CubeFieldSource createColumnKey();
 
     boolean isUsed();
 }

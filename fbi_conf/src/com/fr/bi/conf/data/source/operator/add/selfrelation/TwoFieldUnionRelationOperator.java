@@ -7,7 +7,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -89,8 +89,8 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
         int rowCount = ti.getRowCount();
         ICubeColumnIndexReader idmap = ti.loadGroup(new IndexKey(idFieldName), new ArrayList<BITableSourceRelation>());
-        ICubeFieldSource idColumn = ti.getColumns().get(new IndexKey(idFieldName));
-        ICubeFieldSource pidColumn = ti.getColumns().get(new IndexKey(parentIdFieldName));
+        CubeFieldSource idColumn = ti.getColumns().get(new IndexKey(idFieldName));
+        CubeFieldSource pidColumn = ti.getColumns().get(new IndexKey(parentIdFieldName));
         int columnLength = fields.size();
         if (idColumn != null && pidColumn != null && idColumn.getFieldType() == pidColumn.getFieldType()) {
             for (int i = 0; i < rowCount; i++) {

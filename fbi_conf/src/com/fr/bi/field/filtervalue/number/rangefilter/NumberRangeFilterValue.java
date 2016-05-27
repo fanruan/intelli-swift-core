@@ -2,11 +2,11 @@ package com.fr.bi.field.filtervalue.number.rangefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.filter.NullFilterDealer;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.data.number.NumberGroupInfo;
@@ -146,12 +146,12 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, CubeTableSource target, ICubeDataLoader loader, long userId) {
         if (min > max) {
             return GVIFactory.createAllEmptyIndexGVI();
         }
         NumberGroupInfo gi = NumberGroupInfo.createGroupInfo(min, closemin, max, closemax);
-        ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource());
+        ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo());
         if (dimension.getRelationList() == null) {
             return ti.getAllShowIndex();
         }

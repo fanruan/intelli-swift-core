@@ -33,7 +33,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
      */
     private static final long serialVersionUID = -8657998191260725924L;
     //表的唯一标识
-    protected Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
+    protected Map<String, CubeFieldSource> fields = new LinkedHashMap<String, CubeFieldSource>();
     protected PersistentTable dbTable;
 
     protected AbstractTableSource() {
@@ -62,20 +62,20 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
-    public Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
-        return new HashSet<ICubeFieldSource>();
+    public Set<CubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
+        return new HashSet<CubeFieldSource>();
     }
 
     @Override
-    public Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
+    public Set<CubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
         return getSelfFields(sources);
     }
 
     @Override
-    public Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
-        Set<ICubeFieldSource> result = new HashSet<ICubeFieldSource>();
-        ICubeFieldSource[] fields = getFieldsArray(sources);
-        for (ICubeFieldSource field : fields) {
+    public Set<CubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
+        Set<CubeFieldSource> result = new HashSet<CubeFieldSource>();
+        CubeFieldSource[] fields = getFieldsArray(sources);
+        for (CubeFieldSource field : fields) {
             result.add(field);
         }
         return result;
@@ -87,7 +87,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+    public long read4Part(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return read(travel, field, loader);
     }
 
@@ -152,7 +152,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
-    public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
+    public long read(Traversal<BIDataValue> travel, CubeFieldSource[] field, ICubeDataLoader loader) {
         return 0;
     }
 
@@ -190,7 +190,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
     }
 
-    public Map<String, ICubeFieldSource> getFields() {
+    public Map<String, CubeFieldSource> getFields() {
         try {
             this.fields = getFieldFromPersistentTable();
         } catch (Exception e) {
@@ -206,25 +206,25 @@ public abstract class AbstractTableSource implements CubeTableSource {
      * @return 字段
      */
     @Override
-    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
-        return getFields().values().toArray(new ICubeFieldSource[getFields().values().size()]);
+    public CubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
+        return getFields().values().toArray(new CubeFieldSource[getFields().values().size()]);
     }
 
-    private Map<String, ICubeFieldSource> getFieldFromPersistentTable() {
-        Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
+    private Map<String, CubeFieldSource> getFieldFromPersistentTable() {
+        Map<String, CubeFieldSource> fields = new LinkedHashMap<String, CubeFieldSource>();
         IPersistentTable bt = getPersistentTable();
         if (bt == null) {
             throw new NullPointerException();
         }
-        List<ICubeFieldSource> list = new ArrayList<ICubeFieldSource>();
+        List<CubeFieldSource> list = new ArrayList<CubeFieldSource>();
         for (int i = 0, len = bt.getFieldSize(); i < len; i++) {
             PersistentField column = bt.getField(i);
-            ICubeFieldSource field = column.toDBField(this);
+            CubeFieldSource field = column.toDBField(this);
             list.add(field);
         }
-        for (ICubeFieldSource field : list) {
+        for (CubeFieldSource field : list) {
             String fieldName = field.getFieldName();
-            ICubeFieldSource old = this.fields.get(fieldName);
+            CubeFieldSource old = this.fields.get(fieldName);
             boolean isUsable = old == null || old.isUsable();
             fields.put(fieldName, field);
         }
@@ -294,9 +294,9 @@ public abstract class AbstractTableSource implements CubeTableSource {
         List<JSONObject> stringList = new ArrayList<JSONObject>();
         List<JSONObject> numberList = new ArrayList<JSONObject>();
         List<JSONObject> dateList = new ArrayList<JSONObject>();
-        Map<String, ICubeFieldSource> fields = getFields();
-        for (Map.Entry<String, ICubeFieldSource> entry : fields.entrySet()) {
-            ICubeFieldSource field = entry.getValue();
+        Map<String, CubeFieldSource> fields = getFields();
+        for (Map.Entry<String, CubeFieldSource> entry : fields.entrySet()) {
+            CubeFieldSource field = entry.getValue();
             stringList.add(field.createJSON());
         }
         ja.put(stringList).put(numberList).put(dateList);

@@ -1,7 +1,7 @@
 package com.fr.bi.conf.report.widget;
 
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
@@ -16,9 +16,9 @@ public class RelationColumnKey implements JSONCreator{
      */
     private static final long serialVersionUID = 434756052109265970L;
     protected List<BITableSourceRelation> relations;
-    protected ICubeFieldSource field;
+    protected CubeFieldSource field;
 
-    public RelationColumnKey(ICubeFieldSource define,
+    public RelationColumnKey(CubeFieldSource define,
                              List<BITableSourceRelation> relations) {
         field = define;
         this.relations = relations;

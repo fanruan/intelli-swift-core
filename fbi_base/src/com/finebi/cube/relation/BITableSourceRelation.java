@@ -1,7 +1,7 @@
 package com.finebi.cube.relation;
 
 
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 /**
@@ -10,8 +10,8 @@ import com.fr.bi.stable.data.source.CubeTableSource;
  * @author Connery
  * @since 4.0
  */
-public class BITableSourceRelation extends BIBasicRelation<CubeTableSource, ICubeFieldSource> {
-    public BITableSourceRelation(ICubeFieldSource primaryField, ICubeFieldSource foreignField, CubeTableSource primaryTable, CubeTableSource foreignTable) {
+public class BITableSourceRelation extends BIBasicRelation<CubeTableSource, CubeFieldSource> {
+    public BITableSourceRelation(CubeFieldSource primaryField, CubeFieldSource foreignField, CubeTableSource primaryTable, CubeTableSource foreignTable) {
         super(primaryField, foreignField, primaryTable, foreignTable);
     }
 }

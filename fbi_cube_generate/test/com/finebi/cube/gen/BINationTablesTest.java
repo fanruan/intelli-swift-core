@@ -14,7 +14,7 @@ import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -117,7 +117,7 @@ public class BINationTablesTest extends BICubeTestBase {
             setUp();
             BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
             transportTest.transport(tableSource);
-            ICubeFieldSource field = tableSource.getFieldsArray(null)[columnIndex];
+            CubeFieldSource field = tableSource.getFieldsArray(null)[columnIndex];
             Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
             while (columnKeyIterator.hasNext()) {
                 BIColumnKey columnKey = columnKeyIterator.next();

@@ -4,6 +4,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
@@ -12,7 +13,7 @@ import com.fr.stable.StringUtils;
  * 数据库列转成的基础列, 表示生成cube时的字段信息
  * Created by GUY on 2015/4/10.
  */
-public class BICubeFieldSource implements ICubeFieldSource {
+public class BICubeFieldSource implements CubeFieldSource {
 
     private int classType;
     protected int fieldType;
@@ -22,6 +23,7 @@ public class BICubeFieldSource implements ICubeFieldSource {
     protected CubeTableSource tableBelongTo;
     protected boolean usable = true;
 
+
     public BICubeFieldSource(CubeTableSource tableBelongTo, String fieldName, int classType, int fieldSize) {
         this.tableBelongTo = tableBelongTo;
         this.fieldName = fieldName;
@@ -29,6 +31,10 @@ public class BICubeFieldSource implements ICubeFieldSource {
         this.fieldSize = fieldSize;
         this.fieldID = new BIFieldID(fieldName);
         this.classType = classType;
+    }
+
+    public BICubeFieldSource(CubeTableSource tableBelongTo) {
+        this(tableBelongTo, BIStringUtils.BI_EMPTY, 0, 0);
     }
 
     @Override

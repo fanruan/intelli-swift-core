@@ -7,7 +7,7 @@ import com.fr.bi.conf.data.source.operator.OperatorFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.CubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -64,7 +64,7 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
     /**
      * FIXME 需要实现
      */
-    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
+    public long read(final Traversal<BIDataValue> travel, CubeFieldSource[] fields, ICubeDataLoader loader) {
         Iterator<IETLOperator> it = oprators.iterator();
         long index = 0;
         while (it.hasNext()) {
