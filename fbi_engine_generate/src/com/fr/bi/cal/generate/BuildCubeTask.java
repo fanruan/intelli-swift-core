@@ -2,6 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BIDeliverFailureException;
 import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
@@ -15,11 +16,12 @@ import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageTopic;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.conf.engine.CubeBuildStuffManager;
+import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -36,12 +38,9 @@ import java.util.concurrent.Future;
  *
  * @author Connery
  * @since 4.0
- *
+ * <p/>
  * edit by wuk
  * 增加单表更新功能
- * 
- * edit by wuk
- * 分离单表更新功能
  */
 public class BuildCubeTask implements CubeTask {
 
@@ -51,6 +50,8 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
+    /*单表更新*/
+    private BITable biTable;
 
     public BuildCubeTask(BIUser biUser) {
 
@@ -59,8 +60,16 @@ public class BuildCubeTask implements CubeTask {
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
 
-//        cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
-//        cubeBuildStuffManager.initialCubeStuff();
+    }
+
+    /*单表更新*/
+    public BuildCubeTask(BIUser biUser, BITable biTable) {
+        this.biUser = biUser;
+        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
+        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        this.biTable = biTable;
+
     }
 
 
