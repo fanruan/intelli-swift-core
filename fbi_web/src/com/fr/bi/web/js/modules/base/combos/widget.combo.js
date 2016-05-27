@@ -37,6 +37,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         });
         this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
             this.populate(self._rebuildItems());
+            self.fireEvent(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW);
         });
     },
 
@@ -267,5 +268,6 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         return this.combo.getValue();
     }
 });
+BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW = "EVENT_BEFORE_POPUPVIEW";
 BI.WidgetCombo.EVENT_CHANGE = "WidgetCombo.EVENT_CHANGE";
 $.shortcut('bi.widget_combo', BI.WidgetCombo);

@@ -43,6 +43,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var self = this;
         this._buildWidgetTitle();
+        this._buildChartDrill();
         this._createTools();
 
         this.tableChart = BI.createWidget({
@@ -52,6 +53,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
+        });
+        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function(obj){
+            self._onClickChart(obj);
         });
 
         this.widget = BI.createWidget({
@@ -72,12 +76,21 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 right: 10,
                 top: 50,
                 bottom: 10
+            }, {
+                el: this.chartDrill,
+                left: 0,
+                top: 0,
+                right: 0
             }]
         });
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
+            self.widget.attr("items")[3].top = 6;
+            self.widget.resize();
         }, function () {
             self.tools.setVisible(false);
+            self.widget.attr("items")[3].top = 0;
+            self.widget.resize();
         });
 
     },
@@ -105,6 +118,22 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         } else {
             this.title.setValue(BI.Utils.getWidgetNameByID(id));
         }
+    },
+
+    _buildChartDrill: function(){
+        var self = this;
+        this.chartDrill = BI.createWidget({
+            type: "bi.chart_drill",
+            wId: this.model.get("id")
+        });
+        this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function(widget){
+            self.model.set(widget);
+        });
+        this.chartDrill.populate();
+    },
+
+    _onClickChart: function(obj){
+        this.chartDrill.populate(obj);
     },
 
     _createTools: function () {
@@ -204,6 +233,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     break;
             }
         });
+        combo.on(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW, function(){
+            self.chartDrill.populate();
+        });
 
         this.tools = BI.createWidget({
             type: "bi.left",
@@ -217,6 +249,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
+        this.chartDrill.populate();
     },
 
     _refreshLayout: function () {
@@ -258,6 +291,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     change: function (changed) {
         if (BI.has(changed, "bounds")) {
             this.tableChart.resize();
+            this.chartDrill.populate();
         }
         if (BI.has(changed, "dimensions") ||
             BI.has(changed, "sort") ||
@@ -266,6 +300,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
+        }
+        if(BI.has(changed, "type")) {
+            this.tableChart.resize();
         }
     },
 

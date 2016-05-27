@@ -3165,3 +3165,21 @@
   content: "\e6ac";
   color: #808080;
 }
+.chart-drill-up .b-font:before {
+  content: "\e6ad";
+  color: "";
+}
+.chart-drill-up.native .b-font:before,
+.chart-drill-up.disabled .b-font:before {
+  content: "\e6ad";
+  color: "";
+}
+.chart-drill-down .b-font:before {
+  content: "\e608";
+  color: "";
+}
+.chart-drill-down.native .b-font:before,
+.chart-drill-down.disabled .b-font:before {
+  content: "\e608";
+  color: "";
+}
