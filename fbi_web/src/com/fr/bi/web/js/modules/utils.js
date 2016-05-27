@@ -466,6 +466,12 @@
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_number_level;
         },
 
+        getWSLeftYAxisNumLevelByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.right_y_axis_number_level) ? ws.right_y_axis_number_level :
+                BICst.DEFAULT_CHART_SETTING.right_y_axis_number_level;
+        },
+
         getWSLeftYAxisUnitByID: function(wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_unit) ? ws.left_y_axis_unit :
@@ -488,6 +494,18 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_right_y_axis_title) ? ws.show_right_y_axis_title :
                 BICst.DEFAULT_CHART_SETTING.show_right_y_axis_title;
+        },
+
+        getWSLeftYAxisTitleByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.left_y_axis_title) ? ws.left_y_axis_title :
+                BICst.DEFAULT_CHART_SETTING.left_y_axis_title;
+        },
+
+        getWSRightYAxisTitleByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.right_y_axis_title) ? ws.right_y_axis_title :
+                BICst.DEFAULT_CHART_SETTING.right_y_axis_title;
         },
 
         getWSLeftYAxisReversedByID: function(wid) {

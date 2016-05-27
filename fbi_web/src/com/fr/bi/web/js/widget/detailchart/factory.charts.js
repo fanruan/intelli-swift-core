@@ -175,7 +175,7 @@ BI.ChartCombineFormatItemFactory = {
                 "lineWidth": 2
             },
             geo:{
-                data:FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.js",
+                data: FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json",
                 geoName:'中国'
             },
             "borderColor": "rgb(238,238,238)",

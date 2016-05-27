@@ -712,6 +712,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
 
+                "com/fr/bi/web/css/third/leaflet.css"
+
         };
     }
 
