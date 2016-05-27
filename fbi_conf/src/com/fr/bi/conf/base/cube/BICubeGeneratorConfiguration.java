@@ -3,9 +3,9 @@ package com.fr.bi.conf.base.cube;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.conf.provider.ICubeGeneratorConfigure;
-import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.HashSet;
@@ -30,11 +30,7 @@ public class BICubeGeneratorConfiguration implements ICubeGeneratorConfigure {
             while (itTable.hasNext()) {
                 BIBusinessTable biBusinessTable = itTable.next();
                 CubeTableSource tableSource = null;
-                try {
-                    tableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(biBusinessTable.getID());
-                } catch (BIKeyAbsentException e) {
-                    e.printStackTrace();
-                }
+                tableSource = BusinessTableHelper.getTableDataSource(biBusinessTable);
                 allTable.add(tableSource);
             }
         }

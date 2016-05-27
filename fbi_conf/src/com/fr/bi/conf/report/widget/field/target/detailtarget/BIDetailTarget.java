@@ -3,7 +3,8 @@ package com.fr.bi.conf.report.widget.field.target.detailtarget;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -57,10 +58,10 @@ public interface BIDetailTarget extends BITargetAndDimension, Release {
      */
     boolean isReady4Calculate(Map<String, Object> values);
 
-    List<BISimpleRelation> getRelationList(BusinessTable target, long userId);
+    List<BITableRelation> getRelationList(BusinessTable target, long userId);
 
 
-    void setRelationList(List<BISimpleRelation> relationList);
+    void setRelationList(List<BITableRelation> relationList);
 
     ISort getSort();
 

@@ -601,6 +601,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/tablecell/normal/cell.tarbody.normal.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/tablecell/normal/expandercell.normal.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
+                "com/fr/bi/web/css/modules/tablechartmanager/datatable/combo/sortfilter.combo.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
 
                 //自适应布局
@@ -702,6 +703,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
                 //指标弹出明细表
+                "com/fr/bi/web/css/modules/detailtablepopup/module/selectdata/treeitem/item.level0.css",
+                "com/fr/bi/web/css/modules/detailtablepopup/module/selectdata/treeitem/item.level1.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.css",
@@ -1376,9 +1379,13 @@ public class ResourceHelper {
 
                 //指标弹出明细表
                 "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treeitem/item.level0.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treeitem/item.level1.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treeitem/item.level2.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/selectdata.detailtablepopup.js",
+                "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/region.detailtablepopup.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.js",
@@ -1682,6 +1689,11 @@ public class ResourceHelper {
                 //分页表格
                 "com/fr/bi/web/css/widget/pagetable/pagetable.cell.css",
                 "com/fr/bi/web/css/widget/pagetable/pagetable.css",
+
+                //带序号表格
+                "com/fr/bi/web/css/widget/sequencetable/listnumber.sequencetable.css",
+                "com/fr/bi/web/css/widget/sequencetable/treenumber.sequencetable.css",
+                "com/fr/bi/web/css/widget/sequencetable/sequencetable.css",
 
 
                 //布局
@@ -2338,6 +2350,11 @@ public class ResourceHelper {
                 //分页表格
                 "com/fr/bi/web/js/widget/pagetable/pagetable.cell.js",
                 "com/fr/bi/web/js/widget/pagetable/pagetable.js",
+
+                //带序号表格
+                "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
+                "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
+                "com/fr/bi/web/js/widget/sequencetable/sequencetable.js",
 
                 //图片组件
                 "com/fr/bi/web/js/widget/image/uploadimage.js",

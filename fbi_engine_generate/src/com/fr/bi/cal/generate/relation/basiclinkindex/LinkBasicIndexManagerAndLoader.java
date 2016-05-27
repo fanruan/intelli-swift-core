@@ -12,8 +12,6 @@ import com.fr.bi.cal.stable.index.utils.BIVersionUtils;
 import com.fr.bi.cal.stable.relation.LinkIndexLoader;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
-import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -49,11 +47,8 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         biUser = new BIUser(userId);
         this.start = start;
         CubeTableSource cubeTableSource = null;
-        try {
-            cubeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(new BITableID(start.getSourceID()));
-        } catch (BIKeyAbsentException e) {
-            e.printStackTrace();
-        }
+        cubeTableSource = start;
+
         oldCube = new TableCubeFile(BIPathUtils.createTablePath(cubeTableSource.getSourceID(), userId));
         currentCube = new TableCubeFile(BIPathUtils.createTableTempPath(cubeTableSource.getSourceID(), userId));
 

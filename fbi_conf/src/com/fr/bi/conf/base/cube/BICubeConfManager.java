@@ -1,7 +1,7 @@
 package com.fr.bi.conf.base.cube;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIIDUtils;
@@ -48,7 +48,7 @@ public class BICubeConfManager {
         try {
             String tableId = BIIDUtils.getTableIDFromFieldID(loginField);
             BITableID tId = new BITableID(tableId);
-            CubeTableSource source = BICubeConfigureCenter.getDataSourceManager().getTableSource(tId);
+            CubeTableSource source = BusinessTableHelper.getBusinessTable(tId).getTableSource();
             Set set = source.getFieldDistinctNewestValues(BIIDUtils.getFieldNameFromFieldID(loginField), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
             return set;
         } catch (Exception e) {

@@ -30,6 +30,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     },
 
+    _formatDataForMap: function (da) {
+        this._getShowTarget();
+        var data = this._formatDataForCommon(da);
+    },
+
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         this._getShowTarget();

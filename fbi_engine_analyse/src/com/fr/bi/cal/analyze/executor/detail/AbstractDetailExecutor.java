@@ -4,7 +4,8 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BISimpleRelation;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
@@ -64,7 +65,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             TargetFilter filterValue = target.getFilter();
             if (filterValue != null) {
                 BusinessField dataColumn = target.createColumnKey();
-                List<BISimpleRelation> simpleRelations = target.getRelationList(this.target, this.userId);
+                List<BITableRelation> simpleRelations = target.getRelationList(this.target, this.userId);
                 gvi = GVIUtils.AND(gvi, filterValue.createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convertToMD5RelationFromSimpleRelation(simpleRelations, new BIUser(this.userId))), this.target, getLoader(), this.userId));
             }
         }
@@ -74,7 +75,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             BIDetailTarget target = getTargetById(targetId);
             if (target != null) {
                 BusinessField dataColumn = target.createColumnKey();
-                List<BISimpleRelation> simpleRelations = target.getRelationList(this.target, this.userId);
+                List<BITableRelation> simpleRelations = target.getRelationList(this.target, this.userId);
                 gvi = GVIUtils.AND(gvi, entry.getValue().createFilterIndex(new NoneDimensionCalculator(dataColumn, BIConfUtils.convertToMD5RelationFromSimpleRelation(simpleRelations, new BIUser(this.userId))), this.target, getLoader(), this.userId));
             }
         }

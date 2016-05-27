@@ -3,8 +3,8 @@ package com.fr.bi.web.conf.utils;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.conf.data.source.DBTableSource;
-import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIDBTableField;
@@ -29,11 +29,9 @@ public class BIImportDBTableConnectionRelationTool {
             for (Object table : pack.getBusinessTables()) {
                 BITableID id = ((BIBusinessTable) table).getID();
                 CubeTableSource source = null;
-                try {
-                    source = BICubeConfigureCenter.getDataSourceManager().getTableSource(id);
-                } catch (BIKeyAbsentException e) {
-                    e.printStackTrace();
-                }
+
+                source = BusinessTableHelper.getTableDataSource(id);
+
                 if (source != null && source.getType() == BIBaseConstant.TABLETYPE.DB) {
                     sources.put(id.getIdentityValue(), (DBTableSource) source);
                 }

@@ -125,5 +125,8 @@ public abstract class BIBasicDataSource<T, V> extends BIMapContainer<T, V> {
         }
     }
 
+    public boolean contain(T id) {
+        return containsKey(id);
+    }
 
 }
