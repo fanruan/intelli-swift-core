@@ -8,7 +8,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
  * This class created on 2016/5/26.
- *
+ * 参数必须要有ID
  * @author Connery
  * @since 4.0
  */
@@ -26,7 +26,7 @@ public class BusinessFieldHelper {
     public static BusinessTable getBusinessTable(BusinessField businessField) {
         BINonValueUtils.checkNull(businessField);
         BusinessTable table = getBusinessFieldSource(businessField.getFieldID()).getTableBelongTo();
-        if (!(businessField instanceof BIBusinessFieldWrapper)) {
+        if (!(businessField instanceof BIBusinessFieldGetter)) {
             businessField.setTableBelongTo(table);
         }
         return table;

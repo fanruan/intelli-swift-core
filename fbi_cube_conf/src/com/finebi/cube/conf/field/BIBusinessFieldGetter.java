@@ -7,17 +7,23 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
 
 /**
+ * 工具类，在DataSource记录下来Id和BusinessField对应TableSource
+ * 的情况下，通过Helper类实现只有FieldId的情况下，来获得table，Field其他属性。
+ * <p/>
+ * 使用方法：必须提供一个带Id的BusinessTable实现，并且此BusinessTable必须不是
+ * 一个BIBusinessTableGetter。
+ * 此外只读不可写
  * This class created on 2016/5/26.
  *
  * @author Connery
  * @since 4.0
  */
-public class BIBusinessFieldWrapper implements BusinessField {
+public class BIBusinessFieldGetter implements BusinessField {
     private BusinessField field;
 
-    public BIBusinessFieldWrapper(BusinessField field) {
+    public BIBusinessFieldGetter(BusinessField field) {
         BINonValueUtils.checkNull(field);
-        if (field.getFieldID() != null && !(field instanceof BIBusinessFieldWrapper)) {
+        if (field.getFieldID() != null && !(field instanceof BIBusinessFieldGetter)) {
             this.field = BusinessFieldHelper.getBusinessFieldSource(field.getFieldID());
         } else {
             throw BINonValueUtils.beyondControl();
