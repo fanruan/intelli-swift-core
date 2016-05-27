@@ -63,7 +63,7 @@ public class BusinessTableHelper {
             } catch (BIKeyAbsentException e) {
                 throw BINonValueUtils.beyondControl(e);
             }
-            if (!(table instanceof BIBusinessTableWrapper)) {
+            if (!(table instanceof BIBusinessTableGetter)) {
                 table.setSource(source);
             }
         }

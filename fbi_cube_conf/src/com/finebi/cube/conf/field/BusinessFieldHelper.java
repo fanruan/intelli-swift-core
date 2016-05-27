@@ -26,7 +26,7 @@ public class BusinessFieldHelper {
     public static BusinessTable getBusinessTable(BusinessField businessField) {
         BINonValueUtils.checkNull(businessField);
         BusinessTable table = getBusinessFieldSource(businessField.getFieldID()).getTableBelongTo();
-        if (!(businessField instanceof BIBusinessFieldWrapper)) {
+        if (!(businessField instanceof BIBusinessFieldGetter)) {
             businessField.setTableBelongTo(table);
         }
         return table;
