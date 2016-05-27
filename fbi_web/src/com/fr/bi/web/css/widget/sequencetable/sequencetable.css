@@ -4,3 +4,7 @@
 .bi-sequence-table .sequence-table-scroll {
   background: #dddddd;
 }
+.bi-sequence-table .sequence-table-wrapper {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}

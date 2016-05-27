@@ -34,15 +34,6 @@
 .bi-dashboard-widget .operator-region {
   z-index: 100000;
 }
-.bi-dashboard-widget .ui-resizable-s {
-  bottom: 0;
-}
-.bi-dashboard-widget .ui-resizable-s:hover {
-  border-bottom: 1px solid #e85050;
-}
-.bi-dashboard-widget .ui-resizable-e:hover {
-  border-right: 1px solid #e85050;
-}
 .bi-dashboard-widget .remove-button {
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
