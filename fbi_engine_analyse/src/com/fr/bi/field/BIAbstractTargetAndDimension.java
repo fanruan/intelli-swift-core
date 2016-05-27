@@ -1,6 +1,7 @@
 package com.fr.bi.field;
 
 import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BIBusinessFieldWrapper;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
@@ -97,7 +98,9 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
             if (fieldJo.has("field_id")) {
-                column = new BIBusinessField(new BIFieldID(fieldJo.getString("field_id")));
+                //这里用BIBusinessFieldWrapper,能够通过fieldID获得table
+                column = new BIBusinessFieldWrapper(new BIBusinessField(new BIFieldID(fieldJo.getString("field_id"))));
+
             }
         }
     }
