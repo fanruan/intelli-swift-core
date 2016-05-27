@@ -12,6 +12,7 @@ import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLarge
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmallOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberTopNFilter;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
+import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.cluster.rpc.RPC;
@@ -36,8 +37,8 @@ public class AnalysisETLModule extends AbstractModule {
     private void registerResources() {
         StableFactory.registerJavaScriptFiles(ETLResourcesHelper.DEFAULT_JS, ETLResourcesHelper.getDefaultJs());
         StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
-//        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
-//        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DEZI_CSS, ETLResourcesHelper.getDefaultCss());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DEZI_CSS, ETLResourcesHelper.getDefaultCss());
     }
 
     /**
@@ -59,7 +60,6 @@ public class AnalysisETLModule extends AbstractModule {
     public BIDataSourceManagerProvider getDataSourceManagerProvider() {
         return BICubeConfigureCenter.getDataSourceManager();
     }
-
 
     @Override
     public BISystemPackageConfigurationProvider getBusiPackManagerProvider() {
