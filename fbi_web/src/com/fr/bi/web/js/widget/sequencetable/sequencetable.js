@@ -94,18 +94,6 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
 
-        this.table.on(BI.CustomScrollTable.EVENT_RIGHT_SCROLL, function () {
-            var dot = self.table.getRightHorizontalScroll();
-            self.dots.push(dot);
-            self.lock();
-            if (dot < 50 && dot >= 0) {
-                //显示页码
-                self._showCurrentColumn();
-            } else {
-                self._hideCurrentColumn();
-            }
-        });
-
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_INIT);
         });
