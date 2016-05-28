@@ -1,6 +1,7 @@
 package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
@@ -78,23 +79,26 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
 
     private BusinessTable getFirstForeignTable(JSONArray pathJa) throws Exception {
         JSONObject firstRelationJo = pathJa.getJSONObject(pathJa.length() - 1);
-        BITableRelation re = new BITableRelation();
-        re.parseJSON(firstRelationJo);
+//        BITableRelation re = new BITableRelation();
+//        re.parseJSON(firstRelationJo);
+        BITableRelation re = BITableRelationHelper.getRelation(firstRelationJo);
         return re.getForeignTable();
     }
 
     private BusinessTable getLastPrimaryTable(JSONArray pathJa) throws Exception {
         JSONObject firstRelationJo = pathJa.getJSONObject(0);
-        BITableRelation re = new BITableRelation();
-        re.parseJSON(firstRelationJo);
+//        BITableRelation re = new BITableRelation();
+//        re.parseJSON(firstRelationJo);
+        BITableRelation re = BITableRelationHelper.getRelation(firstRelationJo);
         return re.getPrimaryTable();
     }
 
     private BITableRelationPath createPath(JSONArray pathJa) throws Exception {
         BITableRelationPath newPath = new BITableRelationPath();
         for (int i = 0; i < pathJa.length(); i++) {
-            BITableRelation re = new BITableRelation();
-            re.parseJSON(pathJa.getJSONObject(i));
+//            BITableRelation re = new BITableRelation();
+//            re.parseJSON(pathJa.getJSONObject(i));
+            BITableRelation re = BITableRelationHelper.getRelation(pathJa.getJSONObject(i));
             newPath.addRelationAtTail(re);
         }
         return newPath;
