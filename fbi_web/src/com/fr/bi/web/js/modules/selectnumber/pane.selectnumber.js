@@ -194,37 +194,37 @@ BI.SelectNumberPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         //Excel View
-        var excelView = BI.Utils.getExcelViewByTableId(tableId);
-        var viewFields = [];
-        if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
-            var excel = excelView.excel;
-            var positions = excelView.positions;
-            var items = [];
-            BI.each(excel, function (i, row) {
-                var item = [];
-                BI.each(row, function (j, cell) {
-                    item.push({text: cell})
-                });
-                items.push(item);
-            });
-            BI.each(positions, function (id, position) {
-                if(BI.Utils.getFieldTypeByID(id) === BICst.COLUMN.NUMBER) {
-                    viewFields.push(id);
-                    items[position.row][position.col].value = id;
-                }
-            });
-            if(viewFields.length > 0) {
-                fieldStructure.push({
-                    id: BI.UUID(),
-                    pId: tableId,
-                    type: "bi.excel_view",
-                    items: items
-                });
-            }
-        }
+        //var excelView = BI.Utils.getExcelViewByTableId(tableId);
+        //var viewFields = [];
+        //if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
+        //    var excel = excelView.excel;
+        //    var positions = excelView.positions;
+        //    var items = [];
+        //    BI.each(excel, function (i, row) {
+        //        var item = [];
+        //        BI.each(row, function (j, cell) {
+        //            item.push({text: cell})
+        //        });
+        //        items.push(item);
+        //    });
+        //    BI.each(positions, function (id, position) {
+        //        if(BI.Utils.getFieldTypeByID(id) === BICst.COLUMN.NUMBER) {
+        //            viewFields.push(id);
+        //            items[position.row][position.col].value = id;
+        //        }
+        //    });
+        //    if(viewFields.length > 0) {
+        //        fieldStructure.push({
+        //            id: BI.UUID(),
+        //            pId: tableId,
+        //            type: "bi.excel_view",
+        //            items: items
+        //        });
+        //    }
+        //}
 
         BI.each(BI.Utils.getNumberFieldIDsOfTableID(tableId), function (i, fid) {
-            if (BI.Utils.getFieldIsUsableByID(fid) === false || viewFields.contains(fid)) {
+            if (BI.Utils.getFieldIsUsableByID(fid) === false) {
                 return;
             }
             var fieldName = BI.Utils.getFieldNameByID(fid);

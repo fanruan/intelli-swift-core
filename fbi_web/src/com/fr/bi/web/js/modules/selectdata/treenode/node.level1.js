@@ -29,6 +29,9 @@ BI.DetailSelectDataLevel1Node = BI.inherit(BI.Widget, {
         this.node.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function () {
+            self.setValue([]);
+        });
     },
 
     doRedMark: function () {

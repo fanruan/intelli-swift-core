@@ -188,6 +188,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 el: {
                     id: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
                     pId: tableId,
+                    wId: o.wId,
                     type: "bi.select_data_relation_tables_node",
                     text: BI.i18nText("BI-More_Foreign_Table") + ">>",
                     title: BI.i18nText("BI-More_Foreign_Table"),
@@ -212,7 +213,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
      */
     _getFieldStructureOfOneTable: function (tableId, isRelation) {
         var fieldStructure = [];
-        var self = this;
+        var self = this, o = this.options;
 
         //Excel View
         var excelView = BI.Utils.getExcelViewByTableId(tableId);
@@ -236,6 +237,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 id: BI.UUID(),
                 pId: tableId,
                 type: "bi.excel_view",
+                wId: o.wId,
                 items: items
             });
         }
@@ -258,6 +260,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                         type: "bi.select_data_expander",
                         el: {
                             type: "bi.detail_select_data_level2_date_node",
+                            wId: o.wId,
                             text: fieldName,
                             title: fieldName,
                             value: fid,
@@ -272,6 +275,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                     fieldStructure.push({
                         id: fid,
                         pId: tableId,
+                        wId: o.wId,
                         type: "bi.detail_select_data_level1_date_node",
                         fieldType: BI.Utils.getFieldTypeByID(fid),
                         text: fieldName,
@@ -285,6 +289,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 fieldStructure.push({
                     id: fid,
                     pId: tableId,
+                    wId: o.wId,
                     type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
@@ -388,10 +393,12 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
      * @private
      */
     _buildDateChildren: function (fieldId, isRelation) {
+        var o = this.options;
         var drag = this._createDrag(BI.Utils.getFieldNameByID(fieldId));
         return [{
             id: fieldId + BICst.GROUP.Y,
             pId: fieldId,
+            wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Year_Fen"),
@@ -404,6 +411,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.S,
             pId: fieldId,
+            wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Quarter"),
@@ -416,6 +424,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.M,
             pId: fieldId,
+            wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Multi_Date_Month"),
@@ -428,6 +437,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.W,
             pId: fieldId,
+            wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Week_XingQi"),
@@ -440,6 +450,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.YMD,
             pId: fieldId,
+            wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Date"),
@@ -452,6 +463,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         }, {
             id: fieldId + BICst.GROUP.YMDHMS,
             pId: fieldId,
+            wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Time_ShiKe"),
