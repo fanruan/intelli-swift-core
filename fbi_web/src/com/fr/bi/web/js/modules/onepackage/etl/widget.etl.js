@@ -279,7 +279,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         BI.Popovers.remove(this.model.getId());
         var updateSet = BI.createWidget({
             type: "bi.update_table_data",
-            table: this.model.getValue(),
+            table: this.model.getValue()
         });
         updateSet.on(BI.UpdateTableData.EVENT_SAVE, function(){
             self.model.setUpdateSettings(this.getValue());
@@ -1156,7 +1156,7 @@ BI.ETL = BI.inherit(BI.Widget, {
     }
 });
 BI.ETL.EVENT_REMOVE = "EVENT_REMOVE";
-BI.ETL.EVENT_EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
+// BI.ETL.EVENT_EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 BI.ETL.EVENT_CANCEL = "EVENT_CANCEL";
 BI.ETL.EVENT_SAVE = "EVENT_SAVE";
 $.shortcut("bi.etl", BI.ETL);
