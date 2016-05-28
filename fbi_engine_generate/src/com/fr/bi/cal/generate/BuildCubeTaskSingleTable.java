@@ -100,12 +100,12 @@ public class BuildCubeTaskSingleTable implements CubeTask {
         
         manager.registerDataSource(tableSourceSet);
         manager.registerRelation(cubeBuildStuffManager.getTableSourceRelationSet());
-        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuffManager.getRelationPaths());
-        manager.registerTableRelationPath(relationPathSet);
+//        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuffManager.getRelationPaths());
+//        manager.registerTableRelationPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
         operationManager.generateDataSource(cubeBuildStuffManager.getDependTableResource());
-        operationManager.generateRelationBuilder(cubeBuildStuffManager.getTableSourceRelationSet());
-        operationManager.generateTableRelationPath(relationPathSet);
+//        operationManager.generateRelationBuilder(cubeBuildStuffManager.getTableSourceRelationSet());
+//        operationManager.generateTableRelationPath(relationPathSet);
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
             router.deliverMessage(generateMessageDataSourceStart());
