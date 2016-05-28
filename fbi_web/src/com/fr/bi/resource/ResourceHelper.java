@@ -437,7 +437,6 @@ public class ResourceHelper {
                 //选择字段
                 "com/fr/bi/web/css/modules/selectdata/tab.selectdata.css",
                 "com/fr/bi/web/css/modules/selectdata/preview/pane.preview.selectdata.css",
-                "com/fr/bi/web/css/modules/selectdata/relationtable/node.relationtables.css",
                 "com/fr/bi/web/css/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.css",
 
                 "com/fr/bi/web/css/modules/selectdata4filter/node/node.level0.dimension.css",
@@ -716,6 +715,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
 
+
+                //选择字段服务
+                "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
         };
     }
 
@@ -835,16 +837,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.button.level0.js",
 
-                "com/fr/bi/web/js/modules/selectdata/treenode/node.level0.js",
-                "com/fr/bi/web/js/modules/selectdata/treenode/node.level1.js",
-                "com/fr/bi/web/js/modules/selectdata/treenode/node.level1.date.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/item.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/widget.selectdatapane.js",
                 "com/fr/bi/web/js/modules/selectdata/widget.selectdimensionpane.js",
                 "com/fr/bi/web/js/modules/selectdata/tab.selectdata.js",
-                "com/fr/bi/web/js/modules/selectdata/relationtable/node.relationtables.js",
-                "com/fr/bi/web/js/modules/selectdata/relationtable/node.level2.date.js",
-                "com/fr/bi/web/js/modules/selectdata/relationtable/expander.relationtables.js",
 
                 //明细表选字段
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/abstract.node.level.js",
@@ -1406,6 +1402,16 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/detailtablepopup/module/view/field/view.detailtablepopup.detail.dimension.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/module/view/view.detailtablepopup.js",
                 "com/fr/bi/web/js/modules/detailtablepopup/detailtablepopup.js",
+
+
+                //selectdataserview
+                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.relationtables.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.level2.date.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/relationtable/expander.relationtables.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/packageselectdataservice.js",
         };
     }
 
@@ -1726,7 +1732,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/templatemanager/tools/share/usersearchresult.pane.css",
                 "com/fr/bi/web/css/components/templatemanager/templatemanager.css",
 
-                "com/fr/bi/web/css/components/tablewithnum/number.tabletree.css"
         };
     }
 
@@ -2417,9 +2422,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/buttongroup.templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
-
-                //带有序号的table tree
-                "com/fr/bi/web/js/components/tablewithnum/number.tabletree.js",
 
                 //工程配置
                 "com/fr/bi/web/js/config.js"

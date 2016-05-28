@@ -418,3 +418,9 @@
   filter: alpha(opacity=50);
   background-color: #d8f3fe;
 }
+.bi-mvc-package-select-data-service {
+  background-color: #eaeaea;
+}
+.bi-mvc-package-select-data-service .service {
+  background-color: #ffffff;
+}

@@ -33,7 +33,7 @@ BI.AnalysisETLSelectDataPaneController = BI.inherit(BI.MVCController, {
 
     populate: function (widget, model) {
         var ids = BI.Utils.getAllPackageIDs();
-        widget.searcher.setPackage(ids[0]);
+        widget.service.setPackage(ids[0]);
     }
 
 })
