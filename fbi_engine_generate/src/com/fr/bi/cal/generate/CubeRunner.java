@@ -58,7 +58,7 @@ public class CubeRunner {
                 setStatue(Status.LOADING);
                 try {
                     backup();
-                    //todo by wuk 现在只修改单表和全局更新,部分task任务还在沿用原来的思路,所以暂时保留
+                    //todo by wuk
                     if (!(cubeTask instanceof BuildCubeTask ||cubeTask instanceof BuildCubeTaskSingleTable)){
                         start();
                     }
