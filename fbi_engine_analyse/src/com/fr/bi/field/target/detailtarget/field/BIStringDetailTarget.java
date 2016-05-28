@@ -1,6 +1,5 @@
 package com.fr.bi.field.target.detailtarget.field;
 
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 
@@ -21,7 +20,7 @@ public class BIStringDetailTarget extends BIAbstractDetailTarget {
 
     @Override
     public BusinessTable createTableKey() {
-        return new BIBusinessTable(column.getTableBelongTo().getID());
+        return column.getTableBelongTo();
     }
 
     /**
