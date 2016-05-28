@@ -1,9 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -268,7 +267,7 @@ public class TreeWidget extends BIAbstractWidget {
     private void setTargetTable() {
         if (dimensions.length > 0) {
             BITableID targetTableID = dimensions[0].createTableKey().getID();
-            target = new BIBusinessTable(targetTableID);
+            target = BusinessTableHelper.getBusinessTable(targetTableID);
             for (int i = 0; i < dimensions.length; i++) {
                 List<BITableRelation> relations = this.getRelationList(dimensions[i]);
                 if (!relations.isEmpty()) {
