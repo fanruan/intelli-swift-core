@@ -675,6 +675,10 @@ public class ResourceHelper {
                 //另存为
                 "com/fr/bi/web/css/modules/saveas/report.saveas.floatbox.css",
 
+                //图表钻取
+                "com/fr/bi/web/css/modules/chartdrill/widget.chartdrill.css",
+                "com/fr/bi/web/css/modules/chartdrill/cell.chartdrill.css",
+
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
                 "com/fr/bi/web/css/extend/excelview/excelview.css",
@@ -1305,6 +1309,11 @@ public class ResourceHelper {
                 //另存为
                 "com/fr/bi/web/js/modules/saveas/report.saveas.floatbox.js",
 
+                //图表钻取
+                "com/fr/bi/web/js/modules/chartdrill/widget.chartdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/button.pushdrill.js",
+
                 //etl plugin
                 "com/fr/bi/web/js/extend/excel/etl.excel.plugin.js",
                 //sql plugin
@@ -1765,6 +1774,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/xml.js",
                 "com/fr/bi/web/js/base/utils/chinesePY.js",
                 "com/fr/bi/web/js/base/utils/array.js",
+                "com/fr/bi/web/js/base/utils/number.js",
                 "com/fr/bi/web/js/base/utils/date.js",
                 "com/fr/bi/web/js/base/utils/queue.js",
                 "com/fr/bi/web/js/base/utils/linkedHashMap.js",
@@ -2390,7 +2400,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/treevaluechooser/combo.treevaluechooser.js",
 
                 //带样式表格
-                "com/fr/bi/web/js/components/styletable/style1table.js",
+                "com/fr/bi/web/js/components/styletable/styletable.js",
 
                 //模板管理
                 "com/fr/bi/web/js/components/templatemanager/liststyleitems/report.listview.item.js",

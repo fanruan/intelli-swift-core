@@ -1,12 +1,12 @@
-Style1TableView = BI.inherit(BI.View, {
+StyleTableView = BI.inherit(BI.View, {
     _defaultConfig: function () {
-        return BI.extend(Style1TableView.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(StyleTableView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-mvc-style1-table bi-mvc-layout"
         })
     },
 
     _init: function () {
-        Style1TableView.superclass._init.apply(this, arguments);
+        StyleTableView.superclass._init.apply(this, arguments);
     },
 
     _render: function (vessel) {
@@ -353,7 +353,7 @@ Style1TableView = BI.inherit(BI.View, {
         }];
 
         var table1 = BI.createWidget({
-            type: "bi.style1_table",
+            type: "bi.style_table",
             color: "#0088cc",
             el: {
                 type: "bi.sequence_table",
@@ -402,4 +402,4 @@ Style1TableView = BI.inherit(BI.View, {
     }
 });
 
-Style1TableModel = BI.inherit(BI.Model, {});
+StyleTableModel = BI.inherit(BI.Model, {});

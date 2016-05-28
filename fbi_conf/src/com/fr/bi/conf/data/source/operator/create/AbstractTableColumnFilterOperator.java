@@ -85,30 +85,15 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
         do {
             final ICubeTableService tableIndex = ti;
             GroupValueIndex fgvi = createFilterIndex(parents, new CubeTILoaderAdapter() {
-                @Override
-                public ICubeTableService getTableIndex(Table td) {
-                    return tableIndex;
-                }
-
-                @Override
-                public ICubeTableService getTableIndex(BIField td) {
-                    return tableIndex;
-                }
-
-                @Override
-                public ICubeTableService getTableIndex(BICore md5Core) {
-                    return tableIndex;
-                }
-
-                @Override
-                public ICubeTableService getTableIndex(BITableID id) {
-                    return tableIndex;
-                }
 
                 public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
                     return tableIndex;
                 }
 
+                @Override
+                public ICubeTableService getTableIndex(CubeTableSource tableSource) {
+                    return tableIndex;
+                }
                 public long getUserId() {
                     return user.getUserId();
                 }

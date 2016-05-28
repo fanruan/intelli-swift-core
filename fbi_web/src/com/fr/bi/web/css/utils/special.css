@@ -20,23 +20,8 @@ ul.CodeMirror-hints {
   border: 2px #8e8e8e;
   z-index: 1000000000;
 }
-.ui-effects-resize {
-  position: absolute;
-  background: #ff6600;
-  opacity: 0.2;
-  filter: alpha(opacity=20);
-  border-radius: 0px 0px 2px 2px;
-  border: 2px #8e8e8e;
-  z-index: 1000000000;
-}
 .ui-sortable-place-holder {
-  border: 1px dashed #039935 !important;
-}
-.ui-drag-over {
-  width: 100%;
-  height: 20px;
-  margin-top: 5px;
-  border-radius: 2px;
+  border: 1px dashed #58cc7d !important;
 }
 .dragged {
   position: absolute;
@@ -48,8 +33,13 @@ ul.CodeMirror-hints {
   bottom: 0;
 }
 .ui-resizable-s:hover {
-  border-bottom: 1px solid #808080;
+  border-bottom: 1px solid #009de3;
 }
 .ui-resizable-e:hover {
-  border-right: 1px solid #808080;
+  border-right: 1px solid #009de3;
+}
+.ui-resizable-se {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag_helper.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag_helper.png');
+  _background: none;
 }

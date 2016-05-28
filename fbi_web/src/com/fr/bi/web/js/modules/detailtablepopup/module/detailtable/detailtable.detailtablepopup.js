@@ -25,7 +25,7 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Pane, {
         });
 
         this.table =BI.createWidget({
-            type: "bi.style1_table",
+            type: "bi.style_table",
             color: "#0088cc",
             el: {
                 el: {

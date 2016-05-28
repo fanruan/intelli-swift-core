@@ -130,7 +130,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
                         height: 18
                     }]
                 },
-                width: 60
+                width: 0
             }, {
                 el: this.table
             }]
@@ -139,6 +139,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.table.resize();
+        this.sequence.setVerticalScroll(this.table.getVerticalScroll());
     },
 
     setColumnSize: function (size) {
@@ -157,10 +158,18 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         return this.table.getCalculateRegionColumnSize();
     },
 
+    setVPage: function(v){
+        this.table.setVPage(v);
+    },
+
+    getVPage: function(){
+        return this.table.getVPage();
+    },
+
     attr: function () {
         BI.SequenceTable.superclass.attr.apply(this, arguments);
         this.table.attr.apply(this.table, arguments);
-        this.sequence.attr.apply(this.table, arguments);
+        this.sequence.attr.apply(this.sequence, arguments);
     },
 
     showSequence: function () {
@@ -182,6 +191,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
         this.sequence.populate.apply(this.sequence, arguments);
+        this.sequence.setVerticalScroll(this.table.getVerticalScroll());
     },
 
     destroy: function () {

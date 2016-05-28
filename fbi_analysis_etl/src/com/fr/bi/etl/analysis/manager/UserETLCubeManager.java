@@ -5,7 +5,6 @@ package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
@@ -14,7 +13,6 @@ import com.fr.file.XMLFileManager;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
 import com.fr.stable.StringUtils;
-import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -62,13 +60,13 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     }
 
 	@Override
-	public ICubeTableService getTableIndex(BICore core, BIUser user){
-		UserCubeTableSource ut = getUserSource(core, user.getUserId());
+	public ICubeTableService getTableIndex(AnalysisCubeTableSource source, BIUser user){
+		UserCubeTableSource ut = source.createUserTableSource(user.getUserId());
 		String md5Key = ut.fetchObjectCore().getID().getIdentityValue();
 		SingleUserETLTableCubeManager manager = threadMap.get(md5Key);
 		if(manager == null){
 			synchronized (threadMap) {
-				manager = threadMap.get(core.getIDValue());
+				manager = threadMap.get(source.fetchObjectCore().getIDValue());
 				if(manager == null){
 					manager = new SingleUserETLTableCubeManager(ut);
 					threadMap.put(md5Key, manager);
@@ -90,19 +88,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 		
 	}
 	
-	private UserCubeTableSource getUserSource(BICore core, long userId){
-		AnalysisDataSourceManager ds = StableFactory.getMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, AnalysisDataSourceManager.class);
-        AnalysisCubeTableSource ts = null;
-        try {
-            ts = ds.getTableSourceByCore(core, new BIUser(userId));
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-            return null;
-        }
-        return ts.createUserTableSource(userId);
-	}
-	
-	
+
 	public UserETLCubeManager(){
 		synchronized (cubePathMap) {
 			readXMLFile();

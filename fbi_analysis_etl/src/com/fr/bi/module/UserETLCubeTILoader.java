@@ -6,14 +6,11 @@ package com.fr.bi.module;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.etl.analysis.manager.UserETLCubeManagerProvider;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -51,25 +48,6 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
         return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
     }
 
-    public ICubeTableService getTableIndex(BusinessTable td) {
-        return getTableIndex(new BITableID(td.getID()));
-    }
-
-    public ICubeTableService getTableIndex(BICore core) {
-        return getCubeManager().getTableIndex(core, user);
-    }
-
-    public ICubeTableService getTableIndex(BIField td) {
-        return getTableIndex(td.getTableID());
-    }
-
-    public BIKey getFieldIndex(BIField column) {
-        return new IndexKey(column.getFieldName());
-    }
-
-    public ICubeTableService getTableIndex(BITableID id) {
-        return getCubeManager().getTableIndex(BIAnalysisETLManagerCenter.getDataSourceManager().getCoreByTableID(id, user), user);
-    }
 
     @Override
     public long getUserId() {
@@ -106,12 +84,12 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
-        return null;
+        return getCubeManager().getTableIndex((AnalysisCubeTableSource) tableSource, user);
     }
 
     @Override
     public BIKey getFieldIndex(BusinessField column) {
-        return null;
+        return new IndexKey(column.getFieldName());
     }
 
     @Override

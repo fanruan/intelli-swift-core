@@ -35,7 +35,7 @@ public class BIAnalysisETLGetFieldMinMaxValueAction extends AbstractAnalysisETLA
         JSONObject jo = new JSONObject(tableJSON);
         JSONArray items = jo.getJSONArray(Constants.ITEMS);
         UserCubeTableSource source = AnalysisETLSourceFactory.createTableSource(items, userId).createUserTableSource(userId);
-        ICubeTableService service = PartCubeDataLoader.getInstance(userId, source).getTableIndex(source.fetchObjectCore());
+        ICubeTableService service = PartCubeDataLoader.getInstance(userId, source).getTableIndex(source);
         BIKey key = new IndexKey(field);
         TreeSet tSet = new TreeSet(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         for (int i = 0; i < service.getRowCount(); i++){

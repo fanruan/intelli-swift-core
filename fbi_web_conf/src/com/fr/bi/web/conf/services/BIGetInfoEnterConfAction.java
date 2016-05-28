@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -52,7 +53,7 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
                     Iterator<BusinessField> iterator = t.getFields().iterator();
                     while (iterator.hasNext()) {
                         BusinessField field = iterator.next();
-                        fields.put(field.getTableBelongTo().getID().getIdentity() + field.getFieldName(), field.createJSON());
+                        fields.put(BusinessFieldHelper.getBusinessFieldSource( field.getFieldID()).getFieldID().getIdentity(), field.createJSON());
                     }
                 }
             }

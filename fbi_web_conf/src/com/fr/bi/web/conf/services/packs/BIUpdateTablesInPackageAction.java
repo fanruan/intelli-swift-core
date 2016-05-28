@@ -2,9 +2,11 @@ package com.fr.bi.web.conf.services.packs;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
-import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
@@ -15,13 +17,14 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
 
@@ -140,22 +143,35 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         }
     }
 
-    private void saveRelations(JSONObject relationsJO, long userId) throws Exception {
+    private void saveRelations(JSONObject relationsJO, long userId) throws JSONException {
         BICubeConfigureCenter.getTableRelationManager().clear(userId);
         Set<BITableRelation> relationsSet = new HashSet<BITableRelation>();
         JSONArray relationConn = relationsJO.getJSONArray("connectionSet");
         for (int k = 0; k < relationConn.length(); k++) {
-            JSONObject r = relationConn.getJSONObject(k);
-            JSONObject pKeyJO = r.getJSONObject("primaryKey");
-            JSONObject fKeyJO = r.getJSONObject("foreignKey");
-            BIBusinessField primaryField = new BIBusinessField(new BIFieldID(pKeyJO.getString("field_id")));
-            BIBusinessField foreignField = new BIBusinessField(new BIFieldID(fKeyJO.getString("field_id")));
+            try {
+                JSONObject r = relationConn.getJSONObject(k);
+                JSONObject pKeyJO = r.getJSONObject("primaryKey");
+                JSONObject fKeyJO = r.getJSONObject("foreignKey");
+                BusinessField primaryField = getField(pKeyJO.getString("table_id"), pKeyJO.getString("field_name"));
+                BusinessField foreignField = getField(fKeyJO.getString("table_id"), fKeyJO.getString("field_name"));
+                BITableRelation simpleRelation = new BITableRelation(primaryField, foreignField);
+                BITableRelation tableRelation = simpleRelation;
+                relationsSet.add(tableRelation);
+            } catch (JSONException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
+            } catch (BIFieldAbsentException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
+            }
 
-            BITableRelation simpleRelation = new BITableRelation(primaryField, foreignField);
-            BITableRelation tableRelation = simpleRelation;
-            relationsSet.add(tableRelation);
         }
         BICubeConfigureCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);
+    }
+
+    private BusinessField getField(String tableID, String fieldName) throws BIFieldAbsentException {
+        BusinessTable table = new BIBusinessTable(new BITableID(tableID));
+        return BusinessTableHelper.getSpecificField(table, fieldName);
     }
 
     private void saveExcelView(JSONObject excelViewJO, long userId) throws Exception {

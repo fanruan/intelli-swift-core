@@ -77,9 +77,9 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                 }
                 return;
             }
-            if (BI.isNotEmptyArray(node.values)) {
+            // if (BI.isNotEmptyArray(node.values)) {
                 result.push(count++);
-            }
+            // }
         }
 
         BI.each(nodes, function (i, node) {

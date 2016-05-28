@@ -205,6 +205,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
         this.pager = BI.createWidget(o.pager, {
