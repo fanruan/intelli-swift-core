@@ -104,6 +104,89 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
             }
         }
+        if (BI.has(changed, "dimensions")) {
+            var wType = this.get("type");
+            if (wType !== BICst.WIDGET.TABLE &&
+                wType !== BICst.WIDGET.CROSS_TABLE &&
+                wType !== BICst.WIDGET.COMPLEX_TABLE) {
+                //分类和系列
+                var dims = BI.deepClone(changed.dimensions), preDims = BI.deepClone(prev.dimensions);
+                var view = this.get("view");
+                var preDim1Select = [], preDim2Select = [];
+                BI.each(preDims, function (dId, dim) {
+                    if (dim.used === true) {
+                        if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.DIMENSION1) {
+                            preDim1Select.push(dId);
+                        }
+                        if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.DIMENSION2) {
+                            preDim2Select.push(dId);
+                        }
+                    }
+                });
+                var dim1Change = false, dim2Change = false;
+                BI.each(dims, function (dId, dim) {
+                    var rType = BI.Utils.getRegionTypeByDimensionID(dId);
+                    if (dim.used === true) {
+                        if (rType === BICst.REGION.DIMENSION1) {
+                            !preDim1Select.contains(dId) && (dim1Change = true);
+                        }
+                        if (rType === BICst.REGION.DIMENSION2) {
+                            !preDim2Select.contains(dId) && (dim2Change = true);
+                        }
+                    }
+                });
+                if (dim1Change === true) {
+                    BI.each(preDim1Select, function (i, dId) {
+                        dims[dId].used = false;
+                    });
+                }
+                if (dim2Change === true) {
+                    BI.each(preDim2Select, function (i, dId) {
+                        dims[dId].used = false;
+                    })
+                }
+                //指标两个以上勾选的时候，系列全部不勾选，并且注意要disable
+                var usableT = BI.Utils.getAllUsableTargetDimensionIDs(this.get("id"));
+                if(usableT.length > 1) {
+                    BI.each(view[BICst.REGION.DIMENSION2], function(i, d){
+                        dims[d].used = false;
+                    })
+                }
+                this.set("dimensions", dims);
+            }
+        }
+        if (BI.has(changed, "view")) {
+            var wType = this.get("type");
+            if (wType !== BICst.WIDGET.TABLE &&
+                wType !== BICst.WIDGET.CROSS_TABLE &&
+                wType !== BICst.WIDGET.COMPLEX_TABLE) {
+                var view = changed.view, preView = prev.view;
+                var dimensions = BI.deepClone(this.get("dimensions"));
+                //region1、2中的维度增加的时候，先看原先中是否有已勾选了的，如果有将拖入的used设置为false
+                BI.each(view, function (region, dims) {
+                    if (region < BICst.REGION.TARGET1) {
+                        var adds = [], isPreSelect = false;
+                        BI.each(dims, function(i, dim){
+                             if(!preView[region].contains(dim)){
+                                 adds.push(dim);
+                             }
+                        });
+                        if(adds.length > 0) {
+                            BI.each(preView[region], function (i, dId) {
+                                BI.Utils.isDimensionUsable(dId) && (isPreSelect = true);
+                            });
+                            if (isPreSelect === true) {
+                                BI.each(adds, function(i, add){
+                                    dimensions[add].used = false;
+                                });
+                            }
+                        }
+                    }
+                });
+                this.set("dimensions", dimensions);
+
+            }
+        }
     },
 
     refresh: function () {
