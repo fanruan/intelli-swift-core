@@ -50,6 +50,9 @@ BI.AbstractDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
             }
             self.setEnable(enable);
         });
+        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function () {
+            self.setValue([]);
+        });
     },
 
     doRedMark: function () {

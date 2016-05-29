@@ -138,45 +138,49 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     view[regionType].push(dId);
                 }
                 if (regionType >= BICst.REGION.TARGET1) {//拖的是指标
-                    var targetTableId = BI.Utils.getTableIdByFieldID(fId);
-                    BI.each(dimensions, function (idx, dimension) {
-                        if (idx === dId) {
-                            return;
-                        }
-                        dimension.dimension_map = dimension.dimension_map || {};
-                        if (BI.Utils.isDimensionByDimensionID(idx)) {
-                            var dimensionTableId = BI.Utils.getTableIDByDimensionID(idx);
-                            var path = BI.Utils.getPathsFromTableAToTableB(dimensionTableId, targetTableId);
-                            if (path.length === 1) {
-                                var target_relation = path[0];
-                                dimension.dimension_map[dId] = {
-                                    _src: dimension._src,
-                                    target_relation: target_relation
-                                };
+                    if (BI.isNotEmptyString(fId)) {
+                        var targetTableId = BI.Utils.getTableIdByFieldID(fId);
+                        BI.each(dimensions, function (idx, dimension) {
+                            if (idx === dId) {
+                                return;
                             }
-                        }
-                    })
+                            dimension.dimension_map = dimension.dimension_map || {};
+                            if (BI.Utils.isDimensionByDimensionID(idx)) {
+                                var dimensionTableId = BI.Utils.getTableIDByDimensionID(idx);
+                                var path = BI.Utils.getPathsFromTableAToTableB(dimensionTableId, targetTableId);
+                                if (path.length === 1) {
+                                    var target_relation = path[0];
+                                    dimension.dimension_map[dId] = {
+                                        _src: dimension._src,
+                                        target_relation: target_relation
+                                    };
+                                }
+                            }
+                        });
+                    }
                 }
                 if (regionType < BICst.REGION.TARGET1) {//拖的是维度
                     dimensions[dId].dimension_map = {};
-                    var dimensionTableId = BI.Utils.getTableIdByFieldID(fId);
-                    BI.each(dimensions, function (idx, dimension) {
-                        if (idx === dId) {
-                            return;
-                        }
-                        if (!BI.Utils.isDimensionByDimensionID(idx)) {
-                            var path = BI.Utils.getPathsFromTableAToTableB(dimensionTableId, BI.Utils.getTableIDByDimensionID(idx));
-                            if (path.length === 1) {
-                                var target_relation = path[0];
-                                dimensions[dId].dimension_map[idx] = {
-                                    _src: {
-                                        field_id: fId
-                                    },
-                                    target_relation: target_relation
-                                };
+                    if (BI.isNotEmptyString(fId)) {
+                        var dimensionTableId = BI.Utils.getTableIdByFieldID(fId);
+                        BI.each(dimensions, function (idx, dimension) {
+                            if (idx === dId) {
+                                return;
                             }
-                        }
-                    })
+                            if (!BI.Utils.isDimensionByDimensionID(idx)) {
+                                var path = BI.Utils.getPathsFromTableAToTableB(dimensionTableId, BI.Utils.getTableIDByDimensionID(idx));
+                                if (path.length === 1) {
+                                    var target_relation = path[0];
+                                    dimensions[dId].dimension_map[idx] = {
+                                        _src: {
+                                            field_id: fId
+                                        },
+                                        target_relation: target_relation
+                                    };
+                                }
+                            }
+                        });
+                    }
                 }
                 this.set({
                     dimensions: dimensions,
