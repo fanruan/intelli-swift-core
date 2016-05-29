@@ -775,6 +775,8 @@ public class ResourceHelper {
 
                 //详细设置相关模块
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.tablecharttype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/maptypecombo/combo.maptype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/maptypecombo/popup.maptype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/charttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.dimension.js",

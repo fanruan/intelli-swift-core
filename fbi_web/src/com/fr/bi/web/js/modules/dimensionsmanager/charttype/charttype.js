@@ -53,14 +53,26 @@ BI.ChartType = BI.inherit(BI.Widget, {
                     cls: "chart-type-combo"
                 }));
             } else {
-                result.push(BI.extend({
-                    type: "bi.icon_button",
-                    width: 40,
-                    iconWidth: 24,
-                    iconHeight: 24
-                }, item, {
-                    cls: item.cls + " chart-type-icon"
-                }));
+                if(item.value === BICst.WIDGET.MAP){
+                    result.push(BI.extend({
+                        type: "bi.map_type_combo",
+                        width: 40,
+                        items: BICst.SVG_MAP_TYPE,
+                        iconWidth: 24,
+                        iconHeight: 24
+                    }, {
+                        cls: "chart-type-combo"
+                    }));
+                }else{
+                    result.push(BI.extend({
+                        type: "bi.icon_button",
+                        width: 40,
+                        iconWidth: 24,
+                        iconHeight: 24
+                    }, item, {
+                        cls: item.cls + " chart-type-icon"
+                    }));
+                }
             }
         });
         return result;

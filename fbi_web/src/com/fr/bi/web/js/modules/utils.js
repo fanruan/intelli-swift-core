@@ -508,6 +508,18 @@
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_title;
         },
 
+        getWSShowXAxisTitleByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_x_axis_title) ? ws.show_x_axis_title :
+                BICst.DEFAULT_CHART_SETTING.show_x_axis_title;
+        },
+
+        getWSXAxisTitleByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.x_axis_title) ? ws.x_axis_title :
+                BICst.DEFAULT_CHART_SETTING.x_axis_title;
+        },
+
         getWSLeftYAxisReversedByID: function(wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_reversed) ? ws.left_y_axis_reversed :
@@ -518,6 +530,12 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right_y_axis_reversed) ? ws.right_y_axis_reversed :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_reversed;
+        },
+
+        getWSTextDirectionByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.text_direction) ? ws.text_direction :
+                BICst.DEFAULT_CHART_SETTING.text_direction;
         },
 
         //settings  ---- end ----

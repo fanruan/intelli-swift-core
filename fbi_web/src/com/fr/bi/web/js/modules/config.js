@@ -290,6 +290,23 @@ BICst.DASHBOARD_WIDGETS = [[{
     cls: "drag-reset-icon"
 }]];
 
+BICst.SVG_MAP_TYPE = [{
+    text: BI.i18nText("BI-World"),
+    title: BI.i18nText("BI-World"),
+    value: BICst.WIDGET.MAP_WORLD,
+    cls: "drag-map-global-icon"
+}, {
+    text: BI.i18nText("BI-China"),
+    title: BI.i18nText("BI-China"),
+    value: BICst.WIDGET.MAP_CHINA,
+    cls: "drag-map-china-icon"
+}, {
+    text: BI.i18nText("BI-JIANGSU"),
+    title: BI.i18nText("BI-JIANGSU"),
+    value: BICst.WIDGET.MAP_JIANGSU,
+    cls: "drag-map-svg-icon"
+}];
+
 //组件的设置的下拉选项
 BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS = [{
     value: BICst.DASHBOARD_WIDGET_LINKAGE,
@@ -958,7 +975,10 @@ BICst.DEFAULT_CHART_SETTING = {
     show_left_y_axis_title: false,
     show_right_y_axis_title: false,
     left_y_axis_reversed: false,
-    right_y_axis_reversed: false
+    right_y_axis_reversed: false,
+    show_x_axis_title: false,
+    x_axis_title: "",
+    text_direction: 0
 };
 
 BICst.CAL_TARGET_TYPE = [{

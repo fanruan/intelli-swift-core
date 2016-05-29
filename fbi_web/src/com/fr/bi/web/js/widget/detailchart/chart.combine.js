@@ -6,6 +6,10 @@
 BI.CombineChart = BI.inherit(BI.Widget, {
 
     constants: {
+        LEFT_AXIS: 0,
+        RIGHT_AXIS: 1,
+        ROTATION: -90,
+
         NORMAL: 1,
         ZERO2POINT: 2,
         ONE2POINT: 3,
@@ -47,6 +51,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             "type": "value",
             "lineWidth": 0,
             "showLabel": true,
+            title: {},
             //"formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
             "enableTick": true,
             "gridLineWidth": 0,
@@ -139,29 +144,117 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             if(BI.isNotEmptyArray(self.chart_color)){
                 config.colors = self.chart_color;
             }
-            if(BI.has(config, "yAxis") && config.yAxis.length === 1){
-                config.yAxis[0].reversed = self.left_y_axis_reversed;
-                config.yAxis[0].text = self.show_left_y_axis_title === true ? self.left_y_axis_title : "";
-                config.yAxis[0].formatter = formatTickInYaxis(self.left_y_axis_style);
+            if(BI.has(config, "yAxis") && config.yAxis.length > 0){
+                config.yAxis[0].reversed = self.left_y_axis_reversed ? !config.yAxis[0].reversed : config.yAxis[0].reversed;
+                config.yAxis[0].formatter = formatTickInYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
+                formatNumberLevelInYaxis(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                config.yAxis[0].title.text = self.left_y_axis_title + getYAxisUnit(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                config.yAxis[0].title.text = self.show_left_y_axis_title === true ? config.yAxis[0].title.text : "";
+                //config.yAxis[0].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "yAxis") && config.yAxis.length === 2){
-                config.yAxis[1].text = self.show_right_y_axis_title === true ? self.right_y_axis_title : "";
-                config.yAxis[1].formatter = formatTickInYaxis(self.right_y_axis_style);
-                config.yAxis[1].reversed = self.right_y_axis_reversed;
+                config.yAxis[1].formatter = formatTickInYaxis(self.right_y_axis_style, self.constants.RIGHT_AXIS);
+                config.yAxis[1].reversed = self.right_y_axis_reversed ? !config.yAxis[1].reversed : config.yAxis[1].reversed;
+                formatNumberLevelInYaxis(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                config.yAxis[1].title.text = self.right_y_axis_title + getYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                config.yAxis[1].title.text = self.show_right_y_axis_title === true ? config.yAxis[1].title.text : "";
+                //config.yAxis[1].title.rotation = self.constants.ROTATION;
+            }
+            if(BI.has(config, "xAxis") && config.xAxis.length > 0){
+                config.xAxis[0].labelRotation = self.text_direction;
+                config.xAxis[0].title.text = self.show_x_axis_title === true ? self.x_axis_title : "";
+                config.xAxis[0].title.align = "center";
             }
         }
 
-        function formatTickInYaxis(type){
+        function formatTickInYaxis(type, position){
+            var formatter = '#.##';
             switch (type) {
                 case self.constants.NORMAL:
-                    return "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}";
+                    formatter = '#.##';
+                    break;
                 case self.constants.ZERO2POINT:
-                    return "function(){return window.FR ? FR.contentFormat(arguments[0], '#0') : arguments[0]}";
+                    formatter = '#0';
+                    break;
                 case self.constants.ONE2POINT:
-                    return "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.0#') : arguments[0]}";
+                    formatter = '#0.0';
+                    break;
                 case self.constants.TWO2POINT:
-                    return "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.00') : arguments[0]}";
+                    formatter = '#0.00';
+                    break;
             }
+            if(position === self.constants.LEFT_AXIS){
+                if(self.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(type === self.constants.NORMAL){
+                        formatter = '#0%'
+                    }else{
+                        formatter += '%';
+                    }
+                }
+            }
+            if(position === self.constants.RIGHT_AXIS){
+                if(self.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(type === self.constants.NORMAL){
+                        formatter = '#0%'
+                    }else{
+                        formatter += '%';
+                    }
+                }
+            }
+            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]}"
+        }
+
+        function formatNumberLevelInYaxis(type, position){
+            var magnify = 1;
+            switch (type) {
+                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                    magnify = 1;
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                    magnify = 10000;
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                    magnify = 1000000;
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                    magnify = 100000000;
+                    break;
+            }
+            if(magnify > 1){
+                BI.each(result, function(idx, item){
+                    BI.each(item.data, function(id, da){
+                        if(position === item.yAxis){
+                            da.y = da.y.div(magnify);
+                        }
+                    })
+                })
+            }
+        }
+
+        function getYAxisUnit(numberLevelType, position){
+            var unit = BI.i18nText("BI-Count");
+            switch (numberLevelType) {
+                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                    unit = BI.i18nText("BI-Count");
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                    unit = BI.i18nText("BI-Wan");
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                    unit = BI.i18nText("BI-Million");
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                    unit = BI.i18nText("BI-Yi");
+                    break;
+            }
+            if(position === self.constants.LEFT_AXIS){
+                self.left_y_axis_unit !== "" && (unit = unit + "/" + self.left_y_axis_unit)
+            }
+            if(position === self.constants.RIGHT_AXIS){
+                self.right_y_axis_unit !== "" && (unit = unit + "/" + self.right_y_axis_unit)
+            }
+            return "(" + unit + ")";
         }
     },
 
@@ -179,6 +272,13 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.show_right_y_axis_title = options.show_right_y_axis_title;
         this.left_y_axis_reversed = options.left_y_axis_reversed;
         this.right_y_axis_reversed = options.right_y_axis_reversed;
+        this.left_y_axis_number_level = options.left_y_axis_number_level;
+        this.right_y_axis_number_level = options.right_y_axis_number_level;
+        this.left_y_axis_unit = options.left_y_axis_unit;
+        this.right_y_axis_unit = options.right_y_axis_unit;
+        this.show_x_axis_title = options.show_x_axis_title;
+        this.x_axis_title = options.x_axis_title;
+        this.text_direction = options.text_direction || 0;
     },
 
     populate: function (items, types) {
