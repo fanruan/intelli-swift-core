@@ -16,31 +16,6 @@ import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
  */
 public class CubeTILoaderAdapter implements ICubeDataLoader {
     private final RuntimeException NULL_EXCEPTION = new NullTableIndexException();
-    /**
-     * 根据业务包获取BITableIndex
-     *
-     * @param td
-     * @return
-     */
-    public ICubeTableService getTableIndex(Table td) {
-        throw NULL_EXCEPTION;
-    }
-
-    public ICubeTableService getTableIndex(BICore md5Core) {
-        throw NULL_EXCEPTION;
-    }
-
-    public ICubeTableService getTableIndex(BIField td) {
-        throw NULL_EXCEPTION;
-    }
-
-    public BIKey getFieldIndex(BIField column) {
-        throw NULL_EXCEPTION;
-    }
-
-    public ICubeTableService getTableIndex(BITableID id) {
-        throw NULL_EXCEPTION;
-    }
 
     /**
      * 这里的userId不能乱用，只能访问公共属性的时候可以用这个userId
