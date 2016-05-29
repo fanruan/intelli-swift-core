@@ -104,6 +104,21 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
     },
 
+    _checkUsedEnable: function () {
+        var isUsed = this.model.get("used");
+        var wId = BI.Utils.getWidgetIDByDimensionID(this.model.get("id"));
+        this.usedCheck.setEnable(true);
+        this.usedCheck.setSelected(isUsed);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if ((wType !== BICst.WIDGET.TABLE ||
+            wType !== BICst.WIDGET.CROSS_TABLE ||
+            wType !== BICst.WIDGET.COMPLEX_TABLE)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION2
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
+            this.usedCheck.setEnable(false);
+        }
+    },
+
     _checkDimensionName: function (name) {
         var currId = this.model.get("id");
         var widgetId = BI.Utils.getWidgetIDByDimensionID(currId);
@@ -316,7 +331,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
-        this.usedCheck.setSelected(this.model.get("used"));
+        this._checkUsedEnable();
         this.editor.setValue(this.model.get("name"));
         this.editor.setState(this.model.get("name"));
         var filterIconWidth = BI.isEmpty(this.model.get("filter_value")) ? 0 : this.constants.ICON_BUTTON_WIDTH;
