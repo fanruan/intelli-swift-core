@@ -79,10 +79,8 @@
         },
 
         setCurrentSelectPackageID: function (pId) {
-            if (BI.isNotEmptyString(pId)) {
-                var key = BICst.CACHE.PACKAGE_PREFIX + this.getCurrentTemplateId();
-                BI.Cache.setItem(key, pId);
-            }
+            var key = BICst.CACHE.PACKAGE_PREFIX + this.getCurrentTemplateId();
+            BI.Cache.setItem(key, pId);
         },
 
         getPackageNameByID: function (packageId) {
@@ -120,6 +118,7 @@
                     return self.getFieldTypeByID(id) === BICst.COLUMN.STRING;
                 });
             }
+            return [];
         },
 
         getNumberFieldIDsOfTableID: function (tableId) {
@@ -130,6 +129,7 @@
                     return self.getFieldTypeByID(id) === BICst.COLUMN.NUMBER;
                 });
             }
+            return [];
         },
 
         getDateFieldIDsOfTableID: function (tableId) {
@@ -140,6 +140,7 @@
                     return self.getFieldTypeByID(id) === BICst.COLUMN.DATE;
                 });
             }
+            return [];
         },
 
         getCountFieldIDsOfTableID: function (tableId) {
@@ -147,6 +148,7 @@
                 var fields = Pool.tables[tableId].fields;
                 return BI.pluck(fields[3], "id");
             }
+            return [];
         },
 
         getSortedFieldIdsOfOneTableByTableId: function (tableId) {
@@ -191,7 +193,7 @@
         },
 
         getExcelViewByTableId: function (tableId) {
-            var views = Pool.excel_views;
+            var views = Pool.excel_views || {};
             return views[tableId];
         },
 
@@ -204,7 +206,6 @@
          */
         getFieldNameByID: function (fieldId) {
             var translations = Pool.translations;
-            BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
             var field = Pool.fields[fieldId];
             var fieldName = translations[fieldId];
             if (BI.isNull(fieldName) && BI.isNotNull(field)) {
@@ -219,21 +220,18 @@
         },
 
         getFieldTypeByID: function (fieldId) {
-            BI.isNotNull(fieldId) && BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
             if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].field_type;
             }
         },
 
         getFieldIsUsableByID: function (fieldId) {
-            BI.isNotNull(fieldId) && BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
             if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].is_usable;
             }
         },
 
         getTableIdByFieldID: function (fieldId) {
-            BI.isNotNull(fieldId) && BI.isNotNull(fieldId.field_id) && (fieldId = fieldId.field_id);
             if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].table_id;
             }
@@ -441,26 +439,26 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.column_size) ? ws.column_size : [];
         },
-        
-        getWSChartColorByID: function(wid) {
+
+        getWSChartColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.chart_color) ? ws.chart_color :
                 BICst.DEFAULT_CHART_SETTING.chart_color;
         },
 
-        getWSLeftYAxisStyleByID: function(wid) {
+        getWSLeftYAxisStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_style) ? ws.left_y_axis_style :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_style;
         },
 
-        getWSRightYAxisStyleByID: function(wid) {
+        getWSRightYAxisStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right_y_axis_style) ? ws.right_y_axis_style :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_style;
         },
 
-        getWSRightYAxisNumLevelByID: function(wid) {
+        getWSRightYAxisNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right_y_axis_number_level) ? ws.right_y_axis_number_level :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_number_level;
@@ -478,19 +476,19 @@
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_unit;
         },
 
-        getWSRightYAxisUnitByID: function(wid) {
+        getWSRightYAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right_y_axis_unit) ? ws.right_y_axis_unit :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_unit;
         },
 
-        getWSShowLeftYAxisTitleByID: function(wid) {
+        getWSShowLeftYAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_left_y_axis_title) ? ws.show_left_y_axis_title :
                 BICst.DEFAULT_CHART_SETTING.show_left_y_axis_title;
         },
 
-        getWSShowRightYAxisTitleByID: function(wid) {
+        getWSShowRightYAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_right_y_axis_title) ? ws.show_right_y_axis_title :
                 BICst.DEFAULT_CHART_SETTING.show_right_y_axis_title;
@@ -526,7 +524,7 @@
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_reversed;
         },
 
-        getWSRightYAxisReversedByID: function(wid) {
+        getWSRightYAxisReversedByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right_y_axis_reversed) ? ws.right_y_axis_reversed :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_reversed;

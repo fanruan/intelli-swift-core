@@ -19,6 +19,9 @@ import com.fr.json.JSONObject;
  * @since 4.0
  */
 public class BIBusinessFieldGetter implements BusinessField {
+    public BIBusinessFieldGetter() {
+    }
+
     private BusinessField field;
 
     public BIBusinessFieldGetter(BusinessField field) {

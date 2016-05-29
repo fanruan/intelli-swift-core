@@ -1,7 +1,6 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.fr.bi.cluster.ClusterAdapter;
@@ -58,7 +57,7 @@ public class AnalysisETLModule extends AbstractModule {
 
     @Override
     public BIDataSourceManagerProvider getDataSourceManagerProvider() {
-        return BICubeConfigureCenter.getDataSourceManager();
+        return BIAnalysisETLManagerCenter.getDataSourceManager();
     }
 
     @Override

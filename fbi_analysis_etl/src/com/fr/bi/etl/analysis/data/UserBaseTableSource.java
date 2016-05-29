@@ -21,8 +21,8 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     private UserWidget userWidget;
     @BICoreField
     private long userId;
-    public UserBaseTableSource(BIWidget widget, int etlType, long userId, List<AnalysisETLSourceField> fieldList, String name) {
-        super(widget, etlType,  fieldList, name);
+    public UserBaseTableSource(BIWidget widget, int etlType, long userId, List<AnalysisETLSourceField> fieldList, String name, String id) {
+        super(widget, etlType,  fieldList, name, id);
         this.userId = userId;
         this.userWidget = new UserWidget(widget, userId);
     }

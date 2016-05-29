@@ -264,9 +264,10 @@ BI.extend(BI.TableTree, {
                     next = [];
                 }
                 if (BI.isNotEmptyArray(node.values)) {
+                    var cls = store === -1 ? " last" : "";
                     var id = BI.UUID();
                     for (var i = next.length; i < deep; i++) {
-                        next.push({text: BI.i18nText("BI-Summary_Values"), tag: id, cls: "summary-cell"});
+                        next.push({text: BI.i18nText("BI-Summary_Values"), tag: id, cls: "summary-cell" + cls});
                     }
                     if (!isCross) {
                         next = next.concat(node.values);
