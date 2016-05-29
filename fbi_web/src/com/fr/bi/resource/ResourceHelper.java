@@ -717,7 +717,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/third/leaflet.css",
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css"
-        };git
+        };
     }
 
     public static String[] getCommonJs() {
