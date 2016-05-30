@@ -59,7 +59,7 @@ public class WriteLock extends ProtocolSupport {
      * @param zookeeper zookeeper client instance
      * @param dir       the parent path you want to use for locking
      * @param acls      the acls that you want to use for all the paths,
-     *                  if null world read/write is usable.
+     *                  if null world read/write is used.
      */
     public WriteLock(ZooKeeper zookeeper, String dir, List<ACL> acl) {
         super(zookeeper);
@@ -166,7 +166,7 @@ public class WriteLock extends ProtocolSupport {
     /**
      * return the parent dir for lock
      *
-     * @return the parent dir usable for locks.
+     * @return the parent dir used for locks.
      */
     public String getDir() {
         return dir;

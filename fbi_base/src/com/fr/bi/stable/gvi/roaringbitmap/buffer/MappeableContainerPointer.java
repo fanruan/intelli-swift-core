@@ -21,7 +21,7 @@ interface MappeableContainerPointer extends
     int getCardinality();
 
     /**
-     * This method can be usable to check whether there is current a valid
+     * This method can be used to check whether there is current a valid
      * container as it returns null when there is not.
      * 
      * @return null or the current container

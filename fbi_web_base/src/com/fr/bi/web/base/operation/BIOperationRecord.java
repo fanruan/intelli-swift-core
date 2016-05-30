@@ -111,7 +111,7 @@ public class BIOperationRecord {
      * initial the records according the report name.
      * But if there exists duplicate report name under current fold,just use the file firstly meet when do retrieve
      *
-     * @param reportName the report name usable to retrieve the record
+     * @param reportName the report name used to retrieve the record
      * @throws Exception
      */
     private void initialWithReportName(String reportName) throws Exception {

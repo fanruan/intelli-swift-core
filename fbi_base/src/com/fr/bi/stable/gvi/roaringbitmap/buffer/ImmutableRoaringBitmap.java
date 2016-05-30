@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 /**
  * ImmutableRoaringBitmap provides a compressed immutable (cannot be modified)
- * bitmap. It is meant to be usable with org.roaringbitmap.buffer.MutableRoaringBitmap.
+ * bitmap. It is meant to be used with org.roaringbitmap.buffer.MutableRoaringBitmap.
  * 
  * <pre>
  * {@code

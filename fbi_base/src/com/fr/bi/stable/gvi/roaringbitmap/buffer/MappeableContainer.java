@@ -13,7 +13,7 @@ import java.io.IOException;
 
 /**
  * Base container class. This class is similar to org.roaringbitmap.Container
- * but meant to be usable with memory mapping.
+ * but meant to be used with memory mapping.
  */
 public abstract class MappeableContainer implements Iterable<Short>, Cloneable,
         Externalizable {

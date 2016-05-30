@@ -8,7 +8,7 @@ package com.fr.bi.stable.gvi.roaringbitmap;
  */
 interface ContainerPointer extends Comparable<ContainerPointer>{
 	/**
-	 * This method can be usable to check whether there is current a valid
+	 * This method can be used to check whether there is current a valid
 	 * container as it returns null when there is not.
 	 * @return null or the current container
 	 */

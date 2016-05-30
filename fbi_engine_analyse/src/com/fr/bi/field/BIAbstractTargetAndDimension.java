@@ -90,10 +90,10 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         if (jo.has("hyperlink")) {
             JSONObject hyperlink = jo.getJSONObject("hyperlink");
             this.hyperLinkExpression = hyperlink.optString("expression", StringUtils.EMPTY);
-            this.useHyperLink = hyperlink.getBoolean("usable");
+            this.useHyperLink = hyperlink.getBoolean("used");
         }
-        if (jo.has("usable")) {
-            this.used = jo.getBoolean("usable");
+        if (jo.has("used")) {
+            this.used = jo.getBoolean("used");
         }
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
