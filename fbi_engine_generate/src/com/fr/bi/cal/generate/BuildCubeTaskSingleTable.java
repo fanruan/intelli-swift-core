@@ -18,6 +18,7 @@ import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageTopic;
+import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
@@ -32,6 +33,7 @@ import com.fr.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -53,14 +55,22 @@ public class BuildCubeTaskSingleTable implements CubeTask {
     public BuildCubeTaskSingleTable(BIUser biUser, BIBusinessTable biBusinessTable) {
         this.biUser = biUser;
         this.biBusinessTableGetter=new BIBusinessTableGetter(biBusinessTable);
+        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
+        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        this.cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
+        this.cubeBuildStuffManager.initialCubeStuff();
         init();
 
     }
 
     private void init() {
-        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-        retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        Set<CubeTableSource> tableSourceSet=new HashSet<CubeTableSource>();
+        tableSourceSet.add(biBusinessTableGetter.getTableSource());
+        cubeBuildStuffManager.setAllSingleSources(tableSourceSet);
+        Set<List<Set<CubeTableSource>>> dependTableResource = cubeBuildStuffManager.getDependTableResource();
+        Set<BITableRelation> tableRelationSet = cubeBuildStuffManager.getTableRelationSet();
+        Set<BITableSourceRelationPath> relationPaths = cubeBuildStuffManager.getRelationPaths();
     }
 
 
@@ -95,17 +105,14 @@ public class BuildCubeTaskSingleTable implements CubeTask {
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuffManager.getSources());
         operationManager.initialWatcher();
 
-        Set<CubeTableSource> tableSourceSet=new HashSet<CubeTableSource>();
-        tableSourceSet.add(biBusinessTableGetter.getTableSource());
-        
-        manager.registerDataSource(tableSourceSet);
+        manager.registerDataSource(cubeBuildStuffManager.getAllSingleSources());
         manager.registerRelation(cubeBuildStuffManager.getTableSourceRelationSet());
-//        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuffManager.getRelationPaths());
-//        manager.registerTableRelationPath(relationPathSet);
+        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuffManager.getRelationPaths());
+        manager.registerTableRelationPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
         operationManager.generateDataSource(cubeBuildStuffManager.getDependTableResource());
-//        operationManager.generateRelationBuilder(cubeBuildStuffManager.getTableSourceRelationSet());
-//        operationManager.generateTableRelationPath(relationPathSet);
+        operationManager.generateRelationBuilder(cubeBuildStuffManager.getTableSourceRelationSet());
+        operationManager.generateTableRelationPath(relationPathSet);
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
             router.deliverMessage(generateMessageDataSourceStart());
