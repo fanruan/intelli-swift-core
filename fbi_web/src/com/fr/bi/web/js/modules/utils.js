@@ -446,6 +446,18 @@
                 BICst.DEFAULT_CHART_SETTING.chart_color;
         },
 
+        getWSChartLineTypeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_line_type) ? ws.chart_line_type :
+                BICst.DEFAULT_CHART_SETTING.chart_line_type;
+        },
+
+        getWSChartPieTypeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_pie_type) ? ws.chart_pie_type :
+                BICst.DEFAULT_CHART_SETTING.chart_pie_type;
+        },
+
         getWSLeftYAxisStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_style) ? ws.left_y_axis_style :

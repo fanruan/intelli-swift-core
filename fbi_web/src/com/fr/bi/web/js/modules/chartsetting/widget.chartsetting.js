@@ -57,24 +57,11 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.LINE:
-            case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_RADAR:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.COMPARE_AREA:
             case BICst.WIDGET.FALL_AXIS:
-            case BICst.WIDGET.RANGE_AREA:
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.COMPARE_BAR:
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.PIE:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
@@ -88,6 +75,16 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.percent_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.PercentChartsSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 this.chartSetting = BI.createWidget({
                     type: "bi.multi_axis_chart_setting",
@@ -97,6 +94,66 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.line_area_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.LineAreaChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.RANGE_AREA:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.range_area_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.RangeAreaChartsSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.DONUT:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.donut_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.DonutChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.bar_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.BarChartsSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AREA:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.compare_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.CompareChartsSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.PIE:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.pie_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.PieChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+
         }
         this.chartSetting.populate();
         this.wrapper.addItem({

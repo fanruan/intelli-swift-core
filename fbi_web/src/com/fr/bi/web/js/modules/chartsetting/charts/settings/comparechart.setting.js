@@ -1,9 +1,9 @@
 /**
- * @class BI.ChartsSetting
+ * @class BI.CompareChartsSetting
  * @extends BI.Widget
- * 柱状，堆积柱状，组合图样式
+ * 对比柱状样式
  */
-BI.ChartsSetting = BI.inherit(BI.Widget, {
+BI.CompareChartsSetting = BI.inherit(BI.Widget, {
 
     constant: {
         SINGLE_LINE_HEIGHT: 60,
@@ -21,13 +21,13 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
     },
 
     _defaultConfig: function(){
-        return BI.extend(BI.ChartsSetting.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.CompareChartsSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
         })
     },
 
     _init: function(){
-        BI.ChartsSetting.superclass._init.apply(this, arguments);
+        BI.CompareChartsSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         this.colorSelect = BI.createWidget({
@@ -37,34 +37,21 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.colorSelect.populate(BICst.CHART_COLORS);
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
-            type: "bi.horizontal",
+            type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
-            lgap: this.constant.SIMPLE_H_GAP,
-            items: [{
-                type: "bi.label",
-                text: BI.i18nText("BI-Table_Sheet_Style"),
-                cls: "line-title"
-            }, {
-                type: "bi.left",
-                cls: "detail-style",
-                items: BI.createItems([{
+            items: {
+                left: [{
                     type: "bi.label",
                     text: BI.i18nText("BI-Chart_Color"),
-                    cls: "attr-names"
-                }, {
-                    el: {
-                        type: "bi.center_adapt",
-                        items: [this.colorSelect]
-                    },
-                    lgap: this.constant.SIMPLE_H_GAP
-                }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                })
-            }]
+                    cls: "line-title"
+                }, this.colorSelect]
+            },
+            height: this.constant.SINGLE_LINE_HEIGHT,
+            lhgap: this.constant.SIMPLE_H_GAP
         });
 
         //格式和数量级
@@ -76,7 +63,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.numberLevellY = BI.createWidget({
@@ -87,7 +74,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.rYAxisStyle = BI.createWidget({
@@ -98,7 +85,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.rYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.numberLevelrY = BI.createWidget({
@@ -109,7 +96,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevelrY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         //单位
@@ -122,7 +109,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.RYUnit = BI.createWidget({
@@ -134,7 +121,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.RYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         //显示标题
@@ -146,7 +133,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleLY = BI.createWidget({
@@ -156,7 +143,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             cls: "unit-input"
         });
         this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.isShowTitleRY = BI.createWidget({
@@ -167,7 +154,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleRY = BI.createWidget({
@@ -178,7 +165,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.editTitleRY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         //轴逆序
@@ -189,7 +176,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.reversedLY.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.reversedRY = BI.createWidget({
@@ -199,7 +186,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.reversedRY.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         //横轴文本方向
@@ -214,7 +201,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             }
         });
         this.text_direction.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.isShowTitleX = BI.createWidget({
@@ -225,7 +212,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleX = BI.createWidget({
@@ -236,55 +223,40 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
         });
 
         var xAxis = BI.createWidget({
-            type: "bi.horizontal",
+            type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
-            lgap: this.constant.SIMPLE_H_GAP,
-            items: [{
-                type: "bi.label",
-                text: BI.i18nText("BI-Horizontal_Text"),
-                cls: "line-title"
-            }, {
-                type: "bi.left",
-                cls: "detail-style",
-                items: BI.createItems([{
+            items: {
+                left: [{
                     type: "bi.label",
                     text: BI.i18nText("BI-Text_Direction"),
                     lgap: this.constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
+                    cls: "line-title"
                 }, {
-                    type: "bi.center_adapt",
-                    items: [this.text_direction]
+                    el: this.text_direction,
+                    lgap: this.constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
                     text: "。",
                     textHeight: 30,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.isShowTitleX]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.editTitleX]
-                }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }),
-                lgap: this.constant.SIMPLE_H_GAP
-            }]
+                    height: this.constant.SINGLE_LINE_HEIGHT,
+                    lgap: 5
+                }, this.isShowTitleX, this.editTitleX]
+            },
+            height: this.constant.SINGLE_LINE_HEIGHT
         });
 
         var lYAxis = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
-            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
                 height: "100%",
                 textHeight: 60,
-                text: BI.i18nText("BI-Left_Value_Axis"),
+                text: BI.i18nText("BI-Positive_Value_Axis"),
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -315,9 +287,6 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.reversedLY]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -328,12 +297,12 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         var rYAxis = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
-            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
                 height: "100%",
                 textHeight: 60,
-                text: BI.i18nText("BI-Right_Value_Axis"),
+                text: BI.i18nText("BI-Negative_Value_Axis"),
+                lgap: this.constant.SIMPLE_H_GAP,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -364,9 +333,6 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleRY, this.editTitleRY]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.reversedRY]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -422,8 +388,6 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
         this.editTitleRY.setValue(BI.Utils.getWSRightYAxisTitleByID(wId));
         this.editTitleX.setValue(BI.Utils.getWSXAxisTitleByID(wId));
-        this.reversedLY.setSelected(BI.Utils.getWSLeftYAxisReversedByID(wId));
-        this.reversedRY.setSelected(BI.Utils.getWSRightYAxisReversedByID(wId));
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
@@ -447,8 +411,6 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             left_y_axis_title: this.editTitleLY.getValue(),
             right_y_axis_title: this.editTitleRY.getValue(),
             x_axis_title: this.editTitleX.getValue(),
-            left_y_axis_reversed: this.reversedLY.isSelected(),
-            right_y_axis_reversed: this.reversedRY.isSelected(),
             text_direction: this.text_direction.getValue()
         }
     },
@@ -468,10 +430,8 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.editTitleLY.setValue(v.left_y_axis_title);
         this.editTitleRY.setValue(v.right_y_axis_title);
         this.editTitleX.setValue(v.x_axis_title);
-        this.reversedLY.setSelected(v.left_y_axis_reversed);
-        this.reversedRY.setSelected(v.right_y_axis_reversed);
         this.text_direction.setValue(v.text_direction);
     }
 });
-BI.ChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.charts_setting", BI.ChartsSetting);
+BI.CompareChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.compare_chart_setting", BI.CompareChartsSetting);

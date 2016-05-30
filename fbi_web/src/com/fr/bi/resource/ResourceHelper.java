@@ -1211,6 +1211,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/charts.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/multiaxischart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/percentchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/lineareachart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/crosstable/widget.crosstable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
 

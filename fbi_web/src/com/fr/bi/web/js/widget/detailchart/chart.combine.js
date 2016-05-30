@@ -144,6 +144,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             if(BI.isNotEmptyArray(self.chart_color)){
                 config.colors = self.chart_color;
             }
+            formatChartLineStyle();
             if(BI.has(config, "yAxis") && config.yAxis.length > 0){
                 config.yAxis[0].reversed = self.left_y_axis_reversed ? !config.yAxis[0].reversed : config.yAxis[0].reversed;
                 config.yAxis[0].formatter = formatTickInYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
@@ -256,6 +257,24 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             }
             return "(" + unit + ")";
         }
+
+        function formatChartLineStyle(){
+            switch (self.chart_line_type) {
+                case BICst.CHART_STYLE.RIGHT_ANGLE:
+                    config.plotOptions.curve = false;
+                    config.plotOptions.step = true;
+                    break;
+                case BICst.CHART_STYLE.CURVE:
+                    config.plotOptions.curve = true;
+                    config.plotOptions.step = false;
+                    break;
+                case BICst.CHART_STYLE.NORMAL:
+                default:
+                    config.plotOptions.curve = false;
+                    config.plotOptions.step = false;
+                    break;
+            }
+        }
     },
 
     setTypes: function(types){
@@ -266,6 +285,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.left_y_axis_title = options.left_y_axis_title || "";
         this.right_y_axis_title = options.right_y_axis_title || "";
         this.chart_color = options.chart_color || [];
+        this.chart_line_type = options.chart_line_type || BICst.CHART_STYLE.NORMAL;
         this.left_y_axis_style = options.left_y_axis_style;
         this.right_y_axis_style = options.right_y_axis_style;
         this.show_left_y_axis_title = options.show_left_y_axis_title;

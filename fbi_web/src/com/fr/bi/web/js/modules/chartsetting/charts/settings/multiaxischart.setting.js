@@ -1,6 +1,7 @@
 /**
  * @class BI.MultiAxisChartSetting
  * @extends BI.Widget
+ * 多值轴组合图样式
  */
 BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
 
@@ -40,17 +41,30 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         var tableStyle = BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
+            type: "bi.horizontal",
             cls: "single-line-settings",
-            items: {
-                left: [{
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Table_Sheet_Style"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Chart_Color"),
-                    cls: "line-title"
-                }, this.colorSelect]
-            },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+                    cls: "attr-names"
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.colorSelect]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                })
+            }]
         });
 
         //格式和数量级
@@ -298,27 +312,32 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Horizontal_Text"),
-                textAlign: "left",
-                width: 50,
                 cls: "line-title"
             }, {
                 type: "bi.left",
                 cls: "detail-style",
-                items: [{
+                items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Text_Direction"),
                     lgap: this.constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    el: this.text_direction,
-                    lgap: this.constant.SIMPLE_H_GAP
+                    type: "bi.center_adapt",
+                    items: [this.text_direction]
                 }, {
                     type: "bi.label",
                     text: "。",
                     textHeight: 30,
-                    height: this.constant.SINGLE_LINE_HEIGHT,
-                    lgap: 5
-                }, this.isShowTitleX, this.editTitleX],
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.isShowTitleX]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.editTitleX]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
                 lgap: this.constant.SIMPLE_H_GAP
             }]
         });
@@ -332,7 +351,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
                 height: "100%",
                 textHeight: 60,
                 text: BI.i18nText("BI-Left_Value_Axis"),
-                textAlign: "left",
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -431,7 +449,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 height: "100%",
                 textHeight: 60,
-                width: 50,
                 text: BI.i18nText("BI-Right_Value_Axis_Two"),
                 cls: "line-title",
                 textAlign: "left"
@@ -534,7 +551,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
-        this.isShowTitleRY2.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
+        this.isShowTitleRY2.isSelected() ? this.editTitleRY2.setVisible(true) : this.editTitleRY2.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
     },
 

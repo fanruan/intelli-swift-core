@@ -947,6 +947,30 @@ BICst.TABLE_STYLE_GROUP = [{
     value: BICst.TABLE_STYLE.STYLE3
 }];
 
+//折线图和面积图线形
+BICst.LINE_CHART_STYLE_GROUP = [{
+    text: "折线",
+    value: BICst.CHART_STYLE.NORMAL
+}, {
+    text: "曲线",
+    value: BICst.CHART_STYLE.CURVE
+}, {
+    text: "直角折线",
+    value: BICst.CHART_STYLE.RIGHT_ANGLE
+}];
+
+//饼图类型
+BICst.LINE_CHART_STYLE_GROUP = [{
+    text: "饼图",
+    value: BICst.CHART_STYLE.NORMAL
+}, {
+    text: "等弧玫瑰图",
+    value: BICst.CHART_STYLE.EQUAL_ARC_ROSE
+}, {
+    text: "不等弧玫瑰图",
+    value: BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE
+}];
+
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_COL,
@@ -966,6 +990,8 @@ BICst.DEFAULT_CHART_SETTING = {
 
     //图
     chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+    chart_line_type: BICst.CHART_STYLE.NORMAL,
+    chart_pie_type: BICst.CHART_STYLE.NORMAL,
     left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,

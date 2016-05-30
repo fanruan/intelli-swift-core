@@ -1,13 +1,14 @@
 /**
- * @class BI.ChartsSetting
+ * @class BI.LineAreaChartSetting
  * @extends BI.Widget
  * 柱状，堆积柱状，组合图样式
  */
-BI.ChartsSetting = BI.inherit(BI.Widget, {
+BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
 
     constant: {
         SINGLE_LINE_HEIGHT: 60,
         SIMPLE_H_GAP: 10,
+        SIMPLE_H_GAP2: 20,
         SIMPLE_L_GAP: 2,
         CHECKBOX_WIDTH: 16,
         EDITOR_WIDTH: 80,
@@ -21,13 +22,13 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
     },
 
     _defaultConfig: function(){
-        return BI.extend(BI.ChartsSetting.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.LineAreaChartSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
         })
     },
 
     _init: function(){
-        BI.ChartsSetting.superclass._init.apply(this, arguments);
+        BI.LineAreaChartSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         this.colorSelect = BI.createWidget({
@@ -37,7 +38,23 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.colorSelect.populate(BICst.CHART_COLORS);
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.chartTypeGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.LINE_CHART_STYLE_GROUP, {
+                type: "bi.text_button",
+                extraCls: "table-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.left"
+            }]
+        });
+        this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -61,6 +78,17 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
                         items: [this.colorSelect]
                     },
                     lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Type"),
+                    cls: "attr-names",
+                    lgap: this.constant.SIMPLE_H_GAP2
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.chartTypeGroup]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 })
@@ -76,7 +104,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.numberLevellY = BI.createWidget({
@@ -87,7 +115,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.rYAxisStyle = BI.createWidget({
@@ -98,7 +126,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.rYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.numberLevelrY = BI.createWidget({
@@ -109,7 +137,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevelrY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         //单位
@@ -122,7 +150,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.RYUnit = BI.createWidget({
@@ -134,7 +162,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.RYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         //显示标题
@@ -146,7 +174,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.editTitleLY = BI.createWidget({
@@ -156,7 +184,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             cls: "unit-input"
         });
         this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.isShowTitleRY = BI.createWidget({
@@ -167,7 +195,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.editTitleRY = BI.createWidget({
@@ -178,7 +206,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.editTitleRY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         //轴逆序
@@ -189,7 +217,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.reversedLY.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.reversedRY = BI.createWidget({
@@ -199,7 +227,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.reversedRY.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         //横轴文本方向
@@ -214,7 +242,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             }
         });
         this.text_direction.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.isShowTitleX = BI.createWidget({
@@ -225,7 +253,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         this.editTitleX = BI.createWidget({
@@ -236,7 +264,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         var xAxis = BI.createWidget({
@@ -278,8 +306,8 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         var lYAxis = BI.createWidget({
             type: "bi.horizontal",
-            cls: "single-line-settings",
             lgap: this.constant.SIMPLE_H_GAP,
+            cls: "single-line-settings",
             items: [{
                 type: "bi.label",
                 height: "100%",
@@ -410,6 +438,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartTypeGroup.setValue(BI.Utils.getWSChartLineTypeByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.rYAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
@@ -435,6 +464,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
+            chart_line_type: this.chartTypeGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             right_y_axis_style: this.rYAxisStyle.getValue()[0],
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
@@ -456,6 +486,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
+        this.chartTypeGroup.setValue(v.chart_line_type);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.rYAxisStyle.setValue(v.right_y_axis_style);
         this.numberLevellY.setValue(v.left_y_axis_number_level);
@@ -473,5 +504,5 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.text_direction.setValue(v.text_direction);
     }
 });
-BI.ChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.charts_setting", BI.ChartsSetting);
+BI.LineAreaChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.line_area_chart_setting", BI.LineAreaChartSetting);

@@ -399,11 +399,6 @@ public class BIReportConstant {
         public static final int TABLE_SHOW = 0x40;
 
         public static final int NONE = -1;
-
-        //先放在最后，这些常量可能之后会去掉
-        public static final int MAP_CHINA = 0x41;
-        public static final int MAP_WORLD = 0x42;
-        public static final int MAP_JIANGSU = 0x43;
     }
 
     public static final class REGION {
