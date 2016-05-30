@@ -27,8 +27,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             el: {
                 el: {
                     el: {
-                        type: "bi.table_tree_with_number",
-                        showNumber: false
+                        type: "bi.table_tree"
                     }
                 }
             },
