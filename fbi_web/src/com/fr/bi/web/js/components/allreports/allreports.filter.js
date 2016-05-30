@@ -12,22 +12,23 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         BI.AllReportsFilter.superclass._init.apply(this, arguments);
         var self = this;
         this.depart = BI.createWidget({
-            type: "bi.text_value_combo",
+            type: "bi.multi_select_combo",
+            itemsCreator: BI.bind(this._departsCreator, this),
             height: 30,
             width: 180
         });
         this.role = BI.createWidget({
-            type: "bi.text_value_combo",
+            type: "bi.multi_select_combo",
             height: 30,
             width: 180
         });
         this.name = BI.createWidget({
-            type: "bi.text_value_combo",
+            type: "bi.multi_select_combo",
             height: 30,
             width: 180
         });
         this.status = BI.createWidget({
-            type: "bi.text_value_combo",
+            type: "bi.multi_select_combo",
             height: 30,
             width: 180
         });
@@ -115,14 +116,44 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         });
     },
 
+    _departsCreator: function(options, callback){
+        callback({
+            items: []
+        })
+    },
+
+    _rolesCreator: function(options, callback){
+        callback({
+            items: []
+        })
+    },
+
+    _usersCreator: function(options, callback) {
+        callback({
+            items: []
+        })
+    },
+
+    _statusCreator: function(options, callback){
+        callback({
+            items: []
+        })
+    },
+
     getValue: function(){
         return {
-            depart: this.depart.getValue(),
-            role: this.role.getValue(),
-            name: this.name.getValue(),
+            departs: this.depart.getValue(),
+            roles: this.role.getValue(),
+            users: this.name.getValue(),
             status: this.status.getValue(),
             last_modify: this.lastModify.getValue()
         }
+    },
+
+    populate: function(departs, roles, users){
+        this.departs = departs;
+        this.roles = roles;
+        this.users = users;
     }
 });
 $.shortcut("bi.all_reports_filter", BI.AllReportsFilter);

@@ -109,7 +109,17 @@ BI.AllReports = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-
+        var self = this;
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: BICst.BODY_ELEMENT,
+            text: BI.i18nText("BI-Loading")
+        });
+        BI.Utils.getAllReportsData(function (data) {
+            var departs = data.departs, roles = data.roles, users = data.users, reports = data.reports;
+            self.filterPane.populate(departs, roles, users);
+            mask.destroy();
+        });
     }
 });
 $.shortcut("bi.all_reports", BI.AllReports);

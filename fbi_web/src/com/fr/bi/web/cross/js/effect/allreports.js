@@ -7,10 +7,11 @@
 
         allReports: function ($tab, $content, entry) {
             entry.contentEl.empty();
-            BI.createWidget({
+            var allReports = BI.createWidget({
                 type: "bi.all_reports",
                 element: entry.contentEl
-            })
+            });
+            allReports.populate();
         }
     });
 })(jQuery);
