@@ -22,45 +22,43 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             type: "bi.style_table",
             el: {
                 el: {
+                    type: "bi.page_table",
+                    isNeedFreeze: null,
                     el: {
-                        type: "bi.page_table",
-                        isNeedFreeze: null,
                         el: {
                             el: {
-                                el: {
-                                    type: "bi.table_tree"
-                                }
+                                type: "bi.table_tree"
                             }
+                        }
+                    },
+                    itemsCreator: function (op, populate) {
+                        var vPage = op.vpage, hPage = op.hpage;
+                        var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                        if (BI.isNotNull(vPage)) {
+                            pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                        }
+                        self.model.setPageOperator(pageOperator);
+                        self._onPageChange(function (items, header, crossItems, crossHeader) {
+                            populate.apply(self.table, arguments);
+                            self._afterTablePopulate();
+                        })
+                    },
+                    pager: {
+                        pages: false,
+                        curr: 1,
+                        hasNext: function () {
+                            return self.model.getPage()[1] === 1;
                         },
-                        itemsCreator: function (op, populate) {
-                            var vPage = op.vpage, hPage = op.hpage;
-                            var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            if (BI.isNotNull(vPage)) {
-                                pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
-                            }
-                            self.model.setPageOperator(pageOperator);
-                            self._onPageChange(function (items, header, crossItems, crossHeader) {
-                                populate.apply(self.table, arguments);
-                                self._setStyleAndColor();
-                            })
+                        hasPrev: function () {
+                            return self.model.getPage()[0] === 1;
                         },
-                        pager: {
-                            pages: false,
-                            curr: 1,
-                            hasNext: function () {
-                                return self.model.getPage()[1] === 1;
-                            },
-                            hasPrev: function () {
-                                return self.model.getPage()[0] === 1;
-                            },
-                            firstPage: 1
-                        },
-                        hasHNext: function () {
-                            return self.model.getPage()[3] === 1;
-                        },
-                        isNeedMerge: true,
-                        regionColumnSize: this.model.getStoredRegionColumnSize()
-                    }
+                        firstPage: 1
+                    },
+                    hasHNext: function () {
+                        return self.model.getPage()[3] === 1;
+                    },
+                    isNeedMerge: true,
+                    regionColumnSize: this.model.getStoredRegionColumnSize()
                 },
                 sequence: {
                     type: "bi.sequence_table_tree_number"
@@ -299,7 +297,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
         this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
+        this._afterTablePopulate();
+    },
 
+    _afterTablePopulate: function(){
         if (this.model.isShowNumber()) {
             this.table.showSequence();
         } else {

@@ -1,11 +1,14 @@
 package com.finebi.cube.conf.pack.data;
 
+import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.container.BISetContainer;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -171,16 +174,39 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
             JSONObject tableJson = ja.optJSONObject(i);
             table.parseJSON(tableJson);
             List<String> fieldNames = new ArrayList<String>();
-            if (tableJson.has("used_fields")){
+            if (tableJson.has("used_fields")) {
                 JSONArray array = tableJson.getJSONArray("used_fields");
-                for (int j = 0;j<array.length();j++){
+                for (int j = 0; j < array.length(); j++) {
                     fieldNames.add(array.getString(j));
                 }
             }
-            table = (T) BusinessTableHelper.getBusinessTable(table.getID());
+
             table.setUsedFieldNames(fieldNames);
+            if (tableJson.has("fields")) {
+                table.setFields(this.parseField(tableJson.getJSONArray("fields"), table));
+            }
             add(table);
         }
+    }
+
+    private List<BusinessField> parseField(JSONArray fieldsJA, BusinessTable table) {
+        List<BusinessField> fields = new ArrayList<BusinessField>();
+        for (int i = 0; i < fieldsJA.length(); i++) {
+            try {
+                JSONArray ja = fieldsJA.getJSONArray(i);
+                for (int j = 0; j < ja.length(); j++) {
+                    JSONObject fieldJO = ja.getJSONObject(j);
+                    BIBusinessField field = new BIBusinessField(table, new BIFieldID(fieldJO.getString("id")),
+                            fieldJO.getString("field_name"), fieldJO.getInt("class_type"),
+                            fieldJO.getInt("field_size"), fieldJO.optBoolean("is_usable"), fieldJO.optBoolean("is_enable"));
+                    fields.add(field);
+                }
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
+            }
+        }
+        return fields;
     }
 
     @Override
