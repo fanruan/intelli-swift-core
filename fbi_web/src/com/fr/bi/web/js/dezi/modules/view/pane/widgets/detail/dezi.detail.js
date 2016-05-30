@@ -48,7 +48,10 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             this.tableChartPopupulate();
         }
         if (BI.has(changed, "settings")) {
-            this.tableChartPopupulate();
+            var diffs = BI.deepDiff(changed.settings, prev.settings);
+            if (diffs.length > 0 && (diffs.length > 1 || diffs[0] !== "column_size")) {
+                this.tableChartPopupulate();
+            }
         }
         if (BI.has(changed, "clicked")) {
             this.tableChartPopupulate();

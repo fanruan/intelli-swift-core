@@ -74,6 +74,13 @@ public class DataSourceCompound implements DataSourceCompoundService {
 
     @Override
     public void addTableSource(BusinessTable businessTable, CubeTableSource source) throws BIKeyDuplicateException {
+        if (tableDataSource.containTableSource(businessTable)) {
+            try {
+                removeTableSource(businessTable);
+            } catch (BIKeyAbsentException e) {
+                e.printStackTrace();
+            }
+        }
         tableDataSource.addTableSource(businessTable, source);
         addBusinessTable(businessTable);
     }
@@ -118,6 +125,11 @@ public class DataSourceCompound implements DataSourceCompoundService {
     @Override
     public void removeTableSource(BusinessTable businessTable) throws BIKeyAbsentException {
         tableDataSource.removeTableSource(businessTable);
+        /**
+         * BusinessTable和TableSource对应关系被删除
+         * 那么tableID和BusinessTable也要被删除。
+         */
+        businessTabledDataSource.removeBusinessTable(businessTable.getID());
     }
 
     @Override

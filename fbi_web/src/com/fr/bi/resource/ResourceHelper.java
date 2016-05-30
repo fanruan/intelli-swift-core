@@ -850,7 +850,6 @@ public class ResourceHelper {
 
 
                 //过滤界面的选择字段
-                "com/fr/bi/web/js/modules/selectdata4filter/widget.selectsinglefield.js",
                 "com/fr/bi/web/js/modules/selectdata4filter/widget.dimensionselectfield.js",
                 "com/fr/bi/web/js/modules/selectdata4filter/widget.targetselectfield.js",
                 "com/fr/bi/web/js/modules/selectdata4filter/node/node.level0.dimension.js",
@@ -1404,7 +1403,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/detailtablepopup/detailtablepopup.js",
 
 
-                //selectdataserview
+                //业务包选择字段服务
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",
@@ -1412,6 +1411,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.level2.date.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/expander.relationtables.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/packageselectdataservice.js",
+
+                //简单字段选择服务
+                "com/fr/bi/web/js/services/simpleselectdataservice/simpleselectdataservice.js",
         };
     }
 
@@ -1720,7 +1722,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                */
+                 */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
@@ -1757,6 +1759,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/data/constant/colors.js",
                 "com/fr/bi/web/js/data/constant/attrs.js",
                 "com/fr/bi/web/js/data/constant/biconst.js",
+                "com/fr/bi/web/js/data/pool/pool.js",
                 "com/fr/bi/web/js/data/pool/pool.buffer.js",
                 "com/fr/bi/web/js/data/pool/pool.sharing.js",
                 "com/fr/bi/web/js/data/req/req.js",
@@ -2047,7 +2050,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                */
+                 */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2101,7 +2104,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                */
+                 */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2396,7 +2399,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                */
+                 */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 

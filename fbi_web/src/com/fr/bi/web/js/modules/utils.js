@@ -155,16 +155,15 @@
             var translations = Pool.translations;
             var fieldIds = this.getFieldIDsOfTableID(tableId);
             var transIds = [];
-            // BI.each(fieldIds, function (i, fId) {
-            //     if (BI.isNotNull(translations[fId])) {
-            //         transIds.push(fId);
-            //         BI.remove(fieldIds, fId);
-            //     }
-            // });
-            BI.remove(fieldIds, function(i, item){
-                if(BI.isNotNull(translations[item])) {
-                    transIds.push(item);
-                    return true;
+            BI.each(fieldIds, function (i, fId) {
+                if (BI.isNotNull(translations[fId])) {
+                    transIds.push(fId);
+                }
+            });
+            var filterFiledIds = [];
+            BI.each(fieldIds, function (i, fId) {
+                if (BI.isNull(translations[fId])) {
+                    filterFiledIds.push(fId);
                 }
             });
             var countIds = this.getCountFieldIDsOfTableID(tableId) || [];
@@ -182,7 +181,7 @@
                         break;
                 }
             });
-            BI.each(fieldIds, function (i, id) {
+            BI.each(filterFiledIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
                     case BICst.COLUMN.NUMBER:
                         fNum.push(id);

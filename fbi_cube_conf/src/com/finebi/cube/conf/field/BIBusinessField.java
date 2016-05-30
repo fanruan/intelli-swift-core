@@ -63,6 +63,10 @@ public class BIBusinessField implements BusinessField {
         this(new BIBusinessTable(new BITableID(tableID)), fieldName);
     }
 
+    public BIBusinessField(String tableID, String fieldName, BIFieldID fieldID) {
+        this(new BIBusinessTable(new BITableID(tableID)), fieldName, fieldID);
+    }
+
     public BIBusinessField() {
 
     }
@@ -82,6 +86,10 @@ public class BIBusinessField implements BusinessField {
 
     public BIBusinessField(BusinessTable tableBelongTo, String fieldName) {
         this(tableBelongTo, new BIFieldID(""), fieldName, 0, 0, true, true);
+    }
+
+    public BIBusinessField(BusinessTable tableBelongTo, String fieldName, BIFieldID fieldId) {
+        this(tableBelongTo, fieldId, fieldName, 0, 0, true, true);
     }
 
     public void setFieldName(String fieldName) {
