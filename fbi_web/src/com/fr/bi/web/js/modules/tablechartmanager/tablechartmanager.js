@@ -50,6 +50,9 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.MAP_WORLD:
+            case BICst.WIDGET.MAP_CHINA:
+            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
@@ -121,7 +124,10 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.MAP:
+            //case BICst.WIDGET.MAP:
+            //case BICst.WIDGET.MAP_WORLD:
+            //case BICst.WIDGET.MAP_CHINA:
+            //case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.BUBBLE:

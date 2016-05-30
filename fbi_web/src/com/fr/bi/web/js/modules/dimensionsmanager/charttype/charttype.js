@@ -54,6 +54,9 @@ BI.ChartType = BI.inherit(BI.Widget, {
                 }));
             } else {
                 if(item.value === BICst.WIDGET.MAP){
+                    BI.each(BICst.SVG_MAP_TYPE, function (i, it) {
+                        it.iconClass = it.cls;
+                    });
                     result.push(BI.extend({
                         type: "bi.map_type_combo",
                         width: 40,

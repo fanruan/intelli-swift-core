@@ -332,6 +332,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.MAP_WORLD:
+            case BICst.WIDGET.MAP_CHINA:
+            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
                 return this._formatDataForForceBubble(data);
         }

@@ -1,6 +1,6 @@
 /**
- * created by young
- * 分组表的样式设置
+ * @class BI.ChartsSetting
+ * @extends BI.Widget
  */
 BI.ChartsSetting = BI.inherit(BI.Widget, {
 

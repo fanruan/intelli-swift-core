@@ -76,7 +76,6 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DASHBOARD:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
@@ -86,6 +85,15 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     wId: wId
                 });
                 this.chartSetting.on(BI.ChartsSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.multi_axis_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.MultiAxisChartSetting.EVENT_CHANGE, function () {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
