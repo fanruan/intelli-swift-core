@@ -63,7 +63,6 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
         Iterator<BITableRelation> relationIterator = relationsSet.iterator();
         while (relationIterator.hasNext()) {
             relations.put(relationIterator.next().createJSON());//生成JSON并放入JSONARRAY中
-//            relations.put(getRelationJson(relationIterator.next()));
         }
         return relations;
     }

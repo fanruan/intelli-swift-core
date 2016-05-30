@@ -82,10 +82,10 @@ public class BIBusinessTable implements BusinessTable {
         JSONObject jo = new JSONObject();
         jo.put("id", ID.getIdentityValue());
         JSONArray array = new JSONArray();
-        for (String name : getUsedFieldNames()){
+        for (String name : getUsedFieldNames()) {
             array.put(name);
         }
-        jo.put("used_fields",array);
+        jo.put("used_fields", array);
         return jo;
     }
 
@@ -185,8 +185,10 @@ public class BIBusinessTable implements BusinessTable {
     private JSONObject createCountField() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("field_type", DBConstant.COLUMN.COUNTER);
-        jo.put("field_name", "");
+        jo.put("field_name", BICubeConfigureCenter.getAliasManager().getTransManager(-999).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
         jo.put("table_id", getID().getIdentity());
+        jo.put("is_usable", false);
+        //记录数的id先暂时用拼接
         jo.put("id", jo.optString("table_id") + BICubeConfigureCenter.getAliasManager().getTransManager(-999).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
         return jo;
     }
