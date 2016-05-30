@@ -21,6 +21,8 @@ public class BICubeFieldSource implements ICubeFieldSource {
     protected String fieldName = StringUtils.EMPTY;
     protected CubeTableSource tableBelongTo;
     protected boolean usable = true;
+    private boolean canSetUsable = true;
+
 
     public BICubeFieldSource(CubeTableSource tableBelongTo, String fieldName, int classType, int fieldSize) {
         this.tableBelongTo = tableBelongTo;
@@ -67,7 +69,6 @@ public class BICubeFieldSource implements ICubeFieldSource {
         return classType;
     }
 
-    @Override
     public boolean isUsable() {
         return usable;
     }
@@ -121,6 +122,10 @@ public class BICubeFieldSource implements ICubeFieldSource {
         if (jo.has("is_usable")) {
             usable = jo.optBoolean("is_usable", true);
         }
+
+        if (jo.has("is_enable")) {
+            canSetUsable = jo.optBoolean("is_enable", true);
+        }
         if (jo.has("class_type")) {
             classType = jo.getInt("class_type");
         }
@@ -141,6 +146,7 @@ public class BICubeFieldSource implements ICubeFieldSource {
         jo.put("field_type", fieldType)
                 .put("field_size", fieldSize)
                 .put("is_usable", isUsable())
+                .put("is_enable", canSetUsable)
                 .put("class_type", classType);
 
         return jo;
