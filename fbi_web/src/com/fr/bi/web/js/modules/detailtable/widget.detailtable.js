@@ -114,7 +114,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
             self.pager.setAllPages(Math.ceil(row / size));
             self.pager.setValue(vPage);
-            callback(items, header, [], [])
+            callback(items, header, [], []);
+
+            //设置样式和颜色
+            self.table.setStyleAndColor(BI.StyleTable.STYLE1, BICst.DEFAULT_CHART_SETTING.theme_color);
         }, ob);
     },
 

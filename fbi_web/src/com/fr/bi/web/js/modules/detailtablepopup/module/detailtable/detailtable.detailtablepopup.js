@@ -99,7 +99,8 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Pane, {
             });
             self.pager.setAllPages(Math.ceil(row / size));
             self.pager.setValue(vPage);
-            callback(items, [header])
+            callback(items, [header]);
+            self.table.setStyleAndColor(BI.StyleTable.STYLE1, "#0088cc");
         });
     },
 
