@@ -24,9 +24,10 @@ BI.DetailTablePopupDetailTable = BI.inherit(BI.Pane, {
             height: 18
         });
 
-        this.table =BI.createWidget({
+        this.table = BI.createWidget({
             type: "bi.style_table",
             color: "#0088cc",
+            style: BI.StyleTable.STYLE1,
             el: {
                 el: {
                     type: "bi.page_table",

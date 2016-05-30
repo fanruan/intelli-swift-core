@@ -1,6 +1,6 @@
 /**
  * @class BIDezi.DetailTableDetailView
- * @extend BI.View
+ * @extends BI.View
  * 明细表的详细设置————诡异的命名
  */
 BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
@@ -211,15 +211,16 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
 
     _createTable: function () {
         var self = this;
-        this.table = BI.createWidget({
+        var table = BI.createWidget({
             type: "bi.detail_table",
             cls: "widget-center-wrapper",
             wId: this.model.get("id")
         });
-        this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
+        table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);
         });
-        return this.table;
+        this.tablePopulate = BI.debounce(BI.bind(table.populate, table), 30);
+        return table;
     },
 
 
@@ -229,10 +230,10 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             BI.has(changed, "view") ||
             BI.has(changed, "filter_value") ||
             (BI.has(changed, "target_relation"))) {
-            this.table.populate();
+            this.tablePopulate();
         }
         if (BI.has(changed, "settings")) {
-            this.table.populate();
+            this.tablePopulate();
         }
     },
 
@@ -256,6 +257,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
-        this.table.populate();
+        this.tablePopulate();
     }
 });

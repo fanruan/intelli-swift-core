@@ -135,7 +135,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             cls: "widget-center-wrapper",
             wId: this.model.get("id")
         });
-        this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChartTab.populate, this.tableChartTab), 0);
+        this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChartTab.populate, this.tableChartTab), 30);
         this.tableChartTab.on(BI.TableChartManager.EVENT_CHANGE, function (obs) {
             self.model.set(obs);
         });
