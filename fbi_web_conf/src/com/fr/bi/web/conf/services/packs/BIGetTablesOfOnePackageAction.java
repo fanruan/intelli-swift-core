@@ -3,6 +3,7 @@ package com.fr.bi.web.conf.services.packs;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
@@ -66,7 +67,8 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
             JSONArray nFields = new JSONArray();
             for (int j = 0; j < fs.length(); j++) {
                 JSONObject field = fs.getJSONObject(j);
-                field.put("id", tableId + field.getString("field_name"));
+                BusinessTable table = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
+                field.put("id", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).getFieldID().getIdentityValue());
                 field.put("table_id", tableId);
                 nFields.put(field);
             }

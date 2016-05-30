@@ -2,7 +2,6 @@ package com.finebi.cube.relation;
 
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -27,22 +26,13 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
                 BIFactoryHelper.getObject(BusinessField.class, foreignKeyTableID, foreignKeyFieldName));
     }
 
-    BusinessField generateField(String keyTableID, String keyFieldName) {
-        return BIFactoryHelper.getObject(BusinessField.class, keyTableID, keyFieldName);
-    }
+//    BusinessField generateField(String keyTableID, String keyFieldName) {
+//        return BIFactoryHelper.getObject(BusinessField.class, keyTableID, keyFieldName);
+//    }
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if (jo.has("primaryKey")) {
-            this.primaryField = generateField(BIValueConstant.EMPTY, BIValueConstant.EMPTY);
-            this.primaryField.parseJSON(jo.getJSONObject("primaryKey"));
-            this.primaryTable = this.primaryField.getTableBelongTo();
-        }
-        if (jo.has("foreignKey")) {
-            this.foreignField = generateField(BIValueConstant.EMPTY, BIValueConstant.EMPTY);
-            this.foreignField.parseJSON(jo.getJSONObject("foreignKey"));
-            this.foreignTable = foreignField.getTableBelongTo();
-        }
+        throw new UnsupportedOperationException("parseJson禁用");
     }
 
     /**
@@ -52,9 +42,14 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put("primaryKey", this.primaryField.createJSON());
-        jo.put("foreignKey", this.foreignField.createJSON());
+        JSONObject primaryJson = this.primaryField.createJSON();
+        primaryJson.put("field_id", this.primaryField.getFieldID().getIdentityValue());
+        JSONObject foreignJson = this.foreignField.createJSON();
+        foreignJson.put("field_id", this.foreignField.getFieldID().getIdentityValue());
+        jo.put("primaryKey", primaryJson);
+        jo.put("foreignKey", foreignJson);
         return jo;
     }
+
 
 }

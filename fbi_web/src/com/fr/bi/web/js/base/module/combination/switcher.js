@@ -151,7 +151,9 @@ BI.Switcher = BI.inherit(BI.Widget, {
                 });
             }
             this._created = true;
-            this.fireEvent(BI.Switcher.EVENT_AFTER_INIT);
+            BI.defer(function () {
+                self.fireEvent(BI.Switcher.EVENT_AFTER_INIT);
+            });
         }
     },
 

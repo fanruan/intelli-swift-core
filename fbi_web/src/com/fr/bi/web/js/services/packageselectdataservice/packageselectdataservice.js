@@ -62,8 +62,15 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             var pId = this.getPackageId();
             BI.Utils.setCurrentSelectPackageID(pId);
         });
-        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function () {
-            self.fireEvent(BI.PackageSelectDataService.EVENT_CLICK_ITEM, arguments)
+        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function (value, ob) {
+            if (BI.isKey(o.wId)) {
+                if (BI.isObject(value)) {
+                    value = value.field_id;
+                }
+                var tableId = BI.Utils.getTableIdByFieldID(value);
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, ob.isSelected() ? tableId : "");
+            }
+            self.fireEvent(BI.PackageSelectDataService.EVENT_CLICK_ITEM, arguments);
         });
         if (o.isDefaultInit === true) {
             var id = BI.Utils.getCurrentSelectPackageID();
@@ -74,8 +81,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             packageStructure = o.packageCreator();
             self.searcher.populatePackages(packageStructure);
         };
-        //当前组件的业务包更新
-        BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX + o.wId, broadcast);
+        if (BI.isKey(o.wId)) {
+            //当前组件的业务包更新
+            BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX + o.wId, broadcast);
+        }
         //全局业务包更新
         BI.Broadcasts.on(BICst.BROADCAST.PACKAGE_PREFIX, broadcast);
     },
@@ -201,26 +210,27 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         var fieldStructure = this._getFieldStructureOfOneTable(tableId);
         if (o.showRelativeTables === true) {
             //这里加上相关表
-            var relationTables = BI.Utils.getPrimaryRelationTablesByTableID(tableId);
+            var relationTables = o.tablesCreator(tableId, true);
             BI.remove(relationTables, tableId);
             if (BI.isNotEmptyArray(relationTables)) {
                 var relationTablesStructure = [];
-                BI.each(relationTables, function (i, rtId) {
+                BI.each(relationTables, function (i, table) {
                     relationTablesStructure.push({
-                        id: rtId,
+                        id: table.id,
                         pId: BI.PackageSelectDataService.RELATION_TABLE,
                         type: "bi.select_data_expander",
-                        el: {
+                        el: BI.extend({
                             type: "bi.detail_select_data_level1_node",
                             wId: o.wId,
-                            text: BI.Utils.getTableNameByID(rtId),
-                            title: BI.Utils.getTableNameByID(rtId),
-                            value: rtId,
+                            text: BI.Utils.getTableNameByID(table.id),
+                            title: BI.Utils.getTableNameByID(table.id),
+                            value: table.id
+                        }, table, {
                             isParent: true,
                             open: false
-                        },
+                        }),
                         popup: {
-                            items: self._getFieldStructureOfOneTable(rtId, true)
+                            items: self._getFieldStructureOfOneTable(table.id, true)
                         }
                     });
                 });
@@ -445,11 +455,11 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         return [BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
             id: fieldId + BICst.GROUP.Y,
             pId: fieldId,
-            fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Year_Fen"),
             title: prefix + BI.i18nText("BI-Year_Fen"),
             value: {
@@ -459,11 +469,11 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
             id: fieldId + BICst.GROUP.S,
             pId: fieldId,
-            fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Quarter"),
             title: prefix + BI.i18nText("BI-Quarter"),
             value: {
@@ -473,11 +483,11 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
             id: fieldId + BICst.GROUP.M,
             pId: fieldId,
-            fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Multi_Date_Month"),
             title: prefix + BI.i18nText("BI-Multi_Date_Month"),
             value: {
@@ -487,11 +497,11 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
             id: fieldId + BICst.GROUP.W,
             pId: fieldId,
-            fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Week_XingQi"),
             title: prefix + BI.i18nText("BI-Week_XingQi"),
             value: {
@@ -501,11 +511,11 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
             id: fieldId + BICst.GROUP.YMD,
             pId: fieldId,
-            fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Date"),
             title: prefix + BI.i18nText("BI-Date"),
             value: {
@@ -526,6 +536,14 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
 
     setEnabledValue: function (v) {
         this.searcher.setEnabledValue(v);
+    },
+
+    stopSearch: function () {
+        this.searcher.stopSearch();
+    },
+
+    populate: function () {
+        this.searcher.populate.apply(this.searcher, arguments);
     }
 });
 BI.PackageSelectDataService.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";

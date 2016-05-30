@@ -100,6 +100,5 @@ BI.SimpleSelectDataSearcher = BI.inherit(BI.Widget, {
         this.tree.populate.apply(this.tree, arguments);
     }
 });
-BI.SimpleSelectDataSearcher.EVENT_CHANGE = "SimpleSelectDataSearcher.EVENT_CHANGE";
 BI.SimpleSelectDataSearcher.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
 $.shortcut('bi.simple_select_data_searcher', BI.SimpleSelectDataSearcher);

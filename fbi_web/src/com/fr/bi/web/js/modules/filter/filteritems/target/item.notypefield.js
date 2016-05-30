@@ -89,7 +89,7 @@ BI.TargetNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             }
         });
 
-        selectFieldPane.on(BI.SelectSingleField.EVENT_CLICK_ITEM, function (v) {
+        selectFieldPane.on(BI.TargetFilterSelectField.EVENT_CLICK_ITEM, function (v) {
             self._onTypeSelected(v);
 
         });
