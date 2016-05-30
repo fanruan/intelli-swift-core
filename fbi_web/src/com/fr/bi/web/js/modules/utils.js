@@ -155,10 +155,16 @@
             var translations = Pool.translations;
             var fieldIds = this.getFieldIDsOfTableID(tableId);
             var transIds = [];
-            BI.each(fieldIds, function (i, fId) {
-                if (BI.isNotNull(translations[fId])) {
-                    transIds.push(fId);
-                    BI.remove(fieldIds, fId);
+            // BI.each(fieldIds, function (i, fId) {
+            //     if (BI.isNotNull(translations[fId])) {
+            //         transIds.push(fId);
+            //         BI.remove(fieldIds, fId);
+            //     }
+            // });
+            BI.remove(fieldIds, function(i, item){
+                if(BI.isNotNull(translations[item])) {
+                    transIds.push(item);
+                    return true;
                 }
             });
             var countIds = this.getCountFieldIDsOfTableID(tableId) || [];
