@@ -12,11 +12,7 @@ BI.SimpleSearcher = BI.inherit(BI.Widget, {
             baseCls: "bi-simple-searcher",
             items: [],
             itemsCreator: BI.emptyFn,
-            el: {
-                chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
-            },
-            popup: {},
-            adapter: {}
+            chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
         });
     },
 
@@ -24,12 +20,12 @@ BI.SimpleSearcher = BI.inherit(BI.Widget, {
         BI.SimpleSearcher.superclass._init.apply(this, arguments);
         var self = this, o = this.options, c = this._const;
 
-        this.tree = BI.createWidget(o.adapter, {
+        this.tree = BI.createWidget({
             type: "bi.select_data_tree",
             items: o.items,
             el: {
                 el: {
-                    chooseType: o.el.chooseType
+                    chooseType: o.chooseType
                 }
             },
             itemsCreator: o.itemsCreator
@@ -38,7 +34,7 @@ BI.SimpleSearcher = BI.inherit(BI.Widget, {
             self.fireEvent(BI.SimpleSearcher.EVENT_CHANGE, arguments);
         });
 
-        this.searcher = BI.createWidget(o.el, {
+        this.searcher = BI.createWidget({
             type: "bi.searcher",
             el: {
                 type: "bi.small_search_editor"
@@ -51,7 +47,26 @@ BI.SimpleSearcher = BI.inherit(BI.Widget, {
                 })
             },
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE,
-            popup: o.popup,
+            popup: {
+                matcher: {
+                    type: "bi.select_data_tree",
+                    el: {
+                        el: {
+                            chooseType: o.chooseType
+                        }
+                    },
+                    itemsCreator: o.itemsCreator
+                },
+                searcher: {
+                    type: "bi.select_data_tree",
+                    el: {
+                        el: {
+                            chooseType: o.chooseType
+                        }
+                    },
+                    itemsCreator: o.itemsCreator
+                }
+            },
             adapter: this.tree
         });
 

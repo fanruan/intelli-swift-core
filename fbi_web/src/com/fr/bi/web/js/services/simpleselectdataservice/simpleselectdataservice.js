@@ -86,7 +86,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                         text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
                         title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
                         value: finded.pId,
-                        type: "bi.select_data_level0_node"
+                        type: "bi.simple_select_data_level0_node"
                     }, field2TableMap[finded.id || finded.value], {
                         isParent: true,
                         open: true
@@ -116,7 +116,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         BI.each(currentTables, function (i, table) {
             tablesStructure.push(BI.extend({
                 id: table.id,
-                type: "bi.select_data_level0_node",
+                type: "bi.simple_select_data_level0_node",
                 text: BI.Utils.getTableNameByID(table.id),
                 title: BI.Utils.getTableNameByID(table.id),
                 value: table.id,
