@@ -1,17 +1,36 @@
 /**
- * Created by roy on 16/4/1.
+ * 业务包字段选择服务
+ *
+ * Created by GUY on 2016/5/28.
+ *
+ * @class BI.PackageSelectDataService
+ * @extend BI.Widget
  */
-BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
+BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.DetailDetailTableSelectDataPane.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-detail-select-data",
-            wId: ""
+        return BI.extend(BI.PackageSelectDataService.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-package-select-data-service",
+            wId: "",
+            isDefaultInit: true,
+            showRelativeTables: false,
+            showExcelView: false,
+            showDateGroup: false,
+            packageCreator: function () {
+                return BI.Utils.getAllGroupedPackagesTreeJSON();
+            },
+            tablesCreator: function () {
+                return [];
+            },
+            fieldsCreator: function () {
+                return [];
+            }
         })
     },
 
     _init: function () {
-        BI.DetailDetailTableSelectDataPane.superclass._init.apply(this, arguments);
-        var self = this, o = this.options, packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+        BI.PackageSelectDataService.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
+        var packageStructure = o.packageCreator();
         this.searcher = BI.createWidget({
             type: "bi.select_data_searcher",
             element: this.element,
@@ -28,32 +47,31 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 }
                 if (BI.isNotNull(op.node.isParent)) {
                     if (op.node.fieldType === BICst.COLUMN.DATE) {
-                        populate(self._buildDateChildren(op.node.id));
+                        var newNode = BI.clone(op.node);
+                        delete newNode.children;
+                        delete newNode.isParent;
+                        newNode.type = newNode._type;
+                        populate(self._buildDateChildren(op.node.pId, newNode));
                         return;
                     }
                     populate(self._getFieldsStructureByTableId(op.node.id));
                 }
             }
         });
-
-        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function (value, ob) {
-            if (BI.isObject(value)) {
-                value = value.field_id;
-            }
-            var tableId = BI.Utils.getTableIdByFieldID(value);
-            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, ob.isSelected() ? tableId : "");
-        });
-
         this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, function () {
             var pId = this.getPackageId();
             BI.Utils.setCurrentSelectPackageID(pId);
         });
-
-        var id = BI.Utils.getCurrentSelectPackageID();
-        this.searcher.setPackage(id);
+        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function () {
+            self.fireEvent(BI.PackageSelectDataService.EVENT_CLICK_ITEM, arguments)
+        });
+        if (o.isDefaultInit === true) {
+            var id = BI.Utils.getCurrentSelectPackageID();
+            this.searcher.setPackage(id);
+        }
 
         var broadcast = function () {
-            packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON();
+            packageStructure = o.packageCreator();
             self.searcher.populatePackages(packageStructure);
         };
         //当前组件的业务包更新
@@ -75,7 +93,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         var searchResult = [], matchResult = [];
         //选择了所有数据
         if (type & BI.SelectDataSearchSegment.SECTION_ALL) {
-            var packages = BI.Utils.getAllPackageIDs();
+            var packages = this._getAllPackageIds();
         } else {
             var packages = [packageId];
         }
@@ -91,32 +109,38 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 matchResult = matchResult.concat(sch.matched);
             })
         } else {
-            var result = [], map = {};
+            var result = [], map = {}, tables = [], field2TableMap = {};
             BI.each(packages, function (i, pid) {
-                var tables = BI.Utils.getTableIDsOfPackageID(pid);
+                tables = self._getTablesStructureByPackId(pid);
                 var items = [];
-                BI.each(tables, function (i, tid) {
-                    items = items.concat(self._getFieldsStructureByTableId(tid));
+                BI.each(tables, function (i, table) {
+                    var fields = self._getFieldsStructureByTableId(table.id || table.value);
+                    BI.each(fields, function (i, filed) {
+                        field2TableMap[filed.id || filed.value] = table;
+                    });
+                    items = items.concat(fields);
                 });
-                result.push(BI.Func.getSearchResult(items, keyword));
+                var rs = BI.Func.getSearchResult(items, keyword);
+                result.push(rs);
             });
             BI.each(result, function (i, sch) {
                 BI.each(sch.matched.concat(sch.finded), function (j, finded) {
                     if (!map[finded.pId]) {
-                        searchResult.push({
+                        searchResult.push(BI.extend({
                             id: finded.pId,
                             wId: o.wId,
-                            type: "bi.detail_detail_select_data_level0_node",
-                            text: BI.Utils.getTableNameByID(finded.pId),
-                            title: BI.Utils.getTableNameByID(finded.pId),
+                            text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
+                            title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
                             value: finded.pId,
+                            type: "bi.detail_select_data_level0_node"
+                        }, field2TableMap[finded.id || finded.value], {
                             isParent: true,
                             open: true
-                        });
+                        }));
                         map[finded.pId] = true;
                     }
                 });
-                searchResult = searchResult.concat(sch.matched.concat(sch.finded));
+                searchResult = searchResult.concat(sch.matched).concat(sch.finded);
                 matchResult = matchResult.concat(sch.matched);
             })
         }
@@ -126,6 +150,21 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         }
     },
 
+    _getAllPackageIds: function () {
+        var o = this.options;
+        var packages = o.packageCreator();
+        packages = BI.Tree.transformToTreeFormat(packages);
+        var tree = new BI.Tree();
+        tree.initTree(packages);
+        var result = [];
+        tree.traverse(function (node) {
+            if (node.isLeaf()) {
+                result.push(node.id || node.value);
+            }
+        });
+        return result;
+    },
+
     /**
      * 业务包中，所有表
      * @param packageId
@@ -133,19 +172,20 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
      * @private
      */
     _getTablesStructureByPackId: function (packageId) {
-        var tablesStructure = [], o = this.options;
-        var currentTables = BI.Utils.getTableIDsOfPackageID(packageId);
-        BI.each(currentTables, function (i, tid) {
-            tablesStructure.push({
-                id: tid,
+        var o = this.options;
+        var tablesStructure = [];
+        var currentTables = o.tablesCreator(packageId);
+        BI.each(currentTables, function (i, table) {
+            tablesStructure.push(BI.extend({
+                id: table.id,
                 wId: o.wId,
-                type: "bi.detail_detail_select_data_level0_node",
-                text: BI.Utils.getTableNameByID(tid),
-                title: BI.Utils.getTableNameByID(tid),
-                value: tid,
+                type: "bi.detail_select_data_level0_node",
+                text: BI.Utils.getTableNameByID(table.id),
+                title: BI.Utils.getTableNameByID(table.id),
+                value: table.id,
                 isParent: true,
                 open: false
-            });
+            }, table));
         });
         return tablesStructure;
     },
@@ -159,47 +199,49 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
     _getFieldsStructureByTableId: function (tableId) {
         var self = this, o = this.options;
         var fieldStructure = this._getFieldStructureOfOneTable(tableId);
-        //这里加上相关表
-        var relationTables = BI.Utils.getPrimaryRelationTablesByTableID(tableId);
-        BI.remove(relationTables, tableId);
-        if (BI.isNotEmptyArray(relationTables)) {
-            var relationTablesStructure = [];
-            BI.each(relationTables, function (i, rtId) {
-                relationTablesStructure.push({
-                    id: rtId,
-                    pId: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
-                    type: "bi.select_data_expander",
+        if (o.showRelativeTables === true) {
+            //这里加上相关表
+            var relationTables = BI.Utils.getPrimaryRelationTablesByTableID(tableId);
+            BI.remove(relationTables, tableId);
+            if (BI.isNotEmptyArray(relationTables)) {
+                var relationTablesStructure = [];
+                BI.each(relationTables, function (i, rtId) {
+                    relationTablesStructure.push({
+                        id: rtId,
+                        pId: BI.PackageSelectDataService.RELATION_TABLE,
+                        type: "bi.select_data_expander",
+                        el: {
+                            type: "bi.detail_select_data_level1_node",
+                            wId: o.wId,
+                            text: BI.Utils.getTableNameByID(rtId),
+                            title: BI.Utils.getTableNameByID(rtId),
+                            value: rtId,
+                            isParent: true,
+                            open: false
+                        },
+                        popup: {
+                            items: self._getFieldStructureOfOneTable(rtId, true)
+                        }
+                    });
+                });
+                fieldStructure.push({
+                    type: "bi.relation_tables_expander",
                     el: {
-                        type: "bi.detail_detail_select_data_level1_node",
+                        id: BI.PackageSelectDataService.RELATION_TABLE,
+                        pId: tableId,
                         wId: o.wId,
-                        text: BI.Utils.getTableNameByID(rtId),
-                        title: BI.Utils.getTableNameByID(rtId),
-                        value: rtId,
+                        type: "bi.select_data_relation_tables_node",
+                        text: BI.i18nText("BI-More_Foreign_Table") + ">>",
+                        title: BI.i18nText("BI-More_Foreign_Table"),
+                        value: BI.PackageSelectDataService.RELATION_TABLE,
                         isParent: true,
                         open: false
                     },
                     popup: {
-                        items: self._getFieldStructureOfOneTable(rtId, true)
+                        items: relationTablesStructure
                     }
-                });
-            });
-            fieldStructure.push({
-                type: "bi.relation_tables_expander",
-                el: {
-                    id: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
-                    pId: tableId,
-                    wId: o.wId,
-                    type: "bi.select_data_relation_tables_node",
-                    text: BI.i18nText("BI-More_Foreign_Table") + ">>",
-                    title: BI.i18nText("BI-More_Foreign_Table"),
-                    value: BI.DetailDetailTableSelectDataPane.RELATION_TABLE,
-                    isParent: true,
-                    open: false
-                },
-                popup: {
-                    items: relationTablesStructure
-                }
-            })
+                })
+            }
         }
         return fieldStructure;
     },
@@ -215,44 +257,47 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         var fieldStructure = [];
         var self = this, o = this.options;
 
-        //Excel View
-        var excelView = BI.Utils.getExcelViewByTableId(tableId);
         var viewFields = [];
-        if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
-            var excel = excelView.excel;
-            var positions = excelView.positions;
-            var items = [];
-            BI.each(excel, function (i, row) {
-                var item = [];
-                BI.each(row, function (j, cell) {
-                    item.push({text: cell})
+        if (o.showExcelView === true) {
+            //Excel View
+            var excelView = BI.Utils.getExcelViewByTableId(tableId);
+            if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
+                var excel = excelView.excel;
+                var positions = excelView.positions;
+                var items = [];
+                BI.each(excel, function (i, row) {
+                    var item = [];
+                    BI.each(row, function (j, cell) {
+                        item.push({text: cell})
+                    });
+                    items.push(item);
                 });
-                items.push(item);
-            });
-            BI.each(positions, function (id, position) {
-                viewFields.push(id);
-                items[position.row][position.col].value = id;
-            });
-            fieldStructure.push({
-                id: BI.UUID(),
-                pId: tableId,
-                type: "bi.excel_view",
-                wId: o.wId,
-                items: items
-            });
+                BI.each(positions, function (id, position) {
+                    viewFields.push(id);
+                    items[position.row][position.col].value = id;
+                });
+                if (viewFields.length > 0) {
+                    fieldStructure.push({
+                        id: BI.UUID(),
+                        pId: tableId,
+                        type: "bi.excel_view",
+                        items: items
+                    });
+                }
+            }
         }
 
-        //count, string, number
-        BI.each(BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId), function (i, fid) {
-            if (BI.Utils.getFieldIsUsableByID(fid) === false || viewFields.contains(fid)) {
-                return;
-            }
-            if (BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.COUNTER) {
+        var fields = o.fieldsCreator(tableId, isRelation);
+        BI.each(fields, function (i, field) {
+            var fid = field.id;
+            if (viewFields.contains(fid)) {
                 return;
             }
             var fieldName = BI.Utils.getFieldNameByID(fid);
+            var title = BI.Utils.getTableNameByID(tableId) + "." + fieldName;
             //日期类型-特殊处理
-            if (BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
+            if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
+                var _type = isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item";
                 if (isRelation === true) {
                     fieldStructure.push({
                         id: fid,
@@ -261,14 +306,15 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                         el: {
                             type: "bi.detail_select_data_level2_date_node",
                             wId: o.wId,
+                            _type: field.type || _type,
                             text: fieldName,
-                            title: fieldName,
+                            title: title,
                             value: fid,
                             isParent: true,
                             open: false
                         },
                         popup: {
-                            items: self._buildDateChildren(fid, isRelation)
+                            items: self._buildDateChildren(tableId, field, isRelation)
                         }
                     })
                 } else {
@@ -276,27 +322,28 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                         id: fid,
                         pId: tableId,
                         wId: o.wId,
+                        _type: field.type || _type,
                         type: "bi.detail_select_data_level1_date_node",
                         fieldType: BI.Utils.getFieldTypeByID(fid),
                         text: fieldName,
-                        title: fieldName,
+                        title: title,
                         value: fid,
                         isParent: true
                     });
-                    fieldStructure = fieldStructure.concat(self._buildDateChildren(fid, isRelation));
+                    fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
                 }
             } else {
-                fieldStructure.push({
+                fieldStructure.push(BI.extend({
                     id: fid,
                     pId: tableId,
                     wId: o.wId,
                     type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
-                    title: fieldName,
+                    title: title,
                     value: fid,
                     drag: self._createDrag(fieldName)
-                })
+                }, field))
             }
         });
         return fieldStructure;
@@ -346,9 +393,6 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                             case BICst.GROUP.YMD:
                                 name = BI.i18nText("BI-Date") + "(" + name + ")";
                                 break;
-                            case BICst.GROUP.YMDHMS:
-                                name = BI.i18nText("BI-Time_ShiKe") + "(" + name + ")";
-                                break;
                         }
                         return {
                             name: name,
@@ -392,91 +436,100 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
      * @returns {{id: string, pId: *, type: string, text: *, title: *, value: {fId: *, group: number}, drag: *}[]}
      * @private
      */
-    _buildDateChildren: function (fieldId, isRelation) {
+    _buildDateChildren: function (tableId, field, isRelation) {
         var o = this.options;
-        var drag = this._createDrag(BI.Utils.getFieldNameByID(fieldId));
-        return [{
-            id: fieldId + BICst.GROUP.Y,
-            pId: fieldId,
+        var fieldId = field.id || field.value;
+        var fieldName = field.text || BI.Utils.getFieldNameByID(fieldId);
+        var drag = this._createDrag(fieldName);
+        var prefix = BI.Utils.getTableNameByID(tableId) + "." + fieldName + ".";
+        return [BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            drag: drag
+        }, field, {
+            id: fieldId + BICst.GROUP.Y,
+            pId: fieldId,
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Year_Fen"),
-            title: BI.i18nText("BI-Year_Fen"),
+            title: prefix + BI.i18nText("BI-Year_Fen"),
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.Y}
-            },
-            drag: drag
-        }, {
-            id: fieldId + BICst.GROUP.S,
-            pId: fieldId,
+            }
+        }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            drag: drag
+        }, field, {
+            id: fieldId + BICst.GROUP.S,
+            pId: fieldId,
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Quarter"),
-            title: BI.i18nText("BI-Quarter"),
+            title: prefix + BI.i18nText("BI-Quarter"),
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.S}
-            },
-            drag: drag
-        }, {
-            id: fieldId + BICst.GROUP.M,
-            pId: fieldId,
+            }
+        }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            drag: drag
+        }, field, {
+            id: fieldId + BICst.GROUP.M,
+            pId: fieldId,
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Multi_Date_Month"),
-            title: BI.i18nText("BI-Multi_Date_Month"),
+            title: prefix + BI.i18nText("BI-Multi_Date_Month"),
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.M}
-            },
-            drag: drag
-        }, {
-            id: fieldId + BICst.GROUP.W,
-            pId: fieldId,
+            }
+        }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            drag: drag
+        }, field, {
+            id: fieldId + BICst.GROUP.W,
+            pId: fieldId,
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Week_XingQi"),
-            title: BI.i18nText("BI-Week_XingQi"),
+            title: prefix + BI.i18nText("BI-Week_XingQi"),
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.W}
-            },
-            drag: drag
-        }, {
-            id: fieldId + BICst.GROUP.YMD,
-            pId: fieldId,
+            }
+        }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            drag: drag
+        }, field, {
+            id: fieldId + BICst.GROUP.YMD,
+            pId: fieldId,
             fieldType: BICst.COLUMN.DATE,
             text: BI.i18nText("BI-Date"),
-            title: BI.i18nText("BI-Date"),
+            title: prefix + BI.i18nText("BI-Date"),
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.YMD}
-            },
-            drag: drag
-        }, {
-            id: fieldId + BICst.GROUP.YMDHMS,
-            pId: fieldId,
-            wId: o.wId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            fieldType: BICst.COLUMN.DATE,
-            text: BI.i18nText("BI-Time_ShiKe"),
-            title: BI.i18nText("BI-Time_ShiKe"),
-            value: {
-                field_id: fieldId,
-                group: {type: BICst.GROUP.YMDHMS}
-            },
-            drag: drag
-        }];
+            }
+        })];
+    },
+
+    setPackage: function (id) {
+        this.searcher.setPackage(id);
+    },
+
+    setEnable: function (b) {
+        BI.PackageSelectDataService.superclass.setEnable.apply(this, arguments);
+        this.searcher.setEnable(b);
+    },
+
+    setEnabledValue: function (v) {
+        this.searcher.setEnabledValue(v);
     }
 });
-BI.extend(BI.DetailDetailTableSelectDataPane, {
+BI.PackageSelectDataService.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
+BI.extend(BI.PackageSelectDataService, {
     RELATION_TABLE: "__relation_table__"
 });
-$.shortcut("bi.detail_detail_table_select_data", BI.DetailDetailTableSelectDataPane);
+$.shortcut("bi.package_select_data_service", BI.PackageSelectDataService);

@@ -40,7 +40,7 @@ BIDezi.View = BI.inherit(BI.View, {
             }, {
                 el: saveAs,
                 left: 20,
-                top: 5
+                top: 0
             }]
         });
         this.addSubVessel("pane", subvessel);

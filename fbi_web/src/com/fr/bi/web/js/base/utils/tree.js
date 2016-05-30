@@ -255,24 +255,6 @@
                     node = node.getRight();
                 }
             }
-        },
-
-        levalTraverse: function (callback) {
-            this._levelTraverse(this.root, callback);
-        },
-
-        //层序遍历
-        _levelTraverse: function (node, callback) {
-            var queue = [];
-            queue.push(node);
-            while (!BI.isEmpty(queue)) {
-                var temp = queue.shift();
-                callback && callback(temp);
-                if (temp != null) {
-                    queue.push(temp.getLeft());
-                    queue.push(temp.getRight());
-                }
-            }
         }
     };
 
