@@ -65,16 +65,23 @@ BI.AnalysisETLMergeSheetController = BI.inherit(BI.MVCController, {
         widget.preview.populate(model.createPreviewData(),{})
     },
 
-    mergeChange : function (isValid, widget, model) {
-        if(isValid === true) {
+    mergeChange : function (opt, widget, model) {
+        if(opt.isValid === true) {
             model.refreshColumnName()
             widget.preview.populate(model.createPreviewData(),{})
-        } else {
-            var data = model.createPreviewData();
+        }
+        else{
+	        var data = model.createPreviewData();
             delete data["merge"]
             widget.preview.populate(data,{})
+            if(opt.mergeFieldsLen == 0){
+                widget.saveButton.setWarningTitle(BI.i18nText('BI-ETL_Join_Merge_Field_Not_Set'));
+            }
+            else{
+                widget.saveButton.setWarningTitle(BI.i18nText('BI-ETL_Join_Wrong_Merge_Field'));
+            }
         }
-        widget.saveButton.setEnable(isValid)
+        widget.saveButton.setEnable(opt.isValid)
     },
     
     populate : function (widget, model) {

@@ -37,7 +37,7 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.MVCWidget, {
             height:30,
             width:250,
             watermark: BI.i18nText("BI-Table_Name"),
-            errorText: BI.i18nText("BI-Cannot_Have_Repeated_Field_Name"),
+            errorText: BI.i18nText("BI-Table_Name_Not_Null"),
             validationChecker : function (v) {
                 return self.controller.validationChecker(v)
             }
@@ -54,8 +54,8 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.MVCWidget, {
             type:"bi.analysis_etl_merge_fields",
             cls:"background-border"
         });
-        this.mergeFields.on(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, function (isValid) {
-            self.controller.mergeChange(isValid);
+        this.mergeFields.on(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, function (opt) {
+            self.controller.mergeChange(opt);
         })
         this.registerChildWidget(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS, self.mergeFields)
         this.preview = BI.createWidget({

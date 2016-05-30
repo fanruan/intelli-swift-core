@@ -10,6 +10,7 @@ BI.AnalysisETLMergeSheetFieldsController = BI.inherit(BI.MVCController, {
         joinFields.push([BI.TableAddUnion.UNION_FIELD_NULL, BI.TableAddUnion.UNION_FIELD_NULL]);
         model.setValue(ETLCst.FIELDS, joinFields)
         this.populate(widget, model)
+        return joinFields.length;
     },
 
     isValid : function (widget, model) {
@@ -21,6 +22,7 @@ BI.AnalysisETLMergeSheetFieldsController = BI.inherit(BI.MVCController, {
         BI.removeAt(joinFields, index);
         model.setValue(ETLCst.FIELDS, joinFields)
         this.populate(widget, model)
+        return joinFields.length;
     },
 
     changeMergeField : function (row, col, nValue, widget, model) {
@@ -31,6 +33,7 @@ BI.AnalysisETLMergeSheetFieldsController = BI.inherit(BI.MVCController, {
         joinFields[row][col] = nValue;
         model.setValue(ETLCst.FIELDS, joinFields);
         this.populate(widget, model)
+        return joinFields.length;
     }
 
 })
