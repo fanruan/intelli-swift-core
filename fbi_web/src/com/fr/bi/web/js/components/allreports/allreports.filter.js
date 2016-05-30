@@ -63,7 +63,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         type: "bi.left",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("部门"),
+                            text: BI.i18nText("BI-Department"),
                             cls: "filter-type",
                             height: 30,
                             hgap: 10
@@ -72,7 +72,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         type: "bi.left",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("角色"),
+                            text: BI.i18nText("BI-Role"),
                             cls: "filter-type",
                             height: 30,
                             hgap: 10
@@ -81,7 +81,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         type: "bi.left",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("人员"),
+                            text: BI.i18nText("BI-Users"),
                             cls: "filter-type",
                             height: 30,
                             hgap: 10
@@ -90,7 +90,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         type: "bi.left",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("状态"),
+                            text: BI.i18nText("BI-Status"),
                             cls: "filter-type",
                             height: 30,
                             hgap: 10
@@ -99,7 +99,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         type: "bi.left",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("最近修改日期"),
+                            text: BI.i18nText("BI-Last_Modify_Date"),
                             cls: "filter-type",
                             height: 30,
                             hgap: 10

@@ -33,7 +33,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
                     cls: "hangout-count",
                     items: [{
                         type: "bi.label",
-                        text: BI.i18nText("当前申请挂出模板个数："),
+                        text: BI.i18nText("BI-Current_Apply_For_Hangout"),
                         height: 40
                     }, this.hangout]
                 }),
@@ -86,7 +86,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
                 items: {
                     left: [{
                         type: "bi.label",
-                        text: BI.i18nText("筛选模板"),
+                        text: BI.i18nText("BI-Filter_Report"),
                         cls: "filter-report-label",
                         height: 40,
                         width: 70
