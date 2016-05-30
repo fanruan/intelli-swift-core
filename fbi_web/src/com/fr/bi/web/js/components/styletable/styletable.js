@@ -152,7 +152,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
-        this.setColor(this.options.color);
+        this.setStyleAndColor(this.options.style, this.options.color);
     },
 
     destroy: function () {
