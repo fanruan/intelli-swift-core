@@ -44,14 +44,19 @@ public class BIBusinessField implements BusinessField {
     private boolean canSetUsable = true;
     protected BusinessTable tableBelongTo;
 
-    public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize) {
+    public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize, boolean isUsable, boolean canSetUsable) {
         this.tableBelongTo = tableBelongTo;
         this.fieldName = fieldName;
         this.fieldID = fieldID;
         this.fieldType = BIDBUtils.checkColumnTypeFromClass(classType);
         this.fieldSize = fieldSize;
         this.classType = classType;
-        this.isUsable = true;
+        this.isUsable = isUsable;
+        this.canSetUsable = canSetUsable;
+    }
+
+    public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize) {
+        this(tableBelongTo, fieldID, fieldName, classType, fieldSize, true, true);
     }
 
     public BIBusinessField(String tableID, String fieldName) {
@@ -76,7 +81,7 @@ public class BIBusinessField implements BusinessField {
     }
 
     public BIBusinessField(BusinessTable tableBelongTo, String fieldName) {
-        this(tableBelongTo, new BIFieldID(""), fieldName, 0, 0);
+        this(tableBelongTo, new BIFieldID(""), fieldName, 0, 0, true, true);
     }
 
     public void setFieldName(String fieldName) {
@@ -149,8 +154,8 @@ public class BIBusinessField implements BusinessField {
             String tableId = jo.getString("table_id");
             tableBelongTo = new BIBusinessTable(new BITableID(tableId));
         }
-        if (jo.has("field_id")) {
-            String fieldId = jo.getString("field_id");
+        if (jo.has("id")) {
+            String fieldId = jo.getString("id");
             this.fieldID = new BIFieldID(fieldId);
         }
         if (jo.has("field_type")) {
@@ -161,6 +166,9 @@ public class BIBusinessField implements BusinessField {
         }
         if (jo.has("is_usable")) {
             isUsable = jo.optBoolean("is_usable", true);
+        }
+        if (jo.has("is_enable")) {
+            canSetUsable = jo.optBoolean("is_enable", true);
         }
     }
 
