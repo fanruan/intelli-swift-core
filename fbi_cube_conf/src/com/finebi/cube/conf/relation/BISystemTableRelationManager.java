@@ -244,8 +244,8 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
                 JSONObject jo = new JSONObject();
                 JSONObject primaryJo = new JSONObject();
                 JSONObject foreignJo = new JSONObject();
-                primaryJo.put("field_id", r.getPrimaryField().getFieldID());
-                foreignJo.put("field_id", r.getForeignField().getFieldID());
+                primaryJo.put("field_id", r.getPrimaryField().getFieldID().getIdentityValue());
+                foreignJo.put("field_id", r.getForeignField().getFieldID().getIdentityValue());
                 jo.put("primaryKey", primaryJo);
                 jo.put("foreignKey", foreignJo);
                 path.put(jo);

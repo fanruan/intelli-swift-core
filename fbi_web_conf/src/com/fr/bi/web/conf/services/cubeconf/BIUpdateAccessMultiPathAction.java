@@ -5,6 +5,7 @@ package com.fr.bi.web.conf.services.cubeconf;
 
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -43,9 +44,9 @@ public class BIUpdateAccessMultiPathAction extends AbstractBIConfigureAction {
         JSONArray relationsJSON = new JSONArray(relationsString);
         BITableRelation[] relations = new BITableRelation[relationsJSON.length()];
         for (int i = 0; i < relations.length; i++) {
-            BITableRelation rel = new BITableRelation();
-            rel.parseJSON(relationsJSON.optJSONObject(i));
-            relations[i] = rel;
+//            BITableRelation rel = new BITableRelation();
+//            rel.parseJSON(relationsJSON.optJSONObject(i));
+            relations[i] = BITableRelationHelper.getRelation(relationsJSON.optJSONObject(i));
         }
         BITableRelationPath path = new BITableRelationPath(relations);
         switch (type) {
