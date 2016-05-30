@@ -1,9 +1,11 @@
 package com.finebi.cube.conf.build;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -16,6 +18,7 @@ import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
 
 import java.io.Serializable;
 import java.util.*;
@@ -46,6 +49,7 @@ public class CubeBuildStuffManager implements Serializable {
     private Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap;
     private BIUser biUser;
     private Set<BITableSourceRelationPath> relationPaths;
+    private BusinessTable businessTable;
     /**
      * TableSource之间存在依赖关系，这一点很合理。
      * 这个结构肯定是不好的。
@@ -305,8 +309,59 @@ public class CubeBuildStuffManager implements Serializable {
             throw BINonValueUtils.beyondControl(e);
         }
     }
-    
 
+    public void initialCubeStuff(BusinessTable businessTable) {
+        try {
+            businessTable = BusinessTableHelper.getBusinessTable(businessTable.getID());
+            this.businessTable = businessTable;
+            Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId());
+            this.packs = packs;
+            this.sources = new HashSet<CubeTableSource>();
+            allBusinessTable = new HashSet<BIBusinessTable>();
+            for (IBusinessPackageGetterService pack : packs) {
+                Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
+                while (tIt.hasNext()) {
+                    BIBusinessTable table = tIt.next();
+                    if (ComparatorUtils.equals(table.getID(),businessTable.getID())) {
+                        allBusinessTable.add(table);
+                        sources.add(table.getTableSource());
+                    }
+                }
+            }
+            fullTableDBFields();
+
+            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
+            setDependTableResource(depends);
+            setAllSingleSources(set2Set(depends));
+
+            BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
+
+            BITableRelationConfigurationProvider tableRelationManager = BICubeConfigureCenter.getTableRelationManager();
+
+            Set<BITableRelation> allTableRelation = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId());
+            Set<BITableRelation> tableRelation=new HashSet<BITableRelation>();
+            for (BITableRelation biTableRelation : allTableRelation) {
+                if(ComparatorUtils.equals(businessTable,biTableRelation.getForeignTable())||ComparatorUtils.equals(businessTable,biTableRelation.getPrimaryTable())){
+                    tableRelation.add(biTableRelation);
+                }
+            }
+
+            setTableRelationSet(tableRelation);
+            Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
+            Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
+            setPrimaryKeyMap(primaryKeyMap);
+            setForeignKeyMap(foreignKeyMap);
+
+            Set<BITableRelationPath> allTablePath = tableRelationManager.getAllTablePath(biUser.getUserId());
+            Set<BITableRelationPath> tablePath=new HashSet<BITableRelationPath>();
+            for (BITableRelationPath biTableRelationPath : allTablePath) {
+                biTableRelationPath.getAllRelations();
+            }
+            setRelationPaths(convertPaths(tablePath));
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
     private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
         Iterator<CubeTableSource> it = tableSources.iterator();
         Set<List<Set<CubeTableSource>>> depends = new HashSet<List<Set<CubeTableSource>>>();

@@ -3,7 +3,6 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.build.CubeBuildStuffManager;
-import com.finebi.cube.conf.build.SingleTableCubeBuildStuffManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BIDeliverFailureException;
@@ -41,7 +40,7 @@ import java.util.concurrent.Future;
  */
 public class BuildCubeTaskSingleTable implements CubeTask {
 
-    private SingleTableCubeBuildStuffManager singleTableCubeBuildStuffManager;
+    private CubeBuildStuffManager cubeBuildStuffManager;
     private BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
@@ -60,8 +59,8 @@ public class BuildCubeTaskSingleTable implements CubeTask {
     }
 
     private void init() {
-        singleTableCubeBuildStuffManager=new SingleTableCubeBuildStuffManager(biUser);
-        this.singleTableCubeBuildStuffManager.initialCubeStuff(biBusinessTable);
+        cubeBuildStuffManager=new CubeBuildStuffManager(biUser);
+        this.cubeBuildStuffManager.initialCubeStuff(biBusinessTable);
     }
 
     
@@ -94,16 +93,16 @@ public class BuildCubeTaskSingleTable implements CubeTask {
     @Override
     public void run() {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-        BICubeOperationManager operationManager = new BICubeOperationManager(cube, singleTableCubeBuildStuffManager.getSources());
+        BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuffManager.getSources());
         operationManager.initialWatcher();
 
-        manager.registerDataSource(singleTableCubeBuildStuffManager.getAllSingleSources());
-        manager.registerRelation(singleTableCubeBuildStuffManager.getTableSourceRelationSet());
-        Set<BITableSourceRelationPath> relationPathSet = filterPath(singleTableCubeBuildStuffManager.getRelationPaths());
+        manager.registerDataSource(cubeBuildStuffManager.getAllSingleSources());
+        manager.registerRelation(cubeBuildStuffManager.getTableSourceRelationSet());
+        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuffManager.getRelationPaths());
         manager.registerTableRelationPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
-        operationManager.generateDataSource(singleTableCubeBuildStuffManager.getDependTableResource());
-        operationManager.generateRelationBuilder(singleTableCubeBuildStuffManager.getTableSourceRelationSet());
+        operationManager.generateDataSource(cubeBuildStuffManager.getDependTableResource());
+        operationManager.generateRelationBuilder(cubeBuildStuffManager.getTableSourceRelationSet());
         operationManager.generateTableRelationPath(relationPathSet);
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
