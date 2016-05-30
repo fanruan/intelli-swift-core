@@ -1,8 +1,7 @@
 BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
 
 
-
-    _init : function () {
+    _init: function () {
         BI.AnalysisETLOperatorSelectDataModel.superclass._init.apply(this, arguments);
         //BI.AnalysisETLOperatorSelectDataModel.KEY后台已存这里暂时注释不需要
         // var operator = this.get("operator");
@@ -35,63 +34,72 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
     },
 
 
-    save : function () {
+    save: function () {
         this.set(BI.AnalysisETLOperatorSelectDataModel.KEY, this.getTempFields())
     },
 
-    addField : function (fieldId) {
+    addField: function (f) {
+        var fieldId = f.field_id || f;
         var name = BI.Utils.getFieldNameByID(fieldId);
         var fieldType = BI.Utils.getFieldTypeByID(fieldId)
         var group = null;
-        if(fieldType === BICst.COLUMN.DATE) {
-            group = fieldId.group
-            name += "(" + this._createDateString(group)+ ")";
+        if (fieldType === BICst.COLUMN.DATE) {
+            group = f.group
+            name += "(" + this._createDateString(group) + ")";
             fieldType = this._createNewFieldType(group);
-            fieldId = fieldId.field_id
         }
-        var fieldName =  this.createDistinctName(name);
+        var fieldName = this.createDistinctName(name);
         var field = {
-            "field_name":fieldName,
-            "field_type" : fieldType,
-            "id":fieldId,
-            "uid":BI.UUID()
+            "field_name": fieldName,
+            "field_type": fieldType,
+            "id": fieldId,
+            "uid": BI.UUID()
         }
-        if(BI.isNotNull(group)) {
+        if (BI.isNotNull(group)) {
             field["group"] = group;
         }
         this._addField(field)
     },
 
 
-    
-    _createNewFieldType : function (group) {
+    _createNewFieldType: function (group) {
         switch (group) {
-            case BICst.GROUP.Y : return BICst.COLUMN.NUMBER;
-            case BICst.GROUP.S : return BICst.COLUMN.NUMBER;
-            case BICst.GROUP.M : return BICst.COLUMN.NUMBER;
-            case BICst.GROUP.W : return BICst.COLUMN.NUMBER;
-            case BICst.GROUP.YMD : return BICst.COLUMN.DATE;
+            case BICst.GROUP.Y :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.S :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.M :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.W :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.YMD :
+                return BICst.COLUMN.DATE;
         }
     },
 
 
-    _createDateString : function (group) {
+    _createDateString: function (group) {
         switch (group) {
-            case BICst.GROUP.Y : return BI.i18nText("BI-Year_Fen");
-            case BICst.GROUP.S : return BI.i18nText("BI-Quarter");
-            case BICst.GROUP.M : return BI.i18nText("BI-Multi_Date_Month");
-            case BICst.GROUP.W : return BI.i18nText("BI-Week_XingQi");
-            case BICst.GROUP.YMD : return BI.i18nText("BI-Date");
+            case BICst.GROUP.Y :
+                return BI.i18nText("BI-Year_Fen");
+            case BICst.GROUP.S :
+                return BI.i18nText("BI-Quarter");
+            case BICst.GROUP.M :
+                return BI.i18nText("BI-Multi_Date_Month");
+            case BICst.GROUP.W :
+                return BI.i18nText("BI-Week_XingQi");
+            case BICst.GROUP.YMD :
+                return BI.i18nText("BI-Date");
         }
     },
-    
-    _addField : function (field) {
+
+    _addField: function (field) {
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
         tempFields.push(field);
         this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, tempFields)
     },
-    
-    cancel : function () {
+
+    cancel: function () {
         this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, this.getValue(BI.AnalysisETLOperatorSelectDataModel.KEY))
     },
 
@@ -99,22 +107,22 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         return this.getValue(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
     },
 
-    createDistinctName : function (name) {
-        var oldNames  = [];
+    createDistinctName: function (name) {
+        var oldNames = [];
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
-        BI.each(tempFields, function(i, item){
-            if(!BI.isNull(item.field_name)){
+        BI.each(tempFields, function (i, item) {
+            if (!BI.isNull(item.field_name)) {
                 oldNames.push(item.field_name);
             }
         });
         return BI.Utils.createDistinctName(oldNames, name);
     },
 
-    sort : function (oldIndex, newIndex) {
-        if(newIndex > oldIndex) {
-            newIndex --;
+    sort: function (oldIndex, newIndex) {
+        if (newIndex > oldIndex) {
+            newIndex--;
         }
-        if(oldIndex === newIndex) {
+        if (oldIndex === newIndex) {
             //还是原来位置 do nothing
             return
         }
@@ -125,46 +133,46 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, tempFields)
     },
 
-    removeAt : function (v) {
+    removeAt: function (v) {
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
         BI.removeAt(tempFields, v);
         this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, tempFields)
     },
 
-    rename : function (index, name) {
+    rename: function (index, name) {
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
         tempFields[index].field_name = name;
         this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, tempFields)
     },
 
-    needCancel : function () {
+    needCancel: function () {
         return !BI.isEqual(this.get(BI.AnalysisETLOperatorSelectDataModel.KEY), this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY))
     },
 
-    checkNameValid : function (index, name) {
+    checkNameValid: function (index, name) {
         var self = this, valid = true;
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
         BI.some(tempFields, function (i, item) {
-            if (i != index && item.field_name == name){
-                valid =  false;
+            if (i != index && item.field_name == name) {
+                valid = false;
                 return true;
             }
         });
         return valid;
     },
 
-    _buildDetailTableModel : function (key) {
+    _buildDetailTableModel: function (key) {
         var res = {
-            filter_value:{},
-            page : -1,
-            type : BICst.WIDGET.DETAIL
+            filter_value: {},
+            page: -1,
+            type: BICst.WIDGET.DETAIL
         };
         var fields = this.get(key);
         var tableIds = this._getTablesFromFields(fields)
         var fTable = tableIds[0];
         BI.each(tableIds, function (idx, item) {
             var relation = BI.Utils.getPathsFromTableAToTableB(item, fTable);
-            if(relation.length === 0) {
+            if (relation.length === 0) {
                 fTable = item;
             }
         });
@@ -176,20 +184,20 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
             var dm = {};
             var tableId = BI.Utils.getTableIdByFieldID(item.id)
             dm[fTable] = {
-                target_relation:BI.Utils.getPathsFromTableAToTableB(tableId, fTable)[0] || []
+                target_relation: BI.Utils.getPathsFromTableAToTableB(tableId, fTable)[0] || []
             };
             dimensions[item["uid"]] = {
-                _src : {
-                    id:item["id"] + (BI.isNull(item["group"]) ? "":item["group"]),
-                    field_id:item["id"]
+                _src: {
+                    id: item["id"] + (BI.isNull(item["group"]) ? "" : item["group"]),
+                    field_id: item["id"]
                 },
-                group :   {
+                group: {
                     type: BI.isNull(item["group"]) ? BICst.GROUP.NO_GROUP : item["group"]
                 },
-                dimension_map:dm,
-                name:item["field_name"],
+                dimension_map: dm,
+                name: item["field_name"],
                 type: self._getDimensionType(item["id"]),
-                used:true
+                used: true
             }
             view[BICst.REGION.DIMENSION1].push(item["uid"])
         })
@@ -198,31 +206,37 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         return res;
     },
 
-    _getTypeFromTargetType : function (type, group) {
-        switch (type)  {
-            case BICst.TARGET_TYPE.NUMBER : return BICst.COLUMN.NUMBER;
-            case BICst.TARGET_TYPE.DATE : return this._createNewFieldType(group["type"]);
-            default : return  BICst.COLUMN.STRING;
+    _getTypeFromTargetType: function (type, group) {
+        switch (type) {
+            case BICst.TARGET_TYPE.NUMBER :
+                return BICst.COLUMN.NUMBER;
+            case BICst.TARGET_TYPE.DATE :
+                return this._createNewFieldType(group["type"]);
+            default :
+                return BICst.COLUMN.STRING;
         }
     },
 
-    _getDimensionType : function (fieldId) {
+    _getDimensionType: function (fieldId) {
         var fieldType = BI.Utils.getFieldTypeByID(fieldId)
-        switch (fieldType)  {
-            case BICst.COLUMN.NUMBER : return BICst.TARGET_TYPE.NUMBER;
-            case BICst.COLUMN.DATE : return BICst.TARGET_TYPE.DATE;
-            default : return  BICst.TARGET_TYPE.STRING;
+        switch (fieldType) {
+            case BICst.COLUMN.NUMBER :
+                return BICst.TARGET_TYPE.NUMBER;
+            case BICst.COLUMN.DATE :
+                return BICst.TARGET_TYPE.DATE;
+            default :
+                return BICst.TARGET_TYPE.STRING;
         }
     },
 
 
-    getTempFieldsTables : function () {
+    getTempFieldsTables: function () {
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
         return this._getTablesFromFields(tempFields);
     },
 
 
-    _getTablesFromFields : function (fields) {
+    _getTablesFromFields: function (fields) {
         var res = {};
         BI.each(fields, function (idx, item) {
             var tableId = BI.Utils.getTableIdByFieldID(item.id)
@@ -233,9 +247,9 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         })
     },
 
-    update4Preview : function () {
-        var v  = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
-            etlType:ETLCst.ETL_TYPE.SELECT_DATA
+    update4Preview: function () {
+        var v = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
+            etlType: ETLCst.ETL_TYPE.SELECT_DATA
         })
         v[BI.AnalysisETLOperatorSelectDataModel.KEY] = v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY];
         v["operator"] = this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
@@ -243,9 +257,9 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         return v;
     },
 
-    update : function () {
-        var v  = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
-            etlType:ETLCst.ETL_TYPE.SELECT_DATA
+    update: function () {
+        var v = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
+            etlType: ETLCst.ETL_TYPE.SELECT_DATA
         })
         v["operator"] = this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY);
         delete v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY]

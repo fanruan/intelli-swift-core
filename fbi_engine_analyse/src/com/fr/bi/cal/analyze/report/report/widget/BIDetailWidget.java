@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BIBusinessTableGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
@@ -177,9 +178,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
             List<BITableRelation> relationList = new ArrayList<BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
-                BITableRelation viewRelation = new BITableRelation();
-                viewRelation.parseJSON(relationJa.getJSONObject(j));
-                relationList.add(viewRelation);
+                relationList.add(BITableRelationHelper.getRelation(relationJa.getJSONObject(j)));
             }
             this.dimensions[i].setRelationList(relationList);
         }

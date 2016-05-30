@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
@@ -240,7 +240,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         if (ob instanceof JSONObject) {
                             JSONObject j = (JSONObject) ob;
                             String fieldId = j.getString("field_id");
-                            dimensionMap.put(targetId, new BIBusinessField(new BIFieldID(fieldId)));
+                            dimensionMap.put(targetId, BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(fieldId)));
                         }
                     }
                     if (tar.has("target_relation")) {
