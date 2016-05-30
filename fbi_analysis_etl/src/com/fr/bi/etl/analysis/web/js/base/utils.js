@@ -164,6 +164,22 @@ BI.extend(BI.Utils, {
         return fields;
     },
 
+    createDateFieldType: function (group) {
+        switch (group) {
+            case BICst.GROUP.Y :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.S :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.M :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.W :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.YMD :
+                return BICst.COLUMN.DATE;
+        }
+    },
+
+
     buildData : function(model, widget, callback, filterValueGetter) {
         //测试数据
         var header = [];
