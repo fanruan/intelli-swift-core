@@ -15,13 +15,13 @@ SimpleSearcherView = BI.inherit(BI.View, {
                 populate([
                     {
                         id: 1,
-                        type: "bi.select_data_level0_node",
+                        type: "bi.simple_select_data_level0_node",
                         text: "合同回款信息--",
                         value: 1,
                         isParent: true
                     }, {
                         id: 2,
-                        type: "bi.select_data_level0_node",
+                        type: "bi.simple_select_data_level0_node",
                         text: "合同信息--",
                         value: 2,
                         isParent: true
@@ -55,7 +55,7 @@ SimpleSearcherView = BI.inherit(BI.View, {
                     }, {
                         pId: 1,
                         id: 14,
-                        type: "bi.select_data_level1_node",
+                        type: "bi.simple_select_data_level1_node",
                         text: "合同信息--",
                         value: 14,
                         isParent: true
