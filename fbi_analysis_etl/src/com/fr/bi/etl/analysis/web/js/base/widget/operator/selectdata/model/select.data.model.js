@@ -45,6 +45,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         var group = null;
         if (fieldType === BICst.COLUMN.DATE) {
             group = f.group
+            group = group.type;
             name += "(" + this._createDateString(group) + ")";
             fieldType = this._createNewFieldType(group);
         }
