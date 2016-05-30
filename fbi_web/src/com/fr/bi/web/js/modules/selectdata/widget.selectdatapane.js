@@ -42,7 +42,8 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                 var ids = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {
-                    if (BI.Utils.getFieldIsUsableByID(fid) === true) {
+                    //暂时去除记录数
+                    if (BI.Utils.getFieldIsUsableByID(fid) === true && BI.Utils.getFieldTypeByID(fid) != BICst.COLUMN.COUNTER) {
                         result.push({
                             id: fid
                         })
