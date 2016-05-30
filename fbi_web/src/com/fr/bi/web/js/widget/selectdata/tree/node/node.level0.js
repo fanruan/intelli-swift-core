@@ -18,7 +18,7 @@ BI.SelectDataLevel0Node = BI.inherit(BI.NodeButton, {
         var self = this, o = this.options;
         this.checkbox = BI.createWidget({
             type: "bi.tree_group_node_checkbox"
-        })
+        });
         this.text = BI.createWidget({
             type: "bi.label",
             textAlign: "left",

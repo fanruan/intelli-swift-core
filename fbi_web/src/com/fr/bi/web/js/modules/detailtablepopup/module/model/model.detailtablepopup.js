@@ -176,7 +176,8 @@ BI.DetailTablePopupModel = BI.inherit(BI.Model, {
         Data.SharingPool.put(BI.DetailTablePopup.SHARING_POOL_KEY, {
             id: this.cat("id"),
             dimensions: this.cat("dimensions"),
-            view: this.cat("view")
+            view: this.cat("view"),
+            filter: this.cat("filter")
         })
     },
 
