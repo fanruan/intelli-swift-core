@@ -56,6 +56,9 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         if (BI.has(changed, "dimensions")) {
             this._refreshDimensions();
         }
+        if (BI.has(changed, "view")) {
+            this._refreshDimensions();
+        }
     },
 
     _render: function (vessel) {
@@ -146,8 +149,8 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             cardCreator: BI.bind(this._createTabs, this)
         });
 
-        data_style_tab.on(BI.DataStyleTab.EVENT_CHANGE, function(){
-            if(this.getSelect() === BICst.DETAIL_TAB_STYLE){
+        data_style_tab.on(BI.DataStyleTab.EVENT_CHANGE, function () {
+            if (this.getSelect() === BICst.DETAIL_TAB_STYLE) {
                 self.chartSetting.populate();
             }
         });
@@ -258,7 +261,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         var self = this;
         BI.each(self.model.cat("view"), function (regionType, dids) {
             BI.each(dids, function (i, dId) {
-                self.skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
+                self.skipTo(regionType + "/" + dId, dId, "dimensions." + dId, {}, {force: true});
             });
         });
     },

@@ -8,6 +8,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
@@ -125,9 +126,10 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
                     JSONArray r = rmap.getJSONArray(i);
                     BITableRelation[] relation = new BITableRelation[r.length()];
                     for (int j = 0; j < r.length(); j++) {
-                        BITableRelation rela = new BITableRelation();
-                        rela.parseJSON(r.getJSONObject(j));
-                        relation[j] = rela;
+//                        BITableRelation rela = new BITableRelation();
+//                        rela.parseJSON(r.getJSONObject(j));
+//                        relation[j] = rela;
+                        relation[j] = BITableRelationHelper.getRelation(r.getJSONObject(j));
                     }
                     relations[i] = relation;
                 }
