@@ -4,7 +4,6 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
@@ -87,18 +86,21 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         JSONObject excelViewJO = excelViews != null ? new JSONObject(excelViews) : new JSONObject();
         JSONObject updateSettingJO = updateSettings != null ? new JSONObject(updateSettings) : new JSONObject();
 
+        BIBusinessPackage pack = (BIBusinessPackage) EditPackageConfiguration(packageName, groupName, packageId, userId);
+        pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO, tableDataJO));
+
+
 
         for (int i = 0; i < tableIdsJO.length(); i++) {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
             JSONObject tableJson = tableDataJO.optJSONObject(tableId);
             if (tableJson != null) {
-                BICubeConfigureCenter.getDataSourceManager().addTableSource(new BIBusinessTable(new BITableID(tableId)), TableSourceFactory.createTableSource(tableJson, userId));
+                BusinessTable table= pack.getSpecificTable(new BITableID(tableId));
+                BICubeConfigureCenter.getDataSourceManager().addTableSource(table, TableSourceFactory.createTableSource(tableJson, userId));
             } else {
                 BILogger.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }
         }
-        BIBusinessPackage pack = (BIBusinessPackage) EditPackageConfiguration(packageName, groupName, packageId, userId);
-        pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO));
 
         saveTranslations(translationsJO, userId);
         saveRelations(relationsJO, userId);
@@ -194,7 +196,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         }
     }
 
-    private JSONObject createTablesJsonObject(JSONArray tableIdsJA, JSONObject usedFieldsJO) throws Exception {
+    private JSONObject createTablesJsonObject(JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception {
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();
         if (tableIdsJA != null) {
@@ -204,6 +206,8 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 idJo.put("id", tId);
                 JSONArray usedFields = usedFieldsJO.optJSONArray(tId);
                 idJo.put("used_fields", usedFields);
+                JSONObject table = tableDataJO.getJSONObject(tId);
+                idJo.put("fields", table.getJSONArray("fields"));
                 ja.put(idJo);
             }
         }

@@ -239,7 +239,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         //对于业务包表逻辑：保存当前表的转义（当前业务包转义不可重名）、关联，但id是一个新的，
         //暂时根据 id 属性区分 source 表和 package 表
         BI.each(tables, function (i, table) {
-            //table Id 和 field Id 都由前台生成
             var id = BI.UUID();
             var usedFields = [];
             BI.each(table.fields, function (j, fs) {
