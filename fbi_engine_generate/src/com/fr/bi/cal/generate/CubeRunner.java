@@ -58,7 +58,9 @@ public class CubeRunner {
                 setStatue(Status.LOADING);
                 start();
                 try {
-                    cubeTask.setCubeBuildStuffManager(object);
+                    if(!(cubeTask instanceof BuildCubeTaskSingleTable)) {
+                        cubeTask.setCubeBuildStuffManager(object);
+                    }
                     cubeTask.start();
                     cubeTask.run();
                     cubeTask.end();

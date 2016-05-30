@@ -54,14 +54,11 @@ public class BuildCubeTaskSingleTable implements CubeTask {
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        init();
-
-    }
-
-    private void init() {
         cubeBuildStuffManager=new CubeBuildStuffManager(biUser);
-        this.cubeBuildStuffManager.initialCubeStuff(biBusinessTable);
+        cubeBuildStuffManager.initialCubeStuff(biBusinessTable);
+
     }
+
 
     
 
@@ -138,7 +135,7 @@ public class BuildCubeTaskSingleTable implements CubeTask {
 
     @Override
     public long getUserId() {
-        return -999;
+        return biUser.getUserId();
     }
 
     
