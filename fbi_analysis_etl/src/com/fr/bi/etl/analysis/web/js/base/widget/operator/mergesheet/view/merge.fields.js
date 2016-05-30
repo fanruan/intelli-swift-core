@@ -27,23 +27,20 @@ BI.AnalysisETLMergeSheetFields = BI.inherit(BI.MVCWidget, {
             height: 30
         });
         addMergeButton.on(BI.Button.EVENT_CHANGE, function(){
-            var mergeFieldsLen = self.controller.addEmptyMerge();
-            var opt = {isValid:false, mergeFieldsLen:mergeFieldsLen};
-            self.fireEvent(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, opt)
+            self.controller.addEmptyMerge();
+            self.fireEvent(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, false)
         });
         this.joinTableFields = BI.createWidget({
             type: "bi.table_add_union",
             tables: []
         });
         this.joinTableFields.on(BI.TableAddUnion.EVENT_REMOVE_UNION, function(index){
-            var mergeFieldsLen = self.controller.removeMergeField(index);
-            var opt = {isValid:self.controller.isValid(), mergeFieldsLen:mergeFieldsLen};
-            self.fireEvent(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, opt)
+            self.controller.removeMergeField(index);
+            self.fireEvent(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, self.controller.isValid())
         });
         this.joinTableFields.on(BI.TableAddUnion.EVENT_CHANGE, function(row, col, nValue, oValue){
-            var mergeFieldsLen = self.controller.changeMergeField(row, col, nValue);
-            var opt = {isValid:self.controller.isValid(), mergeFieldsLen:mergeFieldsLen};
-            self.fireEvent(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, opt)
+            self.controller.changeMergeField(row, col, nValue);
+            self.fireEvent(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, self.controller.isValid())
         });
         BI.createWidget({
             type:"bi.vtape",

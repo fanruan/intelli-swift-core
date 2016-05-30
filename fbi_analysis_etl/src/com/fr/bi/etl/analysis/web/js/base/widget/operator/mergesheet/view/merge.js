@@ -54,8 +54,8 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.MVCWidget, {
             type:"bi.analysis_etl_merge_fields",
             cls:"background-border"
         });
-        this.mergeFields.on(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, function (opt) {
-            self.controller.mergeChange(opt);
+        this.mergeFields.on(BI.AnalysisETLMergeSheetFields.MERGE_CHANGE, function (isValid) {
+            self.controller.mergeChange(isValid);
         })
         this.registerChildWidget(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS, self.mergeFields)
         this.preview = BI.createWidget({

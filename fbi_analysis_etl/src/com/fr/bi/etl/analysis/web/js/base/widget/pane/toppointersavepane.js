@@ -81,7 +81,7 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
         this.contentItemWidget.element.addClass("bi-analysis-etl-top-pointer-save-pane-item");
 
         self.contentItemWidget.on(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function (status, title) {
-            self.controller.refreshSaveButtonStatus(status, BI.isNull(title) ? BI.i18nText('BI-Please_Set_Group_Summary') : title);
+            self.controller.refreshSaveButtonStatus(status, BI.isNull(title) ? BI.i18nText('BI-Correct_The_Errors_Red') : title);
         });
         self.contentItemWidget.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function () {
             self.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, arguments);
