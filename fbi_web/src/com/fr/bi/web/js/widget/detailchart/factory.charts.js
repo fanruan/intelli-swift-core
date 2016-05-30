@@ -263,9 +263,7 @@ BI.ChartCombineFormatItemFactory = {
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.MAP_WORLD:
-            case BICst.WIDGET.MAP_CHINA:
-            case BICst.WIDGET.MAP_JIANGSU:
+                geo: ".././"
                 return BI.extend({"chartType": "map"}, config);
             case BICst.WIDGET.GIS_MAP:
                 return {};
