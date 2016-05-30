@@ -144,7 +144,9 @@ BI.Expander = BI.inherit(BI.Widget, {
                 }
             });
             this.popupView.setVisible(this.isExpanded());
-            this.fireEvent(BI.Expander.EVENT_AFTER_INIT);
+            BI.defer(function () {
+                self.fireEvent(BI.Expander.EVENT_AFTER_INIT);
+            });
         }
     },
 

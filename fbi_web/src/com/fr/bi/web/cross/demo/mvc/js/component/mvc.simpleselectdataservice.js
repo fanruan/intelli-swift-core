@@ -1,39 +1,29 @@
-PackageSelectDataServiceView = BI.inherit(BI.View, {
+SimpleSelectDataServiceView = BI.inherit(BI.View, {
     _defaultConfig: function () {
-        return BI.extend(PackageSelectDataServiceView.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(SimpleSelectDataServiceView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-mvc-package-select-data-service bi-mvc-layout"
         })
     },
 
     _init: function () {
-        PackageSelectDataServiceView.superclass._init.apply(this, arguments);
+        SimpleSelectDataServiceView.superclass._init.apply(this, arguments);
     },
 
     _render: function (vessel) {
         var service = BI.createWidget({
-            type: "bi.package_select_data_service",
+            type: "bi.simple_select_data_service",
             cls: "service",
             width: 220,
-            showRelativeTables: true,
-            showExcelView: true,
-            showDateGroup: true,
-            tablesCreator: function (packageId, isRelation) {
-                if (isRelation === true) {
-                    var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageId);
-                    return BI.map(tIds, function (i, id) {
-                        return {
-                            id: id
-                        }
-                    })
-                }
-                var ids = BI.Utils.getTableIDsOfPackageID(packageId);
+            tablesCreator: function () {
+                var pIds = BI.Utils.getAllPackageIDs();
+                var ids = BI.Utils.getTableIDsOfPackageID(pIds[0]);
                 return BI.map(ids, function (i, id) {
                     return {
                         id: id
                     }
                 })
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId) {
                 var ids = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId)
                 return BI.map(ids, function (i, id) {
                     return {
@@ -42,6 +32,7 @@ PackageSelectDataServiceView = BI.inherit(BI.View, {
                 })
             }
         });
+        service.populate();
         BI.createWidget({
             type: "bi.absolute",
             element: vessel,
@@ -55,4 +46,4 @@ PackageSelectDataServiceView = BI.inherit(BI.View, {
     }
 });
 
-PackageSelectDataServiceModel = BI.inherit(BI.Model, {});
+SimpleSelectDataServiceModel = BI.inherit(BI.Model, {});
