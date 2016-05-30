@@ -134,9 +134,6 @@ public class SingleTableCubeBuildStuffManager {
         try {
             primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
             foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
-            if (!ComparatorUtils.equals(relation.getPrimaryTable(),businessTable)&&!ComparatorUtils.equals(relation.getForeignTable(),businessTable))
-                return null;
-            
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);
         }
@@ -186,7 +183,6 @@ public class SingleTableCubeBuildStuffManager {
         BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
         try {
             for (BITableRelation relation : path.getAllRelations()) {
-                if (ComparatorUtils.equals(relation.getPrimaryTable(),businessTable)||ComparatorUtils.equals(relation.getForeignTable(),businessTable))
                 tableSourceRelationPath.addRelationAtTail(convert(relation));
             }
         } catch (BITablePathConfusionException e) {
@@ -294,12 +290,26 @@ public class SingleTableCubeBuildStuffManager {
 
             BITableRelationConfigurationProvider tableRelationManager = BICubeConfigureCenter.getTableRelationManager();
 
+            Set<BITableRelation> allTableRelation = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId());
+            Set<BITableRelation> tableRelation=new HashSet<BITableRelation>();
+            for (BITableRelation biTableRelation : allTableRelation) {
+                if(ComparatorUtils.equals(businessTable,biTableRelation.getForeignTable())||ComparatorUtils.equals(businessTable,biTableRelation.getPrimaryTable())){
+                    tableRelation.add(biTableRelation);
+                }
+            }
 
+            setTableRelationSet(tableRelation);
             Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             setPrimaryKeyMap(primaryKeyMap);
             setForeignKeyMap(foreignKeyMap);
-            setRelationPaths(convertPaths(tableRelationManager.getAllTablePath(biUser.getUserId())));
+
+            Set<BITableRelationPath> allTablePath = tableRelationManager.getAllTablePath(biUser.getUserId());
+            Set<BITableRelationPath> tablePath=new HashSet<BITableRelationPath>();
+            for (BITableRelationPath biTableRelationPath : allTablePath) {
+                biTableRelationPath.getAllRelations();
+            }
+            setRelationPaths(convertPaths(tablePath));
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
