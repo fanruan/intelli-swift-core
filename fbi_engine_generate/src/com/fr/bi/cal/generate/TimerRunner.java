@@ -2,11 +2,9 @@ package com.fr.bi.cal.generate;
 
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.singletable.BICubeTimeTaskCreator;
 import com.finebi.cube.conf.singletable.TableUpdate;
 import com.finebi.cube.conf.timer.UpdateFrequency;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 
 import java.util.*;
@@ -51,20 +49,20 @@ public class TimerRunner {
             timerList.add(timer);
         }
         Iterator<TableUpdate> iter1 = BICubeConfigureCenter.getTableUpdateManager().getSingleTableUpdateActionIter();
-        while (iter1.hasNext()) {
-            final TableUpdate action = iter1.next();
-            action.scheduleStart(new BICubeTimeTaskCreator() {
-                @Override
-                public TimerTask createNewObject() {
-                    return new TimerTask() {
-                        @Override
-                        public void run() {
-                            BICubeConfigureCenter.getCubeManager().addTask(new SingleTableTask(action.getTableKey(), biUser.getUserId()), biUser.getUserId());
-                        }
-                    };
-                }
-            });
-        }
+//        while (iter1.hasNext()) {
+//            final TableUpdate action = iter1.next();
+//            action.scheduleStart(new BICubeTimeTaskCreator() {
+//                @Override
+//                public TimerTask createNewObject() {
+//                    return new TimerTask() {
+//                        @Override
+//                        public void run() {
+//                            BICubeConfigureCenter.getCubeManager().addTask(new SingleTableTask(action.getTableKey(), biUser.getUserId()), biUser.getUserId());
+//                        }
+//                    };
+//                }
+//            });
+//        }
     }
 
     public void envChanged() {

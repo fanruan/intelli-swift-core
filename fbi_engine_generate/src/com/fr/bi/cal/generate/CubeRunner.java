@@ -56,11 +56,10 @@ public class CubeRunner {
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
+                start();
                 try {
-                    backup();
-                    //todo by wuk
-                    if (!(cubeTask instanceof BuildCubeTask ||cubeTask instanceof BuildCubeTaskSingleTable)){
-                        start();
+                    if(!(cubeTask instanceof BuildCubeTaskSingleTable)) {
+                        cubeTask.setCubeBuildStuffManager(object);
                     }
                     cubeTask.start();
                     cubeTask.run();
@@ -143,6 +142,7 @@ public class CubeRunner {
     }
 
     private void start() {
+        backup();
         if (object == null) {
             object = new CubeBuildStuffManager(biUser);
         }

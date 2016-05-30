@@ -1,9 +1,11 @@
 package com.finebi.cube.conf.build;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -14,20 +16,15 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
- * This class created on 2016/5/23.
- *
- * @author Connery
- * @since 4.0
+ * Created by wuk on 16/5/30.
  */
-public class CubeBuildStuffManager implements Serializable {
-
+public class SingleTableCubeBuildStuffManager {
     /**
      *
      */
@@ -36,8 +33,6 @@ public class CubeBuildStuffManager implements Serializable {
     private Set<CubeTableSource> sources;
     private Set<CubeTableSource> allSingleSources;
 
-    private String rootPath;
-    private String buildTempPath;
     private Set<BITableSourceRelation> tableSourceRelationSet;
     private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private Set<BITableRelation> tableRelationSet;
@@ -46,15 +41,10 @@ public class CubeBuildStuffManager implements Serializable {
     private Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap;
     private BIUser biUser;
     private Set<BITableSourceRelationPath> relationPaths;
-    /**
-     * TableSource之间存在依赖关系，这一点很合理。
-     * 这个结构肯定是不好的。
-     * 不合理的在于为何要把这个依赖关系用一个List(原来是个Map)，把间接依赖的统统获得。
-     * 开发的时候封装一下即可，如果当时不封装，这个结构就镶嵌代码了，随着开发替换代价越高。
-     */
+    private BusinessTable businessTable;
     private Set<List<Set<CubeTableSource>>> dependTableResource;
 
-    public CubeBuildStuffManager(BIUser biUser) {
+    public SingleTableCubeBuildStuffManager(BIUser biUser) {
         this.biUser = biUser;
     }
 
@@ -72,9 +62,6 @@ public class CubeBuildStuffManager implements Serializable {
         return sources;
     }
 
-    public String getRootPath() {
-        return rootPath;
-    }
 
     public Set<BITableRelation> getTableRelationSet() {
         Set<BITableRelation> set = new HashSet<BITableRelation>();
@@ -82,13 +69,7 @@ public class CubeBuildStuffManager implements Serializable {
             try {
                 CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
                 CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
-                if (!tableDBFieldMaps.containsKey(primaryTable)) {
-                    continue;
-                }
                 ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
-                if (!tableDBFieldMaps.containsKey(foreignTable)) {
-                    continue;
-                }
                 ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
                 if (tableSourceRelationSet.contains(
                         new BITableSourceRelation(
@@ -153,6 +134,9 @@ public class CubeBuildStuffManager implements Serializable {
         try {
             primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
             foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
+            if (!ComparatorUtils.equals(relation.getPrimaryTable(),businessTable)&&!ComparatorUtils.equals(relation.getForeignTable(),businessTable))
+                return null;
+            
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);
         }
@@ -180,7 +164,7 @@ public class CubeBuildStuffManager implements Serializable {
     private Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> paths) {
         Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
         for (BITableRelationPath path : paths) {
-
+            
             try {
                 set.add(convert(path));
             } catch (Exception e) {
@@ -202,6 +186,7 @@ public class CubeBuildStuffManager implements Serializable {
         BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
         try {
             for (BITableRelation relation : path.getAllRelations()) {
+                if (ComparatorUtils.equals(relation.getPrimaryTable(),businessTable)||ComparatorUtils.equals(relation.getForeignTable(),businessTable))
                 tableSourceRelationPath.addRelationAtTail(convert(relation));
             }
         } catch (BITablePathConfusionException e) {
@@ -224,13 +209,14 @@ public class CubeBuildStuffManager implements Serializable {
     public void setPacks(Set<IBusinessPackageGetterService> packs, long userId) {
         this.packs = packs;
         this.sources = new HashSet<CubeTableSource>();
-        allBusinessTable = new HashSet<BIBusinessTable>();
         for (IBusinessPackageGetterService pack : packs) {
             Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
             while (tIt.hasNext()) {
                 BIBusinessTable table = tIt.next();
-                allBusinessTable.add(table);
-                sources.add(table.getTableSource());
+                if (this.businessTable.equals(table)) {
+                    allBusinessTable.add(table);
+                    sources.add(table.getTableSource());
+                }
             }
         }
         fullTableDBFields();
@@ -292,26 +278,32 @@ public class CubeBuildStuffManager implements Serializable {
         this.foreignKeyMap = foreignKeyMap;
     }
 
-    public void initialCubeStuff() {
+
+    public void initialCubeStuff(BusinessTable businessTable) {
         try {
+            businessTable = BusinessTableHelper.getBusinessTable(businessTable.getID());
+            this.businessTable = businessTable;
             Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId());
             setPacks(packs, biUser.getUserId());
+
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
+
             BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
-            setTableRelationSet(BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId()));
+
+            BITableRelationConfigurationProvider tableRelationManager = BICubeConfigureCenter.getTableRelationManager();
+
+
             Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
-            setPrimaryKeyMap(primaryKeyMap);
             Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
+            setPrimaryKeyMap(primaryKeyMap);
             setForeignKeyMap(foreignKeyMap);
-            setRelationPaths(convertPaths(BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId())));
-            rootPath = BIPathUtils.createBasePath();
+            setRelationPaths(convertPaths(tableRelationManager.getAllTablePath(biUser.getUserId())));
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
     }
-    
 
     private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
         Iterator<CubeTableSource> it = tableSources.iterator();
@@ -349,4 +341,5 @@ public class CubeBuildStuffManager implements Serializable {
         }
         return result;
     }
+
 }

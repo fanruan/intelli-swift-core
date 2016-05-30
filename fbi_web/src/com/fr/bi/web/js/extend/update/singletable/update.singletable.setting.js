@@ -75,7 +75,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             handler: function () {
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
-                
                 BI.Utils.generateCubeByTable(self.model.table.id, function () {
                     self._createCheckInterval();
                 });

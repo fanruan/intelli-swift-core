@@ -39,8 +39,6 @@ import java.util.concurrent.Future;
  * @since 4.0
  * <p/>
  * edit by wuk
- * 增加单表更新功能
- * 移除单表更新功能
  */
 public class BuildCubeTask implements CubeTask {
 
@@ -62,8 +60,6 @@ public class BuildCubeTask implements CubeTask {
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        this.cubeBuildStuffManager = new CubeBuildStuffManager(biUser);
-        this.cubeBuildStuffManager.initialCubeStuff();
     }
 
     @Override
@@ -137,6 +133,11 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public long getUserId() {
         return -999;
+    }
+
+    @Override
+    public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {
+        this.cubeBuildStuffManager=cubeBuildStuffManager;
     }
 
     @Override
