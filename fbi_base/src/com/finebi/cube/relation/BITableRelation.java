@@ -42,8 +42,12 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put("primaryKey", this.primaryField.createJSON());
-        jo.put("foreignKey", this.foreignField.createJSON());
+        JSONObject primaryJson = this.primaryField.createJSON();
+        primaryJson.put("field_id", this.primaryField.getFieldID().getIdentityValue());
+        JSONObject foreignJson = this.foreignField.createJSON();
+        foreignJson.put("field_id", this.foreignField.getFieldID().getIdentityValue());
+        jo.put("primaryKey", primaryJson);
+        jo.put("foreignKey", foreignJson);
         return jo;
     }
 

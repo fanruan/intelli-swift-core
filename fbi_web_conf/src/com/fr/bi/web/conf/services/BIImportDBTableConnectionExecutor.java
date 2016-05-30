@@ -1,15 +1,10 @@
 package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.field.BIBusinessField;
-import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
-import com.fr.bi.exception.BIFieldAbsentException;
-import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.BIDBTableField;
 import com.fr.bi.web.conf.utils.BIImportDBTableConnectionRelationTool;
 import com.fr.data.core.db.DBUtils;
@@ -54,17 +49,17 @@ public class BIImportDBTableConnectionExecutor {
                         if (isEqual(newAddedTable, foreignField, connectionName)) {//如果当前表与新表关联,则加入关联
                             relationsSet.add(new BITableRelation(
                                     new BIBusinessField(tableID2Table.getKey(),
-                                            currentTableRelation.getKey()),
+                                            currentTableRelation.getKey(), new BIFieldID(tableID2Table.getKey() + currentTableRelation.getKey())),
                                     new BIBusinessField(newAddedTableMap.getKey(),
-                                            foreignField.getFieldName())));
+                                            foreignField.getFieldName(), new BIFieldID(newAddedTableMap.getKey() + foreignField.getFieldName()))));
                         } else if (ComparatorUtils.equals(currentTable, newAddedTable)) {//如果当前表与新表不关联,但是当前表与当前新表相同
                             for (Map.Entry<String, DBTableSource> oldEntry : oldTableSources.entrySet()) {//对所有表进行
                                 if (isEqual(oldEntry.getValue(), foreignField, connectionName)) {
                                     relationsSet.add(new BITableRelation(
                                             new BIBusinessField(newAddedTableMap.getKey(),
-                                                    foreignField.getFieldName()),
+                                                    foreignField.getFieldName(), new BIFieldID(newAddedTableMap.getKey() + foreignField.getFieldName())),
                                             new BIBusinessField(oldEntry.getKey(),
-                                                    currentTableRelation.getKey())));
+                                                    currentTableRelation.getKey(), new BIFieldID(oldEntry.getKey() + currentTableRelation.getKey()))));
                                 }
                             }
                         }
