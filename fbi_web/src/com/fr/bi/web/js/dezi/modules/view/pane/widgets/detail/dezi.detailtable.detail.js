@@ -219,7 +219,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);
         });
-        this.tablePopulate = BI.debounce(BI.bind(table.populate, table), 30);
+        this.tablePopulate = BI.debounce(BI.bind(table.populate, table), 0);
         return table;
     },
 

@@ -50,7 +50,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             type: "bi.table_chart_manager",
             wId: self.model.get("id")
         });
-        this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 30);
+        this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
