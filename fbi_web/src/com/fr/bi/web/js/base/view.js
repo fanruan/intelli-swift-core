@@ -474,6 +474,10 @@ BI.View = BI.inherit(BI.V, {
             this.model.set(modelData).set({current: this.model.get("default")});
             return;
         }
+        if (force === false) {
+            this.model.set(modelData);
+            return;
+        }
         var filter = BI.clone(modelData || {});
         delete filter.id;
         var contains = BI.has(this.model.toJSON(), _.keys(filter));

@@ -356,7 +356,7 @@ if (!window.BI) {
         BI[name] = _applyFunc(name)
     });
     _.extend(BI, {
-        //构�?�一个长度为length的数�?
+        //构建一个长度为length的数组
         makeArray: function (length, value) {
             var res = [];
             for (var i = 0; i < length; i++) {
@@ -615,6 +615,28 @@ if (!window.BI) {
 
         deepUniq: function () {
 
+        },
+
+        //比较两个对象得出不一样的key值
+        deepDiff: function (object, other) {
+            object || (object = {});
+            other || (other = {});
+            var result = [];
+            var used = [];
+            for (var b in object) {
+                if (this.has(object, b)) {
+                    if (!this.isEqual(object[b], other[b])) {
+                        result.push(b);
+                    }
+                    used.push(b);
+                }
+            }
+            for (var b in other) {
+                if (this.has(other, b) && !used.contains(b)) {
+                    result.push(b);
+                }
+            }
+            return result;
         }
     });
 
