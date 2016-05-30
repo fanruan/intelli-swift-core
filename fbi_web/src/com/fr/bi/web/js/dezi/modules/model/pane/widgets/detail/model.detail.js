@@ -167,7 +167,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     if (region < BICst.REGION.TARGET1) {
                         var adds = [], isPreSelect = false;
                         BI.each(dims, function(i, dim){
-                             if(!preView[region].contains(dim)){
+                             if(BI.isNotNull(preView[region]) && !preView[region].contains(dim)){
                                  adds.push(dim);
                              }
                         });

@@ -118,7 +118,9 @@ BI.Searcher = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.Searcher.EVENT_CHANGE, value, obj);
                 }
             });
-            this.fireEvent(BI.Searcher.EVENT_AFTER_INIT);
+            BI.defer(function () {
+                self.fireEvent(BI.Searcher.EVENT_AFTER_INIT);
+            });
         }
     },
 

@@ -1,8 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -304,10 +305,9 @@ public class TreeWidget extends BIAbstractWidget {
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
             Map<BusinessTable, BITableRelation> relationMap = new HashMap<BusinessTable, BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
-                BITableRelation viewRelation = new BITableRelation();
-                viewRelation.parseJSON(relationJa.getJSONObject(j));
-                BITableRelation tableRelation = new BITableRelation();
-                tableRelation.parseJSON(viewRelation.createJSON());
+//                BITableRelation viewRelation = new BITableRelation();
+//                viewRelation.parseJSON(relationJa.getJSONObject(j));
+                BITableRelation tableRelation = BITableRelationHelper.getRelation(relationJa.getJSONObject(j));
                 relationMap.put(tableRelation.getForeignTable(), tableRelation);
             }
             this.dimensionMap.put(this.dimensions[i], relationMap);

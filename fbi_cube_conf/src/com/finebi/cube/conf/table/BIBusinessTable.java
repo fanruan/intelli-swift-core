@@ -3,14 +3,12 @@ package com.finebi.cube.conf.table;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.AbstractTableSource;
@@ -172,20 +170,6 @@ public class BIBusinessTable implements BusinessTable {
         result.put("fieldsInfo", fields);
         jo.put(BIJSONConstant.JSON_KEYS.TABLE_TYPE, getTableType());
         return result;
-    }
-
-    public void initialFields() {
-        if (fields == null) {
-            fields = new ArrayList<BusinessField>();
-            Iterator<Map.Entry<String, ICubeFieldSource>> it = getSourceFields().entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, ICubeFieldSource> entry = it.next();
-                ICubeFieldSource field = entry.getValue();
-                BIFieldID fieldID = new BIFieldID(java.util.UUID.randomUUID().toString());
-                fields.add(new BIBusinessField(this,
-                        fieldID, field.getFieldName(), field.getClassType(), field.getFieldSize()));
-            }
-        }
     }
 
     private Map<String, ICubeFieldSource> getSourceFields() {
