@@ -21,11 +21,19 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
                 return "select-data-field-string-font";
             case BICst.COLUMN.NUMBER:
                 return "select-data-field-number-font";
-            case BICst.COLUMN.DATE:
+            case BICst.COLUMN.DATE: {
                 return "select-data-field-date-font";
+            }
             case BICst.COLUMN.COUNTER:
                 return "select-data-field-number-font";
         }
+    },
+
+    _createNewType : function (type, group) {
+        if(type ===  BICst.COLUMN.DATE)  {
+            type = BI.Utils.createDateFieldType(group["type"])
+        }
+        return type;
     },
 
     _init: function () {
@@ -34,7 +42,7 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
         this.button = BI.createWidget({
             type: "bi.blank_icon_text_item",
             // trigger: "mousedown",
-            cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
+            cls: "select-data-level0-item-button " + this._getFieldClass(this._createNewType(o.fieldType, o.value["group"])),
             forceNotSelected:true,
             blankWidth: 10,
             text: o.text,
