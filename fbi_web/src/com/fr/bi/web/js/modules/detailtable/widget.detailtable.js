@@ -214,6 +214,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             self.table.attr("columnSize", self._getColumnSize(header));
             self.table.populate(items, header, [], []);
         });
+    },
+
+    resize: function () {
+        this.table.resize();
     }
 
 });

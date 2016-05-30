@@ -60,7 +60,8 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     local: function () {
         if (this.model.has("dashboard")) {
             var dashboard = this.model.get("dashboard");
-            this._refreshWidgets();
+            //不刷新子组件
+            this._refreshWidgets(false);
             return true;
         }
         if (this.model.has("undo")) {
@@ -76,11 +77,13 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         return false;
     },
 
-    _refreshWidgets: function () {
+    _refreshWidgets: function (refresh) {
         var self = this;
         BI.each(this.cat("widgets"), function (id, widget) {
             var type = widget.type;
-            self.skipTo(id + "/" + type, id, "widgets." + id);
+            self.skipTo(id + "/" + type, id, "widgets." + id, {}, {
+                force: refresh
+            });
         });
     },
 

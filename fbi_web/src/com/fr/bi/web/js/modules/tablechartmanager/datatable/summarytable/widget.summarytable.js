@@ -300,7 +300,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this._afterTablePopulate();
     },
 
-    _afterTablePopulate: function(){
+    _afterTablePopulate: function () {
         if (this.model.isShowNumber()) {
             this.table.showSequence();
         } else {
@@ -342,6 +342,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             }
             self._populateTable();
         }, this.model.getExtraInfo());
+    },
+
+    resize: function () {
+        this.table.resize();
     }
 });
 BI.SummaryTable.EVENT_CHANGE = "EVENT_CHANGE";

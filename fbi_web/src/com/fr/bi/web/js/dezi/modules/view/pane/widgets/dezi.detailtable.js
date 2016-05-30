@@ -45,12 +45,12 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         var self = this;
         this._buildWidgetTitle();
         this._createTools();
-        var table = BI.createWidget({
+        this.table = BI.createWidget({
             type: "bi.detail_table",
             wId: this.model.get("id")
         });
-        this.tablePopulate = BI.debounce(BI.bind(table.populate, table), 0);
-        table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
+        this.tablePopulate = BI.debounce(BI.bind(this.table.populate, this.table), 0);
+        this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);
         });
 
@@ -67,7 +67,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 top: 10,
                 right: 10
             }, {
-                el: table,
+                el: this.table,
                 left: 10,
                 right: 10,
                 top: 50,
@@ -238,6 +238,9 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     },
 
     change: function (changed) {
+        if (BI.has(changed, "bounds")) {
+            this.table.resize();
+        }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
