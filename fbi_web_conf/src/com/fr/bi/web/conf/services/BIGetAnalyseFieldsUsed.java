@@ -41,8 +41,8 @@ public class BIGetAnalyseFieldsUsed extends AbstractBIConfigureAction {
 //        Iterator it = set.iterator();
 //        while (it.hasNext()){
 //            AbstractField key = (AbstractField)it.next();
-//            boolean isUsed = BIReport.isFieldInfoHasTemplateUsed(new BIFieldKey(key));
-//            if(isUsed){
+//            boolean isUsable = BIReport.isFieldInfoHasTemplateUsed(new BIFieldKey(key));
+//            if(isUsable){
 //                ja.put(key.createJSON());
 //            }
 //        }

@@ -10,7 +10,7 @@ import java.nio.ShortBuffer;
 /**
  * Various useful methods for roaring bitmaps.
  * 
- * This class is similar to org.roaringbitmap.Util but meant to be used with
+ * This class is similar to org.roaringbitmap.Util but meant to be usable with
  * memory mapping.
  */
 public final class BufferUtil {

@@ -7,7 +7,7 @@ public class ZooKeeperConfig {
     /**
      * comma separated host:port pairs, each corresponding to a zk
      * server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002" If
-     * the optional chroot suffix is used the example would look
+     * the optional chroot suffix is usable the example would look
      * like: "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002/app/a"
      * where the client would be rooted at "/app/a" and all paths
      * would be relative to this root - ie getting/setting/etc...

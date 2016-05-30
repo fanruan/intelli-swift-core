@@ -53,6 +53,6 @@ public class BIGetTableUseInfoAction extends AbstractBIConfigureAction {
 //                }
 //            }
 //        }
-//        WebUtils.printAsJSON(res, new JSONObject().put("used",isTableHasTemplateUsed));
+//        WebUtils.printAsJSON(res, new JSONObject().put("usable",isTableHasTemplateUsed));
     }
 }

@@ -20,7 +20,7 @@ package com.fr.bi.cluster.zookeeper.lock;
 import org.apache.zookeeper.KeeperException;
 
 /**
- * A callback object which can be used for implementing retry-able operations in the
+ * A callback object which can be usable for implementing retry-able operations in the
  * {@link ProtocolSupport} class
  */
 public interface ZooKeeperOperation {
