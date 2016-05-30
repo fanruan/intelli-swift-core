@@ -87,9 +87,11 @@ public class DataSourceCompound implements DataSourceCompoundService {
 
     private void addBusinessTable(BusinessTable businessTable) {
         try {
-            businessTable.setSource(getTableSource(businessTable));
-            addTable2FieldSource(businessTable);
-            addTable2TableSource(businessTable);
+            if (containTableSource(businessTable)) {
+                businessTable.setSource(getTableSource(businessTable));
+                addTable2FieldSource(businessTable);
+                addTable2TableSource(businessTable);
+            }
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);
         }

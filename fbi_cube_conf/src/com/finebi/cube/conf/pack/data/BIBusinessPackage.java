@@ -196,9 +196,20 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
                 JSONArray ja = fieldsJA.getJSONArray(i);
                 for (int j = 0; j < ja.length(); j++) {
                     JSONObject fieldJO = ja.getJSONObject(j);
+                    String field_name =null;
+                    int fieldSize =0;
+                    int classType = 0;
+                    if (fieldJO.has("field_name")){
+                     field_name =  fieldJO.getString("field_name");}
+                    if (fieldJO.has("class_type")){
+                        classType = fieldJO.getInt("field_size");
+                    }
+                    if (fieldJO.has("field_size")){
+                        fieldSize = fieldJO.getInt("field_size");
+                    }
                     BIBusinessField field = new BIBusinessField(table, new BIFieldID(fieldJO.getString("id")),
-                            fieldJO.getString("field_name"), fieldJO.getInt("class_type"),
-                            fieldJO.getInt("field_size"), fieldJO.optBoolean("is_usable"), fieldJO.optBoolean("is_enable"));
+                         field_name , classType,
+                            fieldSize, fieldJO.optBoolean("is_usable"), fieldJO.optBoolean("is_enable"));
                     fields.add(field);
                 }
             } catch (Exception e) {
