@@ -101,6 +101,9 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.MAP_WORLD:
+            case BICst.WIDGET.MAP_CHINA:
+            case BICst.WIDGET.MAP_JIANGSU:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Region_Name"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
