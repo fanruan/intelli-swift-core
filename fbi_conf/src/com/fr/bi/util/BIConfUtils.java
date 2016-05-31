@@ -112,7 +112,7 @@ public class BIConfUtils {
         CubeTableSource foreignTableSource = null;
         try {
             primaryTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(primaryField.getTableBelongTo());
-            foreignTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(primaryField.getTableBelongTo());
+            foreignTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(foreignField.getTableBelongTo());
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);
         }

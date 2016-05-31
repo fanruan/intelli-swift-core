@@ -206,6 +206,16 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         json["table_name"] = json["name"]
         json["operator"] = BI.deepClone(json)
         return json;
+    },
+
+    getJoinFieldsLength : function() {
+        var fields = this.get(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS);
+        if(BI.isNotNull(fields)) {
+            return fields.getFieldsLength();
+        }
+        else{
+            return 0;
+        }
     }
 })
 BI.AnalysisETLMergeSheetModel.MERGE_TYPE = "mergeType";
