@@ -8,7 +8,8 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         return BI.extend(BI.MultiSelectCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-multi-select-combo',
-            itemsCreator: BI.emptyFn
+            itemsCreator: BI.emptyFn,
+            valueFormatter: BI.emptyFn
         });
     },
 
@@ -25,6 +26,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
         this.popup = BI.createWidget({
             type: 'bi.multi_select_popup_view',
             itemsCreator: o.itemsCreator,
+            valueFormatter: o.valueFormatter,
             onLoaded: function () {
                 BI.defer(function () {
                     self.combo.adjustWidth();

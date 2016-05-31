@@ -2,6 +2,13 @@
  * Created by Young's on 2016/5/30.
  */
 BI.AllReportsFilter = BI.inherit(BI.Widget, {
+
+    _constant: {
+        REPORT_STATUS_APPLYING: 1,
+        REPORT_STATUS_NORMAL: 2,
+        REPORT_STATUS_HANGOUT: 3
+    },
+
     _defaultConfig: function(){
         return BI.extend(BI.AllReportsFilter.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-all-reports-filter"
@@ -12,23 +19,26 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         BI.AllReportsFilter.superclass._init.apply(this, arguments);
         var self = this;
         this.depart = BI.createWidget({
-            type: "bi.multi_select_combo",
-            itemsCreator: BI.bind(this._departsCreator, this),
+            type: "bi.value_chooser_combo",
+            itemsCreator: BI.bind(this._departCreator, this),
             height: 30,
             width: 180
         });
         this.role = BI.createWidget({
-            type: "bi.multi_select_combo",
+            type: "bi.value_chooser_combo",
+            itemsCreator: BI.bind(this._rolesCreator, this),
             height: 30,
             width: 180
         });
         this.name = BI.createWidget({
-            type: "bi.multi_select_combo",
+            type: "bi.value_chooser_combo",
+            itemsCreator: BI.bind(this._usersCreator, this),
             height: 30,
             width: 180
         });
         this.status = BI.createWidget({
-            type: "bi.multi_select_combo",
+            type: "bi.value_chooser_combo",
+            itemsCreator: BI.bind(this._statusCreator, this),
             height: 30,
             width: 180
         });
@@ -116,28 +126,61 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         });
     },
 
-    _departsCreator: function(options, callback){
-        callback({
-            items: []
-        })
+    _departCreator: function(op, callback){
+        var items = [];
+        BI.each(this.departs, function(i, depart){
+            items.push({
+                text: depart.text,
+                value: depart.id,
+                title: depart.text
+            });
+        });
+        callback(items);
     },
 
     _rolesCreator: function(options, callback){
-        callback({
-            items: []
-        })
+        var items = [];
+        BI.each(this.roles, function(i, role){
+            var roleName = role.text;
+            if(BI.isNotNull(role.departmentname)){
+                roleName = role.departmentname + role.postname
+            }
+            items.push({
+                text: roleName,
+                value: role.id,
+                title: roleName
+            });
+        });
+        callback(items);
     },
 
     _usersCreator: function(options, callback) {
-        callback({
-            items: []
-        })
+        var items = [];
+        BI.each(this.users, function(i, user){
+            items.push({
+                text: user.realname,
+                value: user.id,
+                title: user.realname
+            });
+        });
+        callback(items);
     },
 
     _statusCreator: function(options, callback){
-        callback({
-            items: []
-        })
+        var items = [{
+            text: BI.i18nText(""),
+            value: this._constant.REPORT_STATUS_APPLYING,
+            title: BI.i18nText("")
+        }, {
+            text: BI.i18nText(""),
+            value: this._constant.REPORT_STATUS_NORMAL,
+            title: BI.i18nText("")
+        }, {
+            text: BI.i18nText(""),
+            value: this._constant.REPORT_STATUS_HANGOUT,
+            title: BI.i18nText("")
+        }];
+        callback(items);
     },
 
     getValue: function(){

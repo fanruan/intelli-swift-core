@@ -31,6 +31,18 @@ BI.ValueChooserCombo = BI.inherit(BI.Widget, {
             type: 'bi.multi_select_combo',
             element: this.element,
             itemsCreator: BI.bind(this._itemsCreator, this),
+            valueFormatter: function(v){
+                var text = v;
+                if(BI.isNotNull(self.items)) {
+                    BI.some(self.items, function(i, item){
+                        if(item.value === v) {
+                            text = item.text;
+                            return true;
+                        }
+                    });
+                }
+                return text;
+            },
             width: o.width,
             height: o.height
         });
