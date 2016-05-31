@@ -5,12 +5,12 @@
 BI.MultiLayerIconTreeLeafItem = BI.inherit(BI.BasicButton, {
     _defaultConfig: function () {
         return BI.extend(BI.MultiLayerIconTreeLeafItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-multilayer-icon-tree-leaf-item bi-list-item",
+            extraCls: "bi-multilayer-icon-tree-leaf-item bi-list-item-active",
             layer: 0,
-            id: "",
-            pId: "",
             height: 25,
-            iconCls: ""
+            iconCls: "",
+            iconHeight: 14,
+            iconWidth: 12
         })
     },
     _init: function () {
@@ -18,7 +18,7 @@ BI.MultiLayerIconTreeLeafItem = BI.inherit(BI.BasicButton, {
         var self = this, o = this.options;
         this.item = BI.createWidget({
             type: "bi.icon_tree_leaf_item",
-            cls: o.iconCls,
+            iconCls: o.iconCls,
             logic: {
                 dynamic: true
             },
@@ -29,7 +29,9 @@ BI.MultiLayerIconTreeLeafItem = BI.inherit(BI.BasicButton, {
             hgap: o.hgap,
             text: o.text,
             value: o.value,
-            py: o.py
+            py: o.py,
+            iconWidth: o.iconWidth,
+            iconHeight: o.iconHeight
         });
         this.item.on(BI.Controller.EVENT_CHANGE, function (type) {
             if (type === BI.Events.CLICK) {//本身实现click功能

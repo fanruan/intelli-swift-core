@@ -39,6 +39,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.MAP_WORLD:
+            case BICst.WIDGET.MAP_CHINA:
+            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
@@ -96,6 +99,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.MAP_WORLD:
+            case BICst.WIDGET.MAP_CHINA:
+            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
@@ -164,6 +170,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.MAP_WORLD:
+            case BICst.WIDGET.MAP_CHINA:
+            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
