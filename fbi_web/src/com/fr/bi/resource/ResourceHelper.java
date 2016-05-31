@@ -1221,6 +1221,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/piechartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/forcebubble.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/crosstable/widget.crosstable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
 
