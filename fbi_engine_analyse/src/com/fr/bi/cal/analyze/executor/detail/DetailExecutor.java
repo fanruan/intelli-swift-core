@@ -60,7 +60,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     return x;
                 }
                 //row + 1 ? 不然覆盖掉了列名
-                fillOneLine(cells, (int) row.getRow() + 1, row.getValues());
+                fillOneLine(cells, (int) row.getRow(), row.getValues());
                 return false;
             }
         };
@@ -88,11 +88,11 @@ public class DetailExecutor extends AbstractDetailExecutor {
             @Override
             public boolean actionPerformed(BIRowValue row) {
                 Boolean x = checkPage(row);
-                if (x != null){
+                if (x != null) {
                     return x;
                 }
                 JSONArray jsonArray = new JSONArray();
-                for (int i = 0; i < row.getValues().length; i++){
+                for (int i = 0; i < row.getValues().length; i++) {
                     jsonArray.put(dimensions[i].createShowValue(row.getValues()[i]));
                 }
                 ja.put(jsonArray);
@@ -104,7 +104,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     public List<List> getData() {
-        if (target == null){
+        if (target == null) {
             return new ArrayList<List>();
         }
         GroupValueIndex gvi = createDetailViewGvi();
@@ -114,11 +114,11 @@ public class DetailExecutor extends AbstractDetailExecutor {
             @Override
             public boolean actionPerformed(BIRowValue row) {
                 Boolean x = checkPage(row);
-                if (x != null){
+                if (x != null) {
                     return x;
                 }
                 List list = new ArrayList();
-                for (Object ob : row.getValues()){
+                for (Object ob : row.getValues()) {
                     list.add(ob);
                 }
                 data.add(list);
@@ -133,7 +133,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         if (paging.getStartRow() > row.getRow()) {
             return false;
         }
-        if (paging.getTotalSize() <= row.getRow()) {
+        if (paging.getEndRow() <= row.getRow()) {
             return true;
         }
         return null;
