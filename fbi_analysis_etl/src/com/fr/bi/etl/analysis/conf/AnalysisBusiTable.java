@@ -1,9 +1,12 @@
 package com.fr.bi.etl.analysis.conf;
 
+import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
@@ -30,6 +33,17 @@ public class AnalysisBusiTable extends BIBusinessTable {
 
     public void setSource(CubeTableSource source) {
         this.source = source;
+        initFields();
+    }
+
+
+    private void initFields() {
+        String tableId = getID().getIdentity();
+        List<BusinessField> fields = new ArrayList<BusinessField>();
+        for (PersistentField f : source.getPersistentTable().getFieldList()){
+            new BIBusinessField(this, new BIFieldID(tableId + f.getFieldName()), f.getFieldName(), f.getType(), f.getColumnSize());
+        }
+        setFields(fields);
     }
 
     public CubeTableSource getSource() {
