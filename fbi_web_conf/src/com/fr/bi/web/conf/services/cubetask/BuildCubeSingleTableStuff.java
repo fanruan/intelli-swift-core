@@ -34,10 +34,7 @@ public class BuildCubeSingleTableStuff implements CubeBuildStuff{
         init(new BIBusinessTable(biTable.getID()));
         
     }
-
-
-
-
+    
     /**
      *
      */
@@ -46,8 +43,6 @@ public class BuildCubeSingleTableStuff implements CubeBuildStuff{
     private Set<CubeTableSource> sources;
     private Set<CubeTableSource> allSingleSources;
 
-    private String rootPath;
-    private String buildTempPath;
     private Set<BITableSourceRelation> tableSourceRelationSet;
     private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private Set<BITableRelation> tableRelationSet;
@@ -79,9 +74,7 @@ public class BuildCubeSingleTableStuff implements CubeBuildStuff{
         return sources;
     }
 
-    public String getRootPath() {
-        return rootPath;
-    }
+    
 
     public Set<BITableRelation> getTableRelationSet() {
         Set<BITableRelation> set = new HashSet<BITableRelation>();

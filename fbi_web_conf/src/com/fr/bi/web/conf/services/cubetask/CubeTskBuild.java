@@ -16,7 +16,7 @@ public class CubeTskBuild {
     private static BICubeManagerProvider cubeManager=BICubeConfigureCenter.getCubeManager();
 
     public static void buildCubebyBusiniessTable(long userId, CubeBuildStuff cubeBuildStuff, BITable biTable){
-        cubeManager.addTask(new BuildCubeTaskSingleTable(new BIUser(userId),cubeBuildStuff,biTable),userId);
+        cubeManager.addTask(new BuildCubeTaskSingleTable(new BIUser(userId),cubeBuildStuff),userId);
     }
     public static void CubeBuild(long userId){
         cubeManager.addTask(new BuildCubeTask(new BIUser(userId)),userId);

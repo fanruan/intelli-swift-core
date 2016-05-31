@@ -22,7 +22,6 @@ import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -48,7 +47,7 @@ public class BuildCubeTaskSingleTable implements CubeTask {
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
 
-    public BuildCubeTaskSingleTable(BIUser biUser, CubeBuildStuff cubeBuildStuff, BITable biTable) {
+    public BuildCubeTaskSingleTable(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
         this.cubBuildStuff=cubeBuildStuff;
         this.biUser = biUser;
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
