@@ -52,6 +52,9 @@ BI.ChartCombineFormatItemFactory = {
                 break;
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.MAP_WORLD:
+            case BICst.WIDGET.MAP_CHINA:
+            case BICst.WIDGET.MAP_JIANGSU:
                 item = BI.extend({"type": "map"}, items);
                 break;
             case BICst.WIDGET.GIS_MAP:
@@ -89,9 +92,17 @@ BI.ChartCombineFormatItemFactory = {
     combineConfig: function(type){
         var config = {
             "plotOptions": {
+                "rotatable": false,
+                "startAngle": 0,
+                "borderRadius": 0,
+                "endAngle": 360,
+                "innerRadius": "0.0%",
 
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
+                "dataLabels":{
+                    enabled: false
+                },
                 "valueLabel": {
                     "formatter": {
                         "identifier": "${SERIES}${VALUE}",
@@ -173,6 +184,17 @@ BI.ChartCombineFormatItemFactory = {
                 "gap": "22.0%",
                 "animation": true,
                 "lineWidth": 2
+            },
+            dataSheet: {
+                enabled: false,
+                "borderColor": "rgb(0,0,0)",
+                "borderWidth": 1,
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                style:{"fontFamily":"宋体","color":"rgba(0,0,0,1.0)","fontSize":"9pt","fontWeight":""}
+            },
+            geo:{
+                data: FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json",
+                geoName:'中国'
             },
             "borderColor": "rgb(238,238,238)",
             "shadow": false,

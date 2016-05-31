@@ -39,11 +39,18 @@ public class BIAnalysisETLGetFieldMinMaxValueAction extends AbstractAnalysisETLA
         BIKey key = new IndexKey(field);
         TreeSet tSet = new TreeSet(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         for (int i = 0; i < service.getRowCount(); i++){
-            tSet.add(service.getRow(key, i));
+            Object ob = service.getRow(key, i);
+            if (ob != null){
+                tSet.add(ob);
+            }
         }
-        jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, tSet.first());
-        jo.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, tSet.last());
-        WebUtils.printAsJSON(res, jo);
+        JSONObject json = new JSONObject();
+        if (tSet.isEmpty()){
+            tSet.add(0);
+        }
+        json.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, tSet.first());
+        json.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, tSet.last());
+        WebUtils.printAsJSON(res, json);
     }
 
 
