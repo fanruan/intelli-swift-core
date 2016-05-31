@@ -202,7 +202,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
                     if (fieldJO.has("field_name")){
                      field_name =  fieldJO.getString("field_name");}
                     if (fieldJO.has("class_type")){
-                        classType = fieldJO.getInt("field_size");
+                        classType = fieldJO.getInt("class_type");
                     }
                     if (fieldJO.has("field_size")){
                         fieldSize = fieldJO.getInt("field_size");

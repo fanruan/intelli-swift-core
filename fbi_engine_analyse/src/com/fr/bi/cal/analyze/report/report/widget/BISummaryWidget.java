@@ -6,7 +6,6 @@ import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -100,7 +99,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             return new ArrayList<BITableSourceRelation>();
         }
         List<BITableRelation> relationList = relMap.get(tarId);
-        return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convertToMD5RelationFromSimpleRelation(relationList, new BIUser(this.getUserId()));
+        return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convert2TableSourceRelation(relationList);
     }
 
     private BusinessField getDimDataColumn(BIDimension dim, String tarId) {
