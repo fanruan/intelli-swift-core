@@ -209,7 +209,13 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
     },
 
     getJoinFieldsLength : function() {
-        return this.attributes.mergeFields.getValue(ETLCst.FIELDS).length;
+        var fields = this.get(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS);
+        if(fields) {
+            return fields.getFieldsLength();
+        }
+        else{
+            return 0;
+        }
     }
 })
 BI.AnalysisETLMergeSheetModel.MERGE_TYPE = "mergeType";

@@ -74,7 +74,7 @@ BI.AnalysisETLMergeSheetController = BI.inherit(BI.MVCController, {
 	        var data = model.createPreviewData();
             delete data["merge"]
             widget.preview.populate(data,{})
-            if(model.getJoinFieldsLength() == 0){
+            if(model.getJoinFieldsLength() === 0){
                 widget.saveButton.setWarningTitle(BI.i18nText('BI-ETL_Join_Merge_Field_Not_Set'));
             }
             else{
