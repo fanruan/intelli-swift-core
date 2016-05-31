@@ -73,6 +73,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             
             //效果:保存(新增)该表所在业务包的所有操作并更新对应cube
             handler: function () {
+                // console.log(self.model.table);
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
                 BI.Utils.generateCubeByTable(self.model.table.id, function () {

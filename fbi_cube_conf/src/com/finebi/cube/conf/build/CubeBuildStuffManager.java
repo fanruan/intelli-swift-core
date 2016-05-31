@@ -1,5 +1,7 @@
 package com.finebi.cube.conf.build;
 
+import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -46,6 +48,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
     private Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap;
     private BIUser biUser;
     private Set<BITableSourceRelationPath> relationPaths;
+    private ICubeConfiguration cubeConfiguration;
     /**
      * TableSource之间存在依赖关系，这一点很合理。
      * 这个结构肯定是不好的。
@@ -54,7 +57,14 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
      */
     private Set<List<Set<CubeTableSource>>> dependTableResource;
 
+    public CubeBuildStuffManager(BIUser biUser, ICubeConfiguration cubeConfiguration) {
+        this.cubeConfiguration=cubeConfiguration;
+        this.biUser = biUser;
+        initialCubeStuff();
+    }
+
     public CubeBuildStuffManager(BIUser biUser) {
+        this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         this.biUser = biUser;
         initialCubeStuff();
     }
@@ -73,9 +83,10 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         return sources;
     }
 
-    public String getRootPath()
+    @Override
+    public ICubeConfiguration getCubeConfiguration()
     {
-        return rootPath;
+        return BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
     }
 @Override
     public Set<BITableRelation> getTableRelationSet() {
@@ -102,6 +113,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         }
         return set;
     }
+
 
     private Set<BITableRelation> filterRelation(Set<BITableRelation> tableRelationSet) {
         Iterator<BITableRelation> iterator = tableRelationSet.iterator();

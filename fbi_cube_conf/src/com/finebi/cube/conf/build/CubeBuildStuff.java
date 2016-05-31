@@ -1,5 +1,6 @@
 package com.finebi.cube.conf.build;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
@@ -12,7 +13,8 @@ import java.util.Set;
  * Created by wuk on 16/5/30.
  */
 public interface CubeBuildStuff {
-    
+
+
     Set<BITableSourceRelationPath> getRelationPaths();
 
     Set<CubeTableSource> getAllSingleSources();
@@ -23,5 +25,9 @@ public interface CubeBuildStuff {
 
     Set<List<Set<CubeTableSource>>> getDependTableResource();
 
+    ICubeConfiguration getCubeConfiguration();
+    
+
     Set<BITableRelation> getTableRelationSet();
+    
 }

@@ -4,7 +4,6 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.build.CubeBuildStuff;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.singletable.TableUpdate;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -57,10 +56,6 @@ public class AllTask extends AbstractCubeTask {
     @Override
     public long getUserId() {
         return biUser.getUserId();
-    }
-
-    public void setCubeBuildStuff(CubeBuildStuff object) {
-        
     }
 
     @Override

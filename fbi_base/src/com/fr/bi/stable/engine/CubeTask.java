@@ -3,7 +3,6 @@
  */
 package com.fr.bi.stable.engine;
 
-import com.finebi.cube.conf.build.CubeBuildStuff;
 import com.fr.json.JSONCreator;
 
 import java.io.Serializable;
@@ -23,7 +22,5 @@ public interface CubeTask extends JSONCreator, Serializable {
 
     long getUserId();
 
-    void setCubeBuildStuff(CubeBuildStuff object);
-    
-    
+
 }

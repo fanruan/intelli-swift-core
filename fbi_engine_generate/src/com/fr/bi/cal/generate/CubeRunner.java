@@ -1,7 +1,6 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
@@ -58,15 +57,12 @@ public class CubeRunner {
                 setStatue(Status.LOADING);
                 start();
                 try {
-//                        cubeTask.setCubeBuildStuff(object);
                     cubeTask.start();
                     cubeTask.run();
-                    cubeTask.end();
-
+                    cubeTask.end(); 
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 } finally {
-                    
                     finish();
                     setStatue(Status.LOADED);
                     BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
@@ -157,7 +153,7 @@ public class CubeRunner {
         BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-        BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
+//        BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
 //        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();

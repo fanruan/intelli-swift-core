@@ -45,10 +45,6 @@ public class StopCubeTask implements CubeTask {
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
 
-    public void setCubeBuildStuff(CubeBuildStuff  cubeBuildStuff) {
-        this.cubeBuildStuffManager = cubeBuildStuff;
-    }
-
     @Override
     public String getUUID() {
         return "BUILD_CUBE";

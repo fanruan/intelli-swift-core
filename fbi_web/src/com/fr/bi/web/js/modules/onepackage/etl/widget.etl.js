@@ -279,7 +279,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         BI.Popovers.remove(this.model.getId());
         var updateSet = BI.createWidget({
             type: "bi.update_table_data",
-            table: this.model.getTableData()
+            table: this.model.getValue()
         });
         updateSet.on(BI.UpdateTableData.EVENT_SAVE, function(){
             self.model.setUpdateSettings(this.getValue());
