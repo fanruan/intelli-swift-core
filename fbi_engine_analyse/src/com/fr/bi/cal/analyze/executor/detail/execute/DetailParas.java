@@ -39,6 +39,7 @@ public class DetailParas {
     private Map rowMap = new HashMap();
     private boolean[] asc;
     private GroupValueIndex gvi;
+
     public DetailParas(BIDetailWidget widget, GroupValueIndex gvi, ICubeDataLoader loader) {
         this.loader = loader;
 
@@ -49,6 +50,7 @@ public class DetailParas {
         biUser = new BIUser(loader.getUserId());
         init();
     }
+
     public ArrayList<BIDetailTarget> getNoneCalculateList() {
         return noneCalculateList;
     }
@@ -92,7 +94,7 @@ public class DetailParas {
         initCalList();
         for (int i = 0; i < noneCalculateList.size(); i++) {
 
-            List<BITableSourceRelation> relations = BIConfUtils.convertToMD5RelationFromSimpleRelation(noneCalculateList.get(i).getRelationList(target, biUser.getUserId()),biUser);
+            List<BITableSourceRelation> relations = BIConfUtils.convert2TableSourceRelation(noneCalculateList.get(i).getRelationList(target, biUser.getUserId()));
             CollectionKey<BITableSourceRelation> reKey = new CollectionKey<BITableSourceRelation>(relations);
             if (rowMap.get(reKey) == null) {
                 rowMap.put(reKey, DirectTableConnectionFactory.createConnectionRow(relations, loader));
@@ -102,7 +104,7 @@ public class DetailParas {
         sortKey = new DetailSortKey(gvi, target, sortList);
         asc = new boolean[sortList.size()];
         getters = new ICubeColumnIndexReader[sortList.size()];
-        for (int i = 0; i < sortList.size(); i ++){
+        for (int i = 0; i < sortList.size(); i++) {
             getters[i] = sortList.get(i).createGroupValueMapGetter(target, loader, biUser.getUserId());
             asc[i] = sortList.get(i).getSort().getSortType() == BIReportConstant.SORT.ASC ? true : false;
             i++;

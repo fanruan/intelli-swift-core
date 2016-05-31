@@ -51,7 +51,9 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
         GroupValueIndex gvi = null;
         for (CubeTableSource parent : parents) {
             //TODO Connery 这里有问题Mark
-            GroupValueIndex temp = createFilter().createFilterIndex(new BIBusinessTable(new BITableID(parent.fetchObjectCore().getID().getIdentityValue())), loader, loader.getUserId());
+            BIBusinessTable businessTable = new BIBusinessTable(new BITableID(StringUtils.EMPTY));
+            businessTable.setSource(parent);
+            GroupValueIndex temp = createFilter().createFilterIndex(businessTable, loader, loader.getUserId());
             if (gvi == null) {
                 gvi = temp;
             } else {

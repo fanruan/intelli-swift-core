@@ -4,6 +4,7 @@ import com.fr.base.Utils;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.utils.BIFormularUtils;
@@ -77,26 +78,26 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
         }
         String formular = "=" + expressionStr;
         for (int row = 0; row < rowCount; row++) {
-            Object value = BIFormularUtils.getCalculatorValue(cal, formular, ti, columnIndexMap, row);
-            if (value instanceof Number) {
-                value = ((Number) value).doubleValue();
-            } else if (value instanceof Date) {
-                value = ((Date) value).getTime();
-            } else if (value instanceof Character) {
-                String str = String.valueOf(value);
-                value = str;
-            } else {
-                value = Utils.objectToString(value);
-            }
-
             try {
-                travel.actionPerformed(new BIDataValue(row, startCol, value));
+                Object value = BIFormularUtils.getCalculatorValue(cal, formular, ti, columnIndexMap, row);
+                travel.actionPerformed(new BIDataValue(row, startCol, getValueByColumnType(value)));
             } catch (Exception e) {
                 BILogger.getLogger().error("incorrect formular");
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }
         return rowCount;
+    }
+
+    private Object getValueByColumnType(Object value) {
+        switch (columnType){
+            case DBConstant.COLUMN.DATE :
+                return ((Date) value).getTime();
+            case DBConstant.COLUMN.NUMBER :
+                return  ((Number) value).doubleValue();
+            default:
+                return  Utils.objectToString(value);
+        }
     }
 
     @Override

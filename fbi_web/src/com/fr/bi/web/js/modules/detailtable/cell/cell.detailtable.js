@@ -31,7 +31,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var o = this.options;
         var dId = this.options.dId;
         if (this._checkHyperLinkDimension()) {
-            var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId) || {};
+            var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId);
             var item = BI.createWidget({
                 type: "bi.a",
                 cls: "hyper-link-item",
@@ -59,7 +59,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
     },
 
     _checkHyperLinkDimension: function () {
-        var hyperlink = BI.Utils.getDimensionHyperLinkByID(this.options.dId) || {};
+        var hyperlink = BI.Utils.getDimensionHyperLinkByID(this.options.dId);
         return hyperlink.used || false
     },
 
@@ -79,6 +79,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 return text * 100;
         }
+        return text;
     },
 
 
@@ -109,6 +110,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 }
                 return snum;
         }
+        return text;
     },
 
 
@@ -134,6 +136,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                     return "target-style-less-arrow-font";
                 }
         }
+        return "";
     },
 
     _createItemWithStyle: function (item) {
@@ -142,44 +145,51 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var text = o.text;
         var dId = this.options.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        if (BI.isNotNull(styleSettings)) {
-            var format = styleSettings.format, numLevel = styleSettings.num_level;
-            text = this._parseNumLevel(text, numLevel);
-            text = this._parseFloatByDot(text, format);
-            var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
-            iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
-            var conditions = styleSettings.conditions;
-            BI.some(conditions, function (i, co) {
-                var range = co.range;
-                var min = BI.parseFloat(range.min), max = BI.parseFloat(range.max);
-                if ((range.closemin === true ? text >= min : text > min) &&
-                    (range.closemax === true ? text <= max : text < max)) {
-                    color = co.color;
-                }
-            });
-        }
 
+        var format = styleSettings.format, numLevel = styleSettings.num_level,
+            iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
+        text = this._parseNumLevel(text, numLevel);
+        text = this._parseFloatByDot(text, format);
+
+        iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
+        var conditions = styleSettings.conditions;
+        BI.some(conditions, function (i, co) {
+            var range = co.range;
+            var min = BI.parseFloat(range.min), max = BI.parseFloat(range.max);
+            if ((range.closemin === true ? text >= min : text > min) &&
+                (range.closemax === true ? text <= max : text < max)) {
+                color = co.color;
+            }
+        });
 
         if (BI.isNotEmptyString(color)) {
             item.element.css("color", color);
         }
-
-        BI.createWidget({
-            type: "bi.horizontal_adapt",
-            element: this.element,
-            items: [item, {
-                type: "bi.center_adapt",
-                cls: iconCls,
-                items: [{
-                    type: "bi.icon",
+        if (BI.isNotEmptyString(iconCls)) {
+            BI.createWidget({
+                type: "bi.horizontal_adapt",
+                element: this.element,
+                items: [item, {
+                    type: "bi.default",
+                    cls: iconCls,
+                    items: [{
+                        type: "bi.icon",
+                        width: 16,
+                        height: 16
+                    }],
                     width: 16,
                     height: 16
                 }],
-                width: 30,
-                height: 30
-            }],
-            columnSize: ["", 30]
-        });
+                columnSize: ["", 30]
+            });
+        } else {
+            BI.createWidget({
+                type: "bi.vertical",
+                element: this.element,
+                items: [item]
+            })
+        }
+
     }
 
 });

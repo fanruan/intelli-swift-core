@@ -695,17 +695,19 @@
 
         getWidgetFilterValueByID: function (wid) {
             if (this.isWidgetExistByID(wid)) {
-                return Data.SharingPool.get("widgets", wid, "filter_value");
+                return Data.SharingPool.get("widgets", wid, "filter_value") || {};
             }
+            return {};
         },
 
         getAllDimensionIDs: function (wid) {
             if (!wid) {
-                return BI.keys(Data.SharingPool.get("dimensions"))
+                return BI.keys(Data.SharingPool.cat("dimensions"))
             }
             if (this.isWidgetExistByID(wid)) {
-                return BI.keys(Data.SharingPool.get("widgets", wid, "dimensions"));
+                return BI.keys(Data.SharingPool.cat("widgets", wid, "dimensions"));
             }
+            return [];
         },
 
         getAllUsedFieldIds: function () {
@@ -854,20 +856,23 @@
 
         getDimensionSortByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "sort");
+                return Data.SharingPool.get("dimensions", did, "sort") || {};
             }
+            return {};
         },
 
         getDimensionSrcByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "_src");
+                return Data.SharingPool.get("dimensions", did, "_src") || {};
             }
+            return {};
         },
 
         getDimensionGroupByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "group");
+                return Data.SharingPool.get("dimensions", did, "group") || {};
             }
+            return {};
 
         },
 
@@ -880,22 +885,23 @@
 
         getDimensionFilterValueByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "filter_value");
+                return Data.SharingPool.get("dimensions", did, "filter_value") || {};
             }
-
+            return {};
         },
 
         getDimensionSettingsByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "settings");
+                return Data.SharingPool.get("dimensions", did, "settings") || {};
             }
-
+            return {};
         },
 
         getDimensionHyperLinkByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "hyperlink");
+                return Data.SharingPool.get("dimensions", did, "hyperlink") || {};
             }
+            return {};
         },
 
         getFieldTypeByDimensionID: function (did) {
@@ -954,8 +960,9 @@
 
         getDimensionMapByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "dimension_map");
+                return Data.SharingPool.get("dimensions", did, "dimension_map") || {};
             }
+            return {};
         },
 
         isDimensionByDimensionID: function (dId) {
@@ -1703,7 +1710,7 @@
                     var tarIds = BI.Utils.getAllTargetDimensionIDs(lId);
                     BI.each(tarIds, function (i, tarId) {
                         var tarFilter = BI.Utils.getDimensionFilterValueByID(tarId);
-                        if (BI.isNotNull(tarFilter)) {
+                        if (BI.isNotEmptyObject(tarFilter)) {
                             parseFilter(tarFilter);
                             filterValues.push(tarFilter);
                         }
@@ -1715,9 +1722,7 @@
             var dimensions = widget.dimensions;
             BI.each(dimensions, function (dId, dimension) {
                 var filterValue = dimension.filter_value || {};
-                if (BI.isNotNull(filterValue)) {
-                    parseFilter(filterValue);
-                }
+                parseFilter(filterValue);
             });
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
@@ -1838,9 +1843,6 @@
     //format date type filter
     function parseFilter(filter) {
         var filterType = filter.filter_type, filterValue = filter.filter_value;
-        if (BI.isEmptyObject(filterValue)) {
-            return;
-        }
         if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
             BI.each(filterValue, function (i, value) {
                 parseFilter(value);
@@ -1916,7 +1918,7 @@
             filterValue.values = parseComplexDate(filterValue);
             filterValue.type = BICst.GROUP.YMD;
         }
-        return filterValue;
+        return filter;
         //日期偏移值
         function getOffSetDateByDateAndValue(date, value) {
             var tool = new BI.ParamPopupView();

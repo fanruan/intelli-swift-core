@@ -265,7 +265,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 dId: dId
             });
             popup.on(BI.TargetSummaryFilterPopup.EVENT_CHANGE, function (v) {
-                var targetFilter = BI.Utils.getWidgetFilterValueByID(self.options.wId) || {};
+                var targetFilter = BI.Utils.getWidgetFilterValueByID(self.options.wId);
                 targetFilter[dId] = v;
                 self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {filter_value: targetFilter});
             });

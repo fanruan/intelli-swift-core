@@ -69,7 +69,7 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         if(BI.isEmpty(res)){
             var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
-            if(!BI.isEmpty(dimensionMap)){
+            if(BI.isNotEmptyObject(dimensionMap)){
                 BI.each(dimensionMap, function(tId, content){
                     self.stored_paths[tId] = [content.target_relation];
                     self.stored_value[tId] = content;
