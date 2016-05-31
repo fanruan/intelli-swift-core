@@ -104,40 +104,72 @@ SequenceTable2View = BI.inherit(BI.View, {
             }],
             values: [0]
         }];
-
-        BI.createWidget({
-            type: "bi.grid",
-            element: vessel,
-            columns: 1,
-            rows: 1,
-            items: [{
-                column: 0,
-                row: 0,
+        var table = BI.createWidget({
+            type: "bi.sequence_table",
+            el: {
                 el: {
-                    type: "bi.sequence_table",
                     el: {
                         el: {
-                            el: {
-                                el: {
-                                    type: "bi.table_tree"
-                                }
-                            }
+                            type: "bi.table_tree"
                         }
-                    },
-                    sequence: {
-                        type: "bi.sequence_table_tree_number"
-                    },
-                    isNeedResize: true,
-                    isNeedMerge: true,
-                    isNeedFreeze: true,
-                    freezeCols: [0, 1, 2],
-                    mergeCols: [0, 1, 2],
-                    columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
-                    header: header,
-                    items: items,
-                    crossHeader: crossHeader,
-                    crossItems: crossItems
+                    }
                 }
+            },
+            sequence: {
+                type: "bi.sequence_table_tree_number"
+            },
+            isNeedResize: true,
+            isNeedMerge: true,
+            isNeedFreeze: true,
+            freezeCols: [0, 1, 2],
+            mergeCols: [0, 1, 2],
+            columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+            header: header,
+            items: items,
+            crossHeader: crossHeader,
+            crossItems: crossItems
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: vessel,
+            items: [{
+                el: {
+                    type: "bi.grid",
+                    columns: 1,
+                    rows: 1,
+                    items: [{
+                        column: 0,
+                        row: 0,
+                        el: table
+                    }]
+                },
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 50
+            }, {
+                el: {
+                    type: "bi.button",
+                    height: 25,
+                    text: "showSequence",
+                    handler: function () {
+                        table.showSequence();
+                    }
+                },
+                left: 10,
+                bottom: 10
+            }, {
+                el: {
+                    type: "bi.button",
+                    height: 25,
+                    text: "hideSequence",
+                    handler: function () {
+                        table.hideSequence();
+                    }
+                },
+                right: 10,
+                bottom: 10
             }]
         })
     }

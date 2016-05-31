@@ -15,7 +15,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         return BI.extend(BI.PageTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-page-table",
             el: {
-                type: "bi.custom_scroll_table"
+                type: "bi.sequence_table"
             },
 
             hasHNext: BI.emptyFn,
@@ -78,7 +78,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this.hpage = 1;
 
         this.table = BI.createWidget(o.el, {
-            type: "bi.custom_scroll_table",
+            type: "bi.sequence_table",
             element: this.element,
 
             pageSpace: 95,
@@ -216,9 +216,11 @@ BI.PageTable = BI.inherit(BI.Widget, {
         });
         this.pager.on(BI.NumberPager.EVENT_CHANGE, function () {
             self._loading();
+            var vpage = this.getCurrentPage();
             o.itemsCreator({
-                vpage: this.getCurrentPage()
+                vpage: vpage
             }, function (items, header, crossItems, crossHeader) {
+                self.setVPage(vpage);
                 self.populate.apply(self, arguments);
                 self._loaded();
             });
@@ -309,10 +311,12 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     setHPage: function (v) {
         this.hpage = v;
+        this.table.setHPage && this.table.setHPage(v);
     },
 
     setVPage: function (v) {
         this.pager.setValue(v);
+        this.table.setVPage && this.table.setVPage(v);
     },
 
     getHPage: function () {
@@ -351,6 +355,14 @@ BI.PageTable = BI.inherit(BI.Widget, {
         BI.PageTable.superclass.attr.apply(this, arguments);
         this._hideCurrentColumn();
         this.table.attr.apply(this.table, arguments);
+    },
+
+    showSequence: function () {
+        this.table.showSequence();
+    },
+
+    hideSequence: function () {
+        this.table.hideSequence();
     },
 
     populate: function (items) {

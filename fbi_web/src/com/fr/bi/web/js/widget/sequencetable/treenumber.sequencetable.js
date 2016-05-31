@@ -59,31 +59,75 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                 el: this.buttonGroup
             }]
         });
+        //缓存第一行对应的序号
+        this.start = this.options.startSequence;
+        this.cache = {};
         this._populate();
     },
 
-    _formatNumber: function (nodes) {
+    _getStartSequence: function (nodes) {
         var self = this;
-        var result = [];
-        var count = this.options.startSequence;
+        var start = this.start;
+        var cnt = this.start;
 
         function track(node) {
-            if (BI.isNotEmptyArray(node.children)) {
-                BI.each(node.children, function (index, child) {
-                    track(child);
-                });
-                if (BI.isNotEmptyArray(node.values)) {
-                    result.push(BI.i18nText("BI-Summary_Values"));
-                }
-                return;
-            }
-            // if (BI.isNotEmptyArray(node.values)) {
-                result.push(count++);
-            // }
+            self.cache[node.text || node.value] = cnt++;
         }
 
         BI.each(nodes, function (i, node) {
-            track(node);
+            if (BI.isNotEmptyArray(node.children)) {
+                BI.each(node.children, function (index, child) {
+                    if (index === 0) {
+                        if (self.cache[child.text || child.value]) {
+                            start = cnt = self.cache[child.text || child.value];
+                        }
+                    }
+                    track(child)
+                });
+            }
+        });
+        this.start = cnt;
+        return start;
+    },
+
+    _formatNumber: function (nodes) {
+        var self = this, o = this.options;
+        var result = [];
+        var count = this._getStartSequence(nodes);
+
+        function getLeafCount(node) {
+            var cnt = 0;
+            if (BI.isNotEmptyArray(node.children)) {
+                BI.each(node.children, function (index, child) {
+                    cnt += getLeafCount(child);
+                });
+                if (BI.isNotEmptyArray(node.values)) {
+                    cnt++;
+                }
+            } else {
+                cnt++;
+            }
+            return cnt;
+        }
+
+        BI.each(nodes, function (i, node) {
+            if (BI.isNotEmptyArray(node.children)) {
+                BI.each(node.children, function (index, child) {
+                    var cnt = getLeafCount(child);
+                    result.push({
+                        text: count++,
+                        cls: "sequence-table-number",
+                        height: cnt * o.rowSize + (cnt - 1)
+                    });
+                });
+                if (BI.isNotEmptyArray(node.values)) {
+                    result.push({
+                        text: BI.i18nText("BI-Summary_Values"),
+                        cls: "sequence-table-number sequence-table-summary",
+                        height: o.rowSize
+                    });
+                }
+            }
         });
         return result;
     },
@@ -104,21 +148,14 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         }
         var numbers = this._formatNumber(o.items);
         result = result.concat(BI.map(numbers, function (i, num) {
-            var cls = "";
-            if (BI.isNumber(num)) {
-                cls = "sequence-table-number";
-            } else {
-                cls = "sequence-table-number sequence-table-summary";
-            }
-            return {
+            var cls = num.cls;
+            return BI.extend(num, {
                 type: "bi.label",
-                height: o.rowSize,
                 textAlign: "left",
                 hgap: 5,
-                text: num,
                 cls: cls + (i === numbers.length - 1 ? " last" : "")
                 + (BI.isOdd(i) ? " even" : " odd")
-            }
+            })
         }));
 
         return result;
@@ -146,6 +183,13 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
 
     setVerticalScroll: function (scroll) {
         this.buttonGroup.element.scrollTop(scroll);
+    },
+
+    setVPage: function (v) {
+        if (v <= 1) {
+            this.cache = {};
+            this.start = this.options.startSequence;
+        }
     },
 
     populate: function (items, header, crossItems, crossHeader, startSequence) {
