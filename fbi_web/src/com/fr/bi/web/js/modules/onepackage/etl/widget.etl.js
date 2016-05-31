@@ -280,7 +280,6 @@ BI.ETL = BI.inherit(BI.Widget, {
         var updateSet = BI.createWidget({
             type: "bi.update_table_data",
         });
-        console.log(this.model.getTableData());
         updateSet.on(BI.UpdateTableData.EVENT_SAVE, function(){
             self.model.setUpdateSettings(this.getValue());
         });

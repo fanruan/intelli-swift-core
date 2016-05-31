@@ -3,12 +3,19 @@
  */
 package com.fr.bi.cal.generate;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Daniel
@@ -16,9 +23,9 @@ import com.fr.json.JSONObject;
  */
 public class SingleTableTask extends AllTask {
 
-    private BITable table;
+    private BusinessTable table;
 
-    public SingleTableTask(BITable table, long userId) {
+    public SingleTableTask(BusinessTable table, long userId) {
         super(userId);
         this.table = table;
     }
@@ -58,11 +65,16 @@ public class SingleTableTask extends AllTask {
         return jo;
     }
 
-//    protected Map<Integer, Set<ITableSource>> getGenerateTables() {
-//        Map<Integer, Set<ITableSource>> generateTable = new HashMap<Integer, Set<ITableSource>>();
-//        BICollectionUtils.mergeSetValueMap(generateTable, BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(table.getID(), biUser).createGenerateTablesMap());
-//        return generateTable;
-//    }
+    @Override
+    protected Map<Integer, Set<CubeTableSource>> getGenerateTables() {
+        Map<Integer, Set<CubeTableSource>> generateTable = new HashMap<Integer, Set<CubeTableSource>>();
+        try {
+            BICollectionUtils.mergeSetValueMap(generateTable, BICubeConfigureCenter.getDataSourceManager().getTableSource(table).createGenerateTablesMap());
+        } catch (BIKeyAbsentException e) {
+            e.printStackTrace();
+        }
+        return generateTable;
+    }
 
     @Override
     protected boolean checkCubeVersion(TableCubeFile cube) {
@@ -75,8 +87,5 @@ public class SingleTableTask extends AllTask {
         return CubeTaskType.SINGLE;
     }
 
-    public Table getTableKey() {
-        return table;
-    }
 
 }
