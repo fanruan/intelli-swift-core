@@ -1,0 +1,33 @@
+@import "../../bibase";
+.bi-all-reports{
+  background: @color-bi-border-line;
+  & .hangout-count{
+    font-size: @font-size-14;
+    color: @color-bi-text-black;
+  }
+  & .push-bar{
+    background: @color-bi-background-default;
+    border: 1px solid @color-bi-border-line;
+    .border-corner-radius(2px, 2px, 0, 0);
+    & .filter-report-label{
+      color: @color-bi-text-black;
+      font-size: @font-size-14;
+    }
+    & .report-count{
+      color: @color-bi-text-highlight;
+      font-size: @font-size-14;
+    }
+    & .push-button{
+      .border-radius(16px);
+      font-size: @font-size-16;
+      &:hover{
+        background: @color-bi-background-light;
+      }
+    }
+  }
+  & .all-reports{
+    background: @color-bi-background-default;
+    border: 1px solid @color-bi-border-line;
+    .border-radius(2px);
+  }
+}

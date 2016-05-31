@@ -2,17 +2,17 @@
   width: 21px;
   height: 21px;
   margin: 3px;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/cross/resources/images/add_bi.png') no-repeat;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/cross/resources/images/add_bi.png') no-repeat;
 }
 .fs_reportmgr_bi_icon_hover {
   width: 21px;
   height: 21px;
   margin: 3px;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/cross/resources/images/add_bi.png') no-repeat;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/cross/resources/images/add_bi.png') no-repeat;
 }
 .fs_reportmgr_bi_icon_click {
   width: 21px;
   height: 21px;
   margin: 3px;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/cross/resources/images/add_bi.png') no-repeat;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/cross/resources/images/add_bi.png') no-repeat;
 }

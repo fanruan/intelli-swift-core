@@ -228,6 +228,12 @@ Data.Req = BIReq = {
         })
     },
 
+    reqAllReportsData: function (callback) {
+        BI.requestAsync("fr_bi", "get_all_reports_data", {}, function (data) {
+            callback(data);
+        });
+    },
+
     reqWidgetsByTemplateId: function (tId, callback) {
         BI.requestAsync("fr_bi", "get_widget_from_template", {id: tId}, function (data) {
             callback(data);
@@ -285,16 +291,16 @@ Data.Req = BIReq = {
             callback(res);
         });
     },
-    reqGenerateCubeByTable: function(tableId, callback) {
+    reqGenerateCubeByTable: function (tableId, callback) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
-            tableId:tableId
-        }, function(res) {
+            tableId: tableId
+        }, function (res) {
             callback(res);
         });
     },
 
-    reqPrimaryTablesByTable: function(table, callback) {
-        BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function(res){
+    reqPrimaryTablesByTable: function (table, callback) {
+        BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function (res) {
             callback(res);
         });
     }

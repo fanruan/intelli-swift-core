@@ -1734,6 +1734,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/templatemanager/tools/share/usersearchresult.pane.css",
                 "com/fr/bi/web/css/components/templatemanager/templatemanager.css",
 
+                //所有模板
+                "com/fr/bi/web/css/components/allreports/allreports.css",
+                "com/fr/bi/web/css/components/allreports/allreports.filter.css",
+
         };
     }
 
@@ -2427,6 +2431,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/buttongroup.templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
+
+                //查看所有模板（管理员）
+                "com/fr/bi/web/js/components/allreports/allreports.js",
+                "com/fr/bi/web/js/components/allreports/allreports.filter.js",
 
                 //工程配置
                 "com/fr/bi/web/js/config.js"
