@@ -95,6 +95,9 @@ BI.ChartCombineFormatItemFactory = {
 
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
+                "dataLabel":{
+                    enabled: false
+                },
                 "valueLabel": {
                     "formatter": {
                         "identifier": "${SERIES}${VALUE}",

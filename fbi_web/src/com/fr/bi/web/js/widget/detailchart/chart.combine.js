@@ -147,12 +147,14 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             formatChartLineStyle();
             formatChartPieStyle();
             formatChartRadarStyle();
+            formatElementAttrs();
             if(BI.has(config, "yAxis") && config.yAxis.length > 0){
                 config.yAxis[0].reversed = self.left_y_axis_reversed ? !config.yAxis[0].reversed : config.yAxis[0].reversed;
                 config.yAxis[0].formatter = formatTickInYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
                 formatNumberLevelInYaxis(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
                 config.yAxis[0].title.text = self.left_y_axis_title + getYAxisUnit(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
                 config.yAxis[0].title.text = self.show_left_y_axis_title === true ? config.yAxis[0].title.text : "";
+                config.yAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
                 //config.yAxis[0].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "yAxis") && config.yAxis.length === 2){
@@ -161,12 +163,14 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 formatNumberLevelInYaxis(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                 config.yAxis[1].title.text = self.right_y_axis_title + getYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                 config.yAxis[1].title.text = self.show_right_y_axis_title === true ? config.yAxis[1].title.text : "";
+                config.yAxis[1].gridLineWidth = self.show_grid_line === true ? 1 : 0;
                 //config.yAxis[1].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "xAxis") && config.xAxis.length > 0){
                 config.xAxis[0].labelRotation = self.text_direction;
                 config.xAxis[0].title.text = self.show_x_axis_title === true ? self.x_axis_title : "";
                 config.xAxis[0].title.align = "center";
+                config.xAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
             }
         }
 
@@ -304,6 +308,27 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     break;
             }
         }
+
+        function formatElementAttrs(){
+            switch (self.chart_legend) {
+                case BICst.CHART_LEGEND.BOTTOM:
+                    config.legend.enabled = true;
+                    config.legend.position = "bottom";
+                    break;
+                case BICst.CHART_LEGEND.RIGHT:
+                    config.legend.enabled = true;
+                    config.legend.position = "right";
+                    break;
+                case BICst.CHART_LEGEND.NOT_SHOW:
+                default:
+                    config.legend.enabled = false;
+                    break;
+            }
+            config.plotOptions.dataLabels.enabled = self.show_data_label;
+            config.dataSheet.enabled = self.show_data_table;
+
+
+        }
     },
 
     setTypes: function(types){
@@ -331,7 +356,11 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.right_y_axis_unit = options.right_y_axis_unit;
         this.show_x_axis_title = options.show_x_axis_title;
         this.x_axis_title = options.x_axis_title;
-        this.text_direction = options.text_direction || 0;
+        this.chart_legend = options.chart_legend || BICst.CHART_LEGEND.NOT_SHOW;
+        this.show_data_label = options.show_data_label;
+        this.show_data_table = options.show_data_table;
+        this.show_grid_line = options.show_grid_line;
+        this.text_direction = options.text_direction;
     },
 
     populate: function (items, types) {

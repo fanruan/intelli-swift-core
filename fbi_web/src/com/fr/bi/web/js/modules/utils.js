@@ -625,6 +625,30 @@
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_second_reversed;
         },
 
+        getWSChartLegendByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_legend) ? ws.chart_legend :
+                BICst.DEFAULT_CHART_SETTING.chart_legend;
+        },
+
+        getWSShowDataLabelByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_data_label) ? ws.show_data_label :
+                BICst.DEFAULT_CHART_SETTING.show_data_label;
+        },
+
+        getWSShowDataTableByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_data_table) ? ws.show_data_table :
+                BICst.DEFAULT_CHART_SETTING.show_data_table;
+        },
+
+        getWSShowGridLineByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_grid_line) ? ws.show_grid_line :
+                BICst.DEFAULT_CHART_SETTING.show_grid_line;
+        },
+
         getWSTextDirectionByID: function(wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.text_direction) ? ws.text_direction :

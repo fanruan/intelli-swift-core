@@ -1035,7 +1035,11 @@ BICst.DEFAULT_CHART_SETTING = {
     right_y_axis_second_reversed: false,
     show_x_axis_title: false,
     x_axis_title: "",
-    text_direction: 0
+    text_direction: 0,
+    chart_legend: BICst.CHART_LEGEND.NOT_SHOW,
+    show_data_label: false,
+    show_data_table: false,
+    show_grid_line: true
 };
 
 BICst.CAL_TARGET_TYPE = [{

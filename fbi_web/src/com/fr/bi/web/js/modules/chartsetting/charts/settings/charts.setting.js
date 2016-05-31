@@ -259,6 +259,35 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             width: 90
         });
 
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+            this.isSelected() ? self.showDataLabel.setVisible(true) : self.showDataLabel.setVisible(false);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //数据表格
+        this.showDataTable = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        this.showDataTable.on(BI.Controller.EVENT_CHANGE, function(){
+            this.isSelected() ? self.showDataTable.setVisible(true) : self.showDataTable.setVisible(false);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //网格线
+        this.gridLine = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
+            this.isSelected() ? self.gridLine.setVisible(true) : self.gridLine.setVisible(false);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
         var showElement = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
@@ -279,16 +308,14 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
                     type: "bi.center_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.label",
-                    text: "。",
-                    textHeight: 30,
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    type: "bi.center_adapt",
+                    items: [this.showDataLabel]
                 }, {
                     type: "bi.center_adapt",
-                    items: [this.isShowTitleX]
+                    items: [this.showDataTable]
                 }, {
                     type: "bi.center_adapt",
-                    items: [this.editTitleX]
+                    items: [this.gridLine]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -458,7 +485,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, rYAxis, xAxis, otherAttr],
+            items: [tableStyle, lYAxis, rYAxis, xAxis, showElement, otherAttr],
             hgap: 10
         })
     },
@@ -482,6 +509,10 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.reversedLY.setSelected(BI.Utils.getWSLeftYAxisReversedByID(wId));
         this.reversedRY.setSelected(BI.Utils.getWSRightYAxisReversedByID(wId));
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
+        this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
+        this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -506,7 +537,11 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             x_axis_title: this.editTitleX.getValue(),
             left_y_axis_reversed: this.reversedLY.isSelected(),
             right_y_axis_reversed: this.reversedRY.isSelected(),
-            text_direction: this.text_direction.getValue()
+            text_direction: this.text_direction.getValue(),
+            chart_legend: this.legend.getValue()[0],
+            show_data_label: this.show_data_label.isSelected(),
+            show_data_table: this.show_data_table.isSelected(),
+            show_grid_line: this.gridLine.isSelected()
         }
     },
 
@@ -528,6 +563,10 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.reversedLY.setSelected(v.left_y_axis_reversed);
         this.reversedRY.setSelected(v.right_y_axis_reversed);
         this.text_direction.setValue(v.text_direction);
+        this.legend.setValue(v.chart_legend);
+        this.showDataLabel.setSelected(v.show_data_label);
+        this.showDataTable.setSelected(v.show_data_table);
+        this.gridLine.setSelected(v.show_grid_line);
     }
 });
 BI.ChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
