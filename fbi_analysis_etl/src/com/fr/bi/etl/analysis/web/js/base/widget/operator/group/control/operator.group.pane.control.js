@@ -29,7 +29,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         BI.each(view,function(region, id){
             widget.regions[region].setCommentVisible(BI.isEmpty(id));
         });
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isFieldValid())
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, model.isFieldValid(), BI.i18nText('BI-Please_Set_Group_Summary'))
     },
 
     _doModelCheck : function (widget, model) {
