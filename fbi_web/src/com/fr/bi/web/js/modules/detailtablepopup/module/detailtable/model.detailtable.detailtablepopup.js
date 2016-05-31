@@ -56,15 +56,14 @@ BI.DetailTablePopupDetailTableModel = BI.inherit(FR.OB, {
                     target_relation: relations[0] || []
                 }
             });
-
         }
+        var filter = widget.filter;
+        var controlCalculation = BI.Utils.getControlCalculations();
+        filter.filter_value = filter.filter_value.concat(controlCalculation);
         BI.Utils.getWidgetDataByWidgetInfo(dimensions, widget.view, callback, {
             type: BICst.WIDGET.DETAIL,
-            page: page || BICst.TABLE_PAGE_OPERATOR.REFRESH
-        })
-    },
-
-    populate: function () {
-        var self = this;
+            page: page || BICst.TABLE_PAGE_OPERATOR.REFRESH,
+            filter: filter
+        });
     }
 });

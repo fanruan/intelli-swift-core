@@ -5,8 +5,8 @@ package com.fr.bi.field.target.filter.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -93,7 +93,7 @@ public class ColumnFieldFilter extends ColumnFilter {
         super.parseJSON(jo, userId);
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-            dataColumn = new BIBusinessField(new BIFieldID(fieldJo.getString("field_id")));
+            dataColumn = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(fieldJo.getString("field_id")));
         }
     }
 

@@ -23,7 +23,16 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
             showRelativeTables: true,
             showExcelView: false,
             showDateGroup: true,
-            tablesCreator: function (packageId) {
+            tablesCreator: function (packageId, isRelation) {
+                if (isRelation === true) {
+                    var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageId);
+                    return BI.map(tIds, function (i, id) {
+                        return {
+                            id: id,
+                            type: "bi.analysis_etl_select_data_level1_node"
+                        }
+                    })
+                }
                 var ids = BI.Utils.getTableIDsOfPackageID(packageId);
                 return BI.map(ids, function (i, tid) {
                     return {

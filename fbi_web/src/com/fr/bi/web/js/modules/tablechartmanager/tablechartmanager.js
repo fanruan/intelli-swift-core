@@ -67,7 +67,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         }
     },
 
-    _createNoDataPane: function(){
+    _createNoDataPane: function () {
         return BI.createWidget({
             type: "bi.center_adapt",
             items: [{
@@ -99,19 +99,19 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             type: "bi.chart_display",
             wId: this.options.wId
         });
-        chart.on(BI.ChartDisplay.EVENT_CHANGE, function(){
+        chart.on(BI.ChartDisplay.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableChartManager.EVENT_CLICK_CHART, arguments);
         });
         return chart;
     },
 
     _createTable: function () {
-        var self = this, o =  this.options;
+        var self = this, o = this.options;
         this.table = BI.createWidget({
             type: "bi.summary_table",
             wId: o.wId
         });
-        this.table.on(BI.SummaryTable.EVENT_CHANGE, function(obs){
+        this.table.on(BI.SummaryTable.EVENT_CHANGE, function (obs) {
             self.fireEvent(BI.TableChartManager.EVENT_CHANGE, obs);
         });
         return this.table;
@@ -119,6 +119,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
 
     resize: function () {
         switch (this.tableChartTab.getSelect()) {
+            case BICst.WIDGET.TABLE:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.PIE:
@@ -142,7 +143,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
 
     populate: function () {
         var widgetType = BI.Utils.getWidgetTypeByID(this.options.wId);
-        if(!BI.Utils.isAllFieldsExistByWidgetID(this.options.wId)){
+        if (!BI.Utils.isAllFieldsExistByWidgetID(this.options.wId)) {
             widgetType = BICst.WIDGET.NONE;
         }
         this.tableChartTab.setSelect(widgetType);

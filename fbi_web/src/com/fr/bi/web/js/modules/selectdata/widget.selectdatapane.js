@@ -21,7 +21,16 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
             showRelativeTables: true,
             showExcelView: true,
             showDateGroup: true,
-            tablesCreator: function (packageId) {
+            tablesCreator: function (packageId, isRelation) {
+                if (isRelation === true) {
+                    var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageId);
+                    return BI.map(tIds, function (i, id) {
+                        return {
+                            id: id,
+                            type: "bi.detail_select_data_level1_node"
+                        }
+                    })
+                }
                 var ids = BI.Utils.getTableIDsOfPackageID(packageId);
                 return BI.map(ids, function (i, id) {
                     return {
@@ -33,7 +42,8 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                 var ids = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {
-                    if (BI.Utils.getFieldIsUsableByID(fid) === true) {
+                    //暂时去除记录数
+                    if (BI.Utils.getFieldIsUsableByID(fid) === true && BI.Utils.getFieldTypeByID(fid) != BICst.COLUMN.COUNTER) {
                         result.push({
                             id: fid
                         })

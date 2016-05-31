@@ -158,7 +158,12 @@
             BI.each(fieldIds, function (i, fId) {
                 if (BI.isNotNull(translations[fId])) {
                     transIds.push(fId);
-                    BI.remove(fieldIds, fId);
+                }
+            });
+            var filterFiledIds = [];
+            BI.each(fieldIds, function (i, fId) {
+                if (BI.isNull(translations[fId])) {
+                    filterFiledIds.push(fId);
                 }
             });
             var countIds = this.getCountFieldIDsOfTableID(tableId) || [];
@@ -176,7 +181,7 @@
                         break;
                 }
             });
-            BI.each(fieldIds, function (i, id) {
+            BI.each(filterFiledIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
                     case BICst.COLUMN.NUMBER:
                         fNum.push(id);

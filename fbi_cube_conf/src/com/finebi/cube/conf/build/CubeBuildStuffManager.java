@@ -82,7 +82,13 @@ public class CubeBuildStuffManager implements Serializable {
             try {
                 CubeTableSource primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
                 CubeTableSource foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
+                if (!tableDBFieldMaps.containsKey(primaryTable)) {
+                    continue;
+                }
                 ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
+                if (!tableDBFieldMaps.containsKey(foreignTable)) {
+                    continue;
+                }
                 ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
                 if (tableSourceRelationSet.contains(
                         new BITableSourceRelation(
@@ -218,6 +224,7 @@ public class CubeBuildStuffManager implements Serializable {
     public void setPacks(Set<IBusinessPackageGetterService> packs, long userId) {
         this.packs = packs;
         this.sources = new HashSet<CubeTableSource>();
+        allBusinessTable = new HashSet<BIBusinessTable>();
         for (IBusinessPackageGetterService pack : packs) {
             Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
             while (tIt.hasNext()) {
