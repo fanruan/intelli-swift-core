@@ -7,6 +7,10 @@
  */
 BI.CustomScrollTable = BI.inherit(BI.Widget, {
 
+    _const: {
+        minScrollWidth: 200
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.CustomScrollTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-custom-scroll-table",
@@ -297,10 +301,21 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
     },
 
     _resizeFreezeScroll: function () {
+        var o = this.options;
         if (this.options.isNeedFreeze === true) {
             var regionSize = this.table.getCalculateRegionColumnSize();
             this.bottomLeftScrollBar.element.width(regionSize[0]);
             this.bottomRightScrollBar.element.css("left", regionSize[0]);
+
+            if (regionSize[1] <= this._const.minScrollWidth) {
+                var r = 0;
+                if (o.pageSpace > 0) {
+                    r = o.scrollWidth;
+                }
+                this.bottomRightScrollBar.element.css("right", r + "px");
+            } else {
+                this.bottomRightScrollBar.element.css("right", (o.pageSpace || 0) + "px");
+            }
 
             var ratio = this.bottomRightScrollBar.element.width() / regionSize[1];
 
@@ -358,8 +373,20 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
     },
 
     _resizeScroll: function () {
+        var o = this.options;
         if (this.options.isNeedFreeze === false) {
             var regionSize = this.table.getCalculateRegionColumnSize();
+
+            if (regionSize[0] <= this._const.minScrollWidth) {
+                var r = 0;
+                if (o.pageSpace > 0) {
+                    r = o.scrollWidth;
+                }
+                this.bottomRightScrollBar.element.css("right", r + "px");
+            } else {
+                this.bottomRightScrollBar.element.css("right", (o.pageSpace || 0) + "px");
+            }
+
             var ratio = this.bottomRightScrollBar.element.width() / regionSize[0];
 
             var columnSize = this.table.getScrollRegionColumnSize();

@@ -78,13 +78,13 @@ BI.StyleTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
 
-        this.table.on(BI.SequenceTable.EVENT_TABLE_AFTER_INIT, function () {
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
             self.fireEvent(BI.StyleTable.EVENT_TABLE_AFTER_INIT);
         });
-        this.table.on(BI.SequenceTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             self.fireEvent(BI.StyleTable.EVENT_TABLE_AFTER_REGION_RESIZE);
         });
-        this.table.on(BI.SequenceTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
 

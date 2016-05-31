@@ -64,6 +64,11 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             this._refreshWidgets(false);
             return true;
         }
+        if (this.model.has("addWidget")) {
+            var widget = this.model.get("addWidget");
+            this._refreshWidgets();
+            return true;
+        }
         if (this.model.has("undo")) {
             this.model.get("undo");
             this.refresh();
