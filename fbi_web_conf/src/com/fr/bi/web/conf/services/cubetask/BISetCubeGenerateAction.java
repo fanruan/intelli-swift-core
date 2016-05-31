@@ -27,11 +27,12 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
 
-        if (StringUtils.isEmpty(tableId)){
+        if (!StringUtils.isEmpty(tableId)){
             CubeBuildStuff cubeBuildStuffManager= new CubeBuildStuffManager(new BIUser(userId));
             CubeTskBuild.CubeBuild(userId,cubeBuildStuffManager);            
         }else{
-            CubeBuildStuff cubeBuildStuff = new BuildCubeStuffSingleManager(new BITable(tableId),userId);
+            CubeBuildStuff cubeBuildStuff=new CubeBuildStuffManagerSingleTable(new BITable("0e5eefe1adae6d26"),-999);
+//            CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable(new BITable(tableId),userId);
             CubeTskBuild.CubeBuild(userId, cubeBuildStuff);
         }
     }

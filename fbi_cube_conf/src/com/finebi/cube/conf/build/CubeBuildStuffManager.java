@@ -73,6 +73,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         return sources;
     }
 
+    @Override
     public String getRootPath()
     {
         return rootPath;
@@ -102,6 +103,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         }
         return set;
     }
+
 
     private Set<BITableRelation> filterRelation(Set<BITableRelation> tableRelationSet) {
         Iterator<BITableRelation> iterator = tableRelationSet.iterator();

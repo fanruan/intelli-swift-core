@@ -58,6 +58,14 @@ public class BuildCubeTask implements CubeTask {
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        cubeBuildStuff.getRootPath();
+//        try {
+//            ICubeResourceLocation iCubeResourceLocation = new BICubeLocation(cubeBuildStuff.getRootPath(),"");
+//            
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     
@@ -92,6 +100,8 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void run() {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
+        
+        
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
         operationManager.initialWatcher();
 
