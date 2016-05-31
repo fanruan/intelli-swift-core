@@ -9,6 +9,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         LEFT_AXIS: 0,
         RIGHT_AXIS: 1,
         RIGHT_AXIS_SECOND: 2,
+        X_AXIS: 3,
         ROTATION: -90,
 
         NORMAL: 1,
@@ -138,6 +139,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 newxAxis.formatter = "function(){if(this>0) return this; else return this*(-1); }";
                 newyAxis.position = "left";
                 newyAxis.type = "category";
+                delete newyAxis.formatter;
                 config.yAxis.push(newyAxis);
                 break;
 
@@ -155,40 +157,44 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             formatElementAttrs();
             if(BI.has(config, "yAxis") && config.yAxis.length > 0){
                 config.yAxis[0].reversed = self.left_y_axis_reversed ? !config.yAxis[0].reversed : config.yAxis[0].reversed;
-                config.yAxis[0].formatter = formatTickInYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
+                config.yAxis[0].formatter = formatTickInXYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
                 formatNumberLevelInYaxis(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                config.yAxis[0].title.text = self.left_y_axis_title + getYAxisUnit(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                config.yAxis[0].title.text = self.left_y_axis_title + getXYAxisUnit(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
                 config.yAxis[0].title.text = self.show_left_y_axis_title === true ? config.yAxis[0].title.text : "";
                 config.yAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
                 //config.yAxis[0].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "yAxis") && config.yAxis.length > 1){
-                config.yAxis[1].formatter = formatTickInYaxis(self.right_y_axis_style, self.constants.RIGHT_AXIS);
+                config.yAxis[1].formatter = formatTickInXYaxis(self.right_y_axis_style, self.constants.RIGHT_AXIS);
                 config.yAxis[1].reversed = self.right_y_axis_reversed ? !config.yAxis[1].reversed : config.yAxis[1].reversed;
                 formatNumberLevelInYaxis(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                config.yAxis[1].title.text = self.right_y_axis_title + getYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                config.yAxis[1].title.text = self.right_y_axis_title + getXYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                 config.yAxis[1].title.text = self.show_right_y_axis_title === true ? config.yAxis[1].title.text : "";
                 config.yAxis[1].gridLineWidth = self.show_grid_line === true ? 1 : 0;
                 //config.yAxis[1].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "yAxis") && config.yAxis.length > 2){
-                config.yAxis[2].formatter = formatTickInYaxis(self.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
+                config.yAxis[2].formatter = formatTickInXYaxis(self.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
                 config.yAxis[2].reversed = self.right_y_axis_second_reversed ? !config.yAxis[1].reversed : config.yAxis[2].reversed;
                 formatNumberLevelInYaxis(self.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
-                config.yAxis[2].title.text = self.right_y_axis_second_title + getYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS_SECOND);
+                config.yAxis[2].title.text = self.right_y_axis_second_title + getXYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS_SECOND);
                 config.yAxis[2].title.text = self.show_right_y_axis_second_title === true ? config.yAxis[2].title.text : "";
                 config.yAxis[2].gridLineWidth = self.show_grid_line === true ? 1 : 0;
                 //config.yAxis[1].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "xAxis") && config.xAxis.length > 0){
+                config.xAxis[0].formatter = formatTickInXYaxis(self.x_axis_style, self.constants.X_AXIS);
+                config.chartType === "bar" && delete config.yAxis[0].formatter;
                 config.xAxis[0].labelRotation = self.text_direction;
-                config.xAxis[0].title.text = self.show_x_axis_title === true ? self.x_axis_title : "";
+                formatNumberLevelInXaxis(self.x_axis_number_level);
+                config.xAxis[0].title.text = self.x_axis_title + getXYAxisUnit(self.x_axis_number_level, self.constants.X_AXIS);
+                config.xAxis[0].title.text = self.show_x_axis_title === true ? config.xAxis[0].title.text : "";
                 config.xAxis[0].title.align = "center";
                 config.xAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
             }
         }
 
-        function formatTickInYaxis(type, position){
+        function formatTickInXYaxis(type, position){
             var formatter = '#.##';
             switch (type) {
                 case self.constants.NORMAL:
@@ -203,6 +209,15 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 case self.constants.TWO2POINT:
                     formatter = '#0.00';
                     break;
+            }
+            if(position === self.constants.X_AXIS){
+                if(self.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(type === self.constants.NORMAL){
+                        formatter = '#0%'
+                    }else{
+                        formatter += '%';
+                    }
+                }
             }
             if(position === self.constants.LEFT_AXIS){
                 if(self.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
@@ -234,6 +249,32 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]}"
         }
 
+        function formatNumberLevelInXaxis(type){
+            var magnify = 1;
+            switch (type) {
+                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                    magnify = 1;
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                    magnify = 10000;
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                    magnify = 1000000;
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                    magnify = 100000000;
+                    break;
+            }
+            if(magnify > 1){
+                BI.each(result, function(idx, item){
+                    BI.each(item.data, function(id, da){
+                        da.x = da.x.div(magnify);
+                    })
+                })
+            }
+        }
+
         function formatNumberLevelInYaxis(type, position){
             var magnify = 1;
             switch (type) {
@@ -255,14 +296,18 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 BI.each(result, function(idx, item){
                     BI.each(item.data, function(id, da){
                         if(position === item.yAxis){
-                            da.y = da.y.div(magnify);
+                            if(item.type === BICst.WIDGET.BAR){
+                                da.x = da.x.div(magnify);
+                            }else{
+                                da.y = da.y.div(magnify);
+                            }
                         }
                     })
                 })
             }
         }
 
-        function getYAxisUnit(numberLevelType, position){
+        function getXYAxisUnit(numberLevelType, position){
             var unit = BI.i18nText("BI-Count");
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -277,6 +322,9 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 case BICst.TARGET_STYLE.NUM_LEVEL.YI:
                     unit = BI.i18nText("BI-Yi");
                     break;
+            }
+            if(position === self.constants.X_AXIS){
+                self.x_axis_unit !== "" && (unit = unit + "/" + self.x_axis_unit)
             }
             if(position === self.constants.LEFT_AXIS){
                 self.left_y_axis_unit !== "" && (unit = unit + "/" + self.left_y_axis_unit)
@@ -375,19 +423,21 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.x_axis_style = options.x_axis_style || BICst.TARGET_STYLE.FORMAT.NORMAL;
         this.right_y_axis_style = options.right_y_axis_style || BICst.TARGET_STYLE.FORMAT.NORMAL;
         this.right_y_axis_second_style = options.right_y_axis_second_style || BICst.TARGET_STYLE.FORMAT.NORMAL;
+        this.show_x_axis_title = options.show_x_axis_title || false;
         this.show_left_y_axis_title = options.show_left_y_axis_title || false;
         this.show_right_y_axis_title = options.show_right_y_axis_title || false;
         this.show_right_y_axis_second_title = options.show_right_y_axis_second_title || false;
         this.left_y_axis_reversed = options.left_y_axis_reversed || false;
         this.right_y_axis_reversed = options.right_y_axis_reversed || false;
         this.right_y_axis_second_reversed = options.right_y_axis_second_reversed || false;
+        this.x_axis_number_level = options.x_axis_number_level || BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.left_y_axis_number_level = options.left_y_axis_number_level || BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.right_y_axis_number_level = options.right_y_axis_number_level || BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.right_y_axis_second_number_level = options.right_y_axis_second_number_level || BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
+        this.x_axis_unit = options.x_axis_unit || "";
         this.left_y_axis_unit = options.left_y_axis_unit || "";
         this.right_y_axis_unit = options.right_y_axis_unit || "";
         this.right_y_axis_second_unit = options.right_y_axis_second_unit || "";
-        this.show_x_axis_title = options.show_x_axis_title || false;
         this.x_axis_title = options.x_axis_title || "";
         this.chart_legend = options.chart_legend || BICst.CHART_LEGEND.NOT_SHOW;
         this.show_data_label = options.show_data_label || false;
