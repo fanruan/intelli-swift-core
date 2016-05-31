@@ -5,11 +5,11 @@ package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
@@ -61,18 +61,18 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
     }
 
 
-    private Set<Table> getRelatedTables(long userId) {
-        Set<Table> relatedTables = new HashSet<Table>();
+    private Set<BIBusinessTable> getRelatedTables(long userId) {
+        Set<BIBusinessTable> relatedTables = new HashSet<BIBusinessTable>();
         Iterator<Map.Entry<BusinessTable, IRelationContainer>> primaryIt = BICubeConfigureCenter.getTableRelationManager().getAllTable2PrimaryRelation(userId).entrySet().iterator();
         while (primaryIt.hasNext()) {
             Map.Entry entry = primaryIt.next();
-            relatedTables.add((Table) entry.getKey());
+            relatedTables.add((BIBusinessTable) entry.getKey());
         }
 
         Iterator<Map.Entry<BusinessTable, IRelationContainer>> foreignIt = BICubeConfigureCenter.getTableRelationManager().getAllTable2ForeignRelation(userId).entrySet().iterator();
         while (foreignIt.hasNext()) {
             Map.Entry entry = foreignIt.next();
-            relatedTables.add((Table) entry.getKey());
+            relatedTables.add((BIBusinessTable) entry.getKey());
         }
         return relatedTables;
     }
@@ -100,7 +100,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         Set<BITableRelationPath> availableMultiSet = new HashSet<BITableRelationPath>();
         Set<BITableRelationPath> disabledMultiSet = new HashSet<BITableRelationPath>();
         Set<BITableRelationPath> noneMultiSet = new HashSet<BITableRelationPath>();
-        Set<Table> relatedTables = getRelatedTables(userId);
+        Set<BIBusinessTable> relatedTables = getRelatedTables(userId);
         Iterator it = relatedTables.iterator();
         while (it.hasNext()) {
             BusinessTable foreignTable = (BusinessTable) it.next();
