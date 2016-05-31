@@ -55,7 +55,7 @@ BI.SummaryTargetFilter = BI.inherit(BI.Widget, {
     populate: function () {
         var o = this.options;
         var targetFilters = BI.Utils.getWidgetFilterValueByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
-        var conditions = BI.isNotNull(targetFilters) ? targetFilters[o.dId] || [] : [];
+        var conditions = targetFilters[o.dId] || [];
         conditions = BI.isArray(conditions) ? conditions : [conditions];
         this._transformConditions2Tree(conditions);
         this.filter.populate(conditions);
