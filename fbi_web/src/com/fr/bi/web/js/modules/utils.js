@@ -463,10 +463,34 @@
                 BICst.DEFAULT_CHART_SETTING.chart_pie_type;
         },
 
+        getWSChartRadarTypeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_radar_type) ? ws.chart_radar_type :
+                BICst.DEFAULT_CHART_SETTING.chart_radar_type;
+        },
+
+        getWSChartTotalAngleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_total_angle) ? ws.chart_total_angle :
+                BICst.DEFAULT_CHART_SETTING.chart_total_angle;
+        },
+
+        getWSChartInnerRadiusByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_inner_radius) ? ws.chart_inner_radius :
+                BICst.DEFAULT_CHART_SETTING.chart_inner_radius;
+        },
+
         getWSLeftYAxisStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_style) ? ws.left_y_axis_style :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_style;
+        },
+
+        getWSXAxisStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.x_axis_style) ? ws.x_axis_style :
+                BICst.DEFAULT_CHART_SETTING.x_axis_style;
         },
 
         getWSRightYAxisStyleByID: function (wid) {
@@ -495,14 +519,26 @@
 
         getWSLeftYAxisNumLevelByID: function(wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_number_level) ? ws.right_y_axis_number_level :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_number_level;
+            return BI.isNotNull(ws.left_y_axis_number_level) ? ws.left_y_axis_number_level :
+                BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
+        },
+
+        getWSXAxisNumLevelByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.x_axis_number_level) ? ws.x_axis_number_level :
+                BICst.DEFAULT_CHART_SETTING.x_axis_number_level;
         },
 
         getWSLeftYAxisUnitByID: function(wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_unit) ? ws.left_y_axis_unit :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_unit;
+        },
+
+        getWSXAxisUnitByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.x_axis_unit) ? ws.x_axis_unit :
+                BICst.DEFAULT_CHART_SETTING.x_axis_unit;
         },
 
         getWSRightYAxisUnitByID: function (wid) {

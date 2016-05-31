@@ -380,8 +380,15 @@ BICst.CHART_STYLE = {
     RIGHT_ANGLE: 2,        //直角线形
     CURVE: 3,     //曲线
     EQUAL_ARC_ROSE: 4, //等弧玫瑰图
-    NOT_EQUAL_ARC_ROSE: 5 //不等弧玫瑰图
+    NOT_EQUAL_ARC_ROSE: 5, //不等弧玫瑰图
+    CIRCLE: 6,          //圆形雷达
+    POLYGON: 7          //多边形雷达
+};
 
+BICst.PIE_ANGLES = {
+    THREE_FOURTHS: 270,
+    HALF: 180,
+    TOTAL: 360
 };
 
 BICst.TABLE_MAX_ROW = 20;

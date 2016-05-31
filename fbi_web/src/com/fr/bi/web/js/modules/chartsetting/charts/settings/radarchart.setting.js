@@ -1,9 +1,9 @@
 /**
- * @class BI.PieChartSetting
+ * @class BI.RadarChartSetting
  * @extends BI.Widget
- * 柱状，堆积柱状，组合图样式
+ * 百分比堆积，百分比柱状样式
  */
-BI.PieChartSetting = BI.inherit(BI.Widget, {
+BI.RadarChartSetting = BI.inherit(BI.Widget, {
 
     constant: {
         SINGLE_LINE_HEIGHT: 60,
@@ -21,13 +21,13 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
     },
 
     _defaultConfig: function(){
-        return BI.extend(BI.PieChartSetting.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.RadarChartSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
         })
     },
 
     _init: function(){
-        BI.PieChartSetting.superclass._init.apply(this, arguments);
+        BI.RadarChartSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         this.colorSelect = BI.createWidget({
@@ -37,12 +37,12 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         this.colorSelect.populate(BICst.CHART_COLORS);
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
-            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
         this.chartTypeGroup = BI.createWidget({
             type: "bi.button_group",
-            items: BI.createItems(BICst.PIE_CHART_STYLE_GROUP, {
+            items: BI.createItems(BICst.RADAR_CHART_STYLE_GROUP, {
                 type: "bi.text_button",
                 extraCls: "table-style-font",
                 width: this.constant.BUTTON_WIDTH,
@@ -94,20 +94,62 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
             }]
         });
 
-        //内径大小
-        this.innerRadius = BI.createWidget({
+        //格式和数量级
+        this.lYAxisStyle = BI.createWidget({
+            type: "bi.segment",
+            width: this.constant.FORMAT_SEGMENT_WIDTH,
+            height: this.constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_FORMAT
+        });
+
+        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+        });
+
+        this.numberLevellY = BI.createWidget({
+            type: "bi.segment",
+            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: this.constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_LEVEL
+        });
+
+        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+        });
+
+        //单位
+        this.LYUnit = BI.createWidget({
+            type: "bi.sign_editor",
+            width: this.constant.EDITOR_WIDTH,
+            height: this.constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            watermark: BI.i18nText("BI-Custom_Input")
+        });
+
+        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+        });
+
+        //显示标题
+        this.isShowTitleLY = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
+            this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+        });
+
+        this.editTitleLY = BI.createWidget({
             type: "bi.sign_editor",
             width: this.constant.EDITOR_WIDTH,
             height: this.constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
-
-        //总角度
-        this.totalAngle = BI.createWidget({
-            type: "bi.segment",
-            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
-            items: BICst.PIE_TOTAL_ANGLE
+        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
         var lYAxis = BI.createWidget({
@@ -118,26 +160,37 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 height: "100%",
                 textHeight: 60,
-                text: BI.i18nText("BI-Show_Param"),
+                text: BI.i18nText("BI-Value_Axis"),
                 cls: "line-title"
             }, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Inner_Radius_Size"),
+                    text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
-                    items: [this.innerRadius]
+                    items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Total_Angle"),
+                    text: BI.i18nText("BI-Num_Level"),
                     lgap: this.constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
-                    items: [this.totalAngle]
+                    items: [this.numberLevellY]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Unit_Normal"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.LYUnit]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.isShowTitleLY, this.editTitleLY]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -181,28 +234,39 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
-        this.chartTypeGroup.setValue(BI.Utils.getWSChartPieTypeByID(wId));
-        this.totalAngle.setValue(BI.Utils.getWSChartTotalAngleByID(wId));
-        this.innerRadius.setValue(BI.Utils.getWSChartInnerRadiusByID(wId));
+        this.chartTypeGroup.setValue(BI.Utils.getWSChartRadarTypeByID(wId));
+        this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
+        this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
+        this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
+        this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
+
+        this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
     },
 
     getValue: function(){
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
-            chart_pie_type: this.chartTypeGroup.getValue()[0],
-            chart_total_angle: this.totalAngle.getValue()[0],
-            chart_inner_radius: this.innerRadius.getValue()
+            chart_radar_type: this.chartTypeGroup.getValue()[0],
+            left_y_axis_style: this.lYAxisStyle.getValue()[0],
+            left_y_axis_number_level: this.numberLevellY.getValue()[0],
+            left_y_axis_unit: this.LYUnit.getValue(),
+            show_left_y_axis_title: this.isShowTitleLY.isSelected(),
+            left_y_axis_title: this.editTitleLY.getValue()
         }
     },
 
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
-        this.chartTypeGroup.setValue(v.chart_pie_type);
-        this.totalAngle.setValue(v.chart_total_angle);
-        this.innerRadius.setValue(v.chart_inner_radius);
+        this.chartTypeGroup.setValue(v.chart_radar_type);
+        this.lYAxisStyle.setValue(v.left_y_axis_style);
+        this.numberLevellY.setValue(v.left_y_axis_number_level);
+        this.LYUnit.setValue(v.left_y_axis_unit);
+        this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
+        this.editTitleLY.setValue(v.left_y_axis_title);
     }
 });
-BI.PieChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.pie_chart_setting", BI.PieChartSetting);
+BI.RadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.radar_chart_setting", BI.RadarChartSetting);

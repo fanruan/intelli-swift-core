@@ -145,6 +145,8 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 config.colors = self.chart_color;
             }
             formatChartLineStyle();
+            formatChartPieStyle();
+            formatChartRadarStyle();
             if(BI.has(config, "yAxis") && config.yAxis.length > 0){
                 config.yAxis[0].reversed = self.left_y_axis_reversed ? !config.yAxis[0].reversed : config.yAxis[0].reversed;
                 config.yAxis[0].formatter = formatTickInYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
@@ -275,6 +277,33 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     break;
             }
         }
+        function formatChartPieStyle(){
+            switch (self.chart_pie_type){
+                case BICst.CHART_STYLE.EQUAL_ARC_ROSE:
+                    config.plotOptions.roseType = "sameArc";
+                    break;
+                case BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE:
+                    config.plotOptions.roseType = "differentArc";
+                    break;
+                case BICst.CHART_STYLE.NORMAL:
+                default:
+                    break;
+            }
+            config.plotOptions.innerRadius = self.chart_inner_radius;
+            config.plotOptions.endAngle = self.chart_total_angle;
+        }
+
+        function formatChartRadarStyle(){
+            switch (self.chart_radar_type) {
+                case BICst.CHART_STYLE.POLYGON:
+                    config.plotOptions.roseType = "polygon";
+                    break;
+                case BICst.CHART_STYLE.CIRCLE:
+                default:
+                    config.plotOptions.roseType = "circle";
+                    break;
+            }
+        }
     },
 
     setTypes: function(types){
@@ -286,6 +315,10 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.right_y_axis_title = options.right_y_axis_title || "";
         this.chart_color = options.chart_color || [];
         this.chart_line_type = options.chart_line_type || BICst.CHART_STYLE.NORMAL;
+        this.chart_pie_type = options.chart_pie_type || BICst.CHART_STYLE.NORMAL;
+        this.chart_inner_radius = options.chart_inner_radius || 0;
+        this.chart_total_angle = options.chart_total_angle || BICst.PIE_ANGLES.TOTAL;
+        this.chart_radar_type = options.chart_radar_type || BICst.CHART_STYLE.CIRCLE;
         this.left_y_axis_style = options.left_y_axis_style;
         this.right_y_axis_style = options.right_y_axis_style;
         this.show_left_y_axis_title = options.show_left_y_axis_title;

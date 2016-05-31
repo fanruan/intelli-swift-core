@@ -960,7 +960,7 @@ BICst.LINE_CHART_STYLE_GROUP = [{
 }];
 
 //饼图类型
-BICst.LINE_CHART_STYLE_GROUP = [{
+BICst.PIE_CHART_STYLE_GROUP = [{
     text: "饼图",
     value: BICst.CHART_STYLE.NORMAL
 }, {
@@ -969,6 +969,23 @@ BICst.LINE_CHART_STYLE_GROUP = [{
 }, {
     text: "不等弧玫瑰图",
     value: BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE
+}];
+
+//雷达图线性
+BICst.RADAR_CHART_STYLE_GROUP = [{
+    text: "圆形",
+    value: BICst.CHART_STYLE.CIRCLE
+}, {
+    text: "多边形",
+    value: BICst.CHART_STYLE.POLYGON
+}];
+
+BICst.BUBBLE_CHART_STYLE_GROUP = [{
+    text: "圆形",
+    value: BICst.CHART_STYLE.CIRCLE
+}, {
+    text: "多边形",
+    value: BICst.CHART_STYLE.POLYGON
 }];
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
@@ -992,13 +1009,19 @@ BICst.DEFAULT_CHART_SETTING = {
     chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
     chart_line_type: BICst.CHART_STYLE.NORMAL,
     chart_pie_type: BICst.CHART_STYLE.NORMAL,
+    chart_radar_type: BICst.CHART_STYLE.CIRCLE,
+    chart_inner_radius: 0,
+    chart_total_angle: BICst.PIE_ANGLES.TOTAL,
     left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
+    x_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     right_y_axis_second_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     left_y_axis_unit: "",
+    x_axis_unit: "",
     right_y_axis_unit: "",
     right_y_axis_second_unit: "",
     show_left_y_axis_title: false,
@@ -1216,6 +1239,17 @@ BICst.TARGET_STYLE_LEVEL = [{
 }, {
     text: "%",
     value: BICst.TARGET_STYLE.NUM_LEVEL.PERCENT
+}];
+
+BICst.PIE_TOTAL_ANGLE = [{
+    text: "180'",
+    value: BICst.PIE_ANGLES.HALF
+}, {
+    text: "270'",
+    value: BICst.PIE_ANGLES.THREE_FOURTHS
+}, {
+    text: "360'",
+    value: BICst.PIE_ANGLES.TOTAL
 }];
 
 

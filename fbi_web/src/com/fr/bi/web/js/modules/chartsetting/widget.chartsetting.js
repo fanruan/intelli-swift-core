@@ -54,14 +54,9 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.ACCUMULATE_RADAR:
-            case BICst.WIDGET.FALL_AXIS:
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.RADAR:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
@@ -153,7 +148,43 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-
+            case BICst.WIDGET.FALL_AXIS:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.fall_axis_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.FallAxisChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.radar_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.RadarChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.SCATTER:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.scatter_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.ScatterChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.BUBBLE:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.bubble_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.BubbleChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
         }
         this.chartSetting.populate();
         this.wrapper.addItem({
