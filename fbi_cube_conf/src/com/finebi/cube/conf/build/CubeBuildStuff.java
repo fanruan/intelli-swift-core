@@ -1,5 +1,6 @@
 package com.finebi.cube.conf.build;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
@@ -24,7 +25,8 @@ public interface CubeBuildStuff {
 
     Set<List<Set<CubeTableSource>>> getDependTableResource();
 
-    String getRootPath();
+    ICubeConfiguration getCubeConfiguration();
+    
 
     Set<BITableRelation> getTableRelationSet();
     

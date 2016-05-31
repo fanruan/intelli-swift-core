@@ -1,7 +1,6 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.build.CubeBuildStuff;
 import com.finebi.cube.data.ICubeResourceDiscovery;
@@ -55,16 +54,10 @@ public class BuildCubeTask implements CubeTask {
     public BuildCubeTask(BIUser biUser,CubeBuildStuff cubeBuildStuff) {
         this.cubeBuildStuff=cubeBuildStuff;
         this.biUser = biUser;
-        cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+
+        cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        cubeBuildStuff.getRootPath();
-//        try {
-//            ICubeResourceLocation iCubeResourceLocation = new BICubeLocation(cubeBuildStuff.getRootPath(),"");
-//            
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
 
     }
 
@@ -90,15 +83,18 @@ public class BuildCubeTask implements CubeTask {
     public void end() {
         Future<String> result = finishObserver.getOperationResult();
         try {
+            BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
             BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuildStuff.getTableRelationSet());
+            
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
+            BILogger.getLogger().error(e.getMessage(), e);
         }
     }
 
     @Override
     public void run() {
+        
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         
         
@@ -145,10 +141,6 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public long getUserId() {
         return -999;
-    }
-
-    public void setCubeBuildStuff(CubeBuildStuff object) {
-        this.cubeBuildStuff = object;
     }
 
     @Override
