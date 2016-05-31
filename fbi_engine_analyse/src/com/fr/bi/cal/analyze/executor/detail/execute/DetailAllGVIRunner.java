@@ -37,7 +37,7 @@ public class DetailAllGVIRunner extends AbstractGVIRunner {
                     while (itT.hasNext()) {
                         BIDetailTarget dimension = itT.next();
 
-                        List<BITableSourceRelation> relations = BIConfUtils.convertToMD5RelationFromSimpleRelation(dimension.getRelationList(target, biUser.getUserId()), biUser);
+                        List<BITableSourceRelation> relations = BIConfUtils.convert2TableSourceRelation(dimension.getRelationList(target, biUser.getUserId()));
 
                         long row = ((ConnectionRowGetter) (paras.getRowMap().get(new CollectionKey<BITableSourceRelation>(relations))))
                                 .getConnectedRow(rowIndex);

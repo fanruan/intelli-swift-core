@@ -6,7 +6,6 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.connection.DirectTableConnection;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
@@ -126,8 +125,4 @@ public class BIConfUtils {
         );
     }
 
-    public static List<BITableSourceRelation> convertToMD5RelationFromSimpleRelation(List<BITableRelation> relations, BIUser user) {
-
-        return BIConfUtils.convert2TableSourceRelation(relations);
-    }
 }

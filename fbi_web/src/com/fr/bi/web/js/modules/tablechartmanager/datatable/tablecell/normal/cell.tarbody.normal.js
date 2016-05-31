@@ -15,42 +15,49 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
-        if (BI.isNotNull(styleSettings)) {
-            var format = styleSettings.format, numLevel = styleSettings.num_level;
-            text = this._parseNumLevel(text, numLevel);
-            text = this._parseFloatByDot(text, format);
-            var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
-            iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
-            var conditions = styleSettings.conditions;
-            BI.some(conditions, function (i, co) {
-                var range = co.range;
-                var min = BI.parseFloat(range.min), max = BI.parseFloat(range.max);
-                if ((range.closemin === true ? text >= min : text > min) &&
-                    (range.closemax === true ? text <= max : text < max)) {
-                    color = co.color;
-                }
-            });
-        }
+        var format = styleSettings.format, numLevel = styleSettings.num_level;
+        text = this._parseNumLevel(text, numLevel);
+        text = this._parseFloatByDot(text, format);
+        var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
+        iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
+        var conditions = styleSettings.conditions;
+        BI.some(conditions, function (i, co) {
+            var range = co.range;
+            var min = BI.parseFloat(range.min), max = BI.parseFloat(range.max);
+            if ((range.closemin === true ? text >= min : text > min) &&
+                (range.closemax === true ? text <= max : text < max)) {
+                color = co.color;
+            }
+        });
         var textLabel = this._createTargetText(text);
         if (BI.isNotEmptyString(color)) {
             textLabel.element.css("color", color);
         }
-        BI.createWidget({
-            type: "bi.horizontal_adapt",
-            element: this.element,
-            items: [textLabel, {
-                type: "bi.center_adapt",
-                cls: iconCls,
-                items: [{
-                    type: "bi.icon",
+        if (BI.isNotEmptyString(iconCls)) {
+
+            BI.createWidget({
+                type: "bi.horizontal_adapt",
+                element: this.element,
+                items: [textLabel, {
+                    type: "bi.default",
+                    cls: iconCls,
+                    items: [{
+                        type: "bi.icon",
+                        width: 16,
+                        height: 16
+                    }],
                     width: 16,
                     height: 16
                 }],
-                width: 30,
-                height: 30
-            }],
-            columnSize: ["", 30]
-        });
+                columnSize: ["", 30]
+            });
+        } else {
+            BI.createWidget({
+                type: "bi.vertical",
+                element: this.element,
+                items: [textLabel]
+            })
+        }
     },
 
     _parseNumLevel: function (text, numLevel) {
@@ -69,6 +76,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 return text * 100;
         }
+        return text;
     },
 
     _parseFloatByDot: function (text, dot) {
@@ -98,6 +106,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 }
                 return snum;
         }
+        return text;
     },
 
     _getIconByStyleAndMark: function (text, style, mark) {
@@ -122,6 +131,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                     return "target-style-less-arrow-font";
                 }
         }
+        return "";
     },
 
     _createTargetText: function (text) {

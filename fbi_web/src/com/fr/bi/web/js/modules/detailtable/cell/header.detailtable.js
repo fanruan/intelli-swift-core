@@ -2,13 +2,13 @@
  * Created by Young's on 2016/4/15.
  */
 BI.DetailTableHeader = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.DetailTableHeader.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detail-table-header"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.DetailTableHeader.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var dId = o.dId;
@@ -17,15 +17,13 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
             type: "bi.sort_filter_target_combo",
             dId: dId
         });
-        combo.on(BI.SortFilterTargetCombo.EVENT_CHANGE, function(v){
+        combo.on(BI.SortFilterTargetCombo.EVENT_CHANGE, function (v) {
             o.sortFilterChange(v);
         });
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        if(BI.isNotNull(styleSettings)){
-            var st = this._getNumLevelByLevel(styleSettings.num_level) + (styleSettings.unit || "");
-            if(BI.isNotEmptyString(st)){
-                name = name + "(" + st + ")";
-            }
+        var st = this._getNumLevelByLevel(styleSettings.num_level) + (styleSettings.unit || "");
+        if (BI.isNotEmptyString(st)) {
+            name = name + "(" + st + ")";
         }
         BI.createWidget({
             type: "bi.horizontal_adapt",
@@ -40,19 +38,19 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
                 lgap: 5,
                 height: 36
             }, {
-                type: "bi.center_adapt",
+                type: "bi.default",
                 items: [combo],
                 width: 25,
-                height: 36
+                height: 25
             }],
             columnSize: ["", 25]
         });
     },
 
-    _getNumLevelByLevel: function(level){
+    _getNumLevelByLevel: function (level) {
         var numLevel = "";
-        BI.each(BICst.TARGET_STYLE_LEVEL, function(i, ob){
-            if(ob.value === level && level !== BICst.TARGET_STYLE.NUM_LEVEL.NORMAL){
+        BI.each(BICst.TARGET_STYLE_LEVEL, function (i, ob) {
+            if (ob.value === level && level !== BICst.TARGET_STYLE.NUM_LEVEL.NORMAL) {
                 numLevel = ob.text;
             }
         });
