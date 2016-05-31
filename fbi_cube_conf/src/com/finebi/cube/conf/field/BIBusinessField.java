@@ -55,12 +55,12 @@ public class BIBusinessField implements BusinessField {
         this.canSetUsable = canSetUsable;
     }
 
-    public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize) {
-        this(tableBelongTo, fieldID, fieldName, classType, fieldSize, true, true);
-    }
-
     public BIBusinessField(String tableID, String fieldName) {
         this(new BIBusinessTable(new BITableID(tableID)), fieldName);
+    }
+
+    public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize) {
+        this(tableBelongTo, fieldID, fieldName, classType, fieldSize, true, true);
     }
 
     public BIBusinessField(String tableID, String fieldName, BIFieldID fieldID) {

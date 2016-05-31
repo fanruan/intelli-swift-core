@@ -50,8 +50,12 @@ BI.TargetFilter = BI.inherit(BI.Widget, {
 
     populate: function () {
         var o = this.options;
-        var conditions = BI.Utils.getDimensionFilterValueByID(o.dId) || [];
-        conditions = BI.isArray(conditions) ? conditions : [conditions];
+        var conditions = BI.Utils.getDimensionFilterValueByID(o.dId);
+        if (BI.isNotEmptyObject(conditions)) {
+            conditions = [conditions];
+        } else {
+            conditions = [];
+        }
         this.transformConditions2Tree(conditions);
         this.filter.populate(conditions);
     },
