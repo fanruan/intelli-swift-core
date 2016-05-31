@@ -227,31 +227,46 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         var xAxis = BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
+            type: "bi.horizontal",
             cls: "single-line-settings",
-            items: {
-                left: [{
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Horizontal_Text"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Text_Direction"),
                     lgap: this.constant.SIMPLE_H_GAP,
-                    cls: "line-title"
+                    cls: "attr-names"
                 }, {
-                    el: this.text_direction,
-                    lgap: this.constant.SIMPLE_H_GAP
+                    type: "bi.center_adapt",
+                    items: [this.text_direction]
                 }, {
                     type: "bi.label",
                     text: "。",
                     textHeight: 30,
-                    height: this.constant.SINGLE_LINE_HEIGHT,
-                    lgap: 5
-                }, this.isShowTitleX, this.editTitleX]
-            },
-            height: this.constant.SINGLE_LINE_HEIGHT
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.isShowTitleX]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.editTitleX]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: this.constant.SIMPLE_H_GAP
+            }]
         });
 
         var lYAxis = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
+            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
                 height: "100%",
@@ -297,12 +312,12 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         var rYAxis = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
+            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
                 height: "100%",
                 textHeight: 60,
                 text: BI.i18nText("BI-Negative_Value_Axis"),
-                lgap: this.constant.SIMPLE_H_GAP,
                 cls: "line-title"
             }, {
                 type: "bi.left",

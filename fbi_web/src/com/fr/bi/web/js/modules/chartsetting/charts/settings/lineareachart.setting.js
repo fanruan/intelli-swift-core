@@ -54,7 +54,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({

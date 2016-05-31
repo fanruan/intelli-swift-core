@@ -57,7 +57,6 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
@@ -168,6 +167,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                 });
                 break;
             case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.BUBBLE:
                 this.chartSetting = BI.createWidget({
                     type: "bi.scatter_chart_setting",
                     wId: wId
@@ -176,12 +176,12 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.DASHBOARD:
                 this.chartSetting = BI.createWidget({
-                    type: "bi.bubble_chart_setting",
+                    type: "bi.dashboard_chart_setting",
                     wId: wId
                 });
-                this.chartSetting.on(BI.BubbleChartSetting.EVENT_CHANGE, function () {
+                this.chartSetting.on(BI.DashboardChartSetting.EVENT_CHANGE, function () {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;

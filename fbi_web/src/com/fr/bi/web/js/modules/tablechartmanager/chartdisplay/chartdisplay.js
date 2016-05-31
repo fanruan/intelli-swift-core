@@ -55,7 +55,6 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         var self = this;
         var chart = BI.createWidget({type: "bi.combine_chart"});
         chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
-            BI.Msg.toast("asasa");
             self._doChartItemClick(obj);
             self.fireEvent(BI.ChartDisplay.EVENT_CHANGE, arguments);
         });

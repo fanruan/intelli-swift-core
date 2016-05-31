@@ -92,10 +92,15 @@ BI.ChartCombineFormatItemFactory = {
     combineConfig: function(type){
         var config = {
             "plotOptions": {
+                "rotatable": false,
+                "startAngle": 0,
+                "borderRadius": 0,
+                "endAngle": 360,
+                "innerRadius": "0.0%",
 
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
-                "dataLabel":{
+                "dataLabels":{
                     enabled: false
                 },
                 "valueLabel": {
@@ -180,6 +185,13 @@ BI.ChartCombineFormatItemFactory = {
                 "animation": true,
                 "lineWidth": 2
             },
+            dataSheet: {
+                enabled: false,
+                "borderColor": "rgb(0,0,0)",
+                "borderWidth": 1,
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                style:{"fontFamily":"宋体","color":"rgba(0,0,0,1.0)","fontSize":"9pt","fontWeight":""}
+            },
             geo:{
                 data: FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json",
                 geoName:'中国'
@@ -251,7 +263,6 @@ BI.ChartCombineFormatItemFactory = {
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-                geo: ".././"
                 return BI.extend({"chartType": "map"}, config);
             case BICst.WIDGET.GIS_MAP:
                 return {};

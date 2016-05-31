@@ -54,7 +54,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -103,12 +103,20 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
             cls: "unit-input"
         });
 
+        this.innerRadius.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
+        });
+
         //总角度
         this.totalAngle = BI.createWidget({
             type: "bi.segment",
             width: this.constant.CHART_TYPE_SEGMENT_WIDTH,
             height: this.constant.BUTTON_HEIGHT,
             items: BICst.PIE_TOTAL_ANGLE
+        });
+
+        this.totalAngle.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
         var lYAxis = BI.createWidget({

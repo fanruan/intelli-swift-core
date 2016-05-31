@@ -255,7 +255,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         //数据标签
         this.showDataLabel = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Title"),
+            value: BI.i18nText("BI-Show_Data_Label"),
             width: 90
         });
 
@@ -267,7 +267,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         //数据表格
         this.showDataTable = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Title"),
+            value: BI.i18nText("BI-Show_Data_Table"),
             width: 90
         });
 
@@ -279,7 +279,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         //网格线
         this.gridLine = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Title"),
+            value: BI.i18nText("BI-Show_Grid_Line"),
             width: 90
         });
 
@@ -485,7 +485,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, rYAxis, xAxis, showElement, otherAttr],
+            items: [tableStyle, lYAxis, rYAxis, xAxis, otherAttr],
             hgap: 10
         })
     },
@@ -539,8 +539,8 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             right_y_axis_reversed: this.reversedRY.isSelected(),
             text_direction: this.text_direction.getValue(),
             chart_legend: this.legend.getValue()[0],
-            show_data_label: this.show_data_label.isSelected(),
-            show_data_table: this.show_data_table.isSelected(),
+            show_data_label: this.showDataLabel.isSelected(),
+            show_data_table: this.showDataTable.isSelected(),
             show_grid_line: this.gridLine.isSelected()
         }
     },

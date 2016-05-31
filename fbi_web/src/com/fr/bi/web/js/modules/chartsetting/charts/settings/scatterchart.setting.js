@@ -189,7 +189,7 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 height: "100%",
                 textHeight: 60,
-                text: BI.i18nText("BI-Left_Value_Axis"),
+                text: BI.i18nText("BI-Y_Axis"),
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -238,7 +238,7 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 height: "100%",
                 textHeight: 60,
-                text: BI.i18nText("BI-Right_Value_Axis"),
+                text: BI.i18nText("BI-X_Axis"),
                 cls: "line-title"
             }, {
                 type: "bi.left",

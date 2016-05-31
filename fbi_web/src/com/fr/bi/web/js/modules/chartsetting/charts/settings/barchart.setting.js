@@ -150,31 +150,46 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         });
 
         var xAxis = BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
+            type: "bi.horizontal",
             cls: "single-line-settings",
-            items: {
-                left: [{
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Horizontal_Text"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Text_Direction"),
                     lgap: this.constant.SIMPLE_H_GAP,
-                    cls: "line-title"
+                    cls: "attr-names"
                 }, {
-                    el: this.text_direction,
-                    lgap: this.constant.SIMPLE_H_GAP
+                    type: "bi.center_adapt",
+                    items: [this.text_direction]
                 }, {
                     type: "bi.label",
                     text: "。",
                     textHeight: 30,
-                    height: this.constant.SINGLE_LINE_HEIGHT,
-                    lgap: 5
-                }, this.isShowTitleX, this.editTitleX]
-            },
-            height: this.constant.SINGLE_LINE_HEIGHT
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.isShowTitleX]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.editTitleX]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: this.constant.SIMPLE_H_GAP
+            }]
         });
 
         var lYAxis = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
+            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
                 height: "100%",
@@ -270,17 +285,12 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
-            left_y_axis_style: this.lYAxisStyle.getValue()[0],
-            right_y_axis_style: this.lYAxisStyle.getValue()[0],
-            left_y_axis_number_level: this.numberLevellY.getValue()[0],
-            right_y_axis_number_level: this.numberLevellY.getValue()[0],
-            left_y_axis_unit: this.LYUnit.getValue(),
-            right_y_axis_unit: this.LYUnit.getValue(),
+            x_axis_style: this.lYAxisStyle.getValue()[0],
+            x_axis_number_level: this.numberLevellY.getValue()[0],
+            x_axis_unit: this.LYUnit.getValue(),
             show_left_y_axis_title: this.isShowTitleLY.isSelected(),
-            show_right_y_axis_title: this.isShowTitleLY.isSelected(),
             show_x_axis_title: this.isShowTitleX.isSelected(),
             left_y_axis_title: this.editTitleLY.getValue(),
-            right_y_axis_title: this.editTitleLY.getValue(),
             x_axis_title: this.editTitleX.getValue(),
             text_direction: this.text_direction.getValue()
         }
