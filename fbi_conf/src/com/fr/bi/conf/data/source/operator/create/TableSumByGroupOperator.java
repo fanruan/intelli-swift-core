@@ -128,7 +128,12 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
 
     @Override
     public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
-        return  write(travel, loader.getTableIndex(getSingleParentMD5(parents), start, end));
+        if (start == 0){
+            end = Integer.MAX_VALUE;
+            return  write(travel, loader.getTableIndex(getSingleParentMD5(parents), start, end));
+        } else {
+            return 0;
+        }
     }
 
     private int write(Traversal<BIDataValue> travel, ICubeTableService ti) {

@@ -144,10 +144,16 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
             res.addAll(this.filter.getUsedTargets());
         }
         res = res == null ? new ArrayList<String>() : res;
-        if (sort_target != null) {
+        if (sort_target!= null) {
             res.add(sort_target);
         }
+        res.remove(id);
         return res;
+    }
+
+    @Override
+    public boolean useTargetSort() {
+        return sort_target != null && !ComparatorUtils.equals(sort_target, id);
     }
 
 

@@ -71,17 +71,6 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
             }]
         });
 
-        var triggerBtn = BI.createWidget({
-            type: "bi.trigger_icon_button",
-            width: this.constants.iconSize,
-            stopPropagation: true,
-            cls: "multi-select-trigger-icon-button"
-        });
-        triggerBtn.on(BI.TriggerIconButton.EVENT_CHANGE, function () {
-            self.numberCounter.hideView();
-            self.fireEvent(BI.MultiSelectTrigger.EVENT_TRIGGER_CLICK);
-        });
-
         var wrapper = BI.createWidget({
             type: 'bi.htape',
             height: this.constants.iconSize,
@@ -93,9 +82,6 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
                 }, {
                     el: wrapNumberCounter,
                     width: 0
-                }, {
-                    el: triggerBtn,
-                    width: this.constants.iconSize
                 }]
         });
 

@@ -58,13 +58,13 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
                 BI.each(widget.view[item], function (idx, id) {
                     var dimension = widget.dimensions[id];
                     if (dimension.used === true){
-                        var field_type =  BI.Utils.getFieldTypeByID(dimension._src);
+                        var field_type =  BI.Utils.getFieldTypeByID(dimension._src["field_id"]);
                         if (field_type === BICst.COLUMN.DATE
                             && dimension.group.type !== BICst.GROUP.YMD
                             && dimension.group.type !== BICst.GROUP.YMDHMS){
                             field_type = BICst.COLUMN.NUMBER;
                         } else if(field_type === BICst.COLUMN.NUMBER
-                                && BI.isNotNull(dimension.group) && dimension.group.type !== BICst.GROUP.ID_GROUP) {
+                                && (BI.isNull(dimension.group) || dimension.group.type !== BICst.GROUP.ID_GROUP)){
                             field_type = BICst.COLUMN.STRING;
                         }
                         if(BI.isNull(field_type)){
