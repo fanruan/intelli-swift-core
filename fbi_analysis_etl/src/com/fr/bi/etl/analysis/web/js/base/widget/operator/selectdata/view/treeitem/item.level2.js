@@ -27,13 +27,22 @@ BI.AnalysisETLDetailSelectDataLevel2Item = BI.inherit(BI.Single, {
         }
     },
 
+
+    _createNewType : function (type, group) {
+        if(type ===  BICst.COLUMN.DATE)  {
+            type = BI.Utils.createDateFieldType(group["type"])
+        }
+        return type;
+    },
+
+
     _init: function () {
         BI.AnalysisETLDetailSelectDataLevel2Item.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.button = BI.createWidget({
             type: "bi.blank_icon_text_item",
             // trigger: "mousedown",
-            cls: "select-date-level1-item-button " + this._getFieldClass(o.fieldType),
+            cls: "select-date-level1-item-button " + this._getFieldClass(this._createNewType(o.fieldType, o.value["group"])),
             forceNotSelected:true,
             text: o.text,
             value: o.value,

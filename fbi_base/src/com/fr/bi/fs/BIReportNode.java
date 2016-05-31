@@ -20,86 +20,90 @@ import java.util.Date;
  */
 public class BIReportNode extends DAOBean implements Entry {
     /* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+     * @see java.lang.Object#hashCode()
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((createtime == null) ? 0 : createtime.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((parentid == null ? 0 : parentid.hashCode()));
-		result = prime * result + ((path == null) ? 0 : path.hashCode());
-		result = prime * result + ((reportname == null) ? 0 : reportname.hashCode());
-		result = prime * result + (int) (templateid ^ (templateid >>> 32));
-		result = prime * result + (int) (userid ^ (userid >>> 32));
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((createtime == null) ? 0 : createtime.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((parentid == null ? 0 : parentid.hashCode()));
+        result = prime * result + ((path == null) ? 0 : path.hashCode());
+        result = prime * result + ((reportname == null) ? 0 : reportname.hashCode());
+        result = prime * result + (int) (templateid ^ (templateid >>> 32));
+        result = prime * result + (int) (userid ^ (userid >>> 32));
+        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        return result;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (!super.equals(obj)){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-		return equalsReportNode((BIReportNode) obj);
-	}
-	
-	
-	public boolean equalsReportNode(BIReportNode other) {
-		if (createtime == null) {
-			if (other.createtime != null){
-				return false;
-			}
-		} else if (!ComparatorUtils.equals(createtime, other.createtime)){
-			return false;
-		}
-		if (description == null) {
-			if (other.description != null){ return false; }
-		} else if (!ComparatorUtils.equals(description, other.description)){
-			return false;
-		}
-		if (parentid != other.parentid){ return false;}
-		if (path == null) {
-			if (other.path != null){
-				return false;
-			}
-		} else if (!ComparatorUtils.equals(path, other.path)){
-			return false;
-		}
-		if (reportname == null) {
-			if (other.reportname != null){
-				return false;
-			}
-		} else if (!ComparatorUtils.equals(reportname, other.reportname)){
-			return false;
-		}
-		if (templateid != other.templateid){
-			return false;
-		}
-		if (userid != other.userid){
-			return false;
-		}
-		if (username == null) {
-			if (other.username != null){
-				return false;
-			}
-		} else if (!ComparatorUtils.equals(username, other.username)){
-			return false;
-		}
-		return true;
-	}
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        return equalsReportNode((BIReportNode) obj);
+    }
 
-	/**
+
+    public boolean equalsReportNode(BIReportNode other) {
+        if (createtime == null) {
+            if (other.createtime != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(createtime, other.createtime)) {
+            return false;
+        }
+        if (description == null) {
+            if (other.description != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(description, other.description)) {
+            return false;
+        }
+        if (parentid != other.parentid) {
+            return false;
+        }
+        if (path == null) {
+            if (other.path != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(path, other.path)) {
+            return false;
+        }
+        if (reportname == null) {
+            if (other.reportname != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(reportname, other.reportname)) {
+            return false;
+        }
+        if (templateid != other.templateid) {
+            return false;
+        }
+        if (userid != other.userid) {
+            return false;
+        }
+        if (username == null) {
+            if (other.username != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(username, other.username)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      *
      */
     private static final long serialVersionUID = -3662026856074945968L;
@@ -118,20 +122,20 @@ public class BIReportNode extends DAOBean implements Entry {
     private int state = BIReportConstant.BI_REPORT.NULL;
 
     /**
-	 * @return the state
-	 */
-	public int getState() {
-		return state;
-	}
+     * @return the state
+     */
+    public int getState() {
+        return state;
+    }
 
-	/**
-	 * @param state the state to set
-	 */
-	public void setState(int state) {
-		this.state = state;
-	}
+    /**
+     * @param state the state to set
+     */
+    public void setState(int state) {
+        this.state = state;
+    }
 
-	/**
+    /**
      * 默认构造函数
      */
     public BIReportNode() {
@@ -155,6 +159,7 @@ public class BIReportNode extends DAOBean implements Entry {
         this.description = description;
         updateLastModifyTime();
     }
+
     /**
      * 构造
      *
@@ -171,6 +176,7 @@ public class BIReportNode extends DAOBean implements Entry {
         this.username = StringUtils.EMPTY;
         updateLastModifyTime();
     }
+
     /**
      * 构造
      *
@@ -302,7 +308,7 @@ public class BIReportNode extends DAOBean implements Entry {
     }
 
     @Override
-	public void setMobileCoverId(String s) {
+    public void setMobileCoverId(String s) {
 
     }
 
@@ -330,6 +336,7 @@ public class BIReportNode extends DAOBean implements Entry {
         jo.put("lastModify", modifytime.getTime());
         jo.put("state", state);
         jo.put("value", id);
+        jo.put("createBy", this.userid);
         return jo;
     }
 

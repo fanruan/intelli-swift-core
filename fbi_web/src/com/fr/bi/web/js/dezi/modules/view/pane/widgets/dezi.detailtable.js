@@ -45,11 +45,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         var self = this;
         this._buildWidgetTitle();
         this._createTools();
-
         this.table = BI.createWidget({
             type: "bi.detail_table",
             wId: this.model.get("id")
         });
+        this.tablePopulate = BI.debounce(BI.bind(this.table.populate, this.table), 0);
         this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);
         });
@@ -74,9 +74,9 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 bottom: 10
             }]
         });
-        this.widget.element.hover(function(){
+        this.widget.element.hover(function () {
             self.tools.setVisible(true);
-        }, function(){
+        }, function () {
             self.tools.setVisible(false);
         });
     },
@@ -94,11 +94,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 height: 30,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
-                validationChecker: function(v){
+                validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function(){
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
@@ -106,7 +106,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         }
     },
 
-    _createTools: function() {
+    _createTools: function () {
         var self = this;
         var expand = BI.createWidget({
             type: "bi.icon_button",
@@ -170,7 +170,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self.filterPane.setVisible(!self.filterPane.isVisible());
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.open(FR.servletURL+ "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                    window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
                         + window.encodeURIComponent(self.model.get("name")));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY :
@@ -197,12 +197,12 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
     _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
-        this.table.populate();
+        this.tablePopulate();
     },
 
-    _refreshLayout: function() {
+    _refreshLayout: function () {
         var showTitle = BI.Utils.getWSShowNameByID(this.model.get("id"));
-        if(showTitle === false) {
+        if (showTitle === false) {
             this.title.setVisible(false);
             this.widget.attr("items")[0].top = 0;
             this.widget.attr("items")[2].top = 20;
@@ -214,7 +214,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.widget.resize();
     },
 
-    _refreshTitlePosition: function(){
+    _refreshTitlePosition: function () {
         var pos = BI.Utils.getWSNamePosByID(this.model.get("id"));
         var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
             "dashboard-title-center" : "dashboard-title-left";
@@ -238,12 +238,15 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     },
 
     change: function (changed) {
+        if (BI.has(changed, "bounds")) {
+            this.table.resize();
+        }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
         if (BI.has(changed, "dimensions") ||
             BI.has(changed, "sort_sequence")) {
-            this.table.populate();
+            this.tablePopulate();
         }
     },
 
@@ -253,7 +256,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
-        this.table.populate();
+        this.tablePopulate();
         this._refreshLayout();
         this._refreshTitlePosition();
     }
