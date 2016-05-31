@@ -3183,3 +3183,21 @@
   content: "\e608";
   color: "";
 }
+.report-filter-open-font .b-font:before {
+  content: "\e648";
+  color: #808080;
+}
+.report-filter-open-font.native .b-font:before,
+.report-filter-open-font.disabled .b-font:before {
+  content: "\e648";
+  color: #808080;
+}
+.report-filter-close-font .b-font:before {
+  content: "\e645";
+  color: #808080;
+}
+.report-filter-close-font.native .b-font:before,
+.report-filter-close-font.disabled .b-font:before {
+  content: "\e645";
+  color: #808080;
+}

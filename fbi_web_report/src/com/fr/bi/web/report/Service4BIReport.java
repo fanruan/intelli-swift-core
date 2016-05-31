@@ -41,7 +41,9 @@ public class Service4BIReport implements Service {
             new BITemplateFolderDeleteAction(),
             new BIGetMyReportAndFolderAction(),
             new BIInitDeziPaneAction(),
-            new BIGetWidgetFromTemplateAction()
+            new BIGetWidgetFromTemplateAction(),
+
+            new BIGetAllReportsDataAction()
     };
 
     @Override
