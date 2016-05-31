@@ -41,6 +41,8 @@ public interface BIDimension extends BITargetAndDimension {
 
     List<String> getUsedTargets();
 
+    boolean useTargetSort();
+
     boolean showNode(BINode node,
                      Map<String, TargetCalculator> targetsMap);
 

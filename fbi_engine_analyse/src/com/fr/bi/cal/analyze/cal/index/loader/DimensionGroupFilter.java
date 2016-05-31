@@ -594,7 +594,7 @@ public class DimensionGroupFilter {
 
     private boolean hasTargetSortByDimension() {
         for (int i = 0; i < rowDimension.length; i++) {
-            if (rowDimension[i].getSortTarget() != null) {
+            if (rowDimension[i].useTargetSort()) {
                 return true;
             }
         }
