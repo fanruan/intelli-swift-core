@@ -19,7 +19,8 @@ BI.MultiTreeCombo = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         return BI.extend(BI.MultiTreeCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-multi-tree-combo',
-            itemsCreator: BI.emptyFn
+            itemsCreator: BI.emptyFn,
+            height: 30
         });
     },
 
@@ -51,6 +52,7 @@ BI.MultiTreeCombo = BI.inherit(BI.Single, {
 
         this.trigger = BI.createWidget({
             type: "bi.multi_select_trigger",
+            height: o.height,
             adapter: this.popup,
             masker: {
                 offset: this.constants.offset
@@ -73,7 +75,6 @@ BI.MultiTreeCombo = BI.inherit(BI.Single, {
 
         this.combo = BI.createWidget({
             type: "bi.combo",
-            element: this.element,
             toggle: false,
             el: this.trigger,
             adjustLength: 1,
@@ -188,6 +189,33 @@ BI.MultiTreeCombo = BI.inherit(BI.Single, {
                 self.fireEvent(BI.MultiTreeCombo.EVENT_CONFIRM);
             }
         });
+
+        var triggerBtn = BI.createWidget({
+            type: "bi.trigger_icon_button",
+            width: 30,
+            height: o.height,
+            cls: "multi-select-trigger-icon-button"
+        });
+        var wants2Show = false;
+        triggerBtn.element.mousedown(function () {
+            wants2Show = !self.combo.isViewVisible();
+        });
+        triggerBtn.on(BI.TriggerIconButton.EVENT_CHANGE, function () {
+            self.trigger.getCounter().hideView();
+            if (wants2Show === true) {
+                self.combo.showView();
+            }
+        });
+        BI.createWidget({
+            type: "bi.htape",
+            element: this.element,
+            items: [{
+                el: this.combo
+            }, {
+                el: triggerBtn,
+                width: 30
+            }]
+        })
     },
 
     _defaultState: function () {

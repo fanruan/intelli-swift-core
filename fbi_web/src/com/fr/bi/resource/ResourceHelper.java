@@ -1677,6 +1677,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/multitree/display.multi.tree.css",
                 "com/fr/bi/web/css/widget/multitree/search.multi.tree.css",
                 "com/fr/bi/web/css/widget/multitree/popup.multi.tree.css",
+                "com/fr/bi/web/css/widget/multitree/multi.tree.combo.css",
 
                 //选色控件
                 "com/fr/bi/web/css/widget/colorchooser/colorchooser.trigger.css",

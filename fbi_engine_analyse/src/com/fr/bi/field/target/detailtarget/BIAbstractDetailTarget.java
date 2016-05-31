@@ -30,7 +30,7 @@ import java.util.Map;
 public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BIDetailTarget {
     @BICoreField
     protected TargetFilter filter;
-    private ICubeTableService cubeTableService;
+    protected ICubeTableService cubeTableService;
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();
@@ -69,7 +69,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
         return null;
     }
 
-    private void initialTableSource(ICubeDataLoader loader) {
+    protected void initialTableSource(ICubeDataLoader loader) {
         if (cubeTableService == null) {
             cubeTableService = loader.getTableIndex(this.createTableKey().getTableSource());
         }
