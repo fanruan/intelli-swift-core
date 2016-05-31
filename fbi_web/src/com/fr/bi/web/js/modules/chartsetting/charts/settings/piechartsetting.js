@@ -17,7 +17,8 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         ICON_WIDTH: 24,
         ICON_HEIGHT: 24,
         NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240
+        FORMAT_SEGMENT_WIDTH: 240,
+        CHART_TYPE_SEGMENT_WIDTH: 180
     },
 
     _defaultConfig: function(){
@@ -105,7 +106,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         //总角度
         this.totalAngle = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            width: this.constant.CHART_TYPE_SEGMENT_WIDTH,
             height: this.constant.BUTTON_HEIGHT,
             items: BICst.PIE_TOTAL_ANGLE
         });

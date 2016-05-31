@@ -391,6 +391,14 @@ BICst.PIE_ANGLES = {
     TOTAL: 360
 };
 
+BICst.CHART_LEGEND = {
+    NOT_SHOW: 1,
+    TOP: 2,
+    RIGHT: 3,
+    BOTTOM: 4,
+    LEFT: 5
+};
+
 BICst.TABLE_MAX_ROW = 20;
 BICst.TABLE_MAX_COL = 7;
 

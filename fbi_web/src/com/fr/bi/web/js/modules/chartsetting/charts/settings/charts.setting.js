@@ -17,7 +17,8 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         ICON_WIDTH: 24,
         ICON_HEIGHT: 24,
         NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240
+        FORMAT_SEGMENT_WIDTH: 240,
+        LEGEND_SEGMENT_WIDTH: 180
     },
 
     _defaultConfig: function(){
@@ -237,6 +238,62 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
             self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //图例
+        this.legend = BI.createWidget({
+            type: "bi.segment",
+            width: this.constant.LEGEND_SEGMENT_WIDTH,
+            height: this.constant.BUTTON_HEIGHT,
+            items: BICst.CHART_LEGEND
+        });
+
+        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //数据标签
+        this.showDataLabel = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        var showElement = BI.createWidget({
+            type: "bi.horizontal",
+            cls: "single-line-settings",
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Element_Show"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Legend_Normal"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.legend]
+                }, {
+                    type: "bi.label",
+                    text: "。",
+                    textHeight: 30,
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.isShowTitleX]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.editTitleX]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: this.constant.SIMPLE_H_GAP
+            }]
         });
 
         var xAxis = BI.createWidget({

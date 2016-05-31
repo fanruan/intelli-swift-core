@@ -1252,4 +1252,15 @@ BICst.PIE_TOTAL_ANGLE = [{
     value: BICst.PIE_ANGLES.TOTAL
 }];
 
+BICst.CHART_LEGEND = [{
+    text: BI.i18nText("BI-Hidden"),
+    value: BICst.CHART_LEGEND.NOT_SHOW
+}, {
+    text: BI.i18nText("BI-Ju_xia"),
+    value: BICst.CHART_LEGEND.BOTTOM
+}, {
+    text: BI.i18nText("BI-Ju_Right"),
+    value: BICst.CHART_LEGEND.RIGHT
+}];
+
 
