@@ -382,7 +382,6 @@ public class BIReportConstant {
         public static final int NUMBER = 0x21;            //数值控件
         public static final int TREE = 0x22;              //树控件
 
-
         //仅前台使用的部分类型
         public static final int DATE = 0x30;
         public static final int YEAR = 0x31;
@@ -400,7 +399,6 @@ public class BIReportConstant {
         public static final int TABLE_SHOW = 0x40;
 
         public static final int NONE = -1;
-
     }
 
     public static final class REGION {

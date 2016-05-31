@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
@@ -22,6 +23,7 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
 import com.fr.bi.stable.utils.BIIDUtils;
+import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
@@ -99,7 +101,29 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             return new ArrayList<BITableSourceRelation>();
         }
         List<BITableRelation> relationList = relMap.get(tarId);
+        checkRelationExist(relationList, dimId, tarId);
         return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convert2TableSourceRelation(relationList);
+    }
+
+    private void checkRelationExist(List<BITableRelation> relationList, String did,  String tarId) {
+        BITarget target =  BITravalUtils.getTargetByName(tarId, targets);
+        if (relationList != null && relationList.isEmpty()){
+            for (int i = 0; i < relationList.size(); i++){
+                BITableRelation r = relationList.get(i);
+                if (i == relationList.size() - 1 && !ComparatorUtils.equals(r.getForeignTable().getTableSource(), target.getStatisticElement().getTableBelongTo().getTableSource())){
+                    throw new RuntimeException("relation illegal, incorrect foreignTable");
+                }
+                if (!BICubeConfigureCenter.getTableRelationManager().containTableRelationship(getUserId(), r)){
+                    throw new RuntimeException("relation not exist");
+                }
+            }
+        } else {
+            BIDimension dim =  BITravalUtils.getTargetByName(did, dimensions);
+            BusinessField dimField = getDimDataColumn(dim, tarId);
+            if (!ComparatorUtils.equals(target.getStatisticElement().getTableBelongTo().getTableSource(), dimField.getTableBelongTo().getTableSource())){
+                throw new RuntimeException("relation empty, but source different");
+            }
+        }
     }
 
     private BusinessField getDimDataColumn(BIDimension dim, String tarId) {
@@ -243,8 +267,11 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         }
                     }
                     if (tar.has("target_relation")) {
-                        Map<String, List<BITableRelation>> relationMap = new LinkedHashMap<String, List<BITableRelation>>();
-                        relationsMap.put(dimensionId, relationMap);
+                        Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
+                        if(relationMap == null) {
+                            relationMap = new LinkedHashMap<String, List<BITableRelation>>();
+                            relationsMap.put(dimensionId, relationMap);
+                        }
                         Object t = tar.get("target_relation");
                         if (t instanceof JSONArray) {
                             JSONArray rel = (JSONArray) t;

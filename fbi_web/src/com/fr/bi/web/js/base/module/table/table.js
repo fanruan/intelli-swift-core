@@ -1516,6 +1516,9 @@ BI.Table = BI.inherit(BI.Widget, {
             if (this.scrollBottomRight.element[0].scrollTop !== scrollTop) {
                 this.scrollBottomRight.element[0].scrollTop = scrollTop;
             }
+            if (this.scrollBottomLeft.element[0].scrollTop !== scrollTop) {
+                this.scrollBottomLeft.element[0].scrollTop = scrollTop;
+            }
         } else {
             if (this.scrollContainer.element[0].scrollTop !== scrollTop) {
                 this.scrollContainer.element[0].scrollTop = scrollTop;

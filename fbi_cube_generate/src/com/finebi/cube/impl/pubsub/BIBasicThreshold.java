@@ -75,14 +75,17 @@ public abstract class BIBasicThreshold<T> {
 
     public void registerThresholdTag(T tag) throws BITagDuplicateException, BIRegisterIsForbiddenException {
         if (!isRegisterClosed()) {
-            if (!registerTag.contains(tag)) {
-                registerTag.add(tag);
-                /**
-                 * 注册一个标签到阀值器中，那么打开开关。
-                 */
-                turnOnSwitch();
-            } else {
-                throw new BITagDuplicateException(tag.toString());
+            synchronized (registerTag) {
+                if (!registerTag.contains(tag)) {
+                    registerTag.add(tag);
+
+                    /**
+                     * 注册一个标签到阀值器中，那么打开开关。
+                     */
+                    turnOnSwitch();
+                } else {
+                    throw new BITagDuplicateException(tag.toString());
+                }
             }
         } else {
             throw new BIRegisterIsForbiddenException("this threshold is under the status of receiving message ,you can't register tag" +
@@ -110,8 +113,10 @@ public abstract class BIBasicThreshold<T> {
             closeRegister();
             if (handleOrNot(message)) {
                 T tag = getTargetTag(message);
-                if (registerTag.contains(tag)) {
-                    registerTag.remove(tag);
+                synchronized (registerTag) {
+                    if (registerTag.contains(tag)) {
+                        registerTag.remove(tag);
+                    }
                 }
                 /**
                  * 如果触发，那么关闭threshold开关,同时设置为满足阀值
@@ -146,12 +151,15 @@ public abstract class BIBasicThreshold<T> {
     }
 
     public String leftCondition(String tag) {
-        Iterator<T> it = registerTag.iterator();
-        StringBuffer sb = new StringBuffer(tag + ":").append("\n");
-        while (it.hasNext()) {
-            T condition = it.next();
-            sb.append(condition.toString()).append("\n");
+        synchronized (registerTag) {
+            Iterator<T> it = registerTag.iterator();
+            StringBuffer sb = new StringBuffer(tag + ":").append("\n");
+            while (it.hasNext()) {
+                T condition = it.next();
+                sb.append(condition.toString()).append("\n");
+            }
+
+            return sb.toString();
         }
-        return sb.toString();
     }
 }
