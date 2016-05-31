@@ -1,11 +1,9 @@
 package com.finebi.cube.conf.build;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -18,7 +16,6 @@ import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.general.ComparatorUtils;
 
 import java.io.Serializable;
 import java.util.*;
@@ -59,6 +56,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
 
     public CubeBuildStuffManager(BIUser biUser) {
         this.biUser = biUser;
+        initialCubeStuff();
     }
 
     /**
@@ -314,15 +312,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
     }
 
     
-
-    private void clear() {
-        this.sources=null;
-        this.setAllSingleSources(null);
-        this.setDependTableResource(null);
-        this.allBusinessTable=null;
-        this.tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
-        this.relationPaths=null;
-    }
+    
 
     private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
         Iterator<CubeTableSource> it = tableSources.iterator();

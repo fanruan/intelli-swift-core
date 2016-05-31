@@ -142,10 +142,10 @@ public class CubeRunner {
 
     private void start() {
         backup();
-        if (object == null) {
-            object = new CubeBuildStuffManager(biUser);
-        }
-        object.initialCubeStuff();
+//        if (object == null) {
+//            object = new CubeBuildStuffManager(biUser);
+//        }
+//        object.initialCubeStuff();
     }
 
     private void backup() {
