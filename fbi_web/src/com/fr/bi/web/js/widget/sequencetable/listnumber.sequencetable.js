@@ -116,6 +116,10 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
         this.buttonGroup.element.scrollTop(scroll);
     },
 
+    setVPage: function (v) {
+        this.options.startSequence = (v - 1) * 20 + 1;
+    },
+
     populate: function (items, header, startSequence) {
         var o = this.options;
         if (items) {

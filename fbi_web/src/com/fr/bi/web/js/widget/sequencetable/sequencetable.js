@@ -11,7 +11,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         return BI.extend(BI.SequenceTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-sequence-table",
             el: {
-                type: "bi.page_table"
+                type: "bi.custom_scroll_table"
             },
 
             sequence: {},
@@ -66,9 +66,9 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             width: 60
         });
         this.table = BI.createWidget(o.el, {
-            type: "bi.page_table",
-            pageSpace: 95,
+            type: "bi.custom_scroll_table",
 
+            pageSpace: 95,
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
 
@@ -158,11 +158,16 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         return this.table.getCalculateRegionColumnSize();
     },
 
-    setVPage: function(v){
-        this.table.setVPage(v);
+    getVerticalScroll: function () {
+        return this.table.getVerticalScroll();
     },
 
-    getVPage: function(){
+    setVPage: function (v) {
+        this.table.setVPage && this.table.setVPage(v);
+        this.sequence.setVPage(v);
+    },
+
+    getVPage: function () {
         return this.table.getVPage();
     },
 

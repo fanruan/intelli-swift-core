@@ -21,9 +21,9 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table = BI.createWidget({
             type: "bi.style_table",
             el: {
+                type: "bi.page_table",
+                isNeedFreeze: null,
                 el: {
-                    type: "bi.page_table",
-                    isNeedFreeze: null,
                     el: {
                         el: {
                             el: {
@@ -31,38 +31,38 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                             }
                         }
                     },
-                    itemsCreator: function (op, populate) {
-                        var vPage = op.vpage, hPage = op.hpage;
-                        var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                        if (BI.isNotNull(vPage)) {
-                            pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
-                        }
-                        self.model.setPageOperator(pageOperator);
-                        self._onPageChange(function (items, header, crossItems, crossHeader) {
-                            populate.apply(self.table, arguments);
-                            self._afterTablePopulate();
-                        })
-                    },
-                    pager: {
-                        pages: false,
-                        curr: 1,
-                        hasNext: function () {
-                            return self.model.getPage()[1] === 1;
-                        },
-                        hasPrev: function () {
-                            return self.model.getPage()[0] === 1;
-                        },
-                        firstPage: 1
-                    },
-                    hasHNext: function () {
-                        return self.model.getPage()[3] === 1;
-                    },
-                    isNeedMerge: true,
-                    regionColumnSize: this.model.getStoredRegionColumnSize()
+                    sequence: {
+                        type: "bi.sequence_table_tree_number"
+                    }
                 },
-                sequence: {
-                    type: "bi.sequence_table_tree_number"
-                }
+                itemsCreator: function (op, populate) {
+                    var vPage = op.vpage, hPage = op.hpage;
+                    var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                    if (BI.isNotNull(vPage)) {
+                        pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                    }
+                    self.model.setPageOperator(pageOperator);
+                    self._onPageChange(function (items, header, crossItems, crossHeader) {
+                        populate.apply(self.table, arguments);
+                        self._afterTablePopulate();
+                    })
+                },
+                pager: {
+                    pages: false,
+                    curr: 1,
+                    hasNext: function () {
+                        return self.model.getPage()[1] === 1;
+                    },
+                    hasPrev: function () {
+                        return self.model.getPage()[0] === 1;
+                    },
+                    firstPage: 1
+                },
+                hasHNext: function () {
+                    return self.model.getPage()[3] === 1;
+                },
+                isNeedMerge: true,
+                regionColumnSize: this.model.getStoredRegionColumnSize()
             }
         });
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
