@@ -173,6 +173,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             widgetCreator: function (id, info) {
                 if (!widgetVessel[id]) {
                     widgetVessel[id] = BI.createWidget();
+                    self.addSubVessel(id, widgetVessel[id]);
                     var widgets = self.model.cat("widgets");
                     if (!BI.has(widgets, id)) {
                         self.model.set("addWidget", {
@@ -180,7 +181,6 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                             info: info
                         });
                     }
-                    self.addSubVessel(id, widgetVessel[id]);
                 }
                 return widgetVessel[id];
             }

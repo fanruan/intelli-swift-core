@@ -512,17 +512,17 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
     },
 
     getVerticalScroll: function () {
-        return this.topScrollBar.getScrollTop();
+        return this.topScrollBar && this.topScrollBar.getScrollTop();
         //return this.table.getVerticalScroll();
     },
 
     getLeftHorizontalScroll: function () {
-        return this.bottomLeftScrollBar.getScrollLeft();
+        return this.bottomLeftScrollBar && this.bottomLeftScrollBar.getScrollLeft();
         //return this.table.getLeftHorizontalScroll();
     },
 
     getRightHorizontalScroll: function () {
-        return this.bottomRightScrollBar.getScrollLeft();
+        return this.bottomRightScrollBar && this.bottomRightScrollBar.getScrollLeft();
         //return this.table.getRightHorizontalScroll();
     },
 
@@ -557,19 +557,19 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
     },
 
     scrollToRight: function () {
-        this.bottomRightScrollBar.scrollToRight();
+        this.bottomRightScrollBar && this.bottomRightScrollBar.scrollToRight();
     },
 
     scrollToLeft: function () {
-        this.bottomRightScrollBar.scrollToLeft();
+        this.bottomRightScrollBar && this.bottomRightScrollBar.scrollToLeft();
     },
 
     scrollToTop: function () {
-        this.topScrollBar.scrollToTop();
+        this.topScrollBar && this.topScrollBar.scrollToTop();
     },
 
     scrollToBottom: function () {
-        this.topScrollBar.scrollToBottom();
+        this.topScrollBar && this.topScrollBar.scrollToBottom();
     },
 
     destroy: function () {
