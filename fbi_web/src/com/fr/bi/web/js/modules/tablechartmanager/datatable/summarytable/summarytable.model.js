@@ -612,7 +612,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     outerValues.push({
                         type: "bi.target_body_normal_cell",
                         text: v,
-                        dId: tId
+                        dId: tId,
+                        cls: "summary-cell last"
                     });
                 });
                 // item.children.push({

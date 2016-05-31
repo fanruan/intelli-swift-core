@@ -62,6 +62,12 @@
             });
         },
 
+        getAllReportsData: function (callback) {
+            Data.Req.reqAllReportsData(function (data) {
+                callback(data);
+            });
+        },
+
         /**
          * 业务包相关
          */
