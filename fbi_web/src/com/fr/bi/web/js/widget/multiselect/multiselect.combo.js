@@ -9,7 +9,8 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
         return BI.extend(BI.MultiSelectCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-multi-select-combo',
             itemsCreator: BI.emptyFn,
-            valueFormatter: BI.emptyFn
+            valueFormatter: BI.emptyFn,
+            height: 30
         });
     },
 
@@ -53,6 +54,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
 
         this.trigger = BI.createWidget({
             type: "bi.multi_select_trigger",
+            height: o.height,
             adapter: this.popup,
             masker: {
                 offset: {
@@ -109,9 +111,6 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
         this.trigger.on(BI.MultiSelectTrigger.EVENT_BEFORE_COUNTER_POPUPVIEW, function () {
             this.getCounter().setValue(self.storeValue);
         });
-        this.trigger.on(BI.MultiSelectTrigger.EVENT_TRIGGER_CLICK, function () {
-            self.combo.toggle();
-        });
         this.trigger.on(BI.MultiSelectTrigger.EVENT_COUNTER_CLICK, function () {
             if (!self.combo.isViewVisible()) {
                 self.combo.showView();
@@ -120,7 +119,6 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
 
         this.combo = BI.createWidget({
             type: "bi.combo",
-            element: this.element,
             toggle: false,
             el: this.trigger,
             adjustLength: 1,
@@ -129,7 +127,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
 
         this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
             this.setValue(self.storeValue);
-            BI.defer(function(){
+            BI.defer(function () {
                 self.populate();
             });
         });
@@ -138,6 +136,33 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             self.trigger.stopEditing();
             self.fireEvent(BI.MultiSelectCombo.EVENT_CONFIRM);
         });
+
+        var triggerBtn = BI.createWidget({
+            type: "bi.trigger_icon_button",
+            width: 30,
+            height: o.height,
+            cls: "multi-select-trigger-icon-button"
+        });
+        var wants2Show = false;
+        triggerBtn.element.mousedown(function () {
+            wants2Show = !self.combo.isViewVisible();
+        });
+        triggerBtn.on(BI.TriggerIconButton.EVENT_CHANGE, function () {
+            self.trigger.getCounter().hideView();
+            if (wants2Show === true) {
+                self.combo.showView();
+            }
+        });
+        BI.createWidget({
+            type: "bi.htape",
+            element: this.element,
+            items: [{
+                el: this.combo
+            }, {
+                el: triggerBtn,
+                width: 30
+            }]
+        })
     },
 
     _defaultState: function () {
@@ -178,7 +203,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             }
             var selectedMap = self._makeMap(self.storeValue.value);
             var notSelectedMap = self._makeMap(res.value);
-            BI.each(items, function(i, item){
+            BI.each(items, function (i, item) {
                 if (BI.isNotNull(selectedMap[items[i]])) {
                     delete selectedMap[items[i]];
                 }

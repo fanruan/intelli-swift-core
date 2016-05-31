@@ -290,6 +290,23 @@ BICst.DASHBOARD_WIDGETS = [[{
     cls: "drag-reset-icon"
 }]];
 
+BICst.SVG_MAP_TYPE = [{
+    text: BI.i18nText("BI-World"),
+    title: BI.i18nText("BI-World"),
+    value: BICst.WIDGET.MAP_WORLD,
+    cls: "drag-map-global-icon"
+}, {
+    text: BI.i18nText("BI-China"),
+    title: BI.i18nText("BI-China"),
+    value: BICst.WIDGET.MAP_CHINA,
+    cls: "drag-map-china-icon"
+}, {
+    text: BI.i18nText("BI-JIANGSU"),
+    title: BI.i18nText("BI-JIANGSU"),
+    value: BICst.WIDGET.MAP_JIANGSU,
+    cls: "drag-map-svg-icon"
+}];
+
 //组件的设置的下拉选项
 BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS = [{
     value: BICst.DASHBOARD_WIDGET_LINKAGE,
@@ -930,6 +947,47 @@ BICst.TABLE_STYLE_GROUP = [{
     value: BICst.TABLE_STYLE.STYLE3
 }];
 
+//折线图和面积图线形
+BICst.LINE_CHART_STYLE_GROUP = [{
+    text: "折线",
+    value: BICst.CHART_STYLE.NORMAL
+}, {
+    text: "曲线",
+    value: BICst.CHART_STYLE.CURVE
+}, {
+    text: "直角折线",
+    value: BICst.CHART_STYLE.RIGHT_ANGLE
+}];
+
+//饼图类型
+BICst.PIE_CHART_STYLE_GROUP = [{
+    text: "饼图",
+    value: BICst.CHART_STYLE.NORMAL
+}, {
+    text: "等弧玫瑰图",
+    value: BICst.CHART_STYLE.EQUAL_ARC_ROSE
+}, {
+    text: "不等弧玫瑰图",
+    value: BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE
+}];
+
+//雷达图线性
+BICst.RADAR_CHART_STYLE_GROUP = [{
+    text: "圆形",
+    value: BICst.CHART_STYLE.CIRCLE
+}, {
+    text: "多边形",
+    value: BICst.CHART_STYLE.POLYGON
+}];
+
+BICst.BUBBLE_CHART_STYLE_GROUP = [{
+    text: "圆形",
+    value: BICst.CHART_STYLE.CIRCLE
+}, {
+    text: "多边形",
+    value: BICst.CHART_STYLE.POLYGON
+}];
+
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_COL,
@@ -949,16 +1007,39 @@ BICst.DEFAULT_CHART_SETTING = {
 
     //图
     chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+    chart_line_type: BICst.CHART_STYLE.NORMAL,
+    chart_pie_type: BICst.CHART_STYLE.NORMAL,
+    chart_radar_type: BICst.CHART_STYLE.CIRCLE,
+    chart_inner_radius: 0,
+    chart_total_angle: BICst.PIE_ANGLES.TOTAL,
     left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
+    x_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
+    right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    right_y_axis_second_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     left_y_axis_unit: "",
+    x_axis_unit: "",
     right_y_axis_unit: "",
+    right_y_axis_second_unit: "",
     show_left_y_axis_title: false,
     show_right_y_axis_title: false,
+    show_right_y_axis_second_title: false,
+    left_y_axis_title: "",
+    right_y_axis_title: "",
+    right_y_axis_second_title: "",
     left_y_axis_reversed: false,
-    right_y_axis_reversed: false
+    right_y_axis_reversed: false,
+    right_y_axis_second_reversed: false,
+    show_x_axis_title: false,
+    x_axis_title: "",
+    text_direction: 0,
+    chart_legend: BICst.CHART_LEGEND.NOT_SHOW,
+    show_data_label: false,
+    show_data_table: false,
+    show_grid_line: true
 };
 
 BICst.CAL_TARGET_TYPE = [{
@@ -1162,6 +1243,28 @@ BICst.TARGET_STYLE_LEVEL = [{
 }, {
     text: "%",
     value: BICst.TARGET_STYLE.NUM_LEVEL.PERCENT
+}];
+
+BICst.PIE_TOTAL_ANGLE = [{
+    text: "180'",
+    value: BICst.PIE_ANGLES.HALF
+}, {
+    text: "270'",
+    value: BICst.PIE_ANGLES.THREE_FOURTHS
+}, {
+    text: "360'",
+    value: BICst.PIE_ANGLES.TOTAL
+}];
+
+BICst.CHART_LEGEND = [{
+    text: BI.i18nText("BI-Hidden"),
+    value: BICst.CHART_LEGEND.NOT_SHOW
+}, {
+    text: BI.i18nText("BI-Ju_xia"),
+    value: BICst.CHART_LEGEND.BOTTOM
+}, {
+    text: BI.i18nText("BI-Ju_Right"),
+    value: BICst.CHART_LEGEND.RIGHT
 }];
 
 

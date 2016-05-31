@@ -22,12 +22,14 @@ BI.MultiSelectSearcher = BI.inherit(BI.Widget, {
         BI.MultiSelectSearcher.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.editor = BI.createWidget(o.el, {
-            type: 'bi.multi_select_editor'
+            type: 'bi.multi_select_editor',
+            height: o.height
         });
 
         this.searcher = BI.createWidget({
             type: "bi.searcher",
             element: this.element,
+            height: o.height,
             isAutoSearch: false,
             isAutoSync: false,
             onSearch: function (op, callback) {

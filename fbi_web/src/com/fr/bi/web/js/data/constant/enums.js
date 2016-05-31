@@ -375,6 +375,30 @@ BICst.TABLE_STYLE = {
     STYLE3: 3     //内容间隔色
 };
 
+BICst.CHART_STYLE = {
+    NORMAL: 1,      //普通形态
+    RIGHT_ANGLE: 2,        //直角线形
+    CURVE: 3,     //曲线
+    EQUAL_ARC_ROSE: 4, //等弧玫瑰图
+    NOT_EQUAL_ARC_ROSE: 5, //不等弧玫瑰图
+    CIRCLE: 6,          //圆形雷达
+    POLYGON: 7          //多边形雷达
+};
+
+BICst.PIE_ANGLES = {
+    THREE_FOURTHS: 270,
+    HALF: 180,
+    TOTAL: 360
+};
+
+BICst.CHART_LEGEND = {
+    NOT_SHOW: 1,
+    TOP: 2,
+    RIGHT: 3,
+    BOTTOM: 4,
+    LEFT: 5
+};
+
 BICst.TABLE_MAX_ROW = 20;
 BICst.TABLE_MAX_COL = 7;
 
@@ -411,3 +435,4 @@ BICst.VALUE_SAVE_BY_NORMAL = 0;
 BICst.VALUE_SAVE_NO_DECAML = 1;
 BICst.VALUE_SAVE_ONE_DECAML = 2;
 BICst.VALUE_SAVE_TWO_DECAML = 3;
+

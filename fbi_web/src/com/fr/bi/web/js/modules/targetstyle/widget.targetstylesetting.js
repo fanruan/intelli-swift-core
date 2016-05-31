@@ -39,7 +39,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         var self = this, o = this.options;
         var dId = o.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        if(BI.isNull(styleSettings)) {
+        if(BI.isEmptyObject(styleSettings)) {
             styleSettings = {
                 format: BICst.TARGET_STYLE.FORMAT.NORMAL,
                 num_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,

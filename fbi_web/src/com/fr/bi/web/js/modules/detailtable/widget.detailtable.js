@@ -172,7 +172,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             dId: dId
         });
         popup.on(BI.DetailTableFilterPopup.EVENT_CHANGE, function (v) {
-            var filterValue = BI.Utils.getWidgetFilterValueByID(self.options.wId) || {};
+            var filterValue = BI.Utils.getWidgetFilterValueByID(self.options.wId);
             filterValue[dId] = v;
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {filter_value: filterValue});
         });

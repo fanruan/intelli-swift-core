@@ -197,7 +197,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
 
     fieldValuesCreator : function (field, callback, widget, model) {
         var table = {};
-        table[ETLCst.ITEMS] = [model.update()]
+        table[ETLCst.ITEMS] = this._editing === true ? model.update()[ETLCst.PARENTS] : [model.update()];
         return BI.ETLReq.reqFieldValues({
             table : table,
             field : field

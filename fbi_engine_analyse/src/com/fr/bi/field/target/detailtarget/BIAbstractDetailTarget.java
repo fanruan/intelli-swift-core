@@ -5,8 +5,6 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableRelation;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -32,7 +30,7 @@ import java.util.Map;
 public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BIDetailTarget {
     @BICoreField
     protected TargetFilter filter;
-    private ICubeTableService cubeTableService;
+    protected ICubeTableService cubeTableService;
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();
@@ -71,7 +69,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
         return null;
     }
 
-    private void initialTableSource(ICubeDataLoader loader) {
+    protected void initialTableSource(ICubeDataLoader loader) {
         if (cubeTableService == null) {
             cubeTableService = loader.getTableIndex(this.createTableKey().getTableSource());
         }
@@ -106,7 +104,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     @Override
     public ICubeColumnIndexReader createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId) {
         ICubeTableService ti = loader.getTableIndex(column.getTableBelongTo().getTableSource());
-        ICubeColumnIndexReader baseGroupMap = ti.loadGroup(createKey(getStatisticElement()), BIConfUtils.convertToMD5RelationFromSimpleRelation(getRelationList(target, userId), new BIUser(userId)));
+        ICubeColumnIndexReader baseGroupMap = ti.loadGroup(createKey(getStatisticElement()), BIConfUtils.convert2TableSourceRelation(getRelationList(target, userId)));
         ICubeColumnIndexReader sortMap = sort.createGroupedMap(baseGroupMap);
         return new CubeIndexGetterWithNullValue(sortMap, ti.getNullGroupValueIndex(createKey(getStatisticElement())));
     }
