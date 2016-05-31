@@ -96,6 +96,9 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         var self = this;
         var namePopover = BI.createWidget({
             type: "bi.etl_table_name_popover",
+            renameChecker : function (v) {
+                return !BI.Utils.getAllETLTableNames().contains(v);
+            }
         });
         namePopover.on(BI.PopoverSection.EVENT_CLOSE, function () {
             BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);

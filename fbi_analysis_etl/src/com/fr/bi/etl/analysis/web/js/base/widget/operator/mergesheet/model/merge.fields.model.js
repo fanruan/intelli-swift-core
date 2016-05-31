@@ -68,6 +68,16 @@ BI.AnalysisETLMergeSheetFieldsModel = BI.inherit(BI.MVCModel, {
         return BI.concat(mergeFields, left);
     },
 
+    getFieldsLength : function() {
+        var joinFields = this.getValue(ETLCst.FIELDS);
+        if(BI.isNotNull(joinFields)) {
+            return joinFields.length;
+        }
+        else{
+            return 0;
+        }
+    },
+
     /**
      * fields为空时候的默认生成一个
      * @returns {Array}
