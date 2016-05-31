@@ -5,7 +5,6 @@ import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
@@ -16,7 +15,6 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -216,11 +214,15 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
     private String getFieldIdFromRelationKeyJo(JSONObject relationJo) throws JSONException {
         String fieldId = StringUtils.EMPTY;
-        BusinessTable table = BusinessTableHelper.getBusinessTable(new BITableID(relationJo.getString("table_id")));
-        try {
-            fieldId = BusinessTableHelper.getSpecificField(table, relationJo.getString("field_name")).getFieldID().getIdentityValue();
-        } catch (BIFieldAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+        //新增的表不能通过tableHelper获得
+//        BusinessTable table = BusinessTableHelper.getBusinessTable(new BITableID(relationJo.getString("table_id")));
+//        try {
+//            fieldId = BusinessTableHelper.getSpecificField(table, relationJo.getString("field_name")).getFieldID().getIdentityValue();
+//        } catch (BIFieldAbsentException e) {
+//            BILogger.getLogger().error(e.getMessage(), e);
+//        }
+        if(relationJo.has("field_id")){
+            fieldId = relationJo.getString("field_id");
         }
         return fieldId;
     }

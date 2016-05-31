@@ -152,4 +152,22 @@ public class BICubeFieldSource implements ICubeFieldSource {
         return jo;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BICubeFieldSource that = (BICubeFieldSource) o;
+
+        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) return false;
+        return tableBelongTo != null ? tableBelongTo.equals(that.tableBelongTo) : that.tableBelongTo == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fieldName != null ? fieldName.hashCode() : 0;
+        result = 31 * result + (tableBelongTo != null ? tableBelongTo.hashCode() : 0);
+        return result;
+    }
 }
