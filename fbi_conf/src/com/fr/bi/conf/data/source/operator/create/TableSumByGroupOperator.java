@@ -107,7 +107,8 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
                 if (parent.getField(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.DATE) {
                     persistentTable.addColumn(new PersistentField(dimensions[i].getNameText(), dimensions[i].getGroup().getType() ==  BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
                 } else if (parent.getField(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.NUMBER) {
-                    persistentTable.addColumn(new PersistentField(dimensions[i].getNameText(), BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
+                    PersistentField pfield = parent.getField(dimensions[i].getName());
+                    persistentTable.addColumn(new PersistentField(dimensions[i].getNameText(),  dimensions[i].getGroup().getType() ==  BIReportConstant.GROUP.NO_GROUP ? pfield.getType() : BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
                 } else {
                     persistentTable.addColumn(new PersistentField(dimensions[i].getNameText(), parent.getField(dimensions[i].getName()).getType(), parent.getField(dimensions[i].getName()).getColumnSize()));
                 }

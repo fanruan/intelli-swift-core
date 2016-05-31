@@ -42,9 +42,9 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
             table = new AnalysisBusiTable(newId, userId);
             BICubeConfigureCenter.getAliasManager().setAliasName(newId, tableName, userId);
             AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
-            table.setSource(oldTable.getSource());
+            source = oldTable.getSource();
+            table.setSource(source);
             table.setDescribe(oldTable.getDescribe());
-            source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(oldTable);
         }
         BICubeConfigureCenter.getAliasManager().persistData(userId);
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);

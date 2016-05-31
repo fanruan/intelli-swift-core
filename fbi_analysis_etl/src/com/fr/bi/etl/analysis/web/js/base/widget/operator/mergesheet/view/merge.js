@@ -37,7 +37,7 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.MVCWidget, {
             height:30,
             width:250,
             watermark: BI.i18nText("BI-Table_Name"),
-            errorText: BI.i18nText("BI-Cannot_Have_Repeated_Field_Name"),
+            errorText: BI.i18nText("BI-Table_Name_Not_Null"),
             validationChecker : function (v) {
                 return self.controller.validationChecker(v)
             }
