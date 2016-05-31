@@ -2219,6 +2219,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/simplesearcher/searcher.simple.js",
 
                 //简单的选择字段树，主要用于过滤、cube配置内的选择字段
+                "com/fr/bi/web/js/widget/simpleselectdata/treenode/node.level0.js",
+                "com/fr/bi/web/js/widget/simpleselectdata/treenode/node.level1.js",
                 "com/fr/bi/web/js/widget/simpleselectdata/searchpane/segment.search.simpleselectdata.js",
                 "com/fr/bi/web/js/widget/simpleselectdata/searchpane/result.search.simpleselectdata.js",
                 "com/fr/bi/web/js/widget/simpleselectdata/searcher/searcher.simpleselectdata.js",

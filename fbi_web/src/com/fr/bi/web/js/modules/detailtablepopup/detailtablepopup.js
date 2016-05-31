@@ -31,7 +31,7 @@ BI.DetailTablePopup = BI.inherit(BI.Widget, {
         var dimensionsIds = BI.Utils.getAllDimDimensionIDs(wId);
         var data = {};
         var currentId = o.dId;
-        if(BI.Utils.isCalculateTargetByDimensionID(currentId)){
+        if (BI.Utils.isCalculateTargetByDimensionID(currentId)) {
             currentId = BI.Utils.getExpressionValuesByDimensionID(currentId);
         }
         data.id = id;
@@ -46,6 +46,25 @@ BI.DetailTablePopup = BI.inherit(BI.Widget, {
                 _src: BI.Utils.getDimensionSrcByID(dId)
             }
         });
+        var filter = [];
+        BI.each(o.clicked, function (i, clk) {
+            var dimensionId = clk.dId;
+            var value = clk.value;
+            var fieldId = BI.Utils.getFieldIDByDimensionID(dimensionId);
+            filter.push({
+                filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                filter_value: {
+                    value: value
+                },
+                _src: {
+                    field_id: fieldId
+                }
+            })
+        });
+        data.filter = {
+            filter_type: BICst.FILTER_TYPE.AND,
+            filter_value: filter
+        };
         this.view = BI.Factory.createView("", BIDezi.Views.get("/detailtablepopup"), data, {
             element: this.element
         }, null);
