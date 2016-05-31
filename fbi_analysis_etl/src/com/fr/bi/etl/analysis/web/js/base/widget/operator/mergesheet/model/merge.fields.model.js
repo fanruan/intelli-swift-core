@@ -70,7 +70,7 @@ BI.AnalysisETLMergeSheetFieldsModel = BI.inherit(BI.MVCModel, {
 
     getFieldsLength : function() {
         var joinFields = this.getValue(ETLCst.FIELDS);
-        if(joinFields) {
+        if(BI.isNotNull(joinFields)) {
             return joinFields.length;
         }
         else{
