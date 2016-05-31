@@ -3,7 +3,7 @@
  */
 package com.fr.bi.etl.analysis.manager;
 
-import com.finebi.cube.conf.build.CubeBuildStuffManager;
+import com.finebi.cube.conf.build.CubeBuildStuff;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.tableobj.UserETLIndexGenerator;
@@ -124,8 +124,10 @@ public class UserETLUpdateTask implements CubeTask {
 	}
 
 	@Override
-	public void setCubeBuildStuffManager(CubeBuildStuffManager object) {
+	public void setCubeBuildStuff(CubeBuildStuff object) {
+		
 	}
+
 
 
 	/**

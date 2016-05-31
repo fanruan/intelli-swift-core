@@ -3,7 +3,6 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.build.CubeBuildStuff;
-import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
@@ -46,8 +45,8 @@ public class StopCubeTask implements CubeTask {
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
 
-    public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {
-        this.cubeBuildStuffManager = cubeBuildStuffManager;
+    public void setCubeBuildStuff(CubeBuildStuff  cubeBuildStuff) {
+        this.cubeBuildStuffManager = cubeBuildStuff;
     }
 
     @Override

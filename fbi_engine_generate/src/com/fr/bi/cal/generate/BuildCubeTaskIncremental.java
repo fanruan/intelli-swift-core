@@ -3,7 +3,6 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.build.CubeBuildStuff;
-import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
@@ -50,9 +49,6 @@ public class BuildCubeTaskIncremental implements CubeTask {
 
     }
 
-    public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {
-        this.cubeBuildStuffManager = cubeBuildStuffManager;
-    }
 
     @Override
     public String getUUID() {
@@ -97,6 +93,11 @@ public class BuildCubeTaskIncremental implements CubeTask {
     @Override
     public long getUserId() {
         return -999;
+    }
+
+    @Override
+    public void setCubeBuildStuff(CubeBuildStuff object) {
+        
     }
 
     @Override

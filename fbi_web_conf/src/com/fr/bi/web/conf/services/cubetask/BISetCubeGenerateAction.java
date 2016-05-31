@@ -1,6 +1,8 @@
 package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.build.CubeBuildStuff;
+import com.finebi.cube.conf.build.CubeBuildStuffManager;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -26,10 +28,11 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
 
         if (StringUtils.isEmpty(tableId)){
-            CubeTskBuild.CubeBuild(userId);            
+            CubeBuildStuff cubeBuildStuffManager= new CubeBuildStuffManager(new BIUser(userId));
+            CubeTskBuild.CubeBuild(userId,cubeBuildStuffManager);            
         }else{
-            CubeBuildStuff cubeBuildStuff = new BuildCubeSingleTableStuff(new BITable(tableId),userId);
-            CubeTskBuild.buildCubebyBusiniessTable(userId, cubeBuildStuff,new BITable(tableId));
+            CubeBuildStuff cubeBuildStuff = new BuildCubeStuffSingleManager(new BITable(tableId),userId);
+            CubeTskBuild.CubeBuild(userId, cubeBuildStuff);
         }
     }
 

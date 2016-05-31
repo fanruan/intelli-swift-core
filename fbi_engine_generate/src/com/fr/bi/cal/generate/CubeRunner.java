@@ -58,9 +58,7 @@ public class CubeRunner {
                 setStatue(Status.LOADING);
                 start();
                 try {
-                    if(!(cubeTask instanceof BuildCubeTaskSingleTable)) {
-                        cubeTask.setCubeBuildStuffManager(object);
-                    }
+//                        cubeTask.setCubeBuildStuff(object);
                     cubeTask.start();
                     cubeTask.run();
                     cubeTask.end();
@@ -68,6 +66,7 @@ public class CubeRunner {
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 } finally {
+                    
                     finish();
                     setStatue(Status.LOADED);
                     BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
@@ -159,7 +158,7 @@ public class CubeRunner {
         long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
+//        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         renameToCurrentDirect();

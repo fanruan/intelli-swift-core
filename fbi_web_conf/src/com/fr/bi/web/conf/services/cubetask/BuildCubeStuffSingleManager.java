@@ -26,19 +26,17 @@ import java.util.*;
 /**
  * Created by wuk on 16/5/30.
  */
-public class BuildCubeSingleTableStuff implements CubeBuildStuff{
+public class BuildCubeStuffSingleManager implements CubeBuildStuff{
     
 
-    public BuildCubeSingleTableStuff(BITable biTable, long userId) {
+    public BuildCubeStuffSingleManager(BITable biTable, long userId) {
         this.biUser=new BIUser(userId);
         init(new BIBusinessTable(biTable.getID()));
-        
     }
     
     /**
      *
      */
-    private static final long serialVersionUID = -2315016175890907748L;
     private Set<IBusinessPackageGetterService> packs;
     private Set<CubeTableSource> sources;
     private Set<CubeTableSource> allSingleSources;
@@ -75,7 +73,7 @@ public class BuildCubeSingleTableStuff implements CubeBuildStuff{
     }
 
     
-
+@Override
     public Set<BITableRelation> getTableRelationSet() {
         Set<BITableRelation> set = new HashSet<BITableRelation>();
         for (BITableRelation relation : tableRelationSet) {
