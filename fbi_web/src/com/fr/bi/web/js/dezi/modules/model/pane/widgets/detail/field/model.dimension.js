@@ -86,6 +86,7 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
         if (this.has("changeGroup")) {
             var group = this.get("changeGroup");
             this.set("group", {type: group.type, details: []});
+            return true;
         }
         return false;
     }

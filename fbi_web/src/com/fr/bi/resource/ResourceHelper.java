@@ -714,10 +714,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
-
-
+                "com/fr/bi/web/css/third/leaflet.css",
                 //选择字段服务
-                "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
+                "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css"
         };
     }
 
@@ -779,6 +778,8 @@ public class ResourceHelper {
 
                 //详细设置相关模块
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.tablecharttype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/maptypecombo/combo.maptype.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/maptypecombo/popup.maptype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/charttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.dimension.js",
@@ -1207,7 +1208,19 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/charts.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/charts.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/multiaxischart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/percentchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/lineareachart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/barchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/scatterchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/comparechart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/dashboardchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/donutchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/fallaxischart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/piechartsetting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/crosstable/widget.crosstable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
 
@@ -1664,6 +1677,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/multitree/display.multi.tree.css",
                 "com/fr/bi/web/css/widget/multitree/search.multi.tree.css",
                 "com/fr/bi/web/css/widget/multitree/popup.multi.tree.css",
+                "com/fr/bi/web/css/widget/multitree/multi.tree.combo.css",
 
                 //选色控件
                 "com/fr/bi/web/css/widget/colorchooser/colorchooser.trigger.css",
@@ -1953,6 +1967,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/third/jquery.ui.effect.js",
                 "com/fr/bi/web/js/third/d3-min.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/third/leaflet.js",
 
 
                 "com/fr/bi/web/js/case/case.js",

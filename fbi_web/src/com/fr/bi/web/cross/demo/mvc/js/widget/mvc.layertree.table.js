@@ -105,6 +105,22 @@ LayerTreeTableView = BI.inherit(BI.View, {
             values: [0]
         }];
 
+        var table = BI.createWidget({
+            type: "bi.layer_tree_table",
+            isNeedResize: true,
+            isNeedFreeze: true,
+            freezeCols: [0, 1, 2],
+            mergeCols: [0, 1, 2],
+            isNeedMerge: true,
+            columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+            header: header,
+            items: items,
+            crossHeader: crossHeader,
+            crossItems: crossItems
+        });
+        table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+            BI.Msg.toast(JSON.stringify(this.getColumnSize()));
+        });
         BI.createWidget({
             type: "bi.grid",
             element: vessel,
@@ -113,19 +129,7 @@ LayerTreeTableView = BI.inherit(BI.View, {
             items: [{
                 column: 0,
                 row: 0,
-                el: {
-                    type: "bi.layer_tree_table",
-                    isNeedResize: true,
-                    isNeedFreeze: true,
-                    freezeCols: [0, 1, 2],
-                    mergeCols: [0, 1, 2],
-                    isNeedMerge: true,
-                    columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
-                    header: header,
-                    items: items,
-                    crossHeader: crossHeader,
-                    crossItems: crossItems
-                }
+                el: table
             }]
         })
     }

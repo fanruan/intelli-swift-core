@@ -5,9 +5,9 @@ BI.IconTreeLeafItem = BI.inherit(BI.BasicButton, {
             logic: {
                 dynamic: false
             },
-            id: "",
-            pId: "",
             height: 25,
+            iconWidth: 12,
+            iconHeight: 14,
             iconCls: ""
         })
     },
@@ -21,7 +21,9 @@ BI.IconTreeLeafItem = BI.inherit(BI.BasicButton, {
             width: 23,
             cls: o.iconCls,
             items: [{
-                type: "bi.icon"
+                type: "bi.icon",
+                width: o.iconWidth,
+                height: o.iconHeight
             }]
         });
 

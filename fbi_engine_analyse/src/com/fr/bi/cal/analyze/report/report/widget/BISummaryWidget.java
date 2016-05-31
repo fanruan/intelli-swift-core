@@ -267,8 +267,11 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         }
                     }
                     if (tar.has("target_relation")) {
-                        Map<String, List<BITableRelation>> relationMap = new LinkedHashMap<String, List<BITableRelation>>();
-                        relationsMap.put(dimensionId, relationMap);
+                        Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
+                        if(relationMap == null) {
+                            relationMap = new LinkedHashMap<String, List<BITableRelation>>();
+                            relationsMap.put(dimensionId, relationMap);
+                        }
                         Object t = tar.get("target_relation");
                         if (t instanceof JSONArray) {
                             JSONArray rel = (JSONArray) t;
