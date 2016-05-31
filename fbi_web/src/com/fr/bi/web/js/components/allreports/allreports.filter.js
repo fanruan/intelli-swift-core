@@ -9,43 +9,62 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         REPORT_STATUS_HANGOUT: 3
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.AllReportsFilter.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-all-reports-filter"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.AllReportsFilter.superclass._init.apply(this, arguments);
         var self = this;
         this.depart = BI.createWidget({
             type: "bi.value_chooser_combo",
             itemsCreator: BI.bind(this._departCreator, this),
+            cache: false,
             height: 30,
             width: 180
+        });
+        this.depart.on(BI.ValueChooserCombo.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.AllReportsFilter.EVENT_CHANGE);
         });
         this.role = BI.createWidget({
             type: "bi.value_chooser_combo",
             itemsCreator: BI.bind(this._rolesCreator, this),
+            cache: false,
             height: 30,
             width: 180
+        });
+        this.role.on(BI.ValueChooserCombo.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.AllReportsFilter.EVENT_CHANGE);
         });
         this.name = BI.createWidget({
             type: "bi.value_chooser_combo",
             itemsCreator: BI.bind(this._usersCreator, this),
+            cache: false,
             height: 30,
             width: 180
+        });
+        this.name.on(BI.ValueChooserCombo.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.AllReportsFilter.EVENT_CHANGE);
         });
         this.status = BI.createWidget({
             type: "bi.value_chooser_combo",
             itemsCreator: BI.bind(this._statusCreator, this),
+            cache: false,
             height: 30,
             width: 180
+        });
+        this.status.on(BI.ValueChooserCombo.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.AllReportsFilter.EVENT_CHANGE);
         });
         this.lastModify = BI.createWidget({
             type: "bi.time_interval",
             height: 30,
             width: 380
+        });
+        this.lastModify.on(BI.TimeInterval.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AllReportsFilter.EVENT_CHANGE);
         });
         var reset = BI.createWidget({
             type: "bi.button",
@@ -126,9 +145,55 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         });
     },
 
-    _departCreator: function(op, callback){
+    _departCreator: function (op, callback) {
         var items = [];
-        BI.each(this.departs, function(i, depart){
+        //坑爹说好的联动不做了。。。先注释了
+        // var sRole = this.role.getValue(), sUser = this.name.getValue();
+        // var sRoleType = sRole.type || BI.Selection.Multi, sRoleValue = sRole.value || [];
+        // var sUserType = sUser.type || BI.Selection.Multi, sUserValue = sUser.value || [];
+        // var selectedRoles = sRoleValue, selectedUsers = sUserValue;
+        // if (sRoleValue.length !== 0 && sRoleType === BI.Selection.All) {
+        //     BI.each(this.roles, function (i, role) {
+        //         selectedRoles = [];
+        //         if (!sRoleValue.contains(role.id)) {
+        //             selectedRoles.push(role.id);
+        //         }
+        //     });
+        // }
+        // if (sUserValue.length !== 0 && sUserType === BI.Selection.All) {
+        //     selectedUsers = [];
+        //     BI.each(this.users, function (i, user) {
+        //         if (!sRoleValue.contains(user.id)) {
+        //             selectedUsers.push(user.id);
+        //         }
+        //     });
+        // }
+        // //选中的角色中包含的部门，选中的用户所在的部门，交集
+        // var rFilter = [], uFilter = [];
+        // BI.each(this.roles, function (i, role) {
+        //     var dId = role.departmentid;
+        //     if (!rFilter.contains(dId) && selectedRoles.contains(role.id)) {
+        //         rFilter.push(dId);
+        //     }
+        //     BI.some(role.users, function (j, uId) {
+        //         if (!uFilter.contains(dId) && selectedUsers.contains(uId)) {
+        //             uFilter.push(dId);
+        //             return true;
+        //         }
+        //     });
+        // });
+        // var departIds = [];
+        // if (rFilter.length === 0 || uFilter.length === 0) {
+        //     departIds = rFilter.concat(uFilter);
+        // } else {
+        //     BI.each(rFilter, function (i, fId) {
+        //         if (uFilter.contains(fId)) {
+        //             departIds.push(fId);
+        //         }
+        //     });
+        // }
+
+        BI.each(this.departs, function (i, depart) {
             items.push({
                 text: depart.text,
                 value: depart.id,
@@ -138,11 +203,56 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         callback(items);
     },
 
-    _rolesCreator: function(options, callback){
+    _rolesCreator: function (options, callback) {
         var items = [];
-        BI.each(this.roles, function(i, role){
+        // var sDepart = this.depart.getValue(), sUser = this.name.getValue();
+        // var sDepartType = sDepart.type || BI.Selection.Multi, sUserType = sUser.type || BI.Selection.Multi;
+        // var sDepartValue = sDepart.value || [], sUserValue = sUser.value || [];
+        // var selectedDepart = sDepartValue, selectedUser = sUserValue;
+        // if (sDepartValue.length !== 0 && sDepartType === BI.Selection.All) {
+        //     selectedDepart = [];
+        //     BI.each(this.departs, function (i, depart) {
+        //         if (!sDepartValue.contains(depart.id)) {
+        //             selectedDepart.push(depart.id);
+        //         }
+        //     });
+        // }
+        // if (sUserValue.length !== 0 && sUserType === BI.Selection.All) {
+        //     selectedUser = [];
+        //     BI.each(this.departs, function (i, depart) {
+        //         if (!sUserValue.contains(depart.id)) {
+        //             selectedUser.push(depart.id);
+        //         }
+        //     });
+        // }
+        //
+        // //过滤条件
+        // var dFilter = [], uFilter = [];
+        // BI.each(this.roles, function (i, role) {
+        //     var roleId = role.id;
+        //     if (!dFilter.contains(roleId) && selectedDepart.contains(role.departmentid)) {
+        //         dFilter.push(roleId);
+        //     }
+        //     BI.some(role.users, function (j, user) {
+        //         if (!uFilter.contains(roleId) && selectedUser.contains(user.id)) {
+        //             uFilter.push(roleId);
+        //         }
+        //     });
+        // });
+        // var roleIds = [];
+        // if (dFilter.length === 0 || uFilter.length === 0) {
+        //     roleIds = dFilter.concat(uFilter);
+        // } else {
+        //     BI.each(dFilter, function (i, fId) {
+        //         if (uFilter.contains(fId)) {
+        //             roleIds.push(fId);
+        //         }
+        //     });
+        // }
+
+        BI.each(this.roles, function (i, role) {
             var roleName = role.text;
-            if(BI.isNotNull(role.departmentname)){
+            if (BI.isNotNull(role.departmentname)) {
                 roleName = role.departmentname + role.postname
             }
             items.push({
@@ -154,49 +264,221 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         callback(items);
     },
 
-    _usersCreator: function(options, callback) {
+    _usersCreator: function (options, callback) {
         var items = [];
-        BI.each(this.users, function(i, user){
+        // var sDepart = this.depart.getValue(), sRole = this.role.getValue();
+        // var sDepartType = sDepart.type || BI.Selection.Multi, sRoleType = sRole.type || BI.Selection.Multi;
+        // var sDepartValue = sDepart.value || [], sRoleValue = sRole.value || [];
+        // var selectedDepart = sDepartValue, selectedRole = sRoleValue;
+        // if (sDepartValue.length !== 0 && sDepartType === BI.Selection.All) {
+        //     selectedDepart = [];
+        //     BI.each(this.departs, function (i, depart) {
+        //         if (!sDepartValue.contains(depart.id)) {
+        //             selectedDepart.push(depart.id);
+        //         }
+        //     });
+        // }
+        // if (sRoleValue.length !== 0 && sRoleType === BI.Selection.All) {
+        //     selectedRole = [];
+        //     BI.each(this.roles, function (i, role) {
+        //         if (!sRoleValue.contains(role.id)) {
+        //             selectedRole.push(role.id);
+        //         }
+        //     });
+        // }
+        //
+        // //过滤条件
+        // var userIds = [];
+        // if (selectedDepart.length !== 0 || selectedRole.length !== 0) {
+        //     BI.each(this.roles, function (i, role) {
+        //         if (selectedDepart.length === 0 && selectedRole.contains(role.id)) {
+        //             BI.each(role.users, function(j, uId){
+        //                 !userIds.contains(uId) && (userIds.push(uId));
+        //             });
+        //         }
+        //         if(selectedRole.length === 0 && selectedDepart.contains(role.departmentid)){
+        //             BI.each(role.users, function(j, uId){
+        //                 !userIds.contains(uId) && (userIds.push(uId));
+        //             });
+        //         }
+        //         if(selectedDepart.contains(role.departmentid) && selectedRole.contains(role.id)){
+        //             BI.each(role.users, function(j, uId){
+        //                 !userIds.contains(uId) && (userIds.push(uId));
+        //             });
+        //         }
+        //     });
+        // }
+
+        BI.each(this.users, function (i, user) {
             items.push({
                 text: user.realname,
                 value: user.id,
                 title: user.realname
             });
         });
+
         callback(items);
     },
 
-    _statusCreator: function(options, callback){
+    _statusCreator: function (options, callback) {
         var items = [{
-            text: BI.i18nText(""),
+            text: BI.i18nText("BI-Report_Hangout_Applying"),
             value: this._constant.REPORT_STATUS_APPLYING,
-            title: BI.i18nText("")
+            title: BI.i18nText("BI-Report_Hangout_Applying")
         }, {
-            text: BI.i18nText(""),
+            text: BI.i18nText("BI-Not_Apply_Hangout"),
             value: this._constant.REPORT_STATUS_NORMAL,
-            title: BI.i18nText("")
+            title: BI.i18nText("BI-Not_Apply_Hangout")
         }, {
-            text: BI.i18nText(""),
+            text: BI.i18nText("BI-Hangouted"),
             value: this._constant.REPORT_STATUS_HANGOUT,
-            title: BI.i18nText("")
+            title: BI.i18nText("BI-Hangouted")
         }];
         callback(items);
     },
 
-    getValue: function(){
+    getValue: function () {
+        var sDepart = this.depart.getValue(), sRole = this.role.getValue, sUser = this.name.getValue(), sStatus = this.status.getValue();
+        var sDepartType = sDepart.type || BI.Selection.Multi,
+            sRoleType = sRole.type || BI.Selection.Multi,
+            sUserType = sUser.type || BI.Selection.Multi,
+            sStatusType = sStatus.type || BI.Selection.Multi;
+        var sDepartValue = sDepart.value || [],
+            sUserValue = sUser.value || [],
+            sRoleValue = sRole.value || [],
+            sStatusValue = sStatus.value || [];
+        var selectedDepart = sDepartValue, selectedUser = sUserValue, selectedRole = sRoleValue, selectedStatus = sStatusValue;
+        if (sDepartValue.length !== 0 && sDepartType === BI.Selection.All) {
+            selectedDepart = [];
+            BI.each(this.departs, function (i, depart) {
+                if (!sDepartValue.contains(depart.id)) {
+                    selectedDepart.push(depart.id);
+                }
+            });
+        }
+        if (sRoleValue.length !== 0 && sRoleType === BI.Selection.All) {
+            selectedRole = [];
+            BI.each(this.roles, function (i, role) {
+                if (!sRoleValue.contains(role.id)) {
+                    selectedRole.push(role.id);
+                }
+            });
+        }
+        if (sUserValue.length !== 0 && sUserType === BI.Selection.All) {
+            selectedUser = [];
+            BI.each(this.users, function (i, user) {
+                if (!sUserValue.contains(user.id)) {
+                    selectedUser.push(user.id);
+                }
+            });
+        }
+        if (sStatusValue.length !== 0 && sStatusType === BI.Selection.All) {
+            selectedStatus = [];
+            var status = [this._constant.REPORT_STATUS_APPLYING,
+                this._constant.REPORT_STATUS_HANGOUT,
+                this._constant.REPORT_STATUS_NORMAL];
+            BI.each(status, function (i, s) {
+                if (!sStatusValue.contains(s)) {
+                    selectedStatus.push(s);
+                }
+            });
+        }
+
+
+        //获取复杂日期的值
+        function parseComplexDate(v) {
+            if(BI.isNull(v)) {
+                return;
+            }
+            if (v.type === BICst.MULTI_DATE_PARAM) {
+                return parseComplexDateForParam(v.value);
+            } else {
+                return parseComplexDateCommon(v);
+            }
+            function parseComplexDateForParam(value) {
+                var wWid = value.wId, se = value.startOrEnd;
+                if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
+                    var wWValue = BI.Utils.getWidgetValueByID(wWid);
+                    if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
+                        return parseComplexDateCommon(wWValue.start);
+                    } else {
+                        return parseComplexDateCommon(wWValue.end);
+                    }
+                } else {
+                    return parseComplexDateCommon(BI.Utils.getWidgetValueByID(value));
+                }
+            }
+
+            function parseComplexDateCommon(v) {
+                var type = v.type, value = v.value;
+                var date = new Date();
+                var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
+                var tool = new BI.MultiDateParamTrigger();
+                if (BI.isNull(type) && BI.isNotNull(v.year)) {
+                    return new Date(v.year, v.month, v.day).getTime();
+                }
+                switch (type) {
+                    case BICst.MULTI_DATE_YEAR_PREV:
+                        return new Date(currY - 1 * value, currM, currD).getTime();
+                    case BICst.MULTI_DATE_YEAR_AFTER:
+                        return new Date(currY + 1 * value, currM, currD).getTime();
+                    case BICst.MULTI_DATE_YEAR_BEGIN:
+                        return new Date(currY, 1, 1).getTime();
+                    case BICst.MULTI_DATE_YEAR_END:
+                        return new Date(currY, 11, 31).getTime();
+
+                    case BICst.MULTI_DATE_MONTH_PREV:
+                        return tool._getBeforeMultiMonth(value).getTime();
+                    case BICst.MULTI_DATE_MONTH_AFTER:
+                        return tool._getAfterMultiMonth(value).getTime();
+                    case BICst.MULTI_DATE_MONTH_BEGIN:
+                        return new Date(currY, currM, 1).getTime();
+                    case BICst.MULTI_DATE_MONTH_END:
+                        return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
+
+                    case BICst.MULTI_DATE_QUARTER_PREV:
+                        return tool._getBeforeMulQuarter(value).getTime();
+                    case BICst.MULTI_DATE_QUARTER_AFTER:
+                        return tool._getAfterMulQuarter(value).getTime();
+                    case BICst.MULTI_DATE_QUARTER_BEGIN:
+                        return tool._getQuarterStartDate().getTime();
+                    case BICst.MULTI_DATE_QUARTER_END:
+                        return tool._getQuarterEndDate().getTime();
+
+                    case BICst.MULTI_DATE_WEEK_PREV:
+                        return date.getOffsetDate(-7 * value).getTime();
+                    case BICst.MULTI_DATE_WEEK_AFTER:
+                        return date.getOffsetDate(7 * value).getTime();
+
+                    case BICst.MULTI_DATE_DAY_PREV:
+                        return date.getOffsetDate(-1 * value).getTime();
+                    case BICst.MULTI_DATE_DAY_AFTER:
+                        return date.getOffsetDate(1 * value).getTime();
+                    case BICst.MULTI_DATE_DAY_TODAY:
+                        return date.getTime();
+                    case BICst.MULTI_DATE_CALENDAR:
+                        return new Date(value.year, value.month, value.day).getTime();
+
+                }
+            }
+        }
+        
+        var start = this.lastModify.getValue().start, end = this.lastModify.getValue().end;
         return {
-            departs: this.depart.getValue(),
-            roles: this.role.getValue(),
-            users: this.name.getValue(),
-            status: this.status.getValue(),
-            last_modify: this.lastModify.getValue()
+            departs: selectedDepart,
+            roles: selectedRole,
+            users: selectedUser,
+            status: selectedStatus,
+            start: parseComplexDate(start),
+            end: parseComplexDate(end)
         }
     },
 
-    populate: function(departs, roles, users){
+    populate: function (departs, roles, users) {
         this.departs = departs;
         this.roles = roles;
         this.users = users;
     }
 });
+BI.AllReportsFilter.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.all_reports_filter", BI.AllReportsFilter);

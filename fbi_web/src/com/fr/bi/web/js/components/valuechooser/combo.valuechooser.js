@@ -17,7 +17,8 @@ BI.ValueChooserCombo = BI.inherit(BI.Widget, {
             width: 200,
             height: 30,
             items: null,
-            itemsCreator: BI.emptyFn
+            itemsCreator: BI.emptyFn,
+            cache: true
         });
     },
 
@@ -67,16 +68,15 @@ BI.ValueChooserCombo = BI.inherit(BI.Widget, {
 
     _itemsCreator: function (options, callback) {
         var self = this, o = this.options;
-        if (!this.items) {
+        if (!o.cache || !this.items) {
             o.itemsCreator({}, function (items) {
                 self.items = items;
-                call();
+                call(items);
             });
         } else {
-            call();
+            call(this.items);
         }
-        function call() {
-            var items = self.items;
+        function call(items) {
             if (options.keyword) {
                 var search = BI.Func.getSearchResult(items, options.keyword);
                 items = search.matched.concat(search.finded);
