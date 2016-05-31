@@ -26,10 +26,10 @@ import java.util.*;
 /**
  * Created by wuk on 16/5/30.
  */
-public class BuildCubeStuffSingleManager implements CubeBuildStuff{
+public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff{
     
 
-    public BuildCubeStuffSingleManager(BITable biTable, long userId) {
+    public CubeBuildStuffManagerSingleTable(BITable biTable, long userId) {
         this.biUser=new BIUser(userId);
         init(new BIBusinessTable(biTable.getID()));
     }
@@ -208,6 +208,11 @@ public class BuildCubeStuffSingleManager implements CubeBuildStuff{
         return dependTableResource;
     }
 
+    @Override
+    public String getRootPath() {
+        return null;
+    }
+
     public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {
         this.dependTableResource = dependTableResource;
     }
@@ -290,7 +295,9 @@ public class BuildCubeStuffSingleManager implements CubeBuildStuff{
     
 
     public void init(BusinessTable businessTable) {
+        
         try {
+            
             businessTable = BusinessTableHelper.getBusinessTable(businessTable.getID());
             Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId());
             this.packs = packs;
