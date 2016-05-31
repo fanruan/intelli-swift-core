@@ -2,6 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.build.CubeBuildStuff;
 import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
@@ -31,7 +32,7 @@ import java.util.concurrent.Future;
  */
 public class StopCubeTask implements CubeTask {
 
-    private CubeBuildStuffManager cubeBuildStuffManager;
+    private CubeBuildStuff cubeBuildStuffManager;
     private BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;

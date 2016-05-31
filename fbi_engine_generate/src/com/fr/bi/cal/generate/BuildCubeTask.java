@@ -2,6 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.build.CubeBuildStuff;
 import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BIDeliverFailureException;
@@ -42,7 +43,7 @@ import java.util.concurrent.Future;
  */
 public class BuildCubeTask implements CubeTask {
 
-    private CubeBuildStuffManager cubeBuildStuffManager;
+    private CubeBuildStuff cubeBuildStuffManager;
     private BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
@@ -53,14 +54,11 @@ public class BuildCubeTask implements CubeTask {
 
     public BuildCubeTask(BIUser biUser) {
         this.biUser = biUser;
-        init();
-    }
-
-    private void init() {
         cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
+    
 
     @Override
     public String getUUID() {
@@ -135,7 +133,6 @@ public class BuildCubeTask implements CubeTask {
         return -999;
     }
 
-    @Override
     public void setCubeBuildStuffManager(CubeBuildStuffManager cubeBuildStuffManager) {
         this.cubeBuildStuffManager=cubeBuildStuffManager;
     }
