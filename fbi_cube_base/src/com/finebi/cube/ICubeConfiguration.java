@@ -10,4 +10,5 @@ import java.net.URI;
  */
 public interface ICubeConfiguration {
     URI getRootURI();
+    
 }

@@ -21,4 +21,6 @@ public interface CubeTask extends JSONCreator, Serializable {
     void run();
 
     long getUserId();
+
+
 }

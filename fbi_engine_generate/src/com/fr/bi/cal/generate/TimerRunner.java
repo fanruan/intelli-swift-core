@@ -6,7 +6,6 @@ import com.finebi.cube.conf.singletable.BICubeTimeTaskCreator;
 import com.finebi.cube.conf.singletable.TableUpdate;
 import com.finebi.cube.conf.timer.UpdateFrequency;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 
 import java.util.*;
