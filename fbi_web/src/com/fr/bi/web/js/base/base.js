@@ -659,6 +659,22 @@ if (!window.BI) {
         BI[name] = _apply(name)
     });
     _.extend(BI, {
+        getTime: function () {
+            if (window.performance && window.performance.now) {
+                return window.performance.now();
+            } else {
+                if (window.performance && window.performance.webkitNow) {
+                    return window.performance.webkitNow();
+                } else {
+                    if (Date.now) {
+                        return Date.now();
+                    } else {
+                        return new Date().getTime();
+                    }
+                }
+            }
+        },
+
         parseInt: function (number) {
             var radix = 10;
             if (/^0x/g.test(number)) {

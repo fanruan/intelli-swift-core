@@ -525,26 +525,10 @@ BI.Table = BI.inherit(BI.Widget, {
         });
     },
 
-    _getTime: function () {
-        if (window.performance && window.performance.now) {
-            return window.performance.now();
-        } else {
-            if (window.performance && window.performance.webkitNow) {
-                return window.performance.webkitNow();
-            } else {
-                if (Date.now) {
-                    return Date.now();
-                } else {
-                    return new Date().getTime();
-                }
-            }
-        }
-    },
-
     _animateScrollTopTo: function (el, from, to, duration, easing, op) {
         var self = this;
         var onStart = op.onStart, onComplete = op.onComplete, onUpdate = op.onUpdate;
-        var startTime = this._getTime(), _delay, progress = 0, _request;
+        var startTime = BI.getTime(), _delay, progress = 0, _request;
         _cancelTween();
         _startTween();
         var diff = to - from;
@@ -556,7 +540,7 @@ BI.Table = BI.inherit(BI.Widget, {
             if (!progress) {
                 onStart.call();
             }
-            progress = self._getTime() - startTime;
+            progress = BI.getTime() - startTime;
             _tween();
             if (progress >= el.time) {
                 el.time = (progress > el.time) ? progress + _delay - (progress - el.time) : progress + _delay - 1;
