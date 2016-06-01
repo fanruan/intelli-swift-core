@@ -1,5 +1,7 @@
 package com.finebi.cube.pubsub;
 
+import com.finebi.cube.ICubeConfiguration;
+
 /**
  * This class created on 2016/3/15.
  *
