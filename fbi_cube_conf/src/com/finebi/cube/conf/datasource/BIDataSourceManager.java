@@ -39,12 +39,14 @@ public class BIDataSourceManager extends BISystemDataManager<DataSourceCompoundS
     public String persistUserDataName(long key) {
         return managerTag();
     }
+
     @Override
     public DataSourceCompoundService constructValue(Long key) {
         DataSourceCompoundService manager = constructUserManagerValue(key);
         initialUserManager(key, manager);
         return manager;
     }
+
     /**
      * 获得key的value
      * <p/>
@@ -61,7 +63,7 @@ public class BIDataSourceManager extends BISystemDataManager<DataSourceCompoundS
             if (!container.containsKey(key)) {
                 DataSourceCompoundService value = generateAbsentValue(key);
                 try {
-                    if(value!=null) {
+                    if (value != null) {
                         putKeyValue(key, value);
                     }
                     Set<BusinessTable> allTable = BICubeConfigureCenter.getPackageManager().getAllTables(-999);
@@ -197,5 +199,10 @@ public class BIDataSourceManager extends BISystemDataManager<DataSourceCompoundS
     @Override
     public boolean containFieldSource(BIFieldID id) {
         return getInstance().containFieldSource(id);
+    }
+
+    @Override
+    public boolean isRecord(CubeTableSource tableSource) {
+        return getInstance().isRecord(tableSource);
     }
 }

@@ -50,6 +50,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     protected ComplexExpander complexExpander = new ComplexExpander();
     private int maxCol = 7;     //单页最大列数
     private int maxRow = 20;    //单页最大行数
+    private int dimensionRelationIndex = 0;
+    private int targetRelationIndex = 1;
 
     @Override
     public BIDimension[] getDimensions() {
@@ -105,22 +107,22 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convert2TableSourceRelation(relationList);
     }
 
-    private void checkRelationExist(List<BITableRelation> relationList, String did,  String tarId) {
-        BITarget target =  BITravalUtils.getTargetByName(tarId, targets);
-        if (relationList != null && !relationList.isEmpty()){
-            for (int i = 0; i < relationList.size(); i++){
+    private void checkRelationExist(List<BITableRelation> relationList, String did, String tarId) {
+        BITarget target = BITravalUtils.getTargetByName(tarId, targets);
+        if (relationList != null && !relationList.isEmpty()) {
+            for (int i = 0; i < relationList.size(); i++) {
                 BITableRelation r = relationList.get(i);
-                if (i == relationList.size() - 1 && !ComparatorUtils.equals(r.getForeignTable().getTableSource(), target.getStatisticElement().getTableBelongTo().getTableSource())){
+                if (i == relationList.size() - 1 && !ComparatorUtils.equals(r.getForeignTable().getTableSource(), target.getStatisticElement().getTableBelongTo().getTableSource())) {
                     throw new RuntimeException("relation illegal, incorrect foreignTable");
                 }
-                if (!BICubeConfigureCenter.getTableRelationManager().containTableRelationship(getUserId(), r)){
+                if (!BICubeConfigureCenter.getTableRelationManager().containTableRelationship(getUserId(), r)) {
                     throw new RuntimeException("relation not exist");
                 }
             }
         } else {
-            BIDimension dim =  BITravalUtils.getTargetByName(did, dimensions);
+            BIDimension dim = BITravalUtils.getTargetByName(did, dimensions);
             BusinessField dimField = getDimDataColumn(dim, tarId);
-            if (!ComparatorUtils.equals(target.getStatisticElement().getTableBelongTo().getTableSource(), dimField.getTableBelongTo().getTableSource())){
+            if (!ComparatorUtils.equals(target.getStatisticElement().getTableBelongTo().getTableSource(), dimField.getTableBelongTo().getTableSource())) {
                 throw new RuntimeException("relation empty, but source different");
             }
         }
@@ -255,43 +257,45 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 Iterator iterator = dimMap.keys();
                 while (iterator.hasNext()) {
                     String targetId = (String) iterator.next();
-                    JSONObject tar = dimMap.getJSONObject(targetId);
+                    JSONObject targetRelationJo = dimMap.getJSONObject(targetId);
                     Map<String, BusinessField> dimensionMap = new LinkedHashMap<String, BusinessField>();
                     dimensionsMap.put(dimensionId, dimensionMap);
-                    if (tar.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
-                        Object ob = tar.get(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-                        if (ob instanceof JSONObject) {
-                            JSONObject j = (JSONObject) ob;
-                            String fieldId = j.getString("field_id");
+                    if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
+                        if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
+                            JSONObject srcJo = targetRelationJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+                            String fieldId = srcJo.getString("field_id");
                             dimensionMap.put(targetId, BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(fieldId)));
                         }
                     }
-                    if (tar.has("target_relation")) {
+                    if (targetRelationJo.has("target_relation")) {
                         Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
-                        if(relationMap == null) {
+                        if (relationMap == null) {
                             relationMap = new LinkedHashMap<String, List<BITableRelation>>();
                             relationsMap.put(dimensionId, relationMap);
                         }
-                        Object t = tar.get("target_relation");
-                        if (t instanceof JSONArray) {
-                            JSONArray rel = (JSONArray) t;
-                            int lens = rel.length();
-                            List<BITableRelation> relationList = new ArrayList<BITableRelation>();
-                            if (lens == 1) {
-                                String primaryFieldId = rel.optJSONObject(0).optJSONObject("primaryKey").optString("field_id");
-                                String foreignFieldId = rel.optJSONObject(0).optJSONObject("foreignKey").optString("field_id");
-                                if (ComparatorUtils.equals(BIIDUtils.getTableIDFromFieldID(primaryFieldId), BIIDUtils.getTableIDFromFieldID(foreignFieldId))) {
-                                    relationMap.put(targetId, relationList);
-                                    continue;
-                                }
-                            }
-                            for (int j = 0; j < lens; j++) {
-                                relationList.add(BITableRelationHelper.getRelation(rel.optJSONObject(j)));
+                        JSONArray dimensionAndTargetPathsJa = targetRelationJo.getJSONArray("target_relation");
+                        List<BITableRelation> relationList = new ArrayList<BITableRelation>();
+                        //纬度的关联关系
+                        JSONArray dimensionRelationsJa = dimensionAndTargetPathsJa.getJSONArray(dimensionRelationIndex);
+                        String primaryFieldId = dimensionRelationsJa.optJSONObject(0).optJSONObject("primaryKey").optString("field_id");
+                        String foreignFieldId = dimensionRelationsJa.optJSONObject(0).optJSONObject("foreignKey").optString("field_id");
+                        if (ComparatorUtils.equals(BIIDUtils.getTableIDFromFieldID(primaryFieldId), BIIDUtils.getTableIDFromFieldID(foreignFieldId))) {
+                            relationMap.put(targetId, relationList);
+                        } else {
+                            for (int j = 0; j < dimensionRelationsJa.length(); j++) {
+                                relationList.add(BITableRelationHelper.getRelation(dimensionRelationsJa.optJSONObject(j)));
                             }
                             relationMap.put(targetId, relationList);
                         }
+
+
+                        //多对多时指标的关联关系
+                        if (dimensionAndTargetPathsJa.length() > 1) {
+                            JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
+                        }
+
                     } else {
-                        BILogger.getLogger().error("error missing field:" + tar.toString() + this.getClass().getName());
+                        BILogger.getLogger().error("error missing field:" + targetRelationJo.toString() + this.getClass().getName());
                     }
                 }
             }

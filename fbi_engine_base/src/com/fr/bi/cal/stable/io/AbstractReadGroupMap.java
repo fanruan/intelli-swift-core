@@ -320,4 +320,9 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
 	public long nonPrecisionSize() {
 		return size();
 	}
+
+    @Override
+    public int getClassType() {
+        return 0;
+    }
 }
