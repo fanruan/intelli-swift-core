@@ -55,7 +55,6 @@ public class CubeRunner {
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
-//                    if(!(cubeTask instanceof AllTask)&&!(cubeTask instanceof AbstractCubeTask)) {
                         start();
                         try {
                             cubeTask.start();
@@ -69,7 +68,6 @@ public class CubeRunner {
                             setStatue(Status.LOADED);
                             BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                         }
-//                    }
             }
         });
         //设置检查任务
@@ -141,10 +139,10 @@ public class CubeRunner {
 
     private void start() {
         backup();
-//        if (object == null) {
-//            object = new CubeBuildStuffManager(biUser);
-//        }
-//        object.initialCubeStuff();
+        if (object == null) {
+            object = new CubeBuildStuffManager(biUser);
+        }
+        object.initialCubeStuff();
     }
 
     private void backup() {
