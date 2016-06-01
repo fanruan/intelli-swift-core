@@ -32,6 +32,8 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
         }
     }
 
+    
+
     @Override
     public URI getBaseLocation() {
         return baseLocation;

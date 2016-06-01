@@ -201,6 +201,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             self._hideCurrentColumn();
+            self._dealWithPager();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE);
         });
@@ -226,10 +227,22 @@ BI.PageTable = BI.inherit(BI.Widget, {
             });
         });
 
+        this.tipPager = BI.createWidget({
+            type: "bi.label",
+            invisible: false,
+            cls: "page-table-min-pager",
+            width: this._const.scrollWidth,
+            height: this._const.scrollWidth
+        });
+
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
             items: [{
+                el: this.tipPager,
+                right: 0,
+                bottom: 0
+            }, {
                 el: this.pager,
                 right: 0,
                 bottom: 0
@@ -309,6 +322,22 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this._currentColumn && this._currentColumn.destroy();
     },
 
+    _dealWithPager: function () {
+        var o = this.options;
+        var regionSize = this.table.getCalculateRegionColumnSize();
+
+        var sWidth = o.isNeedFreeze === true ? regionSize[1] : regionSize[0];
+
+        if (sWidth <= 200) {
+            this.tipPager.setValue(this.getVPage());
+            this.pager.setVisible(false);
+            this.tipPager.setVisible(true);
+        } else {
+            this.tipPager.setVisible(false);
+            this.pager.setVisible(true);
+        }
+    },
+
     setHPage: function (v) {
         this.hpage = v;
         this.table.setHPage && this.table.setHPage(v);
@@ -367,8 +396,9 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
-        this._hideCurrentColumn();
         this.pager.populate();
+        this._hideCurrentColumn();
+        this._dealWithPager();
     },
 
     destroy: function () {

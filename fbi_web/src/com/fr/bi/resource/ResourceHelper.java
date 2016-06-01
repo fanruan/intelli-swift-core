@@ -1221,6 +1221,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/piechartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/forcebubble.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/crosstable/widget.crosstable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
 
@@ -1622,10 +1623,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/numericalinterval/numericalinterval.css",
 
                 //可以设置参数的下拉框
+                "com/fr/bi/web/css/widget/paramsettingcombo/param2.date.item.css",
                 "com/fr/bi/web/css/widget/paramsettingcombo/param1.date.item.css",
                 "com/fr/bi/web/css/widget/paramsettingcombo/param0.date.item.css",
                 "com/fr/bi/web/css/widget/paramsettingcombo/yearcombo/combo.param.year.css",
                 "com/fr/bi/web/css/widget/paramsettingcombo/datecombo/combo.param.date.css",
+                "com/fr/bi/web/css/widget/paramsettingcombo/datecombo/combo.param.date.css",
+                "com/fr/bi/web/css/widget/paramsettingcombo/dateintervalcombo/combo.param.dateinterval.css",
                 "com/fr/bi/web/css/widget/paramsettingcombo/yearmonthcombo/combo.param.yearmonth.css",
                 "com/fr/bi/web/css/widget/paramsettingcombo/yearseasoncombo/combo.param.yearseason.css",
 
@@ -1751,6 +1755,8 @@ public class ResourceHelper {
                 //所有模板
                 "com/fr/bi/web/css/components/allreports/allreports.css",
                 "com/fr/bi/web/css/components/allreports/allreports.filter.css",
+                "com/fr/bi/web/css/components/allreports/item/allreports.list.item.css",
+                "com/fr/bi/web/css/components/allreports/item/allreports.card.item.css",
 
         };
     }
@@ -2260,6 +2266,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/paramsettingcombo/yearseasoncombo/popup.param.yearseason.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/yearseasoncombo/combo.param.yearseason.js",
 
+                "com/fr/bi/web/js/widget/paramsettingcombo/dateintervalcombo/combo.param.dateinterval.js",
+                "com/fr/bi/web/js/widget/paramsettingcombo/dateintervalcombo/popup.param.dateinterval.js",
+                "com/fr/bi/web/js/widget/paramsettingcombo/param2.date.item.js",
 
                 //下拉复选框
                 "com/fr/bi/web/js/widget/multiselect/trigger/button.checkselected.js",
@@ -2450,6 +2459,9 @@ public class ResourceHelper {
                 //查看所有模板（管理员）
                 "com/fr/bi/web/js/components/allreports/allreports.js",
                 "com/fr/bi/web/js/components/allreports/allreports.filter.js",
+                "com/fr/bi/web/js/components/allreports/allreports.group.js",
+                "com/fr/bi/web/js/components/allreports/item/allreports.list.item.js",
+                "com/fr/bi/web/js/components/allreports/item/allreports.card.item.js",
 
                 //工程配置
                 "com/fr/bi/web/js/config.js"

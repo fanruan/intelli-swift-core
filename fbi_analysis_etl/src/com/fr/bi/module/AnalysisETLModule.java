@@ -60,6 +60,7 @@ public class AnalysisETLModule extends AbstractModule {
         return BIAnalysisETLManagerCenter.getDataSourceManager();
     }
 
+
     @Override
     public BISystemPackageConfigurationProvider getBusiPackManagerProvider() {
         return BIAnalysisETLManagerCenter.getBusiPackManager();

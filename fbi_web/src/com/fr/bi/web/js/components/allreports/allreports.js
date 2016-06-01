@@ -16,6 +16,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.AllReports.superclass._init.apply(this, arguments);
+        var self = this;
         this.hangout = BI.createWidget({
             type: "bi.label",
             text: "",
@@ -23,6 +24,9 @@ BI.AllReports = BI.inherit(BI.Widget, {
         });
         this.filterPane = BI.createWidget({
             type: "bi.all_reports_filter"
+        });
+        this.filterPane.on(BI.AllReportsFilter.EVENT_CHANGE, function(){
+            self._getReportFilterResult();
         });
         this.wrapper = BI.createWidget({
             type: "bi.vtape",
@@ -101,11 +105,95 @@ BI.AllReports = BI.inherit(BI.Widget, {
     },
 
     _createReports: function () {
-        return BI.createWidget({
-            type: "bi.left",
-            cls: "all-reports",
-            items: []
+        this.reportGroup = BI.createWidget({
+            type: "bi.all_reports_group",
+            cls: "all-reports"
         });
+        return this.reportGroup;
+    },
+
+    //过滤reports
+    _getReportFilterResult: function(){
+        var self = this;
+        var filter = this.filterPane.getValue();
+        var departs = filter.departs,
+            roles = filter.roles,
+            users = filter.users,
+            status = filter.status,
+            start = filter.start,
+            end = filter.end;
+        //简单一点的办法就是都过一遍，可能效率太低
+        var reports = [];
+        BI.each(this.reports, function(i, report){
+            if(departs.length > 0){
+                var currDeparts = self._getDepartsByUserId(report.createBy);
+                var isContain = false;
+                BI.some(currDeparts, function(j, d){
+                     if(departs.contains(d)){
+                         return isContain = true;
+                     }
+                });
+                if(isContain === false) {
+                    return;
+                }
+            }
+            if(roles.length > 0) {
+                var currRoles = self._getRolesByUserId(report.createBy);
+                var isContain = false;
+                BI.some(currRoles, function(j, r){
+                    if(roles.contains(r)){
+                        return isContain = true;
+                    }
+                });
+                if(isContain === false) {
+                    return;
+                }
+            }
+            if(users.length > 0) {
+                var isContain = false;
+                BI.some(self.users, function(j, user){
+                    if(user.contains(user.id)){
+                        return isContain = true;
+                    }
+                });
+                if(isContain === false){
+                    return;
+                }
+            }
+            //TODO 状态
+            if(BI.isNotNull(start)) {
+                if(report.lastModify < start){
+                    return;
+                }
+            }
+            if(BI.isNotNull(end)){
+                if(report.lastModify > end){
+                    return;
+                }
+            }
+            reports.push(report);
+        });
+        this.reportGroup.populate(reports, self.roles, self.users);
+    },
+
+    _getDepartsByUserId: function(userId){
+        var departs = [];
+        BI.each(this.roles, function(i, role){
+             if(role.users.contains(userId)) {
+                 departs.push(role.departmentid);
+             }
+        });
+        return departs;
+    },
+
+    _getRolesByUserId: function(userId) {
+        var roles = [];
+        BI.each(this.roles, function(i, role){
+            if(role.users.contains(userId)) {
+                roles.push(role.id);
+            }
+        });
+        return roles;
     },
 
     populate: function () {
@@ -116,10 +204,18 @@ BI.AllReports = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Loading")
         });
         BI.Utils.getAllReportsData(function (data) {
-            var departs = data.departs, roles = data.roles, users = data.users, reports = data.reports;
-            self.filterPane.populate(departs, roles, users);
+            self.departs = data.departs;
+            self.roles = data.roles;
+            self.users = data.users;
+            self.reports = data.reports;
+            self.filterPane.populate(self.departs, self.roles, self.users);
+            self.reportGroup.populate(self.reports, self.roles, self.users);
             mask.destroy();
         });
     }
+});
+BI.extend(BI.AllReports, {
+    SHOW_LIST: 1,
+    SHOW_CARD: 2
 });
 $.shortcut("bi.all_reports", BI.AllReports);

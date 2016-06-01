@@ -22,7 +22,6 @@ public class BICubeConfiguration implements ICubeConfiguration {
     private static String CUBE_FOLDER_NAME_DEFAULT = "Advanced";
     private static String CUBE_TEMP_FOLDER_NAME = ".tcube";
     private static String RANGE_DEFAULT = "default";
-
     public BICubeConfiguration(String range, String cubeFolderName) {
 
         this.range = range;

@@ -83,13 +83,24 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
     },
 
     _createItemsByData: function (values) {
-        var result = [];
+        var self = this, result = [];
         BI.each(values, function (idx, value) {
-            result.push({
-                text: value,
-                value: value,
-                title: value
-            })
+            var group = BI.Utils.getDimensionGroupByID(self.options.dId);
+            if(BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+                var date = new Date(BI.parseInt(value));
+                var text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+                result.push({
+                    text: text,
+                    value: value,
+                    title: text
+                })
+            } else {
+                result.push({
+                    text: value,
+                    value: value,
+                    title: value
+                })
+            }
         });
         return result;
     },
