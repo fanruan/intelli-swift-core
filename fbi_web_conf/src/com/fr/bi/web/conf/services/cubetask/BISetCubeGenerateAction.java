@@ -1,25 +1,18 @@
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeBuildStuffManager;
 import com.finebi.cube.conf.CubeBuildStuffManagerSingleTable;
-import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Iterator;
-import java.util.Set;
 
 public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
 
@@ -35,28 +28,13 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
 
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
-        String connectionName = WebUtils.getHTTPRequestParameter(req, "connectionName");
-        String tableName= WebUtils.getHTTPRequestParameter(req, "tableName");
-        String translations= WebUtils.getHTTPRequestParameter(req, "translations");
-
-
-        BusinessTable businessTable = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
-        businessTable.getTableSource();
+//        String connectionName = WebUtils.getHTTPRequestParameter(req, "connectionName");
+//        String tableName= WebUtils.getHTTPRequestParameter(req, "tableName");
+//        String translations= WebUtils.getHTTPRequestParameter(req, "translations");
+//        BusinessTable businessTable = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
         
-        CubeBuildStuff cubeBuildStuffTest = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
-        BIBusinessTable biBusinessTable = new BIBusinessTable(new BITableID(tableId));
-        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(userId);
-        for (IBusinessPackageGetterService pack : packs) {
-            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
-            while (tIt.hasNext()) {
-                BIBusinessTable table = tIt.next();
-                if (ComparatorUtils.equals(table.getID(),biBusinessTable.getID())) {
-                    biBusinessTable=table;
-                }
-            }
-        }
        
-        
+       //todo kary 优化ETL的更新方式,可能要单独实现ETL更新方法
         if (StringUtils.isEmpty(tableId)){
             CubeBuildStuff cubeBuildStuffManager= new CubeBuildStuffManager(new BIUser(userId));
             CubeTskBuild.CubeBuild(userId,cubeBuildStuffManager);            

@@ -77,7 +77,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
                 //若为ETL,使用ETL的id
-                if (self.model.currentTable.connection_name=="__FR_BI_ETL__"){
+                if (self.model.options.currentTable.connection_name=="__FR_BI_ETL__"){
                     self.model.table.id=self.model.currentTable.id
                 }
                 BI.Utils.generateCubeByTable(self.model.table, function () {

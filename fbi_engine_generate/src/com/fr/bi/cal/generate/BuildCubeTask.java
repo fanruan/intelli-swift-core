@@ -85,7 +85,6 @@ public class BuildCubeTask implements CubeTask {
         try {
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
             BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuildStuff.getTableRelationSet());
-            
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
