@@ -10,10 +10,6 @@
  */
 BI.Table = BI.inherit(BI.Widget, {
 
-    _const: {
-        delta: 120
-    },
-
     _defaultConfig: function () {
         return BI.extend(BI.Table.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-table",
@@ -413,9 +409,13 @@ BI.Table = BI.inherit(BI.Widget, {
         scroll(this.scrollBottomLeft.element, this.scrollTopLeft.element, this.scrollBottomRight.element);
         function scroll(scrollElement, scrollTopElement, otherElement) {
             var fn = function (event, delta, deltaX, deltaY) {
+                var offset = 40;
+                if (event.originalEvent.wheelDelta) {
+                    offset = Math.abs(event.originalEvent.wheelDelta);
+                }
                 if (deltaY === -1 || deltaY === 1) {
                     var old = scrollElement[0].scrollTop;
-                    var scrollTop = otherElement[0].scrollTop - delta * self._const.delta;
+                    var scrollTop = otherElement[0].scrollTop - delta * offset;
                     otherElement[0].scrollTop = scrollTop;
                     scrollElement[0].scrollTop = scrollTop;
                     self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
@@ -810,9 +810,13 @@ BI.Table = BI.inherit(BI.Widget, {
             items: [this.scrollContainer]
         });
         this.scrollContainer.element.mousewheel(function (event, delta, deltaX, deltaY) {
+            var offset = 40;
+            if (event.originalEvent.wheelDelta) {
+                offset = Math.abs(event.originalEvent.wheelDelta);
+            }
             if (deltaY === -1 || deltaY === 1) {
                 var old = self.scrollContainer.element[0].scrollTop;
-                var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * self._const.delta;
+                var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
                 self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
                 if (Math.abs(old - self.scrollContainer.element[0].scrollTop) > 0.1) {
                     event.stopPropagation();
