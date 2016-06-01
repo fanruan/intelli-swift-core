@@ -7,13 +7,13 @@ import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.base.key.BIKey;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.module.BIModule;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.json.JSONException;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
@@ -35,15 +35,6 @@ public class BIModuleUtils {
         return jo;
     }
 
-    public static JSONObject createGroupJSON(long userId) throws JSONException {
-        JSONObject jo = new JSONObject();
-        for (BIModule module : BIModuleManager.getModules()) {
-            BISystemPackageConfigurationProvider provider = module.getBusiPackManagerProvider();
-            jo.join(provider.createGroupJSON(userId));
-        }
-        return jo;
-    }
-
     public static ICubeTableService getTableIndex(BusinessTable td, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
             return childLoaderMap.get(module.getModuleName()).getTableIndex(td.getTableSource());
@@ -51,19 +42,21 @@ public class BIModuleUtils {
         return null;
     }
 
-    public static ICubeTableService getTableIndex(CubeTableSource tableSource, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
+    public static ICubeTableService getTableIndex(CubeTableSource tableSource,  Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
-            return childLoaderMap.get(module.getModuleName()).getTableIndex(tableSource);
+            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
+            try {
+                provider.get
+            } catch (BIKeyAbsentException e) {
+            }
+            if (source != null) {
+                return source;
+            }
+            childLoaderMap.get(module.getModuleName()).getTableIndex(tableSource);
+
         }
         return null;
     }
-
-
-    public static BIKey getFieldIndex(BusinessField column, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
-        ICubeTableService ti = getTableIndex(column.getTableBelongTo(), user, childLoaderMap);
-        return ti == null ? null : ti.getColumnIndex(column);
-    }
-
 
     public static Set<IBusinessPackageGetterService> getAllPacks(long userId) {
         Set<IBusinessPackageGetterService> set = new HashSet<IBusinessPackageGetterService>();
@@ -75,14 +68,40 @@ public class BIModuleUtils {
     }
 
     public static CubeTableSource getSourceByID(BITableID id, BIUser user) {
+        CubeTableSource source = null;
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            CubeTableSource source = null;
-            source = BusinessTableHelper.getTableDataSource(id);
-
+            try {
+                BusinessTable table = provider.getBusinessTable(id);
+                if (table != null){
+                    source = table.getTableSource();
+                }
+            } catch (BIKeyAbsentException e) {
+            }
             if (source != null) {
                 return source;
             }
+        }
+        if (source == null){
+            BINonValueUtils.beyondControl();
+        }
+        return null;
+    }
+
+    public static BusinessField getBusinessFieldById(BIFieldID id) {
+        BusinessField field = null;
+        for (BIModule module : BIModuleManager.getModules()) {
+            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
+            try {
+                field = provider.getBusinessField(id);
+            } catch (BIKeyAbsentException e) {
+            }
+            if (field != null) {
+                return field;
+            }
+        }
+        if (field == null){
+            BINonValueUtils.beyondControl();
         }
         return null;
     }

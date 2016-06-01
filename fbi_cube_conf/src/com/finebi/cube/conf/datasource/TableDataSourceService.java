@@ -26,6 +26,5 @@ public interface TableDataSourceService {
 
     boolean containTableSource(BusinessTable businessTable);
 
-
     Set<BusinessTable> getAllBusinessTable();
 }

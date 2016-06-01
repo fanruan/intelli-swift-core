@@ -2,6 +2,7 @@ package com.fr.bi.web.service.action;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -22,7 +23,9 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
         JSONObject jo = new JSONObject();
         jo.put("id", tableId);
         jo.put("name", BICubeConfigureCenter.getAliasManager().getAliasName(tableId, userId));
-        JSONObject source = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId).getSource().createJSON();
+        AnalysisBusiTable busiTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+        jo.put("describe", busiTable.getDescribe());
+        JSONObject source = busiTable.getSource().createJSON();
         JSONObject table;
         JSONArray items ;
         if (source.has(Constants.ITEMS)){
