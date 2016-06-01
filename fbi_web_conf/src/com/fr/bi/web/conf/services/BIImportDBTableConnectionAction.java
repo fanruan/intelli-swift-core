@@ -11,6 +11,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
@@ -45,11 +46,14 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
         String oldTableString = WebUtils.getHTTPRequestParameter(req, "oldTables");
         Map<String, DBTableSource> newTableSources = getDBSourceMap(newTableString, userId);
         Map<String, DBTableSource> oldTableSources = getDBSourceMap(oldTableString, userId);
-
-
+        Map<String, String> allFieldIdMap = new HashMap<String, String>();
+        JSONObject newTablesJo = new JSONObject(newTableString);
+        JSONObject oldTablesJo = new JSONObject(oldTableString);
+        initFieldIdsMap(allFieldIdMap, newTablesJo);
+        initFieldIdsMap(allFieldIdMap, oldTablesJo);
 
         JSONArray relations = getJSONArrayRelationByTables(
-                new BIImportDBTableConnectionExecutor().getRelationsByTables(newTableSources, oldTableSources, userId));
+                new BIImportDBTableConnectionExecutor().getRelationsByTables(newTableSources, oldTableSources, allFieldIdMap, userId));
         JSONObject translations = getTranslationsByTables(newTableSources);
         JSONObject jo = new JSONObject();
         jo.put("relations", relations);
@@ -109,6 +113,32 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
             }
         }
         return jo;
+    }
+
+    private void initFieldIdsMap(Map<String, String> allFieldIdsMap, JSONObject tablesJson) throws JSONException {
+        Iterator it = tablesJson.keys();
+        while (it.hasNext()) {
+            String tableId = it.next().toString();
+            JSONObject tableJo = tablesJson.getJSONObject(tableId);
+            if (tableJo.has("fields")) {
+                JSONArray fieldsJa = tableJo.optJSONArray("fields");
+                JSONArray stringFieldsJa = fieldsJa.getJSONArray(0);
+                JSONArray numberFieldsJa = fieldsJa.getJSONArray(1);
+                JSONArray dateFieldsJa = fieldsJa.getJSONArray(2);
+                initAllFieldMap(allFieldIdsMap, tableId, stringFieldsJa);
+                initAllFieldMap(allFieldIdsMap, tableId, numberFieldsJa);
+                initAllFieldMap(allFieldIdsMap, tableId, dateFieldsJa);
+            }
+        }
+    }
+
+    private void initAllFieldMap(Map<String, String> allFieldIdsMap, String tableId, JSONArray stringFieldsJa) throws JSONException {
+        for (int i = 0; i < stringFieldsJa.length(); i++) {
+            JSONObject fieldJo = stringFieldsJa.getJSONObject(i);
+            String fieldName = fieldJo.getString("field_name");
+            String fieldId = fieldJo.getString("id");
+            allFieldIdsMap.put(tableId + fieldName, fieldId);
+        }
     }
 
 
