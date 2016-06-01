@@ -1,4 +1,4 @@
-package com.fr.bi.web.conf.services.cubetask;
+package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;

@@ -107,7 +107,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
     private void checkRelationExist(List<BITableRelation> relationList, String did,  String tarId) {
         BITarget target =  BITravalUtils.getTargetByName(tarId, targets);
-        if (relationList != null && relationList.isEmpty()){
+        if (relationList != null && !relationList.isEmpty()){
             for (int i = 0; i < relationList.size(); i++){
                 BITableRelation r = relationList.get(i);
                 if (i == relationList.size() - 1 && !ComparatorUtils.equals(r.getForeignTable().getTableSource(), target.getStatisticElement().getTableBelongTo().getTableSource())){

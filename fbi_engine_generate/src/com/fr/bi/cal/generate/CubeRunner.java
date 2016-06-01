@@ -57,9 +57,11 @@ public class CubeRunner {
                 setStatue(Status.LOADING);
                 start();
                 try {
-                    cubeTask.start();
-                    cubeTask.run();
-                    cubeTask.end(); 
+                    if(!(cubeTask instanceof AllTask)&&!(cubeTask instanceof AbstractCubeTask)) {
+                        cubeTask.start();
+                        cubeTask.run();
+                        cubeTask.end();
+                    }
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 } finally {

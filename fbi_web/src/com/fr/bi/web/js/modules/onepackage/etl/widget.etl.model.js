@@ -2,7 +2,7 @@
  * Created by Young's on 2016/3/11.
  */
 BI.ETLModel = BI.inherit(FR.OB, {
-    _init: function(){
+    _init: function () {
         BI.ETLModel.superclass._init.apply(this, arguments);
         var o = this.options;
         this.id = o.id;
@@ -13,11 +13,11 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.allFields = o.all_fields;
         this.excelView = o.excel_view;
         this.tablesMap = {};
-        if(BI.isNull(this.translations[this.id])){
+        if (BI.isNull(this.translations[this.id])) {
             this.translations[this.id] = BI.isNotNull(o.tableData) ?
-                this._getDistinctTableName(o.tableData.table_name) :  this._getDistinctTableName("ETL");
+                this._getDistinctTableName(o.tableData.table_name) : this._getDistinctTableName("ETL");
         }
-        if(BI.isNull(this.usedFields)){
+        if (BI.isNull(this.usedFields)) {
             this.allTableIds = [];
             this.allTables = [];
             this.isNew = true;
@@ -31,87 +31,88 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.allTables = [finalTable];
     },
 
-    getId: function(){
+    getId: function () {
         return this.id;
     },
 
-    isNewTable: function(){
+    isNewTable: function () {
         return this.isNew;
     },
 
-    getTableData: function(){
+    getTableData: function () {
         return BI.deepClone(this.tableData);
     },
 
-    getFields: function(){
+    getFields: function () {
         return BI.deepClone(this.fields);
     },
 
-    setFields: function(fields){
+    setFields: function (fields) {
         var self = this;
         this.fields = fields;
         this.usedFields = [];
-        BI.each(fields, function(i, fs){
-            BI.each(fs, function(j, field){
+        BI.each(fields, function (i, fs) {
+            BI.each(fs, function (j, field) {
                 self.usedFields.push(field.field_name);
+                field.id = BI.UUID();
                 self.allFields[field.id] = field;
             })
         });
     },
 
-    getAllTables: function(){
+    getAllTables: function () {
         return BI.deepClone(this.allTables);
     },
 
-    getAllTableIds: function(){
+    getAllTableIds: function () {
         return BI.deepClone(this.allTableIds);
     },
 
-    getTablesMap: function(){
+    getTablesMap: function () {
         return BI.deepClone(this.tablesMap);
     },
 
-    getTableById: function(id){
+    getTableById: function (id) {
         return BI.deepClone(this.tablesMap[id]);
     },
 
-    getRelations: function(){
+    getRelations: function () {
         return BI.deepClone(this.relations);
     },
 
-    setRelations: function(relations) {
+    setRelations: function (relations) {
         this.relations = relations;
     },
 
-    getTranslations: function(){
+    getTranslations: function () {
         return BI.deepClone(this.translations);
     },
 
-    setTranslations: function(translations){
+    setTranslations: function (translations) {
         this.translations = translations;
     },
 
-    getUpdateSettings: function() {
+    getUpdateSettings: function () {
         return BI.deepClone(this.updateSettings);
     },
 
-    setUpdateSettings: function(updateSettings) {
+    setUpdateSettings: function (updateSettings) {
         this.updateSettings = updateSettings;
     },
 
-    getUsedFields: function(){
+    getUsedFields: function () {
         return BI.deepClone(this.usedFields);
     },
 
-    setUsedFields: function(usedFields){
+    setUsedFields: function (usedFields) {
         this.usedFields = usedFields;
     },
 
-    getAllFields: function(){
+    getAllFields: function () {
         return BI.deepClone(this.allFields);
     },
 
-    getExcelView: function(){
+    getExcelView: function () {
         return BI.deepClone(this.excelView);
     },
 
@@ -120,7 +121,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var currentPackTables = BI.Utils.getCurrentPackageTables4Conf();
         var isValid = true;
         BI.some(currentPackTables, function (tId, table) {
-            if ( tId !== self.getId() && self.translations[tId] === name && isValid === true) {
+            if (tId !== self.getId() && self.translations[tId] === name && isValid === true) {
                 isValid = false;
                 return true;
             }
@@ -128,9 +129,9 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return isValid;
     },
 
-    addNewTables: function(tables){
+    addNewTables: function (tables) {
         var self = this;
-        BI.each(tables, function(i, table){
+        BI.each(tables, function (i, table) {
             var newIdsMap = {};
             self._addUUID2Tables([table], newIdsMap);
             BI.extend(self.tablesMap, newIdsMap);
@@ -139,22 +140,22 @@ BI.ETLModel = BI.inherit(FR.OB, {
         });
     },
 
-    setExcelView: function(excelView) {
+    setExcelView: function (excelView) {
         this.excelView = excelView;
     },
 
-    removeOneTable: function(tId){
+    removeOneTable: function (tId) {
         var self = this;
-        BI.some(this.allTables, function(i, tables){
+        BI.some(this.allTables, function (i, tables) {
             //需要看是否含有子节点，1、没有直接删除 2、有的话还要把直接子节点拿出来放到allTables里面
-            if(tables[0].id === tId){
+            if (tables[0].id === tId) {
                 self.allTables.splice(i, 1);
                 var childTables = tables[0].tables;
-                BI.each(childTables, function(j, cTable){
+                BI.each(childTables, function (j, cTable) {
                     self.allTables.push([cTable]);
                 });
-                BI.some(self.allTableIds, function(k, id){
-                    if(id === tId){
+                BI.some(self.allTableIds, function (k, id) {
+                    if (id === tId) {
                         self.allTableIds.splice(k, 1);
                         return true;
                     }
@@ -164,29 +165,28 @@ BI.ETLModel = BI.inherit(FR.OB, {
         });
     },
 
-    getTranName: function(){
+    getTranName: function () {
         return this.getTranslations()[this.getId()];
     },
 
-    setTranName: function(name){
+    setTranName: function (name) {
         this.translations[this.getId()] = name;
     },
 
-    saveTableById: function(tId, data){
+    saveTableById: function (tId, data) {
         var self = this;
-        if(BI.isNotNull(data.translations)){
+        if (BI.isNotNull(data.translations)) {
             this.setTranslations(data.translations);
         }
-        if(BI.isNotNull(data.relations)){
+        if (BI.isNotNull(data.relations)) {
             this.setRelations(data.relations);
         }
 
-        if(this.getAllTables().length > 1 &&
-            (data.etl_type === BICst.ETL_OPERATOR.UNION || data.etl_type === BICst.ETL_OPERATOR.JOIN)){
+        if (this.getAllTables().length > 1 &&
+            (data.etl_type === BICst.ETL_OPERATOR.UNION || data.etl_type === BICst.ETL_OPERATOR.JOIN)) {
             var sAllTables = [];
-            BI.each(this.getAllTables(), function(i, tables){
-                if(BI.isNotNull(tables) && tables[0].id === tId ||
-                    !self._getTablesId(data.tables, []).contains(tables[0].id)){
+            BI.each(this.getAllTables(), function (i, tables) {
+                if (BI.isNotNull(tables) && tables[0].id === tId || !self._getTablesId(data.tables, []).contains(tables[0].id)) {
                     sAllTables.push(tables);
                 }
             });
@@ -200,19 +200,19 @@ BI.ETLModel = BI.inherit(FR.OB, {
         self._replaceNodeInAllTables(BI.extend(data, {id: tId}));
         this.tablesMap = {};
         this.allTableIds = [];
-        BI.each(this.getAllTables(), function(i, tables){
+        BI.each(this.getAllTables(), function (i, tables) {
             self._addId2Tables(tables, self.tablesMap);
             self.allTableIds = self.getAllTableIds().concat(self._getTablesId(tables, []));
         });
     },
 
-    _getDistinctTableName: function(name){
+    _getDistinctTableName: function (name) {
         var self = this;
         var allTableNameTrans = [];
         var currentPackTables = BI.Utils.getCurrentPackageTables4Conf();
         var translations = this.getTranslations();
-        BI.each(currentPackTables, function(tid, table){
-            if(tid !== self.getId()){
+        BI.each(currentPackTables, function (tid, table) {
+            if (tid !== self.getId()) {
                 allTableNameTrans.push({name: translations[tid]});
             }
         });
@@ -220,11 +220,11 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     //自己有id的table使用原来的
-    _addId2Tables: function(tables, ids){
+    _addId2Tables: function (tables, ids) {
         var self = this;
-        BI.each(tables, function(i, table){
+        BI.each(tables, function (i, table) {
             var id = table.id || BI.UUID();
-            if(BI.isNotNull(table.tables)){
+            if (BI.isNotNull(table.tables)) {
                 self._addId2Tables(tables[i].tables, ids);
                 tables[i] = BI.extend(table, {
                     id: id,
@@ -244,11 +244,11 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     //给tables添加新的uuid
-    _addUUID2Tables: function(tables, ids){
+    _addUUID2Tables: function (tables, ids) {
         var self = this;
-        BI.each(tables, function(i, table){
+        BI.each(tables, function (i, table) {
             var id = BI.UUID();
-            if(BI.isNotNull(table.tables)){
+            if (BI.isNotNull(table.tables)) {
                 self._addUUID2Tables(tables[i].tables, ids);
                 tables[i] = BI.extend(table, {
                     id: id,
@@ -267,14 +267,14 @@ BI.ETLModel = BI.inherit(FR.OB, {
         });
     },
 
-    _replaceNode: function(tables, newNode){
+    _replaceNode: function (tables, newNode) {
         var self = this;
-        BI.some(tables, function(i, table){
-            if(table.id === newNode.id){
+        BI.some(tables, function (i, table) {
+            if (table.id === newNode.id) {
                 tables[i] = newNode;
                 return true;
             }
-            if(BI.isNotNull(table.tables)){
+            if (BI.isNotNull(table.tables)) {
                 tables[i].tables = self._replaceNode(table.tables, newNode);
             }
 
@@ -282,19 +282,19 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return tables;
     },
 
-    _replaceNodeInAllTables: function(newNode){
+    _replaceNodeInAllTables: function (newNode) {
         var self = this;
         var allTables = BI.deepClone(this.getAllTables());
-        BI.each(allTables, function(i, tables){
+        BI.each(allTables, function (i, tables) {
             allTables[i] = self._replaceNode(tables, newNode);
         });
         this.allTables = allTables;
     },
 
-    _getTablesId: function(tables, tableIds){
+    _getTablesId: function (tables, tableIds) {
         var self = this;
-        BI.each(tables, function(i, table){
-            if(BI.isNotNull(table.tables)){
+        BI.each(tables, function (i, table) {
+            if (BI.isNotNull(table.tables)) {
                 tableIds = self._getTablesId(table.tables, tableIds);
             }
             tableIds.push(table.id);
@@ -302,7 +302,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return tableIds;
     },
 
-    getValue: function(){
+    getValue: function () {
         var finalTable = this.getAllTables()[0][0];
         var data = {
             id: this.getId(),

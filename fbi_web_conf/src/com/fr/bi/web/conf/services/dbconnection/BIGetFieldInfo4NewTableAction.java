@@ -22,11 +22,11 @@ public class BIGetFieldInfo4NewTableAction extends AbstractBIConfigureAction {
         String tables = WebUtils.getHTTPRequestParameter(req, "tables");
         JSONArray tablesJA = new JSONArray(tables);
         JSONArray tablesWithFields = new JSONArray();
-        for(int i = 0; i < tablesJA.length(); i++){
+        for (int i = 0; i < tablesJA.length(); i++) {
             JSONObject table = tablesJA.getJSONObject(i);
             CubeTableSource source = TableSourceFactory.createTableSource(table, userId);
             JSONObject data = source.createJSON();
-            if(table.has("id")){
+            if (table.has("id")) {
                 formatTableDataFields(table.getString("id"), data);
             }
             tablesWithFields.put(data);
@@ -41,19 +41,20 @@ public class BIGetFieldInfo4NewTableAction extends AbstractBIConfigureAction {
 
     /**
      * 最外层的fields信息修改
+     *
      * @param tableId
      * @param tableData
      * @throws Exception
      */
-    private void formatTableDataFields(String tableId, JSONObject tableData) throws Exception{
+    private void formatTableDataFields(String tableId, JSONObject tableData) throws Exception {
         JSONArray fields = tableData.getJSONArray("fields");
         JSONArray newFields = new JSONArray();
-        for(int i = 0; i < fields.length(); i++){
+        for (int i = 0; i < fields.length(); i++) {
             JSONArray fs = fields.getJSONArray(i);
             JSONArray nFields = new JSONArray();
-            for(int j = 0; j < fs.length(); j++){
+            for (int j = 0; j < fs.length(); j++) {
                 JSONObject field = fs.getJSONObject(j);
-                field.put("id", tableId + field.getString("field_name"));
+//                field.put("id", tableId + field.getString("field_name"));
                 field.put("table_id", tableId);
                 nFields.put(field);
             }
