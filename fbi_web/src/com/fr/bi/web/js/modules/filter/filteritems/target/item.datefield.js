@@ -113,11 +113,11 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 break;
             case BICst.FILTER_DATE.BELONG_WIDGET_VALUE:
             case BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE:
-                this._createWidgetTab([BICst.WIDGET.DATE, BICst.WIDGET.YEAR, BICst.WIDGET.QUARTER, BICst.WIDGET.MONTH, BICst.WIDGET.YMD], filterValue);
+                this._createWidgetTab([BICst.WIDGET.DATE, BICst.WIDGET.YEAR, BICst.WIDGET.QUARTER, BICst.WIDGET.MONTH, BICst.WIDGET.YMD], filterValue, false);
                 break;
             case BICst.FILTER_DATE.LATER_THAN:
             case BICst.FILTER_DATE.EARLY_THAN:
-                this._createWidgetTab([BICst.WIDGET.YMD], filterValue);
+                this._createWidgetTab([BICst.WIDGET.YMD], filterValue, true);
                 break;
             case BICst.FILTER_DATE.EQUAL_TO:
             case BICst.FILTER_DATE.NOT_EQUAL_TO:
@@ -132,11 +132,12 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterWidgetContainer.addItem(this.filterWidget);
     },
 
-    _createWidgetTab: function(opt, value){
+    _createWidgetTab: function(opt, value, pointOrInterval){
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.target_date_tab",
-            dateWidgetType: opt
+            dateWidgetType: opt,
+            isTimePoint: pointOrInterval
         });
         this.filterWidget.on(BI.Tab.EVENT_CHANGE, function(){
             self._setNodeData({filter_value : this.getValue()});

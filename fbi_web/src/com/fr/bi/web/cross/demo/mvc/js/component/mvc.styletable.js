@@ -134,7 +134,7 @@ StyleTableView = BI.inherit(BI.View, {
                 }, {type: "bi.page_table_cell", text: 11002}]
             }, {
                 type: "bi.page_table_cell",
-                text: "节点1",
+                text: "节点2",
                 children: [{
                     type: "bi.page_table_cell",
                     text: "子节点1",
@@ -356,11 +356,11 @@ StyleTableView = BI.inherit(BI.View, {
             type: "bi.style_table",
             color: "#0088cc",
             el: {
-                type: "bi.sequence_table",
-                sequence: {
-                    type: "bi.sequence_table_tree_number"
-                },
                 el: {
+                    type: "bi.sequence_table",
+                    sequence: {
+                        type: "bi.sequence_table_tree_number"
+                    },
                     el: {
                         el: {
                             el: {

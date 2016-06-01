@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class BINationDataFactory {
     public static CubeTableSource createTablePerson() {
-        BINationDataSource source = new BINationDataSource();
+        BINationDataSourceTool source = new BINationDataSourceTool();
         List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource(source, "id", DBConstant.CLASS.LONG, 255));
         columns.add(new BICubeFieldSource(source, "name", DBConstant.CLASS.STRING, 255));
@@ -48,7 +48,7 @@ public class BINationDataFactory {
     }
 
     public static CubeTableSource createTableNation() {
-        BINationDataSource source = new BINationDataSource();
+        BINationDataSourceTool source = new BINationDataSourceTool();
         List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource(source, "id", DBConstant.CLASS.LONG, 255));
         columns.add(new BICubeFieldSource(source, "name", DBConstant.CLASS.STRING, 10));

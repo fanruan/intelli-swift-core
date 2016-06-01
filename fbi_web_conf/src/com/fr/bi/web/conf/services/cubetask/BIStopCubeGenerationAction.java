@@ -2,6 +2,8 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.build.CubeBuildStuff;
+import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -23,14 +25,9 @@ public class BIStopCubeGenerationAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
 
         long userId = ServiceUtils.getCurrentUserID(req);
-
         BICubeManagerProvider cubeManager = BICubeConfigureCenter.getCubeManager();
-//        if (BIPackUtils.isNoPackageChange(userId) && BIPackUtils.isNoGeneratingChange(userId)) {
-//            cubeManager.addTask(new AllTask(userId), userId);
-//        } else {
-//            cubeManager.addTask(new CheckTask(userId), userId);
-//        }
-        cubeManager.addTask(new BuildCubeTask(new BIUser(userId)), userId);
+        CubeBuildStuff cubeBuildStuff=new CubeBuildStuffManager(new BIUser(userId));
+        cubeManager.addTask(new BuildCubeTask(new BIUser(userId),cubeBuildStuff), userId);
     }
 
 }

@@ -110,10 +110,10 @@ public abstract class BIAbstractWidget implements BIWidget {
         int x = 0, y = 0, width = 0, height = 0;
         if (jo.has("bounds")) {
             JSONObject bounds = jo.getJSONObject("bounds");
-            x = bounds.getInt("left");
-            y = bounds.getInt("top");
-            width = bounds.getInt("width");
-            height = bounds.getInt("height");
+            x = bounds.optInt("left", 0);
+            y = bounds.optInt("top", 0);
+            width = bounds.optInt("width", 0);
+            height = bounds.optInt("height", 0);
         }
         rect.setBounds(x, y, width, height);
         if (jo.has("name")) {

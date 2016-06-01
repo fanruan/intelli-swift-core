@@ -20,6 +20,4 @@ public class SumKey extends SummaryKey {
     public int getSummaryType() {
         return BIReportConstant.SUMMARY_TYPE.SUM;
     }
-
-
 }

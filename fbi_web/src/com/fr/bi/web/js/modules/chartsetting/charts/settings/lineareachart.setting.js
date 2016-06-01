@@ -273,7 +273,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
             lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Horizontal_Text"),
+                text: BI.i18nText("BI-Category_Axis"),
                 cls: "line-title"
             }, {
                 type: "bi.left",
