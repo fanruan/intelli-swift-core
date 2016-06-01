@@ -1,9 +1,9 @@
 package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.build.CubeBuildStuff;
-import com.finebi.cube.conf.build.CubeBuildStuffManager;
-import com.finebi.cube.conf.build.CubeBuildStuffManagerSingleTable;
+import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.CubeBuildStuffManager;
+import com.finebi.cube.conf.CubeBuildStuffManagerSingleTable;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
