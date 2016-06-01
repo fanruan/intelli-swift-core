@@ -23,7 +23,8 @@ public class BIImportDBTableConnectionExecutor {
 
 
     protected Set<BITableRelation> getRelationsByTables(Map<String, DBTableSource> newTableSources,
-                                                        Map<String, DBTableSource> allTableSources, long userId) throws Exception {
+                                                        Map<String, DBTableSource> allTableSources,
+                                                        Map<String, String> allFieldIdMap, long userId) throws Exception {
         Map<String, Connection> connMap = new HashMap<String, Connection>();
         Map<String, DBTableSource> oldTableSources = new HashMap<String, DBTableSource>(allTableSources);//已经在包内的表
         allTableSources.putAll(newTableSources);
@@ -49,17 +50,17 @@ public class BIImportDBTableConnectionExecutor {
                         if (isEqual(newAddedTable, foreignField, connectionName)) {//如果当前表与新表关联,则加入关联
                             relationsSet.add(new BITableRelation(
                                     new BIBusinessField(tableID2Table.getKey(),
-                                            currentTableRelation.getKey(), new BIFieldID(tableID2Table.getKey() + currentTableRelation.getKey())),
+                                            currentTableRelation.getKey(), new BIFieldID(allFieldIdMap.get(tableID2Table.getKey() + currentTableRelation.getKey()))),
                                     new BIBusinessField(newAddedTableMap.getKey(),
-                                            foreignField.getFieldName(), new BIFieldID(newAddedTableMap.getKey() + foreignField.getFieldName()))));
+                                            foreignField.getFieldName(), new BIFieldID(allFieldIdMap.get(newAddedTableMap.getKey() + foreignField.getFieldName())))));
                         } else if (ComparatorUtils.equals(currentTable, newAddedTable)) {//如果当前表与新表不关联,但是当前表与当前新表相同
                             for (Map.Entry<String, DBTableSource> oldEntry : oldTableSources.entrySet()) {//对所有表进行
                                 if (isEqual(oldEntry.getValue(), foreignField, connectionName)) {
                                     relationsSet.add(new BITableRelation(
                                             new BIBusinessField(newAddedTableMap.getKey(),
-                                                    foreignField.getFieldName(), new BIFieldID(newAddedTableMap.getKey() + foreignField.getFieldName())),
+                                                    foreignField.getFieldName(), new BIFieldID(allFieldIdMap.get(newAddedTableMap.getKey() + foreignField.getFieldName()))),
                                             new BIBusinessField(oldEntry.getKey(),
-                                                    currentTableRelation.getKey(), new BIFieldID(oldEntry.getKey() + currentTableRelation.getKey()))));
+                                                    currentTableRelation.getKey(), new BIFieldID(allFieldIdMap.get(oldEntry.getKey() + currentTableRelation.getKey())))));
                                 }
                             }
                         }
