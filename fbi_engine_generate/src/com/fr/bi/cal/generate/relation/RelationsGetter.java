@@ -10,7 +10,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
-import com.fr.bi.conf.utils.BIPackUtils;
+import com.finebi.cube.conf.utils.BIPackUtils;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;

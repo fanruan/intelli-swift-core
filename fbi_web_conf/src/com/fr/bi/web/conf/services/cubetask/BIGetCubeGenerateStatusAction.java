@@ -5,7 +5,7 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
-import com.fr.bi.conf.utils.BIPackUtils;
+import com.finebi.cube.conf.utils.BIPackUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;

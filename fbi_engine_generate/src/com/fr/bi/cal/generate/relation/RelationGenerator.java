@@ -8,7 +8,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.relation.basiclinkindex.LinkBasicIndexEntry;
 import com.fr.bi.cal.generate.relation.firstlinkindex.LinkFirstIndexEntry;
 import com.fr.bi.cal.generate.relation.inuserelation.LinkInUseIndexEntry;
-import com.fr.bi.conf.utils.BIPackUtils;
+import com.finebi.cube.conf.utils.BIPackUtils;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.DateUtils;
