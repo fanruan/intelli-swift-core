@@ -1,4 +1,4 @@
-package com.finebi.cube.conf.build;
+package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.relation.BITableRelation;

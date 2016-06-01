@@ -75,4 +75,5 @@ public interface ICubeColumnIndexReader<T> {
 
     int sizeOfGroup();
 
+    int getClassType();
 }

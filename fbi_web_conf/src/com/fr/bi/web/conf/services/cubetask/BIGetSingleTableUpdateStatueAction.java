@@ -37,7 +37,7 @@ public class BIGetSingleTableUpdateStatueAction extends
             BusinessTable table = new BIBusinessTable("", "");
             table.parseJSON(new JSONObject(tableString));
 
-//            boolean hasTask = BICubeConfigureCenter.getCubeManager().hasTask(new SingleTableTask(table, userId), userId);
+//            boolean hasTask = CubeGenerationManager.getCubeManager().hasTask(new SingleTableTask(table, userId), userId);
 //            WebUtils.printAsJSON(res, new JSONObject().put("hasTask", hasTask));
         }
         WebUtils.printAsString(res, "table is not defined");

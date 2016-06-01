@@ -68,7 +68,7 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     private void recordTableInfo() {
-        if (tableSource.getSourceID().equals("2d023b15")) {
+        if (tableSource.getSourceID().equals("4b97fa8f")) {
             System.out.println("fine");
         }
         ICubeFieldSource[] columns = getFieldsArray();

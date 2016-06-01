@@ -3,7 +3,8 @@
  */
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
+
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -26,7 +27,7 @@ public class BICheckCubeStatusAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        WebUtils.printAsJSON(res, new JSONObject().put("status", BICubeConfigureCenter.getCubeManager().checkCubeStatus(userId)));
+        WebUtils.printAsJSON(res, new JSONObject().put("status", CubeGenerationManager.getCubeManager().checkCubeStatus(userId)));
     }
 
 }

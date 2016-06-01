@@ -1,7 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.build.CubeBuildStuff;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.generate.relation.RelationGenerator;

@@ -3,17 +3,17 @@ package com.fr.bi.conf.data.source.operator.create;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -179,6 +179,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         return index;
     }
 
+
     private int rtravel(Traversal<BIDataValue> travel, ICubeTableService lti, int rlen, int index, GroupValueIndex gvi, Object[] rvalues, int lleftCount) {
         if (gvi == null || gvi.getRowsCountWithData() == 0) {
             for (int j = 0; j < rlen; j++) {
@@ -228,7 +229,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             for (int j = 0; j < left.size(); j++) {
                 Object[] key = getter.get(j).createKey(1);
                 key[0] = lvalues[j] instanceof Date ? ((Date) lvalues[j]).getTime() : lvalues[j];
-                GroupValueIndex rgvi = key[0] == null ? null : getter.get(j).getGroupIndex(key)[0];
+                ICubeColumnIndexReader reader = getter.get(j);
+                GroupValueIndex rgvi = key[0] == null ? null : reader.getGroupIndex(key)[0];
                 if (rgvi == null) {
                     gvi = null;
                     break;

@@ -1,7 +1,6 @@
 package com.fr.bi.cal.generate.relation.basiclinkindex;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.log.BIRecord;
@@ -36,7 +35,7 @@ public class LinkBasicIndexEntry implements CubeGenerator {
         BILogger.getLogger().info("Prepare Basic Relations");
         long start = System.currentTimeMillis();
         List<LinkBasicIndexManagerAndLoader> threadList = new ArrayList<LinkBasicIndexManagerAndLoader>();
-        Set<CubeTableSource> tableSet = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap().keySet();
+        Set<CubeTableSource> tableSet = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap().keySet();
         BIRecord log = BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId());
         for (CubeTableSource key : tableSet) {
             try {
