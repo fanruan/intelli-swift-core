@@ -1,7 +1,7 @@
 package com.finebi.cube.conf;
 
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
@@ -26,9 +26,9 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
     public CubeBuildStuffManagerTableSource(CubeTableSource cubeTableSource, ICubeConfiguration cubeConfiguration, long userId) {
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = cubeConfiguration;
-        Set<CubeTableSource> sourceSet=new HashSet<CubeTableSource>();
+        Set<CubeTableSource> sourceSet = new HashSet<CubeTableSource>();
         sourceSet.add(cubeTableSource);
-        this.allSingleSources=set2Set(calculateTableSource(sourceSet));
+        this.allSingleSources = set2Set(calculateTableSource(sourceSet));
         init();
     }
 
@@ -39,14 +39,13 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
 
     public CubeBuildStuffManagerTableSource(CubeTableSource cubeTableSource, long userId) {
         this.biUser = new BIUser(userId);
-        this.cubeConfiguration= BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-        Set<CubeTableSource> sourceSet=new HashSet<CubeTableSource>();
+        this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        Set<CubeTableSource> sourceSet = new HashSet<CubeTableSource>();
         sourceSet.add(cubeTableSource);
-        this.allSingleSources=set2Set(calculateTableSource(sourceSet));
+        this.allSingleSources = set2Set(calculateTableSource(sourceSet));
         init();
     }
 
-    
 
     public static Set<CubeTableSource> set2Set(Set<List<Set<CubeTableSource>>> set) {
         Set<CubeTableSource> result = new HashSet<CubeTableSource>();
@@ -59,6 +58,7 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
         }
         return result;
     }
+
     private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
         Iterator<CubeTableSource> it = tableSources.iterator();
         Set<List<Set<CubeTableSource>>> depends = new HashSet<List<Set<CubeTableSource>>>();
@@ -68,11 +68,12 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
         }
         return depends;
     }
+
     @Override
     public Set<BITableSourceRelationPath> getRelationPaths() {
         return new HashSet<BITableSourceRelationPath>();
     }
-    
+
 
     @Override
     public Set<CubeTableSource> getAllSingleSources() {
@@ -104,5 +105,5 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
         return new HashSet<BITableRelation>();
     }
 
-    
+
 }

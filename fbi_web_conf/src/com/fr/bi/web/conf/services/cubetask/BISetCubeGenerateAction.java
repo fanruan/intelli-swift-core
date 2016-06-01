@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeBuildStuffManager;
+import com.finebi.cube.conf.CubeBuildStuffManagerSingleTable;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.BITableID;
