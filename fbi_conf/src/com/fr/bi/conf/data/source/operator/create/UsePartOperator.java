@@ -72,7 +72,7 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
         for (IPersistentTable t : tables) {
             for (PersistentField c : t.getFieldList()) {
                 if (!uselessFields.contains(c.getFieldName())) {
-                    persistentTable.addColumn(new PersistentField(c.getFieldName(), c.getType()));
+                    persistentTable.addColumn(new PersistentField(c.getFieldName(), c.getSqlType()));
                 }
             }
         }

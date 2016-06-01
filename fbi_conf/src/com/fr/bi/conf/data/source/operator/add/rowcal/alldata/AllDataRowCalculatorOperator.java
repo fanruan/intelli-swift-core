@@ -89,7 +89,7 @@ public class AllDataRowCalculatorOperator extends RowCalculatorOperator{
 	}
 
 	@Override
-	protected int getClassType(){
-		return DBConstant.CLASS.DOUBLE;
+	protected int getSqlType(){
+		return java.sql.Types.DOUBLE;
 	}
 }
