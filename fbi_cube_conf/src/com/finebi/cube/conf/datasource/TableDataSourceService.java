@@ -26,5 +26,7 @@ public interface TableDataSourceService {
 
     boolean containTableSource(BusinessTable businessTable);
 
+    boolean isRecord(CubeTableSource tableSource);
+
     Set<BusinessTable> getAllBusinessTable();
 }

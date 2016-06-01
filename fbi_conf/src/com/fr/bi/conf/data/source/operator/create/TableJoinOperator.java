@@ -7,7 +7,6 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
@@ -180,22 +179,6 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         return index;
     }
 
-    private Object[] convert(Object[] value, int classType) {
-        for (int i = 0; i < value.length; i++) {
-            switch (classType) {
-                case DBConstant.CLASS.INTEGER:
-
-            }
-        }
-        return null;
-    }
-
-    private Object[] convertInt(Object[] value) {
-        for (int i = 0; i < value.length; i++) {
-//            value[i] = BITypeUtils.convert();
-        }
-        return null;
-    }
 
     private int rtravel(Traversal<BIDataValue> travel, ICubeTableService lti, int rlen, int index, GroupValueIndex gvi, Object[] rvalues, int lleftCount) {
         if (gvi == null || gvi.getRowsCountWithData() == 0) {
@@ -246,7 +229,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             for (int j = 0; j < left.size(); j++) {
                 Object[] key = getter.get(j).createKey(1);
                 key[0] = lvalues[j] instanceof Date ? ((Date) lvalues[j]).getTime() : lvalues[j];
-                GroupValueIndex rgvi = key[0] == null ? null : getter.get(j).getGroupIndex(key)[0];
+                ICubeColumnIndexReader reader = getter.get(j);
+                GroupValueIndex rgvi = key[0] == null ? null : reader.getGroupIndex(key)[0];
                 if (rgvi == null) {
                     gvi = null;
                     break;

@@ -119,4 +119,8 @@ public class CubeLinkedHashMap extends LinkedHashMap implements
 	}
 
 
+    @Override
+    public int getClassType() {
+        return 0;
+    }
 }
