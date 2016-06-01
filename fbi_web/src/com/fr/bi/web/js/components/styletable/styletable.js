@@ -9,9 +9,9 @@ BI.StyleTable = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.StyleTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-style1-table",
+            baseCls: "bi-style-table",
             el: {
-                type: "bi.sequence_table"
+                type: "bi.page_table"
             },
 
             color: null,
@@ -51,7 +51,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         this.table = BI.createWidget(o.el, {
-            type: "bi.sequence_table",
+            type: "bi.page_table",
             element: this.element,
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
