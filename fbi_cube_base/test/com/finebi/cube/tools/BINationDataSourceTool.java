@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * Created by wuk on 16/5/17.
  */
-public class BINationDataSource extends AbstractCubeTableSource{
+public class BINationDataSourceTool extends AbstractCubeTableSource{
     public String sourceID;
     public List<ICubeFieldSource> fieldList;
     public int rowCount;

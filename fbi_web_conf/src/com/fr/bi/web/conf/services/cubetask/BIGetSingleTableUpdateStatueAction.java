@@ -3,10 +3,8 @@
  */
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.generate.SingleTableTask;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -39,8 +37,8 @@ public class BIGetSingleTableUpdateStatueAction extends
             BusinessTable table = new BIBusinessTable("", "");
             table.parseJSON(new JSONObject(tableString));
 
-            boolean hasTask = BICubeConfigureCenter.getCubeManager().hasTask(new SingleTableTask(table, userId), userId);
-            WebUtils.printAsJSON(res, new JSONObject().put("hasTask", hasTask));
+//            boolean hasTask = BICubeConfigureCenter.getCubeManager().hasTask(new SingleTableTask(table, userId), userId);
+//            WebUtils.printAsJSON(res, new JSONObject().put("hasTask", hasTask));
         }
         WebUtils.printAsString(res, "table is not defined");
     }

@@ -1755,6 +1755,8 @@ public class ResourceHelper {
                 //所有模板
                 "com/fr/bi/web/css/components/allreports/allreports.css",
                 "com/fr/bi/web/css/components/allreports/allreports.filter.css",
+                "com/fr/bi/web/css/components/allreports/item/allreports.list.item.css",
+                "com/fr/bi/web/css/components/allreports/item/allreports.card.item.css",
 
         };
     }
@@ -2457,6 +2459,9 @@ public class ResourceHelper {
                 //查看所有模板（管理员）
                 "com/fr/bi/web/js/components/allreports/allreports.js",
                 "com/fr/bi/web/js/components/allreports/allreports.filter.js",
+                "com/fr/bi/web/js/components/allreports/allreports.group.js",
+                "com/fr/bi/web/js/components/allreports/item/allreports.list.item.js",
+                "com/fr/bi/web/js/components/allreports/item/allreports.card.item.js",
 
                 //工程配置
                 "com/fr/bi/web/js/config.js"
