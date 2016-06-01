@@ -2,6 +2,7 @@ package com.fr.bi.cal.generate;
 
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.singletable.BICubeTimeTaskCreator;
 import com.finebi.cube.conf.singletable.TableUpdate;
 import com.finebi.cube.conf.timer.UpdateFrequency;
@@ -43,7 +44,7 @@ public class TimerRunner {
 
                 @Override
                 public void run() {
-                    BICubeConfigureCenter.getCubeManager().addTask(new AllTask(biUser.getUserId()), biUser.getUserId());
+                    CubeGenerationManager.getCubeManager().addTask(new AllTask(biUser.getUserId()), biUser.getUserId());
                 }
 
             }, startDate, scheduleTime);
@@ -58,7 +59,7 @@ public class TimerRunner {
                     return new TimerTask() {
                         @Override
                         public void run() {
-                            BICubeConfigureCenter.getCubeManager().addTask(new SingleTableTask(action.getTableKey(), biUser.getUserId()), biUser.getUserId());
+                            CubeGenerationManager.getCubeManager().addTask(new SingleTableTask(action.getTableKey(), biUser.getUserId()), biUser.getUserId());
                         }
                     };
                 }

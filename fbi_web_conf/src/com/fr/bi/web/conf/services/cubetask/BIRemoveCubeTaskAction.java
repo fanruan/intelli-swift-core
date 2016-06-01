@@ -3,7 +3,8 @@
  */
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
+
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.web.utils.WebUtils;
@@ -25,7 +26,7 @@ public class BIRemoveCubeTaskAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         String id = WebUtils.getHTTPRequestParameter(req, "id");
-        BICubeConfigureCenter.getCubeManager().removeTask(id, userId);
+        CubeGenerationManager.getCubeManager().removeTask(id, userId);
     }
 
 }

@@ -49,9 +49,6 @@ public class BICubeConfigureCenter {
         return StableFactory.getMarkedObject(BIDataSourceManagerProvider.XML_TAG, BIDataSourceManagerProvider.class);
     }
 
-    public static BICubeManagerProvider getCubeManager() {
-        return StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
-    }
 
     public static SingleTableUpdateManager getTableUpdateManager() {
         return StableFactory.getMarkedObject(SingleTableUpdateManager.XML_TAG, SingleTableUpdateManager.class);
@@ -60,4 +57,6 @@ public class BICubeConfigureCenter {
     public static UpdateFrequencyManager getTableUpdateFreguency() {
         return StableFactory.getMarkedObject(UpdateFrequencyManager.XML_TAG, UpdateFrequencyManager.class);
     }
+
+
 }

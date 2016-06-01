@@ -1,6 +1,6 @@
 package com.fr.bi.cal;
 
-import com.finebi.cube.conf.build.CubeBuildStuffManager;
+import com.finebi.cube.conf.CubeBuildStuffManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.CubeRunner;
 import com.fr.bi.cal.generate.TimerRunner;
