@@ -8,10 +8,12 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.memory.MemoryCubeFile;
 import com.fr.bi.cal.stable.tableindex.index.BITableIndex;
 import com.fr.bi.conf.utils.BIModuleManager;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -72,12 +74,12 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
-        return null;
+        return BIModuleUtils.getTableIndex(tableSource, childLoaderMap);
     }
 
     @Override
     public BIKey getFieldIndex(BusinessField column) {
-        return null;
+        return new IndexKey(column.getFieldName());
     }
 
     @Override
