@@ -10,6 +10,7 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.DateUtils;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -140,7 +141,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
     private Object convertNumber(Number value) {
         switch (columnType){
             case DBConstant.COLUMN.STRING:{
-                return value.toString();
+                return GeneralUtils.objectToString(value);
             }
             case DBConstant.COLUMN.DATE: {
                 return value.longValue();
