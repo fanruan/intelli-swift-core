@@ -3,17 +3,18 @@ package com.fr.bi.conf.data.source.operator.create;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -177,6 +178,23 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             index = rtravel(travel, lti, rlen, index, gvi, rvalues, lleftCount);
         }
         return index;
+    }
+
+    private Object[] convert(Object[] value, int classType) {
+        for (int i = 0; i < value.length; i++) {
+            switch (classType) {
+                case DBConstant.CLASS.INTEGER:
+
+            }
+        }
+        return null;
+    }
+
+    private Object[] convertInt(Object[] value) {
+        for (int i = 0; i < value.length; i++) {
+//            value[i] = BITypeUtils.convert();
+        }
+        return null;
     }
 
     private int rtravel(Traversal<BIDataValue> travel, ICubeTableService lti, int rlen, int index, GroupValueIndex gvi, Object[] rvalues, int lleftCount) {

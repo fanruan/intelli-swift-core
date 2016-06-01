@@ -1,6 +1,9 @@
 package com.finebi.cube.structure.column;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.input.ICubeDoubleReaderWrapperBuilder;
+import com.finebi.cube.data.input.ICubeIntegerReaderWrapperBuilder;
+import com.finebi.cube.data.input.ICubeLongReaderWrapperBuilder;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.BIResourceInvalidException;
@@ -8,9 +11,11 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.group.ICubeGroupDataService;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
 
 import java.util.Comparator;
 
@@ -172,5 +177,19 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     @Override
     public boolean isEmpty() {
         return indexDataService.isEmpty();
+    }
+
+    @Override
+    public int getClassType() {
+        if (ComparatorUtils.equals(ICubeLongReaderWrapperBuilder.FRAGMENT_TAG, currentLocation.getFragment())) {
+            return DBConstant.CLASS.LONG;
+        }
+        if (ComparatorUtils.equals(ICubeIntegerReaderWrapperBuilder.FRAGMENT_TAG, currentLocation.getFragment())) {
+            return DBConstant.CLASS.INTEGER;
+        }
+        if (ComparatorUtils.equals(ICubeDoubleReaderWrapperBuilder.FRAGMENT_TAG, currentLocation.getFragment())) {
+            return DBConstant.CLASS.DOUBLE;
+        }
+        return 0;
     }
 }

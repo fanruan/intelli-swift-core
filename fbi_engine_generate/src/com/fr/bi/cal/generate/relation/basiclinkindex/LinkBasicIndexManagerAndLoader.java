@@ -2,7 +2,7 @@ package com.fr.bi.cal.generate.relation.basiclinkindex;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
@@ -201,7 +201,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
 
 
     protected Map<CubeTableSource, Set<BITableSourceRelation>> getPrimaryKeyMap() {
-        return BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap();
+        return CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap();
     }
 
     private ICubeTableService getTableIndex(CubeTableSource table) {

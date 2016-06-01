@@ -58,4 +58,6 @@ public interface ICubeColumnReaderService<T> extends ICubeIndexDataGetterService
     boolean existRelationPath(BICubeTablePath path);
 
     ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException;
+
+    int getClassType();
 }
