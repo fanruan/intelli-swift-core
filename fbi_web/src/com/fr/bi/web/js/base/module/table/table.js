@@ -407,7 +407,9 @@ BI.Table = BI.inherit(BI.Widget, {
 
         scroll(this.scrollBottomRight.element, this.scrollTopRight.element, this.scrollBottomLeft.element);
         scroll(this.scrollBottomLeft.element, this.scrollTopLeft.element, this.scrollBottomRight.element);
+
         function scroll(scrollElement, scrollTopElement, otherElement) {
+            var scrollTop = 0, scrollLeft = 0;
             var fn = function (event, delta, deltaX, deltaY) {
                 var offset = 40;
                 if (event.originalEvent.wheelDelta) {
@@ -415,10 +417,24 @@ BI.Table = BI.inherit(BI.Widget, {
                 }
                 if (deltaY === -1 || deltaY === 1) {
                     var old = scrollElement[0].scrollTop;
-                    var scrollTop = otherElement[0].scrollTop - delta * offset;
-                    otherElement[0].scrollTop = scrollTop;
-                    scrollElement[0].scrollTop = scrollTop;
-                    self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                    //先动一动
+                    scrollElement[0].scrollTop = scrollElement[0].scrollTop - delta;
+                    if (scrollElement.is(':animated')) {
+                        scrollElement.stop(true, true);
+                        //停止动画直接到达目标状态
+                        scrollElement[0].scrollTop = scrollTop;
+                    }
+                    if (otherElement.is(':animated')) {
+                        otherElement.stop(true, true);
+                        //停止动画直接到达目标状态
+                        otherElement[0].scrollTop = scrollTop;
+                    }
+                    scrollTop = otherElement[0].scrollTop - delta * offset;
+                    scrollElement.animate({scrollTop: scrollTop}, 300, function () {
+                        self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                    });
+                    otherElement.animate({scrollTop: scrollTop}, 300);
+                    //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
                     if (Math.abs(old - scrollElement[0].scrollTop) > 0.1) {
                         event.stopPropagation();
                         return false;
@@ -426,7 +442,6 @@ BI.Table = BI.inherit(BI.Widget, {
                 }
             };
             otherElement.mousewheel(fn);
-            var scrollTop = 0, scrollLeft = 0;
             scrollElement.scroll(function (e) {
                 var change = false;
                 if (scrollElement.scrollTop() != scrollTop) {
@@ -809,6 +824,7 @@ BI.Table = BI.inherit(BI.Widget, {
             scrollable: false,
             items: [this.scrollContainer]
         });
+        var scrollTop;
         this.scrollContainer.element.mousewheel(function (event, delta, deltaX, deltaY) {
             var offset = 40;
             if (event.originalEvent.wheelDelta) {
@@ -816,8 +832,19 @@ BI.Table = BI.inherit(BI.Widget, {
             }
             if (deltaY === -1 || deltaY === 1) {
                 var old = self.scrollContainer.element[0].scrollTop;
-                var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
-                self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                //先动一动
+                self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta;
+                if (self.scrollContainer.element.is(':animated')) {
+                    self.scrollContainer.element.stop(true, true);
+                    //停止动画直接到达目标状态
+                    self.scrollContainer.element[0].scrollTop = scrollTop;
+                }
+                scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
+                self.scrollContainer.element.animate({scrollTop: scrollTop}, 300, function () {
+                    self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                });
+                //var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
+                //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
                 if (Math.abs(old - self.scrollContainer.element[0].scrollTop) > 0.1) {
                     event.stopPropagation();
                     return false;
@@ -825,6 +852,7 @@ BI.Table = BI.inherit(BI.Widget, {
             }
         });
         this.scrollContainer.element.scroll(function () {
+            scrollTop = self.scrollContainer.element[0].scrollTop;
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
         });
         this._resize = function () {
