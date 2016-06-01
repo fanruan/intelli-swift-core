@@ -2453,8 +2453,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/allreports/allreports.js",
                 "com/fr/bi/web/js/components/allreports/allreports.filter.js",
                 "com/fr/bi/web/js/components/allreports/allreports.group.js",
+                "com/fr/bi/web/js/components/allreports/item/allreports.item.model.js",
                 "com/fr/bi/web/js/components/allreports/item/allreports.list.item.js",
                 "com/fr/bi/web/js/components/allreports/item/allreports.card.item.js",
+                "com/fr/bi/web/js/components/allreports/hangout/reporthangout.js",
 
                 //工程配置
                 "com/fr/bi/web/js/config.js"
