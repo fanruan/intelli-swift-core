@@ -41,7 +41,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
         String tableId = getID().getIdentity();
         List<BusinessField> fields = new ArrayList<BusinessField>();
         for (PersistentField f : source.getPersistentTable().getFieldList()){
-            new BIBusinessField(this, new BIFieldID(tableId + f.getFieldName()), f.getFieldName(), f.getType(), f.getColumnSize());
+            fields.add(new BIBusinessField(this, new BIFieldID(tableId + f.getFieldName()), f.getFieldName(), f.getSqlType(), f.getColumnSize()));
         }
         setFields(fields);
     }

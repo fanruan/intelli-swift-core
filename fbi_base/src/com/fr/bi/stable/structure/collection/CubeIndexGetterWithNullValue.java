@@ -166,4 +166,9 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 	public long nonPrecisionSize() {
 		return getter.nonPrecisionSize() + 1;
 	}
+
+    @Override
+    public int getClassType() {
+        return 0;
+    }
 }

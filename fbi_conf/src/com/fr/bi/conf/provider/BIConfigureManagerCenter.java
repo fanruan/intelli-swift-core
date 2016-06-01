@@ -42,4 +42,5 @@ public class BIConfigureManagerCenter {
     public static BICubeConfManagerProvider getCubeConfManager() {
         return StableFactory.getMarkedObject(BICubeConfManagerProvider.XML_TAG, BICubeConfManagerProvider.class);
     }
+
 }

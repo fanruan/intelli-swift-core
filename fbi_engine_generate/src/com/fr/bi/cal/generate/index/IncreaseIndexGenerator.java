@@ -1,7 +1,7 @@
 package com.fr.bi.cal.generate.index;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.cal.stable.index.AbstractIndexGenerator;
 import com.fr.bi.cal.stable.index.SimpleIndexIncreaseGenerator;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -17,6 +17,6 @@ public class IncreaseIndexGenerator extends IndexGenerator {
 
     @Override
     protected AbstractIndexGenerator createSimpleIndexGenerator() {
-        return new SimpleIndexIncreaseGenerator(cube, source, BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getSources(), version, BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId()), BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()));
+        return new SimpleIndexIncreaseGenerator(cube, source, CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getSources(), version, BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId()), BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()));
     }
 }

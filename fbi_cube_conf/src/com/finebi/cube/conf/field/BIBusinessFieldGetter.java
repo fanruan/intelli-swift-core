@@ -40,7 +40,7 @@ public class BIBusinessFieldGetter implements BusinessField {
 
     @Override
     public int getFieldType() {
-        return field.getClassType();
+        return field.getFieldType();
     }
 
     @Override

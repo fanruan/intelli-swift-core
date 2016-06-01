@@ -3,18 +3,38 @@
  */
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.CubeBuildStuffManagerTableSource;
+import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.exception.BIDeliverFailureException;
+import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
+import com.finebi.cube.gen.arrange.BICubeOperationManager;
+import com.finebi.cube.location.BICubeLocation;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.router.IRouter;
+import com.finebi.cube.structure.BICube;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
+import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
-import com.fr.bi.etl.analysis.tableobj.UserETLIndexGenerator;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.core.UUID;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
+
+import static com.fr.bi.cal.generate.BuildCubeTask.generateMessageDataSourceStart;
 
 /**
  * @author Daniel
@@ -29,25 +49,77 @@ public class UserETLUpdateTask implements CubeTask {
 	private String path = UUID.randomUUID().toString();
 	
 	private UserCubeTableSource source;
-	
-	private UserETLIndexGenerator generator;
-	
+
 	private Date start;
 	private Date end;
-	
-	/**
-	 * @param source
-	 */
-	public UserETLUpdateTask(UserCubeTableSource source) {
-		this.source = source;
-		generator = new UserETLIndexGenerator(source, getTableVersion(), path);
-	}
-	
+
+
+    private CubeBuildStuff cubeBuildStuff;
+    private BIUser biUser;
+    protected ICubeResourceRetrievalService retrievalService;
+    protected ICubeConfiguration cubeConfiguration;
+    @BIIgnoreField
+    protected BICube cube;
+
+
+    public UserETLUpdateTask(UserCubeTableSource source) {
+        this.source = source;
+        this.cubeBuildStuff = new CubeBuildStuffManagerTableSource(source,new ICubeConfiguration() {
+            @Override
+            public URI getRootURI() {
+                try {
+                    return URI.create(new BICubeLocation(BIPathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()), path).getAbsolutePath());
+                } catch (URISyntaxException e) {
+                    throw BINonValueUtils.beyondControl(e);
+                }
+            }
+        },  source.getUserId() );
+        this.biUser = new BIUser(source.getUserId());
+        cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
+        retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
+        this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+    }
+
+    @Override
+    public void run() {
+
+        BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
+
+
+        BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
+        operationManager.initialWatcher();
+
+        manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
+        manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
+        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getRelationPaths());
+        manager.registerTableRelationPath(relationPathSet);
+        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
+        operationManager.generateRelationBuilder(cubeBuildStuff.getTableSourceRelationSet());
+        operationManager.generateTableRelationPath(relationPathSet);
+        IRouter router = BIFactoryHelper.getObject(IRouter.class);
+        try {
+            router.deliverMessage(generateMessageDataSourceStart());
+        } catch (BIDeliverFailureException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    private Set<BITableSourceRelationPath> filterPath(Set<BITableSourceRelationPath> paths) {
+        Iterator<BITableSourceRelationPath> iterator = paths.iterator();
+        Set<BITableSourceRelationPath> result = new HashSet<BITableSourceRelationPath>();
+        while (iterator.hasNext()) {
+            BITableSourceRelationPath path = iterator.next();
+            if (path.getAllRelations().size() > 1) {
+                result.add(path);
+            }
+        }
+        return result;
+    }
 
 	private static TableCubeFile getOldCube(String md5){
 		UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
 		String path = manager.getCubePath(md5);
-		return new TableCubeFile(BIPathUtils.createUserETLTablePath(md5, path));
+		return new TableCubeFile(BIPathUtils.createUserETLCubePath(md5, path));
 	}
 
 	public String getPath(){
@@ -61,13 +133,7 @@ public class UserETLUpdateTask implements CubeTask {
 		BILogger.getLogger().info("started in file path:" + path);
 	}
 	
-	
-	@Override
-	public void run() {
-		generator.generateCube();
-	}
 
-	
 	@Override
 	public void end() {
 		UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
@@ -90,8 +156,6 @@ public class UserETLUpdateTask implements CubeTask {
 		if(end != null){
 			jo.put("end", end.getTime());
 		}
-		jo.put("percent", getPercent());
-		jo.put("name", source.toString());
 		return jo;
 	}
 
@@ -148,13 +212,5 @@ public class UserETLUpdateTask implements CubeTask {
 			versionList.add(getOldCube(iter.next()).getTableVersion());
 		}
 		return Arrays.hashCode(versionList.toArray());
-	}
-
-
-	public int getPercent(){
-		if(generator == null){
-			return 0;
-		}
-		return generator.getPercent();
 	}
 }

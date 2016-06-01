@@ -38,7 +38,7 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.update_single_table_setting",
                 element: center,
                 table: this.model.getTableBySourceTableId(tableId),
-                update_setting: this.model.getUpdateSettingBySourceTableId(tableId),
+                update_setting: this.model.getUpdateSettingBySourceTableId(tableId)
             });
             setting.on(BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW, function(){
                 BI.Popovers.close(self.model.getId());

@@ -4,6 +4,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.singletable.TableUpdate;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -17,7 +18,6 @@ import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public class AllTask extends AbstractCubeTask {
     protected Map<Integer, Set<CubeTableSource>> getGenerateTables() {
         Map<Integer, Set<CubeTableSource>> generateTable = new HashMap<Integer, Set<CubeTableSource>>();
         addOtherTables(generateTable);
-        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPacks();
+        Set<IBusinessPackageGetterService> packs = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPacks();
         for (IBusinessPackageGetterService pack : packs) {
             Set<BIBusinessTable> busiTable = pack.getBusinessTables();
             for (BIBusinessTable table : busiTable) {

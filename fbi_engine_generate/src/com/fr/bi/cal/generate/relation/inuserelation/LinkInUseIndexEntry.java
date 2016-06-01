@@ -2,6 +2,7 @@ package com.fr.bi.cal.generate.relation.inuserelation;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
@@ -141,6 +142,6 @@ public class LinkInUseIndexEntry implements CubeGenerator {
     }
 
     private Map<CubeTableSource, Set<BITableSourceRelation>> getPrimaryKeyMap() {
-        return BICubeConfigureCenter.getCubeManager().getGeneratingObject(user.getUserId()).getPrimaryKeyMap();
+        return CubeGenerationManager.getCubeManager().getGeneratingObject(user.getUserId()).getPrimaryKeyMap();
     }
 }

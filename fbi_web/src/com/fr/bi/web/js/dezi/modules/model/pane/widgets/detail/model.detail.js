@@ -235,7 +235,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                     var target_relation = path[0];
                                     dimension.dimension_map[dId] = {
                                         _src: dimension._src,
-                                        target_relation: target_relation
+                                        target_relation: [target_relation]
                                     };
                                 }
                             }
@@ -258,7 +258,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                         _src: {
                                             field_id: fId
                                         },
-                                        target_relation: target_relation
+                                        target_relation: [target_relation]
                                     };
                                 }
                             }

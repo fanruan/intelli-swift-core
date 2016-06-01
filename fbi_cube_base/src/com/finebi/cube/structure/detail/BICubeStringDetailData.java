@@ -2,6 +2,7 @@ package com.finebi.cube.structure.detail;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.ICubeResourceLocation;
+import com.fr.bi.stable.constant.DBConstant;
 
 /**
  * This class created on 2016/3/29.
@@ -17,5 +18,10 @@ public class BICubeStringDetailData extends BICubeDetailData<String> {
     @Override
     protected ICubeResourceLocation setDetailType() {
         return currentLocation.setStringType();
+    }
+
+    @Override
+    public int getClassType() {
+        return DBConstant.CLASS.STRING;
     }
 }

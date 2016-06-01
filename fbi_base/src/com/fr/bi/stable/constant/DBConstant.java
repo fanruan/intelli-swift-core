@@ -34,6 +34,8 @@ public class DBConstant {
 
         public static final int TIME = 0x9;
 
+        public static final int BYTE = 0xa;
+
         /**
          * 行号类型，逻辑对象
          */

@@ -19,6 +19,11 @@ import java.util.Set;
 public class UserBaseTableSource extends AnalysisBaseTableSource implements UserCubeTableSource {
     private GroupValueIndex filter;
     private UserWidget userWidget;
+    private ICubeDataLoader loader;
+
+    public void setLoader(ICubeDataLoader loader) {
+        this.loader = loader;
+    }
     @BICoreField
     private long userId;
     public UserBaseTableSource(BIWidget widget, int etlType, long userId, List<AnalysisETLSourceField> fieldList, String name, String id) {

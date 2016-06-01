@@ -1,7 +1,5 @@
 package com.fr.bi.field;
 
-import com.finebi.cube.conf.field.BIBusinessField;
-import com.finebi.cube.conf.field.BIBusinessFieldGetter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
@@ -10,6 +8,7 @@ import com.fr.bi.base.BIID;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -99,8 +98,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
             if (fieldJo.has("field_id")) {
                 //这里用BIBusinessFieldWrapper,能够通过fieldID获得table
-                column = new BIBusinessFieldGetter(new BIBusinessField(new BIFieldID(fieldJo.getString("field_id"))));
-
+                column = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldJo.getString("field_id")));
             }
         }
     }

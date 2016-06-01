@@ -16,6 +16,7 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIExcutorConstant;
@@ -119,7 +120,7 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     public void setTargetTable(long userID) {
         BITableID targetTableID = dimensions[0].createTableKey().getID();
-        target = BusinessTableHelper.getBusinessTable(new BITableID(targetTableID));
+        target = BIModuleUtils.getBusinessTableById(new BITableID(targetTableID));
         for (int i = 0; i < dimensions.length; i++) {
             List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
             if (!relations.isEmpty()) {

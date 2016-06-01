@@ -32,7 +32,7 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
         this.hostDataColumn = hostDataColumn;
     }
 
-    protected abstract void initialColumnEntity( ICubeResourceLocation currentLocation);
+    protected abstract void initialColumnEntity(ICubeResourceLocation currentLocation);
 
     @Override
     public void addOriginalDataValue(int rowNumber, T originalValue) {
@@ -145,5 +145,10 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     @Override
     public boolean isEmpty() {
         return columnEntity.isEmpty();
+    }
+
+    @Override
+    public int getClassType() {
+        return columnEntity.getClassType();
     }
 }

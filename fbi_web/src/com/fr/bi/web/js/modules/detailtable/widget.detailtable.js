@@ -27,23 +27,23 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             color: BICst.DEFAULT_CHART_SETTING.theme_color,
             style: BI.StyleTable.STYLE1,
             el: {
+                type: "bi.page_table",
                 el: {
-                    type: "bi.page_table",
                     el: {
                         el: {
                             el: {
                                 type: "bi.table_tree"
                             }
                         }
-                    },
-                    itemsCreator: function (op, populate) {
-                        var vPage = op.vpage;
-                        self._onPageChange(vPage, function (items, header, crossItems, crossHeader) {
-                            populate.apply(self.table, arguments);
-                        })
-                    },
-                    pager: this.pager
-                }
+                    }
+                },
+                itemsCreator: function (op, populate) {
+                    var vPage = op.vpage;
+                    self._onPageChange(vPage, function (items, header, crossItems, crossHeader) {
+                        populate.apply(self.table, arguments);
+                    })
+                },
+                pager: this.pager
             }
         });
 

@@ -77,10 +77,10 @@ BI.PartField = BI.inherit(BI.Widget, {
 
     _checkStatus: function(){
         var fieldState = this.model.getFieldState();
-        var result = BI.find(fieldState, function(idx, item){
+        var result = BI.filter(fieldState, function(idx, item){
             return item.checked === true;
         });
-        if(BI.isNull(result)){
+        if(result.length === 0 || result.length === fieldState.length){
             this.save.setEnable(false);
             this.save.setTitle(BI.i18nText("BI-Please_Select_Needed_Field"));
             return;

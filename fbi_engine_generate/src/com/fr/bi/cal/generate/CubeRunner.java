@@ -1,8 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.build.CubeBuildStuffManager;
+import com.finebi.cube.conf.CubeBuildStuffManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
@@ -56,19 +55,13 @@ public class CubeRunner {
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
+                start();
                 try {
-                    start();
-                    //TODO BY WUK 等重构完了再分离
-                    if (cubeTask instanceof BuildCubeTask) {
-                        ((BuildCubeTask) cubeTask).setCubeBuildStuffManager(object);
+                    if(!(cubeTask instanceof AllTask)&&!(cubeTask instanceof AbstractCubeTask)) {
+                        cubeTask.start();
+                        cubeTask.run();
+                        cubeTask.end();
                     }
-                    if (cubeTask instanceof BuildCubeTaskIncremental) {
-                        ((BuildCubeTaskIncremental) cubeTask).setCubeBuildStuffManager(object);
-                    }
-                    cubeTask.start();
-                    cubeTask.run();
-                    cubeTask.end();
-
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -147,10 +140,10 @@ public class CubeRunner {
 
     private void start() {
         backup();
-        if (object == null) {
-            object = new CubeBuildStuffManager(biUser);
-        }
-        object.initialCubeStuff();
+//        if (object == null) {
+//            object = new CubeBuildStuffManager(biUser);
+//        }
+//        object.initialCubeStuff();
     }
 
     private void backup() {
@@ -162,8 +155,8 @@ public class CubeRunner {
         BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-        BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
+//        BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
+//        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         renameToCurrentDirect();
