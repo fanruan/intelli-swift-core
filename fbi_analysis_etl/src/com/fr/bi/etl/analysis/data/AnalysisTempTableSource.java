@@ -11,7 +11,6 @@ import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
-import com.fr.third.org.apache.poi.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
