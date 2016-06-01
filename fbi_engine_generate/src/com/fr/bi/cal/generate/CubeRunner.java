@@ -1,7 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.build.CubeBuildStuffManager;
+import com.finebi.cube.conf.CubeBuildStuffManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
@@ -154,7 +154,7 @@ public class CubeRunner {
         long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
 //        BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-//        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
+//        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         renameToCurrentDirect();

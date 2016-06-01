@@ -3,7 +3,7 @@
  */
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.generate.SingleTableTask;
@@ -39,12 +39,12 @@ public class BIAddSingleTableUpdateTaskAction extends AbstractBIConfigureAction 
             out.put("status", "success");
 
             if (isAdd) {
-                boolean added = BICubeConfigureCenter.getCubeManager().addTask(new SingleTableTask(biTable, userId), userId);
+                boolean added = CubeGenerationManager.getCubeManager().addTask(new SingleTableTask(biTable, userId), userId);
                 out.put("hasTask", added);
                 WebUtils.printAsJSON(res, out);
 
             } else {
-                boolean hasTask = BICubeConfigureCenter.getCubeManager().hasTask(new SingleTableTask(biTable, userId), userId);
+                boolean hasTask = CubeGenerationManager.getCubeManager().hasTask(new SingleTableTask(biTable, userId), userId);
                 out.put("hasTask", hasTask);
                 WebUtils.printAsJSON(res, out);
             }

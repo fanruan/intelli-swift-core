@@ -1,7 +1,6 @@
 package com.finebi.cube.conf.utils;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.build.CubeBuildStuffManager;
 import com.finebi.cube.conf.pack.data.BIBasicBusinessPackage;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -73,10 +72,7 @@ public class BIPackUtils {
 
     public static int getGeneratingChangeCounts(long userId) {
         int count = 0;
-        CubeBuildStuffManager object = BICubeConfigureCenter.getCubeManager().getGeneratingObject(userId);
-        if (object == null) {
-            return count;
-        }
+
 
         if (BICubeConfigureCenter.getPackageManager().isPackageDataChanged(userId)) {
             return 1;

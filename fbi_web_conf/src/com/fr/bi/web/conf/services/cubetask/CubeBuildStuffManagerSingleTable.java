@@ -4,7 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
-import com.finebi.cube.conf.build.CubeBuildStuff;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -26,27 +26,28 @@ import java.util.*;
 /**
  * Created by wuk on 16/5/30.
  */
-public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff{
-    
+public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
+
 
     public CubeBuildStuffManagerSingleTable(BusinessTable businessTable, ICubeConfiguration cubeConfiguration, long userId) {
-        this.biUser=new BIUser(userId);
-        this.cubeConfiguration=cubeConfiguration;
+        this.biUser = new BIUser(userId);
+        this.cubeConfiguration = cubeConfiguration;
         init(businessTable);
     }
+
     public CubeBuildStuffManagerSingleTable(BusinessTable businessTable, long userId) {
-        this.biUser=new BIUser(userId);
-        this.cubeConfiguration= BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        this.biUser = new BIUser(userId);
+        this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         init(businessTable);
     }
-    
+
     /**
      *
      */
     private Set<IBusinessPackageGetterService> packs;
     private Set<CubeTableSource> sources;
     private Set<CubeTableSource> allSingleSources;
-private ICubeConfiguration cubeConfiguration;
+    private ICubeConfiguration cubeConfiguration;
     private Set<BITableSourceRelation> tableSourceRelationSet;
     private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private Set<BITableRelation> tableRelationSet;
@@ -78,8 +79,8 @@ private ICubeConfiguration cubeConfiguration;
         return sources;
     }
 
-    
-@Override
+
+    @Override
     public Set<BITableRelation> getTableRelationSet() {
         Set<BITableRelation> set = new HashSet<BITableRelation>();
         for (BITableRelation relation : tableRelationSet) {
@@ -103,7 +104,7 @@ private ICubeConfiguration cubeConfiguration;
             }
         }
 //        return set;
-    return new HashSet<BITableRelation>();
+        return new HashSet<BITableRelation>();
     }
 
     private Set<BITableRelation> filterRelation(Set<BITableRelation> tableRelationSet) {
@@ -300,12 +301,11 @@ private ICubeConfiguration cubeConfiguration;
         this.foreignKeyMap = foreignKeyMap;
     }
 
-    
 
     public void init(BusinessTable businessTable) {
-        
+
         try {
-            
+
 //            businessTable = BusinessTableHelper.getBusinessTable(businessTable.getID());
             Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId());
             this.packs = packs;
@@ -315,7 +315,7 @@ private ICubeConfiguration cubeConfiguration;
                 Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
                 while (tIt.hasNext()) {
                     BIBusinessTable table = tIt.next();
-                    if (ComparatorUtils.equals(table.getID(),businessTable.getID())) {
+                    if (ComparatorUtils.equals(table.getID(), businessTable.getID())) {
                         allBusinessTable.add(table);
                         sources.add(table.getTableSource());
                     }
@@ -330,9 +330,9 @@ private ICubeConfiguration cubeConfiguration;
             BITableRelationConfigurationProvider tableRelationManager = BICubeConfigureCenter.getTableRelationManager();
 
             Set<BITableRelation> allTableRelation = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId());
-            Set<BITableRelation> tableRelation=new HashSet<BITableRelation>();
+            Set<BITableRelation> tableRelation = new HashSet<BITableRelation>();
             for (BITableRelation biTableRelation : allTableRelation) {
-                if(ComparatorUtils.equals(businessTable,biTableRelation.getForeignTable())||ComparatorUtils.equals(businessTable,biTableRelation.getPrimaryTable())){
+                if (ComparatorUtils.equals(businessTable, biTableRelation.getForeignTable()) || ComparatorUtils.equals(businessTable, biTableRelation.getPrimaryTable())) {
                     tableRelation.add(biTableRelation);
                 }
             }
@@ -344,7 +344,7 @@ private ICubeConfiguration cubeConfiguration;
             setForeignKeyMap(foreignKeyMap);
 
             Set<BITableRelationPath> allTablePath = tableRelationManager.getAllTablePath(biUser.getUserId());
-            Set<BITableRelationPath> tablePath=new HashSet<BITableRelationPath>();
+            Set<BITableRelationPath> tablePath = new HashSet<BITableRelationPath>();
             for (BITableRelationPath biTableRelationPath : allTablePath) {
                 biTableRelationPath.getAllRelations();
             }
@@ -353,7 +353,7 @@ private ICubeConfiguration cubeConfiguration;
             throw BINonValueUtils.beyondControl(e);
         }
     }
-    
+
 
     private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
         Iterator<CubeTableSource> it = tableSources.iterator();

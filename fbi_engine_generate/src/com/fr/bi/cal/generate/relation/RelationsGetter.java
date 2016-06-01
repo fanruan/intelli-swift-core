@@ -2,15 +2,15 @@ package com.fr.bi.cal.generate.relation;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.finebi.cube.conf.utils.BIPackUtils;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
-import com.finebi.cube.conf.utils.BIPackUtils;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -37,12 +37,12 @@ public class RelationsGetter {
     }
 
     private Set<String> createGenerateTables() {
-        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPacks();
+        Set<IBusinessPackageGetterService> packs = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPacks();
         Set<BusinessTable> generateTable = BIPackUtils.getAllBusiTableKeys(packs);
         /**
          * TODO Connery：LoginInfo Mark
          */
-//        BILoginUserInfo info = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getUserInfo();
+//        BILoginUserInfo info = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getUserInfo();
 //        if (info != null && info.getTableKey() != null) {
 //            generateTable.add(info.getTableKey());
 //        }
@@ -56,11 +56,11 @@ public class RelationsGetter {
 
     private Set<BITableSourceRelation> generateRelations(Set<String> tableMD5s) {
         Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
-        Set<BITableSourceRelation> connectionSet = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableSourceRelationSet();
-        Map<CubeTableSource, Set<BITableSourceRelation>> primKeyMap = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap();
-        Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getForeignKeyMap();
+        Set<BITableSourceRelation> connectionSet = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableSourceRelationSet();
+        Map<CubeTableSource, Set<BITableSourceRelation>> primKeyMap = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap();
+        Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getForeignKeyMap();
         ICubeDataLoader loader = CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId());
-        for (BITableSourceRelation tableSourceRelation : BICubeConfigureCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableSourceRelationSet()) {
+        for (BITableSourceRelation tableSourceRelation : CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableSourceRelationSet()) {
             ICubeFieldSource primaryKey = tableSourceRelation.getPrimaryKey();
             ICubeFieldSource foreignKey = tableSourceRelation.getForeignKey();
             CubeTableSource primaryTableSource = tableSourceRelation.getPrimaryTable();
