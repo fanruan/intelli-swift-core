@@ -10,6 +10,8 @@ import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
+import com.fr.third.org.apache.poi.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
 
     @Override
     public IPersistentTable getPersistentTable() {
-        return  new PersistentTable(null, null, null);
+        return  new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
 
