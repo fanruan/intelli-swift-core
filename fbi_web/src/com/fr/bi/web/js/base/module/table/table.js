@@ -570,21 +570,42 @@ BI.Table = BI.inherit(BI.Widget, {
         function _startTween() {
             _delay = 1000 / 60;
             el.time = progress + _delay;
-            _request = (!window.requestAnimationFrame) ? function (f) {
+            _request = (!requestAnimationFrame()) ? function (f) {
                 _tween();
                 return setTimeout(f, 0.01);
-            } : window.requestAnimationFrame;
+            } : requestAnimationFrame();
             el._id = _request(_step);
+        }
+
+        function requestAnimationFrame() {
+            return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                window.oRequestAnimationFrame;
+        }
+
+        function cancelAnimationFrame() {
+            return window.cancelAnimationFrame ||
+                window.webkitCancelAnimationFrame ||
+                window.mozCancelAnimationFrame ||
+                window.msCancelAnimationFrame ||
+                window.oCancelAnimationFrame ||
+                window.cancelRequestAnimationFrame ||
+                window.webkitCancelRequestAnimationFrame ||
+                window.mozCancelRequestAnimationFrame ||
+                window.msCancelRequestAnimationFrame ||
+                window.oCancelRequestAnimationFrame
         }
 
         function _cancelTween() {
             if (el._id == null) {
                 return;
             }
-            if (!window.requestAnimationFrame) {
+            if (!cancelAnimationFrame()) {
                 clearTimeout(el._id);
             } else {
-                window.cancelAnimationFrame(el._id);
+                cancelAnimationFrame()(el._id);
             }
             el._id = null;
         }
