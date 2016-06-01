@@ -109,9 +109,7 @@ SequenceTable2View = BI.inherit(BI.View, {
             el: {
                 el: {
                     el: {
-                        el: {
-                            type: "bi.table_tree"
-                        }
+                        type: "bi.table_tree"
                     }
                 }
             },

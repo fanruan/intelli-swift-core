@@ -487,7 +487,7 @@ DataStructureModel = BI.inherit(BI.Model, {
                     }
                 ],
                 empty_widgets: [],
-                layoutType: 0,
+                layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
                 packageName: "业务包111",
                 version: 3.1,
                 layoutData: {
@@ -1167,7 +1167,7 @@ DataStructureModel = BI.inherit(BI.Model, {
                 popupConfig: {
                     id: 6,		//模板ID，同上
                     layoutData: {},		//布局数据
-                    layoutType: 0,	//布局方式--自由/自适应，BICst.DASHBOARD_LAYOUT_ARRAY
+                    layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,	//布局方式--自由/自适应，BICst.DASHBOARD_LAYOUT_ARRAY
                     widgets: {
                         "b8cb9d91f6035364": {
                             bounds: {		//位置信息
