@@ -76,7 +76,7 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void start() {
-
+        BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
     }
 
     @Override

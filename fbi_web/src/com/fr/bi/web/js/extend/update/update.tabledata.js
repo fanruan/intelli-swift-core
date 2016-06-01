@@ -38,6 +38,7 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.update_single_table_setting",
                 element: center,
                 table: this.model.getTableBySourceTableId(tableId),
+                currentTable:self.model.table,
                 update_setting: this.model.getUpdateSettingBySourceTableId(tableId)
             });
             setting.on(BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW, function(){
@@ -82,6 +83,7 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                         var setting = BI.createWidget({
                             type: "bi.update_single_table_setting",
                             table: self.model.getTableBySourceTableId(id),
+                            currentTable:self.model.table,
                             update_setting: self.model.getUpdateSettingBySourceTableId(id)
                         });
                         setting.on(BI.UpdateSingleTableSetting.EVENT_CHANGE, function(){

@@ -326,7 +326,6 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
-            BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
             BITableRelationConfigurationProvider tableRelationManager = BICubeConfigureCenter.getTableRelationManager();
 
             Set<BITableRelation> allTableRelation = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId());

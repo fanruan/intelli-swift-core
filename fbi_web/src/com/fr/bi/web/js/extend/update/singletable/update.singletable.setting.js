@@ -20,7 +20,8 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.model = new BI.UpdateSingleTableSettingModel({
             update_setting: o.update_setting,
-            table: o.table
+            table: o.table,
+            currentTable:o.currentTable
         });
 
         //最上面的更新方式下拉框
@@ -73,10 +74,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             
             //效果:保存(新增)该表所在业务包的所有操作并更新对应cube
             handler: function () {
-                console.log(self.model.table);
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
-                BI.Utils.generateCubeByTable(self.model.table.id, function () {
+                //若为ETL,使用ETL的id
+                if (self.model.currentTable.connection_name=="__FR_BI_ETL__"){
+                    self.model.table.id=self.model.currentTable.id
+                }
+                BI.Utils.generateCubeByTable(self.model.table, function () {
                     self._createCheckInterval();
                 });
                 
