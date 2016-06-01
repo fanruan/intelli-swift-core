@@ -409,39 +409,46 @@ BI.Table = BI.inherit(BI.Widget, {
         scroll(this.scrollBottomLeft.element, this.scrollTopLeft.element, this.scrollBottomRight.element);
 
         function scroll(scrollElement, scrollTopElement, otherElement) {
-            var scrollTop = 0, scrollLeft = 0;
+            var scrolling;
             var fn = function (event, delta, deltaX, deltaY) {
-                var offset = 40;
-                if (event.originalEvent.wheelDelta) {
-                    offset = Math.abs(event.originalEvent.wheelDelta);
-                }
-                if (deltaY === -1 || deltaY === 1) {
-                    var old = scrollElement[0].scrollTop;
-                    //先动一动
-                    scrollElement[0].scrollTop = scrollElement[0].scrollTop - delta;
-                    if (scrollElement.is(':animated')) {
-                        scrollElement.stop(true, true);
-                        //停止动画直接到达目标状态
-                        scrollElement[0].scrollTop = scrollTop;
+                var inf = self._getScrollOffsetAndDur(event);
+                if (deltaY < 0 || deltaY > 0) {
+                    if (scrolling) {
+                        otherElement[0].scrollTop = scrolling;
                     }
-                    if (otherElement.is(':animated')) {
-                        otherElement.stop(true, true);
-                        //停止动画直接到达目标状态
-                        otherElement[0].scrollTop = scrollTop;
+                    scrolling = otherElement[0].scrollTop - delta * inf.offset;
+                    var stopPropagation = false;
+                    var st = otherElement[0].scrollTop;
+                    otherElement[0].scrollTop = scrolling;
+                    if (otherElement[0].scrollTop !== scrollTop) {
+                        stopPropagation = true;
                     }
-                    scrollTop = otherElement[0].scrollTop - delta * offset;
-                    scrollElement.animate({scrollTop: scrollTop}, 300, function () {
-                        self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                    otherElement[0].scrollTop = st;
+                    self._animateScrollTopTo(otherElement, otherElement[0].scrollTop, scrolling, inf.dur, "linear", {
+                        onStart: function () {
+                        },
+                        onUpdate: function (top) {
+                            scrollElement[0].scrollTop = top;
+                            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, top);
+                        },
+                        onComplete: function () {
+                            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrolling);
+                            scrolling = null;
+                        }
                     });
-                    otherElement.animate({scrollTop: scrollTop}, 300);
+
+
+                    //otherElement[0].scrollTop = scrollTop;
+                    //scrollElement[0].scrollTop = scrollTop;
                     //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
-                    if (Math.abs(old - scrollElement[0].scrollTop) > 0.1) {
+                    if (stopPropagation === true) {
                         event.stopPropagation();
                         return false;
                     }
                 }
             };
             otherElement.mousewheel(fn);
+            var scrollTop = 0, scrollLeft = 0;
             scrollElement.scroll(function (e) {
                 var change = false;
                 if (scrollElement.scrollTop() != scrollTop) {
@@ -516,6 +523,147 @@ BI.Table = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
             }
         });
+    },
+
+    _getTime: function () {
+        if (window.performance && window.performance.now) {
+            return window.performance.now();
+        } else {
+            if (window.performance && window.performance.webkitNow) {
+                return window.performance.webkitNow();
+            } else {
+                if (Date.now) {
+                    return Date.now();
+                } else {
+                    return new Date().getTime();
+                }
+            }
+        }
+    },
+
+    _animateScrollTopTo: function (el, from, to, duration, easing, op) {
+        var self = this;
+        var onStart = op.onStart, onComplete = op.onComplete, onUpdate = op.onUpdate;
+        var startTime = this._getTime(), _delay, progress = 0, _request;
+        _cancelTween();
+        _startTween();
+        var diff = to - from;
+        el._stop = 0;
+        function _step() {
+            if (el._stop) {
+                return;
+            }
+            if (!progress) {
+                onStart.call();
+            }
+            progress = self._getTime() - startTime;
+            _tween();
+            if (progress >= el.time) {
+                el.time = (progress > el.time) ? progress + _delay - (progress - el.time) : progress + _delay - 1;
+                if (el.time < progress + 1) {
+                    el.time = progress + 1;
+                }
+            }
+            if (el.time < duration) {
+                el._id = _request(_step);
+            } else {
+                el.scrollTop(to);
+                onComplete.call();
+            }
+        }
+
+        function _tween() {
+            var top = to;
+            if (duration > 0) {
+                el.currVal = _ease(el.time, from, diff, duration, easing);
+                el.scrollTop(top = Math.round(el.currVal));
+            } else {
+                el.scrollTop(to);
+            }
+            onUpdate(top);
+        }
+
+        function _startTween() {
+            _delay = 1000 / 60;
+            el.time = progress + _delay;
+            _request = (!window.requestAnimationFrame) ? function (f) {
+                _tween();
+                return setTimeout(f, 0.01);
+            } : window.requestAnimationFrame;
+            el._id = _request(_step);
+        }
+
+        function _cancelTween() {
+            if (el._id == null) {
+                return;
+            }
+            if (!window.requestAnimationFrame) {
+                clearTimeout(el._id);
+            } else {
+                window.cancelAnimationFrame(el._id);
+            }
+            el._id = null;
+        }
+
+        function _ease(t, b, c, d, type) {
+            switch (type) {
+                case "linear":
+                    return c * t / d + b;
+                    break;
+                case "mcsLinearOut":
+                    t /= d;
+                    t--;
+                    return c * Math.sqrt(1 - t * t) + b;
+                    break;
+                case "easeInOutSmooth":
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t + b;
+                    t--;
+                    return -c / 2 * (t * (t - 2) - 1) + b;
+                    break;
+                case "easeInOutStrong":
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+                    t--;
+                    return c / 2 * ( -Math.pow(2, -10 * t) + 2 ) + b;
+                    break;
+                case "easeInOut":
+                case "mcsEaseInOut":
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t * t + b;
+                    t -= 2;
+                    return c / 2 * (t * t * t + 2) + b;
+                    break;
+                case "easeOutSmooth":
+                    t /= d;
+                    t--;
+                    return -c * (t * t * t * t - 1) + b;
+                    break;
+                case "easeOutStrong":
+                    return c * ( -Math.pow(2, -10 * t / d) + 1 ) + b;
+                    break;
+                case "easeOut":
+                case "mcsEaseOut":
+                default:
+                    var ts = (t /= d) * t, tc = ts * t;
+                    return b + c * (0.499999999999997 * tc * ts + -2.5 * ts * ts + 5.5 * tc + -6.5 * ts + 4 * t);
+            }
+        }
+    },
+
+    _getScrollOffsetAndDur: function (event) {
+        var offset = 40, dur = 200;
+        if (event.originalEvent.wheelDelta) {
+            offset = Math.abs(event.originalEvent.wheelDelta);
+        }
+        if (event.deltaFactor < 2) {
+            offset = 3;
+            dur = 17;
+        }
+        return {
+            offset: offset,
+            dur: dur
+        };
     },
 
     resize: function () {
@@ -826,33 +974,41 @@ BI.Table = BI.inherit(BI.Widget, {
         });
         var scrollTop;
         this.scrollContainer.element.mousewheel(function (event, delta, deltaX, deltaY) {
-            var offset = 40;
-            if (event.originalEvent.wheelDelta) {
-                offset = Math.abs(event.originalEvent.wheelDelta);
-            }
-            if (deltaY === -1 || deltaY === 1) {
-                var old = self.scrollContainer.element[0].scrollTop;
-                //先动一动
-                self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta;
-                if (self.scrollContainer.element.is(':animated')) {
-                    self.scrollContainer.element.stop(true, true);
-                    //停止动画直接到达目标状态
-                    self.scrollContainer.element[0].scrollTop = scrollTop;
+            var inf = self._getScrollOffsetAndDur(event);
+            if (deltaY < 0 || deltaY > 0) {
+                var ele = self.scrollContainer.element;
+                if (scrollTop) {
+                    ele[0].scrollTop = scrollTop;
                 }
-                scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
-                self.scrollContainer.element.animate({scrollTop: scrollTop}, 300, function () {
-                    self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                scrollTop = ele[0].scrollTop - delta * inf.offset;
+                var stopPropagation = false;
+                var st = ele[0].scrollTop;
+                ele[0].scrollTop = scrollTop;
+                if (ele[0].scrollTop !== scrollTop) {
+                    stopPropagation = true;
+                }
+                ele[0].scrollTop = st;
+                self._animateScrollTopTo(ele, ele[0].scrollTop, scrollTop, inf.dur, "linear", {
+                    onStart: function () {
+                    },
+                    onUpdate: function (top) {
+                        self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, top);
+                    },
+                    onComplete: function () {
+                        self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                        scrollTop = null;
+                    }
                 });
                 //var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
                 //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
-                if (Math.abs(old - self.scrollContainer.element[0].scrollTop) > 0.1) {
+                if (stopPropagation === true) {
                     event.stopPropagation();
                     return false;
                 }
             }
         });
         this.scrollContainer.element.scroll(function () {
-            scrollTop = self.scrollContainer.element[0].scrollTop;
+            // scrollTop = self.scrollContainer.element[0].scrollTop;
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
         });
         this._resize = function () {
