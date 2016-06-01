@@ -182,4 +182,9 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
     public boolean containBusinessTable(BITableID id) {
         return getInstance().containBusinessTable(id);
     }
+
+    @Override
+    public boolean isRecord(CubeTableSource tableSource) {
+        return false;
+    }
 }

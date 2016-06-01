@@ -58,6 +58,11 @@ public class BITableDataSource extends BIBasicDataSource<BusinessTable, CubeTabl
     }
 
     @Override
+    public boolean isRecord(CubeTableSource tableSource) {
+        return cacheContainSource(tableSource);
+    }
+
+    @Override
     public Set<BusinessTable> getAllBusinessTable() {
         return container.keySet();
     }
