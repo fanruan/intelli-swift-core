@@ -1,7 +1,7 @@
 BIDezi.PaneModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.PaneModel.superclass._defaultConfig.apply(this), {
-            layoutType: 0,
+            layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             widgets: {}
         });
     },

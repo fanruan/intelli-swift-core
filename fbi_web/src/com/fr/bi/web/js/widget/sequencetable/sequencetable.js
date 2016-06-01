@@ -95,21 +95,25 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         });
 
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-            self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_INIT);
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
+            self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_INIT, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-
+            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
         });
 
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function (scrollTop) {
             if (BI.isNotNull(scrollTop)) {
                 self.sequence.setVerticalScroll(scrollTop);
             }
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_REGION_RESIZE);
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
+            self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
 
