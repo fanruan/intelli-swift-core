@@ -187,8 +187,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 return true;
             }
         });
-        BI.each(this.allFields, function(id, field){
-            if(field !== null && field.table_id === tableId) {
+        BI.each(this.allFields, function (id, field) {
+            if (field !== null && field.table_id === tableId) {
                 delete self.allFields[id];
             }
         });
@@ -243,12 +243,13 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             var usedFields = [];
             BI.each(table.fields, function (j, fs) {
                 BI.each(fs, function (k, field) {
-                    field.id = id + field.field_name;
+                    // field.id = id + field.field_name;
+                    field.id = BI.UUID();
                     field.table_id = id;
                     usedFields.push(field.field_name);
                     //这里简单维护一下field信息（包括table_id,table_name,field_name,field_type即可）
-                    self.allFields[id + field.field_name] = {
-                        id: id + field.field_name,
+                    self.allFields[field.id] = {
+                        id: field.id,
                         table_id: id,
                         table_name: table.table_name,
                         field_name: field.field_name,
