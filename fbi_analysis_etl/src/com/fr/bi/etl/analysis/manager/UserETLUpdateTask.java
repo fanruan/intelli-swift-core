@@ -19,6 +19,7 @@ import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -26,7 +27,6 @@ import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.core.UUID;
 
@@ -58,6 +58,7 @@ public class UserETLUpdateTask implements CubeTask {
     private BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
+    @BIIgnoreField
     protected BICube cube;
 
 
@@ -67,11 +68,10 @@ public class UserETLUpdateTask implements CubeTask {
             @Override
             public URI getRootURI() {
                 try {
-                    return URI.create(new BICubeLocation(BIConfigurePathUtils.createBasePath(), path).getAbsolutePath());
+                    return URI.create(new BICubeLocation(BIPathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()), path).getAbsolutePath());
                 } catch (URISyntaxException e) {
-                    BINonValueUtils.beyondControl(e);
+                    throw BINonValueUtils.beyondControl(e);
                 }
-                return null;
             }
         },  source.getUserId() );
         this.biUser = new BIUser(source.getUserId());
@@ -119,7 +119,7 @@ public class UserETLUpdateTask implements CubeTask {
 	private static TableCubeFile getOldCube(String md5){
 		UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
 		String path = manager.getCubePath(md5);
-		return new TableCubeFile(BIPathUtils.createUserETLTablePath(md5, path));
+		return new TableCubeFile(BIPathUtils.createUserETLCubePath(md5, path));
 	}
 
 	public String getPath(){

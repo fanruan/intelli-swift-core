@@ -86,6 +86,9 @@ public class BIPathUtils {
         return createUserETLTableBasePath(md5) + File.separator + path;
     }
 
+    public static String createUserETLCubePath(String md5, String path) {
+        return createUserETLTableBasePath(md5) + File.separator + path + File.separator + md5;
+    }
 
     public static String createUserTotalPath(long userId) {
         return createBasePath()

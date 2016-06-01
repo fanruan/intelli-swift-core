@@ -53,7 +53,7 @@ public class SingleUserETLTableCubeManager implements Release {
 		this.source = source;
 		String path = getSavedPath();
 		if(path != null){
-			tq.add(new ETLTableObject(source.fetchObjectCore().getID().getIdentityValue(), path));
+			tq.add(new ETLTableObject(source, path));
 		}
 		addTask();
 	}
@@ -80,7 +80,7 @@ public class SingleUserETLTableCubeManager implements Release {
 								data.start();
 								data.run();
 								data.end();
-								tq.add(new ETLTableObject(source.fetchObjectCore().getID().getIdentityValue(), data.getPath()));
+								tq.add(new ETLTableObject(source, data.getPath()));
 							} catch (Exception e){
 								BILogger.getLogger().error(e.getMessage());
 							} finally {

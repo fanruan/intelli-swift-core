@@ -45,16 +45,11 @@ public class BIModuleUtils {
     public static ICubeTableService getTableIndex(CubeTableSource tableSource,  Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            try {
-                provider.get
-            } catch (BIKeyAbsentException e) {
+            if (provider.isRecord(tableSource)) {
+                return childLoaderMap.get(module.getModuleName()).getTableIndex(tableSource);
             }
-            if (source != null) {
-                return source;
-            }
-            childLoaderMap.get(module.getModuleName()).getTableIndex(tableSource);
-
         }
+        BINonValueUtils.beyondControl();
         return null;
     }
 
@@ -105,4 +100,23 @@ public class BIModuleUtils {
         }
         return null;
     }
+
+    public static BusinessTable getBusinessTableById(BITableID id) {
+        BusinessTable field = null;
+        for (BIModule module : BIModuleManager.getModules()) {
+            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
+            try {
+                field = provider.getBusinessTable(id);
+            } catch (BIKeyAbsentException e) {
+            }
+            if (field != null) {
+                return field;
+            }
+        }
+        if (field == null){
+            BINonValueUtils.beyondControl();
+        }
+        return null;
+    }
+
 }
