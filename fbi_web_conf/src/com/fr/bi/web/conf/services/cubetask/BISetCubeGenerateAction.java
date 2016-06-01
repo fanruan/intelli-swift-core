@@ -32,20 +32,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
             CubeBuildStuff cubeBuildStuffManager= new CubeBuildStuffManager(new BIUser(userId));
             CubeTskBuild.CubeBuild(userId,cubeBuildStuffManager);            
         }else{
-            
             CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
-//            BIBusinessTable biBusinessTable = new BIBusinessTable(new BITableID(tableId));
-//            Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(userId);
-//            for (IBusinessPackageGetterService pack : packs) {
-//                Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
-//                while (tIt.hasNext()) {
-//                    BIBusinessTable table = tIt.next();
-//                    if (ComparatorUtils.equals(table.getID(),biBusinessTable.getID())) {
-//                        biBusinessTable=table;
-//                    }
-//                }
-//            }
-//                        CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerTableSource(biBusinessTable.getTableSource(),userId);
             CubeTskBuild.CubeBuild(userId, cubeBuildStuff);
         }
     }
