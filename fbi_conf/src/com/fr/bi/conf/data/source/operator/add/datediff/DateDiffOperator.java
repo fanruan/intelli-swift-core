@@ -19,6 +19,7 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+
 /**
  * Created by GUY on 2015/3/5.
  */
@@ -154,8 +155,8 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     }
 
     @Override
-    protected int getClassType() {
-        return DBConstant.CLASS.INTEGER;
+    protected int getSqlType() {
+        return java.sql.Types.INTEGER;
     }
 
     @Override

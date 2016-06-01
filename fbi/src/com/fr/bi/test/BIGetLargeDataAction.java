@@ -51,7 +51,7 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
          * 现在改成空TableSource
          */
         fields[0] = new BICubeFieldSource(new DBTableSource("", ""), columns.get(0).getFieldName(),
-                BIDBUtils.checkColumnClassTypeFromSQL(columns.get(0).getType(), columns.get(0).getColumnSize(), columns.get(0).getScale()),
+                BIDBUtils.checkColumnClassTypeFromSQL(columns.get(0).getSqlType(), columns.get(0).getColumnSize(), columns.get(0).getScale()),
                 columns.get(0).getColumnSize());
 
         final List<String> list = new ArrayList<String>();

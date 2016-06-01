@@ -13,6 +13,7 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.json.JSONObject;
 
+
 /**
  * @author Daniel
  *
@@ -64,8 +65,8 @@ public class RankRowCalculatorOperator extends RowCalculatorOperator {
 	}
 
 	@Override
-	protected int getClassType(){
-		return DBConstant.CLASS.INTEGER;
+	protected int getSqlType(){
+		return java.sql.Types.INTEGER;
 	}
 
 }
