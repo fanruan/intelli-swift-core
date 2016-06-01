@@ -6,6 +6,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -38,7 +39,7 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
 
     @Override
     public IPersistentTable getPersistentTable() {
-        throw new RuntimeException(UNSUPPORT);
+        return  new PersistentTable(null, null, null);
     }
 
 
