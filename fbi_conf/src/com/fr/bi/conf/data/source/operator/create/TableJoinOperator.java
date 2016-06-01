@@ -100,7 +100,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         for (int i = 0; i < columns.size(); i++) {
             PersistentField column = columns.get(i).isLeft() ? leftT.getField(columns.get(i).getColumnName()) : rightT.getField(columns.get(i).getColumnName());
             if (column != null) {
-                persistentTable.addColumn(new PersistentField(columns.get(i).getName(), columns.get(i).getName(), column.getType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
+                persistentTable.addColumn(new PersistentField(columns.get(i).getName(), columns.get(i).getName(), column.getSqlType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
             }
         }
         return persistentTable;
