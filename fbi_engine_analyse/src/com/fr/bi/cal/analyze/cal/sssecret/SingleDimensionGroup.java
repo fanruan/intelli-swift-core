@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.Executor.Executor;
@@ -15,6 +14,7 @@ import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -82,7 +82,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
-        long rowCount = loader.getTableIndex(BusinessFieldHelper.getBusinessTable(column.getField()).getTableSource()).getRowCount();
+        long rowCount = loader.getTableIndex(BIModuleUtils.getBusinessTableById(tableKey.getID()).getTableSource()).getRowCount();
         int groupLimit = 10;
         if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
             useRealData = true;

@@ -58,7 +58,6 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
             }
         }
     }
-
 	@Override
 	public ICubeTableService getTableIndex(AnalysisCubeTableSource source, BIUser user){
 		UserCubeTableSource ut = source.createUserTableSource(user.getUserId());
@@ -189,5 +188,10 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 	public String getCubePath(String md5key) {
 		return cubePathMap.get(md5key);
 	}
+
+    @Override
+    public boolean isCubeGenerating(String md5) {
+        return threadMap.containsKey(md5) && threadMap.get(md5).isCubeGenerating();
+    }
 
 }

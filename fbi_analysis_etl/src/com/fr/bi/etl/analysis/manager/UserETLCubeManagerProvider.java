@@ -27,6 +27,8 @@ public interface UserETLCubeManagerProvider extends Release{
 	 */
 	String getCubePath(String md5);
 
+    boolean isCubeGenerating(String md5);
+
     void envChanged();
 
     void releaseCurrentThread();
