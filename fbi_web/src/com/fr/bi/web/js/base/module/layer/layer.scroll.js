@@ -106,12 +106,12 @@ BI.ScrollView = BI.inherit(BI.Widget, {
 
     resize: function(){
         this.element.height(this.options.height);
-        BI.defer(BI.bind(this._checkDropDown, this));
+        BI.nextTick(BI.bind(this._checkDropDown, this));
     },
 
     addItem: function(){
         this.scroll.addItem.apply(this.scroll, arguments);
-        BI.defer(BI.bind(this._checkDropDown, this));
+        BI.nextTick(BI.bind(this._checkDropDown, this));
     }
 });
 

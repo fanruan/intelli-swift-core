@@ -41,13 +41,13 @@ BI.ListPane = BI.inherit(BI.Pane, {
             itemsCreator: function (op, calback) {
                 if (op.times === 1) {
                     self.empty();
-                    BI.defer(function () {
+                    BI.nextTick(function () {
                         self.loading()
                     });
                 }
                 o.itemsCreator(op, function () {
                     calback.apply(self, arguments);
-                    op.times === 1 && BI.defer(function () {
+                    op.times === 1 && BI.nextTick(function () {
                         self.loaded();
                     });
                 });

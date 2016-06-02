@@ -360,7 +360,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         this.arrangement.populate(items);
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                BI.defer(function () {
+                BI.nextTick(function () {
                     self.arrangement.resize();
                 });
                 break;

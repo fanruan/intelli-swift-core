@@ -317,7 +317,7 @@ BI.TreeValueChooserCombo = BI.inherit(BI.Widget, {
         var selected_values = op.selected_values;
         var last_search_value = op.last_search_value || "";
         var output = search();
-        BI.defer(function () {
+        BI.nextTick(function () {
             callback({
                 hasNext: output.length > self._const.perPage,
                 items: result,
@@ -484,7 +484,7 @@ BI.TreeValueChooserCombo = BI.inherit(BI.Widget, {
                 halfCheck: state[1]
             })
         }
-        BI.defer(function () {
+        BI.nextTick(function () {
             callback({
                 items: result,
                 hasNext: nodes.length > times * self._const.perPage

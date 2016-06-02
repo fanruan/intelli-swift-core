@@ -106,7 +106,7 @@ BI.Loader = BI.inherit(BI.Widget, {
             items: BI.LogicFactory.createLogicItemsByDirection(o.direction, this.prev, this.button_group, this.next)
         }))));
 
-        o.isDefaultInit && BI.isEmpty(o.items) && BI.defer(BI.bind(function () {
+        o.isDefaultInit && BI.isEmpty(o.items) && BI.nextTick(BI.bind(function () {
             o.isDefaultInit && BI.isEmpty(o.items) && this.populate();
         }, this));
         if (BI.isNotEmptyArray(o.items)) {

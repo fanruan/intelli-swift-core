@@ -21,7 +21,7 @@ BI.CodeEditor = BI.inherit(BI.Single, {
             lineNumbers: false
         });
         this.editor.on("change", function (cm, change) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.fireEvent(BI.CodeEditor.EVENT_CHANGE)
             });
         });
@@ -70,7 +70,7 @@ BI.CodeEditor = BI.inherit(BI.Single, {
         });
 
         if (BI.isKey(o.value)) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.setValue(o.value);
             });
         }

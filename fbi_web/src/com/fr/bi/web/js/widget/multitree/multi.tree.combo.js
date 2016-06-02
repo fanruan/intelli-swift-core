@@ -33,7 +33,7 @@ BI.MultiTreeCombo = BI.inherit(BI.Single, {
             type: 'bi.multi_tree_popup_view',
             itemsCreator: o.itemsCreator,
             onLoaded: function () {
-                BI.defer(function () {
+                BI.nextTick(function () {
                     self.trigger.getCounter().adjustView();
                     self.trigger.getSearcher().adjustView();
                 });
@@ -100,7 +100,7 @@ BI.MultiTreeCombo = BI.inherit(BI.Single, {
         this.trigger.on(BI.MultiSelectTrigger.EVENT_STOP, function () {
             self.storeValue = {value: this.getValue()};
             self.combo.setValue(self.storeValue);
-            BI.defer(function () {
+            BI.nextTick(function () {
                 if (isPopupView()) {
                     self.combo.populate();
                 }

@@ -511,7 +511,7 @@ BI.Table = BI.inherit(BI.Widget, {
             }
         };
 
-        BI.defer(function () {
+        BI.nextTick(function () {
             if (self.element.is(":visible")) {
                 self._resize();
                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
@@ -1027,7 +1027,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
             }
         });
-        BI.defer(function () {
+        BI.nextTick(function () {
             if (self.element.is(":visible")) {
                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
             }

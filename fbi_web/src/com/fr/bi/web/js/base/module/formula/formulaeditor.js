@@ -26,7 +26,7 @@
             this.editor.on("change", function (cm, change) {
                 self._checkWaterMark();
                 CodeMirror.showHint(cm, CodeMirror.formulaHint, {completeSingle: false});
-                BI.defer(function () {
+                BI.nextTick(function () {
                     self.fireEvent(BI.FormulaEditor.EVENT_CHANGE)
                 });
             });
