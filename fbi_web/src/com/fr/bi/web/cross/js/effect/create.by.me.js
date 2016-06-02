@@ -43,7 +43,14 @@
                         users: FR.encrypt(FR.jsonEncode(users), "neilsx")
                     }, function () {
                     });
-                })
+                });
+                templateManage.on(BI.TemplateManager.EVENT_HANGOUT, function (id, status) {
+                    BI.requestAsync("fr_bi", "report_hangout", {
+                        id: id,
+                        status: status
+                    }, function () {
+                    });
+                });
             });
         }
     });
