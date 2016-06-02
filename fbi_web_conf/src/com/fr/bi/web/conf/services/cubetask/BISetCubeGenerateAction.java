@@ -37,10 +37,10 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
        //todo kary 优化ETL的更新方式,可能要单独实现ETL更新方法
         if (StringUtils.isEmpty(tableId)){
             CubeBuildStuff cubeBuildStuffManager= new CubeBuildStuffManager(new BIUser(userId));
-            CubeTskBuild.CubeBuild(userId,cubeBuildStuffManager);            
+            CubeTaskBuild.CubeBuild(userId,cubeBuildStuffManager);            
         }else{
             CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
-            CubeTskBuild.CubeBuild(userId, cubeBuildStuff);
+            CubeTaskBuild.CubeBuild(userId, cubeBuildStuff);
         }
     }
 

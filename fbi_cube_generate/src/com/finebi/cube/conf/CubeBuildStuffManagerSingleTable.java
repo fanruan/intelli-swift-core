@@ -60,7 +60,6 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
                     }
                 }
             }
-
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
@@ -101,7 +100,6 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
     public Set<BITableSourceRelationPath> getRelationPaths() {
         return new HashSet<BITableSourceRelationPath>();
     }
-
 
 
     @Override

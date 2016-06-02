@@ -47,6 +47,9 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
             setting.on(BI.UpdateSingleTableSetting.EVENT_CLOSE_PREVIEW, function(){
                 BI.Popovers.open(self.model.getId());
             });
+            setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function(obj){
+                self.fireEvent(BI.UpdateTableData.EVENT_CUBE_SAVE,obj);
+            });
             this.settings[tableIds[0]] = setting;
         } else {
             var items = [];
@@ -129,4 +132,5 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
     }
 });
 BI.UpdateTableData.EVENT_SAVE = "EVENT_SAVE";
+BI.UpdateTableData.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 $.shortcut("bi.update_table_data", BI.UpdateTableData);
