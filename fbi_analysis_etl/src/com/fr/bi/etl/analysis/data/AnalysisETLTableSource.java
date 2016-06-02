@@ -105,7 +105,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
                     for (AnalysisCubeTableSource parent : getParents()){
                         parents.add(parent.createUserTableSource(userId));
                     }
-                    source = new UserETLTableSource(getETLOperators(), parents, userId);
+                    source = new UserETLTableSource(getETLOperators(), parents, userId, fieldList);
                     userBaseTableMap.put(userId, source);
                 } else {
                     source = tmp;
