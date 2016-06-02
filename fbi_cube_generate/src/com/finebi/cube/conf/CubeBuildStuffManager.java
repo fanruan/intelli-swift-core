@@ -308,7 +308,6 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
-            BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
             setTableRelationSet(BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId()));
             Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             setPrimaryKeyMap(primaryKeyMap);
