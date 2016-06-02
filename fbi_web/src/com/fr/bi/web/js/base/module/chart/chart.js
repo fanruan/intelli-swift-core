@@ -65,7 +65,7 @@ BI.Chart = BI.inherit(BI.Pane, {
         };
 
         if (this.isInit === false) {
-            BI.delay(init, 1);
+            BI.nextTick(init, 1);
         }
 
         if (this.element.is(":visible") && this.isSetOptions === true) {

@@ -30,11 +30,11 @@ BI.BasicButton = BI.inherit(BI.Single, {
         BI.BasicButton.superclass._init.apply(this, arguments);
         var opts = this.options;
         if (opts.selected === true) {
-            BI.defer(BI.bind(function () {
+            BI.nextTick(BI.bind(function () {
                 this.setSelected(opts.selected);
             }, this));
         }
-        BI.defer(BI.bind(this.bindEvent, this));
+        BI.nextTick(BI.bind(this.bindEvent, this));
 
         if (opts.shadow) {
             this._createShadow();

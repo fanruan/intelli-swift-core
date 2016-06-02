@@ -287,6 +287,7 @@ BI.ChartCombineFormatItemFactory = {
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
+                geo: ".././"
                 return BI.extend({"chartType": "map"}, config);
             case BICst.WIDGET.GIS_MAP:
                 return {};

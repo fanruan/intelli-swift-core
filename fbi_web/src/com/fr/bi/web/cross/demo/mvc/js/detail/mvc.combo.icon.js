@@ -24,7 +24,7 @@ IconComboView = BI.inherit(BI.View, {
                 iconClass: "move-font"
             }]
         });
-        BI.defer(function () {
+        BI.nextTick(function () {
             combo.showView();
         });
         BI.createWidget({

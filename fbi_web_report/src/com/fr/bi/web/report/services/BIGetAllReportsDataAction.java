@@ -60,7 +60,6 @@ public class BIGetAllReportsDataAction extends ActionNoSessionCMD {
             JSONArray users = new JSONArray();
             JSONArray reports = new JSONArray();
             List<User> userList = UserControl.getInstance().findAllUser();
-            userList.add(UserControl.getInstance().getUser(UserControl.getInstance().getSuperManagerID()));
             for(int i = 0; i < userList.size(); i++){
                 User u = userList.get(i);
                 users.put(u.createEditInfoJSONConfig());
