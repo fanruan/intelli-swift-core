@@ -63,7 +63,7 @@ BI.ExcelTable = BI.inherit(BI.Widget, {
         });
 
         this.populate(o.items);
-        BI.defer(function () {
+        BI.nextTick(function () {
             self.setRegionColumnSize(o.regionColumnSize || [30, ""]);
         });
     },

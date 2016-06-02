@@ -61,7 +61,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         this.drops = {};
         this.storeDrops = {};
         if (o.items.length > 0) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.populate(o.items);
             });
         }

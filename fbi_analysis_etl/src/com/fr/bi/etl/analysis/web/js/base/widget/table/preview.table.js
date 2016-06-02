@@ -254,7 +254,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                     var el = $(e.target)
                     if(self.dragHepler.prepareDragging === true){
                         //放到DragButton之后所有事件要延迟执行，不然黑没有开始dragging 这边就继续执行了，结果就跑偏了
-                        self.dragHepler.timeoutTimer = setTimeout(fn, 100);
+                        self.dragHepler.timeoutTimer = BI.delay(fn, 100);
                     } else {
                         fn.apply();
                     }
@@ -392,7 +392,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
 
     populate: function(items, header, operator) {
         var self = this;
-        setTimeout(function(e){
+        BI.nextTick(function(e){
             self.options.operator = operator
             if(BI.isNull(header)) {
                 header = self.options.header;
@@ -424,7 +424,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                 })
             })
 
-        }, 0)
+        })
     }
 })
 

@@ -78,13 +78,13 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
         });
 
         this.text.on(BI.TextButton.EVENT_CHANGE, function () {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.fireEvent(BI.SignStyleEditor.EVENT_CLICK_LABEL)
             });
         });
 
         this.tipText.on(BI.TextButton.EVENT_CHANGE, function () {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.fireEvent(BI.SignStyleEditor.EVENT_CLICK_LABEL)
             });
         });
@@ -153,7 +153,7 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
         this._showHint();
         this._checkText();
 
-        BI.defer(function () {
+        BI.nextTick(function () {
             var tipTextSize = self.text.element.getStyle("font-size");
             self.tipTextSize = tipTextSize.substring(0, tipTextSize.length - 2);
             self._resizeLayout();

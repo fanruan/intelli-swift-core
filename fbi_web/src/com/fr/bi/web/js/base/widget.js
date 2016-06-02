@@ -75,7 +75,7 @@ BI.Widget = BI.inherit(FR.Widget, {
     },
 
     _initVisualEffects: function () {
-        BI.defer(BI.bind(function () {
+        BI.nextTick(BI.bind(function () {
             if (this.options.disabled) {
                 this.setEnable(false);
             }

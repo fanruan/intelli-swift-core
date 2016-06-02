@@ -787,7 +787,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         int rowLength = usedDimensions.length;
         int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
-        if (summaryLength + columnLen == 0) {
+        if (columnLen == 0) {
             return null;
         }
         long start = System.currentTimeMillis();

@@ -48,7 +48,7 @@ BI.FloatCenterAdaptLayout = BI.inherit(BI.Layout, {
             items: [left]
         });
 
-        BI.defer(function () {
+        BI.nextTick(function () {
             var width = left.element.width(),
                 height = left.element.height();
             BI.DOM.hang([left]);

@@ -6,6 +6,7 @@ BI.UpdateSingleTableSettingModel = BI.inherit(FR.OB, {
         BI.UpdateSingleTableSettingModel.superclass._init.apply(this, arguments);
         var updateSetting = this.options.update_setting;
         this.table = this.options.table;
+        this.currentTable=this.options.currentTable;
         this.updateType = BICst.SINGLE_TABLE_UPDATE_TYPE.ALL;
         this.addSql = "";
         this.deleteSql = "";

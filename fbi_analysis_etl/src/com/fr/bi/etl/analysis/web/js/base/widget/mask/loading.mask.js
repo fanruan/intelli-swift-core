@@ -76,7 +76,7 @@ BI.ETLLoadingMask = BI.inherit(BI.Widget, {
             card.showCardByName(self._constants.CANCEL)
         }, 10000)
         BI.Layers.show(this.getName());
-        BI.defer(function () {
+        BI.nextTick(function () {
             BI.Layers.show(self.getName());
         });
     },

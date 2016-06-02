@@ -23,7 +23,7 @@ BI.CubeProgressIndicator = BI.inherit(BI.Widget, {
         BI.requestAsync("fr_bi_dezi", "get_temp_cube_generating_status", {}, function (state) {
             BI.Msg.toast("已完成" + state.percent + "%");
             if (state.percent < 100) {
-                setTimeout(BI.bind(self._reqState, self), 300);
+                BI.nextTick(BI.bind(self._reqState, self), 300);
             } else {
                 self.fireEvent(BI.CubeProgressIndicator.EVENT_COMPLETE);
             }

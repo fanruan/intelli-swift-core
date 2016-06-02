@@ -60,7 +60,7 @@ BI.DynamicTab = FR.extend(BI.MVCWidget, {
             allHistory: this.controller.hasMergeHistory(v)
         });
         var self = this;
-        BI.defer(function () {
+        BI.nextTick(function () {
             self.registerChildWidget(v, tab,  {
                 currentTables:function () {
                     return self.controller.getCurrentTables()

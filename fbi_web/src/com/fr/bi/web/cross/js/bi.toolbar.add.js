@@ -29,15 +29,20 @@ $.extend(FS.Plugin.ReportManagerAddon, {
                             FR.Msg.alert(BI.i18nText("FS-Generic-Simple_Alert"), BI.i18nText("FS-Report-No_Dir_Selected"));
                             return;
                         }
-                        var title = BI.i18nText("FS-Report-Simple_BI");
-                        var onOK = function () {
-                            return self.DIR._addOrEditBI();
-                        };
-                        var onCancel = function () {
-                        };
-                        var data = null; //编辑dialog的初始数据
-                        self.biDialog = self.createBIDialog(title, onOK, onCancel, data);
-                        self.biDialog.setVisible(true);
+                        // var title = BI.i18nText("FS-Report-Simple_BI");
+                        // var onOK = function () {
+                        //     return self.DIR._addOrEditBI();
+                        // };
+                        // var onCancel = function () {
+                        // };
+                        // var data = null; //编辑dialog的初始数据
+                        // self.biDialog = self.createBIDialog(title, onOK, onCancel, data);
+                        // self.biDialog.setVisible(true);
+                        var id = BI.UUID();
+                        var popover = BI.createWidget({
+                            type: "bi.plate_hangout_report"
+                        });
+                        BI.Popovers.create(id, popover, {width: 400, height: 320}).open(id);
                     }
                 }
             };
