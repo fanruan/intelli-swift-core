@@ -291,9 +291,11 @@ Data.Req = BIReq = {
             callback(res);
         });
     },
-    reqGenerateCubeByTable: function (tableId, callback) {
+    reqGenerateCubeByTable: function (table, callback) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
-            tableId: tableId
+            connectionName: table.connection_name,
+            tableName: table.table_name,
+            tableId: table.id
         }, function (res) {
             callback(res);
         });
