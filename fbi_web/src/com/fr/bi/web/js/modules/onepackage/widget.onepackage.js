@@ -535,6 +535,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     }
 });
 BI.OnePackage.EVENT_CANCEL = "EVENT_CANCEL";
+BI.OnePackage.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 BI.OnePackage.EVENT_SAVE = "EVENT_SAVE";
 BI.OnePackage.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 $.shortcut("bi.one_package", BI.OnePackage);
