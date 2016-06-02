@@ -18,7 +18,8 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         ICON_HEIGHT: 24,
         NUMBER_LEVEL_SEGMENT_WIDTH: 300,
         FORMAT_SEGMENT_WIDTH: 240,
-        CHART_TYPE_SEGMENT_WIDTH: 180
+        CHART_TYPE_SEGMENT_WIDTH: 180,
+        LEGEND_SEGMENT_WIDTH: 180
     },
 
     _defaultConfig: function(){
@@ -119,6 +120,59 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
+        //图例
+        this.legend = BI.createWidget({
+            type: "bi.segment",
+            width: this.constant.LEGEND_SEGMENT_WIDTH,
+            height: this.constant.BUTTON_HEIGHT,
+            items: BICst.CHART_LEGEND
+        });
+
+        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //数据标签
+        this.showDataLabel = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Data_Label"),
+            width: 115
+        });
+
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        var showElement = BI.createWidget({
+            type: "bi.horizontal",
+            cls: "single-line-settings",
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Element_Show"),
+                textHeight: 60,
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Legend_Normal"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.legend]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.showDataLabel]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: this.constant.SIMPLE_H_GAP
+            }]
+        });
+
         var lYAxis = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
@@ -181,7 +235,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, otherAttr],
+            items: [tableStyle, lYAxis, showElement, otherAttr],
             hgap: 10
         })
     },
@@ -193,6 +247,9 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         this.chartTypeGroup.setValue(BI.Utils.getWSChartPieTypeByID(wId));
         this.totalAngle.setValue(BI.Utils.getWSChartTotalAngleByID(wId));
         this.innerRadius.setValue(BI.Utils.getWSChartInnerRadiusByID(wId));
+        this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+
     },
 
     getValue: function(){
@@ -201,7 +258,9 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
             chart_color: this.colorSelect.getValue()[0],
             chart_pie_type: this.chartTypeGroup.getValue()[0],
             chart_total_angle: this.totalAngle.getValue()[0],
-            chart_inner_radius: this.innerRadius.getValue()
+            chart_inner_radius: this.innerRadius.getValue(),
+            chart_legend: this.legend.getValue()[0],
+            show_data_label: this.showDataLabel.isSelected()
         }
     },
 
@@ -211,6 +270,8 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         this.chartTypeGroup.setValue(v.chart_pie_type);
         this.totalAngle.setValue(v.chart_total_angle);
         this.innerRadius.setValue(v.chart_inner_radius);
+        this.legend.setValue(v.chart_legend);
+        this.showDataLabel.setSelected(v.show_data_label);
     }
 });
 BI.PieChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
