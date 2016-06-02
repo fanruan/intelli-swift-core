@@ -50,9 +50,6 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.MAP_WORLD:
-            case BICst.WIDGET.MAP_CHINA:
-            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
@@ -118,23 +115,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     },
 
     resize: function () {
-        switch (this.tableChartTab.getSelect()) {
-            case BICst.WIDGET.TABLE:
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.PIE:
-            case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            //case BICst.WIDGET.MAP:
-            //case BICst.WIDGET.MAP_WORLD:
-            //case BICst.WIDGET.MAP_CHINA:
-            //case BICst.WIDGET.MAP_JIANGSU:
-            case BICst.WIDGET.DASHBOARD:
-            case BICst.WIDGET.DONUT:
-            case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.SCATTER:
-                this.tableChartTab.getSelectedTab().resize();
-        }
+        this.tableChartTab.getSelectedTab().resize();
     },
 
     getValue: function () {

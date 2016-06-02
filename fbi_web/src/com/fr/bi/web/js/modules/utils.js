@@ -276,6 +276,10 @@
             return Data.SharingPool.get("widgets", wid, "type");
         },
 
+        getWidgetSubTypeByID: function (wid) {
+            return Data.SharingPool.get("widgets", wid, "sub_type");
+        },
+
         getWidgetNameByID: function (wid) {
             var widget = Data.SharingPool.cat("widgets", wid);
             if (BI.isNotNull(widget)) {

@@ -52,9 +52,6 @@ BI.ChartCombineFormatItemFactory = {
                 break;
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.MAP_WORLD:
-            case BICst.WIDGET.MAP_CHINA:
-            case BICst.WIDGET.MAP_JIANGSU:
                 item = BI.extend({"type": "map"}, items);
                 break;
             case BICst.WIDGET.GIS_MAP:
@@ -183,7 +180,25 @@ BI.ChartCombineFormatItemFactory = {
                 "borderWidth": 1,
                 "gap": "22.0%",
                 "animation": true,
-                "lineWidth": 2
+                "lineWidth": 2,
+
+                bubble:{
+                    "large": false,
+                    "connectNulls": false,
+                    "shadow": true,
+                    "curve": false,
+                    "sizeBy": "area",
+                    "maxSize": 60,
+                    "minSize": 12,
+                    "lineWidth": 0,
+                    "animation": true,
+                    "fillColorOpacity": 0.699999988079071,
+                    "marker": {
+                        "symbol": "circle",
+                        "radius": 28.39695010101295,
+                        "enabled": true
+                    }
+                }
             },
             dataSheet: {
                 enabled: false,
@@ -263,7 +278,6 @@ BI.ChartCombineFormatItemFactory = {
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-                geo: ".././"
                 return BI.extend({"chartType": "map"}, config);
             case BICst.WIDGET.GIS_MAP:
                 return {};
