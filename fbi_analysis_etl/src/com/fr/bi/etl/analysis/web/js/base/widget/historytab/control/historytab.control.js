@@ -77,9 +77,9 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         }
         if(widget.options.allHistory === true){
             var allHistoryId = this._getTabButtonGroup(widget).allHistoryId;
-            setTimeout(function(){
+            BI.nextTick(function(){
                 self.populateOneTab(allHistoryId, widget, model)
-            }, 0)
+            })
 
         }
     },
@@ -250,7 +250,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         }
         this._getTabButtonGroup(widget).addItemFromIndex(button, index);
         button.on(BI.Controller.EVENT_CHANGE, function () {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 var v = button.getValue();
                 var tab = widget.tab.getTab(v)
                 if (BI.isNotNull(tab) && BI.isNotNull(tab.controller.resetPointerPosition)) {

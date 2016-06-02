@@ -80,11 +80,11 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
         });
         this._initScroll();
         if (o.isNeedFreeze === true) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self._resizeFreezeScroll();
             });
         } else if (o.isNeedFreeze === false) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self._resizeScroll();
             });
         }
@@ -439,12 +439,12 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.table.resize();
         if (o.isNeedFreeze === true) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self._resizeFreezeScroll();
                 self._scrollFreezeScroll();
             });
         } else if (o.isNeedFreeze === false) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self._resizeScroll();
                 self._scrollScroll();
             });
@@ -544,12 +544,12 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.table.populate.apply(this.table, arguments);
         if (o.isNeedFreeze === true) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self._resizeFreezeScroll();
                 self._scrollFreezeScroll();
             });
         } else if (o.isNeedFreeze === false) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self._resizeScroll();
                 self._scrollScroll();
             });

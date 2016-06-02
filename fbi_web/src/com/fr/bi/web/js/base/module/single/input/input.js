@@ -203,7 +203,7 @@ BI.Input = BI.inherit(BI.Single, {
 
     setValue: function (textValue) {
         this.element.val(textValue);
-        BI.defer(BI.bind(function () {
+        BI.nextTick(BI.bind(function () {
             this._checkValidationOnValueChange();
             this._defaultState();
         }, this));

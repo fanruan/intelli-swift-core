@@ -109,7 +109,7 @@ BI.AnalysisETLMergePreviewTable = BI.inherit(BI.Widget, {
 
     populate: function(items, header, leftColumns, mergeColumns) {
         var self = this;
-        setTimeout(function(e){
+        BI.nextTick(function(e){
             self.options.leftColumns = leftColumns
             self.options.mergeColumns = mergeColumns
             if(BI.isNull(header)) {
@@ -126,7 +126,7 @@ BI.AnalysisETLMergePreviewTable = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.AnalysisETLMergePreviewTable.EVENT_RENAME, idx, name)
                 })
             })
-        }, 0)
+        })
     }
 })
 
