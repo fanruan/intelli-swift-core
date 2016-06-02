@@ -137,9 +137,9 @@ BI.CodeEditor = BI.inherit(BI.Single, {
 
     refresh: function(){
         var self = this;
-        BI.delay(function () {
+        BI.nextTick(function () {
             self.editor.refresh();
-        }, 0);
+        });
     }
 });
 BI.CodeEditor.EVENT_CHANGE = "EVENT_CHANGE";

@@ -77,9 +77,9 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         }
         if(widget.options.allHistory === true){
             var allHistoryId = this._getTabButtonGroup(widget).allHistoryId;
-            setTimeout(function(){
+            BI.nextTick(function(){
                 self.populateOneTab(allHistoryId, widget, model)
-            }, 0)
+            })
 
         }
     },

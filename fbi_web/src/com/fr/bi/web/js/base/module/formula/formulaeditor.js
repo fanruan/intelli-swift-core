@@ -215,9 +215,9 @@
 
         refresh: function () {
             var self = this;
-            BI.delay(function () {
+            BI.nextTick(function () {
                 self.editor.refresh();
-            }, 0);
+            });
         }
 
     });
