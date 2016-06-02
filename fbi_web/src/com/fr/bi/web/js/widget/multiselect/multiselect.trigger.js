@@ -82,6 +82,9 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
                 }, {
                     el: wrapNumberCounter,
                     width: 0
+                }, {
+                    el: BI.createWidget(),
+                    width: 30
                 }]
         });
 
