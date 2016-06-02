@@ -80,10 +80,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 if (self.model.options.currentTable.connection_name=="__FR_BI_ETL__"){
                     self.model.table.id=self.model.currentTable.id
                 }
-                    // self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
-                BI.Utils.generateCubeByTable(self.model.table, function () {
-                    self._createCheckInterval();
-                });
+                    self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
+                self._createCheckInterval();
+                // BI.Utils.generateCubeByTable(self.model.table, function () {
+                //     self._createCheckInterval();
+                // });
 
             }
         });
