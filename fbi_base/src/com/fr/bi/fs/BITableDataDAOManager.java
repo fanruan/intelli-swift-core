@@ -87,6 +87,7 @@ public class BITableDataDAOManager extends XMLFileManager {
                 rowList.add(String.valueOf(-1));
                 rowList.add(tdNode.getDescription());
                 rowList.add(String.valueOf(tdNode.getStatus()));
+                rowList.add(String.valueOf(tdNode.getUserId()));
                 this.biReportTableData.addRow(rowList);
             }
         }
@@ -308,6 +309,7 @@ public class BITableDataDAOManager extends XMLFileManager {
                             } catch (Exception e){
                             }
                             tdNode.setStatus(status);
+                            tdNode.setUserId(Long.valueOf(tableData.getValueAt(i, 10).toString()));
                             tdBIReport_idMap.put(id, tdNode);
                         } catch (Exception e) {
                             FRContext.getLogger().error(e.getMessage(), e);

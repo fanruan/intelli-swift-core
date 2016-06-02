@@ -171,9 +171,13 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
     _onClickHangout: function(){
         BI.Popovers.remove(this._constant.PATH_CHOOSER);
         var pathChooser = BI.createWidget({
-            type: "bi.report_hangout_path_chooser"
+            type: "bi.report_hangout_path_chooser",
+            reportName: this.options.report.text
         });
-        BI.Popovers.create(this._constant.PATH_CHOOSER, pathChooser).open(this._constant.PATH_CHOOSER);
+        pathChooser.on(BI.ReportHangoutPathChooser.EVENT_SAVE, function(){
+             
+        });
+        BI.Popovers.create(this._constant.PATH_CHOOSER, pathChooser, {width: 400, height: 340}).open(this._constant.PATH_CHOOSER);
     },
 
     _refreshHangout: function(){
