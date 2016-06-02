@@ -30,13 +30,53 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     },
 
-    _formatDataForMap: function (da) {
-        this._getShowTarget();
-        var data = this._formatDataForCommon(da);
-        if(BI.isEmptyArray(data)){
-            return [];
+    _formatDataForMap: function (data) {
+        var self = this, o = this.options;
+        var targetIds = this._getShowTarget();
+        var result = [];
+        if (BI.has(data, "c")) {
+            var obj = (data.c)[0];
+            var view = BI.Utils.getWidgetViewByID(o.wId);
+            var columnSizeArray = BI.makeArray(BI.isNull(obj) ? 0 : BI.size(obj.s), 0);
+            result = BI.map(columnSizeArray, function (idx, value) {
+                var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[idx]) || {};
+                var type = chart.type || BICst.WIDGET.BUBBLE;
+                var adjustData = BI.map(data.c, function (id, item) {
+                    var res = {}
+                    if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
+                        switch(type){
+                            case BICst.WIDGET.BUBBLE:
+                            case BICst.WIDGET.AXIS:
+                            case BICst.WIDGET.PIE:
+                            default:
+                                res = {
+                                    name: item.n,
+                                    size: item.s[idx]
+                                };
+                        }
+                    }else{
+                        res = {
+                            name: item.n,
+                            value: item.s[idx],
+                            targetIds: [targetIds[idx]]
+                        };
+                    }
+                    if(BI.has(item, "c")){
+                        res.drill = {};
+                        res.drill.series = self._formatDataForMap(item);
+                        res.drill.geo = {
+                            data: BICst.MAP_PATH[BICst.MAP_NAME[res.name]]
+                        };
+                    }
+                    return res;
+                });
+                var obj = {};
+                obj.data = adjustData;
+                obj.name = BI.Utils.getDimensionNameByID(targetIds[idx]);
+                return obj;
+            });
         }
-
+        return result;
     },
 
     _formatDataForAxis: function (da) {
@@ -293,6 +333,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     parseChartData: function (data) {
         var self = this, o = this.options;
+        if(BI.Utils.getWidgetTypeByID(o.wId) >= BICst.MAP_TYPE.WORLD){
+            return [this._formatDataForMap(data)];
+        }
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
                 return this._formatDataForBubble(data);
@@ -332,9 +375,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.MAP_WORLD:
-            case BICst.WIDGET.MAP_CHINA:
-            case BICst.WIDGET.MAP_JIANGSU:
+                return this._formatDataForMap(data);
             case BICst.WIDGET.GIS_MAP:
                 return this._formatDataForForceBubble(data);
         }
@@ -342,6 +383,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     getWidgetData: function(type, callback){
         var self = this, o = this.options;
+        var view = BI.Utils.getWidgetViewByID(o.wId);
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             var data = self.parseChartData(jsonData.data);
             var types = [];
@@ -350,20 +392,39 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             BI.each(data, function (idx, da) {
                 var t = [];
                 BI.each(da, function (id, d) {
-                    if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
+                    if(type >= BICst.MAP_TYPE.WORLD && BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[count])){
                         var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
-                        t.push(chart.type || BICst.WIDGET.AXIS);
-                        count++;
-                    } else {
-                        t.push(type);
+                        t.push(chart.type || BICst.WIDGET.BUBBLE);
+                    }else{
+                        if(type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART){
+                            var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
+                            t.push(chart.type || BICst.WIDGET.AXIS);
+                        }else{
+                            t.push(type);
+                        }
                     }
+                    count++;
                 });
-                types.push(t);
+                if(BI.isNotEmptyArray(t)){
+                    types.push(t);
+                }
             });
             if(BI.isEmptyArray(types)){
                 types.push([type]);
             }
             callback(types, data);
+        }, {
+            expander: {
+                x: {
+                    type: true,
+                    value: [[]]
+                },
+                y: {
+                    type: true,
+                    value: [[]]
+                }
+            },
+            page: -1
         });
     },
 

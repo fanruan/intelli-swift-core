@@ -123,8 +123,18 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     },
 
     _rebuildItems: function(){
+        var o = this.options;
         var item = this.defaultItems();
-        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        var view = BI.Utils.getWidgetViewByID(wId);
+        var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
+            return did === o.dId;
+        });
+        if(wType >= BICst.MAP_TYPE.WORLD && BI.isNotNull(result)){
+            item[0][this.constants.CHART_TYPE_POSITION].children = BICst.SUSPENSION_MAP_TYPE;
+            return item;
+        }
         switch (wType) {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:

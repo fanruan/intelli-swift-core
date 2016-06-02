@@ -52,9 +52,6 @@ BI.ChartCombineFormatItemFactory = {
                 break;
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.MAP_WORLD:
-            case BICst.WIDGET.MAP_CHINA:
-            case BICst.WIDGET.MAP_JIANGSU:
                 item = BI.extend({"type": "map"}, items);
                 break;
             case BICst.WIDGET.GIS_MAP:
@@ -63,6 +60,9 @@ BI.ChartCombineFormatItemFactory = {
             default:
                 item = BI.extend({"type": "column"}, items);
                 break;
+        }
+        if(type >= BICst.MAP_TYPE.WORLD){
+            item = BI.extend({"type": "map"}, items);
         }
         item.data = BI.map(item.data, function(idx, it){
             if(BI.has(it, "color") || BI.has(item, "color")){
@@ -183,7 +183,25 @@ BI.ChartCombineFormatItemFactory = {
                 "borderWidth": 1,
                 "gap": "22.0%",
                 "animation": true,
-                "lineWidth": 2
+                "lineWidth": 2,
+
+                bubble:{
+                    "large": false,
+                    "connectNulls": false,
+                    "shadow": true,
+                    "curve": false,
+                    "sizeBy": "area",
+                    "maxSize": 60,
+                    "minSize": 12,
+                    "lineWidth": 0,
+                    "animation": true,
+                    "fillColorOpacity": 0.699999988079071,
+                    "marker": {
+                        "symbol": "circle",
+                        "radius": 28.39695010101295,
+                        "enabled": true
+                    }
+                }
             },
             dataSheet: {
                 enabled: false,
@@ -224,6 +242,12 @@ BI.ChartCombineFormatItemFactory = {
             "plotShadow": false,
             "plotBorderRadius": 0
         };
+        if(type >= BICst.MAP_TYPE.WORLD){
+            config.geo = {
+                data: BICst.MAP_PATH[type]
+            };
+            return BI.extend({"chartType": "map"}, config);
+        }
         switch (type) {
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:

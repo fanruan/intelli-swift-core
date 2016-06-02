@@ -20,6 +20,11 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         BI.RegionsManager.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.regions = {};
+        if(o.regionType >= BICst.MAP_TYPE.WORLD){
+            this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Region_Name"), BICst.REGION.DIMENSION1);
+            this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
+            this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Region_Suspension_Target"), BICst.REGION.TARGET2)
+        }
         switch (o.regionType) {
             case BICst.WIDGET.TABLE:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Row_Header"), BICst.REGION.DIMENSION1);

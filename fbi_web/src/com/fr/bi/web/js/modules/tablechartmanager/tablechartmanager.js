@@ -26,6 +26,9 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     },
 
     _createChartTabs: function (v) {
+        if(v >= BICst.MAP_TYPE.WORLD){
+            return this._createChart();
+        }
         switch (v) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -50,9 +53,6 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.MAP_WORLD:
-            case BICst.WIDGET.MAP_CHINA:
-            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
@@ -118,6 +118,9 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     },
 
     resize: function () {
+        if(this.tableChartTab.getSelect() > BICst.MAP_TYPE.WORLD){
+            this.tableChartTab.getSelectedTab().resize();
+        }
         switch (this.tableChartTab.getSelect()) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.AXIS:
@@ -125,10 +128,6 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
-            //case BICst.WIDGET.MAP:
-            //case BICst.WIDGET.MAP_WORLD:
-            //case BICst.WIDGET.MAP_CHINA:
-            //case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.BUBBLE:

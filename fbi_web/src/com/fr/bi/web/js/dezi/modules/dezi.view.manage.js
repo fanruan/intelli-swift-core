@@ -16,6 +16,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
     },
 
     getDetail: function (id, type) {
+        if(type >= BICst.MAP_TYPE.WORLD){
+            return "BIDezi.DetailView";
+        }
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -39,9 +42,6 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.MAP_WORLD:
-            case BICst.WIDGET.MAP_CHINA:
-            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
@@ -76,6 +76,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
     },
 
     getWidget: function (id, type) {
+        if(type >= BICst.MAP_TYPE.WORLD){
+            return "BIDezi.WidgetView";
+        }
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -99,9 +102,6 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.MAP_WORLD:
-            case BICst.WIDGET.MAP_CHINA:
-            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
@@ -147,6 +147,13 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
     },
 
     getDimensionOrTarget: function (id, type, region, dId) {
+        if(type >= BICst.MAP_TYPE.WORLD){
+            if (BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
+                BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region)) {
+                return "BIDezi.DimensionView";
+            }
+            return "BIDezi.TargetView";
+        }
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -170,9 +177,6 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.MAP_WORLD:
-            case BICst.WIDGET.MAP_CHINA:
-            case BICst.WIDGET.MAP_JIANGSU:
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:

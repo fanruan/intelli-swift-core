@@ -157,12 +157,14 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             formatElementAttrs();
             if(BI.has(config, "yAxis") && config.yAxis.length > 0){
                 config.yAxis[0].reversed = self.left_y_axis_reversed ? !config.yAxis[0].reversed : config.yAxis[0].reversed;
-                config.yAxis[0].formatter = formatTickInXYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
+                if(config.chartType !== "bar"){
+                    config.yAxis[0].formatter = formatTickInXYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
+                }
                 formatNumberLevelInYaxis(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
                 config.yAxis[0].title.text = self.left_y_axis_title + getXYAxisUnit(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
                 config.yAxis[0].title.text = self.show_left_y_axis_title === true ? config.yAxis[0].title.text : "";
                 config.yAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
-                //config.yAxis[0].title.rotation = self.constants.ROTATION;
+                config.yAxis[0].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "yAxis") && config.yAxis.length > 1){
                 config.yAxis[1].formatter = formatTickInXYaxis(self.right_y_axis_style, self.constants.RIGHT_AXIS);
@@ -171,7 +173,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 config.yAxis[1].title.text = self.right_y_axis_title + getXYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                 config.yAxis[1].title.text = self.show_right_y_axis_title === true ? config.yAxis[1].title.text : "";
                 config.yAxis[1].gridLineWidth = self.show_grid_line === true ? 1 : 0;
-                //config.yAxis[1].title.rotation = self.constants.ROTATION;
+                config.yAxis[1].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "yAxis") && config.yAxis.length > 2){
                 config.yAxis[2].formatter = formatTickInXYaxis(self.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
@@ -180,14 +182,17 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 config.yAxis[2].title.text = self.right_y_axis_second_title + getXYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS_SECOND);
                 config.yAxis[2].title.text = self.show_right_y_axis_second_title === true ? config.yAxis[2].title.text : "";
                 config.yAxis[2].gridLineWidth = self.show_grid_line === true ? 1 : 0;
-                //config.yAxis[1].title.rotation = self.constants.ROTATION;
+                config.yAxis[1].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "xAxis") && config.xAxis.length > 0){
-                config.xAxis[0].formatter = formatTickInXYaxis(self.x_axis_style, self.constants.X_AXIS);
-                config.chartType === "bar" && delete config.yAxis[0].formatter;
+                if(config.chartType === "bar"){
+                    config.xAxis[0].formatter = formatTickInXYaxis(self.x_axis_style, self.constants.X_AXIS);
+                    formatNumberLevelInXaxis(self.x_axis_number_level);
+                    config.xAxis[0].title.text = self.x_axis_title + getXYAxisUnit(self.x_axis_number_level, self.constants.X_AXIS);
+                }else{
+                    config.xAxis[0].title.text = self.x_axis_title;
+                }
                 config.xAxis[0].labelRotation = self.text_direction;
-                formatNumberLevelInXaxis(self.x_axis_number_level);
-                config.xAxis[0].title.text = self.x_axis_title + getXYAxisUnit(self.x_axis_number_level, self.constants.X_AXIS);
                 config.xAxis[0].title.text = self.show_x_axis_title === true ? config.xAxis[0].title.text : "";
                 config.xAxis[0].title.align = "center";
                 config.xAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
