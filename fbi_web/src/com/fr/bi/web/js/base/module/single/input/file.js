@@ -400,7 +400,7 @@
             }
             this.element.attr("name", o.name || this.getName());
 
-            BI.defer(function () {
+            BI.nextTick(function () {
                 // create the noswfupload.wrap Object
                 // wrap.maxSize 文件大小限制
                 // wrap.maxlength 文件个数限制

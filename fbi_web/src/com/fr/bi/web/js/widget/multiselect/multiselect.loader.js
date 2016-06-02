@@ -12,6 +12,9 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
             logic: {
                 dynamic: true
             },
+            el: {
+                height: 400
+            },
             valueFormatter: BI.emptyFn,
             itemsCreator: BI.emptyFn,
             onLoaded: BI.emptyFn
@@ -28,9 +31,8 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
             type: "bi.select_list",
             element: this.element,
             logic: opts.logic,
-            el: {
+            el: BI.extend({
                 onLoaded: opts.onLoaded,
-                height: 400,
                 el: {
                     type: "bi.loader",
                     isDefaultInit: false,
@@ -50,7 +52,7 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
                         }]
                     }
                 }
-            },
+            }, opts.el),
             itemsCreator: function (op, callback) {
                 var startValue = self._startValue;
                 self.storeValue && (op = BI.extend(op || {}, {

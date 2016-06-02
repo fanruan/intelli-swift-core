@@ -1,8 +1,8 @@
 package com.fr.bi.etl.analysis.data;
 
-import java.util.Set;
-
 import com.fr.bi.stable.data.source.CubeTableSource;
+
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/14.

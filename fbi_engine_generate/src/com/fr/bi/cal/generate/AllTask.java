@@ -33,6 +33,8 @@ public class AllTask extends AbstractCubeTask {
     protected Map<Integer, Set<CubeTableSource>> getGenerateTables() {
         Map<Integer, Set<CubeTableSource>> generateTable = new HashMap<Integer, Set<CubeTableSource>>();
         addOtherTables(generateTable);
+       
+
         Set<IBusinessPackageGetterService> packs = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPacks();
         for (IBusinessPackageGetterService pack : packs) {
             Set<BIBusinessTable> busiTable = pack.getBusinessTables();

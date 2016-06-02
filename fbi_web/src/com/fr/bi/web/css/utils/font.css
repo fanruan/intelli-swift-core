@@ -3201,3 +3201,39 @@
   content: "\e645";
   color: #808080;
 }
+.report-apply-hangout-normal-font .b-font:before {
+  content: "\e66d";
+  color: #808080;
+}
+.report-apply-hangout-normal-font.native .b-font:before,
+.report-apply-hangout-normal-font.disabled .b-font:before {
+  content: "\e66d";
+  color: #808080;
+}
+.report-apply-hangout-ing-font .b-font:before {
+  content: "\e66d";
+  color: #009de3;
+}
+.report-apply-hangout-ing-font.native .b-font:before,
+.report-apply-hangout-ing-font.disabled .b-font:before {
+  content: "\e66d";
+  color: #009de3;
+}
+.report-hangout-font .b-font:before {
+  content: "\e64b";
+  color: #58cc7d;
+}
+.report-hangout-font.native .b-font:before,
+.report-hangout-font.disabled .b-font:before {
+  content: "\e64b";
+  color: #58cc7d;
+}
+.report-cancel-hangout-font .b-font:before {
+  content: "\e64b";
+  color: #808080;
+}
+.report-cancel-hangout-font.native .b-font:before,
+.report-cancel-hangout-font.disabled .b-font:before {
+  content: "\e64b";
+  color: #808080;
+}

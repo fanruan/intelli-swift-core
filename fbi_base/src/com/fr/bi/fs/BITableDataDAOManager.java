@@ -21,7 +21,7 @@ import java.util.*;
  * Created by 小灰灰 on 2015/8/5.
  */
 public class BITableDataDAOManager extends XMLFileManager {
-
+    private static final String XML_TAG = "BITableDataDAOManager";
     private static BITableDataDAOManager manager;
     private final Map<Long, BIReportNode> tdBIReport_idMap = new Hashtable<Long, BIReportNode>();
     private final Map<Long, BIReportNode> tdBISharedReport_idMap = new Hashtable<Long, BIReportNode>();
@@ -86,7 +86,7 @@ public class BITableDataDAOManager extends XMLFileManager {
                 rowList.add(String.valueOf(tdNode.getLastModifyTime().getTime()));
                 rowList.add(String.valueOf(-1));
                 rowList.add(tdNode.getDescription());
-                rowList.add(String.valueOf(tdNode.getState()));
+                rowList.add(String.valueOf(tdNode.getStatus()));
                 this.biReportTableData.addRow(rowList);
             }
         }
@@ -299,15 +299,15 @@ public class BITableDataDAOManager extends XMLFileManager {
                             if (des != Primitive.NULL && des != null) {
                                 tdNode.setDescription(des.toString());
                             }
-                            int state = BIReportConstant.BI_REPORT.NULL;
+                            int status = BIReportConstant.BI_REPORT.NULL;
                             try {
                             	Object ss = tableData.getValueAt(i, 9);
                             	 if (ss != Primitive.NULL && ss != null) {
-                            		 state = Integer.valueOf(ss.toString());
+                                     status = Integer.valueOf(ss.toString());
                             	 }
                             } catch (Exception e){
                             }
-                            tdNode.setState(state);
+                            tdNode.setStatus(status);
                             tdBIReport_idMap.put(id, tdNode);
                         } catch (Exception e) {
                             FRContext.getLogger().error(e.getMessage(), e);
@@ -364,6 +364,7 @@ public class BITableDataDAOManager extends XMLFileManager {
 
     @Override
     public void writeXML(XMLPrintWriter writer) {
+        writer.startTAG(XML_TAG);
         if (this.biReportTableData != null) {
             writer.startTAG("BIReport");
             biReportTableData.writeXML(writer);
@@ -374,5 +375,6 @@ public class BITableDataDAOManager extends XMLFileManager {
             biSharedReportTableData.writeXML(writer);
             writer.end();
         }
+        writer.end();
     }
 }

@@ -185,6 +185,6 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
 
     @Override
     public boolean isRecord(CubeTableSource tableSource) {
-        return false;
+        return getInstance().isRecord(tableSource);
     }
 }

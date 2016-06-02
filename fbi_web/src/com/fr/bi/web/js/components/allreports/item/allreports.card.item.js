@@ -14,7 +14,10 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
         BI.AllReportsCardItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var report = o.report;
-
+        this.model = new BI.AllReportsItemModel({
+            roles: o.roles,
+            users: o.users
+        });
         var hangoutButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "remove-report-font tool-delete-icon",
@@ -30,7 +33,11 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
             });
         });
         hangoutButton.setVisible(false);
-
+        
+        var userName = this.model.getUserNameByUserId(report.createBy);
+        var departName = this.model.getDepartNameByUserId(report.createBy);
+        var roleName = this.model.getRoleByUserId(report.createBy);
+        
         var infoIcon = BI.createWidget({
             type: "bi.combo",
             el: {
@@ -48,22 +55,22 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
                     type: "bi.vertical",
                     items: [{
                         type: "bi.label",
-                        text: BI.i18nText("BI-Users") + ": " + self._getUserNameByUserId(report.createBy),
-                        title: BI.i18nText("BI-Users") + ": " + self._getUserNameByUserId(report.createBy),
+                        text: BI.i18nText("BI-Users") + ": " + userName,
+                        title: BI.i18nText("BI-Users") + ": " + userName,
                         textAlign: "left",
                         height: 30,
                         hgap: 5
                     }, {
                         type: "bi.label",
-                        text: BI.i18nText("BI-Role") + ": " + self._getRoleByUserId(report.createBy),
-                        title: BI.i18nText("BI-Role") + ": " + self._getRoleByUserId(report.createBy),
+                        text: BI.i18nText("BI-Role") + ": " + roleName,
+                        title: BI.i18nText("BI-Role") + ": " + roleName,
                         textAlign: "left",
                         height: 30,
                         hgap: 5
                     }, {
                         type: "bi.label",
-                        text: BI.i18nText("BI-Department") + ": " + self._getDepartNameByUserId(report.createBy),
-                        title: BI.i18nText("BI-Department") + ": " + self._getDepartNameByUserId(report.createBy),
+                        text: BI.i18nText("BI-Department") + ": " + departName,
+                        title: BI.i18nText("BI-Department") + ": " + departName,
                         textAlign: "left",
                         height: 30,
                         hgap: 5
@@ -130,40 +137,6 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
         });
     },
 
-    _getRoleByUserId: function(id){
-        var roles = this.options.roles;
-        var roleNames = [];
-        BI.each(roles, function(i, role){
-            var roleName = role.text || (role.departmentname + role.postname);
-            if(!roleNames.contains(roleName) && role.users.contains(id)){
-                roleNames.push(roleName);
-            }
-        });
-        return roleNames;
-    },
-
-    _getDepartNameByUserId: function(id) {
-        var roles = this.options.roles;
-        var roleNames = [];
-        BI.each(roles, function(i, role){
-            var roleName = role.text || role.departmentname;
-            if(!roleNames.contains(roleName) && role.users.contains(id)){
-                roleNames.push(roleName);
-            }
-        });
-        return roleNames;
-    },
-
-    _getUserNameByUserId: function(id){
-        var userName = "";
-        var users = this.options.users;
-        BI.some(users, function(i, user){
-            if(id === user.id){
-                userName = user.realname;
-                return true;
-            }
-        });
-        return userName;
-    }
+    
 });
 $.shortcut("bi.all_reports_card_item", BI.AllReportsCardItem);

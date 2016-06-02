@@ -293,18 +293,38 @@ BICst.DASHBOARD_WIDGETS = [[{
 BICst.SVG_MAP_TYPE = [{
     text: BI.i18nText("BI-World"),
     title: BI.i18nText("BI-World"),
-    value: BICst.WIDGET.MAP_WORLD,
+    value: BICst.MAP_TYPE.WORLD,
     cls: "drag-map-global-icon"
 }, {
     text: BI.i18nText("BI-China"),
     title: BI.i18nText("BI-China"),
-    value: BICst.WIDGET.MAP_CHINA,
+    value: BICst.MAP_TYPE.CHINA,
     cls: "drag-map-china-icon"
 }, {
     text: BI.i18nText("BI-JIANGSU"),
     title: BI.i18nText("BI-JIANGSU"),
-    value: BICst.WIDGET.MAP_JIANGSU,
+    value: BICst.MAP_TYPE.JIANGSU,
     cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-SHANGDONG"),
+    title: BI.i18nText("BI-SHANDONG"),
+    value: BICst.MAP_TYPE.SHANGDONG,
+    cls: "drag-map-svg-icon"
+}];
+
+//地图使用区域悬浮可选择的图表类型
+BICst.SUSPENSION_MAP_TYPE = [{
+    text: BI.i18nText("BI-Suspension_Bubble_Chart"),
+    value: BICst.WIDGET.BUBBLE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Suspension_Pie_Chart"),
+    value: BICst.WIDGET.PIE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Suspension_Column_Chart"),
+    value: BICst.WIDGET.AXIS,
+    cls: "dot-e-font"
 }];
 
 //组件的设置的下拉选项

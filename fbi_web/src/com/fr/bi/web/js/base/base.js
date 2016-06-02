@@ -654,11 +654,70 @@ if (!window.BI) {
         }
     });
 
+    _.extend(BI, {
+        nextTick: (function () {
+            var callbacks = [];
+            var pending = false;
+            var timerFunc;
+
+            function nextTickHandler() {
+                pending = false;
+                var copies = callbacks.slice(0);
+                callbacks = [];
+                for (var i = 0; i < copies.length; i++) {
+                    copies[i]();
+                }
+            }
+
+            /* istanbul ignore if */
+            if (typeof MutationObserver !== 'undefined') {
+                var counter = 1;
+                var observer = new MutationObserver(nextTickHandler);
+                var textNode = document.createTextNode(counter);
+                observer.observe(textNode, {
+                    characterData: true
+                });
+                timerFunc = function () {
+                    counter = (counter + 1) % 2;
+                    textNode.data = counter;
+                }
+            } else {
+                timerFunc = setTimeout
+            }
+            return function (cb, ctx) {
+                var func = ctx
+                    ? function () {
+                    cb.call(ctx)
+                } : cb;
+                callbacks.push(func);
+                if (pending) return;
+                pending = true;
+                timerFunc(nextTickHandler, 0);
+            }
+        })()
+    });
+
     //数字相关方法
     _.each(["random"], function (name) {
         BI[name] = _apply(name)
     });
     _.extend(BI, {
+        getTime: function () {
+            if (window.performance && window.performance.now) {
+                return window.performance.now();
+            } else {
+                if (window.performance && window.performance.webkitNow) {
+                    return window.performance.webkitNow();
+                } else {
+                    if (Date.now) {
+                        return Date.now();
+                    } else {
+                        return new Date().getTime();
+                    }
+                }
+            }
+        },
+
         parseInt: function (number) {
             var radix = 10;
             if (/^0x/g.test(number)) {

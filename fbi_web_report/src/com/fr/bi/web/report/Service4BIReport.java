@@ -43,7 +43,9 @@ public class Service4BIReport implements Service {
             new BIInitDeziPaneAction(),
             new BIGetWidgetFromTemplateAction(),
 
-            new BIGetAllReportsDataAction()
+            new BIGetAllReportsDataAction(),
+
+            new BITemplateHangoutAction()
     };
 
     @Override

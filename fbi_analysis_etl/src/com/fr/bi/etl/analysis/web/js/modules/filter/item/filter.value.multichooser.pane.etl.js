@@ -1,8 +1,8 @@
 BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
-    _constants :{
-        GAP : 5,
-        SEARCHER_HEIGHT : 30,
-        SELECTOR_HEIGHT : 100
+    _constants: {
+        GAP: 5,
+        SEARCHER_HEIGHT: 30,
+        SELECTOR_HEIGHT: 100
     },
 
     _defaultConfig: function () {
@@ -17,8 +17,9 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
         this.storeValue = {};
         this.pane = BI.createWidget({
             type: 'bi.multi_select_loader',
+            el: {},
             itemsCreator: BI.bind(this._itemsCreator, this),
-            height : self._constants.SELECTOR_HEIGHT
+            height: self._constants.SELECTOR_HEIGHT
         });
         this.pane.on(BI.MultiSelectLoader.EVENT_CHANGE, function () {
             self.setValue(self.pane.getValue());
@@ -26,7 +27,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
         })
         this.searcher = BI.createWidget({
             type: "bi.search_editor",
-            height : self._constants.SEARCHER_HEIGHT
+            height: self._constants.SEARCHER_HEIGHT
         });
         this.searcher.on(BI.SearchEditor.EVENT_CHANGE, function () {
             self.pane.populate();
@@ -42,10 +43,10 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
         })
         return BI.createWidget({
             type: "bi.vertical",
-            scrolly : false,
-            element : this.element,
-            bgap : self._constants.GAP,
-            items:[self.searcher, self.pane]
+            scrolly: false,
+            element: this.element,
+            bgap: self._constants.GAP,
+            items: [self.searcher, self.pane]
         })
     },
 
@@ -72,7 +73,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
                 var search = BI.Func.getSearchResult(items, keyword);
                 items = search.matched.concat(search.finded);
             }
-            var values =  self.storeValue.value;
+            var values = self.storeValue.value;
             if (BI.isNotNull(values)) {
                 var filter = BI.makeObject(values, true);
                 items = BI.filter(items, function (i, ob) {
@@ -80,12 +81,12 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
                 });
             }
             callback({
-                items : items
+                items: items
             })
         }
     },
-    
-    populate : function () {
+
+    populate: function () {
         this.pane.populate();
     },
 
@@ -93,7 +94,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
         return this.storeValue;
     },
 
-    setValue : function (v) {
+    setValue: function (v) {
         this.storeValue = v;
         this.pane.setValue(v)
     }
