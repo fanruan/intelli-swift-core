@@ -73,13 +73,6 @@ public class AnalysisBusiTable extends BIBusinessTable {
     @Override
     public void setFields(List<BusinessField> fields) {
         super.setFields(fields);
-        if (fields != null){
-            List<String> usedFieldNames = new ArrayList<String>();
-            for (BusinessField f : fields){
-                usedFieldNames.add(f.getFieldName());
-            }
-            setUsedFieldNames(usedFieldNames);
-        }
     }
 
     public void setDescribe(String describe) {
