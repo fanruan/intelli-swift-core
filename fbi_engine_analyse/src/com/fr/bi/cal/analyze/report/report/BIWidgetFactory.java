@@ -39,9 +39,6 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.BAR: {
                 return new TableWidget();
             }
-            case BIReportConstant.WIDGET.MAP: {
-                return new TableWidget();
-            }
             case BIReportConstant.WIDGET.AXIS:
             case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
             case BIReportConstant.WIDGET.COMPARE_BAR:
@@ -53,6 +50,7 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.ACCUMULATE_AREA:
             case BIReportConstant.WIDGET.COMBINE_CHART:
             case BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BIReportConstant.WIDGET.MAP:
                 return new MultiChartWidget();
             case BIReportConstant.WIDGET.ACCUMULATE_BAR: {
                 return new TableWidget();
@@ -88,7 +86,7 @@ public class BIWidgetFactory {
                 return new TreeWidget();
             }
             default: {
-                return new TableWidget();
+                return new MultiChartWidget();
             }
         }
     }

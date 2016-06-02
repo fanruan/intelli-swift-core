@@ -121,8 +121,13 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
     },
 
     setType: function (type) {
-        this._join(type);
-        this.type = type;
+        var t = type;
+        if(type >= BICst.MAP_TYPE.WORLD){
+            this.sub_type = t;
+            t = BICst.WIDGET.MAP;
+        }
+        this._join(t);
+        this.type = t;
     },
 
     getType: function () {
@@ -139,11 +144,13 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
     },
 
     getValue: function () {
-        return {
+        var v = {
             type: this.type,
             view: this.viewMap[this.type] || {},
             dimensions: this.dimensionsMap[this.type] || {}
-        }
+        };
+        this.type === BICst.WIDGET.MAP && BI.extend(v, {sub_type: this.sub_type});
+        return v;
     },
 
     populate: function () {
