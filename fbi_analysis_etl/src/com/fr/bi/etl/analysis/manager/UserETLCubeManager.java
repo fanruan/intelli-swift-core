@@ -58,7 +58,6 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
             }
         }
     }
-
 	@Override
 	public ICubeTableService getTableIndex(AnalysisCubeTableSource source, BIUser user){
 		UserCubeTableSource ut = source.createUserTableSource(user.getUserId());
