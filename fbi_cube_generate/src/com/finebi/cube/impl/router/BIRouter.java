@@ -82,7 +82,7 @@ public class BIRouter implements IRouter {
     @Override
     public void deliverMessage(IMessage message) throws BIDeliverFailureException {
         if (verbose) {
-            BILogger.getLogger().addLog("Message Router Receive:" + message.toString());
+            BILogger.getLogger().info("Message Router Receive:" + message.toString());
             System.out.println("Message Router Receive:" + message.toString());
         }
         messageDispatcher.addMessage(message);
