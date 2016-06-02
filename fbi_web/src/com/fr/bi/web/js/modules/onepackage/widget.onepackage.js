@@ -503,7 +503,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             Data.SharingPool.put("fields", self.model.getAllFields());
             Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
             BI.Utils.updateTablesOfOnePackage(data, function () {
-                self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
+                // self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
                 BI.Utils.generateCubeByTable(obj, function () {
                 });
             });
@@ -535,7 +535,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     }
 });
 BI.OnePackage.EVENT_CANCEL = "EVENT_CANCEL";
-BI.OnePackage.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 BI.OnePackage.EVENT_SAVE = "EVENT_SAVE";
 BI.OnePackage.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 $.shortcut("bi.one_package", BI.OnePackage);
