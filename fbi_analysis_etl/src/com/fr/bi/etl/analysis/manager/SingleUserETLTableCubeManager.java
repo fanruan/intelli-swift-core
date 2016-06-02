@@ -99,7 +99,10 @@ public class SingleUserETLTableCubeManager implements Release {
         return BIFileUtils.checkDir(new File(BIPathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue())));
     }
 	
-	
+	protected boolean isCubeGenerating(){
+        return !updateTask.isEmpty();
+    }
+
 	/**
 	 * 
 	 */
