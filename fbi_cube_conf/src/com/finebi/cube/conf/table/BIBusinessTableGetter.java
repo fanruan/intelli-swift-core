@@ -98,13 +98,5 @@ public class BIBusinessTableGetter implements BusinessTable {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public List<String> getUsedFieldNames() {
-        return null;
-    }
 
-    @Override
-    public void setUsedFieldNames(List<String> usedFieldNames) {
-
-    }
 }

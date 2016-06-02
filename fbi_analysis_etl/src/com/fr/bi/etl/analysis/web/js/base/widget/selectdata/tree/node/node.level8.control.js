@@ -21,6 +21,14 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         this.widget = widget;
     },
 
+    startChecker : function (id) {
+        setInterval(function () {
+            BI.ETLReq.reqTableStatus({
+                id : id
+            }, BI.emptyFn)
+        }, 2000);
+    },
+    
     _showWarningPop : function (id) {
         var self = this;
         var warningPopover = BI.createWidget({

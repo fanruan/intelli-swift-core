@@ -189,4 +189,9 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 		return cubePathMap.get(md5key);
 	}
 
+    @Override
+    public boolean isCubeGenerating(String md5) {
+        return threadMap.containsKey(md5) && threadMap.get(md5).isCubeGenerating();
+    }
+
 }
