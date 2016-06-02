@@ -56,7 +56,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     timeSetting.setVisible(false);
                     break;
             }
-            self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE);
+            self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CHANGE);
         });
 
         //增量更新设置面板
@@ -80,9 +80,9 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 if (self.model.options.currentTable.connection_name=="__FR_BI_ETL__"){
                     self.model.table.id=self.model.currentTable.id
                 }
-                    self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
-                // BI.Utils.generateCubeByTable(self.model.table, function () {
-                // });
+                    // self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
+                BI.Utils.generateCubeByTable(self.model.table, function () {
+                });
                 self._createCheckInterval();
             }
         });
