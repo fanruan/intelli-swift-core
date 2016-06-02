@@ -85,7 +85,7 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
             type:this.controller.getOperatorTypeByValue(v)
         })
 
-        BI.defer(function () {
+        BI.nextTick(function () {
             self.controller.populateOneTab(v);
         })
         tab.on(BI.Controller.EVENT_CHANGE, function(){

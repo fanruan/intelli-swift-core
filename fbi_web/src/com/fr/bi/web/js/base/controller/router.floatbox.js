@@ -51,7 +51,7 @@ BI.FloatBoxRouter = BI.inherit(BI.WRouter, {
             this.views[url] = view;
             this.controller.add(url, this.store[url]);
             context && context.on("end:" + view.cid, function () {
-                setTimeout(function () {
+                BI.nextTick(function () {
                     self.close(url);
 //                    view.end();
                     var t = void 0, isNew = false, keys;

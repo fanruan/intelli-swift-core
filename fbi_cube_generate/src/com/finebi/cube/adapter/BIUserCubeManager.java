@@ -15,8 +15,6 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.conf.utils.BIModuleUtils;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -56,12 +54,6 @@ public class BIUserCubeManager implements ICubeDataLoader {
     public BIKey getFieldIndex(BusinessField column) {
         return new IndexKey(column.getFieldName());
 
-    }
-
-
-    public ICubeTableService getTableIndex(BITableID id) {
-        CubeTableSource source = BIModuleUtils.getSourceByID(id, user);
-        return getTableIndex(source);
     }
 
     @Override

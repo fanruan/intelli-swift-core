@@ -352,5 +352,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         return size();
     }
 
-
+    public int getClassType() {
+        return columnReaderService.getClassType();
+    }
 }

@@ -36,7 +36,7 @@ BI.ShowListener = BI.inherit(FR.OB, {
                     o.afterCardCreated(cardName);
                 }
                 o.cardLayout.showCardByName(cardName);
-                BI.defer(function () {
+                BI.nextTick(function () {
                     o.afterCardShow(cardName);
                     self.fireEvent(BI.ShowListener.EVENT_CHANGE, cardName);
                 });

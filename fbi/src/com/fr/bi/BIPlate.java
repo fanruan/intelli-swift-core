@@ -167,6 +167,7 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/theme/bi.theme.js",
                 "/com/fr/bi/web/cross/js/theme/bi.widget.newanalysis.js",
                 "/com/fr/bi/web/cross/js/bi.toolbar.add.js",
+                "/com/fr/bi/web/cross/js/reporthangout/hangoutreport.plate.js",
                 "/com/fr/bi/web/cross/js/bi.extra.dialog.js",
                 "/com/fr/bi/web/cross/js/bi.segment.js",
                 "/com/fr/bi/web/cross/js/bi.combo.js",

@@ -185,6 +185,11 @@ public class DataSourceCompound implements DataSourceCompoundService {
     }
 
     @Override
+    public boolean isRecord(CubeTableSource tableSource) {
+        return tableDataSource.isRecord(tableSource);
+    }
+
+    @Override
     public void initialAll() {
         initialDataSource(tableDataSource.getAllBusinessTable());
     }

@@ -20,7 +20,7 @@ BI.Radio = BI.inherit(BI.Single, {
         this.setSelected(this.options.selected);
         this.element.bind("click", function (e) {
             var v = e.target.checked;
-            BI.defer(function () {
+            BI.nextTick(function () {
                 e.target.checked = v;
             });
             self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.CLICK, self.getValue(), self);

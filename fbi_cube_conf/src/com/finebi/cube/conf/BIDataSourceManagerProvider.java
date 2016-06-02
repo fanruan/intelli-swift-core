@@ -25,7 +25,6 @@ public interface BIDataSourceManagerProvider extends BusinessTableSourceService,
      */
     ICubeFieldSource findDBField(BusinessField biField) throws BIFieldAbsentException;
 
-
     @Deprecated
     void persistData(long userId);
 

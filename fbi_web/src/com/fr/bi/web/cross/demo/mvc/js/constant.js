@@ -349,7 +349,7 @@ var _JS = [
 
     "detail/mvc.colorchooser.js",
 
-    "detail/mvc.textareaeditor.js",
+    "detail/mvc.textarea.js",
 
     "detail/mvc.texttoolbar.js",
 
@@ -577,7 +577,7 @@ var _Routes = {
     "/filter": "FilterView",
     "/color_chooser": "ColorChooserView",
     "/text_toolbar": "TextToolbarView",
-    "/text_area": "TextAreaEditorView",
+    "/text_area": "TextAreaView",
     "/path_chooser": "PathChooserView",
     "/direction_path_chooser": "DirectionPathChooserView",
     "/file_manager": "FileManagerView",

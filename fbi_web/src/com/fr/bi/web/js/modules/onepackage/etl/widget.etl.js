@@ -284,6 +284,10 @@ BI.ETL = BI.inherit(BI.Widget, {
         updateSet.on(BI.UpdateTableData.EVENT_SAVE, function(){
             self.model.setUpdateSettings(this.getValue());
         });
+        updateSet.on(BI.UpdateTableData.EVENT_CUBE_SAVE, function(obj){
+            self.model.setUpdateSettings(this.getValue());
+            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, obj)
+        });
         BI.Popovers.create(this.model.getId(), updateSet).open(this.model.getId());
     },
 
@@ -848,6 +852,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Loading")
         });
         BI.Utils.checkCubeStatusByTable(table, function (status) {
+
             mask.destroy();
             callback(status);
         })
@@ -1156,7 +1161,7 @@ BI.ETL = BI.inherit(BI.Widget, {
     }
 });
 BI.ETL.EVENT_REMOVE = "EVENT_REMOVE";
-// BI.ETL.EVENT_EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
+BI.ETL.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 BI.ETL.EVENT_CANCEL = "EVENT_CANCEL";
 BI.ETL.EVENT_SAVE = "EVENT_SAVE";
 $.shortcut("bi.etl", BI.ETL);

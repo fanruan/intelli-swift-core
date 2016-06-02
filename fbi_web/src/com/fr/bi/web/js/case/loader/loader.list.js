@@ -78,7 +78,7 @@ BI.ListLoader = BI.inherit(BI.Widget, {
             items: [this.next]
         });
 
-        o.isDefaultInit && BI.isEmpty(o.items) && BI.defer(BI.bind(function () {
+        o.isDefaultInit && BI.isEmpty(o.items) && BI.nextTick(BI.bind(function () {
             this.populate();
         }, this));
         if (BI.isNotEmptyArray(o.items)) {

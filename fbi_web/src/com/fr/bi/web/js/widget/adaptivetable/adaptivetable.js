@@ -116,7 +116,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         });
 
         if (o.isNeedFreeze === true) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 if (self.element.is(":visible")) {
                     self._initRegionSize();
                     self.table.resize();
@@ -338,7 +338,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.table.populate.apply(this.table, arguments);
         if (o.isNeedFreeze === true) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 if (self.element.is(":visible")) {
                     self._initRegionSize();
                     self.table.resize();

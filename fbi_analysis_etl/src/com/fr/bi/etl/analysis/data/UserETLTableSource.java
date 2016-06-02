@@ -20,6 +20,14 @@ import java.util.Set;
 public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, UserCubeTableSource> implements UserCubeTableSource {
     private long userId;
 
+    private ICubeDataLoader loader;
+
+    public void setLoader(ICubeDataLoader loader) {
+        this.loader = loader;
+        for (UserCubeTableSource s : getParents()){
+            s.setLoader(loader);
+        }
+    }
 
     public UserETLTableSource(List<IETLOperator> operators, List<UserCubeTableSource> parents, long userId) {
         super(operators, parents);
@@ -45,9 +53,14 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         long index = 0;
         while (it.hasNext()) {
             IETLOperator op = it.next();
-            index = op.writeSimpleIndex(travel, parents, loader);
+            index = op.writeSimpleIndex(travel, parents, this.loader);
         }
         return index;
+    }
+
+    @Override
+    public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+        return super.read4Part(travel, field, this.loader, start, end);
     }
 
     /**

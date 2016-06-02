@@ -21,8 +21,13 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
 
     public static final String XML_TAG = "UsePartOperator";
     private static final int NOT_CONTAINS = 2;
+
+
     @BICoreField
     private List<String> uselessFields = new ArrayList<String>();
+
+    @BICoreField
+    private int type = NOT_CONTAINS;
 
 
     public UsePartOperator(long userId) {
@@ -46,7 +51,7 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
             ja.put(s);
         }
         jo.put("value", ja);
-        jo.put("type", NOT_CONTAINS);
+        jo.put("type", type);
         return jo;
     }
 
@@ -63,6 +68,7 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
         for (int i = 0; i < ja.length(); i++) {
             uselessFields.add(ja.getString(i));
         }
+        type = jo.optInt("type", NOT_CONTAINS);
     }
 
 
@@ -71,8 +77,8 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
         IPersistentTable persistentTable = getBITable();
         for (IPersistentTable t : tables) {
             for (PersistentField c : t.getFieldList()) {
-                if (!uselessFields.contains(c.getFieldName())) {
-                    persistentTable.addColumn(new PersistentField(c.getFieldName(), c.getType()));
+                if (type == NOT_CONTAINS ^ uselessFields.contains(c.getFieldName())) {
+                    persistentTable.addColumn(new PersistentField(c.getFieldName(), c.getSqlType()));
                 }
             }
         }

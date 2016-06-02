@@ -50,7 +50,7 @@ BI.LoadingCancelMask = BI.inherit(BI.Widget, {
             }]
         });
         BI.Maskers.show(this.getName());
-        BI.defer(function () {
+        BI.nextTick(function () {
             BI.Maskers.show(self.getName());
         });
     },
