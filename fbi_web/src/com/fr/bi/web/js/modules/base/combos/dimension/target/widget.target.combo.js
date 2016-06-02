@@ -131,10 +131,6 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
             return did === o.dId;
         });
-        if(wType >= BICst.MAP_TYPE.WORLD && BI.isNotNull(result)){
-            item[0][this.constants.CHART_TYPE_POSITION].children = BICst.SUSPENSION_MAP_TYPE;
-            return item;
-        }
         switch (wType) {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:

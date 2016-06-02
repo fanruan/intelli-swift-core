@@ -373,7 +373,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     delete config.plotOptions.roseType;
                     break;
             }
-            config.plotOptions.innerRadius = self.chart_inner_radius;
+            typess[0] === BICst.WIDGET.PIE && (config.plotOptions.innerRadius = self.chart_inner_radius);
             config.plotOptions.endAngle = self.chart_total_angle;
         }
 
@@ -451,11 +451,12 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.text_direction = options.text_direction;
     },
 
-    populate: function (items, types) {
+    populate: function (items, options, types) {
         if(BI.isNotNull(types)){
             this.setTypes(types);
         }
         var opts = this._formatItems(items);
+        BI.extend(opts[1], options);
         this.CombineChart.populate(opts[0], opts[1]);
     },
 

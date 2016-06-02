@@ -166,13 +166,6 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         dims[d].used = false;
                     })
                 }
-
-                //地图的指标区域规则在上述规则下单独处理
-                //if(this.get("type") >= BICst.MAP_TYPE.WORLD){
-                //    if(BI.has(view, BICst.REGION.TARGET2) && view[BICst.REGION.TARGET2].length > 0){
-                //
-                //    }
-                //}
                 this.set("dimensions", dims);
             }
         }

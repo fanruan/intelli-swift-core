@@ -15,9 +15,6 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
     },
 
     _getWidgetClass: function (type) {
-        if(type >= BICst.MAP_TYPE.WORLD){
-            return "chart-map-font";
-        }
         switch (type) {
             case BICst.WIDGET.TABLE:
                 return "chart-table-font";

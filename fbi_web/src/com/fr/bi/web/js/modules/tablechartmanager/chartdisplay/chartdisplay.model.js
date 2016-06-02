@@ -333,9 +333,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     parseChartData: function (data) {
         var self = this, o = this.options;
-        if(BI.Utils.getWidgetTypeByID(o.wId) >= BICst.MAP_TYPE.WORLD){
-            return [this._formatDataForMap(data)];
-        }
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
                 return this._formatDataForBubble(data);
@@ -375,7 +372,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-                return this._formatDataForMap(data);
+                return [this._formatDataForMap(data)];
             case BICst.WIDGET.GIS_MAP:
                 return this._formatDataForForceBubble(data);
         }
@@ -384,6 +381,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     getWidgetData: function(type, callback){
         var self = this, o = this.options;
         var view = BI.Utils.getWidgetViewByID(o.wId);
+        var options = {};
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             var data = self.parseChartData(jsonData.data);
             var types = [];
@@ -392,16 +390,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             BI.each(data, function (idx, da) {
                 var t = [];
                 BI.each(da, function (id, d) {
-                    if(type >= BICst.MAP_TYPE.WORLD && BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[count])){
+                    if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
                         var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
-                        t.push(chart.type || BICst.WIDGET.BUBBLE);
-                    }else{
-                        if(type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART){
-                            var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
-                            t.push(chart.type || BICst.WIDGET.AXIS);
-                        }else{
-                            t.push(type);
-                        }
+                        t.push(chart.type || BICst.WIDGET.AXIS);
+                    } else {
+                        t.push(type);
                     }
                     count++;
                 });
@@ -412,7 +405,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             if(BI.isEmptyArray(types)){
                 types.push([type]);
             }
-            callback(types, data);
+            type === BICst.WIDGET.MAP && (options.geo = {data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)]});
+            callback(types, data, options);
         }, {
             expander: {
                 x: {

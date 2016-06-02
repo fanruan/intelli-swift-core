@@ -26,9 +26,6 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     },
 
     _createChartTabs: function (v) {
-        if(v >= BICst.MAP_TYPE.WORLD){
-            return this._createChart();
-        }
         switch (v) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -118,22 +115,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     },
 
     resize: function () {
-        if(this.tableChartTab.getSelect() > BICst.MAP_TYPE.WORLD){
-            this.tableChartTab.getSelectedTab().resize();
-        }
-        switch (this.tableChartTab.getSelect()) {
-            case BICst.WIDGET.TABLE:
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.PIE:
-            case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.DASHBOARD:
-            case BICst.WIDGET.DONUT:
-            case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.SCATTER:
-                this.tableChartTab.getSelectedTab().resize();
-        }
+        this.tableChartTab.getSelectedTab().resize();
     },
 
     getValue: function () {

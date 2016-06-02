@@ -16,9 +16,6 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
     },
 
     getDetail: function (id, type) {
-        if(type >= BICst.MAP_TYPE.WORLD){
-            return "BIDezi.DetailView";
-        }
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -76,9 +73,6 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
     },
 
     getWidget: function (id, type) {
-        if(type >= BICst.MAP_TYPE.WORLD){
-            return "BIDezi.WidgetView";
-        }
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -147,13 +141,6 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
     },
 
     getDimensionOrTarget: function (id, type, region, dId) {
-        if(type >= BICst.MAP_TYPE.WORLD){
-            if (BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
-                BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region)) {
-                return "BIDezi.DimensionView";
-            }
-            return "BIDezi.TargetView";
-        }
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:

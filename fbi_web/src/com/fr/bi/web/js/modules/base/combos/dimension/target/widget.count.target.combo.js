@@ -125,18 +125,14 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var items = this.defaultItem();
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
 
-        if(wType >= BICst.MAP_TYPE.WORLD){
-            items[this.constants.CHART_TYPE_POSITION][0].children = BICst.SUSPENSION_MAP_TYPE;
-        }else{
-            switch (wType) {
-                case BICst.WIDGET.COMBINE_CHART:
-                case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                    items[this.constants.CHART_TYPE_POSITION][0].disabled = false;
-                    break;
-                default:
-                    items[this.constants.CHART_TYPE_POSITION][0].disabled = true;
-                    break;
-            }
+        switch (wType) {
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                items[this.constants.CHART_TYPE_POSITION][0].disabled = false;
+                break;
+            default:
+                items[this.constants.CHART_TYPE_POSITION][0].disabled = true;
+                break;
         }
 
         BI.find(items, function(idx, item){

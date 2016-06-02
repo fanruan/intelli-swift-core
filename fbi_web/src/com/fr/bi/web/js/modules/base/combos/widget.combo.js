@@ -43,9 +43,6 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
 
     _rebuildItems: function () {
         var wId = this.options.wId;
-        if(BI.Utils.getWidgetTypeByID(wId) >= BICst.MAP_TYPE.WORLD){
-            return this._createWidgetComboItems();
-        }
         switch (BI.Utils.getWidgetTypeByID(wId)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:

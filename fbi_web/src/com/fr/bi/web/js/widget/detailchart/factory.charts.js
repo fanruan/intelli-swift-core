@@ -61,9 +61,6 @@ BI.ChartCombineFormatItemFactory = {
                 item = BI.extend({"type": "column"}, items);
                 break;
         }
-        if(type >= BICst.MAP_TYPE.WORLD){
-            item = BI.extend({"type": "map"}, items);
-        }
         item.data = BI.map(item.data, function(idx, it){
             if(BI.has(it, "color") || BI.has(item, "color")){
                 it.color = BI.has(it, "color") ? it.color : item.color;
@@ -242,12 +239,6 @@ BI.ChartCombineFormatItemFactory = {
             "plotShadow": false,
             "plotBorderRadius": 0
         };
-        if(type >= BICst.MAP_TYPE.WORLD){
-            config.geo = {
-                data: BICst.MAP_PATH[type]
-            };
-            return BI.extend({"chartType": "map"}, config);
-        }
         switch (type) {
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
@@ -287,7 +278,6 @@ BI.ChartCombineFormatItemFactory = {
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-                geo: ".././"
                 return BI.extend({"chartType": "map"}, config);
             case BICst.WIDGET.GIS_MAP:
                 return {};
