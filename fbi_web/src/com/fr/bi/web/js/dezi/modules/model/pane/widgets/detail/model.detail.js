@@ -128,10 +128,24 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                     if (dim.used === true) {
                         if (rType === BICst.REGION.DIMENSION1) {
-                            !preDim1Select.contains(dId) && (dim1Change = true);
+                            if(!preDim1Select.contains(dId)){
+                                //添加维度
+                                if(BI.isNotEmptyArray(preDim1Select) && BI.size(dims) !== BI.size(preDims)){
+                                    dims[dId].used = false;
+                                }else{
+                                    //维度间切换
+                                    dim1Change = true;
+                                }
+                            }
                         }
                         if (rType === BICst.REGION.DIMENSION2) {
-                            !preDim2Select.contains(dId) && (dim2Change = true);
+                            if(!preDim2Select.contains(dId)){
+                                if(BI.isNotEmptyArray(preDim2Select) && BI.size(dims) !== BI.size(preDims)){
+                                    dims[dId].used = false;
+                                }else{
+                                    dim2Change = true;
+                                }
+                            }
                         }
                     }
                 });
@@ -152,10 +166,17 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         dims[d].used = false;
                     })
                 }
+
+                //地图的指标区域规则在上述规则下单独处理
+                //if(this.get("type") >= BICst.MAP_TYPE.WORLD){
+                //    if(BI.has(view, BICst.REGION.TARGET2) && view[BICst.REGION.TARGET2].length > 0){
+                //
+                //    }
+                //}
                 this.set("dimensions", dims);
             }
         }
-        if (BI.has(changed, "view")) {
+        if (BI.has(changed, "view") && !BI.has(changed, "dimensions")) {
             var wType = this.get("type");
             if (wType !== BICst.WIDGET.TABLE &&
                 wType !== BICst.WIDGET.CROSS_TABLE &&
