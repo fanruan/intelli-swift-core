@@ -47,8 +47,6 @@ public class TableWidget extends BISummaryWidget {
     }
 
 
-
-
     @Override
     public BIDimension[] getViewDimensions() {
         BIDimension[] dimensions = getDimensions();
@@ -189,7 +187,7 @@ public class TableWidget extends BISummaryWidget {
         int summaryLen = getViewTargets().length;
         boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
         boolean b1 = usedColumn.length >= 0 && usedRows.length == 0 && summaryLen == 0;
-        boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
+        boolean b2 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen > 0;
         boolean b3 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen == 0;
         if (b0) {
             executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
@@ -234,10 +232,7 @@ public class TableWidget extends BISummaryWidget {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if (jo.has("view")) {
-            Object o = jo.get("view");
-            if (o instanceof JSONObject) {
-                data.parseJSON(jo);
-            }
+            data.parseJSON(jo);
         }
 
         if (jo.has("page")) {

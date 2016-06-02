@@ -54,7 +54,7 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
 
         JSONArray relations = getJSONArrayRelationByTables(
                 new BIImportDBTableConnectionExecutor().getRelationsByTables(newTableSources, oldTableSources, allFieldIdMap, userId));
-        JSONObject translations = getTranslationsByTables(newTableSources);
+        JSONObject translations = getTranslationsByTables(newTableSources, allFieldIdMap);
         JSONObject jo = new JSONObject();
         jo.put("relations", relations);
         jo.put("translations", translations);
@@ -93,7 +93,7 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
      * @return
      * @throws Exception
      */
-    private JSONObject getTranslationsByTables(Map<String, DBTableSource> sourceTables) throws Exception {
+    private JSONObject getTranslationsByTables(Map<String, DBTableSource> sourceTables, Map<String, String> allFieldIdMap) throws Exception {
         JSONObject jo = new JSONObject();
         JSONObject tableTrans = new JSONObject();
         JSONObject fieldTrans = new JSONObject();
@@ -108,7 +108,7 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
             }
             for (PersistentField column : table.getFieldList()) {
                 if (!StringUtils.isEmpty(column.getRemark())) {
-                    fieldTrans.put(entry.getKey() + column.getFieldName(), column.getRemark());
+                    fieldTrans.put(allFieldIdMap.get(entry.getKey() + column.getFieldName()), column.getRemark());
                 }
             }
         }
