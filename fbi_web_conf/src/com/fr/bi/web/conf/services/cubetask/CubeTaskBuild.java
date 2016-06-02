@@ -9,7 +9,7 @@ import com.fr.bi.cal.generate.BuildCubeTask;
 /**
  * Created by wuk on 16/5/30.
  */
-public class CubeTskBuild {
+public class CubeTaskBuild {
 
     private static BICubeManagerProvider cubeManager= CubeGenerationManager.getCubeManager();
 
