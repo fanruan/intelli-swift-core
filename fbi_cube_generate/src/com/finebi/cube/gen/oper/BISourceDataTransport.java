@@ -105,7 +105,7 @@ public class BISourceDataTransport extends BIProcessor {
         return false;
     }
 
-    private long transport() {
+    protected long transport() {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
         ICubeFieldSource[] cubeFieldSources = new ICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
