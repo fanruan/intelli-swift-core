@@ -82,8 +82,9 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 }
                     // self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
                 BI.Utils.generateCubeByTable(self.model.table, function () {
-                });
                     self._createCheckInterval();
+                });
+
             }
         });
 
@@ -445,6 +446,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
 });
 BI.UpdateSingleTableSetting.EVENT_CHANGE = "EVENT_CHANGE";
+BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW = "EVENT_OPEN_PREVIEW";
 BI.UpdateSingleTableSetting.EVENT_CLOSE_PREVIEW = "EVENT_CLOSE_PREVIEW";
 $.shortcut("bi.update_single_table_setting", BI.UpdateSingleTableSetting);
