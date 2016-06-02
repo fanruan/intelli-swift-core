@@ -305,6 +305,7 @@
 # define BI_CLASS_TIMESTAMP 7
 # define BI_CLASS_DECIMAL 8
 # define BI_CLASS_TIME 9
+# define BI_CLASS_BYTE 10
 # define BI_CLASS_ROW 16
 # define BI_GLOBAL_UPDATE @"__global_update__"
 
