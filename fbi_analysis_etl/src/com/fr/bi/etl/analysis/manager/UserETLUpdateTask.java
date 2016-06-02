@@ -197,15 +197,17 @@ public class UserETLUpdateTask implements CubeTask {
 	 * @return
 	 */
 	public boolean check() {
-		TableCubeFile cube = getOldCube(source.fetchObjectCore().getID().getIdentityValue());
-		return cube.checkCubeVersion() && checkSourceVersion();
+        return false;
+//		TableCubeFile cube = getOldCube(source.fetchObjectCore().getID().getIdentityValue());
+//		return cube.checkCubeVersion() && checkSourceVersion();
 	}
 	
 	/**
 	 * @return
 	 */
 	private boolean checkSourceVersion() {
-		return getTableVersion() == getOldCube(source.fetchObjectCore().getID().getIdentityValue()).getTableVersion();
+        return false;
+//		return getTableVersion() == getOldCube(source.fetchObjectCore().getID().getIdentityValue()).getTableVersion();
 	}
 	
 	private int getTableVersion(){
