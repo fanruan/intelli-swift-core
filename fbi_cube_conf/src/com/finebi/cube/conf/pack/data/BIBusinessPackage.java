@@ -174,14 +174,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
             JSONObject tableJson = ja.optJSONObject(i);
             table.parseJSON(tableJson);
             List<String> fieldNames = new ArrayList<String>();
-            if (tableJson.has("used_fields")) {
-                JSONArray array = tableJson.getJSONArray("used_fields");
-                for (int j = 0; j < array.length(); j++) {
-                    fieldNames.add(array.getString(j));
-                }
-            }
 
-            table.setUsedFieldNames(fieldNames);
             if (tableJson.has("fields")) {
                 table.setFields(this.parseField(tableJson.getJSONArray("fields"), table));
             }
