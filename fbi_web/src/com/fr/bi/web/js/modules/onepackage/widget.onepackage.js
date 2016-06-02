@@ -496,18 +496,18 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             update_settings: this.model.getUpdateSettings()
         });
         BI.Layers.show(this._constant.ETL_LAYER);
-        etl.on(BI.ETL.EVENT_CUBE_SAVE, function (obj) {
-            var data = self.model.getValue();
-            Data.SharingPool.put("translations", data.translations);
-            Data.SharingPool.put("relations", data.relations);
-            Data.SharingPool.put("fields", self.model.getAllFields());
-            Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
-            BI.Utils.updateTablesOfOnePackage(data, function () {
-                // self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
-                BI.Utils.generateCubeByTable(obj, function () {
-                });
-            });
-        });
+        // etl.on(BI.ETL.EVENT_CUBE_SAVE, function (obj) {
+        //     var data = self.model.getValue();
+        //     Data.SharingPool.put("translations", data.translations);
+        //     Data.SharingPool.put("relations", data.relations);
+        //     Data.SharingPool.put("fields", self.model.getAllFields());
+        //     Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
+        //     BI.Utils.updateTablesOfOnePackage(data, function () {
+        //         self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
+        //         BI.Utils.generateCubeByTable(obj, function () {
+        //         });
+        //     });
+        // });
         etl.on(BI.ETL.EVENT_SAVE, function (data) {
             self.model.changeTableInfo(id, data);
             self._refreshTablesInPackage();
@@ -536,5 +536,5 @@ BI.OnePackage = BI.inherit(BI.Widget, {
 });
 BI.OnePackage.EVENT_CANCEL = "EVENT_CANCEL";
 BI.OnePackage.EVENT_SAVE = "EVENT_SAVE";
-BI.OnePackage.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
+// BI.OnePackage.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 $.shortcut("bi.one_package", BI.OnePackage);
