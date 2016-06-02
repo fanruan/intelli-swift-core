@@ -11,12 +11,12 @@ function environment() {
         }
     }
 
-    var dimensions = {1: {}, 2: {}};
+    var dimensions = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
     var widgets = {
         1: {
-            type: BICst.WIDGET.TABLE,
+            type: BICst.WIDGET.AXIS,
             dimensions: dimensions,
-            view: {10000: ["1", "2"]},
+            view: {10000: ["1", "2"], 20000: ["3"], 30000: ["4", "5"]},
             bounds: {
                 left: 0,
                 top: 0,
@@ -37,6 +37,11 @@ function environment() {
                     }
                 })
             });
+            init(widgets);
+        },
+
+        setWidgetTypeById: function (id, type) {
+            widgets[id].type = type;
             init(widgets);
         }
     }

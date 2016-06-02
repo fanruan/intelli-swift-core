@@ -11,12 +11,12 @@ function environment() {
         }
     }
 
-    var dimensions = {1: {}, 2: {}};
+    var dimensions = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
     var widgets = {
         1: {
-            type: BICst.WIDGET.TABLE,
+            type: BICst.WIDGET.AXIS,
             dimensions: dimensions,
-            view: {10000: ["1", "2"]},
+            view: {10000: ["1", "2"], 20000: ["3"], 30000: ["4", "5"]},
             bounds: {
                 left: 0,
                 top: 0,
@@ -38,6 +38,11 @@ function environment() {
                 })
             });
             init(widgets);
+        },
+
+        setWidgetTypeById: function (id, type) {
+            widgets[id].type = type;
+            init(widgets);
         }
     }
 };describe("测试DimensionsManager", function () {
@@ -58,7 +63,7 @@ function environment() {
         manager.populate();
         var val = manager.getValue();
         $("#wrapper").empty();
-        expect(val.view).toEqual({10000: ["1", "2"]});
+        expect(val.view).toEqual({10000: ["1", "2"], 20000: ["3"], 30000: ["4", "5"]});
 
     });
     it("维度的删除", function () {
@@ -77,11 +82,33 @@ function environment() {
         });
         manager.populate();
         var val = manager.getValue();
-        expect(val.view).toEqual({10000: ["1", "2"]});
+        expect(val.view).toEqual({10000: ["1", "2"], 20000: ["3"], 30000: ["4", "5"]});
         env.deleteDimensionById("1");
         manager.populate();
         var val = manager.getValue();
-        expect(val.view).toEqual({10000: ["2"]});
+        expect(val.view).toEqual({10000: ["2"], 20000: ["3"], 30000: ["4", "5"]});
+
+    });
+    it("组件类型的切换", function () {
+        var env = environment();
+        var dimensionsVessel = {};
+        var manager = BI.createWidget({
+            type: "bi.dimensions_manager",
+            element: $("#wrapper"),
+            wId: "1",
+            dimensionCreator: function (id, info) {
+                if (!dimensionsVessel[id]) {
+                    dimensionsVessel[id] = BI.createWidget();
+                }
+                return dimensionsVessel[id];
+            }
+        });
+        manager.populate();
+        var val = manager.getValue();
+        expect(val.view).toEqual({10000: ["1", "2"], 20000: ["3"], 30000: ["4", "5"]});
+        manager.model.setType(BICst.WIDGET.TABLE);
+        var val = manager.getValue();
+        expect(val.view).toEqual({10000: ["1", "2", "3"], 30000: ["4", "5"]});
 
     });
 });;describe("测试Fit", function () {
