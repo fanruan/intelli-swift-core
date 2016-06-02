@@ -24,7 +24,7 @@ public class PersistentField implements IPersistentField {
         return remark;
     }
 
-    private int type;
+    private int sqlType;
     private String columnName;
     private String remark;
     private boolean isPrimaryKey;
@@ -35,7 +35,7 @@ public class PersistentField implements IPersistentField {
     private int scale = DEFALUTSCALE;
 
     public PersistentField(String columnName, String remark, int type, boolean isPrimaryKey, int column_size, int scale) {
-        this.setType(type);
+        this.setSqlType(type);
         this.setColumnName(columnName);
         this.biType = BIDBUtils.sqlType2BI(type, column_size, scale);
         this.remark = remark;
@@ -86,8 +86,8 @@ public class PersistentField implements IPersistentField {
      * @return java.sql.Types
      */
     @Override
-    public int getType() {
-        return type;
+    public int getSqlType() {
+        return sqlType;
     }
 
     /**
@@ -95,8 +95,8 @@ public class PersistentField implements IPersistentField {
      *
      * @param type java.sql.Types
      */
-    public void setType(int type) {
-        this.type = type;
+    public void setSqlType(int type) {
+        this.sqlType = type;
     }
 
     /**
@@ -146,8 +146,8 @@ public class PersistentField implements IPersistentField {
         JSONObject jo = new JSONObject();
         jo.put("text", this.getFieldName());
         jo.put("value", this.getFieldName());
-        jo.put("type", this.getType());
-        jo.put("biColumnType", BIDBUtils.sqlType2BI(this.getType(), column_size, scale));
+        jo.put("type", this.getSqlType());
+        jo.put("biColumnType", BIDBUtils.sqlType2BI(this.getSqlType(), column_size, scale));
         jo.put("scale", scale);
         jo.put("isPrimaryKey", isPrimaryKey());
         jo.put("column_size", column_size);
@@ -177,10 +177,10 @@ public class PersistentField implements IPersistentField {
             this.setColumnName(jo.getString("value"));
         }
         if (jo.has("type")) {
-            this.setType(jo.getInt("type"));
+            this.setSqlType(jo.getInt("type"));
         }
         if (jo.has("isPrimaryKey")) {
-            this.setType(jo.getInt("isPrimaryKey"));
+            this.setSqlType(jo.getInt("isPrimaryKey"));
         }
         if (jo.has("column_size")) {
             this.column_size = jo.getInt("column_size");
@@ -195,7 +195,7 @@ public class PersistentField implements IPersistentField {
     }
 
     public BICubeFieldSource toDBField(CubeTableSource tableBelongTo) {
-        return new BICubeFieldSource(tableBelongTo, getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getType(), getColumnSize(), getScale()), getColumnSize());
+        return new BICubeFieldSource(tableBelongTo, getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getSqlType(), getColumnSize(), getScale()), getColumnSize());
     }
 
     /**
@@ -213,7 +213,7 @@ public class PersistentField implements IPersistentField {
     public boolean equals(Object o2) {
         return o2 instanceof PersistentField
                 && ComparatorUtils.equals(((PersistentField) o2).getFieldName(), this.getFieldName())
-                && ((PersistentField) o2).getType() == this.getType()
+                && ((PersistentField) o2).getSqlType() == this.getSqlType()
                 && ((PersistentField) o2).isPrimaryKey() == this.isPrimaryKey();
     }
 

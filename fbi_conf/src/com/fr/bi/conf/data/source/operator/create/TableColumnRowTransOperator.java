@@ -177,7 +177,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
 
         for (IPersistentTable pDBTable : base) {
             PersistentField column = pDBTable.getField(group_name);
-            basicTable.addColumn(new PersistentField(group_name, group_name, column.getType(), false, column.getColumnSize(), column.getScale()));
+            basicTable.addColumn(new PersistentField(group_name, group_name, column.getSqlType(), false, column.getColumnSize(), column.getScale()));
 
             otherColumnNames = new ArrayList<String>();
             for (int i = 0; i < pDBTable.getFieldSize(); i++) {
@@ -185,7 +185,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
                 if (!isColumnSelected(tarColumn.getFieldName())) {
                     String fieldName = tarColumn.getFieldName();
                     otherColumnNames.add(fieldName);
-                    basicTable.addColumn(new PersistentField(fieldName, null, tarColumn.getType(), false, tarColumn.getColumnSize(), tarColumn.getScale()));
+                    basicTable.addColumn(new PersistentField(fieldName, null, tarColumn.getSqlType(), false, tarColumn.getColumnSize(), tarColumn.getScale()));
                 }
             }
 
@@ -195,7 +195,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
                     String lcColumn = aLc_value.origin + "-" + column1.origin;
                     String text = aLc_value.getTransText() + "-" + column1.getTransText();
                     String lcColumnText = ComparatorUtils.equals(text, lcColumn) ? null : text;
-                    basicTable.addColumn(new PersistentField(lcColumn, lcColumnText, c.getType(), false, c.getColumnSize(), c.getScale()));
+                    basicTable.addColumn(new PersistentField(lcColumn, lcColumnText, c.getSqlType(), false, c.getColumnSize(), c.getScale()));
                 }
             }
         }

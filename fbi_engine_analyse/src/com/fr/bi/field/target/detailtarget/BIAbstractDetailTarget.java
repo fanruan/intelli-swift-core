@@ -6,6 +6,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.BIStyleTarget;
@@ -30,6 +31,7 @@ import java.util.Map;
 public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BIDetailTarget {
     @BICoreField
     protected TargetFilter filter;
+    @BIIgnoreField
     protected ICubeTableService cubeTableService;
     protected ISort sort = new NoSort();
     @BICoreField

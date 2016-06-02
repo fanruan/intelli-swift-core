@@ -129,7 +129,7 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
 	}
 	
 	@Override
-	protected int getClassType(){
-		return DBConstant.CLASS.INTEGER;
+	protected int getSqlType(){
+		return java.sql.Types.INTEGER;
 	}
 }

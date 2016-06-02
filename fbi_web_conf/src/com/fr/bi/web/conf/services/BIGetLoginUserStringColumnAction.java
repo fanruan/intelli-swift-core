@@ -32,8 +32,8 @@ public class BIGetLoginUserStringColumnAction extends AbstractBIConfigureAction 
 //					Iterator iter = t.getBIColumnIterator();
 //					while(iter.hasNext()){
 //						BIColumn col = (BIColumn) iter.next();
-//						BIDataColumn dataColumn = new BIDataColumn(info.getTableKey().getDbName(), info.getTableKey().getSchema(), info.getTableKey().getTableName(), col.getColumnName(), BIBaseUtils.checkColumnClassTypeFromSQL(col.getType()), col.getColumnSize());
-//						if(dataColumn.getType() == BIBaseConstant.COLUMN.STRING
+//						BIDataColumn dataColumn = new BIDataColumn(info.getTableKey().getDbName(), info.getTableKey().getSchema(), info.getTableKey().getTableName(), col.getColumnName(), BIBaseUtils.checkColumnClassTypeFromSQL(col.getSqlType()), col.getColumnSize());
+//						if(dataColumn.getSqlType() == BIBaseConstant.COLUMN.STRING
 //								&& !ComparatorUtils.equals(info.getUserNameColumn(), dataColumn.getFieldName())){
 //							ja.put(dataColumn.createJSON());
 //						}
@@ -55,9 +55,9 @@ public class BIGetLoginUserStringColumnAction extends AbstractBIConfigureAction 
 //							Iterator it = table.getBIColumnIterator();
 //							while(it.hasNext()){
 //								BIColumn col = (BIColumn) it.next();
-//								BIDataColumn dataColumn = new BIDataColumn(field.getDbName(), field.getSchema(), field.getTableName(), col.getColumnName(), BIBaseUtils.checkColumnClassTypeFromSQL(col.getType()), col.getColumnSize());
+//								BIDataColumn dataColumn = new BIDataColumn(field.getDbName(), field.getSchema(), field.getTableName(), col.getColumnName(), BIBaseUtils.checkColumnClassTypeFromSQL(col.getSqlType()), col.getColumnSize());
 //								dataColumn.setRelation(relation[0]);
-//								if(dataColumn.getType() == BIBaseConstant.COLUMN.STRING){
+//								if(dataColumn.getSqlType() == BIBaseConstant.COLUMN.STRING){
 //									ja.put(dataColumn.createJSON());
 //								}
 //							}
@@ -72,7 +72,7 @@ public class BIGetLoginUserStringColumnAction extends AbstractBIConfigureAction 
 //				BIAbstractFieldDefine[] c = ti.getColumn();
 //				for(int i = 0, len = c.length; i < len; i++){
 //                    BIAbstractFieldDefine dataColumn = c[i];
-//					if(dataColumn.getType() == BIBaseConstant.COLUMN.STRING
+//					if(dataColumn.getSqlType() == BIBaseConstant.COLUMN.STRING
 //							&& !ComparatorUtils.equals(info.getUserNameColumn(), dataColumn.getFieldName())){
 //						ja.put(dataColumn.createJSON(BITableTranslater.UNCONFIGURED));
 //					}
@@ -93,7 +93,7 @@ public class BIGetLoginUserStringColumnAction extends AbstractBIConfigureAction 
 //						for(int i = 0, len = column.length; i < len; i++){
 //							BIDataColumn dataColumn = (BIDataColumn) column[i].clone();
 //							dataColumn.setRelation(relation[0]);
-//							if(dataColumn.getType() == BIBaseConstant.COLUMN.STRING){
+//							if(dataColumn.getSqlType() == BIBaseConstant.COLUMN.STRING){
 //								ja.put(dataColumn.createJSON());
 //							}
 //						}

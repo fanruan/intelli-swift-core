@@ -68,6 +68,9 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
                     },
                     validationChecker: function(name){
                         return o.reportChecker(name, item.id);
+                    },
+                    onClickHangout: function(){
+                        self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_HANGOUT, item.id);
                     }
                 });
             }
@@ -142,4 +145,5 @@ BI.extend(BI.TemplateManagerButtonGroup, {
 BI.TemplateManagerButtonGroup.EVENT_CHANGE = "TemplateManagerButtonGroup.EVENT_CHANGE";
 BI.TemplateManagerButtonGroup.EVENT_FOLDER_RENAME = "TemplateManagerButtonGroup.EVENT_FOLDER_RENAME";
 BI.TemplateManagerButtonGroup.EVENT_DELETE = "TemplateManagerButtonGroup.EVENT_DELETE";
+BI.TemplateManagerButtonGroup.EVENT_HANGOUT = "EVENT_HANGOUT";
 $.shortcut("bi.template_manager_button_group", BI.TemplateManagerButtonGroup);

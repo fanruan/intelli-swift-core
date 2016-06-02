@@ -27,17 +27,17 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     private String name;
     @BICoreField
     private List<AnalysisETLSourceField> fieldList;
-
-    @Override
-    public IPersistentTable getPersistentTable() {
-        if (dbTable == null) {
-            dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
-            for (AnalysisETLSourceField c : fieldList){
-                dbTable.addColumn(new PersistentField(c.getFieldName(), c.getFieldType()));
-            }
-        }
-        return dbTable;
-    }
+//
+//    @Override
+//    public IPersistentTable getPersistentTable() {
+//        if (dbTable == null) {
+//            dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
+//            for (AnalysisETLSourceField c : fieldList){
+//                dbTable.addColumn(new PersistentField(c.getFieldName(), c.getFieldType()));
+//            }
+//        }
+//        return dbTable;
+//    }
 
     @Override
     public List<AnalysisETLSourceField> getFieldsList() {
