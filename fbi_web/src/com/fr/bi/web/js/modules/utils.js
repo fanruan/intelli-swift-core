@@ -269,7 +269,7 @@
         },
 
         getWidgetViewByID: function (wid) {
-            return Data.SharingPool.get("widgets", wid, "view") || [];
+            return Data.SharingPool.get("widgets", wid, "view") || {};
         },
 
         getWidgetTypeByID: function (wid) {
