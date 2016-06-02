@@ -20,6 +20,7 @@ import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,7 +37,7 @@ public class BINationTablesTest extends BICubeTestBase {
     protected void setUp() throws Exception {
         super.setUp();
     }
-    
+
     public void testFieldPathIndex() {
         try {
 
@@ -78,14 +79,14 @@ public class BINationTablesTest extends BICubeTestBase {
                     ids.add(row);
                 }
             });
-            assertEquals(ids.toArray(), new int[]{0, 2});
+            assertTrue(ComparatorUtils.equals(ids.toArray(), new int[]{0, 2}));
 
 
             //select name from persons where rowId in (0,1)
             final List<String> idList = new ArrayList<String>();
             idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(0));
             idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(1));
-            assertEquals(idList.toArray(), new String[]{"nameA", "nameB"});
+            assertTrue(ComparatorUtils.equals(idList.toArray(), new String[]{"nameA", "nameB"}));
 
 
         } catch (Exception e) {
