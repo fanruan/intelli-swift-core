@@ -9,7 +9,6 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.relations = o.relations;
         this.translations = o.translations;
         this.updateSettings = o.update_settings;
-        this.usedFields = o.used_fields;
         this.allFields = o.all_fields;
         this.excelView = o.excel_view;
         this.tablesMap = {};
@@ -17,7 +16,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
             this.translations[this.id] = BI.isNotNull(o.tableData) ?
                 this._getDistinctTableName(o.tableData.table_name) : this._getDistinctTableName("ETL");
         }
-        if (BI.isNull(this.usedFields)) {
+        if (BI.isNull(o.table_data)) {
             this.allTableIds = [];
             this.allTables = [];
             this.isNew = true;
@@ -50,10 +49,8 @@ BI.ETLModel = BI.inherit(FR.OB, {
     setFields: function (fields) {
         var self = this;
         this.fields = fields;
-        this.usedFields = [];
         BI.each(fields, function (i, fs) {
             BI.each(fs, function (j, field) {
-                self.usedFields.push(field.field_name);
                 field.id = BI.UUID();
                 self.allFields[field.id] = field;
             })
@@ -100,13 +97,6 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.updateSettings = updateSettings;
     },
 
-    getUsedFields: function () {
-        return BI.deepClone(this.usedFields);
-    },
-
-    setUsedFields: function (usedFields) {
-        this.usedFields = usedFields;
-    },
 
     getAllFields: function () {
         return BI.deepClone(this.allFields);
@@ -171,6 +161,21 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     setTranName: function (name) {
         this.translations[this.getId()] = name;
+    },
+
+    setFieldsUsable: function (usedFields) {
+        var self = this;
+        BI.each(this.fields, function (i, fieldsArray) {
+            BI.each(fieldsArray, function (index, fieldObj) {
+                if (BI.contains(usedFields, fieldObj.id)) {
+                    fieldObj.is_usable = true;
+                } else {
+                    fieldObj.is_usable = false;
+                }
+                self.allFields[fieldObj.id] = fieldObj;
+            })
+        });
+
     },
 
     saveTableById: function (tId, data) {
@@ -309,7 +314,6 @@ BI.ETLModel = BI.inherit(FR.OB, {
             translations: this.getTranslations(),
             relations: this.getRelations(),
             all_fields: this.getAllFields(),
-            usedFields: this.getUsedFields(),
             fields: this.getFields(),
             excel_view: this.getExcelView(),
             update_settings: this.getUpdateSettings()
