@@ -96,7 +96,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         var sortedFields = [], usedFields = [], noUsedFields = [];
         var allTransKeys = BI.keys(this.translations);
         BI.each(fields, function (i, field) {
-            if (self.usedFields.contains(field.field_name)) {
+            if (self.usedFields.contains(field.id)) {
                 usedFields.push(field);
             } else {
                 noUsedFields.push(field);
@@ -159,7 +159,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
             item.push(self._createRelationButton(field.id));
 
             var isUsable = self._createIsUsable(field);
-            field.is_enable === false && self.usedFields.remove(field.field_name);
+            field.is_enable === false && self.usedFields.remove(field.id);
             isUsable.attr("disabled") === false && self.isUsableArray.push(isUsable);
             item.push({
                 type: "bi.center_adapt",
@@ -255,27 +255,27 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         var onUsedFieldsChange = this.options.onUsedFieldsChange;
         var isUsable = BI.createWidget({
             type: "bi.checkbox",
-            selected: this.usedFields.contains(field.field_name) && (field.is_enable === true),
+            selected: this.usedFields.contains(field.id) && (field.is_enable === true),
             disabled: !field.is_enable
         });
         isUsable.on(BI.Checkbox.EVENT_CHANGE, function () {
-            self._halfCheckChange(field.field_name, isUsable);
+            self._halfCheckChange(field.id, isUsable);
             onUsedFieldsChange(self.usedFields, field.id);
         });
         return isUsable;
     },
 
-    _halfCheckChange: function (fieldName, isUsable) {
+    _halfCheckChange: function (fieldId, isUsable) {
         var self = this;
         if (this.changeLocked === true) {
             return;
         }
         this.changeLocked = true;
         if (isUsable.isSelected() === true) {
-            this.usedFields.push(fieldName);
+            this.usedFields.push(fieldId);
         } else {
-            BI.some(this.usedFields, function (i, fName) {
-                if (fName === fieldName) {
+            BI.some(this.usedFields, function (i, fId) {
+                if (fId === fieldId) {
                     self.usedFields.splice(i, 1);
                     return true;
                 }
@@ -315,12 +315,12 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         var fields = this.tableInfo.fields;
         if (selected === true) {
             BI.each(fields, function (i, field) {
-                field.is_enable === true && !self.usedFields.contains(field.field_name) && self.usedFields.push(field.field_name);
+                field.is_enable === true && !self.usedFields.contains(field.id) && self.usedFields.push(field.id);
             })
         } else {
             BI.each(fields, function (i, field) {
-                if (self.usedFields.contains(field.field_name)) {
-                    BI.remove(self.usedFields, field.field_name);
+                if (self.usedFields.contains(field.id)) {
+                    BI.remove(self.usedFields, field.id);
                 }
             });
         }
