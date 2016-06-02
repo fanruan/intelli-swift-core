@@ -108,7 +108,7 @@ public abstract class BIBasicDataSource<T, V> extends BIMapContainer<T, V> {
 
     protected boolean cacheContainSource(V source) {
         synchronized (container) {
-            return container.containsValue(source);
+            return sourceCache.contains(source);
         }
     }
 

@@ -288,10 +288,10 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
             x_axis_style: this.lYAxisStyle.getValue()[0],
             x_axis_number_level: this.numberLevellY.getValue()[0],
             x_axis_unit: this.LYUnit.getValue(),
-            show_left_y_axis_title: this.isShowTitleLY.isSelected(),
-            show_x_axis_title: this.isShowTitleX.isSelected(),
-            left_y_axis_title: this.editTitleLY.getValue(),
-            x_axis_title: this.editTitleX.getValue(),
+            show_left_y_axis_title: this.isShowTitleX.isSelected(),
+            show_x_axis_title: this.isShowTitleLY.isSelected(),
+            left_y_axis_title: this.editTitleX.getValue(),
+            x_axis_title: this.editTitleLY.getValue(),
             text_direction: this.text_direction.getValue()
         }
     },
@@ -299,13 +299,13 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
-        this.lYAxisStyle.setValue(v.left_y_axis_style);
-        this.numberLevellY.setValue(v.left_y_axis_number_level);
-        this.LYUnit.setValue(v.left_y_axis_unit);
-        this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
-        this.isShowTitleX.setSelected(v.x_axis_title);
-        this.editTitleLY.setValue(v.left_y_axis_title);
-        this.editTitleX.setValue(v.x_axis_title);
+        this.lYAxisStyle.setValue(v.x_axis_style);
+        this.numberLevellY.setValue(v.x_axis_number_level);
+        this.LYUnit.setValue(v.x_axis_unit);
+        this.isShowTitleLY.setSelected(v.show_x_axis_title);
+        this.isShowTitleX.setSelected(v.show_left_y_axis_title);
+        this.editTitleLY.setValue(v.x_axis_title);
+        this.editTitleX.setValue(v.left_y_axis_title);
         this.text_direction.setValue(v.text_direction);
     }
 });

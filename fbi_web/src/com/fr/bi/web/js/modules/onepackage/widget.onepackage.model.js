@@ -180,6 +180,17 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     removeTable: function (tableId) {
         var self = this;
         delete this.usedFields[tableId];
+
+        //删除表的转义
+        delete self.translations[tableId];
+        //删除表中字段转义
+        var allFieldsArray = self.tablesData[tableId].fields;
+        BI.each(allFieldsArray, function (i, fieldsArray) {
+            BI.each(fieldsArray, function (index, fieldObj) {
+                delete self.translations[fieldObj.id];
+            })
+        });
+
         delete this.tablesData[tableId];
         BI.some(this.getTables(), function (i, table) {
             if (table.id === tableId) {
@@ -193,12 +204,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             }
         });
 
-        //删除相关转义
-        BI.each(this.translations, function (id, name) {
-            if (id === tableId) {
-                delete self.translations[id];
-            }
-        });
+
         //删除相关关联
         var connectionSet = this.relations.connectionSet, primaryKeyMap = this.relations.primKeyMap, foreignKeyMap = this.relations.foreignKeyMap;
         BI.each(connectionSet, function (i, keys) {

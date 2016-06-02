@@ -1,6 +1,5 @@
 package com.fr.bi.etl.analysis.data;
 
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Set;
@@ -21,6 +20,4 @@ public interface UserCubeTableSource extends CubeTableSource {
 	Set<String> getSourceUsedMD5();
 
     boolean containsIDParentsWithMD5(String md5);
-
-    void setLoader(ICubeDataLoader loader);
 }
