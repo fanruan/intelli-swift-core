@@ -34,7 +34,7 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
 
     private void init() {
         this.dependTableResource = calculateTableSource(set2Set(calculateTableSource(allSingleSources)));
-        BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
+
     }
 
     public CubeBuildStuffManagerTableSource(CubeTableSource cubeTableSource, long userId) {

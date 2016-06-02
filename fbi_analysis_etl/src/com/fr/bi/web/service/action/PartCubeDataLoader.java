@@ -108,7 +108,6 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         if (isParentTableIndex(source)) {
             return getTableIndex(((UserETLTableSource) source).getParents().get(0), start, end);
         }
-        ((UserCubeTableSource)source).setLoader(this);
         final MemoryCubeFile cube = new MemoryCubeFile(source.getFieldsArray(new HashSet<CubeTableSource>()));
         cube.writeRowCount(source.read4Part(new Traversal<BIDataValue>() {
             @Override

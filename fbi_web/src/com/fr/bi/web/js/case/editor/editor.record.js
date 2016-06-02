@@ -121,7 +121,7 @@ BI.RecordEditor = BI.inherit(BI.Single, {
     },
 
     _adjustInputWidth: function(){
-        BI.defer(BI.bind(function(){
+        BI.nextTick(BI.bind(function(){
             this.editor.element.css("width", this.element.width() - this.textContainer.element.outerWidth() - 10);
         }, this));
     },

@@ -399,6 +399,24 @@ BICst.CHART_LEGEND = {
     LEFT: 5
 };
 
+BICst.MAP_TYPE = {};
+BICst.MAP_TYPE.WORLD = 10000;
+BICst.MAP_TYPE.CHINA = 11000;
+BICst.MAP_TYPE.JIANGSU = 11010;
+BICst.MAP_TYPE.SHANGDONG = 11020;
+
+BICst.MAP_PATH = {};
+BICst.MAP_PATH[BICst.MAP_TYPE.WORLD] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.CHINA] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.JIANGSU] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/jiangsu.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.SHANGDONG] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/shandong.json";
+
+BICst.MAP_NAME = {};
+BICst.MAP_NAME["世界"] = BICst.MAP_TYPE.WORLD;
+BICst.MAP_NAME["中国"] = BICst.MAP_TYPE.CHINA;
+BICst.MAP_NAME["江苏省"] = BICst.MAP_TYPE.JIANGSU;
+BICst.MAP_NAME["山东省"] = BICst.MAP_TYPE.SHANGDONG;
+
 BICst.TABLE_MAX_ROW = 20;
 BICst.TABLE_MAX_COL = 7;
 

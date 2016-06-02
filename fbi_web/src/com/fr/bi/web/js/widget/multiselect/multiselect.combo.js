@@ -29,7 +29,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             itemsCreator: o.itemsCreator,
             valueFormatter: o.valueFormatter,
             onLoaded: function () {
-                BI.defer(function () {
+                BI.nextTick(function () {
                     self.combo.adjustWidth();
                     self.combo.adjustHeight();
                     self.trigger.getCounter().adjustView();
@@ -127,7 +127,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
 
         this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
             this.setValue(self.storeValue);
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.populate();
             });
         });

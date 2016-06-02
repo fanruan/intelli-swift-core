@@ -59,7 +59,7 @@ BI.SimpleStateEditor = BI.inherit(BI.Single, {
             }
         });
         this.text.on(BI.TextButton.EVENT_CHANGE, function () {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.fireEvent(BI.SimpleStateEditor.EVENT_CLICK_LABEL);
             });
         });

@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- *
  * Created by GUY on 2015/4/2.
  *
  * @author Connery
@@ -35,6 +34,12 @@ public class UserAliasManager {
         }
         synchronized (transMap) {
             transMap.put(id, name);
+        }
+    }
+
+    public void removeTransName(String id) {
+        synchronized (transMap) {
+            transMap.remove(id);
         }
     }
 

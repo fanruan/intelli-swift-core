@@ -147,7 +147,7 @@ BI.Combo = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
             });
             this.popupView.setVisible(false);
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.fireEvent(BI.Combo.EVENT_AFTER_INIT);
             });
         }

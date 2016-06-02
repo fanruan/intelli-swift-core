@@ -236,9 +236,6 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.reversedLY]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),

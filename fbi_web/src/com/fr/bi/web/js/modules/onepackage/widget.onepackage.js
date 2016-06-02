@@ -387,13 +387,11 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         editSQL.on(BI.EditSQL.EVENT_SAVE, function (data) {
             BI.Layers.remove(self._constant.SQL_LAYER);
             var tableId = BI.UUID();
-            var usedFields = [];
             var allFields = self.model.getAllFields();
             BI.each(data.fields, function (i, fs) {
                 BI.each(fs, function (j, field) {
                     field.table_id = tableId;
                     field.id = BI.UUID();
-                    usedFields.push(field.field_name);
                     allFields[field.id] = field;
                 });
             });
@@ -407,7 +405,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self._constant.ETL_LAYER),
                 id: tableId,
                 table_data: data,
-                used_fields: usedFields,
                 relations: self.model.getRelations(),
                 translations: translations,
                 all_fields: allFields,
@@ -440,13 +437,11 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function (data) {
             BI.Layers.remove(self._constant.EXCEL_LAYER);
             var tableId = BI.UUID();
-            var usedFields = [];
             var allFields = self.model.getAllFields();
             BI.each(data.fields, function (i, fs) {
                 BI.each(fs, function (j, field) {
                     field.table_id = tableId;
                     field.id = BI.UUID();
-                    usedFields.push(field.field_name);
                     allFields[field.id] = field;
                 });
             });
@@ -460,7 +455,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self._constant.ETL_LAYER),
                 id: tableId,
                 table_data: data,
-                used_fields: usedFields,
                 relations: self.model.getRelations(),
                 translations: translations,
                 all_fields: allFields,
@@ -488,7 +482,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: id,
             table_data: this.model.getTablesData()[id],
-            used_fields: this.model.getUsedFields()[id],
             relations: this.model.getRelations(),
             translations: this.model.getTranslations(),
             all_fields: this.model.getAllFields(),
@@ -496,6 +489,18 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             update_settings: this.model.getUpdateSettings()
         });
         BI.Layers.show(this._constant.ETL_LAYER);
+        etl.on(BI.ETL.EVENT_CUBE_SAVE, function (obj) {
+            var data = self.model.getValue();
+            Data.SharingPool.put("translations", data.translations);
+            Data.SharingPool.put("relations", data.relations);
+            Data.SharingPool.put("fields", self.model.getAllFields());
+            Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
+            BI.Utils.updateTablesOfOnePackage(data, function () {
+                self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
+                BI.Utils.generateCubeByTable(obj, function () {
+                });
+            });
+        });
         etl.on(BI.ETL.EVENT_SAVE, function (data) {
             self.model.changeTableInfo(id, data);
             self._refreshTablesInPackage();
@@ -524,4 +529,5 @@ BI.OnePackage = BI.inherit(BI.Widget, {
 });
 BI.OnePackage.EVENT_CANCEL = "EVENT_CANCEL";
 BI.OnePackage.EVENT_SAVE = "EVENT_SAVE";
+BI.OnePackage.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 $.shortcut("bi.one_package", BI.OnePackage);

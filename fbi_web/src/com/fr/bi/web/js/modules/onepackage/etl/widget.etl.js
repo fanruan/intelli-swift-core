@@ -212,7 +212,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Update_Setup"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT
         });
-        this.updateSetButton.on(BI.Button.EVENT_CHANGE, function(){
+        this.updateSetButton.on(BI.Button.EVENT_CHANGE, function () {
             self._onClickUpdateSet();
         });
         this.excelViewButton = BI.createWidget({
@@ -221,7 +221,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Display_Data_In_Actual"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT
         });
-        this.excelViewButton.on(BI.Button.EVENT_CHANGE, function(){
+        this.excelViewButton.on(BI.Button.EVENT_CHANGE, function () {
             self._onClickExcelView();
         });
         this.saveButton = BI.createWidget({
@@ -274,20 +274,24 @@ BI.ETL = BI.inherit(BI.Widget, {
         })
     },
 
-    _onClickUpdateSet: function(){
+    _onClickUpdateSet: function () {
         var self = this;
         BI.Popovers.remove(this.model.getId());
         var updateSet = BI.createWidget({
             type: "bi.update_table_data",
             table: this.model.getValue()
         });
-        updateSet.on(BI.UpdateTableData.EVENT_SAVE, function(){
+        updateSet.on(BI.UpdateTableData.EVENT_SAVE, function () {
             self.model.setUpdateSettings(this.getValue());
+        });
+        updateSet.on(BI.UpdateTableData.EVENT_CUBE_SAVE, function (obj) {
+            self.model.setUpdateSettings(this.getValue());
+            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, obj)
         });
         BI.Popovers.create(this.model.getId(), updateSet).open(this.model.getId());
     },
 
-    _onClickExcelView: function(){
+    _onClickExcelView: function () {
         var self = this;
         var excelViewPane = BI.createWidget({
             type: "bi.excel_view_setting",
@@ -295,10 +299,10 @@ BI.ETL = BI.inherit(BI.Widget, {
             table: this.model.getValue(),
             view: this.model.getExcelView()
         });
-        excelViewPane.on(BI.ExcelViewSetting.EVENT_CANCEL, function(){
+        excelViewPane.on(BI.ExcelViewSetting.EVENT_CANCEL, function () {
             BI.Layers.remove(self.constants.EXCEL_VIEW_LAYER);
         });
-        excelViewPane.on(BI.ExcelViewSetting.EVENT_SAVE, function(view){
+        excelViewPane.on(BI.ExcelViewSetting.EVENT_SAVE, function (view) {
             BI.Layers.remove(self.constants.EXCEL_VIEW_LAYER);
             self.model.setExcelView(view);
         });
@@ -411,8 +415,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 fields: this.model.getFields(),
                 relations: this.model.getRelations(),
                 translations: this.model.getTranslations(),
-                all_fields: this.model.getAllFields(),
-                usedFields: this.model.getUsedFields()
+                all_fields: this.model.getAllFields()
             }
         });
         tableInfo.on(BI.TableFieldWithSearchPane.EVENT_RELATION_CHANGE, function (fieldId) {
@@ -434,7 +437,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             self.model.setTranslations(translations);
         });
         tableInfo.on(BI.TableFieldWithSearchPane.EVENT_USABLE_CHANGE, function (usedFields) {
-            self.model.setUsedFields(usedFields);
+            self.model.setFieldsUsable(usedFields);
         });
         this.dataSetPane.populate([{
             el: this.tableNameWrapper,
@@ -848,6 +851,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Loading")
         });
         BI.Utils.checkCubeStatusByTable(table, function (status) {
+
             mask.destroy();
             callback(status);
         })
@@ -1156,7 +1160,7 @@ BI.ETL = BI.inherit(BI.Widget, {
     }
 });
 BI.ETL.EVENT_REMOVE = "EVENT_REMOVE";
-// BI.ETL.EVENT_EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
+BI.ETL.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 BI.ETL.EVENT_CANCEL = "EVENT_CANCEL";
 BI.ETL.EVENT_SAVE = "EVENT_SAVE";
 $.shortcut("bi.etl", BI.ETL);

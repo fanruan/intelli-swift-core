@@ -70,6 +70,7 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
                 BusinessTable table = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
                 field.put("id", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).getFieldID().getIdentityValue());
                 field.put("table_id", tableId);
+                field.put("is_usable", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).isUsable());
                 nFields.put(field);
             }
             newFields.put(nFields);

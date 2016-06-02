@@ -5,22 +5,27 @@ package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.CubeBuildStuffManagerTableSource;
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.exception.BIDeliverFailureException;
-import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
-import com.finebi.cube.gen.arrange.BICubeOperationManager;
+import com.finebi.cube.exception.BICubeColumnAbsentException;
+import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
-import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
+import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.column.BIColumnKey;
+import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
+import com.fr.bi.module.UserETLCubeTILoader;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.structure.collection.list.IntList;
@@ -33,8 +38,6 @@ import com.fr.stable.core.UUID;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-
-import static com.fr.bi.cal.generate.BuildCubeTask.generateMessageDataSourceStart;
 
 /**
  * @author Daniel
@@ -64,7 +67,7 @@ public class UserETLUpdateTask implements CubeTask {
 
     public UserETLUpdateTask(UserCubeTableSource source) {
         this.source = source;
-        this.cubeBuildStuff = new CubeBuildStuffManagerTableSource(source,new ICubeConfiguration() {
+        this.cubeBuildStuff = new UserETLCubeStuff(source,new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
                 try {
@@ -82,39 +85,42 @@ public class UserETLUpdateTask implements CubeTask {
 
     @Override
     public void run() {
-
-        BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-
-
-        BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
-        operationManager.initialWatcher();
-
-        manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
-        manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
-        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getRelationPaths());
-        manager.registerTableRelationPath(relationPathSet);
-        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
-        operationManager.generateRelationBuilder(cubeBuildStuff.getTableSourceRelationSet());
-        operationManager.generateTableRelationPath(relationPathSet);
-        IRouter router = BIFactoryHelper.getObject(IRouter.class);
-        try {
-            router.deliverMessage(generateMessageDataSourceStart());
-        } catch (BIDeliverFailureException e) {
-            throw BINonValueUtils.beyondControl(e);
+        final ICubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(this.source));
+        ICubeFieldSource[] columns = this.source.getFieldsArray(new HashSet<CubeTableSource>());
+        List<ICubeFieldSource> columnList = new ArrayList<ICubeFieldSource>();
+        for (ICubeFieldSource col : columns) {
+            columnList.add(new BICubeFieldSource(this.source, col.getFieldName(), col.getClassType(), col.getFieldSize()));
         }
-    }
+        tableEntityService.recordTableStructure(columnList);
+        List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
+        ICubeFieldSource[] cubeFieldSources = new ICubeFieldSource[fieldList.size()];
+        for (int i = 0; i < fieldList.size(); i++) {
+            cubeFieldSources[i] = fieldList.get(i);
+        }
+        tableEntityService.recordRowCount(this.source.read(new Traversal<BIDataValue>() {
+            @Override
+            public void actionPerformed(BIDataValue v) {
+                try {
+                    tableEntityService.addDataValue(v);
+                } catch (BICubeColumnAbsentException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
 
-    private Set<BITableSourceRelationPath> filterPath(Set<BITableSourceRelationPath> paths) {
-        Iterator<BITableSourceRelationPath> iterator = paths.iterator();
-        Set<BITableSourceRelationPath> result = new HashSet<BITableSourceRelationPath>();
-        while (iterator.hasNext()) {
-            BITableSourceRelationPath path = iterator.next();
-            if (path.getAllRelations().size() > 1) {
-                result.add(path);
+        ICubeFieldSource[] fields = source.getFieldsArray(new HashSet<CubeTableSource>());
+        for (int i = 0; i < fields.length; i++) {
+            ICubeFieldSource field = fields[i];
+            Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
+            while (columnKeyIterator.hasNext()) {
+                BIColumnKey targetColumnKey = columnKeyIterator.next();
+                new BIFieldIndexGenerator(cube, source, field, targetColumnKey).mainTask(null);
             }
         }
-        return result;
+
     }
+
+
 
 	private static TableCubeFile getOldCube(String md5){
 		UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
@@ -191,15 +197,17 @@ public class UserETLUpdateTask implements CubeTask {
 	 * @return
 	 */
 	public boolean check() {
-		TableCubeFile cube = getOldCube(source.fetchObjectCore().getID().getIdentityValue());
-		return cube.checkCubeVersion() && checkSourceVersion();
+        return false;
+//		TableCubeFile cube = getOldCube(source.fetchObjectCore().getID().getIdentityValue());
+//		return cube.checkCubeVersion() && checkSourceVersion();
 	}
 	
 	/**
 	 * @return
 	 */
 	private boolean checkSourceVersion() {
-		return getTableVersion() == getOldCube(source.fetchObjectCore().getID().getIdentityValue()).getTableVersion();
+        return false;
+//		return getTableVersion() == getOldCube(source.fetchObjectCore().getID().getIdentityValue()).getTableVersion();
 	}
 	
 	private int getTableVersion(){
