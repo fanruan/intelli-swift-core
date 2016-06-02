@@ -7,10 +7,10 @@ package com.fr.bi.stable.utils.code;
 public class BILogger {
     boolean verbose = true;
     public static BILogger logger = null;
-//    public LogInfo topicLog;
-//    public LogInfo fragmentLog;
-//    public LogInfo status;
-    public LogInfo logInfo=new LogInfo(0,"","");
+//    public CubeLogInfo topicLog;
+//    public CubeLogInfo fragmentLog;
+//    public CubeLogInfo status;
+    public CubeLogInfo logInfo=new CubeLogInfo(0,"","");
 
     public static BILogger getLogger() {
         if (logger != null) {
@@ -19,7 +19,7 @@ public class BILogger {
         synchronized (BILogger.class) {
             if (logger == null) {
                 logger = new BILogger();
-                logger.logInfo=new LogInfo(0,"","");
+                logger.logInfo=new CubeLogInfo(0,"","");
             }
         }
         return logger;
@@ -51,9 +51,8 @@ public class BILogger {
         this.logInfo.setCostTime(this.logInfo.getCostTime()+costTime);
         this.logInfo.setMessage(this.logInfo.getMessage()+message);
         this.logInfo.setErrorMsg(this.logInfo.getErrorMsg()+errMsg);
-//        this.logInfo.logInfo.add(log);
-    };
-    public LogInfo getLogInfo(){
+    }
+    public CubeLogInfo getLogInfo(){
         return logInfo;
     }
 }

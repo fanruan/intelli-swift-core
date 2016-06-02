@@ -44,6 +44,12 @@ public class BINationTablesTest extends BICubeTestBase {
     protected void setUp() throws Exception {
         super.setUp();
     }
+    
+    public void testBILogger(){
+        testBasic();
+        
+    }
+    
     public void testBasic() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
