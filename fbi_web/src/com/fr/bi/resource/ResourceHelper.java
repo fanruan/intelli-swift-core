@@ -1812,6 +1812,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/linkedHashMap.js",
                 "com/fr/bi/web/js/base/utils/tree.js",
                 "com/fr/bi/web/js/base/utils/vector.js",
+                "com/fr/bi/web/js/base/utils/lru.js",
 
                 "com/fr/bi/web/js/base/action/action.js",
                 "com/fr/bi/web/js/base/action/action.show.js",
