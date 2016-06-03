@@ -196,4 +196,13 @@ public class BIBusinessTable implements BusinessTable {
     protected int getTableType() {
         return BIReportConstant.BUSINESS_TABLE_TYPE.NORMAL;
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("BIBusinessTable{");
+        sb.append("ID=").append(ID);
+        sb.append(", tableName='").append(tableName).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }
