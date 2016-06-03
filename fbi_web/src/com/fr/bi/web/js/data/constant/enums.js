@@ -391,7 +391,7 @@ BICst.PIE_ANGLES = {
     TOTAL: 360
 };
 
-BICst.CHART_LEGEND = {
+BICst.CHART_LEGENDS = {
     NOT_SHOW: 1,
     TOP: 2,
     RIGHT: 3,

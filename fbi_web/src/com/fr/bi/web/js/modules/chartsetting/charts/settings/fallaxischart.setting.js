@@ -162,6 +162,72 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.FallAxisChartSetting.EVENT_CHANGE);
         });
 
+        //数据标签
+        this.showDataLabel = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Data_Label"),
+            width: 115
+        });
+
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //数据表格
+        this.showDataTable = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Data_Table"),
+            width: 115
+        });
+
+        this.showDataTable.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //网格线
+        this.gridLine = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Grid_Line"),
+            width: 115
+        });
+
+        this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        var showElement = BI.createWidget({
+            type: "bi.horizontal",
+            cls: "single-line-settings",
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Element_Show"),
+                textHeight: 60,
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Legend_Normal"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.showDataLabel]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.showDataTable]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.gridLine]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: this.constant.SIMPLE_H_GAP
+            }]
+        });
+
         var xAxis = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
@@ -272,7 +338,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, xAxis, otherAttr],
+            items: [tableStyle, lYAxis, xAxis, showElement, otherAttr],
             hgap: 10
         })
     },
@@ -289,6 +355,9 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
         this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
         this.editTitleX.setValue(BI.Utils.getWSXAxisTitleByID(wId));
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
+        this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -305,7 +374,10 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
             show_x_axis_title: this.isShowTitleX.isSelected(),
             left_y_axis_title: this.editTitleLY.getValue(),
             x_axis_title: this.editTitleX.getValue(),
-            text_direction: this.text_direction.getValue()
+            text_direction: this.text_direction.getValue(),
+            show_data_label: this.showDataLabel.isSelected(),
+            show_data_table: this.showDataTable.isSelected(),
+            show_grid_line: this.gridLine.isSelected(),
         }
     },
 
@@ -320,6 +392,9 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
         this.editTitleLY.setValue(v.left_y_axis_title);
         this.editTitleX.setValue(v.x_axis_title);
         this.text_direction.setValue(v.text_direction);
+        this.showDataLabel.setSelected(v.show_data_label);
+        this.showDataTable.setSelected(v.show_data_table);
+        this.gridLine.setSelected(v.show_grid_line);
     }
 });
 BI.FallAxisChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
