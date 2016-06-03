@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
 
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
@@ -345,7 +346,7 @@ public class DimensionGroupFilter {
 
     private void createFinalIndexes(GroupValueIndex[] groupValueIndexes, GroupValueIndex[][] groupValueIndexe2D) {
         for (int i = 0; i < groupValueIndexe2D.length; i++) {
-            if (!ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) {
+            if (!ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BIBusinessTable.createEmptyTable())) {
                 for (int j = 0; j < groupValueIndexe2D[i].length; j++) {
                     if (groupValueIndexes[i] == MergerInfo.ALL_SHOW) {
                         groupValueIndexes[i] = groupValueIndexe2D[i][j];

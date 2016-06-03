@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
 import com.fr.bi.cal.analyze.cal.result.Node;
@@ -8,7 +9,6 @@ import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.result.NodeUtils;
 import com.fr.bi.cal.analyze.cal.result.operator.Operator;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -265,7 +265,7 @@ public class GroupUtils {
             }
         }
         for (int i = 0; i < groups.length; i++) {
-            if (groups[i] != null && !ComparatorUtils.equals(groups[i].getTableKey(), BITable.BI_EMPTY_TABLE())) {
+            if (groups[i] != null && !ComparatorUtils.equals(groups[i].getTableKey(), BIBusinessTable.createEmptyTable())) {
                 if (groups[i] instanceof TreeNoneDimensionGroup) {
                     Number summaryValue = groups[i].getSummaryValue(calculators[i]);
                     setSummaryValueMap(node, (TreeNoneDimensionGroup) groups[i]);
