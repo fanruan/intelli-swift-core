@@ -59,7 +59,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
         try {
             BILogger.getLogger().info("now start" + source.toString() + "loading data");
             long start = System.currentTimeMillis();
-            BIConfigureManagerCenter.getLogManager().infoTableReading(source.getPersistentTable(), 0, biUser.getUserId());
+            
             generateSimpleCube();
             BIConfigureManagerCenter.getLogManager().infoTableReading(source.getPersistentTable(),
                     System.currentTimeMillis() - start, biUser.getUserId());

@@ -14,4 +14,6 @@ public class BITableSourceRelation extends BIBasicRelation<CubeTableSource, ICub
     public BITableSourceRelation(ICubeFieldSource primaryField, ICubeFieldSource foreignField, CubeTableSource primaryTable, CubeTableSource foreignTable) {
         super(primaryField, foreignField, primaryTable, foreignTable);
     }
+
+    
 }

@@ -39,6 +39,7 @@ public class BICubeRelationUtils {
                 new BITableKey(sourceRelation.getPrimaryTable()),
                 new BITableKey(sourceRelation.getForeignTable())
         );
+        
     }
 
 //    public static BICubeRelation convertTableRelation(BICubeRelation sourceRelation) {

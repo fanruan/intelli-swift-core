@@ -9,13 +9,16 @@ import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.cal.log.BILogManager;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.bridge.StableFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,12 +56,18 @@ public class BISourceDataTransport extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        long t=System.currentTimeMillis();
+
         recordTableInfo();
         long count = transport();
 
         if (count >= 0) {
             tableEntityService.recordRowCount(count);
         }
+        long costTime=System.currentTimeMillis()-t;
+//        String range = ((BICubeConfiguration) ((BICubeResourceRetrieval) ((BICube) cube).resourceRetrievalService).cubeConfiguration).range;
+        biLogManager.infoTable(tableSource.getPersistentTable(),costTime, -999);
         return null;
     }
 

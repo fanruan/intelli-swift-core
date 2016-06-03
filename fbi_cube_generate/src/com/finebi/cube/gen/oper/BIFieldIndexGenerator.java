@@ -7,6 +7,8 @@ import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -56,8 +58,13 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
+        BILogManagerProvider biLogManager = BIConfigureManagerCenter.getLogManager();
+        biLogManager.logIndexStart(-999);
+        long t=System.currentTimeMillis();
         initial();
         buildTableIndex();
+        long costTime=System.currentTimeMillis()-t;
+        biLogManager.infoTableIndex(tableSource.getPersistentTable(),costTime, Long.valueOf(-999));
         return null;
     }
 

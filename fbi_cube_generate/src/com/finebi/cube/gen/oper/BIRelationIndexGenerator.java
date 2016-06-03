@@ -2,12 +2,21 @@ package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
+import com.fr.bi.cal.log.BILogManager;
+import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.stable.bridge.StableFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class created on 2016/4/7.
@@ -26,10 +35,32 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        buildRelationIndex();
-        return null;
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        biLogManager.logRelationStart(-999);
+        long t=System.currentTimeMillis();
+        try {
+
+            buildRelationIndex();
+            long costTime=System.currentTimeMillis()-t;
+            biLogManager.infoRelation(getRelaionColumeKeyInfo(),costTime, -999);
+            return null;
+        } catch (Exception e) {
+            biLogManager.errorRelation(getRelaionColumeKeyInfo(),e.getMessage(), -999);
+            BILogger.getLogger().error(e.getMessage(), e);
+        } finally {
+            return null;
+        }
     }
 
+    public RelationColumnKey getRelaionColumeKeyInfo() {
+        BITableSourceRelation biTableSourceRelation=null;
+        List<BITableSourceRelation> relations =new ArrayList<BITableSourceRelation>();
+        relations.add(biTableSourceRelation); 
+        
+        return new RelationColumnKey(null,relations);
+    }
+    
+    
     @Override
     public void release() {
 
@@ -110,5 +141,5 @@ public class BIRelationIndexGenerator extends BIProcessor {
         }
 
     }
-
+    
 }
