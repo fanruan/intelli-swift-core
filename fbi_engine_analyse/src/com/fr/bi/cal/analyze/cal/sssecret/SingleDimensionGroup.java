@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.Executor.Executor;
@@ -18,13 +19,13 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.bi.util.BIConfUtils;
+import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -200,7 +201,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
 
     private BusinessTable getRealTableKey4Calculate() {
-        return tableKey == BITable.BI_EMPTY_TABLE() ? column.getField().getTableBelongTo() : tableKey;
+        return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
     }
 
     private Iterator getIterByChildValue() {

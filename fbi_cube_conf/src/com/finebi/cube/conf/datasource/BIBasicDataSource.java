@@ -30,8 +30,12 @@ public abstract class BIBasicDataSource<T, V> extends BIMapContainer<T, V> {
 
     protected void initialSourceCache() {
         synchronized (container) {
-            if (sourceCache == null) {
-                sourceCache = new HashSet<V>();
+            if (cacheNeedInitial()) {
+                if (sourceCache == null) {
+                    sourceCache = new HashSet<V>();
+                } else {
+                    sourceCache.clear();
+                }
                 for (V value : container.values()) {
                     sourceCache.add(value);
                 }
@@ -70,6 +74,10 @@ public abstract class BIBasicDataSource<T, V> extends BIMapContainer<T, V> {
 
             }
         }
+    }
+
+    private boolean cacheNeedInitial() {
+        return sourceCache == null || (sourceCache.isEmpty() && !container.isEmpty());
     }
 
     private void removeCacheSource(V source) {
