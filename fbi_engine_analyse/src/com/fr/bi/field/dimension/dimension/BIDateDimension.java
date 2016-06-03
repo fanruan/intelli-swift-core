@@ -1,13 +1,12 @@
 package com.fr.bi.field.dimension.dimension;
 
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.stable.StringUtils;
 
 import java.util.List;
 
@@ -66,9 +65,6 @@ public class BIDateDimension extends BIAbstractDimension {
 
     @Override
     public Object getValueByType(Object data) {
-        if (group.getType() == BIReportConstant.GROUP.YMD){
-            return data == null ? null : Long.parseLong(data.toString());
-        }
-        return data == null ? StringUtils.EMPTY : Integer.parseInt(data.toString());
+        return data == null ? null : Long.parseLong(data.toString());
     }
 }

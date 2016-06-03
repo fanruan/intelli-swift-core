@@ -188,8 +188,6 @@ public class MemoryCubeFile extends AbstractCubeFile {
                         case DBConstant.COLUMN.NUMBER:
                             switch (field.getClassType()) {
                                 case DBConstant.CLASS.INTEGER:
-                                    columns[i] = new MemoryIntegerColumn();
-                                    break;
                                 case DBConstant.CLASS.LONG: {
                                     columns[i] = new MemoryLongColumn();
                                     break;

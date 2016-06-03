@@ -59,7 +59,7 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
         if (fieldType == DBConstant.COLUMN.DATE){
             return DateUtils.format(new Date((Long)ob));
         }
-        return ob;
+        return ob == null ? StringUtils.EMPTY : ob;
     }
 
     @Override
