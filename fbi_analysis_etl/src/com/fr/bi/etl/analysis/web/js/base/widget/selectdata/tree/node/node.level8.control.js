@@ -22,22 +22,22 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
     },
 
     startChecker : function (id) {
-        this.checker = this._createChecker(id, 2000)
-    },
-
-    _createChecker : function (id, time) {
         var self = this;
-        return setInterval(function () {
+        var checker =  setInterval(function () {
             BI.ETLReq.reqTableStatus({
                 id : id
             }, function (res) {
                 if (res[ETLCst.GENERATED_PERCENT] === 1){
-                    clearInterval(self.checker);
-                    self.checker = self._createChecker(id, 60000)
+                    self.widget.showLoading(res[ETLCst.GENERATED_PERCENT]);
+                    clearInterval(checker);
                 }
                 self.widget.showLoading(res[ETLCst.GENERATED_PERCENT]);
             })
-        }, time);
+        }, 2000);
+    },
+
+    _createChecker : function (id, time) {
+       
     },
 
     _showWarningPop : function (id) {
