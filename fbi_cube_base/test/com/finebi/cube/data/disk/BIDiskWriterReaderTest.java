@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 public class BIDiskWriterReaderTest extends TestCase {
     private ICubePrimitiveResourceDiscovery discovery;
     public static String projectPath = "D:\\FineBI\\Git\\workHouse\\project\\fbi_cube_base\\test\\cube\\";
+//    public static String projectPath = "/Users/wuk/Documents/fbicode/";
 
     @Override
     protected void setUp() throws Exception {
