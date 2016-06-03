@@ -8,6 +8,7 @@ import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
 
@@ -41,7 +42,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
         String tableId = getID().getIdentity();
         List<BusinessField> fields = new ArrayList<BusinessField>();
         for (PersistentField f : source.getPersistentTable().getFieldList()){
-            fields.add(new BIBusinessField(this, new BIFieldID(tableId + f.getFieldName()), f.getFieldName(), f.getSqlType(), f.getColumnSize()));
+            fields.add(new BIBusinessField(this, new BIFieldID(tableId + f.getFieldName()), f.getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(f.getSqlType(), f.getColumnSize(), f.getScale()), f.getColumnSize()));
         }
         setFields(fields);
     }
