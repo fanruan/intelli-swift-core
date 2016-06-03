@@ -5,6 +5,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.container.BISetContainer;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
@@ -189,19 +190,37 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
                 JSONArray ja = fieldsJA.getJSONArray(i);
                 for (int j = 0; j < ja.length(); j++) {
                     JSONObject fieldJO = ja.getJSONObject(j);
-                    String field_name =null;
-                    int fieldSize =0;
+                    String field_name = null;
+                    int fieldSize = 0;
                     int classType = 0;
-                    if (fieldJO.has("field_name")){
-                     field_name =  fieldJO.getString("field_name");}
-                    if (fieldJO.has("class_type")){
+                    if (fieldJO.has("field_name")) {
+                        field_name = fieldJO.getString("field_name");
+                    }
+                    if (fieldJO.has("field_type")) {
+                        int fieldType = fieldJO.getInt("field_type");
+                        switch (fieldType) {
+                            case DBConstant.COLUMN.STRING:
+                                classType = DBConstant.CLASS.STRING;
+                                break;
+                            case DBConstant.COLUMN.NUMBER:
+                                classType = DBConstant.CLASS.DOUBLE;
+                                break;
+                            case DBConstant.COLUMN.DATE:
+                                classType = DBConstant.CLASS.DATE;
+                                break;
+                            default:
+                                classType = DBConstant.CLASS.STRING;
+                                break;
+                        }
+                    }
+                    if (fieldJO.has("class_type")) {
                         classType = fieldJO.getInt("class_type");
                     }
-                    if (fieldJO.has("field_size")){
+                    if (fieldJO.has("field_size")) {
                         fieldSize = fieldJO.getInt("field_size");
                     }
                     BIBusinessField field = new BIBusinessField(table, new BIFieldID(fieldJO.getString("id")),
-                         field_name , classType,
+                            field_name, classType,
                             fieldSize, fieldJO.optBoolean("is_usable"), fieldJO.optBoolean("is_enable"));
                     fields.add(field);
                 }
