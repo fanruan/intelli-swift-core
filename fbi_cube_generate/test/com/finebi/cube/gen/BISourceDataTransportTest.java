@@ -39,7 +39,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     public void transport(CubeTableSource tableSource) {
         try {
             setUp();
-            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>());
+            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(),1);
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,9 +75,9 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         try {
             BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent();
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
-            new BISourceDataTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>()).mainTask(null);
+            new BISourceDataTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(),1).mainTask(null);
             parents.add(tableSource.parent);
-            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents);
+            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents,1);
             dataTransport.mainTask(null);
 
 

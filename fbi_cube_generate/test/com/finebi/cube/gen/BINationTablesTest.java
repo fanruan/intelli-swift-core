@@ -159,7 +159,7 @@ public class BINationTablesTest extends BICubeTestBase {
      */
     public void transport(CubeTableSource tableSource) {
         try {
-            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>());
+            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(),1);
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();
