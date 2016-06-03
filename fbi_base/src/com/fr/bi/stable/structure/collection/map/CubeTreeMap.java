@@ -44,7 +44,7 @@ public class CubeTreeMap<K> extends TreeMap implements ICubeColumnIndexReader, R
      */
     @Override
     public Object[] createKey(int length) {
-        return new Object[length];
+        return (K[])new Object[length];
     }
 
     @Override

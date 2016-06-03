@@ -110,19 +110,25 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             return cnt;
         }
 
+        var start = 0;
         BI.each(nodes, function (i, node) {
             if (BI.isNotEmptyArray(node.children)) {
                 BI.each(node.children, function (index, child) {
                     var cnt = getLeafCount(child);
                     result.push({
                         text: count++,
+                        start: start,
+                        cnt: cnt,
                         cls: "sequence-table-number",
                         height: cnt * o.rowSize + (cnt - 1)
                     });
+                    start += cnt;
                 });
                 if (BI.isNotEmptyArray(node.values)) {
                     result.push({
                         text: BI.i18nText("BI-Summary_Values"),
+                        start: start++,
+                        cnt: 1,
                         cls: "sequence-table-number sequence-table-summary",
                         height: o.rowSize
                     });
@@ -149,12 +155,16 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         var numbers = this._formatNumber(o.items);
         result = result.concat(BI.map(numbers, function (i, num) {
             var cls = num.cls;
+            if (BI.isOdd(num.start)) {
+                cls += " even";
+            } else {
+                cls += " odd";
+            }
             return BI.extend(num, {
                 type: "bi.label",
                 textAlign: "left",
                 hgap: 5,
                 cls: cls + (i === numbers.length - 1 ? " last" : "")
-                + (BI.isOdd(i) ? " even" : " odd")
             })
         }));
 

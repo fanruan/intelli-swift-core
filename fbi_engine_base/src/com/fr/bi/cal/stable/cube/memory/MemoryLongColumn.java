@@ -20,4 +20,9 @@ public class MemoryLongColumn extends AbstractSingleMemoryColumn<Long> {
     protected void initDetail() {
         detail = new AnyIndexArray<Long>();
     }
+
+    @Override
+    protected Long createEmptyValue() {
+        return Long.MAX_VALUE;
+    }
 }

@@ -9,6 +9,7 @@ import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,11 @@ public class MemoryStringColumn extends AbstractSingleMemoryColumn<String> {
             }
         }
         return getter;
+    }
+
+    @Override
+    protected String createEmptyValue() {
+        return StringUtils.EMPTY;
     }
 
 
