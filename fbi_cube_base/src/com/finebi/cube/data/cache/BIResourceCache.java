@@ -47,4 +47,9 @@ public class BIResourceCache<R> extends BIMapContainer<ICubeResourceLocation, IR
     public boolean isAvailableResource(ICubeResourceLocation location) {
         return false;
     }
+
+    @Override
+    public void forceRelease() {
+
+    }
 }

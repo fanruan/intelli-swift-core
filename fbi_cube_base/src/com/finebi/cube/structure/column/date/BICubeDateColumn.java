@@ -42,9 +42,6 @@ public class BICubeDateColumn extends BICubeLongColumn {
         super.addNULLIndex(position, groupValueIndex);
     }
 
-    @Override
-    public void addVersion(int version) {
-        super.addVersion(version);
-    }
+
 
 }

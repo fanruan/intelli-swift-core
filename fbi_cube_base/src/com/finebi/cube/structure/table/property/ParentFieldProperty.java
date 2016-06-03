@@ -5,6 +5,7 @@ import com.finebi.cube.data.disk.reader.BIStringNIOReader;
 import com.finebi.cube.data.disk.writer.BIStringNIOWriter;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.structure.property.BICubeProperty;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.HashSet;

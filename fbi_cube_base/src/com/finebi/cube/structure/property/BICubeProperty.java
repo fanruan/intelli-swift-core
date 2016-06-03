@@ -1,4 +1,4 @@
-package com.finebi.cube.structure.table.property;
+package com.finebi.cube.structure.property;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeReader;

@@ -68,9 +68,9 @@ public interface ICubeColumnEntityService<T> extends ICubeColumnReaderService<T>
 
     void recordSizeOfGroup(int size);
 
-    int getVersion();
 
-    void addVersion(int version);
+
+
 
     /**
      * 在对应位置添加空值

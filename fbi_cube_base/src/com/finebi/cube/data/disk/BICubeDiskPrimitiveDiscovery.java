@@ -50,13 +50,12 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         resourceLockMap = new HashMap<ICubeResourceLocation, ResourceLock>();
         writerCache = new BIResourceSimpleCache<ICubePrimitiveWriter>();
         readerCache = new BIResourceSimpleCache<ICubePrimitiveReader>();
-
     }
 
     @Override
     public ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
         BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
-        if (readerCache.isAvailableResource(resourceLocation) &&! readerCache.getResource(resourceLocation).isForceReleased()) {
+        if (readerCache.isAvailableResource(resourceLocation) && !readerCache.getResource(resourceLocation).isForceReleased()) {
             return readerCache.getResource(resourceLocation);
         } else {
             ICubePrimitiveReader reader = readerManager.buildCubeReader(resourceLocation);
@@ -71,7 +70,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     public ICubePrimitiveWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException {
         ResourceLock lock = getLock(resourceLocation);
         synchronized (lock) {
-            if (writerCache.isAvailableResource(resourceLocation) &&! writerCache.getResource(resourceLocation).isForceReleased()) {
+            if (writerCache.isAvailableResource(resourceLocation) && !writerCache.getResource(resourceLocation).isForceReleased()) {
                 return writerCache.getResource(resourceLocation);
             } else {
                 BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
@@ -100,5 +99,10 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
 
     private class ResourceLock {
 
+    }
+
+    public void forceRelease() {
+        readerCache.forceRelease();
+        writerCache.forceRelease();
     }
 }

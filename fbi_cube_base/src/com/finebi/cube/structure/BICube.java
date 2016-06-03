@@ -3,7 +3,9 @@ package com.finebi.cube.structure;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
+import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
+import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
@@ -57,5 +59,25 @@ public class BICube implements ICube {
             throw BINonValueUtils.illegalArgument(relation.toString() + " the relation is so terrible");
         }
         return getCubeRelation(tableKey, relationPath);
+    }
+
+    @Override
+    public boolean canRead(ITableKey tableKey) {
+        try {
+            ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey);
+            if (isResourceExist(location)) {
+                ICubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
+                return tableEntityGetterService.tableDataAvailable();
+            }
+            return false;
+
+        } catch (BICubeResourceAbsentException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean isResourceExist(ICubeResourceLocation location) {
+        return discovery.isResourceExist(location);
     }
 }
