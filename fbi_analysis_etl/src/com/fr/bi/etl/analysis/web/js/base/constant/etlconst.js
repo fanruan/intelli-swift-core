@@ -18,7 +18,6 @@ ETLCst.PARENTS = "parents";
 ETLCst.FIELDS = "etl_fields";
 ETLCst.ITEMS = "items";
 ETLCst.PACK_ID = "myetlidbuxudonga";
-ETLCst.ISGENERATING = "generating";
-ETLCst.ISGENERATED = "generated";
+ETLCst.GENERATED_PERCENT = "generated_percent";
 ETLCst.SYSTEM_TIME = "__system_time-3e1d05defe78__";
 
