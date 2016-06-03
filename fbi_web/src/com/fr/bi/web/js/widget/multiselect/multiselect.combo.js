@@ -64,6 +64,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
                     bottom: 33
                 }
             },
+            valueFormatter: o.valueFormatter,
             itemsCreator: function (op, callback) {
                 o.itemsCreator(op, function (res) {
                     if (op.times === 1 && BI.isNotNull(op.keyword)) {
@@ -139,28 +140,32 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
 
         var triggerBtn = BI.createWidget({
             type: "bi.trigger_icon_button",
-            width: 30,
-            height: o.height,
+            width: o.height,
+            height: o.height + 2,
             cls: "multi-select-trigger-icon-button"
-        });
-        var wants2Show = false;
-        triggerBtn.element.mousedown(function () {
-            wants2Show = !self.combo.isViewVisible();
         });
         triggerBtn.on(BI.TriggerIconButton.EVENT_CHANGE, function () {
             self.trigger.getCounter().hideView();
-            if (wants2Show === true) {
+            if (self.combo.isViewVisible()) {
+                self.combo.hideView();
+            } else {
                 self.combo.showView();
             }
         });
         BI.createWidget({
-            type: "bi.htape",
+            type: "bi.absolute",
             element: this.element,
             items: [{
-                el: this.combo
+                el: this.combo,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
             }, {
                 el: triggerBtn,
-                width: 30
+                right: 0,
+                top: 0,
+                bottom: 0
             }]
         })
     },

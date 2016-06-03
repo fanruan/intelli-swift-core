@@ -17,7 +17,7 @@ BI.MultiSelectSearchPane = BI.inherit(BI.Widget, {
         return BI.extend(BI.MultiSelectSearchPane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-multi-select-search-pane",
             itemsCreator: BI.emptyFn,
-
+            valueFormatter: BI.emptyFn,
             keywordGetter: BI.emptyFn
         });
     },
@@ -37,6 +37,7 @@ BI.MultiSelectSearchPane = BI.inherit(BI.Widget, {
         this.loader = BI.createWidget({
             type: "bi.multi_select_search_loader",
             keywordGetter: o.keywordGetter,
+            valueFormatter: o.valueFormatter,
             itemsCreator: function (op, callback) {
                 o.itemsCreator.apply(self, [op, function (res) {
                     callback(res);
