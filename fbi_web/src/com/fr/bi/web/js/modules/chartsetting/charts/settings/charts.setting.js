@@ -1,10 +1,9 @@
 /**
- * @class BI.PercentChartsSetting
+ * @class BI.ChartsSetting
  * @extends BI.Widget
- * 百分比堆积，百分比柱状样式
+ * 柱状，堆积柱状，组合图样式
  */
-BI.PercentChartsSetting = BI.inherit(BI.Widget, {
-
+BI.ChartsSetting = BI.inherit(BI.Widget, {
     constant: {
         SINGLE_LINE_HEIGHT: 60,
         SIMPLE_H_GAP: 10,
@@ -22,13 +21,13 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
     },
 
     _defaultConfig: function(){
-        return BI.extend(BI.PercentChartsSetting.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.ChartsSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
         })
     },
 
     _init: function(){
-        BI.PercentChartsSetting.superclass._init.apply(this, arguments);
+        BI.ChartsSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         this.colorSelect = BI.createWidget({
@@ -38,7 +37,7 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         this.colorSelect.populate(BICst.CHART_COLORS);
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -77,7 +76,7 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
         this.numberLevellY = BI.createWidget({
@@ -88,7 +87,29 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        this.rYAxisStyle = BI.createWidget({
+            type: "bi.segment",
+            width: this.constant.FORMAT_SEGMENT_WIDTH,
+            height: this.constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_FORMAT
+        });
+
+        this.rYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        this.numberLevelrY = BI.createWidget({
+            type: "bi.segment",
+            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: this.constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_LEVEL
+        });
+
+        this.numberLevelrY.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
         //单位
@@ -101,7 +122,19 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        this.RYUnit = BI.createWidget({
+            type: "bi.sign_editor",
+            width: this.constant.EDITOR_WIDTH,
+            height: this.constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            watermark: BI.i18nText("BI-Custom_Input")
+        });
+
+        this.RYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
         //显示标题
@@ -113,7 +146,7 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleLY = BI.createWidget({
@@ -123,7 +156,50 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
             cls: "unit-input"
         });
         this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        this.isShowTitleRY = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function(){
+            this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        this.editTitleRY = BI.createWidget({
+            type: "bi.sign_editor",
+            width: this.constant.EDITOR_WIDTH,
+            height: this.constant.EDITOR_HEIGHT,
+            cls: "unit-input"
+        });
+
+        this.editTitleRY.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //轴逆序
+        this.reversedLY = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Reversed_Axis"),
+            width: 80
+        });
+
+        this.reversedLY.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        this.reversedRY = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Reversed_Axis"),
+            width: 80
+        });
+
+        this.reversedRY.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
         //横轴文本方向
@@ -138,7 +214,7 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
             }
         });
         this.text_direction.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
         this.isShowTitleX = BI.createWidget({
@@ -149,7 +225,7 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleX = BI.createWidget({
@@ -160,7 +236,7 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
         //图例
@@ -251,6 +327,7 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Category_Axis"),
+                textHeight: 60,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -274,6 +351,16 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.editTitleX]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Category_Axis"),
+                    textHeight: 60,
+                    cls: "line-title"
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Category_Axis"),
+                    textHeight: 60,
+                    cls: "line-title"
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -282,14 +369,14 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         });
 
         var lYAxis = BI.createWidget({
-            type: "bi.horizontal",
+            type: "bi.horizontal_adapt",
             cls: "single-line-settings",
+            verticalAlign: "top",
             lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
-                height: "100%",
                 textHeight: 60,
-                text: BI.i18nText("BI-Value_Axis"),
+                text: BI.i18nText("BI-Left_Value_Axis"),
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -320,6 +407,58 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.reversedLY]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: this.constant.SIMPLE_H_GAP
+            }]
+        });
+
+        var rYAxis = BI.createWidget({
+            type: "bi.horizontal_adapt",
+            cls: "single-line-settings",
+            verticalAlign: "top",
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                textHeight: 60,
+                text: BI.i18nText("BI-Right_Value_Axis"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.rYAxisStyle]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Num_Level"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.numberLevelrY]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Unit_Normal"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.RYUnit]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.isShowTitleRY, this.editTitleRY]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.reversedRY]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -354,7 +493,7 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, xAxis, showElement, otherAttr],
+            items: [tableStyle, lYAxis, rYAxis, xAxis, showElement, otherAttr],
             hgap: 10
         })
     },
@@ -364,12 +503,19 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
+        this.rYAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
+        this.numberLevelrY.setValue(BI.Utils.getWSRightYAxisNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
+        this.RYUnit.setValue(BI.Utils.getWSRightYAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.isShowTitleRY.setSelected(BI.Utils.getWSShowRightYAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
+        this.editTitleRY.setValue(BI.Utils.getWSRightYAxisTitleByID(wId));
         this.editTitleX.setValue(BI.Utils.getWSXAxisTitleByID(wId));
+        this.reversedLY.setSelected(BI.Utils.getWSLeftYAxisReversedByID(wId));
+        this.reversedRY.setSelected(BI.Utils.getWSRightYAxisReversedByID(wId));
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
@@ -377,6 +523,7 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
+        this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
     },
 
@@ -385,12 +532,19 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
+            right_y_axis_style: this.rYAxisStyle.getValue()[0],
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
+            right_y_axis_number_level: this.numberLevelrY.getValue()[0],
             left_y_axis_unit: this.LYUnit.getValue(),
+            right_y_axis_unit: this.RYUnit.getValue(),
             show_left_y_axis_title: this.isShowTitleLY.isSelected(),
+            show_right_y_axis_title: this.isShowTitleRY.isSelected(),
             show_x_axis_title: this.isShowTitleX.isSelected(),
             left_y_axis_title: this.editTitleLY.getValue(),
+            right_y_axis_title: this.editTitleRY.getValue(),
             x_axis_title: this.editTitleX.getValue(),
+            left_y_axis_reversed: this.reversedLY.isSelected(),
+            right_y_axis_reversed: this.reversedRY.isSelected(),
             text_direction: this.text_direction.getValue(),
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
@@ -403,12 +557,19 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
+        this.rYAxisStyle.setValue(v.right_y_axis_style);
         this.numberLevellY.setValue(v.left_y_axis_number_level);
+        this.numberLevelrY.setValue(v.right_y_axis_number_level);
         this.LYUnit.setValue(v.left_y_axis_unit);
+        this.RYUnit.setValue(v.right_y_axis_unit);
         this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
+        this.isShowTitleRY.setSelected(v.show_right_y_axis_title);
         this.isShowTitleX.setSelected(v.x_axis_title);
         this.editTitleLY.setValue(v.left_y_axis_title);
+        this.editTitleRY.setValue(v.right_y_axis_title);
         this.editTitleX.setValue(v.x_axis_title);
+        this.reversedLY.setSelected(v.left_y_axis_reversed);
+        this.reversedRY.setSelected(v.right_y_axis_reversed);
         this.text_direction.setValue(v.text_direction);
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
@@ -416,5 +577,5 @@ BI.PercentChartsSetting = BI.inherit(BI.Widget, {
         this.gridLine.setSelected(v.show_grid_line);
     }
 });
-BI.PercentChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.percent_chart_setting", BI.PercentChartsSetting);
+BI.ChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.charts_setting", BI.ChartsSetting);

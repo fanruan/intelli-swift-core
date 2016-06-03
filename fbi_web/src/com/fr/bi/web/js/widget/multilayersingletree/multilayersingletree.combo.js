@@ -52,6 +52,7 @@ BI.MultiLayerSingleTreeCombo = BI.inherit(BI.Widget, {
         this.popup.on(BI.MultiLayerSingleTreePopup.EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.combo.hideView();
+            self.fireEvent(BI.MultiLayerSingleTreeCombo.EVENT_CHANGE);
         });
     },
 
@@ -70,5 +71,5 @@ BI.MultiLayerSingleTreeCombo = BI.inherit(BI.Widget, {
     }
 });
 
-
+BI.MultiLayerSingleTreeCombo.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.multilayer_single_tree_combo", BI.MultiLayerSingleTreeCombo);

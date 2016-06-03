@@ -340,7 +340,6 @@ BI.ETL = BI.inherit(BI.Widget, {
 
     _populateAfterETLOperator: function () {
         var self = this;
-        this.model.setFields([]);
         var allTables = this.model.getAllTables();
         if (allTables.length === 1) {
             var mask = BI.createWidget({
@@ -353,7 +352,9 @@ BI.ETL = BI.inherit(BI.Widget, {
                 self._populate();
                 mask.destroy();
             });
+            return
         }
+        this.model.setFields([]);
         self._populate();
     },
 

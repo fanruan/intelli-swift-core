@@ -36,6 +36,7 @@ public class BIDAOUtils {
             new TableDataDAOControl.ColumnColumn("type", Integer.class),
             new TableDataDAOControl.ColumnColumn("description", String.class),
             new TableDataDAOControl.ColumnColumn("status", Integer.class),
+            new TableDataDAOControl.ColumnColumn("userid", String.class),
     };
     private final static TableDataDAOControl.ColumnColumn[] TABLEDATA_SHARED_COLUMNS = {
             new TableDataDAOControl.ColumnColumn("id", String.class),

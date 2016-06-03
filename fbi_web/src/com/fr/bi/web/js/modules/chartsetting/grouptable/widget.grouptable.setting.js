@@ -17,13 +17,13 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         ICON_HEIGHT: 24
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.GroupTableSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-group-table-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.GroupTableSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         //类型——横向、纵向展开
@@ -38,10 +38,11 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 iconHeight: this.constant.ICON_HEIGHT
             }),
             layouts: [{
-                type: "bi.left"
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.tableFormGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+        this.tableFormGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //主题颜色
@@ -50,7 +51,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             width: this.constant.BUTTON_HEIGHT,
             height: this.constant.BUTTON_HEIGHT
         });
-        this.colorSelector.on(BI.ColorChooser.EVENT_CHANGE, function(){
+        this.colorSelector.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //风格——1、2、3
@@ -65,57 +66,63 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 iconHeight: this.constant.ICON_HEIGHT
             }),
             layouts: [{
-                type: "bi.left"
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.tableSyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+        this.tableSyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         var tableStyle = BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
+            type: "bi.left",
             cls: "single-line-settings",
-            items: {
-                left: [{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Table_Sheet_Style"),
-                    cls: "line-title"
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Type"),
-                    cls: "attr-names"
-                }, this.tableFormGroup, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Theme_Color"),
-                    cls: "attr-names"
-                }, this.colorSelector, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Table_Style"),
-                    cls: "attr-names"
-                }, this.tableSyleGroup]
-            },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Table_Sheet_Style"),
+                cls: "line-title",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, {
+                type: "bi.label",
+                text: BI.i18nText("BI-Type"),
+                cls: "attr-names",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, this.tableFormGroup, {
+                type: "bi.label",
+                text: BI.i18nText("BI-Theme_Color"),
+                cls: "attr-names",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.colorSelector],
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, {
+                type: "bi.label",
+                text: BI.i18nText("BI-Table_Style"),
+                cls: "attr-names",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, this.tableSyleGroup],
+            hgap: this.constant.SIMPLE_H_GAP
         });
 
         //显示序号
         this.showNumber = BI.createWidget({
             type: "bi.checkbox"
         });
-        this.showNumber.on(BI.Checkbox.EVENT_CHANGE, function(){
+        this.showNumber.on(BI.Checkbox.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //显示汇总
         this.showRowTotal = BI.createWidget({
             type: "bi.checkbox"
         });
-        this.showRowTotal.on(BI.Checkbox.EVENT_CHANGE, function(){
+        this.showRowTotal.on(BI.Checkbox.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //展开所有行表头节点
         this.openRowNode = BI.createWidget({
             type: "bi.checkbox"
         });
-        this.openRowNode.on(BI.Checkbox.EVENT_CHANGE, function(){
+        this.openRowNode.on(BI.Checkbox.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //单页最大行数
@@ -125,138 +132,134 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             height: this.constant.EDITOR_HEIGHT,
             cls: "max-row-input",
             errorText: BI.i18nText("BI-Please_Enter_Number_1_To_100"),
-            validationChecker: function(v){
+            validationChecker: function (v) {
                 var value = BI.parseInt(v);
                 return value > 0 && value < 100;
             }
         });
-        this.maxRow.on(BI.SignEditor.EVENT_CHANGE, function(){
+        this.maxRow.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         var show = BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
+            type: "bi.left",
             cls: "single-line-settings",
-            items: {
-                left: [{
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Element_Show"),
+                cls: "line-title",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, {
+                type: "bi.vertical_adapt",
+                items: [{
+                    type: "bi.center_adapt",
+                    items: [this.showNumber],
+                    width: this.constant.CHECKBOX_WIDTH,
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Element_Show"),
-                    cls: "line-title"
+                    text: BI.i18nText("BI-Display_Sequence_Number"),
+                    cls: "attr-names",
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }],
+                lgap: this.constant.SIMPLE_L_GAP
+            }, {
+                type: "bi.vertical_adapt",
+                items: [{
+                    type: "bi.center_adapt",
+                    items: [this.showRowTotal],
+                    width: this.constant.CHECKBOX_WIDTH,
+                    height: this.constant.SINGLE_LINE_HEIGHT
                 }, {
-                    type: "bi.left",
-                    items: [{
-                        type: "bi.center_adapt",
-                        items: [this.showNumber],
-                        width: this.constant.CHECKBOX_WIDTH,
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Display_Sequence_Number"),
-                        cls: "attr-names",
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }],
-                    lgap: this.constant.SIMPLE_L_GAP
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Show_Total_Row"),
+                    cls: "attr-names",
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }],
+                lgap: this.constant.SIMPLE_L_GAP
+            }, {
+                type: "bi.left",
+                items: [{
+                    type: "bi.center_adapt",
+                    items: [this.openRowNode],
+                    width: this.constant.CHECKBOX_WIDTH,
+                    height: this.constant.SINGLE_LINE_HEIGHT
                 }, {
-                    type: "bi.left",
-                    items: [{
-                        type: "bi.center_adapt",
-                        items: [this.showRowTotal],
-                        width: this.constant.CHECKBOX_WIDTH,
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Show_Total_Row"),
-                        cls: "attr-names",
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }],
-                    lgap: this.constant.SIMPLE_L_GAP
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Open_All_Row_Header_Node"),
+                    cls: "attr-names",
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }],
+                lgap: this.constant.SIMPLE_L_GAP
+            }, {
+                type: "bi.vertical_adapt",
+                items: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Page_Max_Row"),
+                    cls: "attr-names",
+                    height: this.constant.SINGLE_LINE_HEIGHT
                 }, {
-                    type: "bi.left",
-                    items: [{
-                        type: "bi.center_adapt",
-                        items: [this.openRowNode],
-                        width: this.constant.CHECKBOX_WIDTH,
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Open_All_Row_Header_Node"),
-                        cls: "attr-names",
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }],
-                    lgap: this.constant.SIMPLE_L_GAP
-                }, {
-                    type: "bi.left",
-                    items: [{
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Page_Max_Row"),
-                        cls: "attr-names",
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }, {
-                        type: "bi.center_adapt",
-                        items: [this.maxRow],
-                        width: this.constant.EDITOR_WIDTH,
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }],
-                    lgap: 5
-                }]
-            },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+                    type: "bi.center_adapt",
+                    items: [this.maxRow],
+                    width: this.constant.EDITOR_WIDTH,
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }],
+                lgap: 5
+            }],
+            hgap: this.constant.SIMPLE_H_GAP
         });
 
         //冻结维度
         this.freezeDim = BI.createWidget({
             type: "bi.checkbox"
         });
-        this.freezeDim.on(BI.Checkbox.EVENT_CHANGE, function(){
+        this.freezeDim.on(BI.Checkbox.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //联动传递指标过滤条件
         this.transferFilter = BI.createWidget({
             type: "bi.checkbox"
         });
-        this.transferFilter.on(BI.Checkbox.EVENT_CHANGE, function(){
+        this.transferFilter.on(BI.Checkbox.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         var otherAttr = BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
+            type: "bi.left",
             cls: "single-line-settings",
-            items: {
-                left: [{
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Interactive_Attr"),
+                cls: "line-title",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, {
+                type: "bi.vertical_adapt",
+                items: [{
+                    type: "bi.center_adapt",
+                    items: [this.freezeDim],
+                    width: this.constant.CHECKBOX_WIDTH,
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Interactive_Attr"),
-                    cls: "line-title"
+                    text: BI.i18nText("BI-Freeze_Table_Dimensions"),
+                    cls: "attr-names",
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }],
+                lgap: this.constant.SIMPLE_L_GAP
+            }, {
+                type: "bi.vertical_adapt",
+                items: [{
+                    type: "bi.center_adapt",
+                    items: [this.transferFilter],
+                    width: this.constant.CHECKBOX_WIDTH,
+                    height: this.constant.SINGLE_LINE_HEIGHT
                 }, {
-                    type: "bi.left",
-                    items: [{
-                        type: "bi.center_adapt",
-                        items: [this.freezeDim],
-                        width: this.constant.CHECKBOX_WIDTH,
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Freeze_Table_Dimensions"),
-                        cls: "attr-names",
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }],
-                    lgap: this.constant.SIMPLE_L_GAP
-                }, {
-                    type: "bi.left",
-                    items: [{
-                        type: "bi.center_adapt",
-                        items: [this.transferFilter],
-                        width: this.constant.CHECKBOX_WIDTH,
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Bind_Target_Condition"),
-                        cls: "attr-names",
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }],
-                    lgap: this.constant.SIMPLE_L_GAP
-                }]
-            },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Bind_Target_Condition"),
+                    cls: "attr-names",
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }],
+                lgap: this.constant.SIMPLE_L_GAP
+            }],
+            hgap: this.constant.SIMPLE_H_GAP
         });
         BI.createWidget({
             type: "bi.vertical",
@@ -266,7 +269,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         })
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             table_form: this.tableFormGroup.getValue()[0],
             theme_color: this.colorSelector.getValue(),
@@ -279,8 +282,8 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             transfer_filter: this.transferFilter.isSelected()
         }
     },
-    
-    populate: function(){
+
+    populate: function () {
         var wId = this.options.wId;
         this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
         this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
@@ -293,7 +296,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.tableFormGroup.setValue(v.table_form);
         this.colorSelector.setValue(v.theme_color);
         this.tableSyleGroup.setValue(v.table_style);

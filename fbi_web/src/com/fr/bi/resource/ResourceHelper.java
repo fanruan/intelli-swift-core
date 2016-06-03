@@ -1757,6 +1757,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/allreports/allreports.filter.css",
                 "com/fr/bi/web/css/components/allreports/item/allreports.list.item.css",
                 "com/fr/bi/web/css/components/allreports/item/allreports.card.item.css",
+                "com/fr/bi/web/css/components/allreports/hangout/reporthangout.css",
 
         };
     }

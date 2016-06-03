@@ -2,17 +2,17 @@
  * 在决策平台中，报表管理页面可以添加BI相关的东西
  */
 $.extend(FS.Plugin.ReportManagerAddon, {
-    biButton : function(tools) {
+    biButton: function (tools) {
         var self = this;
-        if(FS.config.supportModules.indexOf("bi") != -1) {
+        if (FS.config.supportModules.indexOf("bi") != -1) {
             var addbibtn = {
                 //添加BIICON及其事件
                 iconCls: 'fs_reportmgr_bi_icon',
                 width: 21,
                 height: 21,
-                hover:[function(){
+                hover: [function () {
                     $(this).addClass('fs_reportmgr_bi_icon_hover');
-                },function(){
+                }, function () {
                     $(this).removeClass('fs_reportmgr_bi_icon_hover');
                 }],
                 handler: {
@@ -29,20 +29,12 @@ $.extend(FS.Plugin.ReportManagerAddon, {
                             FR.Msg.alert(BI.i18nText("FS-Generic-Simple_Alert"), BI.i18nText("FS-Report-No_Dir_Selected"));
                             return;
                         }
-                        // var title = BI.i18nText("FS-Report-Simple_BI");
-                        // var onOK = function () {
-                        //     return self.DIR._addOrEditBI();
-                        // };
-                        // var onCancel = function () {
-                        // };
-                        // var data = null; //编辑dialog的初始数据
-                        // self.biDialog = self.createBIDialog(title, onOK, onCancel, data);
-                        // self.biDialog.setVisible(true);
-                        var id = BI.UUID();
-                        var popover = BI.createWidget({
-                            type: "bi.plate_hangout_report"
+                        new BI.BIReportDialog({
+                            onSave: function(data){
+                                data.parentId = self.DIR.dirTabletree.getSelectedNodes()[0].id.substr(1);
+                                self.DIR._addOrEditBI(data);
+                            }
                         });
-                        BI.Popovers.create(id, popover, {width: 400, height: 320}).open(id);
                     }
                 }
             };

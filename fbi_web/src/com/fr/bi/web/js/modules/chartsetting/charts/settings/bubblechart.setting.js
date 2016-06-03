@@ -17,7 +17,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         ICON_WIDTH: 24,
         ICON_HEIGHT: 24,
         NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240
+        FORMAT_SEGMENT_WIDTH: 240,
+        LEGEND_SEGMENT_WIDTH: 180
     },
 
     _defaultConfig: function(){
@@ -243,6 +244,73 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             }]
         });
 
+        //图例
+        this.legend = BI.createWidget({
+            type: "bi.segment",
+            width: this.constant.LEGEND_SEGMENT_WIDTH,
+            height: this.constant.BUTTON_HEIGHT,
+            items: BICst.CHART_LEGEND
+        });
+
+        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //数据标签
+        this.showDataLabel = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Data_Label"),
+            width: 115
+        });
+
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //网格线
+        this.gridLine = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Grid_Line"),
+            width: 115
+        });
+
+        this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        var showElement = BI.createWidget({
+            type: "bi.horizontal",
+            cls: "single-line-settings",
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Element_Show"),
+                textHeight: 60,
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Legend_Normal"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.legend]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.showDataLabel]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.gridLine]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: this.constant.SIMPLE_H_GAP
+            }]
+        });
+
         var xAxis = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
@@ -316,7 +384,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, xAxis, otherAttr],
+            items: [tableStyle, lYAxis, xAxis, showElement, otherAttr],
             hgap: 10
         })
     },
@@ -335,6 +403,9 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
         this.editTitleX.setValue(BI.Utils.getWSXAxisTitleByID(wId));
+        this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -353,7 +424,10 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             show_left_y_axis_title: this.isShowTitleLY.isSelected(),
             show_x_axis_title: this.isShowTitleX.isSelected(),
             left_y_axis_title: this.editTitleLY.getValue(),
-            x_axis_title: this.editTitleX.getValue()
+            x_axis_title: this.editTitleX.getValue(),
+            chart_legend: this.legend.getValue()[0],
+            show_data_label: this.showDataLabel.isSelected(),
+            show_grid_line: this.gridLine.isSelected()
         }
     },
 
@@ -370,6 +444,9 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         this.isShowTitleX.setSelected(v.x_axis_title);
         this.editTitleLY.setValue(v.left_y_axis_title);
         this.editTitleX.setValue(v.x_axis_title);
+        this.legend.setValue(v.chart_legend);
+        this.showDataLabel.setSelected(v.show_data_label);
+        this.gridLine.setSelected(v.show_grid_line);
     }
 });
 BI.BubbleChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
