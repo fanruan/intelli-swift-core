@@ -1,7 +1,6 @@
 package com.fr.bi.field.target.detailtarget.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -30,7 +29,7 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
                 if (ob == null){
                     return ob;
                 }
-                return group.getType() == BIReportConstant.GROUP.M ? (Integer)ob + 1 : ob;
+                return group.getType() == BIReportConstant.GROUP.M ? ((Number)ob).longValue() + 1 : ((Number)ob).longValue();
             }
         }
         return null;

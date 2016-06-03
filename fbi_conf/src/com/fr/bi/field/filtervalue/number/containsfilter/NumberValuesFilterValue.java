@@ -20,6 +20,7 @@ import com.fr.bi.stable.report.result.LightNode;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -67,7 +68,7 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
         if (relations == null) {
             return null;
         }
-        Double[] value = valueSet.toArray(new Double[valueSet.size()]);
+        Object[] value = copyValue(sgm);;
         GroupValueIndex sgvi = GVIFactory.createAllEmptyIndexGVI();
         Object[] indexs = sgm.getGroupIndex(value);
         boolean hasValue = value.length > 0;
@@ -79,6 +80,28 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
         }
         return hasValue ? sgvi : null;
     }
+
+    //TODO 暂时没有更好的解决办法，先这样处理
+    private Object[]  copyValue(ICubeColumnIndexReader sgm) {
+        Object[] v = sgm.createKey(valueSet.size());
+        Object firstKey = sgm.firstKey();
+        if(firstKey instanceof  Long) {
+            Iterator<Double> iter = valueSet.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                Double d = iter.next();
+                if(Double.isNaN(d)) {
+                    v[i++] = Long.MAX_VALUE;
+                } else {
+                    v[i++] = d.longValue();
+                }
+            }
+            return v;
+        } else {
+            return  valueSet.toArray(new Double[valueSet.size()]);
+        }
+    }
+
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
@@ -92,8 +115,13 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
             }
             for (int i = 0, len = ja.length(); i < len; i++) {
                 Object o = ja.get(i);
+
                 if (o != null) {
-                    valueSet.add(Double.valueOf(o.toString()));
+                    if(StringUtils.isEmpty(o.toString())){
+                        valueSet.add(Double.NaN);
+                    } else {
+                        valueSet.add(Double.valueOf(o.toString()));
+                    }
                 }
             }
         }

@@ -98,6 +98,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                 el: this.tip
             }]
         })
+        self.controller.startChecker(this.options.id);
     },
 
     _createItemList : function (){

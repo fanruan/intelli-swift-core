@@ -6,5 +6,8 @@ package com.finebi.cube;
  * @author Connery
  * @since 4.0
  */
-public class CubeVersion {
+public interface CubeVersion {
+    long getValue();
+
+    void recordValue(long value);
 }

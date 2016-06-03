@@ -23,6 +23,7 @@ import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.*;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 
 import java.util.*;
@@ -286,7 +287,7 @@ public class DimensionGroupFilter {
                     GeneralANDDimensionFilter resultFilter = (GeneralANDDimensionFilter) rowDimension[deep].getFilter();
                     if (resultFilter.canCreateDirectFilter()) {
                         DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
-                        BusinessTable t = (mergerInfoList.get(i).getRoot().getTableKey() == BITable.BI_EMPTY_TABLE()) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
+                        BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
                         GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
                         ret[i] = and(ret[i], filterIndex);
                     }
@@ -344,7 +345,7 @@ public class DimensionGroupFilter {
 
     private void createFinalIndexes(GroupValueIndex[] groupValueIndexes, GroupValueIndex[][] groupValueIndexe2D) {
         for (int i = 0; i < groupValueIndexe2D.length; i++) {
-            if (mergerInfoList.get(i).getRoot().getTableKey() != BITable.BI_EMPTY_TABLE()) {
+            if (!ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) {
                 for (int j = 0; j < groupValueIndexe2D[i].length; j++) {
                     if (groupValueIndexes[i] == MergerInfo.ALL_SHOW) {
                         groupValueIndexes[i] = groupValueIndexe2D[i][j];

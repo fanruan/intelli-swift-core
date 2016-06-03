@@ -122,20 +122,23 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
             if(t != null) {
                 value = converter.result2Value(t);
             }
-            if (value != null) {
-                IntList list = treeMap.get(value);
-                if (list == null) {
-                    list = new IntList();
-                    treeMap.put(value, list);
-                }
-                list.add(i);
+            if(value == null) {
+                value = createEmptyValue();
             }
+            IntList list = treeMap.get(value);
+            if (list == null) {
+                list = new IntList();
+                treeMap.put(value, list);
+            }
+            list.add(i);
         }
         for (Map.Entry<Object, IntList> entry : treeMap.entrySet()){
             getter.put(entry.getKey(), GVIFactory.createGroupVauleIndexBySimpleIndex(entry.getValue()));
         }
         return getter;
     }
+
+    protected abstract  T createEmptyValue();
 
     @Override
     public IndexFile getLinkIndexFile(BIKey key, List list) {

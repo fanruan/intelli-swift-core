@@ -23,6 +23,7 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.lru.FIFOHashMap;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.cache.list.IntList;
+import com.fr.general.ComparatorUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -135,7 +136,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private BusinessTable getRealTableKey4Calculate(DimensionCalculator column, BusinessTable tableKey) {
-        return tableKey == BITable.BI_EMPTY_TABLE() ? column.getField().getTableBelongTo() : tableKey;
+        return ComparatorUtils.equals(tableKey, BITable.BI_EMPTY_TABLE()) ? column.getField().getTableBelongTo() : tableKey;
     }
 
     /**
@@ -219,7 +220,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if (deep >= value.length) {
             return;
         }
-        ISingleDimensionGroup sg = (root.getTableKey() == BITable.BI_EMPTY_TABLE() && deep > 0) ? ng.createNoneTargetSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], value, deep, getCKGvigetter(value, deep), useRealData) : getSingleDimensionGroupCache(value, ng, deep);
+        ISingleDimensionGroup sg = (ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0) ? ng.createNoneTargetSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], value, deep, getCKGvigetter(value, deep), useRealData) : getSingleDimensionGroupCache(value, ng, deep);
         int i = sg.getChildIndexByValue(value[deep]);
         if (i == -1) {
             return;
@@ -375,7 +376,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     private ISingleDimensionGroup getLightCacheFromSession(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
         ISingleDimensionGroup sg;
-        GroupKey groupKey = SingleDimensionGroup.createGroupKey(ng.tableKey, cks[deep], ng.tableKey == BITable.BI_EMPTY_TABLE() ? getCKGvigetter(gv, deep) : ng.node.getGroupValueIndex(), useRealData);
+        GroupKey groupKey = SingleDimensionGroup.createGroupKey(ng.tableKey, cks[deep], ComparatorUtils.equals(ng.tableKey, BITable.BI_EMPTY_TABLE()) ? getCKGvigetter(gv, deep) : ng.node.getGroupValueIndex(), useRealData);
         ISingleDimensionGroup singleDimensionGroup = GroupCache.getLightDimensionGroupCache(session, groupKey);
         if (singleDimensionGroup == null) {
             singleDimensionGroup = createSingleDimensionGroup(gv, ng, deep);
@@ -387,7 +388,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     private ISingleDimensionGroup getLightCacheFromSession(Object[] data, NoneDimensionGroup ng, int deep) {
         ISingleDimensionGroup sg;
-        GroupKey groupKey = SingleDimensionGroup.createGroupKey(ng.tableKey, cks[deep], ng.tableKey == BITable.BI_EMPTY_TABLE() ? getCKGvigetter(data, deep) : ng.node.getGroupValueIndex(), useRealData);
+        GroupKey groupKey = SingleDimensionGroup.createGroupKey(ng.tableKey, cks[deep], ComparatorUtils.equals(ng.tableKey, BITable.BI_EMPTY_TABLE()) ? getCKGvigetter(data, deep) : ng.node.getGroupValueIndex(), useRealData);
         ISingleDimensionGroup singleDimensionGroup = GroupCache.getLightDimensionGroupCache(session, groupKey);
         if (singleDimensionGroup == null) {
             singleDimensionGroup = createSingleDimensionGroup(data, ng, deep);
@@ -399,7 +400,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected ISingleDimensionGroup createSingleDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
         ISingleDimensionGroup sg;
-        if ((root.getTableKey() == BITable.BI_EMPTY_TABLE() && deep > 0)) {
+        if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
             sg = ng.createNoneTargetSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, getCKGvigetter(gv, deep), useRealData);
         } else {
             sg = ng.createSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
@@ -409,7 +410,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
         ISingleDimensionGroup sg;
-        if ((root.getTableKey() == BITable.BI_EMPTY_TABLE() && deep > 0)) {
+        if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
             sg = ng.createNoneTargetSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], data, deep, getCKGvigetter(data, deep), useRealData);
         } else {
             sg = ng.createSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);

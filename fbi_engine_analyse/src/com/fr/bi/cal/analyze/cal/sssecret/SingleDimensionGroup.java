@@ -25,6 +25,7 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.bi.util.BIConfUtils;
+import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -200,7 +201,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
 
     private BusinessTable getRealTableKey4Calculate() {
-        return tableKey == BITable.BI_EMPTY_TABLE() ? column.getField().getTableBelongTo() : tableKey;
+        return ComparatorUtils.equals(tableKey, BITable.BI_EMPTY_TABLE()) ? column.getField().getTableBelongTo() : tableKey;
     }
 
     private Iterator getIterByChildValue() {
