@@ -6,6 +6,7 @@ package com.fr.bi.etl.analysis.manager;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -65,7 +66,9 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 
     @Override
     public void checkTableIndex(AnalysisCubeTableSource source, BIUser user) {
-        createManager(source, user);
+        if (!(source.getType() == Constants.TABLE_TYPE.TEMP)){
+            createManager(source, user);
+        }
     }
 
     private SingleUserETLTableCubeManager createManager(AnalysisCubeTableSource source, BIUser user) {
