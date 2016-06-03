@@ -25,7 +25,9 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         setInterval(function () {
             BI.ETLReq.reqTableStatus({
                 id : id
-            }, BI.emptyFn)
+            }, function (res) {
+               
+            })
         }, 2000);
     },
     

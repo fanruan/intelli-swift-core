@@ -55,7 +55,12 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
     private void flushProperty() {
         if (tableProperty != null) {
-            tableProperty.clear();
+            /**
+             * 必须使用强制是否
+             * 否则简单的clear的话只是通知不再引用句柄。
+             * 实际资源没有被close掉。
+             */
+            tableProperty.forceRelease();
         }
         tableProperty = new BICubeTableProperty(currentLocation, discovery);
 
