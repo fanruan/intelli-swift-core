@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
  * Created by 小灰灰 on 2016/6/2.
  */
 public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLAction{
-
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
@@ -25,9 +24,9 @@ public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLA
         String sourceID = ((AnalysisCubeTableSource)table.getTableSource()).createUserTableSource(userId).getSourceID();
         boolean isGenerated = !StringUtils.isEmpty(BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getCubePath(sourceID));
         boolean isGenerating = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isCubeGenerating(sourceID);
+        double percent = isGenerating ? 0.5 : isGenerated ? 1 : 0.1;
         JSONObject jo = new JSONObject();
-        jo.put(Constants.ISGENERATING, isGenerating);
-        jo.put(Constants.ISGENERATED, isGenerated);
+        jo.put(Constants.GENERATED_PERCENT, percent);
         WebUtils.printAsJSON(res, jo);
     }
 
