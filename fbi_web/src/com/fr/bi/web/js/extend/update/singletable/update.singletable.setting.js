@@ -56,7 +56,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     timeSetting.setVisible(false);
                     break;
             }
-            self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE);
+            self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CHANGE);
         });
 
         //增量更新设置面板
@@ -81,9 +81,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     self.model.table.id=self.model.currentTable.id
                 }
                     self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
-                // BI.Utils.generateCubeByTable(self.model.table, function () {
-                // });
                 self._createCheckInterval();
+                // BI.Utils.generateCubeByTable(self.model.table, function () {
+                //     self._createCheckInterval();
+                // });
+
             }
         });
 
@@ -438,8 +440,8 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     }
                 }
             )
-        
-        }, 5000)
+
+        }, 2000)
     }
 
 

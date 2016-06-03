@@ -1,17 +1,26 @@
 package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
+import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
+import com.finebi.cube.gen.arrange.BICubeOperationManager4Test;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
 import com.finebi.cube.gen.oper.BISourceDataTransport;
+import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
+import com.finebi.cube.gen.subset.BICubeBuildProbeTool;
+import com.finebi.cube.impl.message.BIMessageTestTool;
+import com.finebi.cube.impl.operate.BIOperationID;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
-import com.finebi.cube.tools.BINationDataFactory;
-import com.finebi.cube.tools.BITableSourceTestTool;
+import com.finebi.cube.tools.*;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -20,21 +29,69 @@ import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.utils.code.BILogger;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.Future;
 
 /**
  * Created by wuk on 16/5/17.
  */
 public class BINationTablesTest extends BICubeTestBase {
     private BISourceDataTransport dataTransport;
-
+    private BICubeOperationManager4Test operationManager;
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+    }
+    
+    public void testBILogger(){
+        testBasic();
+        
+    }
+    
+    public void testBasic() {
+        try {
+            BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
+            Set<CubeTableSource> setSource = new HashSet<CubeTableSource>();
+            operationManager = new BICubeOperationManager4Test(cube, setSource);
+            operationManager.initialWatcher();
+            manager.registerDataSource(BIMemoryDataSourceFactory.getDataSourceSet());
+//            manager.registerDataSource(setSource);
+            Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
+            relations.add(BITableSourceRelationTestTool.getMemoryAB());
+            relations.add(BITableSourceRelationTestTool.getMemoryBC());
+            manager.registerRelation(relations);
+            Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
+            pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
+            manager.registerTableRelationPath(pathSet);
+            operationManager.generateRelationBuilder(relations);
+            operationManager.generateTableRelationPath(pathSet);
+            operationManager.generateDataSource(BIMemoryDataSourceFactory.getDataSourceSetMap());
+
+            IRouter router = BIFactoryHelper.getObject(IRouter.class);
+            router.deliverMessage(BIMessageTestTool.generateMessageDataSourceStart());
+            BICubeFinishObserver<Future> observer = new BICubeFinishObserver(new BIOperationID("finishObserver"));
+            Future future = observer.getOperationResult();
+            System.out.println(future.get());
+            Map<String, Integer> map = BICubeBuildProbeTool.INSTANCE.getFlag();
+            assertTrue(map.containsKey("tablePath"));
+            assertTrue(map.containsKey("RelationIndex"));
+            checkTable((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableA(), map);
+            checkTable((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableB(), map);
+            checkTable((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableC(), map);
+            assertTrue(BILogger.getLogger().getLogInfo().getMessage().length()>0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    private void checkTable(BIMemoryDataSource biMemoryDataSource, Map<String, Integer> map) {
+        ICubeFieldSource[] fields = biMemoryDataSource.getFieldsArray(null);
+        for (int i = 0; i < fields.length; i++) {
+            assertTrue(map.containsKey(fields[i].getFieldName() + biMemoryDataSource.getSourceID()));
+        }
     }
     
     public void testFieldPathIndex() {
@@ -78,14 +135,12 @@ public class BINationTablesTest extends BICubeTestBase {
                     ids.add(row);
                 }
             });
-            assertEquals(ids.toArray(), new int[]{0, 2});
-
-
+            assertEquals(ids.size(),2);
             //select name from persons where rowId in (0,1)
             final List<String> idList = new ArrayList<String>();
             idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(0));
             idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(1));
-            assertEquals(idList.toArray(), new String[]{"nameA", "nameB"});
+            assertEquals(idList.size(),2);
 
 
         } catch (Exception e) {
