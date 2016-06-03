@@ -54,7 +54,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
 
     @Override
     public boolean isIndependent() {
-        return false;
+        return true;
     }
 
     private void initialStatic() {
@@ -563,17 +563,25 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
 
     @Override
     public Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
-        return null;
+        return new HashSet<ICubeFieldSource>();
     }
 
     @Override
     public Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
-        return null;
+        Set<ICubeFieldSource> result = new HashSet<ICubeFieldSource>();
+        for (ICubeFieldSource source : getFieldsArray(sources)) {
+            result.add(source);
+        }
+        return result;
     }
 
     @Override
     public Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
-        return null;
+        Set<ICubeFieldSource> result = new HashSet<ICubeFieldSource>();
+        for (ICubeFieldSource source : getFieldsArray(sources)) {
+            result.add(source);
+        }
+        return result;
     }
 
 

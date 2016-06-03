@@ -5,6 +5,8 @@ import com.finebi.cube.gen.oper.BISourceDataTransport;
 import com.finebi.cube.structure.ICubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.table.CompoundCubeTableReader;
+import com.finebi.cube.tools.BIMemDataSourceDependent;
 import com.finebi.cube.tools.BIMemDataSourceTestToolCube;
 import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
@@ -71,23 +73,24 @@ public class BISourceDataTransportTest extends BICubeTestBase {
 
     public void testTransportCompoundTable() {
         try {
+            BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent();
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
-            new BISourceDataTransport(cube, BIMemoryDataSourceFactory.generateTableA(), new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>()).mainTask(null);
-            parents.add(BIMemoryDataSourceFactory.generateTableA());
+            new BISourceDataTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>()).mainTask(null);
+            parents.add(tableSource.parent);
             dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents);
             dataTransport.mainTask(null);
 
 
-            ICubeTableEntityGetterService compoundTable = cube.getCubeTable(BITableKeyUtils.convert(tableSource));
-            int size = tableSource.getFieldsArray(null).length + BIMemoryDataSourceFactory.generateTableA().getFieldsArray(null).length;
+            CompoundCubeTableReader compoundTable = (CompoundCubeTableReader) cube.getCubeTable(BITableKeyUtils.convert(tableSource));
+            int size = tableSource.getFieldsArray(null).length + tableSource.parent.getFacetFields(null).size();
             assertEquals(size, compoundTable.getFieldInfo().size());
-
+            ICubeTableEntityGetterService parent = compoundTable.getParentTable();
             BIMemoryDataSource memoryDataSource = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableA();
-            ICubeFieldSource[] fields = BIMemoryDataSourceFactory.generateTableA().getFieldsArray(new HashSet<CubeTableSource>());
-            ICubeColumnReaderService col1 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[0]));
-            ICubeColumnReaderService col2 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[1]));
-            ICubeColumnReaderService col3 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[2]));
-            ICubeColumnReaderService col4 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[3]));
+            ICubeFieldSource[] fields = tableSource.parent.getFieldsArray(new HashSet<CubeTableSource>());
+            ICubeColumnReaderService col1 = compoundTable.getColumnDataGetter(BIColumnKey.covertColumnKey(fields[0]));
+            ICubeColumnReaderService col2 = compoundTable.getColumnDataGetter(BIColumnKey.covertColumnKey(fields[1]));
+            ICubeColumnReaderService col3 = compoundTable.getColumnDataGetter(BIColumnKey.covertColumnKey(fields[2]));
+            ICubeColumnReaderService col4 = compoundTable.getColumnDataGetter(BIColumnKey.covertColumnKey(fields[3]));
 
             for (int i = 0; i < memoryDataSource.rowCount; i++) {
                 assertEquals(col1.getOriginalValueByRow(i), memoryDataSource.contents.get(0).get(i));

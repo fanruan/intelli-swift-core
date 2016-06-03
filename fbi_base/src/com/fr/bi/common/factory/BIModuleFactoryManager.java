@@ -79,7 +79,7 @@ public class BIModuleFactoryManager {
                  */
             }
         } else {
-            throw new BIFactoryKeyAbsentException(BIStringUtils.append("the module factory absent:", moduleTag));
+            throw new BIFactoryKeyAbsentException(BIStringUtils.appendWithSpace("the module factory absent:", moduleTag));
         }
     }
 
