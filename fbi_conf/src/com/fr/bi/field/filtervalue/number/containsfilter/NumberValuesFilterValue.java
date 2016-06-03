@@ -20,6 +20,7 @@ import com.fr.bi.stable.report.result.LightNode;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -92,8 +93,13 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
             }
             for (int i = 0, len = ja.length(); i < len; i++) {
                 Object o = ja.get(i);
+
                 if (o != null) {
-                    valueSet.add(Double.valueOf(o.toString()));
+                    if(StringUtils.isEmpty(o.toString())){
+                        valueSet.add(Double.NaN);
+                    } else {
+                        valueSet.add(Double.valueOf(o.toString()));
+                    }
                 }
             }
         }
