@@ -4,9 +4,13 @@ import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BITemplateFolderNode;
 import com.fr.bi.fs.HSQLBITemplateFolderDAO;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.algorithem.BISortUtils;
+import com.fr.fs.control.EntryControl;
+import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.utils.WebUtils;
 
@@ -34,10 +38,36 @@ public class BIGetReportAndFolderAction extends ActionNoSessionCMD {
         if (nodeList == null) {
             nodeList = new ArrayList<BIReportNode>();
         }
+        JSONArray allEntry = EntryControl.getInstance().getRootNode().createAllEntryJSONArray(UserControl.getInstance().getSuperManagerID(), true);
         for(int i = 0; i < nodeList.size(); i++){
-            ja.put(nodeList.get(i).createJSONConfig());
+            BIReportNode node = nodeList.get(i);
+            if (node.getStatus() == BIReportConstant.REPORT_STATUS.HANGOUT &&
+                    checkReportStatus(node.getId(), node.getUserId(), allEntry)) {
+                node.setStatus(BIReportConstant.REPORT_STATUS.NORMAL);
+            }
+            ja.put(node.createJSONConfig());
         }
         WebUtils.printAsJSON(res, ja);
+    }
+
+    private boolean checkReportStatus(long reportId, long createBy, JSONArray entries) throws Exception {
+        boolean needReset = true;
+        for (int i = 0; i < entries.length(); i++) {
+            JSONObject entry = entries.getJSONObject(i);
+            JSONArray childNodes = entry.optJSONArray("ChildNodes");
+            if (childNodes != null && checkReportStatus(reportId, createBy, childNodes) == false) {
+                needReset = false;
+                break;
+            }
+            long rId = entry.optLong("reportId");
+            long uId = entry.optLong("createBy");
+            if (reportId == rId && uId == createBy) {
+                needReset = false;
+                break;
+            }
+        }
+        return needReset;
+
     }
 
     @Override

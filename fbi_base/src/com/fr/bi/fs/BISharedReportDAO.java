@@ -2,6 +2,8 @@ package com.fr.bi.fs;
 
 import com.fr.fs.base.entity.User;
 
+import java.util.List;
+
 /**
  * @author richie
  * @date 2015-04-28
@@ -9,9 +11,9 @@ import com.fr.fs.base.entity.User;
  */
 public interface BISharedReportDAO {
 
-    void resetSharedByReportIdAndUsers(long reportId, long[] userids) throws Exception;
+    void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userids) throws Exception;
 
-    long[] findTemplateIdsByUserId(long userId);
+    List<User> findUsersByReport(long reportId, long createBy) throws Exception;
 
-    User[] findUsersByReportId(long id) throws Exception;
+    List<BISharedReportNode> findReportsByShare2User(long userId);
 }

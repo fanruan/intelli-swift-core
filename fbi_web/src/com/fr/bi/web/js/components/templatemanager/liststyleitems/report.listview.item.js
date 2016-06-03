@@ -182,7 +182,7 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
                     llgap: 20,
                     rrgap: 20
                 },
-                width: 260
+                width: 280
             }]
         });
     },
