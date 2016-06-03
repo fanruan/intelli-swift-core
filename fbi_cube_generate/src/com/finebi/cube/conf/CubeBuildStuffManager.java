@@ -56,7 +56,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
     private Set<List<Set<CubeTableSource>>> dependTableResource;
 
     public CubeBuildStuffManager(BIUser biUser, ICubeConfiguration cubeConfiguration) {
-        this.cubeConfiguration=cubeConfiguration;
+        this.cubeConfiguration = cubeConfiguration;
         this.biUser = biUser;
         initialCubeStuff();
     }
@@ -82,11 +82,11 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
     }
 
     @Override
-    public ICubeConfiguration getCubeConfiguration()
-    {
+    public ICubeConfiguration getCubeConfiguration() {
         return BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
     }
-@Override
+
+    @Override
     public Set<BITableRelation> getTableRelationSet() {
         Set<BITableRelation> set = new HashSet<BITableRelation>();
         for (BITableRelation relation : tableRelationSet) {
@@ -112,6 +112,10 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         return set;
     }
 
+    @Override
+    public Map<CubeTableSource, Long> getVersions() {
+        return new HashMap<CubeTableSource, Long>();
+    }
 
     private Set<BITableRelation> filterRelation(Set<BITableRelation> tableRelationSet) {
         Iterator<BITableRelation> iterator = tableRelationSet.iterator();
@@ -320,8 +324,6 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         }
     }
 
-    
-    
 
     private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
         Iterator<CubeTableSource> it = tableSources.iterator();

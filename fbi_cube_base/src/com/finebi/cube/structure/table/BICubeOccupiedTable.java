@@ -31,10 +31,7 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
 
     }
 
-    @Override
-    public void recordTableGenerateVersion(int version) {
 
-    }
 
     @Override
     public void recordRowCount(long rowCount) {
@@ -86,10 +83,6 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
         return null;
     }
 
-    @Override
-    public int getTableVersion() {
-        return 0;
-    }
 
     @Override
     public List<ICubeFieldSource> getFieldInfo() {
@@ -154,5 +147,15 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
     @Override
     public Set<String> getFieldNamesFromParent() {
         return null;
+    }
+
+    @Override
+    public long getVersion() {
+        return 0;
+    }
+
+    @Override
+    public void addVersion(long version) {
+
     }
 }

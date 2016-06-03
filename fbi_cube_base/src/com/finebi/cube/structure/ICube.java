@@ -73,4 +73,6 @@ public interface ICube {
      * @return 关联路径的操作对象
      */
     ICubeRelationEntityGetterService getCubeRelation(ITableKey tableKey, BICubeRelation relation) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException;
+
+    boolean canRead(ITableKey tableKey);
 }

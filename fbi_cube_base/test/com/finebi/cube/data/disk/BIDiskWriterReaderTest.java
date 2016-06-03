@@ -18,15 +18,15 @@ import java.io.File;
  * @since 4.0
  */
 public class BIDiskWriterReaderTest extends TestCase {
-    private ICubePrimitiveResourceDiscovery discovery;
+        private ICubePrimitiveResourceDiscovery discovery;
 
-    public static String projectPath = computePath();
+        public static String projectPath = computePath();
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        discovery = BICubeDiskPrimitiveDiscovery.getInstance();
-    }
+        @Override
+        protected void setUp() throws Exception {
+            super.setUp();
+            discovery = BICubeDiskPrimitiveDiscovery.getInstance();
+        }
 
     private void down() {
 

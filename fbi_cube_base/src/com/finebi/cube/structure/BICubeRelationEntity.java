@@ -3,6 +3,7 @@ package com.finebi.cube.structure;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
 /**
@@ -16,10 +17,12 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
 
     private ICubeIndexDataService indexDataService;
     private ICubeResourceDiscovery discovery;
+    private ICubeVersion version;
 
     public BICubeRelationEntity(ICubeResourceDiscovery discovery, ICubeResourceLocation cubeResourceLocation) {
         this.discovery = discovery;
         indexDataService = new BICubeIndexData(this.discovery, cubeResourceLocation);
+        version = new BICubeVersion(cubeResourceLocation, discovery);
     }
 
     public BICubeRelationEntity(ICubeIndexDataService indexDataService) {
@@ -56,11 +59,22 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public void clear() {
         indexDataService.clear();
+        version.clear();
     }
 
     @Override
     public boolean isEmpty() {
         return indexDataService.isEmpty();
+    }
+
+    @Override
+    public long getVersion() {
+        return version.getVersion();
+    }
+
+    @Override
+    public void addVersion(long version) {
+        this.version.addVersion(version);
     }
 }
 

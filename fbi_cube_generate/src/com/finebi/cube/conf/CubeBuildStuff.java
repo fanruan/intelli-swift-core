@@ -7,6 +7,7 @@ import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -26,8 +27,10 @@ public interface CubeBuildStuff {
     Set<List<Set<CubeTableSource>>> getDependTableResource();
 
     ICubeConfiguration getCubeConfiguration();
-    
+
 
     Set<BITableRelation> getTableRelationSet();
-    
+
+    Map<CubeTableSource, Long> getVersions();
+
 }

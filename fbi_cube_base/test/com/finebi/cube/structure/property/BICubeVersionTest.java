@@ -1,4 +1,4 @@
-package com.finebi.cube.structure;
+package com.finebi.cube.structure.property;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
@@ -7,6 +7,7 @@ import com.finebi.cube.location.BICubeConfigurationTest;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.file.BIFileUtils;
@@ -32,7 +33,7 @@ public class BICubeVersionTest extends TestCase {
             cubeConfiguration = new BICubeConfigurationTest();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
-            version = new BICubeVersion(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),location);
+            version = new BICubeVersion(location, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         } catch (BICubeResourceAbsentException e) {
             assertFalse(true);
         }
@@ -50,14 +51,14 @@ public class BICubeVersionTest extends TestCase {
 
     public void testAvailable() {
         try {
-            assertFalse(version.isVersionWriterAvailable());
-            assertFalse(version.isVersionReaderAvailable());
+            assertFalse(version.isReaderAvailable());
+            assertFalse(version.isWriterAvailable());
             version.addVersion(1);
-            assertTrue(version.isVersionWriterAvailable());
-            assertFalse(version.isVersionReaderAvailable());
+            assertTrue(version.isWriterAvailable());
+            assertFalse(version.isReaderAvailable());
             assertEquals(version.getVersion(), 1);
-            assertTrue(version.isVersionWriterAvailable());
-            assertTrue(version.isVersionReaderAvailable());
+            assertTrue(version.isWriterAvailable());
+            assertTrue(version.isReaderAvailable());
         } catch (Exception e) {
             assertFalse(true);
         }
@@ -66,13 +67,13 @@ public class BICubeVersionTest extends TestCase {
     public void testReset() {
         try {
             testAvailable();
-            version.resetVersionWriter();
-            assertFalse(version.isVersionWriterAvailable());
-            assertTrue(version.isVersionReaderAvailable());
-            version.resetVersionReader();
+            version.resetWriter();
+            assertFalse(version.isWriterAvailable());
+            assertTrue(version.isReaderAvailable());
+            version.resetReader();
 
-            assertFalse(version.isVersionWriterAvailable());
-            assertFalse(version.isVersionReaderAvailable());
+            assertFalse(version.isWriterAvailable());
+            assertFalse(version.isReaderAvailable());
 
         } catch (Exception e) {
             assertFalse(true);

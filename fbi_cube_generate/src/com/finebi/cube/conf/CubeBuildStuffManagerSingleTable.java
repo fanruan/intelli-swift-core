@@ -12,10 +12,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by wuk on 16/5/30.
@@ -124,6 +121,11 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
     @Override
     public Set<BITableRelation> getTableRelationSet() {
         return new HashSet<BITableRelation>();
+    }
+
+    @Override
+    public Map<CubeTableSource, Long> getVersions() {
+        return null;
     }
 
     public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {

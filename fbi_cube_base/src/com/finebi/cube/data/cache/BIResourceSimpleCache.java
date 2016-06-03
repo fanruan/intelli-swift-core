@@ -1,5 +1,6 @@
 package com.finebi.cube.data.cache;
 
+import com.finebi.cube.CubeResourceRelease;
 import com.finebi.cube.location.ICubeResourceLocation;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.Map;
  * @author Connery
  * @since 4.0
  */
-public class BIResourceSimpleCache<R> implements IResourceCache<R> {
+public class BIResourceSimpleCache<R extends CubeResourceRelease> implements IResourceCache<R> {
     Map<ICubeResourceLocation, R> contents = new HashMap<ICubeResourceLocation, R>();
 
     @Override
@@ -29,5 +30,10 @@ public class BIResourceSimpleCache<R> implements IResourceCache<R> {
         return contents.containsKey(location);
     }
 
-
+    @Override
+    public void forceRelease() {
+        for (CubeResourceRelease resourceRelease : contents.values()) {
+            resourceRelease.forceRelease();
+        }
+    }
 }

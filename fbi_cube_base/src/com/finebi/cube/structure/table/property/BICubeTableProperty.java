@@ -1,17 +1,15 @@
 package com.finebi.cube.structure.table.property;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.data.input.ICubeIntegerReaderWrapper;
 import com.finebi.cube.data.input.ICubeLongReaderWrapper;
 import com.finebi.cube.data.input.ICubeStringReader;
-import com.finebi.cube.data.output.ICubeIntegerWriterWrapper;
 import com.finebi.cube.data.output.ICubeLongWriterWrapper;
 import com.finebi.cube.data.output.ICubeStringWriter;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.ICubeTablePropertyService;
-import com.finebi.cube.structure.ITableKey;
+import com.finebi.cube.structure.*;
+import com.finebi.cube.structure.property.BICubeProperty;
+import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -30,7 +28,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private ICubeResourceLocation currentLocation;
     private static String MAIN_DATA = "field";
     private static String ROW_COUNT_DATA = "count";
-    private static String VERSION_DATA = "version";
+
     private static String TIMESTAMP_DATA = "timestamp";
     private static String SUPER_TABLES = "st";
 
@@ -43,8 +41,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private ICubeStringReader fieldInfoReader;
     private ICubeStringWriter parentsWriter;
     private ICubeStringReader parentsReader;
-    private ICubeIntegerWriterWrapper versionWriter;
-    private ICubeIntegerReaderWrapper versionReader;
+    private ICubeVersion version;
 
     private ICubeLongWriterWrapper rowCountWriter;
     private ICubeLongReaderWrapper rowCountReader;
@@ -58,6 +55,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         this.currentLocation = currentLocation.copy();
         this.discovery = discovery;
         parentFieldProperty = new ParentFieldProperty(currentLocation, discovery);
+        version = new BICubeVersion(currentLocation, discovery);
     }
 
     protected boolean isFieldWriterAvailable() {
@@ -76,13 +74,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         return fieldInfoReader != null;
     }
 
-    protected boolean isVersionWriterAvailable() {
-        return versionWriter != null;
-    }
-
-    protected boolean isVersionReaderAvailable() {
-        return versionReader != null;
-    }
 
     protected boolean isRowCountWriterAvailable() {
         return rowCountWriter != null;
@@ -163,20 +154,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     }
 
-    private void initialVersionReader() throws Exception {
-        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(VERSION_DATA);
-        rowCountLocation.setIntegerTypeWrapper();
-        rowCountLocation.setReaderSourceLocation();
-        versionReader = (ICubeIntegerReaderWrapper) discovery.getCubeReader(rowCountLocation);
-
-    }
-
-    private void initialVersionWriter() throws Exception {
-        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(VERSION_DATA);
-        rowCountLocation.setIntegerTypeWrapper();
-        rowCountLocation.setWriterSourceLocation();
-        versionWriter = (ICubeIntegerWriterWrapper) discovery.getCubeWriter(rowCountLocation);
-    }
 
     private void initialParentTableReader() throws Exception {
         ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(SUPER_TABLES);
@@ -215,27 +192,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
     }
 
-    public ICubeIntegerWriterWrapper getVersionWriter() {
-        try {
-            if (!isVersionWriterAvailable()) {
-                initialVersionWriter();
-            }
-            return versionWriter;
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
-    }
-
-    public ICubeIntegerReaderWrapper getVersionReader() {
-        try {
-            if (!isVersionReaderAvailable()) {
-                initialVersionReader();
-            }
-            return versionReader;
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
-    }
 
     public ICubeLongWriterWrapper getRowCountWriter() {
         try {
@@ -421,19 +377,13 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
-    public void recordTableGenerateVersion(int version) {
-        getVersionWriter().recordSpecificValue(0, version);
+    public long getVersion() {
+        return version.getVersion();
     }
 
     @Override
-    public int getTableVersion() {
-        try {
-            return Integer.parseInt(String.valueOf(getVersionReader().getSpecificValue(0)));
-        } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-            BINonValueUtils.beyondControl(e.getMessage(), e);
-        }
-        return -1;
+    public void addVersion(long version) {
+        this.version.addVersion(version);
     }
 
     @Override
@@ -469,19 +419,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         return parentFieldProperty.getParentFields();
     }
 
-    protected void resetVersionWriter() {
-        if (isVersionWriterAvailable()) {
-            versionWriter.clear();
-            versionWriter = null;
-        }
-    }
-
-    protected void resetVersionReader() {
-        if (isVersionReaderAvailable()) {
-            versionReader.clear();
-            versionReader = null;
-        }
-    }
 
     protected void resetRowCountWriter() {
         if (isRowCountWriterAvailable()) {
@@ -529,8 +466,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     public void clear() {
         resetFiledWriter();
         resetFieldReader();
-        resetVersionWriter();
-        resetVersionReader();
         resetRowCountWriter();
         resetRowCountReader();
         resetTimeStampWriter();
@@ -538,6 +473,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         resetParentReader();
         resetParentWriter();
         parentFieldProperty.clear();
+        version.clear();
     }
 
     public void forceRelease() {
@@ -547,12 +483,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         if (isFieldReaderAvailable()) {
             fieldInfoReader.forceRelease();
         }
-        if (isVersionReaderAvailable()) {
-            versionReader.forceRelease();
-        }
-        if (isVersionWriterAvailable()) {
-            versionWriter.forceRelease();
-        }
+
         if (isRowCountReaderAvailable()) {
             rowCountReader.forceRelease();
         }
@@ -572,6 +503,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             parentsReader.forceRelease();
         }
         parentFieldProperty.forceRelease();
+        ((BICubeProperty) version).forceRelease();
         clear();
     }
 }

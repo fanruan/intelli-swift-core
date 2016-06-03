@@ -19,10 +19,9 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeTablePropertyService extends Release {
+public interface ICubeTablePropertyService extends Release, ICubeVersion {
     void recordTableStructure(List<ICubeFieldSource> fields);
 
-    void recordTableGenerateVersion(int version);
 
     void recordRowCount(long rowCount);
 
@@ -36,7 +35,6 @@ public interface ICubeTablePropertyService extends Release {
 
     Date getCubeLastTime();
 
-    int getTableVersion();
 
     List<ICubeFieldSource> getFieldInfo();
 
