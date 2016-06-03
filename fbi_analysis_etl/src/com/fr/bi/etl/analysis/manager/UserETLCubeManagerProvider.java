@@ -21,6 +21,8 @@ public interface UserETLCubeManagerProvider extends Release{
 	 */
 	ICubeTableService getTableIndex(AnalysisCubeTableSource core, BIUser user);
 
+    void checkTableIndex(AnalysisCubeTableSource core, BIUser user);
+
 	/**
 	 * @param md5
 	 * @return
