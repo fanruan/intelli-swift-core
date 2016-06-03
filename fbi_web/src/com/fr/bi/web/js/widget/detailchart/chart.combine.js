@@ -390,23 +390,24 @@ BI.CombineChart = BI.inherit(BI.Widget, {
 
         function formatElementAttrs(){
             switch (self.chart_legend) {
-                case BICst.CHART_LEGEND.BOTTOM:
+                case BICst.CHART_LEGENDS.BOTTOM:
                     config.legend.enabled = true;
                     config.legend.position = "bottom";
                     break;
-                case BICst.CHART_LEGEND.RIGHT:
+                case BICst.CHART_LEGENDS.RIGHT:
                     config.legend.enabled = true;
                     config.legend.position = "right";
                     break;
-                case BICst.CHART_LEGEND.NOT_SHOW:
+                case BICst.CHART_LEGENDS.NOT_SHOW:
                 default:
                     config.legend.enabled = false;
                     break;
             }
             config.plotOptions.dataLabels.enabled = self.show_data_label;
             config.dataSheet.enabled = self.show_data_table;
-
-
+            if(config.dataSheet.enabled === true){
+                config.xAxis[0].showLabel = false;
+            }
         }
     },
 
@@ -444,10 +445,10 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.right_y_axis_unit = options.right_y_axis_unit || "";
         this.right_y_axis_second_unit = options.right_y_axis_second_unit || "";
         this.x_axis_title = options.x_axis_title || "";
-        this.chart_legend = options.chart_legend || BICst.CHART_LEGEND.NOT_SHOW;
+        this.chart_legend = options.chart_legend || BICst.CHART_LEGENDS.NOT_SHOW;
         this.show_data_label = options.show_data_label || false;
         this.show_data_table = options.show_data_table || false;
-        this.show_grid_line = options.show_grid_line || true;
+        this.show_grid_line = options.show_grid_line;
         this.text_direction = options.text_direction;
     },
 

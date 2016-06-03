@@ -48,13 +48,29 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     setFields: function (fields) {
         var self = this;
-        this.fields = fields;
         BI.each(fields, function (i, fs) {
             BI.each(fs, function (j, field) {
-                field.id = BI.UUID();
+                field.id = self._getCurrentFieldIdByFieldInfo(field);
                 self.allFields[field.id] = field;
             })
         });
+        this.fields = fields;
+    },
+
+
+    _getCurrentFieldIdByFieldInfo: function (fieldInfo) {
+        var id = BI.UUID();
+        var oldFields = this.fields;
+        BI.some(oldFields, function (i, fieldsArray) {
+            return BI.some(fieldsArray, function (index, fieldObj) {
+                if (fieldObj.field_name === fieldInfo.field_name) {
+                    id = fieldObj.id;
+                    return true
+                }
+                return false
+            })
+        });
+        return id;
     },
 
     getAllTables: function () {

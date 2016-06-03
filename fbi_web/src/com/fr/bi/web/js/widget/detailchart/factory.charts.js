@@ -98,7 +98,15 @@ BI.ChartCombineFormatItemFactory = {
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "dataLabels":{
-                    enabled: false
+                    "formatter": {
+                        "identifier": "${VALUE}",
+                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
+                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                    },
+                    "align": "inside",
+                    "enabled": false
                 },
                 "valueLabel": {
                     "formatter": {
