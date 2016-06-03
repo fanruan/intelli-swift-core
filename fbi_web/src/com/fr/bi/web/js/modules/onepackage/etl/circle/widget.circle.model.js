@@ -87,14 +87,14 @@ BI.CircleModel = BI.inherit(BI.Widget, {
             var oldIdFieldName = table.etl_value.id_field_name;
             var tmpConnectionSet = [], tmpPrimKey = [], tmpForeKey = [];
             var oldRelationForeignKeyIds = BI.map(oldFloorNames, function(idx, name){
-                return tId + name;
+                return getFieldIdByFieldName(name);
             });
-            var oldRelationPrimaryKeyId = tId + oldIdFieldName;
+            var oldRelationPrimaryKeyId = getFieldIdByFieldName(oldIdFieldName);
             BI.each(connectionSet, function (j, c) {
                 if (BI.isNull(c)) {
                     return;
                 }
-                if(c["primaryKey"].field_id === tId + oldIdFieldName && BI.contains(oldRelationForeignKeyIds, c["foreignKey"].field_id)){
+                if(c["primaryKey"].field_id === oldRelationPrimaryKeyId && BI.contains(oldRelationForeignKeyIds, c["foreignKey"].field_id)){
                     tmpConnectionSet.push(c);
                 }
             });
@@ -102,7 +102,7 @@ BI.CircleModel = BI.inherit(BI.Widget, {
                 if (BI.isNull(map)) {
                     return;
                 }
-                if(map["primaryKey"].field_id === tId + oldIdFieldName && BI.contains(oldRelationForeignKeyIds, map["foreignKey"].field_id)){
+                if(map["primaryKey"].field_id === oldRelationPrimaryKeyId && BI.contains(oldRelationForeignKeyIds, map["foreignKey"].field_id)){
                     tmpPrimKey.push(map);
                 }
             });
@@ -117,46 +117,11 @@ BI.CircleModel = BI.inherit(BI.Widget, {
                 });
             });
             BI.remove(connectionSet, tmpConnectionSet);
-            BI.remove(primKeyMap[tId + oldIdFieldName], tmpPrimKey);
+            BI.remove(primKeyMap[oldRelationPrimaryKeyId], tmpPrimKey);
             BI.each(oldRelationForeignKeyIds, function(idx, id){
                 BI.remove(foreignKeyMap[id], tmpForeKey);
             });
         }
-        //设置1:N的关联
-        BI.each(etlValue.floors, function (idx, floor) {
-            var primaryId = tId + etlValue.id_field_name;
-            var foreignId = tId + floor.name;
-            connectionSet.push({
-                primaryKey: {
-                    field_id: primaryId
-                },
-                foreignKey: {
-                    field_id: foreignId
-                }
-            });
-            if(!primKeyMap[primaryId]){
-                primKeyMap[primaryId] = [];
-            }
-            primKeyMap[primaryId].push({
-                primaryKey: {
-                    field_id: primaryId
-                },
-                foreignKey: {
-                    field_id: foreignId
-                }
-            });
-            if(!foreignKeyMap[foreignId]){
-                foreignKeyMap[foreignId] = [];
-            }
-            foreignKeyMap[foreignId].push({
-                primaryKey: {
-                    field_id: primaryId
-                },
-                foreignKey: {
-                    field_id: foreignId
-                }
-            });
-        });
 
         return {
             relations: relations,
@@ -164,6 +129,13 @@ BI.CircleModel = BI.inherit(BI.Widget, {
             etl_value: this.getOperatorValue(),
             connection_name: BICst.CONNECTION.ETL_CONNECTION,
             tables: [this.getTableStructure()]
+        };
+
+        function getFieldIdByFieldName(field_name){
+            var res = BI.find(self.fields, function(idx, field){
+                return field.field_name === field_name;
+            });
+            return res.id;
         }
     },
 
@@ -192,6 +164,11 @@ BI.CircleModel = BI.inherit(BI.Widget, {
         this.reopen = info.reopen;
         this.relations = info.relations;
         this.tables = info.tableInfo.tables;
+        var fields = info.tableInfo.fields;
+        if(this.reopen === true){
+            fields = info.fields;
+        }
+        this.fields = BI.concat(fields[0], BI.concat(fields[1], fields[2]));
         this.old_tables = BI.extend(info.tableInfo, {id: BI.UUID()});
         this.isGenerated = info.isGenerated;
     }

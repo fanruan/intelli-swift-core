@@ -61,5 +61,10 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
         }
     }
 
+    @Override
+    protected Long createEmptyValue() {
+        return Long.MAX_VALUE;
+    }
+
 
 }

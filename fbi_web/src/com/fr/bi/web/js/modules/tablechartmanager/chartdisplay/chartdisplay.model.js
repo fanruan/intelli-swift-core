@@ -372,9 +372,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-                return [this._formatDataForMap(data)];
             case BICst.WIDGET.GIS_MAP:
-                return this._formatDataForForceBubble(data);
+                return [this._formatDataForMap(data)];
         }
     },
 
@@ -405,7 +404,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             if(BI.isEmptyArray(types)){
                 types.push([type]);
             }
-            type === BICst.WIDGET.MAP && (options.geo = {data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)]});
+            if(type === BICst.WIDGET.MAP || type === BICst.WIDGET.GIS_MAP){
+                options.geo = {data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)]}
+            }
             callback(types, data, options);
         }, {
             expander: {

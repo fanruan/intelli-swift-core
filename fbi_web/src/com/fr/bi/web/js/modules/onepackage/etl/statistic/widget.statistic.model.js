@@ -132,7 +132,6 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
             dimensions[id] = {
                 name: BI.Func.createDistinctName(dimensions, field["field_name"]),
                 _src: {
-                    field_id: field.id,
                     field_name: field["field_name"]
                 },
                 type: getDimensionTypeByFieldType(type),

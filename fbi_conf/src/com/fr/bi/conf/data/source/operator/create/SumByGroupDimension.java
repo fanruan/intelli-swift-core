@@ -11,7 +11,6 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
-import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -43,9 +42,7 @@ public class SumByGroupDimension implements JSONTransform, BICoreService {
         }
         if(jsonObject.has("_src")){
             JSONObject jo = jsonObject.optJSONObject("_src");
-            if (jo.has("field_id")){
-                this.name = BIIDUtils.getFieldNameFromFieldID(jo.getString("field_id"));
-            } else if (jo.has("field_name")){
+            if (jo.has("field_name")){
                 this.name = jo.getString("field_name");
             }
         }

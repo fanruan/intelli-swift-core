@@ -52,10 +52,8 @@ BI.ChartCombineFormatItemFactory = {
                 break;
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-                item = BI.extend({"type": "map"}, items);
-                break;
             case BICst.WIDGET.GIS_MAP:
-                item = {};
+                item = BI.extend({"type": "map"}, items);
                 break;
             default:
                 item = BI.extend({"type": "column"}, items);
@@ -286,9 +284,8 @@ BI.ChartCombineFormatItemFactory = {
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-                return BI.extend({"chartType": "map"}, config);
             case BICst.WIDGET.GIS_MAP:
-                return {};
+                return BI.extend({"chartType": "map"}, config);
             default:
                 return BI.extend({"chartType": "column"}, config);
         }
