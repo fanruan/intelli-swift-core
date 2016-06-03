@@ -349,6 +349,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             });
             BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
                 self.model.setFields(data[0].fields);
+                self.model.setRelationsByETLValue(data[0]);
                 self._populate();
                 mask.destroy();
             });
@@ -771,6 +772,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                     reopen: true,
                     isGenerated: status.isGenerated,
                     tableInfo: table,
+                    fields: self.model.getFields(),
                     relations: self.model.getRelations()
                 }
             });
@@ -1104,6 +1106,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 id: self.model.getId(),
                 reopen: false,
                 isGenerated: false,
+                fields: self.model.getFields(),
                 tableInfo: self.model.getTableById(tId),
                 relations: self.model.getRelations()
             }
