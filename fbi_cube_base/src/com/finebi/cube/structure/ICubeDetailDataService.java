@@ -1,5 +1,6 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.CubeVersion;
 import com.fr.bi.common.inter.Release;
 
 /**
@@ -23,4 +24,8 @@ public interface ICubeDetailDataService<T> extends Release {
     T getOriginalValueByRow(int rowNumber);
 
     int getClassType();
+
+    CubeVersion getVersion();
+
+    void recordVersion(CubeVersion version);
 }

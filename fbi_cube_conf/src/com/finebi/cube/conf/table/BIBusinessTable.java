@@ -15,6 +15,7 @@ import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BICollectionUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -40,6 +41,10 @@ public class BIBusinessTable implements BusinessTable {
 
     public BIBusinessTable(BITableID ID) {
         this(ID, "FINEBI_EMPTY");
+    }
+
+    public static BIBusinessTable createEmptyTable() {
+        return new BIBusinessTable(new BITableID(BIStringUtils.emptyString()), "FINEBI_EMPTY");
     }
 
     public BIBusinessTable(BITableID ID, String tableName) {
@@ -82,7 +87,6 @@ public class BIBusinessTable implements BusinessTable {
         jo.put("id", ID.getIdentityValue());
         return jo;
     }
-
 
 
     @Override

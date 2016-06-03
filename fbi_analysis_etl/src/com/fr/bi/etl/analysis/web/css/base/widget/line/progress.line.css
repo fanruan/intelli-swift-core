@@ -26,10 +26,10 @@
   -o-transition: all 0.5s ease;
 }
 .bi-analysis-progress-point {
-  -webkit-animation: leftToRight 3s ease infinite;
-  -moz-animation: leftToRight 3s ease infinite;
-  -o-animation: leftToRight 3s ease infinite;
-  animation: leftToRight 3s ease infinite;
+  -webkit-animation: leftToRight 2s ease infinite;
+  -moz-animation: leftToRight 2s ease infinite;
+  -o-animation: leftToRight 2s ease infinite;
+  animation: leftToRight 2s ease infinite;
 }
 @keyframes leftToRight {
   from  {right:100%} to {right:0px}  /**to{1: 1;}**/;

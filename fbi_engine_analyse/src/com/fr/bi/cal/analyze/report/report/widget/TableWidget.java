@@ -187,7 +187,7 @@ public class TableWidget extends BISummaryWidget {
         int summaryLen = getViewTargets().length;
         boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
         boolean b1 = usedColumn.length >= 0 && usedRows.length == 0 && summaryLen == 0;
-        boolean b2 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen > 0;
+        boolean b2 = usedRows.length >= 0 && usedColumn.length == 0 ;
         boolean b3 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen == 0;
         if (b0) {
             executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
