@@ -30,4 +30,9 @@ public class ResourceCache<R> implements IResourceCache<R> {
     public boolean isAvailableResource(ICubeResourceLocation location) {
         return false;
     }
+
+    @Override
+    public void forceRelease() {
+
+    }
 }

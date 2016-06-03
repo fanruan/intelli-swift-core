@@ -15,6 +15,7 @@ import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BICollectionUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -40,6 +41,10 @@ public class BIBusinessTable implements BusinessTable {
 
     public BIBusinessTable(BITableID ID) {
         this(ID, "FINEBI_EMPTY");
+    }
+
+    public static BIBusinessTable createEmptyTable() {
+        return new BIBusinessTable(new BITableID(BIStringUtils.emptyString()), "FINEBI_EMPTY");
     }
 
     public BIBusinessTable(BITableID ID, String tableName) {
@@ -82,7 +87,6 @@ public class BIBusinessTable implements BusinessTable {
         jo.put("id", ID.getIdentityValue());
         return jo;
     }
-
 
 
     @Override
@@ -143,9 +147,22 @@ public class BIBusinessTable implements BusinessTable {
             /**
              * Connery:错用createJson，传递了一个Loader进去
              */
-            JSONObject filedJson = field.createJSON(loader);
-            fields.put(field.getFieldID().getIdentityValue(), filedJson);
-            stringList.add(filedJson);
+            JSONObject fieldJson = field.createJSON(loader);
+            fields.put(field.getFieldID().getIdentityValue(), fieldJson);
+            switch(field.getFieldType()){
+                case DBConstant.COLUMN.STRING:
+                    stringList.add(fieldJson);
+                    break;
+                case DBConstant.COLUMN.NUMBER:
+                    numberList.add(fieldJson);
+                    break;
+                case DBConstant.COLUMN.DATE:
+                    dateList.add(fieldJson);
+                    break;
+                default:
+                    stringList.add(fieldJson);
+                    break;
+            }
         }
         fields.put(getID().getIdentity() + BICubeConfigureCenter.getAliasManager().getTransManager(-999).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"), createCountField());
         countList.add(createCountField());
@@ -181,5 +198,14 @@ public class BIBusinessTable implements BusinessTable {
 
     protected int getTableType() {
         return BIReportConstant.BUSINESS_TABLE_TYPE.NORMAL;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("BIBusinessTable{");
+        sb.append("ID=").append(ID);
+        sb.append(", tableName='").append(tableName).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

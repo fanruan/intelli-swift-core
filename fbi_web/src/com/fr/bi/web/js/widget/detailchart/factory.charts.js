@@ -52,10 +52,8 @@ BI.ChartCombineFormatItemFactory = {
                 break;
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-                item = BI.extend({"type": "map"}, items);
-                break;
             case BICst.WIDGET.GIS_MAP:
-                item = {};
+                item = BI.extend({"type": "map"}, items);
                 break;
             default:
                 item = BI.extend({"type": "column"}, items);
@@ -98,7 +96,15 @@ BI.ChartCombineFormatItemFactory = {
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "dataLabels":{
-                    enabled: false
+                    "formatter": {
+                        "identifier": "${VALUE}",
+                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
+                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                    },
+                    "align": "inside",
+                    "enabled": false
                 },
                 "valueLabel": {
                     "formatter": {
@@ -278,9 +284,8 @@ BI.ChartCombineFormatItemFactory = {
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-                return BI.extend({"chartType": "map"}, config);
             case BICst.WIDGET.GIS_MAP:
-                return {};
+                return BI.extend({"chartType": "map"}, config);
             default:
                 return BI.extend({"chartType": "column"}, config);
         }

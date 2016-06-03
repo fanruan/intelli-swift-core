@@ -3,6 +3,8 @@ package com.finebi.cube.adapter;
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.exception.BICubeTableAbsentException;
+import com.finebi.cube.gen.BISourceDataTransportTest;
 import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
@@ -29,7 +31,13 @@ public class ICubeTableServiceTest extends BICubeTestBase {
     protected void setUp() throws Exception {
         super.setUp();
         manager = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
-        tableService = manager.getTableIndex(BIMemoryDataSourceFactory.generateTableA());
+
+        try {
+            tableService = manager.getTableIndex(BIMemoryDataSourceFactory.generateTableA());
+        } catch (BICubeTableAbsentException e) {
+            BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
+            transportTest.transport(BIMemoryDataSourceFactory.generateTableA());
+        }
 
     }
 
@@ -78,6 +86,7 @@ public class ICubeTableServiceTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
+
     public void testTableFieldRelation() {
         try {
 

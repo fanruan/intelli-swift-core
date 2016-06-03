@@ -4,10 +4,6 @@
  */
 BI.ChartSetting = BI.inherit(BI.Widget, {
 
-    constants:{
-        MAP_REGION: 10000
-    },
-
     _defaultConfig: function () {
         return BI.extend(BI.ChartSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-chart-setting"
@@ -29,15 +25,6 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
             this.chartSetting.destroy();
         }
         var chartType = BI.Utils.getWidgetTypeByID(wId);
-        if(chartType >= this.constants.MAP_REGION){
-            this.chartSetting = BI.createWidget({
-                type: "bi.charts_setting",
-                wId: wId
-            });
-            this.chartSetting.on(BI.ChartsSetting.EVENT_CHANGE, function () {
-                self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
-            });
-        }
         switch (chartType) {
             case BICst.WIDGET.TABLE:
                 this.chartSetting = BI.createWidget({

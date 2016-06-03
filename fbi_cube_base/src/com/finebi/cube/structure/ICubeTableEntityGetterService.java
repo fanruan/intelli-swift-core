@@ -19,9 +19,8 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeTableEntityGetterService extends Release {
+public interface ICubeTableEntityGetterService extends Release, ICubeVersion {
 
-    int getTableVersion();
 
     /**
      * 获得CubeTable对应的数据源表的字段信息

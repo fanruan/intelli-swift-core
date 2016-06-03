@@ -79,6 +79,12 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             }
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         })
+        this.loadingBar = BI.createWidget({
+            type: "bi.analysis_progress",
+            width:220,
+            height:2
+        })
+        this.loadingBar.setPercent(0);
         BI.createWidget({
             type: "bi.htape",
             element: this.element,
@@ -98,6 +104,19 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                 el: this.tip
             }]
         })
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el : self.loadingBar,
+                left : 10,
+                right : 10,
+                top :0,
+                bottom : 15
+            }]
+        })
+        self.loadingBar.setVisible(false);
+        self.controller.startChecker(this.options.id);
     },
 
     _createItemList : function (){
@@ -114,6 +133,18 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             text: BI.i18nText("BI-Remove"),
             value:ETLCst.ANALYSIS_TABLE_SET.DELETE
         }]];
+    },
+
+    showLoading : function (percent) {
+        var self = this;
+        if (percent != 1){
+            this.loadingBar.setVisible(true);
+        } else {
+            BI.delay(function () {
+                self.loadingBar.setVisible(false)
+            }, 600)
+        }
+        this.loadingBar.setPercent(percent);
     },
 
     doRedMark: function () {

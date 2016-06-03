@@ -142,7 +142,9 @@ public class BICubeFieldSource implements ICubeFieldSource {
         JSONObject jo = new JSONObject();
         jo.put("field_name", getFieldName());
         jo.put("id", fieldID.getIdentityValue());
-        jo.put("table_id", getTableBelongTo().getSourceID());
+        if (getTableBelongTo() != null) {
+            jo.put("table_id", getTableBelongTo().getSourceID());
+        }
         jo.put("field_type", fieldType)
                 .put("field_size", fieldSize)
                 .put("is_usable", isUsable())

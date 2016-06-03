@@ -55,7 +55,12 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
     private void flushProperty() {
         if (tableProperty != null) {
-            tableProperty.clear();
+            /**
+             * 必须使用强制是否
+             * 否则简单的clear的话只是通知不再引用句柄。
+             * 实际资源没有被close掉。
+             */
+            tableProperty.forceRelease();
         }
         tableProperty = new BICubeTableProperty(currentLocation, discovery);
 
@@ -72,10 +77,6 @@ public class BICubeTableEntity implements ICubeTableEntityService {
         columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
     }
 
-    @Override
-    public void recordTableGenerateVersion(int version) {
-        tableProperty.recordTableGenerateVersion(version);
-    }
 
     @Override
     public void recordRowCount(long rowCount) {
@@ -138,11 +139,6 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
     @Override
     public void copyDetailValue(ICubeTableEntityService cube, long rowCount) {
-    }
-
-    @Override
-    public int getTableVersion() {
-        return tableProperty.getTableVersion();
     }
 
     @Override
@@ -224,4 +220,15 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     public boolean isRowCountAvailable() {
         return tableProperty.isRowCountAvailable();
     }
+
+    @Override
+    public long getVersion() {
+        return tableProperty.getVersion();
+    }
+
+    @Override
+    public void addVersion(long version) {
+        tableProperty.addVersion(version);
+    }
+
 }

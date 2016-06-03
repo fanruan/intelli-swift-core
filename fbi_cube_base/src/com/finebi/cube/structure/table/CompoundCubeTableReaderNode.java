@@ -72,10 +72,6 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void recordTableGenerateVersion(int version) {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public void recordRowCount(long rowCount) {
@@ -129,11 +125,6 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     }
 
-    @Override
-    public int getTableVersion() {
-        throw new UnsupportedOperationException();
-
-    }
 
     @Override
     public List<ICubeFieldSource> getFieldInfo() {
@@ -228,6 +219,16 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     @Override
     public Set<String> getFieldNamesFromParent() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long getVersion() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void addVersion(long version) {
         throw new UnsupportedOperationException();
     }
 }

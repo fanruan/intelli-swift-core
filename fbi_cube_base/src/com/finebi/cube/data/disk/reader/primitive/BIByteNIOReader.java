@@ -36,7 +36,7 @@ public class BIByteNIOReader extends BIBasicNIOReader<Byte> implements ICubeByte
         try {
             return byteBuffers.get(page).get(index);
         } catch (IndexOutOfBoundsException ex) {
-             throw new IndexOutOfBoundsException(BIStringUtils.append("BI page value is:",
+             throw new IndexOutOfBoundsException(BIStringUtils.appendWithSpace("BI page value is:",
                     page.toString(), "the index value is", Integer.valueOf(index).toString()));
         } finally {
             readWriteLock.readLock().unlock();

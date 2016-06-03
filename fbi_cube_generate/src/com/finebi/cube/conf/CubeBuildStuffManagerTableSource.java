@@ -8,10 +8,7 @@ import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by wuk on 16/6/1.
@@ -105,5 +102,8 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
         return new HashSet<BITableRelation>();
     }
 
-
+    @Override
+    public Map<CubeTableSource, Long> getVersions() {
+        return null;
+    }
 }

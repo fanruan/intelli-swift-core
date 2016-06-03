@@ -39,6 +39,7 @@ public class BICubeOperationManager {
 
     private Set<CubeTableSource> originalTableSet;
     private Map<CubeTableSource, BIOperation> tableSourceWatchers;
+    private Map<CubeTableSource, Long> versionMap;
 
     public BICubeOperationManager(ICube cube, Set<CubeTableSource> originalTableSet) {
         this.cube = cube;
@@ -46,6 +47,10 @@ public class BICubeOperationManager {
         registeredFieldIndex = new HashSet<CubeTableSource>();
         this.originalTableSet = originalTableSet;
         tableSourceWatchers = new HashMap<CubeTableSource, BIOperation>();
+    }
+
+    public void setVersionMap(Map<CubeTableSource, Long> versionMap) {
+        this.versionMap = versionMap;
     }
 
     public void initialWatcher() {
@@ -108,7 +113,7 @@ public class BICubeOperationManager {
                 if (!isGenerated(tableSource)) {
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
-                            getDataTransportBuilder(cube, tableSource, originalTableSet, parentTables));
+                            getDataTransportBuilder(cube, tableSource, originalTableSet, parentTables, getVersion(tableSource)));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource));
                     try {
@@ -372,6 +377,14 @@ public class BICubeOperationManager {
         }
     }
 
+    long getVersion(CubeTableSource tableSource) {
+        if (versionMap != null && versionMap.containsKey(tableSource)) {
+            return versionMap.get(tableSource);
+        } else {
+            return -1;
+        }
+    }
+
     protected BIRelationIndexGenerator getRelationBuilder(ICube cube, BITableSourceRelation relation) {
         return new BIRelationIndexGenerator(cube, BICubeRelationUtils.convert(relation));
     }
@@ -384,8 +397,8 @@ public class BICubeOperationManager {
         return new BITableSourceBuildWatcher(tableEntityService);
     }
 
-    protected BISourceDataTransport getDataTransportBuilder(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent) {
-        return new BISourceDataTransport(cube, tableSource, allSources, parent);
+    protected BISourceDataTransport getDataTransportBuilder(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
+        return new BISourceDataTransport(cube, tableSource, allSources, parent, version);
     }
 
     protected BITablePathIndexBuilder getTablePathBuilder(ICube cube, BITableSourceRelationPath tablePath) {

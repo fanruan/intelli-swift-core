@@ -45,9 +45,7 @@ public class SumByGroupTarget implements JSONTransform {
         }
         if(jsonObject.has("_src")){
             JSONObject jo = jsonObject.optJSONObject("_src");
-            if (jo.has("field_id")){
-                this.name = BIIDUtils.getFieldNameFromFieldID(jo.getString("field_id"));
-            } else if (jo.has("field_name")){
+            if (jo.has("field_name")){
                 this.name = jo.getString("field_name");
             }
         }

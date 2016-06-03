@@ -166,7 +166,6 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 BILogger.getLogger().error(e.getMessage(), e);
                 continue;
             }
-
         }
         BICubeConfigureCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);
     }

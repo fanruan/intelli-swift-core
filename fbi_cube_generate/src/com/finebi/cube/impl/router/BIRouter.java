@@ -16,6 +16,7 @@ import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.common.factory.annotation.BISingletonObject;
+import com.fr.bi.stable.utils.code.BILogger;
 
 
 /**
@@ -81,6 +82,7 @@ public class BIRouter implements IRouter {
     @Override
     public void deliverMessage(IMessage message) throws BIDeliverFailureException {
         if (verbose) {
+            BILogger.getLogger().info("Message Router Receive:" + message.toString());
             System.out.println("Message Router Receive:" + message.toString());
         }
         messageDispatcher.addMessage(message);

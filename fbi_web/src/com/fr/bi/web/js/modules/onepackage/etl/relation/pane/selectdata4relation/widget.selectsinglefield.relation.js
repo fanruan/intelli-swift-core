@@ -191,7 +191,7 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                 return BI.some(pack, function(tId, fields){
                     if(tableId === tId) {
                         BI.each(fields, function(i, field){
-                            if(field.field_type !== fieldType) {
+                            if(field.field_type === fieldType) {
                                 fieldStructure.push({
                                     id: field.id,
                                     pId: tableId,

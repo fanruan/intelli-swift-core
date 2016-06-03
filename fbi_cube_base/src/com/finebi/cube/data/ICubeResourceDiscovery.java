@@ -22,4 +22,5 @@ public interface ICubeResourceDiscovery {
 
     ICubeWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException;
 
+    boolean isResourceExist(ICubeResourceLocation resourceLocation);
 }

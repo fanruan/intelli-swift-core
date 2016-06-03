@@ -6,6 +6,7 @@ package com.fr.bi.etl.analysis.manager;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -60,22 +61,33 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     }
 	@Override
 	public ICubeTableService getTableIndex(AnalysisCubeTableSource source, BIUser user){
-		UserCubeTableSource ut = source.createUserTableSource(user.getUserId());
-		String md5Key = ut.fetchObjectCore().getID().getIdentityValue();
-		SingleUserETLTableCubeManager manager = threadMap.get(md5Key);
-		if(manager == null){
-			synchronized (threadMap) {
-				manager = threadMap.get(source.fetchObjectCore().getIDValue());
-				if(manager == null){
-					manager = new SingleUserETLTableCubeManager(ut);
-					threadMap.put(md5Key, manager);
-				}
-			}
-		}
-		return manager.getTableIndex();
+		return createManager(source, user).getTableIndex();
 	}
-	
-	public void releaseCurrentThread(){
+
+    @Override
+    public void checkTableIndex(AnalysisCubeTableSource source, BIUser user) {
+        if (!(source.getType() == Constants.TABLE_TYPE.TEMP)){
+            createManager(source, user);
+        }
+    }
+
+    private SingleUserETLTableCubeManager createManager(AnalysisCubeTableSource source, BIUser user) {
+        UserCubeTableSource ut = source.createUserTableSource(user.getUserId());
+        String md5Key = ut.fetchObjectCore().getID().getIdentityValue();
+        SingleUserETLTableCubeManager manager = threadMap.get(md5Key);
+        if(manager == null){
+            synchronized (threadMap) {
+                manager = threadMap.get(source.fetchObjectCore().getIDValue());
+                if(manager == null){
+                    manager = new SingleUserETLTableCubeManager(ut);
+                    threadMap.put(md5Key, manager);
+                }
+            }
+        }
+        return manager;
+    }
+
+    public void releaseCurrentThread(){
 		Iterator<Entry<String, SingleUserETLTableCubeManager>> iter = threadMap.entrySet().iterator();
 		while(iter.hasNext()){
 			Entry<String, SingleUserETLTableCubeManager> entry = iter.next();
