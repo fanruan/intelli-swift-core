@@ -351,16 +351,6 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.editTitleX]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Category_Axis"),
-                    textHeight: 60,
-                    cls: "line-title"
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Category_Axis"),
-                    textHeight: 60,
-                    cls: "line-title"
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
