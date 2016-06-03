@@ -42,10 +42,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             this.name = BI.Utils.getConfPackageNameByID(this.id);
             this.tables = BI.Utils.getConfPackageTablesByID(this.id);
         }
-        this.usedFields = {};
-        BI.each(this.tables, function (i, table) {
-            self.usedFields[table.id] = table.used_fields;
-        });
         this.allFields = Data.SharingPool.get("fields");
         this.relations = Data.SharingPool.get("relations");
         this.translations = Data.SharingPool.get("translations");
@@ -97,9 +93,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         return BI.deepClone(this.tablesData);
     },
 
-    getUsedFields: function () {
-        return BI.deepClone(this.usedFields);
-    },
 
     getExcelViews: function () {
         return BI.deepClone(this.excelViews);
@@ -169,17 +162,15 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         this.excelViews[id] = data.excel_view;
         this.updateSettings = data.update_settings;
         //可能是新添加的
-        if (BI.isNull(this.usedFields[id])) {
-            this.tables.push({id: id, used_fields: data.usedFields});
+        if(BI.isNull(this.tablesData[id])){
+            this.tables.push({id: id});
         }
-        this.usedFields[id] = data.usedFields;
         this.tablesData[id] = data;
         this._syncSharedPackages();
     },
 
     removeTable: function (tableId) {
         var self = this;
-        delete this.usedFields[tableId];
 
         //删除表的转义
         delete self.translations[tableId];
@@ -246,13 +237,11 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         //暂时根据 id 属性区分 source 表和 package 表
         BI.each(tables, function (i, table) {
             var id = BI.UUID();
-            var usedFields = [];
             BI.each(table.fields, function (j, fs) {
                 BI.each(fs, function (k, field) {
                     // field.id = id + field.field_name;
                     field.id = BI.UUID();
                     field.table_id = id;
-                    usedFields.push(field.field_name);
                     //这里简单维护一下field信息（包括table_id,table_name,field_name,field_type即可）
                     self.allFields[field.id] = {
                         id: field.id,
@@ -263,8 +252,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     };
                 })
             });
-            self.tables.push({id: id, used_fields: usedFields});
-            self.usedFields[id] = usedFields;
+            self.tables.push({id: id});
 
             if (BI.isNull(table.id)) {
                 self.translations[id] = self.createDistinctTableTranName(table.table_name);
@@ -417,7 +405,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             table_data: this.getTablesData(),
             relations: this.getRelations(),
             translations: this.getTranslations(),
-            used_fields: this.getUsedFields(),
             excel_views: this.getExcelViews(),
             update_settings: this.getUpdateSettings()
         }

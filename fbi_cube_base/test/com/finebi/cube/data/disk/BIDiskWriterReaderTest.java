@@ -19,6 +19,7 @@ import java.io.File;
  */
 public class BIDiskWriterReaderTest extends TestCase {
     private ICubePrimitiveResourceDiscovery discovery;
+
     public static String projectPath = computePath();
 
     @Override

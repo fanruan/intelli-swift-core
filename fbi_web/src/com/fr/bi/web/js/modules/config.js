@@ -1056,7 +1056,7 @@ BICst.DEFAULT_CHART_SETTING = {
     show_x_axis_title: false,
     x_axis_title: "",
     text_direction: 0,
-    chart_legend: BICst.CHART_LEGEND.NOT_SHOW,
+    chart_legend: BICst.CHART_LEGENDS.NOT_SHOW,
     show_data_label: false,
     show_data_table: false,
     show_grid_line: true
@@ -1278,13 +1278,13 @@ BICst.PIE_TOTAL_ANGLE = [{
 
 BICst.CHART_LEGEND = [{
     text: BI.i18nText("BI-Hidden"),
-    value: BICst.CHART_LEGEND.NOT_SHOW
+    value: BICst.CHART_LEGENDS.NOT_SHOW
 }, {
     text: BI.i18nText("BI-Ju_xia"),
-    value: BICst.CHART_LEGEND.BOTTOM
+    value: BICst.CHART_LEGENDS.BOTTOM
 }, {
     text: BI.i18nText("BI-Ju_Right"),
-    value: BICst.CHART_LEGEND.RIGHT
+    value: BICst.CHART_LEGENDS.RIGHT
 }];
 
 

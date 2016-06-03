@@ -45,7 +45,8 @@ public class Service4BIReport implements Service {
 
             new BIGetAllReportsDataAction(),
 
-            new BITemplateHangoutAction()
+            new BITemplateHangoutAction(),
+            new BIGetAllHangoutReportsAction()
     };
 
     @Override

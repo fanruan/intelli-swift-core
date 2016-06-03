@@ -117,7 +117,11 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         CubeTreeMap getter = new CubeTreeMap(comparator);
         Map<Object, IntList> treeMap = new TreeMap<Object, IntList>();
         for (int i = 0; i < detail.size(); i ++){
-            Object value = converter.result2Value(detail.get(i));
+            T t = detail.get(i);
+            Object value = t;
+            if(t != null) {
+                value = converter.result2Value(t);
+            }
             if (value != null) {
                 IntList list = treeMap.get(value);
                 if (list == null) {

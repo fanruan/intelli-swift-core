@@ -2,6 +2,7 @@ package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
@@ -20,9 +21,13 @@ import java.util.*;
  */
 public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, UserCubeTableSource> implements UserCubeTableSource {
     private long userId;
-    public UserETLTableSource(List<IETLOperator> operators, List<UserCubeTableSource> parents, long userId) {
+    @BICoreField
+    private List<AnalysisETLSourceField> fieldList;
+
+    public UserETLTableSource(List<IETLOperator> operators, List<UserCubeTableSource> parents, long userId, List<AnalysisETLSourceField> fieldList) {
         super(operators, parents);
         this.userId = userId;
+        this.fieldList = fieldList;
     }
 
     @Override
@@ -104,5 +109,15 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
             }
         }
         return false;
+    }
+
+    @Override
+    public UserCubeTableSource createUserTableSource(long userId) {
+        return this;
+    }
+
+    @Override
+    public List<AnalysisETLSourceField> getFieldsList() {
+        return fieldList;
     }
 }

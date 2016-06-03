@@ -131,6 +131,7 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
         return settings;
     }
 });
+
 BI.UpdateTableData.EVENT_SAVE = "EVENT_SAVE";
 BI.UpdateTableData.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 $.shortcut("bi.update_table_data", BI.UpdateTableData);
