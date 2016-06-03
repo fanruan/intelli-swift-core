@@ -7,10 +7,10 @@ package com.fr.bi.stable.utils.code;
 public class BILogger {
     boolean verbose = true;
     public static BILogger logger = null;
-//    public CubeLogInfo topicLog;
-//    public CubeLogInfo fragmentLog;
-//    public CubeLogInfo status;
-    public CubeLogInfo logInfo=new CubeLogInfo(0,"","");
+//    public CubeLogInfoTotal topicLog;
+//    public CubeLogInfoTotal fragmentLog;
+//    public CubeLogInfoTotal status;
+    public CubeLogInfoTotal cubeLogInfo=new CubeLogInfoTotal(0,"","");
 
     public static BILogger getLogger() {
         if (logger != null) {
@@ -19,7 +19,7 @@ public class BILogger {
         synchronized (BILogger.class) {
             if (logger == null) {
                 logger = new BILogger();
-                logger.logInfo=new CubeLogInfo(0,"","");
+                logger.cubeLogInfo=new CubeLogInfoTotal(0,"","");
             }
         }
         return logger;
@@ -48,11 +48,11 @@ public class BILogger {
     }
     
     public void addLog(long costTime,String message,String errMsg){
-        this.logInfo.setCostTime(this.logInfo.getCostTime()+costTime);
-        this.logInfo.setMessage(this.logInfo.getMessage()+message);
-        this.logInfo.setErrorMsg(this.logInfo.getErrorMsg()+errMsg);
+        this.cubeLogInfo.setCostTime(this.cubeLogInfo.getCostTime()+costTime);
+        this.cubeLogInfo.setMessage(this.cubeLogInfo.getMessage()+message);
+        this.cubeLogInfo.setErrorMsg(this.cubeLogInfo.getErrorMsg()+errMsg);
     }
-    public CubeLogInfo getLogInfo(){
-        return logInfo;
+    public CubeLogInfoTotal getCubeLogInfo(){
+        return this.cubeLogInfo;
     }
 }

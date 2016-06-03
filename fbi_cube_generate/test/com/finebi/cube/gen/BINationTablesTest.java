@@ -47,7 +47,7 @@ public class BINationTablesTest extends BICubeTestBase {
     
     public void testBILogger(){
         testBasic();
-        
+        assertTrue(BILogger.getLogger().getCubeLogInfo().getMessage().length()>0);
     }
     
     public void testBasic() {
@@ -80,7 +80,6 @@ public class BINationTablesTest extends BICubeTestBase {
             checkTable((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableA(), map);
             checkTable((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableB(), map);
             checkTable((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableC(), map);
-            assertTrue(BILogger.getLogger().getLogInfo().getMessage().length()>0);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

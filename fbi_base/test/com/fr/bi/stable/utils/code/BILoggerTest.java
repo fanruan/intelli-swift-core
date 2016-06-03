@@ -12,7 +12,7 @@ public class BILoggerTest extends TestCase{
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
-            assertTrue(BILogger.getLogger().getLogInfo().getErrorMsg().length()>0);
+            assertTrue(BILogger.getLogger().getCubeLogInfo().getErrorMsg().length()>0);
         }
     }
 

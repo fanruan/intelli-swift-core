@@ -21,4 +21,5 @@ public class CubeTableGenerateLog {
         this.costTime = costTime;
     }
     
+    
 }

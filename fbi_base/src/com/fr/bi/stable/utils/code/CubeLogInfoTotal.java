@@ -1,23 +1,23 @@
 package com.fr.bi.stable.utils.code;
 
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by wuk on 16/6/2.
  */
-public class CubeLogInfo {
+public class CubeLogInfoTotal {
     private long costTime;
     private String message;
     private String errorMsg;
     private List cubeGenerateLogList;
 
-    public CubeLogInfo(long costTime, String errorInfo, String errorMsg) {
+    public CubeLogInfoTotal(long costTime, String errorInfo, String errorMsg) {
         this.costTime = costTime;
         this.message = errorInfo;
         this.errorMsg = errorMsg;
-        this.cubeGenerateLogList = new ArrayList<CubeTableGenerateLog>();
+        this.cubeGenerateLogList = new LinkedList();
     }
 
     public void setCostTime(long costTime) {
@@ -44,14 +44,7 @@ public class CubeLogInfo {
         return errorMsg;
     }
 
-    public void addCubeTableGenerateLog(CubeTableGenerateLog cubeTableGenerateLog) {
-        cubeGenerateLogList.add(cubeTableGenerateLog);
-    }
-//    public CubeLogInfo add(CubeLogInfo logInfo){
-//        this.setCostTime(this.getCostTime()+logInfo.getCostTime());
-//        this.setMessage(this.getMessage()+logInfo.getMessage());
-//        this.setErrorMsg(this.errorMsg+logInfo.getErrorMsg());
-//       return this; 
-//    }
+    
+
 }
 
