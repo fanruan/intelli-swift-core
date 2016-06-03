@@ -31,6 +31,7 @@ import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.utils.code.BILogger;
 
+import com.fr.general.ComparatorUtils;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -44,7 +45,7 @@ public class BINationTablesTest extends BICubeTestBase {
     protected void setUp() throws Exception {
         super.setUp();
     }
-    
+
     public void testBILogger(){
         testBasic();
         assertTrue(BILogger.getLogger().getCubeLogInfo().getMessage().length()>0);
@@ -134,12 +135,14 @@ public class BINationTablesTest extends BICubeTestBase {
                     ids.add(row);
                 }
             });
-            assertEquals(ids.size(),2);
+            assertTrue(ComparatorUtils.equals(ids.toArray(), new int[]{0, 2}));
+
+
             //select name from persons where rowId in (0,1)
             final List<String> idList = new ArrayList<String>();
             idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(0));
             idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(1));
-            assertEquals(idList.size(),2);
+            assertTrue(ComparatorUtils.equals(idList.toArray(), new String[]{"nameA", "nameB"}));
 
 
         } catch (Exception e) {

@@ -22,8 +22,11 @@ public class BIStringUtils {
         }
     }
 
-    public static String append(String... strings) {
+    public static String appendWithSpace(String... strings) {
         return StringUtils.join(" ", strings);
+    }
+    public static String append(String... strings) {
+        return StringUtils.join("", strings);
     }
 
     /**

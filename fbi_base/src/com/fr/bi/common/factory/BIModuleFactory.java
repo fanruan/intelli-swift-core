@@ -66,7 +66,7 @@ public abstract class BIModuleFactory implements IModuleFactory {
             if (ComparatorUtils.equals(moduleTag, getFactoryTag())) {
                 currentFactory.registerClass(name, clazz);
             } else {
-                throw new IllegalArgumentException(BIStringUtils.append("the moduleTag " +
+                throw new IllegalArgumentException(BIStringUtils.appendWithSpace("the moduleTag " +
                         "don't belong to current module factory", moduleTag));
             }
         }
@@ -81,7 +81,7 @@ public abstract class BIModuleFactory implements IModuleFactory {
             if (ComparatorUtils.equals(moduleTag, getFactoryTag())) {
                 currentFactory.registerObject(name, object);
             } else {
-                throw new IllegalArgumentException(BIStringUtils.append("the moduleTag " +
+                throw new IllegalArgumentException(BIStringUtils.appendWithSpace("the moduleTag " +
                         "don't belong to current module factory", moduleTag));
             }
         }

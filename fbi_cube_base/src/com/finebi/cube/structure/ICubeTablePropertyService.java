@@ -48,4 +48,6 @@ public interface ICubeTablePropertyService extends Release {
 
     Set<String> getFieldNamesFromParent();
 
+    void forceRelease();
+
 }

@@ -6,7 +6,10 @@ import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
 import com.finebi.cube.tools.BILocationBuildTestTool;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import junit.framework.TestCase;
+
+import java.io.File;
 
 /**
  * This class created on 2016/3/10.
@@ -16,8 +19,8 @@ import junit.framework.TestCase;
  */
 public class BIDiskWriterReaderTest extends TestCase {
     private ICubePrimitiveResourceDiscovery discovery;
-//    public static String projectPath = "D:\\FineBI\\Git\\workHouse\\project\\fbi_cube_base\\test\\cube\\";
-    public static String projectPath = "/Users/wuk/Documents/fbicode/";
+
+    public static String projectPath = computePath();
 
     @Override
     protected void setUp() throws Exception {
@@ -27,6 +30,35 @@ public class BIDiskWriterReaderTest extends TestCase {
 
     private void down() {
 
+    }
+
+    private static String computePath() {
+        String classFileName = "classes";
+        String libFileName = "lib";
+        File directory = new File("");
+        String classRootPath = BIDiskWriterReaderTest.class.getResource("/").getPath();
+        classRootPath = classRootPath.replace("/", File.separator);
+        if (classRootPath.endsWith(File.separator)) {
+            classRootPath = cut(classRootPath, File.separator);
+        }
+        if (classRootPath.endsWith(classFileName)) {
+            classRootPath = cut(classRootPath, classFileName);
+        }
+        if (classRootPath.endsWith(libFileName)) {
+            classRootPath = cut(classRootPath, libFileName);
+        }
+        if (classRootPath.endsWith(File.separator)) {
+            classRootPath = BIStringUtils.append(classRootPath, "testFolder", File.separator, "cube");
+        }
+        return classRootPath;
+    }
+
+    private static String cut(String path, String suffix) {
+        return BIStringUtils.cutEndChar(path, suffix);
+    }
+
+    public void testPath() {
+        System.out.println(computePath());
     }
 
     public void testSimpleWriteReader() {
@@ -72,6 +104,7 @@ public class BIDiskWriterReaderTest extends TestCase {
             BILogger.getLogger().error(e.getMessage(), e);
         }
     }
+
     public void testSimpleObjectOpenTime() {
         try {
             ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "writer");
