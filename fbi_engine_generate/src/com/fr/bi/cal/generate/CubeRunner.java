@@ -173,6 +173,10 @@ public class CubeRunner {
     }
 
     public CubeBuildStuffManager getCubeGeneratingObjects() {
+                if (object == null) {
+            object = new CubeBuildStuffManager(biUser);
+            object.initialCubeStuff();
+        }
         return object;
     }
 
