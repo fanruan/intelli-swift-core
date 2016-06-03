@@ -64,6 +64,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
                     bottom: 33
                 }
             },
+            valueFormatter: o.valueFormatter,
             itemsCreator: function (op, callback) {
                 o.itemsCreator(op, function (res) {
                     if (op.times === 1 && BI.isNotNull(op.keyword)) {

@@ -18,6 +18,7 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
         return BI.extend(BI.MultiSelectTrigger.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-multi-select-trigger",
             itemsCreator: BI.emptyFn,
+            valueFormatter: BI.emptyFn,
             searcher: {},
             switcher: {},
 
@@ -34,6 +35,7 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
         this.searcher = BI.createWidget(o.searcher, {
             type: "bi.multi_select_searcher",
             itemsCreator: o.itemsCreator,
+            valueFormatter: o.valueFormatter,
             popup: {},
             adapter: o.adapter,
             masker: o.masker
@@ -52,6 +54,7 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
         });
         this.numberCounter = BI.createWidget(o.switcher, {
             type: 'bi.multi_select_check_selected_switcher',
+            valueFormatter: o.valueFormatter,
             itemsCreator: o.itemsCreator,
             adapter: o.adapter,
             masker: o.masker

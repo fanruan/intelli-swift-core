@@ -12,7 +12,7 @@ BI.MultiSelectSearcher = BI.inherit(BI.Widget, {
             itemsCreator: BI.emptyFn,
             el: {},
             popup: {},
-
+            valueFormatter: BI.emptyFn,
             adapter: null,
             masker: {}
         });
@@ -39,6 +39,7 @@ BI.MultiSelectSearcher = BI.inherit(BI.Widget, {
 
             popup: BI.extend({
                 type: "bi.multi_select_search_pane",
+                valueFormatter: o.valueFormatter,
                 keywordGetter: function () {
                     return self.editor.getValue();
                 },

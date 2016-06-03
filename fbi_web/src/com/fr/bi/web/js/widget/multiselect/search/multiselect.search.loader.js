@@ -10,7 +10,8 @@ BI.MultiSelectSearchLoader = BI.inherit(BI.Widget, {
         return BI.extend(BI.MultiSelectSearchLoader.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-multi-select-search-loader',
             itemsCreator: BI.emptyFn,
-            keywordGetter: BI.emptyFn
+            keywordGetter: BI.emptyFn,
+            valueFormatter: BI.emptyFn,
         });
     },
 
@@ -94,17 +95,24 @@ BI.MultiSelectSearchLoader = BI.inherit(BI.Widget, {
     },
 
     _filterValues: function (src) {
-        var keyword = this.options.keywordGetter();
+        var o = this.options;
+        var keyword = o.keywordGetter();
         var values = BI.deepClone(src.value) || [];
+        var newValues = BI.map(values, function (i, v) {
+            return {
+                text: o.valueFormatter(v) || v,
+                value: v
+            };
+        });
         if (BI.isKey(keyword)) {
-            var search = BI.Func.getSearchResult(values, keyword);
+            var search = BI.Func.getSearchResult(newValues, keyword);
             values = search.matched.concat(search.finded);
         }
         return BI.map(values, function (i, v) {
             return {
-                text: v,
-                title: v,
-                value: v,
+                text: v.text,
+                title: v.text,
+                value: v.value,
                 selected: src.type === BI.Selection.All
             }
         })
