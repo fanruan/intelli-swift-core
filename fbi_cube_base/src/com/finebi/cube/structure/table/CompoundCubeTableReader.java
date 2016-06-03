@@ -3,6 +3,7 @@ package com.finebi.cube.structure.table;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
+import com.finebi.cube.exception.BICubeTableAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -15,7 +16,6 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -56,7 +56,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
                 }
             }
         } else {
-            throw BINonValueUtils.beyondControl("Please generate Cube firstly");
+            throw new BICubeTableAbsentException("Please generate Cube firstly");
         }
         if (isParentAvailable()) {
             for (ICubeFieldSource field : parentTable.getFieldInfo()) {
