@@ -7,6 +7,7 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.structure.ICubeIndexDataGetterService;
+import com.finebi.cube.structure.ICubeVersion;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
@@ -17,7 +18,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeColumnReaderService<T> extends ICubeIndexDataGetterService, Release {
+public interface ICubeColumnReaderService<T> extends ICubeIndexDataGetterService,ICubeVersion, Release {
 
     /**
      * 获得分组值对应的位置。

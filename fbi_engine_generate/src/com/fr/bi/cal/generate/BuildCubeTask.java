@@ -21,8 +21,6 @@ import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -50,21 +48,17 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
-    private BILogManagerProvider biLogManager;
 
-    
 
-    public BuildCubeTask(BIUser biUser,CubeBuildStuff cubeBuildStuff) {
-        this.cubeBuildStuff=cubeBuildStuff;
+    public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
+        this.cubeBuildStuff = cubeBuildStuff;
         this.biUser = biUser;
 
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        biLogManager = BIConfigureManagerCenter.getLogManager();
-    }
 
-    
+    }
 
 
     @Override
@@ -79,8 +73,6 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void start() {
-
-        biLogManager.logStart(biUser.getUserId());
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
     }
 
@@ -93,29 +85,24 @@ public class BuildCubeTask implements CubeTask {
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
-        }finally {
-            biLogManager.logEnd(biUser.getUserId());
-            biLogManager.getBILog(-999);
-            
-            try {
-                System.out.println(biLogManager.createJSON(biUser.getUserId()));
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
         }
     }
 
     @Override
     public void run() {
-        
+
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
+
+
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
         operationManager.initialWatcher();
+
         manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
         manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getRelationPaths());
         manager.registerTableRelationPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
+        operationManager.setVersionMap(cubeBuildStuff.getVersions());
         operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
         operationManager.generateRelationBuilder(cubeBuildStuff.getTableSourceRelationSet());
         operationManager.generateTableRelationPath(relationPathSet);

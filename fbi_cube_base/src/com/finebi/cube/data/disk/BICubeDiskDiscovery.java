@@ -14,6 +14,8 @@ import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.common.factory.annotation.BISingletonObject;
 
+import java.io.File;
+
 /**
  * This class created on 2016/3/16.
  *
@@ -57,5 +59,11 @@ public class BICubeDiskDiscovery implements ICubeResourceDiscovery {
     @Override
     public ICubeWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException {
         return writerManager.buildCubeWriter(resourceLocation);
+    }
+
+    @Override
+    public boolean isResourceExist(ICubeResourceLocation resourceLocation) {
+        File file = new File(resourceLocation.getAbsolutePath());
+        return file.exists();
     }
 }

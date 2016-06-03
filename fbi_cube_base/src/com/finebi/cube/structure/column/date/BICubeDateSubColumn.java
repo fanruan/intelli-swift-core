@@ -66,12 +66,12 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
-    public int getVersion() {
+    public long getVersion() {
         return columnEntity.getVersion();
     }
 
     @Override
-    public void addVersion(int version) {
+    public void addVersion(long version) {
         columnEntity.addVersion(version);
     }
 

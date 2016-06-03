@@ -34,7 +34,7 @@ public class BICubePrimitiveWriterWrapper<T> implements ICubeWriter<T> {
 
     @Override
     public void clear() {
-        writer.clear();
+        writer.releaseHandler();
     }
 
     @Override

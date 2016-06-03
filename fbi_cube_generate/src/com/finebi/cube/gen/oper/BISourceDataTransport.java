@@ -37,14 +37,17 @@ public class BISourceDataTransport extends BIProcessor {
     protected ICubeTableEntityService tableEntityService;
     protected ICube cube;
     protected List<ITableKey> parents = new ArrayList<ITableKey>();
+    protected long version=0;
 
-    public BISourceDataTransport(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource) {
+    public BISourceDataTransport(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource,long version) {
         this.tableSource = tableSource;
         this.allSources = allSources;
         this.cube = cube;
         tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+        this.version = version;
         initialParents(parentTableSource);
     }
+
 
     private void initialParents(Set<CubeTableSource> parentTableSource) {
         if (parentTableSource != null) {
@@ -64,6 +67,7 @@ public class BISourceDataTransport extends BIProcessor {
 
         if (count >= 0) {
             tableEntityService.recordRowCount(count);
+            tableEntityService.addVersion(version);
         }
         long costTime=System.currentTimeMillis()-t;
 //        String range = ((BICubeConfiguration) ((BICubeResourceRetrieval) ((BICube) cube).resourceRetrievalService).cubeConfiguration).range;

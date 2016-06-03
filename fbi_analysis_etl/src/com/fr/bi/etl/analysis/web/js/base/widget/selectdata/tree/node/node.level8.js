@@ -84,6 +84,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             width:220,
             height:2
         })
+        this.loadingBar.setPercent(0);
         BI.createWidget({
             type: "bi.htape",
             element: this.element,
