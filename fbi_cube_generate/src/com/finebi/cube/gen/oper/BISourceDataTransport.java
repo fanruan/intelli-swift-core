@@ -16,6 +16,7 @@ import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.bridge.StableFactory;
@@ -47,6 +48,7 @@ public class BISourceDataTransport extends BIProcessor {
         this.version = version;
         initialParents(parentTableSource);
     }
+    
 
 
     private void initialParents(Set<CubeTableSource> parentTableSource) {
@@ -62,16 +64,21 @@ public class BISourceDataTransport extends BIProcessor {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t=System.currentTimeMillis();
 
-        recordTableInfo();
-        long count = transport();
+        try {
+            recordTableInfo();
+            long count = transport();
 
-        if (count >= 0) {
-            tableEntityService.recordRowCount(count);
-            tableEntityService.addVersion(version);
+            if (count >= 0) {
+                tableEntityService.recordRowCount(count);
+                tableEntityService.addVersion(version);
+            }
+            long costTime=System.currentTimeMillis()-t;
+            biLogManager.infoTable(tableSource.getPersistentTable(),costTime, -999);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            biLogManager.errorTable(tableSource.getPersistentTable(),e.getMessage(), -999);
+        } finally {
         }
-        long costTime=System.currentTimeMillis()-t;
-//        String range = ((BICubeConfiguration) ((BICubeResourceRetrieval) ((BICube) cube).resourceRetrievalService).cubeConfiguration).range;
-        biLogManager.infoTable(tableSource.getPersistentTable(),costTime, -999);
         return null;
     }
 

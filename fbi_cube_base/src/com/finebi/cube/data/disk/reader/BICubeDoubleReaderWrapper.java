@@ -12,5 +12,6 @@ import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 public class BICubeDoubleReaderWrapper extends BICubePrimitiveReaderWrapper<Double> implements ICubeDoubleReaderWrapper {
     public BICubeDoubleReaderWrapper(ICubePrimitiveReader<Double> reader) {
         super(reader);
+
     }
 }

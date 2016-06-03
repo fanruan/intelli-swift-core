@@ -9,6 +9,7 @@ import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.cal.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -53,11 +54,14 @@ public class BIRelationIndexGenerator extends BIProcessor {
     }
 
     public RelationColumnKey getRelaionColumeKeyInfo() {
+        ICubeFieldSource field = null;
         BITableSourceRelation biTableSourceRelation=null;
         List<BITableSourceRelation> relations =new ArrayList<BITableSourceRelation>();
-        relations.add(biTableSourceRelation); 
-        
-        return new RelationColumnKey(null,relations);
+        relations.add(biTableSourceRelation);
+
+relation.getForeignTable();
+        relation
+        return new RelationColumnKey(field,relations);
     }
     
     
