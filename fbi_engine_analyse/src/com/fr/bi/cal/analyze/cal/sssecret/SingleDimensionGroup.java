@@ -15,7 +15,6 @@ import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
-import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -83,7 +82,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
-        long rowCount = loader.getTableIndex(BIModuleUtils.getBusinessTableById(tableKey.getID()).getTableSource()).getRowCount();
+        BusinessTable target = ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
+        long rowCount = loader.getTableIndex(target.getTableSource()).getRowCount();
         int groupLimit = 10;
         if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
             useRealData = true;
