@@ -53,7 +53,7 @@ BI.ChartType = BI.inherit(BI.Widget, {
                     cls: "chart-type-combo"
                 }));
             } else {
-                if(item.value === BICst.WIDGET.MAP){
+                if (item.value === BICst.WIDGET.MAP) {
                     BI.each(BICst.SVG_MAP_TYPE, function (i, it) {
                         it.iconClass = it.cls;
                     });
@@ -66,7 +66,7 @@ BI.ChartType = BI.inherit(BI.Widget, {
                     }, {
                         cls: "chart-type-combo"
                     }));
-                }else{
+                } else {
                     result.push(BI.extend({
                         type: "bi.icon_button",
                         width: 40,

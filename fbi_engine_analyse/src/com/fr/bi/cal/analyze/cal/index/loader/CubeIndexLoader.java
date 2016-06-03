@@ -884,7 +884,7 @@ public class CubeIndexLoader {
         TargetCalculator summary = CountCalculator.NONE_TARGET_COUNT_CAL;
         BusinessTable tableBelongTo = BusinessFieldHelper.getBusinessTable(row[0].getField());
         GroupValueIndex gvi = widget.createFilterGVI(row, tableBelongTo, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(tableBelongTo));
-        NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(new BIBusinessTable(null), gvi, session.getLoader());
+        NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(BIBusinessTable.createEmptyTable(), gvi, session.getLoader());
         RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, rowDimension, expander, session, summary, widget, useRealData);
         MergerInfo mergerInfo = new MergerInfo(null, gvi, rootDimensionGroup, root, summary, summary.createTargetGettingKey(), session, rowDimension, expander, null, widget);
         List<MergerInfo> mergerInfoList = new ArrayList<MergerInfo>();

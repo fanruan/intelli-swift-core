@@ -10,6 +10,7 @@ BI.MultiSelectCheckSelectedSwitcher = BI.inherit(BI.Widget, {
         return BI.extend(BI.MultiSelectCheckSelectedSwitcher.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-multi-select-check-selected-switcher',
             itemsCreator: BI.emptyFn,
+            valueFormatter: BI.emptyFn,
             el: {},
             popup: {},
             adapter: null,
@@ -35,6 +36,7 @@ BI.MultiSelectCheckSelectedSwitcher = BI.inherit(BI.Widget, {
             el: this.button,
             popup: BI.extend({
                 type: "bi.multi_select_check_pane",
+                valueFormatter: o.valueFormatter,
                 itemsCreator: o.itemsCreator,
                 onClickContinueSelect: function () {
                     self.switcher.hideView();

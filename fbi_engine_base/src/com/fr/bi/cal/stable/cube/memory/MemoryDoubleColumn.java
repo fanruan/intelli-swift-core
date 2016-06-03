@@ -17,4 +17,9 @@ public class MemoryDoubleColumn extends AbstractSingleMemoryColumn<Double> {
     protected void initDetail() {
         detail = new AnyIndexArray<Double>();
     }
+
+
+    protected   Double createEmptyValue() {
+        return Double.NaN;
+    }
 }

@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.detail;
 
+import com.finebi.cube.CubeVersion;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeReader;
 import com.finebi.cube.data.output.ICubeWriter;
@@ -111,6 +112,21 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     public void clear() {
         resetCubeReader();
         resetCubeWriter();
+
+    }
+
+    @Override
+    public int getClassType() {
+        return 0;
+    }
+
+    @Override
+    public CubeVersion getVersion() {
+        return null;
+    }
+
+    @Override
+    public void recordVersion(CubeVersion version) {
 
     }
 }
