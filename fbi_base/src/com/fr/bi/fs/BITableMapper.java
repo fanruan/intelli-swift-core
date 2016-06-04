@@ -41,9 +41,9 @@ public class BITableMapper {
         public static final String FIELD_CREATETIME = "createtime";
         public static final String FIELD_DESCRIPTION = "description";
         public static final String FIELD_MODIFYTIME = "modifytime";
-        public static final String FIELD_STATE = "state";
+        public static final String FIELD_STATUS = "status";
 
-        public static final RelationFCMapper RELATION_BISHAREDREPORTNODE = new OToMRelationFCMapper("biSharedReportNoedeSet", BISharedReportNode.class, BI_SHARED_REPORT_NODE.FIELD_SHARED_REPORT_ID);
+        public static final RelationFCMapper RELATION_BISHAREDREPORTNODE = new OToMRelationFCMapper("biSharedReportNoedeSet", BISharedReportNode.class, BI_SHARED_REPORT_NODE.FIELD_REPORT_ID);
 
         public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(
                 BIReportNode.class,
@@ -58,7 +58,7 @@ public class BITableMapper {
                         new CommonFieldColumnMapper(FIELD_DESCRIPTION, Types.VARCHAR, new ColumnSize(1023), false),
 
                         RELATION_BISHAREDREPORTNODE,
-                        new CommonFieldColumnMapper(FIELD_STATE, Types.INTEGER, new ColumnSize(10), true)
+                        new CommonFieldColumnMapper(FIELD_STATUS, Types.INTEGER, new ColumnSize(10), true)
                 }
         );
     }
@@ -84,15 +84,17 @@ public class BITableMapper {
     }
 
     public static class BI_SHARED_REPORT_NODE {
-        public static final String FIELD_SHARED_REPORT_ID = "bid";
-        public static final String FIELD_SHARED_USER_ID = "userid";
+        public static final String FIELD_REPORT_ID = "reportId";
+        public static final String FIELD_CREATE_BY = "createBy";
+        public static final String FIELD_SHARE_TO = "createBy";
 
         public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(
                 BISharedReportNode.class,
                 new FieldColumnMapper[]{
                         new PrimaryKeyFCMapper("id", Types.BIGINT, new ColumnSize(10)),
-                        new MToOForeignFCMapper(FIELD_SHARED_REPORT_ID, Types.BIGINT, FIELD_SHARED_REPORT_ID, new ColumnSize(10), false, BIReportNode.class, true),
-                        new MToOForeignFCMapper(FIELD_SHARED_USER_ID, Types.BIGINT, FIELD_SHARED_USER_ID, new ColumnSize(10), false, User.class, true)
+                        new MToOForeignFCMapper(FIELD_REPORT_ID, Types.BIGINT, FIELD_REPORT_ID, new ColumnSize(10), false, BIReportNode.class, true),
+                        new MToOForeignFCMapper(FIELD_CREATE_BY, Types.BIGINT, FIELD_CREATE_BY, new ColumnSize(10), false, User.class, true),
+                        new MToOForeignFCMapper(FIELD_SHARE_TO, Types.BIGINT, FIELD_SHARE_TO, new ColumnSize(10), false, User.class, true)
                 }
         );
     }

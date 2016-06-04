@@ -2,11 +2,9 @@ package com.fr.bi.web.report.services;
 
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.fs.base.entity.User;
-import com.fr.fs.control.CompanyRoleControl;
-import com.fr.fs.control.CustomRoleControl;
-import com.fr.fs.control.DepartmentControl;
-import com.fr.fs.control.UserControl;
+import com.fr.fs.control.*;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -33,7 +31,7 @@ public class BIGetAllReportsDataAction extends ActionNoSessionCMD {
             JSONArray departs = DepartmentControl.getInstance().getAllDepartmentInfo(true);
             JSONArray companyRoles = CompanyRoleControl.getInstance().getAllCompanyRoleInfo();
             JSONArray customRoles = CustomRoleControl.getInstance().getAllCustomRoleInfo();
-            for(int i = 0; i < companyRoles.length(); i++){
+            for (int i = 0; i < companyRoles.length(); i++) {
                 JSONObject cRole = companyRoles.getJSONObject(i);
                 int rId = cRole.getInt("id");
                 Set<Long> uIds = CompanyRoleControl.getInstance().getUsersID(rId);
@@ -44,7 +42,7 @@ public class BIGetAllReportsDataAction extends ActionNoSessionCMD {
                 }
                 cRole.put("users", users);
             }
-            for(int i = 0; i < customRoles.length(); i++){
+            for (int i = 0; i < customRoles.length(); i++) {
                 JSONObject cRole = customRoles.getJSONObject(i);
                 int rId = cRole.getInt("id");
                 Set<Long> uIds = CustomRoleControl.getInstance().getUsersID(rId);
@@ -60,12 +58,19 @@ public class BIGetAllReportsDataAction extends ActionNoSessionCMD {
             JSONArray users = new JSONArray();
             JSONArray reports = new JSONArray();
             List<User> userList = UserControl.getInstance().findAllUser();
-            for(int i = 0; i < userList.size(); i++){
+            JSONArray allEntry = EntryControl.getInstance().getRootNode().createAllEntryJSONArray(UserControl.getInstance().getSuperManagerID(), true);
+            for (int i = 0; i < userList.size(); i++) {
                 User u = userList.get(i);
                 users.put(u.createEditInfoJSONConfig());
                 List<BIReportNode> singleUserReports = BIDAOUtils.findByUserID(u.getId());
-                for(int j = 0; j < singleUserReports.size(); j++){
-                    reports.put(singleUserReports.get(j).createJSONConfig());
+                for (int j = 0; j < singleUserReports.size(); j++) {
+                    BIReportNode node = singleUserReports.get(j);
+                    //TODO 在这里去check status不合适，然而在模板管理的地方删除模板也不好处理bi模板的状态问题
+                    if (node.getStatus() == BIReportConstant.REPORT_STATUS.HANGOUT &&
+                            checkReportStatus(node.getId(), node.getUserId(), allEntry)) {
+                        node.setStatus(BIReportConstant.REPORT_STATUS.NORMAL);
+                    }
+                    reports.put(node.createJSONConfig());
                 }
             }
             jo.put("departs", departs);
@@ -74,6 +79,26 @@ public class BIGetAllReportsDataAction extends ActionNoSessionCMD {
             jo.put("reports", reports);
         }
         WebUtils.printAsJSON(res, jo);
+    }
+
+    private boolean checkReportStatus(long reportId, long createBy, JSONArray entries) throws Exception {
+        boolean needReset = true;
+        for (int i = 0; i < entries.length(); i++) {
+            JSONObject entry = entries.getJSONObject(i);
+            JSONArray childNodes = entry.optJSONArray("ChildNodes");
+            if (childNodes != null && checkReportStatus(reportId, createBy, childNodes) == false) {
+                needReset = false;
+                break;
+            }
+            long rId = entry.optLong("reportId");
+            long uId = entry.optLong("createBy");
+            if (reportId == rId && uId == createBy) {
+                needReset = false;
+                break;
+            }
+        }
+        return needReset;
+
     }
 
     @Override
