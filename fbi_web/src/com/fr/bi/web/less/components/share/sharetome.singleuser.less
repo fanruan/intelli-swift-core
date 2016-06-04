@@ -1,0 +1,35 @@
+@import "../../bibase";
+.bi-share-to-me-single-user{
+  border: 1px solid @color-bi-border-normal;
+  .border-radius(2px);
+  & .user-name{
+    font-size: @font-size-14;
+    color: @color-bi-text-gray;
+    background: @color-bi-background-gray;
+  }
+  & .report-item-list{
+    border-top: 1px solid @color-bi-border-line;
+    &:hover{
+      background: @color-bi-background-gray;
+    }
+    & .report-name{
+      font-size: @font-size-14;
+      color: @color-bi-text-black;
+    }
+    & .time-text{
+      color: @color-bi-text-gray;
+    }
+    & .normal-mark{
+      font-size: @font-size-16;
+    }
+  }
+  & .report-item-card{
+    &:hover{
+      background: @color-bi-background-gray;
+    }
+    & .report-name{
+      font-size: @font-size-14;
+      color: @color-bi-text-black;
+    }
+  }
+}

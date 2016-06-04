@@ -116,5 +116,10 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
         return BITableDataDAOManager.getInstance().findReportsByShare2User(userId);
     }
 
+    @Override
+    public void removeSharedByReport(long reportId, long createBy) {
+        BITableDataDAOManager.getInstance().removeSharedByReport(reportId, createBy);
+    }
+
 
 }
