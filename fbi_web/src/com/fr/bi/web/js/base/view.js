@@ -14,14 +14,14 @@ BI.View = BI.inherit(BI.V, {
             }
         }).listenTo(this.model, "change", function (changed) {
             this.delegateEvents();
-        }).listenTo(this.model, "changed", function (changed, prev) {
+        }).listenTo(this.model, "changed", function (changed, prev, context, options) {
             if (BI.has(changed, "current") && BI.size(changed) > 1) {
                 throw new Error("refresh操作不能调用set操作");
             }
             var notLocal = !BI.has(changed, "current") && !this.local() && this.notifyParent().notify();
             this.model.actionEnd() && this.actionEnd();
             this.model._changing_ = true;
-            notLocal && !BI.isEmpty(changed) && this.change(changed, prev);
+            notLocal && !BI.isEmpty(changed) && this.change(changed, prev, context, options);
             this.model._changing_ = false;
             this.model.actionEnd() && this.actionEnd();
         }).listenTo(this.model, "splice", function (arg) {

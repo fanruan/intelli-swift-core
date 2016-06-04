@@ -54,7 +54,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
-        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function(obj){
+        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
         });
 
@@ -120,19 +120,19 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }
     },
 
-    _buildChartDrill: function(){
+    _buildChartDrill: function () {
         var self = this;
         this.chartDrill = BI.createWidget({
             type: "bi.chart_drill",
             wId: this.model.get("id")
         });
-        this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function(widget){
+        this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
         this.chartDrill.populate();
     },
 
-    _onClickChart: function(obj){
+    _onClickChart: function (obj) {
         this.chartDrill.populate(obj);
     },
 
@@ -218,7 +218,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self.filterPane.setVisible(!self.filterPane.isVisible());
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.open(FR.servletURL+ "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                    window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
                         + window.encodeURIComponent(self.model.get("name")));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY:
@@ -233,7 +233,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     break;
             }
         });
-        combo.on(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW, function(){
+        combo.on(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW, function () {
             self.chartDrill.populate();
         });
 
@@ -288,7 +288,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     },
 
-    change: function (changed) {
+    change: function (changed, prev, context, options) {
+        if (options.notrefresh === true) {
+            return;
+        }
         if (BI.has(changed, "bounds")) {
             this.tableChart.resize();
             this.chartDrill.populate();
@@ -301,7 +304,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
-        if(BI.has(changed, "type")) {
+        if (BI.has(changed, "type")) {
             this.tableChart.resize();
         }
     },
