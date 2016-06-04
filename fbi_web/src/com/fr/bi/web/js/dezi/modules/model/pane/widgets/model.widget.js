@@ -12,7 +12,9 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
 
     change: function (changed, pre) {
         if (BI.has(changed, "detail")) {
-            this.set(this.get("detail"));
+            this.set(this.get("detail"), {
+                notrefresh: true
+            });
         }
         //维度或指标改变时需要调节联动设置
         if (BI.has(changed, "dimensions")) {
