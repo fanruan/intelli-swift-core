@@ -56,7 +56,7 @@ public class BINumberDimension extends BIAbstractDimension {
     @Override
     public Object getValueByType(Object data) {
         if (group.getType() == BIReportConstant.GROUP.ID_GROUP){
-            return data == null ? null : Long.parseLong(data.toString());
+            return data == null ? null : Double.parseDouble(data.toString());
         }
         return data == null ? StringUtils.EMPTY : data.toString();
     }

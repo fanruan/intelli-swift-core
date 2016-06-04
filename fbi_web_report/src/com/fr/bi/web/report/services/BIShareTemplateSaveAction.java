@@ -2,6 +2,7 @@ package com.fr.bi.web.report.services;
 
 import com.fr.bi.fs.BISharedReportDAO;
 import com.fr.fs.control.UserControl;
+import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.Decrypt;
 import com.fr.json.JSONArray;
 import com.fr.web.core.ActionNoSessionCMD;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 public class BIShareTemplateSaveAction extends ActionNoSessionCMD {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        long userId = ServiceUtils.getCurrentUserID(req);
         String templateIdsString = WebUtils.getHTTPRequestParameter(req, "reports");
         String userIdsString = WebUtils.getHTTPRequestParameter(req, "users");
 
@@ -29,7 +31,7 @@ public class BIShareTemplateSaveAction extends ActionNoSessionCMD {
             for (int i = 0, len = userIds.length; i < len; i++) {
                 userIds[i] = jaUserIds.getLong(i);
             }
-            UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).resetSharedByReportIdAndUsers(jaTemplateIds.getLong(j), userIds);
+            UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).resetSharedByReportIdAndUsers(jaTemplateIds.getLong(j), userId, userIds);
         }
     }
 

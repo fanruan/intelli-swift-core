@@ -493,9 +493,9 @@ public class BIReportConstant {
     public static final String SYSTEM_TIME = "__system_time-3e1d05defe78__";
 
     public static final class REPORT_STATUS {
-        public static final int NORMAL = 1;
-        public static final int APPLYING = 2;
-        public static final int HANGOUT = 3;
+        public static final int APPLYING = 1;
+        public static final int HANGOUT = 2;
+        public static final int NORMAL = 3;
     }
 
 }
