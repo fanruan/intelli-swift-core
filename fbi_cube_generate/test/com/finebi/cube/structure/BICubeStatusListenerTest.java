@@ -8,7 +8,7 @@ import com.finebi.cube.BICubeTestBase;
  * @author Connery
  * @since 4.0
  */
-public class BICubeTest extends BICubeTestBase {
+public class BICubeStatusListenerTest extends BICubeTestBase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
