@@ -14,7 +14,7 @@ BI.Model = BI.inherit(BI.M, {
         BI.Model.superclass._init.apply(this, arguments);
         this.on("change:current", function (obj, val) {
             BI.isNotNull(val) && this.refresh(val);
-        }).on("change", function (changed, prev) {
+        }).on("change", function (changed, prev, context, options) {
             if (this._start === true || BI.has(changed, "current")) {
                 return;
             }
@@ -22,7 +22,7 @@ BI.Model = BI.inherit(BI.M, {
             if (!this.local()) {
                 !BI.has(this._tmp, BI.keys(changed)) && this.parent && this.parent._change(this);
                 this._changing_ = true;
-                this.change(changed, prev);
+                this.change(changed, prev, context, options);
                 this._changing_ = false;
             }
         });

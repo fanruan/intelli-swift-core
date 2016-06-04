@@ -70,6 +70,9 @@ public class BIGroupFactory {
             case BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP:
                 group = new CustomNumberGroup();
                 break;
+            case BIReportConstant.GROUP.ID_GROUP:
+                group = new IdGroup();
+                break;
             default:
                 group = new NoGroup();
                 break;
