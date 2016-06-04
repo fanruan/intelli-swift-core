@@ -60,6 +60,38 @@ public class BIDBUtils {
         }
     }
 
+    public static int classTypeToSql(int classType) {
+        switch (classType) {
+            case DBConstant.CLASS.INTEGER: {
+                return Types.INTEGER;
+            }
+            case DBConstant.CLASS.LONG: {
+                return Types.BIGINT;
+            }
+            case DBConstant.CLASS.FLOAT: {
+                return Types.FLOAT;
+            }
+            case DBConstant.CLASS.DOUBLE: {
+                return Types.DOUBLE;
+            }
+            case DBConstant.CLASS.DECIMAL: {
+                return Types.DOUBLE;
+            }
+            case DBConstant.CLASS.DATE:
+                return Types.DATE;
+            case DBConstant.CLASS.TIMESTAMP:
+                return Types.TIMESTAMP;
+            case DBConstant.CLASS.TIME:
+                return Types.TIME;
+            case DBConstant.CLASS.ROW:
+                return Types.INTEGER;
+            default: {
+                return Types.VARCHAR;
+            }
+        }
+
+    }
+
     /**
      * 通过java类判断字段类型
      *

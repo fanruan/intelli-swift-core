@@ -78,9 +78,11 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     private int getDetailWidgetSqlType(int index) {
         BIAbstractDetailTarget target = (BIAbstractDetailTarget) widget.getDimensions()[index];
-        if (target.isCalculateTarget() || target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER){
-            return Types.NUMERIC ;
-        } else {
+        if (target.isCalculateTarget()) {
+           return Types.DOUBLE;
+        }  else if(target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
+            return BIDBUtils.classTypeToSql(target.getStatisticElement().getClassType()) ;
+        }else {
             return getTypeByGroup(target.getGroup());
         }
     }
@@ -88,7 +90,9 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     private int getTableWidgetSqlType(int index){
         BIDimension dim = (BIDimension) widget.getDimensions()[index];
         if (dim.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER){
-            return dim.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP ? Types.NUMERIC : Types.VARCHAR;
+            return (dim.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP
+                    || dim.getGroup().getType() == BIReportConstant.GROUP.ID_GROUP) ?
+                    BIDBUtils.classTypeToSql(dim.getStatisticElement().getClassType())  : Types.VARCHAR;
         } else {
             return getTypeByGroup(dim.getGroup());
         }
