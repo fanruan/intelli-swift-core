@@ -7,7 +7,10 @@ import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.dao.PlatformDataAccessObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author richie
@@ -19,7 +22,7 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
     private static HSQLBIReportDAO dao = null;
 
     public static HSQLBIReportDAO getInstance() {
-        dao =  BIConstructorUtils.constructObject(HSQLBIReportDAO.class, dao);
+        dao = BIConstructorUtils.constructObject(HSQLBIReportDAO.class, dao);
         return dao;
     }
 
@@ -94,17 +97,19 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
     }
 
     @Override
-	public void resetSharedByReportIdAndUsers(long reportId, long[] userids) {
-        java.util.List sharedNodes = createSession().listByFieldValue(BISharedReportNode.class, BITableMapper.BI_SHARED_REPORT_NODE.FIELD_SHARED_REPORT_ID, new Long(reportId));
-
+    public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(BITableMapper.BI_SHARED_REPORT_NODE.FIELD_REPORT_ID, reportId);
+        map.put(BITableMapper.BI_SHARED_REPORT_NODE.FIELD_CREATE_BY, createBy);
+        List sharedNodes = createSession().listByFieldValues(BISharedReportNode.class, map);
         IntList indicesOfNewUserIdsMatchedInOld = new IntList();
         for (int i = 0, len = sharedNodes.size(); i < len; i++) {
             BISharedReportNode node = (BISharedReportNode) sharedNodes.get(i);
-            long userIdShared = node.getUserId();
+            long userIdShared = node.getShareTo();
 
             boolean findMatch = false;
-            for (int ui = 0; ui < userids.length; ui++) {
-                if (userids[ui] == userIdShared) {
+            for (int ui = 0; ui < userIds.length; ui++) {
+                if (userIds[ui] == userIdShared) {
                     indicesOfNewUserIdsMatchedInOld.add(ui);
                     findMatch = true;
                     break;
@@ -115,42 +120,33 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
             }
         }
 
-        for (int i = 0; i < userids.length; i++) {
+        for (int i = 0; i < userIds.length; i++) {
             if (!indicesOfNewUserIdsMatchedInOld.contain(i)) {
-                long newUserId2Add = userids[i];
-                createSession().saveOrUpdate(new BISharedReportNode(reportId, newUserId2Add));
+                long newUserId2Add = userIds[i];
+                createSession().saveOrUpdate(new BISharedReportNode(reportId, createBy, newUserId2Add));
             }
         }
     }
 
     @Override
-	public User[] findUsersByReportId(long id) {
-        java.util.List l = createSession().listByFieldValue(BISharedReportNode.class, BITableMapper.BI_SHARED_REPORT_NODE.FIELD_SHARED_REPORT_ID, new Long(id));
-        java.util.List users = new java.util.ArrayList();
-        for (int i = 0; i < l.size(); i++) {
-            BISharedReportNode node = (BISharedReportNode) l.get(i);
-            try {
-                User user = UserControl.getInstance().getUser(node.getUserId());
-                if (user != null) {
-                    users.add(user);
-                }
-            } catch (Exception e) {
-            }
+    public List<User> findUsersByReport(long reportId, long createBy) throws Exception {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(BITableMapper.BI_SHARED_REPORT_NODE.FIELD_REPORT_ID, reportId);
+        map.put(BITableMapper.BI_SHARED_REPORT_NODE.FIELD_CREATE_BY, createBy);
+        List sReports = createSession().listByFieldValues(BISharedReportNode.class, map);
+        List<User> users = new ArrayList<User>();
+        for(int i = 0; i < sReports.size(); i++){
+            BISharedReportNode node = (BISharedReportNode)sReports.get(i);
+            users.add(UserControl.getInstance().getUser(node.getShareTo()));
         }
-
-        return (User[]) users.toArray(new User[users.size()]);
+        return users;
     }
 
     @Override
-	public long[] findTemplateIdsByUserId(long userId) {
-        java.util.List l = createSession().listByFieldValue(BISharedReportNode.class, BITableMapper.BI_SHARED_REPORT_NODE.FIELD_SHARED_USER_ID, new Long(userId));
-
-        long[] templateIds = new long[l.size()];
-        for (int i = 0; i < l.size(); i++) {
-            BISharedReportNode node = (BISharedReportNode) l.get(i);
-            templateIds[i] = node.getBid();
-        }
-
-        return templateIds;
+    public List<BISharedReportNode> findReportsByShare2User(long userId) {
+        List<BISharedReportNode> sReports = createSession().listByFieldValue(BISharedReportNode.class, BITableMapper.BI_SHARED_REPORT_NODE.FIELD_SHARE_TO, userId);
+        return sReports;
     }
+
+
 }

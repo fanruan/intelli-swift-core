@@ -32,4 +32,6 @@ public interface IResourceCache<R> {
      * @return 是否可获得
      */
     boolean isAvailableResource(ICubeResourceLocation location);
+
+    void forceRelease();
 }

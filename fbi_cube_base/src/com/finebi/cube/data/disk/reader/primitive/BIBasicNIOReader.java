@@ -16,6 +16,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -29,10 +30,17 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
     private boolean isValid = true;
     private ICubeSourceReleaseManager releaseManager;
     private File baseFile;
+    private String readerHandler;
 
     public BIBasicNIOReader(File cacheFile) {
         this.baseFile = cacheFile;
         this.isValid = true;
+        readerHandler = UUID.randomUUID().toString();
+    }
+
+    @Override
+    public String getReaderHandler() {
+        return readerHandler;
     }
 
     public BIBasicNIOReader(String cacheFilePath) {
@@ -98,7 +106,7 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
     protected abstract T getValue(Long page, int index);
 
     @Override
-    public void clear() {
+    public void releaseHandler() {
         if (useReleaseManager()) {
             releaseManager.release(this);
         } else {
@@ -188,6 +196,6 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
 
     @Override
     public boolean canReader() {
-        return baseFile.exists() && baseFile.length() > 0;
+        return isValid && baseFile.exists() && baseFile.length() > 0;
     }
 }

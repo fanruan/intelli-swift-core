@@ -1,7 +1,7 @@
 package com.finebi.cube.data.output.primitive;
 
+import com.finebi.cube.CubeResourceRelease;
 import com.finebi.cube.data.ICubeSourceReleaseManager;
-import com.fr.bi.common.inter.Release;
 
 /**
  * This class created on 2016/3/2.
@@ -9,7 +9,7 @@ import com.fr.bi.common.inter.Release;
  * @author Connery
  * @since 4.0
  */
-public interface ICubePrimitiveWriter<T> extends Release {
+public interface ICubePrimitiveWriter<T> extends CubeResourceRelease {
     /**
      * 在指定的位置写入相应的值
      *
@@ -24,8 +24,9 @@ public interface ICubePrimitiveWriter<T> extends Release {
 
     void releaseSource();
 
-    void forceRelease();
+    String getWriterHandler();
 
-
-    boolean isForceReleased();
+    boolean canWriter();
 }
+
+

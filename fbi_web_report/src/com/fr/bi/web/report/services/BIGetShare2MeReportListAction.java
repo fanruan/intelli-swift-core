@@ -27,7 +27,7 @@ public class BIGetShare2MeReportListAction extends ActionNoSessionCMD {
         //callback 用于判断是否是用JSONP方式跨域使用
         String callback = WebUtils.getHTTPRequestParameter(req, "callback");
         long userId = ServiceUtils.getCurrentUserID(req);
-        List<BIReportNode> nodeList = BIDAOUtils.getBIReportNodesShared2UserId(userId);
+        List<BIReportNode> nodeList = BIDAOUtils.getBIReportNodesByShare2User(userId);
         BISortUtils.sortByModifyTime(nodeList);
         JSONArray ja = new JSONArray();
         Iterator<BIReportNode> iter = nodeList.iterator();

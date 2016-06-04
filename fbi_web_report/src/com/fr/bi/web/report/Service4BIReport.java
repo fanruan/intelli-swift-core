@@ -36,7 +36,6 @@ public class Service4BIReport implements Service {
             new BIShareTemplateSaveAction(),
             new BIGetAllUserInfoAction(),
             new BIMoveTemplateSaveAction(),
-            new BIShareTemplateFetchAction(),
             new BITemplateFolderRenameAction(),
             new BITemplateFolderDeleteAction(),
             new BIGetMyReportAndFolderAction(),
@@ -46,7 +45,8 @@ public class Service4BIReport implements Service {
             new BIGetAllReportsDataAction(),
 
             new BITemplateHangoutAction(),
-            new BIGetAllHangoutReportsAction()
+            new BIGetAllHangoutReportsAction(),
+            new BIReportHangout2PlateAction()
     };
 
     @Override

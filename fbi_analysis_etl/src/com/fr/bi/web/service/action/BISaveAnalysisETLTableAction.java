@@ -53,7 +53,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
         BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
         BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
-        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
+        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
         JSONObject result = new JSONObject();
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
         JSONObject translations = new JSONObject();

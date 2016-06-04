@@ -1,3 +1,16 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
+.bi-all-reports-card-item:hover {
+  background: #f4f4f4;
+}
+.bi-all-reports-card-item .normal-mark {
+  font-size: 16px;
+}
+.bi-all-reports-card-item .mark-icon {
+  background: #ffffff;
+  font-size: 16px;
+}
+.bi-all-reports-card-item .info-card {
+  background: #fff5c1;
+}

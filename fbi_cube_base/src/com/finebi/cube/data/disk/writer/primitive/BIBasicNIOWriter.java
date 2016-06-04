@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.UUID;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
@@ -26,8 +27,10 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     protected final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private long file_index = -1L;
     private boolean isReleased = false;
+    private String writerHandler;
 
     public BIBasicNIOWriter(File cacheFile) {
+        writerHandler = UUID.randomUUID().toString();
         this.baseFile = cacheFile;
         if (!baseFile.exists()) {
             try {
@@ -47,7 +50,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 
 
     @Override
-    public void clear() {
+    public void releaseHandler() {
         readWriteLock.writeLock().lock();
         try {
             if (useReleaseManager()) {
@@ -77,8 +80,18 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     }
 
     @Override
+    public String getWriterHandler() {
+        return writerHandler;
+    }
+
+    @Override
     public void forceRelease() {
         releaseSource();
+    }
+
+    @Override
+    public boolean canWriter() {
+        return !isReleased;
     }
 
     @Override
