@@ -1455,252 +1455,874 @@ define('render/RenderFactory',['require','./RenderLibrary','../Constants','../ut
 
 });
 /**
+ * Created by eason on 16/5/26.
+ */
+
+define('dom/Browser',['require'],function(require){
+
+    var ua = navigator.userAgent.toLowerCase(),
+        doc = document.documentElement,
+
+        ie = 'ActiveXObject' in window,
+
+        webkit    = ua.indexOf('webkit') !== -1,
+        phantomjs = ua.indexOf('phantom') !== -1,
+        android23 = ua.search('android [23]') !== -1,
+        chrome    = ua.indexOf('chrome') !== -1,
+        gecko     = ua.indexOf('gecko') !== -1  && !webkit && !window.opera && !ie,
+
+        mobile = typeof orientation !== 'undefined' || ua.indexOf('mobile') !== -1,
+        msPointer = !window.PointerEvent && window.MSPointerEvent,
+        pointer = window.PointerEvent || msPointer,
+
+        ie3d = ie && ('transition' in doc.style),
+        webkit3d = ('WebKitCSSMatrix' in window) && ('m11' in new window.WebKitCSSMatrix()) && !android23,
+        gecko3d = 'MozPerspective' in doc.style,
+        opera12 = 'OTransition' in doc.style;
+
+    var touch = !window.L_NO_TOUCH && (pointer || 'ontouchstart' in window ||
+        (window.DocumentTouch && document instanceof window.DocumentTouch));
+
+    return {
+        ie: ie,
+
+        // @property ielt9: Boolean
+        // `true` for Internet Explorer versions less than 9.
+        ielt9: ie && !document.addEventListener,
+
+        // @property edge: Boolean
+        // `true` for the Edge web browser.
+        edge: 'msLaunchUri' in navigator && !('documentMode' in document),
+
+        // @property webkit: Boolean
+        // `true` for webkit-based browsers like Chrome and Safari (including mobile versions).
+        webkit: webkit,
+
+        // @property gecko: Boolean
+        // `true` for gecko-based browsers like Firefox.
+        gecko: gecko,
+
+        // @property android: Boolean
+        // `true` for any browser running on an Android platform.
+        android: ua.indexOf('android') !== -1,
+
+        // @property android23: Boolean
+        // `true` for browsers running on Android 2 or Android 3.
+        android23: android23,
+
+        // @property chrome: Boolean
+        // `true` for the Chrome browser.
+        chrome: chrome,
+
+        // @property safari: Boolean
+        // `true` for the Safari browser.
+        safari: !chrome && ua.indexOf('safari') !== -1,
+
+
+        // @property ie3d: Boolean
+        // `true` for all Internet Explorer versions supporting CSS transforms.
+        ie3d: ie3d,
+
+        // @property webkit3d: Boolean
+        // `true` for webkit-based browsers supporting CSS transforms.
+        webkit3d: webkit3d,
+
+        // @property gecko3d: Boolean
+        // `true` for gecko-based browsers supporting CSS transforms.
+        gecko3d: gecko3d,
+
+        // @property opera12: Boolean
+        // `true` for the Opera browser supporting CSS transforms (version 12 or later).
+        opera12: opera12,
+
+        // @property any3d: Boolean
+        // `true` for all browsers supporting CSS transforms.
+        any3d: !window.L_DISABLE_3D && (ie3d || webkit3d || gecko3d) && !opera12 && !phantomjs,
+
+
+        // @property mobile: Boolean
+        // `true` for all browsers running in a mobile device.
+        mobile: mobile,
+
+        // @property mobileWebkit: Boolean
+        // `true` for all webkit-based browsers in a mobile device.
+        mobileWebkit: mobile && webkit,
+
+        // @property mobileWebkit3d: Boolean
+        // `true` for all webkit-based browsers in a mobile device supporting CSS transforms.
+        mobileWebkit3d: mobile && webkit3d,
+
+        // @property mobileOpera: Boolean
+        // `true` for the Opera browser in a mobile device.
+        mobileOpera: mobile && window.opera,
+
+        // @property mobileGecko: Boolean
+        // `true` for gecko-based browsers running in a mobile device.
+        mobileGecko: mobile && gecko,
+
+
+        // @property touch: Boolean
+        // `true` for all browsers supporting [touch events](https://developer.mozilla.org/docs/Web/API/Touch_events).
+        touch: !!touch,
+
+        // @property msPointer: Boolean
+        // `true` for browsers implementing the Microsoft touch events model (notably IE10).
+        msPointer: !!msPointer,
+
+        // @property pointer: Boolean
+        // `true` for all browsers supporting [pointer events](https://msdn.microsoft.com/en-us/library/dn433244%28v=vs.85%29.aspx).
+        pointer: !!pointer,
+
+
+        // @property retina: Boolean
+        // `true` for browsers on a high-resolution "retina" screen.
+        retina: (window.devicePixelRatio || (window.screen.deviceXDPI / window.screen.logicalXDPI)) > 1
+    };
+    
+});
+
+/**
+ * Created by eason on 16/5/26.
+ * 尝试换一种dom事件的实现方式
+ */
+
+define('dom/DomEvent',['require','../utils/BaseUtils','./Browser'],function(require){
+
+    var eventsKey = '_vanchart_events';
+
+    var BaseUtils = require('../utils/BaseUtils');
+    var Browser = require('./Browser');
+
+    var DomEvent = {
+
+        // @function on(el: HTMLElement, types: String, fn: Function, context?: Object): this
+        // Adds a listener function (`fn`) to a particular DOM dom type of the
+        // element `el`. You can optionally specify the context of the listener
+        // (object the `this` keyword will point to). You can also pass several
+        // space-separated types (e.g. `'click dblclick'`).
+
+        // @alternative
+        // @function on(el: HTMLElement, eventMap: Object, context?: Object): this
+        // Adds a set of type/listener pairs, e.g. `{click: onClick, mousemove: onMouseMove}`
+        on: function (obj, types, fn, context) {
+
+            // types can be a map of types/handlers
+            if (typeof types === 'object') {
+                for (var type in types) {
+                    // we don't process space-separated events here for performance;
+                    // it's a hot path since Layer uses the on(obj) syntax
+                    this._on(obj, type, types[type], fn);
+                }
+            } else {
+                // types can be a string of space-separated words
+                types = BaseUtils.splitWords(types);
+
+                for (var i = 0, len = types.length; i < len; i++) {
+                    this._on(obj, types[i], fn, context);
+                }
+            }
+
+            return this;
+        },
+
+        // @function off(el: HTMLElement, types: String, fn: Function, context?: Object)
+        // Removes a previously added listener function. If no function is specified,
+        // it will remove all the listeners of that particular DOM dom from the element.
+        // Note that if you passed a custom context to on, you must pass the same
+        // context to `off` in order to remove the listener.
+
+        // @alternative
+        // @function off(el: HTMLElement, types: eventMap: Object, context?: Object): this
+        off: function (obj, types, fn, context) {
+
+            if (!types) {
+                // clear all listeners if called without arguments
+                delete this._events;
+
+            } else if (typeof types === 'object') {
+                for (var type in types) {
+                    this._off(obj, type, types[type], fn);
+                }
+
+            } else {
+                types = BaseUtils.splitWords(types);
+
+                for (var i = 0, len = types.length; i < len; i++) {
+                    this._off(obj, types[i], fn, context);
+                }
+            }
+
+            return this;
+        },
+
+        _on: function (obj, type, fn, context) {
+            var id = type + BaseUtils.stamp(fn) + (context ? '_' + BaseUtils.stamp(context) : '');
+
+            if (obj[eventsKey] && obj[eventsKey][id]) { return this; }
+
+            var handler = function (e) {
+                return fn.call(context || obj, e || window.event);
+            };
+
+            var originalHandler = handler;
+
+            // if (Browser.pointer && type.indexOf('touch') === 0) {
+            //     this.addPointerListener(obj, type, handler, id);
+            //
+            // } else if (Browser.touch && (type === 'dblclick') && this.addDoubleTapListener) {
+            //     this.addDoubleTapListener(obj, handler, id);
+            //
+            // }
+
+            if ('addEventListener' in obj) {
+
+                if (type === 'mousewheel') {
+                    obj.addEventListener('onwheel' in obj ? 'wheel' : 'mousewheel', handler, false);
+
+                } else if ((type === 'mouseenter') || (type === 'mouseleave')) {
+                    handler = function (e) {
+                        e = e || window.event;
+                        if (DomEvent._isExternalTarget(obj, e)) {
+                            originalHandler(e);
+                        }
+                    };
+                    obj.addEventListener(type === 'mouseenter' ? 'mouseover' : 'mouseout', handler, false);
+
+                } else {
+                    if (type === 'click' && Browser.android) {
+                        handler = function (e) {
+                            return DomEvent._filterClick(e, originalHandler);
+                        };
+                    }
+                    obj.addEventListener(type, handler, false);
+                }
+
+            } else if ('attachEvent' in obj) {
+                obj.attachEvent('on' + type, handler);
+            }
+
+            obj[eventsKey] = obj[eventsKey] || {};
+            obj[eventsKey][id] = handler;
+
+            return this;
+        },
+
+        _off: function (obj, type, fn, context) {
+
+            var id = type + BaseUtils.stamp(fn) + (context ? '_' + BaseUtils.stamp(context) : ''),
+                handler = obj[eventsKey] && obj[eventsKey][id];
+
+            if (!handler) { return this; }
+
+            // if (Browser.pointer && type.indexOf('touch') === 0) {
+            //     this.removePointerListener(obj, type, id);
+            //
+            // } else if (Browser.touch && (type === 'dblclick') && this.removeDoubleTapListener) {
+            //     this.removeDoubleTapListener(obj, id);
+            //
+            // }
+
+            if ('removeEventListener' in obj) {
+
+                if (type === 'mousewheel') {
+                    obj.removeEventListener('onwheel' in obj ? 'wheel' : 'mousewheel', handler, false);
+
+                } else {
+                    obj.removeEventListener(
+                        type === 'mouseenter' ? 'mouseover' :
+                            type === 'mouseleave' ? 'mouseout' : type, handler, false);
+                }
+
+            } else if ('detachEvent' in obj) {
+                obj.detachEvent('on' + type, handler);
+            }
+
+            obj[eventsKey][id] = null;
+
+            return this;
+        },
+
+        // @function stopPropagation(ev: DOMEvent): this
+        // Stop the given dom from propagation to parent elements. Used inside the listener functions:
+        // ```js
+        // DomEvent.on(div, 'click', function (ev) {
+        // 	DomEvent.stopPropagation(ev);
+        // });
+        // ```
+        stopPropagation: function (e) {
+
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            } else if (e.originalEvent) {  // In case of Leaflet dom.
+                e.originalEvent._stopped = true;
+            } else {
+                e.cancelBubble = true;
+            }
+
+            DomEvent._skipped(e);
+
+            return this;
+        },
+
+        // @function disableScrollPropagation(el: HTMLElement): this
+        // Adds `stopPropagation` to the element's `'mousewheel'` events (plus browser variants).
+        disableScrollPropagation: function (el) {
+            return DomEvent.on(el, 'mousewheel', DomEvent.stopPropagation);
+        },
+
+        // @function disableClickPropagation(el: HTMLElement): this
+        // Adds `stopPropagation` to the element's `'click'`, `'doubleclick'`,
+        // `'mousedown'` and `'touchstart'` events (plus browser variants).
+        disableClickPropagation: function (el) {
+            var stop = DomEvent.stopPropagation;
+
+            DomEvent.on(el, Draggable.START.join(' '), stop);
+
+            return DomEvent.on(el, {
+                click: DomEvent._fakeStop,
+                dblclick: stop
+            });
+        },
+
+        // @function preventDefault(ev: DOMEvent): this
+        // Prevents the default action of the DOM Event `ev` from happening (such as
+        // following a link in the href of the a element, or doing a POST request
+        // with page reload when a `<form>` is submitted).
+        // Use it inside listener functions.
+        preventDefault: function (e) {
+
+            if (e.preventDefault) {
+                e.preventDefault();
+            } else {
+                e.returnValue = false;
+            }
+            return this;
+        },
+
+        // @function stop(ev): this
+        // Does `stopPropagation` and `preventDefault` at the same time.
+        stop: function (e) {
+            return DomEvent.preventDefault(e).stopPropagation(e);
+        },
+
+        // @function getWheelDelta(ev: DOMEvent): Number
+        // Gets normalized wheel delta from a mousewheel DOM dom, in vertical
+        // pixels scrolled (negative if scrolling down).
+        // Events from pointing devices without precise scrolling are mapped to
+        // a best guess of between 50-60 pixels.
+        getWheelDelta: function (e) {
+            return (e.deltaY && e.deltaMode === 0) ? -e.deltaY :        // Pixels
+                (e.deltaY && e.deltaMode === 1) ? -e.deltaY * 18 :   // Lines
+                    (e.deltaY && e.deltaMode === 2) ? -e.deltaY * 52 :   // Pages
+                        (e.deltaX || e.deltaZ) ? 0 :	// Skip horizontal/depth wheel events
+                            e.wheelDelta ? (e.wheelDeltaY || e.wheelDelta) / 2 : // Legacy IE pixels
+                                (e.detail && Math.abs(e.detail) < 32765) ? -e.detail * 18 : // Legacy Moz lines
+                                    e.detail ? e.detail / -32765 * 52 : // Legacy Moz pages
+                                        0;
+        },
+
+        _skipEvents: {},
+
+        _fakeStop: function (e) {
+            // fakes stopPropagation by setting a special dom flag, checked/reset with DomEvent._skipped(e)
+            DomEvent._skipEvents[e.type] = true;
+        },
+
+        _skipped: function (e) {
+            var skipped = this._skipEvents[e.type];
+            // reset when checking, as it's only used in map container and propagates outside of the map
+            this._skipEvents[e.type] = false;
+            return skipped;
+        },
+
+        // check if element really left/entered the dom target (for mouseenter/mouseleave)
+        _isExternalTarget: function (el, e) {
+
+            var related = e.relatedTarget;
+
+            if (!related) { return true; }
+
+            try {
+                while (related && (related !== el)) {
+                    related = related.parentNode;
+                }
+            } catch (err) {
+                return false;
+            }
+            return (related !== el);
+        },
+
+        // this is a horrible workaround for a bug in Android where a single touch triggers two click events
+        _filterClick: function (e, handler) {
+            var timeStamp = (e.timeStamp || (e.originalEvent && e.originalEvent.timeStamp)),
+                elapsed = DomEvent._lastClick && (timeStamp - DomEvent._lastClick);
+
+            // are they closer together than 500ms yet more than 100ms?
+            // Android typically triggers them ~300ms apart while multiple listeners
+            // on the same dom should be triggered far faster;
+            // or check if click is simulated on the element, and if it is, reject any non-simulated events
+
+            if ((elapsed && elapsed > 100 && elapsed < 500) || (e.target._simulatedClick && !e._simulated)) {
+                DomEvent.stop(e);
+                return;
+            }
+
+            DomEvent._lastClick = timeStamp;
+
+            handler(e);
+        }
+    };
+
+    DomEvent.addListener = DomEvent.on;
+
+    DomEvent.removeListener = DomEvent.off;
+
+    return DomEvent;
+
+});
+
+/**
+ * Created by eason on 16/5/26.
+ */
+
+define('dom/Evented',['require','../utils/QueryUtils','../utils/BaseUtils'],function(require){
+
+    var QueryUtils = require('../utils/QueryUtils');
+    var BaseUtils = require('../utils/BaseUtils');
+
+    return {
+        /* @method on(type: String, fn: Function, context?: Object): this
+         * Adds a listener function (`fn`) to a particular event type of the object. You can optionally specify the context of the listener (object the this keyword will point to). You can also pass several space-separated types (e.g. `'click dblclick'`).
+         *
+         * @alternative
+         * @method on(eventMap: Object): this
+         * Adds a set of type/listener pairs, e.g. `{click: onClick, mousemove: onMouseMove}`
+         */
+        on: function (types, fn, context) {
+
+            // types can be a map of types/handlers
+            if (typeof types === 'object') {
+                for (var type in types) {
+                    // we don't process space-separated events here for performance;
+                    // it's a hot path since Layer uses the on(obj) syntax
+                    this._on(type, types[type], fn);
+                }
+
+            } else {
+                // types can be a string of space-separated words
+                types = BaseUtils.splitWords(types);
+
+                for (var i = 0, len = types.length; i < len; i++) {
+                    this._on(types[i], fn, context);
+                }
+            }
+
+            return this;
+        },
+
+        /* @method off(type: String, fn?: Function, context?: Object): this
+         * Removes a previously added listener function. If no function is specified, it will remove all the listeners of that particular event from the object. Note that if you passed a custom context to `on`, you must pass the same context to `off` in order to remove the listener.
+         *
+         * @alternative
+         * @method off(eventMap: Object): this
+         * Removes a set of type/listener pairs.
+         *
+         * @alternative
+         * @method off: this
+         * Removes all listeners to all events on the object.
+         */
+        off: function (types, fn, context) {
+
+            if (!types) {
+                // clear all listeners if called without arguments
+                delete this._events;
+
+            } else if (typeof types === 'object') {
+                for (var type in types) {
+                    this._off(type, types[type], fn);
+                }
+
+            } else {
+                types = BaseUtils.splitWords(types);
+
+                for (var i = 0, len = types.length; i < len; i++) {
+                    this._off(types[i], fn, context);
+                }
+            }
+
+            return this;
+        },
+
+        // attach listener (without syntactic sugar now)
+        _on: function (type, fn, context) {
+
+            var events = this._events = this._events || {},
+                contextId = context && context !== this && BaseUtils.stamp(context);
+
+            if (contextId) {
+                // store listeners with custom context in a separate hash (if it has an id);
+                // gives a major performance boost when firing and removing events (e.g. on map object)
+
+                var indexKey = type + '_idx',
+                    indexLenKey = type + '_len',
+                    typeIndex = events[indexKey] = events[indexKey] || {},
+                    id = BaseUtils.stamp(fn) + '_' + contextId;
+
+                if (!typeIndex[id]) {
+                    typeIndex[id] = {fn: fn, ctx: context};
+
+                    // keep track of the number of keys in the index to quickly check if it's empty
+                    events[indexLenKey] = (events[indexLenKey] || 0) + 1;
+                }
+
+            } else {
+                // individual layers mostly use "this" for context and don't fire listeners too often
+                // so simple array makes the memory footprint better while not degrading performance
+
+                events[type] = events[type] || [];
+                events[type].push({fn: fn});
+            }
+        },
+
+        _off: function (type, fn, context) {
+            var events = this._events,
+                indexKey = type + '_idx',
+                indexLenKey = type + '_len';
+
+            if (!events) { return; }
+
+            if (!fn) {
+                // clear all listeners for a type if function isn't specified
+                delete events[type];
+                delete events[indexKey];
+                delete events[indexLenKey];
+                return;
+            }
+
+            var contextId = context && context !== this && BaseUtils.stamp(context),
+                listeners, i, len, listener, id;
+
+            if (contextId) {
+                id = BaseUtils.stamp(fn) + '_' + contextId;
+                listeners = events[indexKey];
+
+                if (listeners && listeners[id]) {
+                    listener = listeners[id];
+                    delete listeners[id];
+                    events[indexLenKey]--;
+                }
+
+            } else {
+                listeners = events[type];
+
+                if (listeners) {
+                    for (i = 0, len = listeners.length; i < len; i++) {
+                        if (listeners[i].fn === fn) {
+                            listener = listeners[i];
+                            listeners.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // set the removed listener to noop so that's not called if remove happens in fire
+            if (listener) {
+                listener.fn = BaseUtils.falseFn;
+            }
+        },
+
+        // @method fire(type: String, data?: Object, propagate?: Boolean): this
+        // Fires an event of the specified type. You can optionally provide an data
+        // object — the first argument of the listener function will contain its
+        // properties. The event might can optionally be propagated to event parents.
+        fire: function (type, data, propagate) {
+            if (!this.listens(type, propagate)) { return this; }
+
+            var event = BaseUtils.extend({}, data, {type: type, target: this}),
+                events = this._events;
+
+            if (events) {
+                var typeIndex = events[type + '_idx'],
+                    i, len, listeners, id;
+
+                if (events[type]) {
+                    // make sure adding/removing listeners inside other listeners won't cause infinite loop
+                    listeners = events[type].slice();
+
+                    for (i = 0, len = listeners.length; i < len; i++) {
+                        listeners[i].fn.call(this, event);
+                    }
+                }
+
+                // fire event for the context-indexed listeners as well
+                for (id in typeIndex) {
+                    typeIndex[id].fn.call(typeIndex[id].ctx, event);
+                }
+            }
+
+            if (propagate) {
+                // propagate the event to parents (set with addEventParent)
+                this._propagateEvent(event);
+            }
+
+            return this;
+        },
+
+        // @method listens(type: String): Boolean
+        // Returns `true` if a particular event type has any listeners attached to it.
+        listens: function (type, propagate) {
+            var events = this._events;
+
+            if (events && (events[type] || events[type + '_len'])) { return true; }
+
+            if (propagate) {
+                // also check parents for listeners if event propagates
+                for (var id in this._eventParents) {
+                    if (this._eventParents[id].listens(type, propagate)) { return true; }
+                }
+            }
+            return false;
+        },
+
+        // @method once(…): this
+        // Behaves as [`on(…)`](#evented-on), except the listener will only get fired once and then removed.
+        // once: function (types, fn, context) {
+        //
+        //     if (typeof types === 'object') {
+        //         for (var type in types) {
+        //             this.once(type, types[type], fn);
+        //         }
+        //         return this;
+        //     }
+        //
+        //     var handler = L.bind(function () {
+        //         this
+        //             .off(types, fn, context)
+        //             .off(types, handler, context);
+        //     }, this);
+        //
+        //     // add a listener that's executed once and removed after that
+        //     return this
+        //         .on(types, fn, context)
+        //         .on(types, handler, context);
+        // },
+
+        // @method addEventParent(obj: Evented): this
+        // Adds an event parent - an `Evented` that will receive propagated events
+        addEventParent: function (obj) {
+            this._eventParents = this._eventParents || {};
+            this._eventParents[BaseUtils.stamp(obj)] = obj;
+            return this;
+        },
+
+        // @method removeEventParent(obj: Evented): this
+        // Removes an event parent, so it will stop receiving propagated events
+        removeEventParent: function (obj) {
+            if (this._eventParents) {
+                delete this._eventParents[BaseUtils.stamp(obj)];
+            }
+            return this;
+        },
+
+        _propagateEvent: function (e) {
+            for (var id in this._eventParents) {
+                this._eventParents[id].fire(e.type, BaseUtils.extend({layer: e.target}, e), true);
+            }
+        }
+    }
+});
+/**
  * Created by eason on 16/2/19.
  * 处理事件
  */
 
-define('Handler',['require','./utils/BaseUtils','./Constants'],function(require){
+define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','./dom/Evented'],function(require){
 
     var MIN_DISTANCE = 5;
 
     var BaseUtils = require('./utils/BaseUtils');
     var Constants = require('./Constants');
+    var DomEvent = require('./dom/DomEvent');
+    var Evented = require('./dom/Evented');
 
-    function Handler(vanchart){
+    function Handler(vanchart, container){
 
         this.vanchart = vanchart;
 
-        this._setDomEvents();
+        this._container = container;
+
+        this._targets = {};
+
+        !vanchart._leaflet && this._initEvents();
     }
 
     Handler.prototype = {
 
-        _setDomEvents:function(){
+        _initEvents:function(remove){
 
-            var parent = this.vanchart.dom;
+            BaseUtils.extend(this, Evented);
 
-            if(BaseUtils.hasTouch()){
+            this._targets = {};
+            this._targets[BaseUtils.stamp(this._container)] = this;
 
-                BaseUtils.addEvent(parent, 'touchstart', this._onContainerTouchStart.bind(this));
+            this.on({
+                'mousemove':this._onContainerMouseMove,
+                'mousedown':this._onContainerMouseDown,
+                'mouseup':this._onContainerMouseUp
+            }, this);
 
-                BaseUtils.addEvent(parent, 'touchend', this._onContainerTouchEnd.bind(this));
+            var onOff = remove ? 'off' : 'on';
 
-            }else{
+            DomEvent[onOff](this._container, 'click dblclick mousedown mouseup ' +
+                'mouseover mouseout mousemove contextmenu keypress', this._handleDOMEvent, this);
 
-                BaseUtils.addEvent(parent, 'mousedown', this._onContainerMouseDown.bind(this));
+            //todo 还没用上,代码留着
+            // if (this.options.trackResize) {
+            //     L.DomEvent[onOff](window, 'resize', this._onResize, this);
+            // }
+            //
+            // if (L.Browser.any3d && this.options.transform3DLimit) {
+            //     this[onOff]('moveend', this._onMoveEnd);
+            // }
+        },
 
-                BaseUtils.addEvent(parent, 'mouseup', this._onContainerMouseUp.bind(this));
+        _handleDOMEvent: function (e) {
+            if (DomEvent._skipped(e)) { return; }
 
-                BaseUtils.addEvent(parent, 'mousemove', this._onContainerMouseMove.bind(this));
+            var type = e.type === 'keypress' && e.keyCode === 13 ? 'click' : e.type;
 
-                BaseUtils.addEvent(parent, 'mouseleave', this._onContainerMouseLeave.bind(this));
+            if (e.type === 'click') {
+                // Fire a synthetic 'preclick' event which propagates up (mainly for closing popups).
+                // @event preclick: MouseEvent
+                // Fired before mouse click on the map (sometimes useful when you
+                // want something to happen on click before any existing click
+                // handlers start running).
+                var synth = BaseUtils.extend({}, e);
+                synth.type = 'preclick';
+                this._handleDOMEvent(synth);
+            }
+
+            //todo 代码留着,碰到情况在分析
+            // if (type === 'mousedown') {
+            //     // prevents outline when clicking on keyboard-focusable element
+            //     DomUtil.preventOutline(e.target || e.srcElement);
+            // }
+
+            this._fireDOMEvent(e, type);
+        },
+
+        _fireDOMEvent: function (e, type, targets) {
+
+            if (e._stopped) { return; }
+
+            // Find the layer the event is propagating from and its parents.
+            targets = (targets || []).concat(this._findEventTargets(e, type));
+
+            if (!targets.length) { return; }
+
+            var target = targets[0];
+            if (type === 'contextmenu' && target.listens(type, true)) {
+                DomEvent.preventDefault(e);
+            }
+
+            var data = {
+                originalEvent: e
+            };
+
+            if (e.type !== 'keypress') {
+                data.containerPoint = BaseUtils.getMousePos(e, this._container);
+            }
+
+            for (var i = 0; i < targets.length; i++) {
+                targets[i].fire(type, data, true);
+                if (data.originalEvent._stopped) { return; }
             }
         },
 
-        trackerPointLeave:function(event){
+        _findEventTargets: function (e, type) {
+            var targets = [],
+                target,
+                isHover = type === 'mouseout' || type === 'mouseover',
+                src = e.target || e.srcElement,
+                dragging = false;
 
-            var point = this._getPointData(event);
-
-            if(point){
-                point.series.chart.cancelChosenState(point);
-            }
-
-            this._hideTooltip();
-
-            if(point == this.vanchart.hoverPoint){
-                this.vanchart.hoverPoint = null;
-            }
-        },
-
-        trackerPointMove:function(event){
-            this._showTooltip(event);
-        },
-
-        trackerPointEnter:function(event){
-            var point = this._getPointData(event);
-            this.updateHoverPoint(point, event);
-        },
-
-        trackerPointDown:function(){
-
-            var point = this.vanchart.hoverPoint;
-
-            if(point){
-                point.series.chart.makeClickedState(point);
-            }
-        },
-
-        trackerPointUp:function(event){
-
-            var point = this.vanchart.hoverPoint;
-
-            if(point){
-                point.series.chart.cancelClickedState(point);
-                point.onClick(event);
-            }
-        },
-
-        trackerSeriesEnter:function(event){
-
-            var series = this._getSeriesData(event);
-
-            series.chart.makeSeriesChosenState(series);
-
-            this.vanchart.hoverSeries = series;
-        },
-
-        trackerSeriesLeave:function(event){
-
-            var series = this._getSeriesData(event);
-
-            series.chart.cancelSeriesChosenState(series);
-        },
-
-        trackerPointTouchStart:function(event){
-
-            event = event || window.event;
-            var target = event.target || event.srcElement;
-
-            var point = d3.select(target).datum();
-
-            this.updateHoverPoint(point, event);
-
-            this._showTooltip(event);
-
-            event.stopPropagation ? event.stopPropagation() : event.cancelBubble = true;
-        },
-
-        trackerPointTouchEnd:function(event){
-
-            var point = this.vanchart.hoverPoint;
-
-            if(point){
-                point.onClick(event);
-            }
-
-            event = event || window.event;
-
-            event.stopPropagation ? event.stopPropagation() : event.cancelBubble = true;
-        },
-
-        //走到这边的都是没点到具体点的
-        _onContainerTouchStart:function(event){
-
-            var chart = this.vanchart;
-
-            var dom = this.vanchart.getParentDom();
-            var currentPos = BaseUtils.getMousePos(event, dom);
-            var plotBounds = this.vanchart.getPlotBounds();
-
-            if(BaseUtils.containsPoint(plotBounds,currentPos)){
-                var series = chart.hoverPoint ? chart.hoverPoint.series : chart.hoverSeries;
-
-                if(chart.series.length){
-                    if(series){
-                        series.chart.onContainerMouseMove(event);
-                    }else{
-                        chart.series[0].chart.onContainerMouseMove(event);
-                    }
+            while (src) {
+                target = this._targets[BaseUtils.stamp(src)];
+                if (target && (type === 'click' || type === 'preclick') && !e._simulated) {
+                    // Prevent firing click after you just dragged an object.
+                    dragging = true;
+                    break;
                 }
-
-                this._showTooltip(event);
-            }
-
-        },
-
-        _onContainerTouchEnd:function(event){
-
-            var point = this.vanchart.hoverPoint;
-
-            if(point){
-                point.onClick(event);
-            }
-
-        },
-
-        updateHoverPoint:function(hoverPoint, event){
-
-            if(hoverPoint && hoverPoint != this.vanchart.hoverPoint){
-
-                if(this.vanchart.hoverPoint){
-                    hoverPoint.series.chart.cancelChosenState(this.vanchart.hoverPoint);
-
-                    if(this.vanchart.isMouseDown){
-                        hoverPoint.series.chart.cancelClickedState(this.vanchart.hoverPoint);
-                    }
+                if (target && target.listens(type, true)) {
+                    if (isHover && !DomEvent._isExternalTarget(src, e)) { break; }
+                    targets.push(target);
+                    if (isHover) {break;}
                 }
-
-                this.vanchart.hoverPoint = hoverPoint;
-                this.vanchart.hoverSeries = hoverPoint.series;
-
-                hoverPoint.series.chart.makeChosenState(hoverPoint);
-
-                if(this.vanchart.isMouseDown){
-                    hoverPoint.series.chart.makeClickedState(hoverPoint);
-                }
-
-                this._showTooltip(event);
+                if (src === this._container) { break; }
+                src = src.parentNode;
             }
-
+            if (!targets.length && !dragging && !isHover && DomEvent._isExternalTarget(src, e)) {
+                targets = [this];
+            }
+            return targets;
         },
 
-        _hideTooltip:function(){
-            var tooltip = this.vanchart.components.tooltip;
-            tooltip.hide();
+        addInteractiveTarget:function(domWrapper, types, render){
+
+            BaseUtils.extend(domWrapper, Evented);
+
+            var domEl = domWrapper.node() || domWrapper.node;
+
+            var data = domWrapper.datum();
+
+            this._targets[BaseUtils.stamp(domEl)] = domWrapper;
+            
+            this._targets[BaseUtils.stamp(data)] = domWrapper;
+
+            domWrapper.on(types, render);
         },
 
-        //根据数据显示数据点提示
-        _showTooltip:function(event){
-            var tooltip = this.vanchart.components.tooltip;
-            var d = this.vanchart.hoverPoint;
-            if(d && d.visible){
-                var opt = d.tooltip;
-                var tooltipDim  = tooltip.calculateTooltipDivDim(opt, d.tooltipText);
-                var pos = d.series.chart.getTooltipPos(d, tooltipDim, event);
-                tooltip.show(pos, opt, d.tooltipText);
-            }
+        fireEventByData:function(data, type, event){
+            var target = data ? this._targets[BaseUtils.stamp(data)] : null;
+
+            target && target.fire(type, event)
         },
 
         _onContainerMouseDown:function(event){
 
             var chart = this.vanchart;
-
-            var dom = this.vanchart.getParentDom();
-            var mousePos = BaseUtils.getMousePos(event, dom);
+            var hoverPoint = this.vanchart.hoverPoint;
+            var mousePos = event.containerPoint;
             var plotBounds = chart.getPlotBounds();
+            var tooltip = chart.getTooltip();
 
             chart.isMouseDown = true;
             chart.downPos = mousePos;
 
-            if(this._supportCoordinateZoom() && BaseUtils.containsPoint(plotBounds, mousePos)){
+            tooltip.immediateHide();
+
+            //饼图旋转
+            if(hoverPoint){
+                var seriesChart = hoverPoint.series.chart;
+                this._draggingTarget = seriesChart.findDraggingTarget && seriesChart.findDraggingTarget(event);
+            }
+
+            //缩放
+            if(!this._draggingTarget && this._supportCoordinateZoom() && BaseUtils.containsPoint(plotBounds, mousePos)){
                 this.selectRect = this.vanchart.render.getRenderRoot().append('rect');
             }
-
-            var point = chart.hoverPoint;
-            var series = chart.hoverSeries;
-            if(point && series){
-                series.chart.makeClickedState(point);
-            }
-
-            if(series){
-                series.chart.onContainerMouseDown(event);
-            }
-
-            var tooltip = this.vanchart.components.tooltip;
-            tooltip.immediateHide();
         },
 
         _onContainerMouseUp:function(event){
 
             var chart = this.vanchart;
             var components = chart.components;
+            var upPos = event.containerPoint;
 
             if(this.selectRect){
 
-                var upPos = BaseUtils.getMousePos(event, this.vanchart.getParentDom());
-
                 if(chart.downPos && upPos){
-
                     if(BaseUtils.distance(chart.downPos, upPos) > MIN_DISTANCE){
                         chart.dealAxisZoom(chart.downPos, upPos);
 
@@ -1711,41 +2333,30 @@ define('Handler',['require','./utils/BaseUtils','./Constants'],function(require)
                     }
                 }
 
-                if(this.selectRect){
-                    this.selectRect.remove();
-                    this.selectRect = null;
-                }
+                this.selectRect.remove();
+                this.selectRect = null;
+            }
+
+            if(chart.isMouseDown && this._draggingTarget){
+                this._draggingTarget.dragEnd(event);
+                this._draggingTarget = null;
             }
 
             chart.isMouseDown = false;
-
-            var series = chart.hoverSeries;
-            var point = chart.hoverPoint;
-
-            if(point && series){
-                series.chart.cancelClickedState(point);
-            }
-
-            if(series){
-                series.chart.onContainerMouseUp(event);
-            }
-        },
-
-        _onContainerMouseLeave:function(){
-            this._hideTooltip();
+            chart.downPos = null;
         },
 
         _onContainerMouseMove:function(event){
 
             var chart = this.vanchart;
+            var currentPos = event.containerPoint;
+            var hoverPoint = this.vanchart.hoverPoint;
 
-            var dom = this.vanchart.getParentDom();
-            var currentPos = BaseUtils.getMousePos(event, dom);
             var plotBounds = this.vanchart.getPlotBounds();
+            var options = this.vanchart.getOptions();
 
             if(this.selectRect){
 
-                var options = this.vanchart.getOptions();
                 var zoomType = options.zoom.zoomType;
 
                 var x = Math.min(currentPos[0], chart.downPos[0]);
@@ -1767,62 +2378,93 @@ define('Handler',['require','./utils/BaseUtils','./Constants'],function(require)
                 this.selectRect.attr('x', x).attr('y', y)
                     .attr('width', width).attr('height', height)
                     .style({'fill':'rgba(69,114,167,0.25)'});
-
             }
 
-            if(BaseUtils.containsPoint(plotBounds,currentPos)){
-                var series = chart.hoverSeries;
-                if(series && series.visible){
-                    series.chart.onContainerMouseMove(event);
-                }
+            var tooltip = this.vanchart.getTooltip();
+            if(BaseUtils.containsPoint(plotBounds,currentPos)) {
 
+                if (hoverPoint && !(hoverPoint.tooltip && hoverPoint.tooltip.shared)) {
+                    var seriesChart = hoverPoint.series.chart;
 
-                var option = this.vanchart.getOptions();
-                if(option.plotOptions.large){
+                    if (seriesChart.getClosestPoint) {
+                        var closestPoint = seriesChart.getClosestPoint(currentPos);
 
-                    var chart = this.vanchart.getChart(Constants.BUBBLE_CHART) ||
-                                        this.vanchart.getChart(Constants.SCATTER_CHART);
+                        if (closestPoint && (closestPoint != hoverPoint)) {
 
-                    if(chart){
-                        chart.onContainerMouseMove(event);
+                            this.fireEventByData(hoverPoint, 'mouseout', event);
+
+                            this.fireEventByData(closestPoint, 'mouseover', event);
+
+                        }
                     }
 
+                    tooltip.showWithPoint(this.vanchart.hoverPoint);
+                } else {
+
+                    var sharedPointsLength = 0;
+                    for (var item in chart.xAxis().sharedPoints) {
+                        ++sharedPointsLength;
+                        break;
+                    }
+
+                    if (sharedPointsLength) {
+                        this._highlightShared(event);
+                    }
+                }
+            } else {
+                tooltip.hide();
+                var axis = chart.xAxis();
+                axis && axis.getRender().removeHighlightBand();
+            }
+
+            //drag operation
+            if(chart.isMouseDown && this._draggingTarget){
+                this._draggingTarget.onDrag(event);
+            }
+        },
+
+        _getCoveredPointsByKey: function (key, axis) {
+            axis = axis || this.vanchart.xAxis();
+            return axis.sharedPoints[key] || [];
+        },
+
+        _highlightShared: function (event) {
+            var dom = this.vanchart.getParentDom();
+            var pos = BaseUtils.getMousePos(event, dom);
+
+            var axis = this.vanchart.xAxis();
+            axis && axis.getRender().drawHighlightBand(pos);
+
+            var index = axis.getIndexByPosition(pos);
+            var key = (axis.type === Constants.CATEGORY_AXIS_COMPONENT) ? axis.scale.domain()[index] : index;
+            var self = this;
+
+            if(!BaseUtils.isNull(key) && key != this.vanchart.coveredKey){
+
+                if(!BaseUtils.isNull(this.vanchart.coveredKey)){
+                    var prePoints = this._getCoveredPointsByKey(this.vanchart.coveredKey);
+                    prePoints.map(function (point) {
+                        self.fireEventByData(point, 'leave', event);
+                    });
                 }
 
+                this.vanchart.coveredKey = key;
+
+                var points = this._getCoveredPointsByKey(key);
+
+                points.map(function (point) {
+                    self.fireEventByData(point, 'cover', event);
+                });
+
+
             }
+            // todo, shouldn't calculate dim&content every time
+            var tooltip = this.vanchart.getTooltip();
+            tooltip.showWithSharedPoints(this._getCoveredPointsByKey(this.vanchart.coveredKey));
+
         },
 
-        validClick:function(event){
-
-            var dom = this.vanchart.getParentDom();
-
-            var mousePos = BaseUtils.getMousePos(event, dom);
-
-            if(this.vanchart.downPos){
-                return BaseUtils.distance(this.vanchart.downPos, mousePos) < MIN_DISTANCE;
-            }
-
-            return true;
-        },
-
-        _getSeriesData:function(event){
-
-            event = event || window.event;
-            var target = event.target || event.srcElement;
-
-            var data = BaseUtils.isSupportSVG() ? d3.select(target).datum() : target._data_;
-
-            return data.lineData || data.series || data;
-        },
-
-        _getPointData:function(event){
-
-            event = event || window.event;
-            var target = event.target || event.srcElement;
-
-            return BaseUtils.isSupportSVG() ? d3.select(target).datum() : target._data_;
-        },
-
+        // todo ugly method to be removed
         _supportCoordinateZoom:function(){
 
             var option = this.vanchart.getOptions();
@@ -1834,8 +2476,196 @@ define('Handler',['require','./utils/BaseUtils','./Constants'],function(require)
             }
 
             return BaseUtils.isSupportSVG() && option.zoom && option.zoom.zoomType;
-
         }
+
+        // trackerPointLeave:function(event){
+        //
+        //     var point = this._getPointData(event);
+        //
+        //     if(point){
+        //         point.series.chart.cancelChosenState(point);
+        //     }
+        //
+        //     this._hideTooltip();
+        //
+        //     if(point == this.vanchart.hoverPoint){
+        //         this.vanchart.hoverPoint = null;
+        //     }
+        // },
+        //
+        // trackerPointMove:function(event){
+        //     this._showTooltip(event);
+        // },
+        //
+        // trackerPointEnter:function(event){
+        //     var point = this._getPointData(event);
+        //     this.updateHoverPoint(point, event);
+        // },
+        //
+        // trackerPointDown:function(){
+        //
+        //     var point = this.vanchart.hoverPoint;
+        //
+        //     if(point){
+        //         point.series.chart.makeClickedState(point);
+        //     }
+        // },
+        //
+        // trackerPointUp:function(event){
+        //
+        //     var point = this.vanchart.hoverPoint;
+        //
+        //     if(point){
+        //         point.series.chart.cancelClickedState(point);
+        //         point.onClick(event);
+        //     }
+        // },
+        //
+        // trackerSeriesEnter:function(event){
+        //
+        //     var series = this._getSeriesData(event);
+        //
+        //     series.chart.makeSeriesChosenState(series);
+        //
+        //     this.vanchart.hoverSeries = series;
+        // },
+        //
+        // trackerSeriesLeave:function(event){
+        //
+        //     var series = this._getSeriesData(event);
+        //
+        //     series.chart.cancelSeriesChosenState(series);
+        // },
+        //
+        // trackerPointTouchStart:function(event){
+        //
+        //     event = event || window.event;
+        //     var target = event.target || event.srcElement;
+        //
+        //     var point = d3.select(target).datum();
+        //
+        //     this.updateHoverPoint(point, event);
+        //
+        //     this._showTooltip(event);
+        //
+        //     event.stopPropagation ? event.stopPropagation() : event.cancelBubble = true;
+        // },
+        //
+        // trackerPointTouchEnd:function(event){
+        //
+        //     var point = this.vanchart.hoverPoint;
+        //
+        //     if(point){
+        //         point.onClick(event);
+        //     }
+        //
+        //     event = event || window.event;
+        //
+        //     event.stopPropagation ? event.stopPropagation() : event.cancelBubble = true;
+        // },
+        //
+        // //走到这边的都是没点到具体点的
+        // _onContainerTouchStart:function(event){
+        //
+        //     var chart = this.vanchart;
+        //
+        //     var dom = this.vanchart.getParentDom();
+        //     var currentPos = BaseUtils.getMousePos(event, dom);
+        //     var plotBounds = this.vanchart.getPlotBounds();
+        //
+        //     if(BaseUtils.containsPoint(plotBounds,currentPos)){
+        //         var series = chart.hoverPoint ? chart.hoverPoint.series : chart.hoverSeries;
+        //
+        //         if(chart.series.length){
+        //             if(series){
+        //                 series.chart.onContainerMouseMove(event);
+        //             }else{
+        //                 chart.series[0].chart.onContainerMouseMove(event);
+        //             }
+        //         }
+        //
+        //         this._showTooltip(event);
+        //     }
+        //
+        // },
+        //
+        // _onContainerTouchEnd:function(event){
+        //
+        //     var point = this.vanchart.hoverPoint;
+        //
+        //     if(point){
+        //         point.onClick(event);
+        //     }
+        //
+        // },
+        //
+        // updateHoverPoint:function(hoverPoint, event){
+        //
+        //     if(hoverPoint && hoverPoint != this.vanchart.hoverPoint){
+        //
+        //         if(this.vanchart.hoverPoint){
+        //             hoverPoint.series.chart.cancelChosenState(this.vanchart.hoverPoint);
+        //
+        //             if(this.vanchart.isMouseDown){
+        //                 hoverPoint.series.chart.cancelClickedState(this.vanchart.hoverPoint);
+        //             }
+        //         }
+        //
+        //         this.vanchart.hoverPoint = hoverPoint;
+        //         this.vanchart.hoverSeries = hoverPoint.series;
+        //
+        //         hoverPoint.series.chart.makeChosenState(hoverPoint);
+        //
+        //         if(this.vanchart.isMouseDown){
+        //             hoverPoint.series.chart.makeClickedState(hoverPoint);
+        //         }
+        //
+        //         this._showTooltip(event);
+        //     }
+        //
+        // },
+        //
+        // _hideTooltip:function(){
+        //     var tooltip = this.vanchart.components.tooltip;
+        //     tooltip.hide();
+        // },
+        //
+        // _onContainerMouseLeave:function(){
+        //     this._hideTooltip();
+        // },
+
+        // validClick:function(event){
+        //
+        //     var dom = this.vanchart.getParentDom();
+        //
+        //     var mousePos = BaseUtils.getMousePos(event, dom);
+        //
+        //     if(this.vanchart.downPos){
+        //         return BaseUtils.distance(this.vanchart.downPos, mousePos) < MIN_DISTANCE;
+        //     }
+        //
+        //     return true;
+        // },
+        //
+        // _getSeriesData:function(event){
+        //
+        //     event = event || window.event;
+        //     var target = event.target || event.srcElement;
+        //
+        //     var data = BaseUtils.isSupportSVG() ? d3.select(target).datum() : target._data_;
+        //
+        //     return data.lineData || data.series || data;
+        // },
+        //
+        // _getPointData:function(event){
+        //
+        //     event = event || window.event;
+        //     var target = event.target || event.srcElement;
+        //
+        //     return BaseUtils.isSupportSVG() ? d3.select(target).datum() : target._data_;
+        // },
+        //
+
     };
 
 
@@ -1996,6 +2826,8 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
 
         constructor:Point,
 
+        isPoint:true,
+
         _init:function(pointOption){
 
             var series = this.series;
@@ -2023,6 +2855,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
             //饼图要反过来
             if (series.type === Constants.PIE_CHART || series.type === Constants.GAUGE_CHART) {
                 seriesName = [category, category = seriesName][0];
+                seriesName = BaseUtils.isNull(seriesName) ? 'SeriesX' + this.index : seriesName; 
             }
 
             var color = chart.vanchart.getDefaultSeriesColor(seriesName);
@@ -2219,7 +3052,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
                  (this.columnType ? Constants.INSIDE : (dataLabels.align || Constants.OUTSIDE));
 
             return {
-                color:position == Constants.OUTSIDE ? this.series.color : '#ffffff',
+                color:position == Constants.OUTSIDE ? this.color : '#ffffff',
                 fontSize:'12px',
                 fontFamily:'Verdana',
                 fontWeight:'bold'
@@ -2240,41 +3073,13 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
                 fontSize:'12px',
                 fontFamily:'Verdana',
                 textShadow:'1px 1px 1px rgba(0,0,0,0.15)',
-                color: position == Constants.OUTSIDE ? this.series.color : '#ffffff'
+                color: position == Constants.OUTSIDE ? this.color : '#ffffff'
             };
-        },
-
-        onMouseMove:function(event){
-
-        },
-
-        onClick:function(event){
-            if(this.click){
-                this.click.call(this, event);
-            }else if(this.hyperlink){
-                event = event || window.event;
-                var hyperlink = this.hyperlink;
-
-                if(hyperlink && window.FR){
-                    FR.doHyperlink(event, (new Function("return " + hyperlink))(), true);
-                }
-            }
-
-        },
-
-        onMouseDown:function(event){
-
-        },
-
-        onMouseUp:function(event){
-
         }
 
     };
 
     return Point;
-
-
 });
 
 /**
@@ -2303,6 +3108,8 @@ define('component/Series',['require','../utils/BaseUtils','../utils/QueryUtils',
     Series.prototype = {
 
         constructor:Series,
+
+        isSeries:true,
 
         _init:function(seriesOption){
 
@@ -2336,6 +3143,8 @@ define('component/Series',['require','../utils/BaseUtils','../utils/QueryUtils',
             this.style = QueryUtils.queryList(queryList, 'style');
             this.trendLine = QueryUtils.queryList(queryList, 'trendLine');
             this.bands = QueryUtils.queryList(queryList, 'bands');
+
+            this.tooltip = QueryUtils.queryList(queryList, 'tooltip');
 
             var marker = BaseUtils.clone(QueryUtils.queryList(queryList, 'marker'));
             //ie暂时不支持图片
@@ -2393,7 +3202,20 @@ define('component/Series',['require','../utils/BaseUtils','../utils/QueryUtils',
             var self = this;
             this.points =
                 data.map(function (datum, i) {
-                        return new Point(self, datum, i);
+                        var p = new Point(self, datum, i);
+
+                        // if ([Constants.BAR_CHART,
+                        //     Constants.COLUMN_CHART,
+                        //     Constants.LINE_CHART,
+                        //     Constants.AREA_CHART]
+                        //     .indexOf(self.type) !== -1) {
+                        //     if (self.tooltip && self.tooltip.shared) {
+                        //         self.baseAxis.sharedPoints[p.category] || (self.baseAxis.sharedPoints[p.category] = []);
+                        //         self.baseAxis.sharedPoints[p.category].push(p);
+                        //     }
+                        // }
+                    
+                        return p;
                     })
                     .filter(function (point) {
                         return self._isValidPoint(rangeLegend, point);
@@ -2564,26 +3386,8 @@ define('component/Series',['require','../utils/BaseUtils','../utils/QueryUtils',
                         }
                     }
                 }
-
-
-
+                
             }
-        },
-
-        onMouseMove:function(event){
-
-        },
-
-        onClick:function(event){
-
-        },
-
-        onMouseDown:function(event){
-
-        },
-
-        onMouseUp:function(event){
-
         }
     };
 
@@ -2909,7 +3713,7 @@ define('component/Base',['require','../utils/BaseUtils','../Constants','../rende
             this._floatY = 0;
             this.bounds = {x:0, y:0, width:0, height:0};
 
-            this.refresh();
+            this.refresh(option);
         },
 
         refresh:function(option, componentOption){
@@ -2924,6 +3728,8 @@ define('component/Base',['require','../utils/BaseUtils','../Constants','../rende
                 this._floatX = this._getPercentValue(componentOption.x, this.vanchart.chartWidth());
                 this._floatY = this._getPercentValue(componentOption.y, this.vanchart.chartHeight());
             }
+
+            this._refresh && this._refresh();
         },
 
         //确定占据的大小
@@ -3795,6 +4601,48 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
     var ARROW_SIZE = 15;
 
     var BaseAxis = Base.extend({
+        
+        init: function () {
+            this.sharedPoints = {};
+        },
+        
+        getSharedPointsFromSeries: function (series) {
+            if (!this.isBaseAxis) {
+                return;
+            }
+            this.sharedPoints = {};
+            var self = this;
+            series.map(function (seriesItem) {
+                if (seriesItem.baseAxis === self &&
+                    seriesItem.tooltip &&
+                    seriesItem.tooltip.shared &&
+                    self._isSeriesVisible(seriesItem)) {
+
+                    seriesItem.points.map(function (point) {
+                        self._getSharedPoints(point);
+                    })
+                }
+            });
+        },
+        
+        _getSharedPoints: function (point) {
+            var series = point.series;
+            if ([Constants.BAR_CHART,
+                    Constants.COLUMN_CHART,
+                    Constants.LINE_CHART,
+                    Constants.AREA_CHART]
+                    .indexOf(series.type) !== -1) {
+                if (series.visible && 
+                    series.tooltip && 
+                    series.tooltip.shared && 
+                    !point.isNull &&
+                    point.visible
+                ) {
+                    this.sharedPoints[point.category] || (this.sharedPoints[point.category] = []);
+                    this.sharedPoints[point.category].push(point);
+                }
+            }
+        },
 
         doLayout:function(){
             switch (this.componentType) {
@@ -3810,16 +4658,16 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             }
         },
 
-        refresh: function (option, axisOption) {
-            Base.prototype.refresh.call(this, option, axisOption);
+        refreshPolar: function (option, axisOption) {
+            this.refresh(option, axisOption);
 
             switch (this.componentType) {
                 case Constants.RADIUS_AXIS_COMPONENT:
-                    this.polar = this.vanchart.polar(axisOption.polarIndex);
+                    this.polar = this.vanchart.polar(axisOption.axisIndex);
                     this.polar.radiusAxis = this;
                     break;
                 case Constants.ANGLE_AXIS_COMPONENT:
-                    this.polar = this.vanchart.polar(axisOption.polarIndex);
+                    this.polar = this.vanchart.polar(axisOption.axisIndex);
                     this.polar.angleAxis = this;
                     break;
                 default:
@@ -4152,6 +5000,8 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             var plotLines = this.componentOption.plotLines || [];
             var position = this.componentOption.position;
             var plotBounds = this.vanchart.getPlotBounds();
+            var axisBounds = this.bounds;
+
             var scale = this.scale;
             var isDate = this.type == Constants.DATE_AXIS_COMPONENT ;
 
@@ -4167,14 +5017,20 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
                 switch (position){
                     case Constants.TOP:
+                        startPos = {x:pos, y: axisBounds.y - plotBounds.y};
+                        endPos = {x:pos, y: plotBounds.height};
+                        break;
                     case Constants.BOTTOM:
                         startPos = {x:pos, y:0};
-                        endPos = {x:pos, y:plotBounds.height};
+                        endPos = {x:pos, y: axisBounds.y - plotBounds.y};
                         break;
                     case Constants.LEFT:
+                        startPos = {x: axisBounds.x - plotBounds.x, y:pos};
+                        endPos = {x:plotBounds.width, y:pos};
+                        break;
                     case Constants.RIGHT:
-                        startPos = {x:0, y:pos};
-                        endPos = {x:plotBounds.width, y:pos}
+                        startPos = {x: axisBounds.x - plotBounds.x, y:pos};
+                        endPos = {x:0, y:pos};
                         break;
                 }
 
@@ -4186,17 +5042,14 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 var minY = Math.min(startPos.y, endPos.y);
                 var maxY = Math.max(startPos.y, endPos.y);
 
-                if(scale.rangeBand){
-                    if(position == Constants.TOP || position == Constants.BOTTOM){
-                        if(minX < 0 || maxX > plotBounds.width){
-                            return;
-                        }
-                    }else{
-                        if(minY < 0 || maxY > plotBounds.height){
-                            return;
-                        }
+                if(position == Constants.TOP || position == Constants.BOTTOM){
+                    if(minX < 0 || maxX > plotBounds.width){
+                        return;
                     }
-
+                }else{
+                    if(minY < 0 || maxY > plotBounds.height){
+                        return;
+                    }
                 }
 
                 if(d.label && d.label.text && d.label.style){
@@ -4263,16 +5116,10 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
             plotBands.forEach(function(d){
 
-                var from = d.from;
-                var to = d.to;
+                var from, to;
 
-                if(self.type != Constants.CATEGORY_AXIS_COMPONENT){
-                    from = Math.max(Math.min(d.from, d.to), domain[0]);
-                    to = Math.min(Math.max(d.from, d.to), domain[1]);
-                }
-
-                var t_f = scale(from);
-                var t_t = scale(to);
+                var t_f = scale(d.from);
+                var t_t = scale(d.to);
 
                 from = Math.min(t_f, t_t);
                 to = Math.max(t_f, t_t);
@@ -4280,15 +5127,23 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 to += rangeBand;
 
                 var x = 0, y = 0, width = plotBounds.width, height = plotBounds.height;
-                var gap = Math.abs(to - from);
 
                 if(self.isHorizontal()){
-                    x = Math.max(0, from);
-                    width = Math.min(width, gap);
+                    from = Math.max(x, from);
+                    to = Math.min(width + x, to);
+                    x = from;
+                    width = to - from;
                 }else{
-                    y = Math.max(0, from);
-                    height = Math.min(height, gap);
+                    from = Math.max(y, from);
+                    to = Math.min(height + y, to);
+                    y = from;
+                    height = to - from;
                 }
+
+                if (width <= 0 || height <= 0) {
+                    return;
+                }
+
                 result.push({x:x, y:y, width:width, height:height, color: d.color});
             });
 
@@ -5051,6 +5906,29 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             });
 
             return minRadius - PADDING_GAP;
+        },
+
+        getIndexByPosition: function (pos) {
+            var plotBounds = this.getPlotBounds();
+            var scale = this.scale;
+            var startX = scale(
+                this.isAxisReversed() ?
+                    scale.domain()[scale.domain().length - 1] :
+                    scale.domain()[0]
+            );
+            var x = pos[0] - plotBounds.x - startX;
+
+            var index;
+            switch (this.type) {
+                case Constants.DATE_AXIS_COMPONENT:
+                    index = BaseUtils.date2int(scale.invert(x));
+                    break;
+                default:
+                    index = scale.invert(x);
+            }
+
+            index = Math.round(index);
+            return index;
         }
     });
 
@@ -5068,6 +5946,8 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
     //
     //     this.polar = null;
     // }
+
+    BaseAxis.addInitHook(BaseAxis.prototype.init);
     
     return BaseAxis;
 });
@@ -5080,10 +5960,16 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
     var BaseAxis = require('./BaseAxis');
     var BaseUtils = require('../utils/BaseUtils');
     var Constants = require('../Constants');
-
+    
     var CategoryAxis = BaseAxis.extend({
 
         type:Constants.CATEGORY_AXIS_COMPONENT,
+        
+        init: function () {
+            this.isRangePoints = null;
+            this.piece = null;
+            this.highlightType = null;
+        },
 
         initAttributesWithSeries:function(){
 
@@ -5099,7 +5985,8 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
                 stored[category] = true;
             });
 
-            var hasArea = false, hasBar = false;
+            this.isRangePoints = true;
+            this.highlightType = 'line';
 
             for(var i = 0, len = series.length; i < len; i++){
 
@@ -5115,15 +6002,20 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
                             stored[label] = true;
                         }
                     });
-                    if(sery.type == Constants.AREA_CHART){
-                        hasArea = true;
-                    } else if (sery.type == Constants.BAR_CHART || sery.type == Constants.COLUMN_CHART) {
-                        hasBar = true;
+                    if (!this._isSeriesVisible(sery)) {
+                        continue;
+                    }
+                    if (sery.type !== Constants.AREA_CHART) {
+                        this.isRangePoints = false;
+
+                        if (sery.type === Constants.BAR_CHART || sery.type === Constants.COLUMN_CHART) {
+                            this.highlightType = 'band';
+                        }
                     }
                 }
             }
-
-            this.isRangePoints = !hasBar && hasArea;
+            
+            this.getSharedPointsFromSeries(series);
 
             this.categories = categories;
 
@@ -5187,7 +6079,14 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
 
             var valueIndex = this.isBaseAxis ? 0 : 1;
 
-            var valueKey = this.isBaseAxis ? 'x' : 'y';
+            var map = {
+                'xAxis': 'x',
+                'yAxis': 'y',
+                'angleAxis': 'x',
+                'radiusAxis': 'y',
+                'gaugeAxis': 'y'
+            };
+            var valueKey = map[this.componentType];
 
             var cateory = BaseUtils.isArray(datum) ? datum[valueIndex] : datum[valueKey];
 
@@ -5323,6 +6222,77 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
                     this.updateAxisScale(this._getStartIndex(), this._getEndIndex());
                 }
             }
+        },
+
+        getHighlightType: function () {
+            return this.highlightType;
+        },
+
+        getIndexByPosition: function (pos) {
+            var plotBounds = this.getPlotBounds();
+            var scale = this.scale;
+
+            var startX = scale(
+                this.isAxisReversed() ?
+                    scale.domain()[scale.domain().length - 1] :
+                    scale.domain()[0]
+            );
+            var x = pos[0] - plotBounds.x - startX;
+
+            var index;
+            var categories = this.getCategories();
+            if (categories.length > 1) {
+                var unitLength = scale(scale.domain()[1]) - scale(scale.domain()[0]);
+                index = this.isAxisReversed() ? categories.length - 1 - x / unitLength : x / unitLength;
+            } else {
+                index = 0;
+            }
+
+            if (this.getHighlightType() === 'line' && this.isRangePoints) {
+                index = Math.round(index);
+            } else {
+                index = Math.floor(index);
+            }
+
+            return index;
+        },
+
+        _getBandByIndex: function (index){
+            var plotBounds = this.getPlotBounds();
+            var ticks = this._getTickValuesWithEndValue();
+            var scale = this.scale;
+            var domain = scale.domain();
+            var from;
+            var to;
+
+            from = scale(domain[index]);
+
+            switch (this.getHighlightType()) {
+                case 'band':
+                    if (index + 1 === ticks.length) {
+                        to = plotBounds.width;
+                    } else {
+                        to = scale(domain[index + 1]);
+                    }
+                    break;
+                case 'line':
+                default:
+                    var det = this.isRangePoints ? 0 : scale.rangeBand()/2;
+                    from += det;
+                    to = from;
+            }
+
+            return {
+                x: plotBounds.x + from,
+                y: plotBounds.y,
+                width: to - from,
+                height: plotBounds.height
+            };
+        },
+
+        _getBandByPosition: function (pos) {
+            var index = this.getIndexByPosition(pos);
+            return this._getBandByIndex(index);
         }
     });
     
@@ -5332,6 +6302,7 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
     //     this.piece = null;
     //     this.refresh(option, axisOption);
     // }
+    CategoryAxis.addInitHook(CategoryAxis.prototype.init);
 
     require('../ComponentLibrary').register(Constants.CATEGORY_AXIS_COMPONENT, CategoryAxis);
     return CategoryAxis;
@@ -5368,6 +6339,8 @@ define('component/ValueAxis',['require','./Base','./BaseAxis','../utils/BaseUtil
                     this.byPercent = sery.stackByPercent && !this.isBaseAxis;
                 }
             }
+            
+            this.getSharedPointsFromSeries(series);
 
             var minMax = this._calculateMinMaxValue();
 
@@ -5639,7 +6612,10 @@ define('component/ValueAxis',['require','./Base','./BaseAxis','../utils/BaseUtil
             var cfg = this.componentOption;
 
             //值轴为底轴的时候,固定最大最小值才有效
-            this._calculateNiceDomain(min, max, this.isBaseAxis ? min : cfg.min, this.isBaseAxis ? max : cfg.max, zoomFix && this.isBaseAxis);
+            var minMax = this._calculateNiceDomain(min, max, this.isBaseAxis ? min : cfg.min, this.isBaseAxis ? max : cfg.max, zoomFix && this.isBaseAxis);
+
+            this.componentOption.min = minMax.minValue;
+            this.componentOption.max = minMax.maxValue;
 
             this._updateOriginTickData();
 
@@ -5649,6 +6625,7 @@ define('component/ValueAxis',['require','./Base','./BaseAxis','../utils/BaseUtil
         _initZoomStatus:function(){
             var zoom = this.vanchart.getComponent(Constants.ZOOM_COMPONENT);
             if(zoom && zoom.zoomToolEnabled() && BaseUtils.isSupportSVG() && this.isBaseAxis){
+
                 if(this.vanchart.isInitOrRestoreState()){
 
                     var revisedDomain = zoom.getRevisedDomain();
@@ -5705,6 +6682,8 @@ define('component/DateAxis',['require','./Base','./BaseAxis','../utils/BaseUtils
         type:Constants.DATE_AXIS_COMPONENT,
 
         initAttributesWithSeries:function(){
+
+            this.getSharedPointsFromSeries(this.vanchart.series);
 
             this.scale = d3.time.scale();
 
@@ -5776,15 +6755,14 @@ define('component/DateAxis',['require','./Base','./BaseAxis','../utils/BaseUtils
             var minValue = Math.ceil(Number.MAX_VALUE);
             var maxValue = -minValue;
 
-            var axisOption = this.componentOption;
-            var series = this.option.series;
+            var series = this.vanchart.series;
             var hasData = false;
 
             for(var i = 0, len = series.length; i < len; i++){
                 var sery = series[i];
-                var usedIndex = sery[this.componentType] || 0;
-                if(usedIndex == axisOption.axisIndex && this._isSeriesVisible(sery)){
-                    var data = sery.data;
+                var byAxis = sery[this.componentType];
+                if(byAxis == this && this._isSeriesVisible(sery)){
+                    var data = sery.seriesOption.data;
                     for(var i = 0,len = data.length; i < len; i++){
                         var value = this.getValueFromData(data[i]);
 
@@ -5869,6 +6847,9 @@ define('component/DateAxis',['require','./Base','./BaseAxis','../utils/BaseUtils
             minValue = BaseUtils.date2int(minValue);
 
             maxValue = BaseUtils.date2int(maxValue);
+
+            this.componentOption.min = minValue;
+            this.componentOption.max = maxValue;
 
             this._updateDomain(minValue, maxValue, zoomFix);
         },
@@ -6380,7 +7361,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/LabelDivMan
     var BaseRender = Class.extend({
 
         initialize:function(component){
-            
+
             this.component = component;
 
             if(component && component.getParentDom){
@@ -6725,10 +7706,8 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/LabelDivMan
                 .select('path.' + MARKER_STROKE).style('stroke', backgroundColor);
         },
 
-        _cancelMarkerClickedState:function(parentS, d){
-
-            var markerG = parentS.select('g.' + d.className);
-
+        _cancelMarkerClickedState:function(markerG, d){
+            
             var backgroundColor = this.component._getBackgroundColor();
             var markerFillColor = d.marker.fillColor;
 
@@ -6744,7 +7723,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/LabelDivMan
 
         },
 
-        _makeMarkerChosenState:function(parentS, d, addSize, animationTime){
+        _makeMarkerChosenState:function(markerG, d, addSize, animationTime){
             addSize = addSize || 2;
             animationTime = animationTime || 0;
 
@@ -6760,9 +7739,6 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/LabelDivMan
 
             if(this._isHollowMarker(markerType))
                 pathR -= 1;
-
-
-            var markerG = parentS.select('g.' + d.className);
 
             if(markerG){
                 markerG
@@ -6795,7 +7771,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/LabelDivMan
 
         },
 
-        _cancelMarkerChosenState:function(parentS, d){
+        _cancelMarkerChosenState:function(markerG, d){
 
             var backgroundColor = this.component._getBackgroundColor();
 
@@ -6808,9 +7784,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/LabelDivMan
             if(this._isHollowMarker(markerType))
                 pathR -= 1;
 
-            var markerG = parentS.select('g.' + d.className);
             if(markerG){
-
                 //stop animation
                 markerG
                     .select('path.' + MARKER)
@@ -7405,26 +8379,27 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/LabelDivMan
         },
 
         addSeriesEventHandler:function(shapeS){
-
             var self = this;
 
-            if(BaseUtils.isSupportSVG() && shapeS.each){
-                shapeS.each(function(){
-                    self._addSingleSeriesEventHandler(this);
-                })
+            if(BaseUtils.isSupportSVG()){
+                if (shapeS.each) {
+                    shapeS.each(function () {
+                        self._addSingleSeriesEventHandler(d3.select(this));
+                    })
+                } else {
+                    this._addSingleSeriesEventHandler(d3.select(shapeS[0][0]));
+                }
             }else{
-                this._addSingleSeriesEventHandler(shapeS.node);
+                this._addSingleSeriesEventHandler(shapeS);
             }
 
         },
 
-        _addSingleSeriesEventHandler:function(el){
+        _addSingleSeriesEventHandler:function(layer){
 
             var handler = this.component.vanchart.handler;
 
-            BaseUtils.addEvent(el, 'mouseenter', handler.trackerSeriesEnter.bind(handler));
-
-            BaseUtils.addEvent(el, 'mouseleave', handler.trackerSeriesLeave.bind(handler));
+            handler.addInteractiveTarget(layer, this._getSeriesTypes(), this);
         },
 
         addShapeEventHandler:function(shapeS){
@@ -7433,35 +8408,115 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/LabelDivMan
 
             if(BaseUtils.isSupportSVG()){
                 shapeS.each(function(){
-                    self._addSingleShapeEventHandler(this);
-                })
+                    self._addSingleShapeEventHandler(d3.select(this));
+                });
             }else{
-                this._addSingleShapeEventHandler(shapeS.node);
+                this._addSingleShapeEventHandler(shapeS);
             }
 
         },
 
-        _addSingleShapeEventHandler:function(el){
+        _addSingleShapeEventHandler:function(layer){
 
             var handler = this.component.vanchart.handler;
 
-            if(BaseUtils.hasTouch()){
+            handler.addInteractiveTarget(layer, this._getTypes(), this);
+        },
 
-                BaseUtils.addEvent(el, 'touchstart', handler.trackerPointTouchStart.bind(handler));
-
-                BaseUtils.addEvent(el, 'touchend', handler.trackerPointTouchEnd.bind(handler));
-
-            }else{
-                BaseUtils.addEvent(el, 'mouseenter', handler.trackerPointEnter.bind(handler));
-
-                BaseUtils.addEvent(el, 'mouseleave', handler.trackerPointLeave.bind(handler));
-
-                BaseUtils.addEvent(el, 'mousemove', handler.trackerPointMove.bind(handler));
-
-                BaseUtils.addEvent(el, 'mousedown', handler.trackerPointDown.bind(handler));
-
-                BaseUtils.addEvent(el, 'mouseup', handler.trackerPointUp.bind(handler));
+        _getTypes:function(){
+            return {
+                'mouseover':this._mouseOver,
+                'mouseout':this._mouseOut,
+                'mousedown':this.mouseDown,
+                'mouseup':this.mouseUp,
+                'cover':this.mouseOver,
+                'leave':this.mouseOut,
             }
+        },
+
+        _getSeriesTypes:function(){
+            return {
+                'mouseover':this._seriesMouseOver,
+                'forceMouseOut':this._seriesMouseOut
+            }
+        },
+
+        _mouseOver:function(event){
+
+            var point = event.target.datum(),
+                series = point.series,
+                chart = series.chart.vanchart,
+                handler = chart.handler,
+                hoverPoint = chart.hoverPoint,
+                hoverSeries = chart.hoverSeries;
+
+            if (hoverSeries !== series) {
+                handler.fireEventByData(hoverSeries, 'forceMouseOut', event);
+                handler.fireEventByData(series, 'mouseover', event);
+                chart.hoverSeries = series;
+            }
+
+            if (hoverPoint && hoverPoint !== point) {
+                handler.fireEventByData(hoverPoint, 'mouseout', event);
+            }
+
+            point.series && (chart.hoverPoint = point);
+
+            this.mouseOver(event);
+        },
+
+        _mouseOut:function(event){
+
+            var point = event.target.datum(),
+                series = point.series,
+                chart = series.chart.vanchart;
+
+            chart.hoverPoint = null;
+            this.mouseOut(event);
+        },
+
+        _seriesMouseOver:function(event){
+
+            var series = event.target.datum(),
+                chart = series.chart.vanchart,
+                hoverPoint = chart.hoverPoint,
+                hoverSeries = chart.hoverSeries,
+                handler = chart.handler;
+
+            // set normal state to previous series
+            if (hoverSeries && hoverSeries !== series) {
+                handler.fireEventByData(hoverSeries, 'forceMouseOut', event);
+            }
+            
+            chart.hoverSeries = series;
+
+            if(!hoverPoint || (hoverPoint && hoverPoint.series != series)){
+
+                var closestPoint = series.chart.getClosestPoint(event.containerPoint);
+
+                handler.fireEventByData(hoverPoint, 'mouseout', event);
+
+                handler.fireEventByData(closestPoint, 'mouseover', event);
+            }
+
+            this.seriesMouseOver(event);
+        },
+
+        seriesMouseOver:function(){
+
+        },
+
+        _seriesMouseOut:function(event){
+
+            var series = event.target.datum(),
+                chart = series.chart.vanchart,
+                hoverSeries = chart.hoverSeries,
+                hoverPoint = chart.hoverPoint,
+                handler = chart.handler;
+
+            chart.hoverSeries = null;
+
+            this.seriesMouseOut(event);
         },
 
         _canvasRender:function(){
@@ -7538,36 +8593,6 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/LabelDivMan
 
         remove:function(){
 
-        },
-
-        //数据点形状的数据，移动到标签上的时候触发选中
-        makeChosenState:function(d){
-
-        },
-
-        //数据点形状的数据，移动出到标签上的时候取消选中
-        cancelChosenState:function(d){
-
-        },
-
-        makeClickedState:function(d){
-
-        },
-
-        cancelClickedState:function(d){
-
-        },
-
-        onDragStart:function(){
-
-        },
-
-        onDrag:function(){
-
-        },
-
-        onDragEnd:function(){
-
         }
     });
     
@@ -7631,9 +8656,9 @@ define('component/Axis',['require','./Base','../utils/BaseUtils','../Constants',
     require('../render/AxisRender');
 
     var Axis = Base.extend({
+        _refresh:function(){
+            this._axisList = this._axisList || [];
 
-        buildAxis:function(){
-            this._axisList = [];
             var option = this.option;
             var axisOption = this.componentOption;
             if(!BaseUtils.isArray(axisOption)){
@@ -7678,6 +8703,8 @@ define('component/Axis',['require','./Base','../utils/BaseUtils','../Constants',
 
                     this._axisList[axisIndex] = new AxisClass(this.vanchart, this.option, this.componentType, axisOption[axisIndex]);
                 }
+
+                this._axisList[axisIndex].refreshPolar && this._axisList[axisIndex].refreshPolar(this.option, axisOption[axisIndex]);
             }
         },
 
@@ -7707,7 +8734,10 @@ define('component/Axis',['require','./Base','../utils/BaseUtils','../Constants',
 
                     var axis = axisList[i];
 
-                    var baseBounds = i == 0 ? plotBounds : axisList[i - 1].bounds;
+                    var baseBounds = plotBounds;
+                    if (i > 0 && !axisList[i-1].isOnZero() ) {
+                        baseBounds = axisList[i - 1].bounds;
+                    }
 
                     var axisBounds = axis.bounds;
 
@@ -7804,9 +8834,7 @@ define('component/Axis',['require','./Base','../utils/BaseUtils','../Constants',
             return axisRenders;
         }
     });
-
-    Axis.addInitHook(Axis.prototype.buildAxis);
-
+    
     require('../ComponentLibrary').register(Constants.AXIS_COMPONENT, Axis);
 
     return Axis;
@@ -7984,23 +9012,30 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
         getFeatureMap:function(series){
             var areaFeatures = [], bubbleFeatures = [], scatterFeatures = [], imageFeatures = [];
 
-            var validArea = {};
-            for(var i = series.length - 1; i >= 0; i--){
-                var sery = series[i];
-                if(sery.type == Constants.MAP_CHART){
-                    var points = sery.points;
-                    for(var pIndex = points.length - 1; pIndex >= 0; pIndex--){
-                        var point = points[pIndex];
-                        if(!point.feature){
-                            QueryUtils.merge(point, point.feature = this.getFeature(point.location));
-                        }
-                        validArea[point.location] = true;
-                        QueryUtils.merge(point, point.visible && sery.visible ? point.mapStyle : sery.mapStyle, true);
-                        areaFeatures.push(point);
-                    }
-                }else if(sery.visible){
+            var areaText = [], bubbleText = [], scatterText = [], imageText = [];
 
-                    if(sery.type == Constants.BUBBLE_CHART){
+            var validArea = {};
+
+            //计算第一个有效的系列
+            for(var i = 0, len = series.length; i < len; i++){
+                var sery = series[i];
+
+                if(sery.visible){
+                    if(sery.type == Constants.MAP_CHART){
+                        var points = sery.points;
+                        for(var pIndex = points.length - 1; pIndex >= 0; pIndex--){
+                            var point = points[pIndex];
+                            if(!point.feature){
+                                QueryUtils.merge(point, point.feature = this.getFeature(point.name));
+                            }
+                            if(point.visible){
+                                validArea[point.name] = true;
+                                BaseUtils.extend(point, point.mapStyle);
+                                areaFeatures.push(point);
+                                // areaText.push(point);
+                            }
+                        }
+                    }else if(sery.type == Constants.BUBBLE_CHART){
                         bubbleFeatures = bubbleFeatures.concat(sery.points);
                     }else{
                         sery.points.forEach(function(point){
@@ -8023,6 +9058,11 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 }
             }
 
+            //测试下效果
+            bubbleText = bubbleFeatures;
+            scatterText = scatterFeatures;
+            imageText = imageFeatures;
+
             var features = this.getAllFeatures();
             var dStyle = this.getDefaultMapStyle();
             features.forEach(function(feature){
@@ -8037,7 +9077,12 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 areaFeatures:areaFeatures,
                 bubbleFeatures:bubbleFeatures,
                 scatterFeatures:scatterFeatures,
-                imageFeatures:imageFeatures
+                imageFeatures:imageFeatures,
+
+                areaText:areaText,
+                bubbleText:bubbleText,
+                scatterText:scatterText,
+                imageText:imageText
             };
         },
 
@@ -8730,6 +9775,30 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
             }
         },
 
+        showWithPoint:function(point){
+            if(point && point.visible){
+                var opt = point.tooltip;
+                var tooltipDim  = this.calculateTooltipDivDim(opt, point.tooltipText);
+                var pos = point.series.chart.getTooltipPos(point, tooltipDim, event);
+                this.show(pos, opt, point.tooltipText);
+            }
+        },
+        
+        showWithSharedPoints: function (points) {
+            if (!points || points.length === 0) {
+                this.hide();
+                return;
+            }
+            var d = points.reduce(function (prev, curr) {
+                return (prev.value > curr.value) ? prev : curr;
+            });
+            var opt = d.tooltip;
+            var text = this._calculateTooltipContent(points);
+            var tooltipDim  = this.calculateTooltipDivDim(opt, text);
+            var tooltipPos = d.series.chart.getTooltipPos(d, tooltipDim, event);
+            this.show(tooltipPos, opt, text);
+        },
+
         show:function(pos, opt, tooltipText){
 
             if(pos && opt && tooltipText && !this.vanchart.isMouseDown){
@@ -8779,7 +9848,41 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
                 width:width,
                 height:height
             };
-        }
+        },
+
+        _calculateTooltipContent:function(points){
+
+            var tooltip = points[0].tooltip;
+            var formatter = tooltip.formatter;
+
+            if(!formatter){
+                return "";
+            }
+
+            if(typeof formatter == 'object'){
+
+                var style = tooltip.style;
+                var label = formatter.identifier;
+
+                var content = '';
+
+                content += points[0].series.chart._createCategoryLine(points[0], label, style, formatter);
+
+                points.map(function(point){
+
+                    content += '<span style="font-size:12px; color: ' + point.color + '">'+'&#9679  '+'</span>';
+
+                    content += point.series.chart._createSeriesLine(point, label, style, formatter);
+
+                    content += '<br />';
+                });
+
+                return content;
+            }else{
+                //
+                return BaseUtils.getFormatterFunction(formatter).call();
+            }
+        },
 
     });
 
@@ -10322,13 +11425,13 @@ define('render/ZoomBarRender',['require','./BaseRender','../utils/BaseUtils','..
                         switch (component){
 
                             case Constants.LEFT:
-                                if(self.zoomBar.resizable()){
+                                if(self.component.resizable()){
                                     self._leftButtonMove(this.downX, this.initX);
                                 }
                                 break;
 
                             case Constants.RIGHT:
-                                if(self.zoomBar.resizable()){
+                                if(self.component.resizable()){
                                     self._rightButtonMove(this.downX, this.initX);
                                 }
                                 break;
@@ -10348,7 +11451,7 @@ define('render/ZoomBarRender',['require','./BaseRender','../utils/BaseUtils','..
                         this.tartget = null;
                         self._updateBounds();
 
-                        var axis = self.zoomBar.vanchart.xAxis();
+                        var axis = self.component.vanchart.xAxis();
                         if(axis){
                             axis.render.render();
                         }
@@ -10572,9 +11675,10 @@ define('render/ZoomBarRender',['require','./BaseRender','../utils/BaseUtils','..
             var xScale = this.xScale;
 
             var series = this.component.option.series;
+            var chartType = this.component.option.chartType;
             var usedSeries = [];
             series.forEach(function(sery){
-                if(!sery.xAxis && config[sery.type].xAxis){
+                if(!sery.xAxis && config[sery.type || chartType].xAxis){
                     usedSeries.push(sery);
                 }
             });
@@ -11128,11 +12232,6 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
     var ITEM_GAP = 2;
 
     var RangeLegend = Base.extend({
-
-        _refresh: function () {
-            this._mergeAttr();
-        },
-
         doLayout: function () {
 
             if(this.isIntervalLegend){
@@ -11144,7 +12243,10 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
             this._setComponentBounds(this.componentOption.position || Constants.RIGHT_TOP, usedSize);
 
             this._calculateRangeLegendFinalBounds(usedSize);
+        },
 
+        _refresh: function () {
+            this._mergeAttr();
         },
 
         _mergeAttr: function () {
@@ -11614,7 +12716,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./Compone
         };
         this.vancharts = vancharts;
 
-        this.handler = new Handler(this);
+        this.handler = new Handler(this, dom);
         this.render = RenderFactory.getRender(Constants.VANCHART, this);
 
         this.components = {};
@@ -11624,7 +12726,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./Compone
         this.series = [];
 
         this.colorMap = {};
-
+        
         this.refresh(option);
     }
 
@@ -11877,7 +12979,6 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./Compone
                 Constants.GAUGE_AXIS_COMPONENT,
                 Constants.Y_AXIS_COMPONENT,
                 Constants.X_AXIS_COMPONENT,
-                Constants.ZOOM_COMPONENT,
                 Constants.DATA_SHEET_COMPONENT
             ]
                 .forEach(function(cName){
@@ -11907,6 +13008,18 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./Compone
                     var component = components[cName];
                     if(component){
                         component.dealOnZero();
+                    }
+                });
+
+            [
+                Constants.ZOOM_COMPONENT,
+            ]
+                .forEach(function(cName){
+
+                    var component = components[cName];
+
+                    if(component){
+                        component.fixBoundsByPlot();
                     }
                 });
 
@@ -12028,9 +13141,14 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./Compone
             option.series.map(function (item) {
                 var type = item.type;
                 if (type && chartTypes.indexOf(type) === -1) {
+                    chartTypes.push(item);
                     QueryUtils.merge(result, defaultConfig[type], true);
                 }
             });
+            
+            if (chartTypes.length === 0) {
+                QueryUtils.merge(result, defaultConfig[Constants.LINE_CHART], true);
+            }
 
             QueryUtils.merge(result, themeConfig, true);
 
@@ -12347,6 +13465,10 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./Compone
             return 0;
         },
 
+        getTooltip:function(){
+            return this.components.tooltip;
+        },
+
         getComponent:function(type){
             return this.components[type];
         },
@@ -12572,7 +13694,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextDimension(text, style, useHtml){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.body.appendChild(div);
+        document.getElementById("container").appendChild(div);
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "nowrap";
@@ -12602,7 +13724,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.body.removeChild(div);
+        document.getElementById("container").removeChild(div);
 
         return {width:width, height:height};
     }
@@ -12610,7 +13732,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextWrapDimension(text, style, useHTML){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.body.appendChild(div);
+        document.getElementById("container").appendChild(div);
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "normal";
@@ -12635,7 +13757,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.body.removeChild(div);
+        document.getElementById("container").removeChild(div);
 
         return {width:width, height:height};
     }
@@ -12650,6 +13772,24 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function stamp(obj){
         obj._vanchart_id = obj._vanchart_id || ++lastID;
         return obj._vanchart_id;
+    }
+
+    function falseFn() {
+        return false;
+    }
+
+    //properties mix in
+    function extend(dest) {
+        var i, j, len, src;
+
+        for (j = 1, len = arguments.length; j < len; j++) {
+            src = arguments[j];
+            for (i in src) {
+                dest[i] = src[i];
+            }
+        }
+
+        return dest;
     }
 
     function divRotate(div, rotation){
@@ -13296,9 +14436,9 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         return Math.abs(v) < 1e-6 ? 0 : v;
     }
 
-    function getMousePos(event, el){
+    function getMousePos(ev, el){
 
-        event = event || window.event;
+        var event = ev.originalEvent || ev;
 
         event = event.touches ?  (event.touches.length ? event.touches.item(0) : event.changedTouches[0]) : event;
 
@@ -13389,7 +14529,9 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         getArcPoint:getArcPoint,
         getTextWrapDimension:getTextWrapDimension,
         stamp:stamp,
-        splitWords:splitWords
+        splitWords:splitWords,
+        falseFn:falseFn,
+        extend:extend
     };
 
 });
@@ -13413,6 +14555,7 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
     var Y = '{Y}';
     var SIZE = '{SIZE}';
 
+    var NAME = 'NAME';
     var CATEGORY = 'CATEGORY';
     var SERIES = 'SERIES';
     var VALUE = 'VALUE';
@@ -13619,8 +14762,9 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
             var dIndex = point.index;
 
             //标记点的颜色取的顺序：colors配色、plotOptions的标记点的颜色、范围图例、条件属性系列配色、条件属性系列标记点颜色、条件属性数据点的配色、条件属性数据点的标记点的配色
-            marker.fillColor = this.vanchart.getDefaultSeriesColor(point.seriesName);
+            marker.fillColor = marker.fillColor || this.vanchart.getDefaultSeriesColor(point.seriesName);
 
+            // are following necessary?
             if(BaseUtils.hasDefined(this.option.plotOptions.marker)){
                 marker.fillColor = this.option.plotOptions.marker.fillColor || marker.fillColor;
             }
@@ -13799,66 +14943,7 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
 
             return [xValues, yValues, Constants.BOTTOM];
         },
-
-        makeChosenState:function(d){
-            if(this.render){
-                this.render.makeChosenState(d);
-            }
-        },
-
-        cancelChosenState:function(d){
-            if(this.render){
-                this.render.cancelChosenState(d);
-            }
-        },
-
-        makeClickedState:function(d){
-            if(this.render){
-                this.render.makeClickedState(d);
-            }
-        },
-
-        cancelClickedState:function(d){
-            if(this.render){
-                this.render.cancelClickedState(d);
-            }
-        },
-
-        onContainerMouseUp:function(){
-
-        },
-
-        onContainerMouseDown:function(){
-
-        },
-
-        getClosestPoint:function(){
-
-        },
-
-        makeSeriesChosenState:function(){
-
-        },
-
-        cancelSeriesChosenState:function(){
-
-        },
-
-        onContainerMouseMove:function(event){
-
-            var pos = this.getMousePos(event);
-
-            var plotBounds = this.getPlotBounds();
-
-            var nearbyPoint = this.getClosestPoint(pos);
-
-            if(BaseUtils.containsPoint(plotBounds, pos) && nearbyPoint){
-                event = event || window.event;
-
-                this.vanchart.handler.updateHoverPoint(nearbyPoint, event);
-            }
-        },
-
+        
         //默认是按照分类总值来排序
         orderData:function(){
 
@@ -13950,8 +15035,13 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
 
                 var sery = series[i];
 
-                if(sery.type == this.componentType && sery.visible && sery.points.length && !sery.points[0].isNull){
-                    data.push(series[i]);
+                if(sery.type == this.componentType && sery.visible && sery.points.length){
+                    for(var j = 0; j < sery.points.length; ++j) {
+                        if (!sery.points[j].isNull) {
+                            data.push(series[i]);
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -14164,11 +15254,15 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
                 var content = '';
 
                 if(label.indexOf(CATEGORY) != -1){
+                    content = Formatter.format(data.category, formatter.categoryFormat);
+                }
 
-                    var categoryString = Formatter.format(data.category, formatter.categoryFormat);
+                if(label.indexOf(NAME) != -1){
+                    content = Formatter.format(data.name, formatter.nameFormat);
+                }
 
-                    content += (style ? '<span>' : Constants.TOOLTIP_CATEGORY_STYLE) + categoryString +'</span>';
-
+                if(content){
+                    content = (style ? '<span>' : Constants.TOOLTIP_CATEGORY_STYLE) + content +'</span>';
                     content += '<br />';
                 }
 
@@ -14237,6 +15331,10 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
             }
 
             return content;
+        },
+
+        getClosestPoint:function(){
+            
         }
         
     });
@@ -15038,37 +16136,22 @@ define('chart/Pie',['require','../Constants','../utils/BaseUtils','./BaseChart',
             this.option.byClassName = false;
         },
 
-        onContainerMouseMove:function(event){
-
-            if(this.dragTarget){
-
-                var pos = this.getMousePos(event);
-
-                this.render.onDrag(this.dragTarget, pos);
-            }
-
-        },
-
-        onContainerMouseUp:function(event){
-
-            if(this.dragTarget){
-                var pos = this.getMousePos(event);
-
-                this.render.onDragEnd(this.dragTarget, pos);
-
-                this.dragTarget = null;
-            }
-
-            if(this.vanchart.hoverPoint){
-                this.cancelClickedState(this.vanchart.hoverPoint);
+        onDrag:function(event){
+            if(this._draggingSeries){
+                this.render.onDrag(this._draggingSeries, event.containerPoint);
             }
         },
 
-        onContainerMouseDown:function(event){
+        dragEnd:function(event){
+            if(this._draggingSeries){
+                this.render.onDragEnd(this._draggingSeries, event.containerPoint);
+                this._draggingSeries = null;
+            }
+        },
 
-            this.dragTarget = null;
+        findDraggingTarget:function(event){
 
-            var pos = this.getMousePos(event);
+            var pos = event.containerPoint;
 
             var plotBounds = this.getPlotBounds();
 
@@ -15076,21 +16159,17 @@ define('chart/Pie',['require','../Constants','../utils/BaseUtils','./BaseChart',
             var y = pos[1] - plotBounds.y;
 
             var series = this.getVisibleChartData();
-            series.forEach(function(config){
-                if(BaseUtils.containsPoint(config.bounds, [x,y]) && config.rotatable){
-                    this.dragTarget = config;
+
+            for(var i = series.length - 1; i >= 0; i--){
+                if(BaseUtils.containsPoint(series[i].bounds, [x,y]) && series[i].rotatable){
+                    this.render.onDragStart(series[i], pos);
+                    this._draggingSeries = series[i];
+                    return this;
                 }
-            }.bind(this));
-
-            if(this.dragTarget){
-                this.render.onDragStart(this.dragTarget, pos);
             }
-
-            if(this.vanchart.hoverPoint){
-                this.makeClickedState(this.vanchart.hoverPoint);
-            }
+            
         }
-        
+
     });
 
     require('../ChartLibrary').register(Constants.PIE_CHART, Pie);
@@ -15521,43 +16600,6 @@ define('chart/Bar',['require','./BaseChart','../utils/BaseUtils','../Constants',
             };
         }
 
-        // getCoverdPoint:function(pos){
-        //
-        //     var selectedPoint;
-        //     var minDistance = Number.MAX_VALUE;
-        //
-        //     var lineData = this.vanchart.hoverSeries;
-        //
-        //     var plotBounds = this.getPlotBounds();
-        //
-        //     if(lineData && lineData.points){
-        //         lineData.points.forEach(function(point){
-        //             var dis = Math.abs(point.x + plotBounds.x - pos[0]);
-        //             if(dis < minDistance && !point.isNull){
-        //                 selectedPoint = point;
-        //                 minDistance = dis;
-        //             }
-        //         });
-        //     }else{
-        //
-        //         var series = this.vanchart.series;
-        //
-        //         series.forEach(function(sery){
-        //
-        //             if(sery.points){
-        //                 sery.points.forEach(function(point){
-        //                     var dis = Math.abs(point.x + plotBounds.x - pos[0]);
-        //                     if(dis < minDistance && !point.isNull){
-        //                         selectedPoint = point;
-        //                         minDistance = dis;
-        //                     }
-        //                 });
-        //             }
-        //         });
-        //     }
-        //
-        //     return selectedPoint;
-        // }
     });
 
     require('../ChartLibrary').register(Constants.BAR_CHART, Bar);
@@ -16275,6 +17317,7 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','../utils/Co
                 var singleGauge = gaugeData[i];
 
                 if(singleGauge.center){
+                    var plotBounds = this.vanchart.getPlotBounds();
                     var centerX = singleGauge.center[0];
                     var centerY = singleGauge.center[1];
 
@@ -16285,6 +17328,9 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','../utils/Co
                     if(centerY.indexOf('%') != -1){
                         centerY = this._getPercentValue(centerY, this.vanchart.chartHeight());
                     }
+
+                    centerX -= plotBounds.x;
+                    centerY -= plotBounds.y;
 
                     singleGauge.centerX = centerX;
                     singleGauge.centerY = centerY;
@@ -16768,21 +17814,28 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','../utils/Co
 
         _fixHorizontalThermometerCenter:function(gauge){
 
-            var bounds = gauge.bounds;
-
+            var centerX, centerY, radius;
+            var gaugeAxis = gauge.gaugeAxis;
             var percentageLabel = gauge.percentageLabel;
             var valueLabel = gauge.valueLabel;
-            var gaugeAxis = gauge.gaugeAxis;
             var showValueLabel = gauge.valueLabelContent ? gauge.valueLabelContent[0] : null;
-
-            var centerX, centerY, radius;
 
             var totalHeight = this._getThermometerSize(gauge);
 
-            centerX = bounds.x + bounds.width/2;
-            radius = bounds.width/2 - gaugeAxis.getMaxTickWidth() - DEFAULT_PADDING;
+            // todo, has center or auto
+            if (!gauge.center) {
+                var bounds = gauge.bounds;
+                var startY = bounds.y + (bounds.height - totalHeight)/2;
+                centerX = bounds.x + bounds.width/2;
+                centerY = startY - 5;
+                radius = bounds.width/2 - gaugeAxis.getMaxTickWidth() - DEFAULT_PADDING;
 
-            var startY = bounds.y + (bounds.height - totalHeight)/2;
+            } else {
+                centerX = gauge.centerX;
+                centerY = gauge.centerY;
+                radius = gauge.radius;
+                var startY = centerY + 5;
+            }
 
             if(gauge.percentageLabelContent || showValueLabel){
                 if(gauge.percentageLabelContent && showValueLabel
@@ -16829,7 +17882,6 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','../utils/Co
 
             startY += (gaugeAxis.getTickHeight() + TICK_LABEL_GAP + TICK_SIZE + TICK_LABEL_GAP + THERMOMETER_R * 2);
 
-            centerY = startY - 5;
 
             if(gauge.percentageLabelContent || showValueLabel){
 
@@ -16887,8 +17939,6 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','../utils/Co
 
             var centerX, centerY, radius;
 
-            var bounds = gauge.bounds;
-
             var percentageLabel = gauge.percentageLabel;
             var valueLabel = gauge.valueLabel;
             var gaugeAxis = gauge.gaugeAxis;
@@ -16900,10 +17950,20 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','../utils/Co
             //纵向布局
             var totalWidth = this._getThermometerSize(gauge);
 
-            var startX = bounds.x + (bounds.width - totalWidth)/2;
-            centerY = bounds.y + bounds.height/2;
+            // todo,
+            if (!gauge.center) {
+                var bounds = gauge.bounds;
+                var startX = bounds.x + (bounds.width - totalWidth)/2;
+                centerY = bounds.y + bounds.height/2;
+                radius = bounds.height/2 - gaugeAxis.getTickHeight() - DEFAULT_PADDING;
+                centerX = startX + THERMOMETER_R;
 
-            radius = bounds.height/2 - gaugeAxis.getTickHeight() - DEFAULT_PADDING;
+            } else {
+                centerX = gauge.centerX;
+                centerY = gauge.centerY;
+                radius = gauge.radius;
+                var startY = centerY - THERMOMETER_R;
+            }
 
             var scale = d3.scale.linear().domain(domain).range([radius, -radius]);
             var labelY = centerY + scale(point.valueInDomain);
@@ -16954,8 +18014,6 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','../utils/Co
                     }
                 }
             }
-
-            centerX = startX + THERMOMETER_R;
 
             startX += (THERMOMETER_R * 2 + TICK_LABEL_GAP + TICK_SIZE + TICK_LABEL_GAP + gaugeAxis.getMaxTickWidth());
 
@@ -18396,7 +19454,10 @@ define('chart/Scatter',['require','./BaseChart','../utils/BaseUtils','../utils/C
 
         constructor: Scatter,
 
+        selfSeryIndex: 0,
+
         doLayout: function () {
+            this.selfSeryIndex = 0;
             var self = this;
             var series = this.getVisibleChartData();
             var allPoints = [];
@@ -18520,13 +19581,14 @@ define('chart/Scatter',['require','./BaseChart','../utils/BaseUtils','../utils/C
             //放在最后原因：会用到size
             this._mergeMarkerAttributes(point);
             if(BaseUtils.isNullMarker(point.marker)){
-                point.marker.symbol = BaseUtils.getDefaultMarkerSymbol(point.series.index);
+                point.marker.symbol = point.series.marker.symbol;
             }
         },
 
         mergeSeriesAttributes:function(sery){
             if(BaseUtils.isNullMarker(sery.marker)){
-                sery.marker.symbol = BaseUtils.getDefaultMarkerSymbol(sery.index);
+                sery.marker.symbol = BaseUtils.getDefaultMarkerSymbol(this.selfSeryIndex);
+                this.selfSeryIndex++;
             }
 
             var plotOptions = QueryUtils.merge(
@@ -18612,7 +19674,12 @@ define('chart/Scatter',['require','./BaseChart','../utils/BaseUtils','../utils/C
 /**
  * Created by eason on 16/5/9.
  */
-define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/QueryUtils','./BaseChart','../component/Geo','../component/Series','../theme/options','../ChartLibrary'],function(require){
+define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/QueryUtils','./BaseChart','../component/Geo','../component/Series','../theme/options','../utils/Formatter','../ChartLibrary'],function(require){
+
+    var NAME = 'NAME';
+    var SERIES = 'SERIES';
+    var VALUE = 'VALUE';
+    var PERCENT = 'PERCENT';
 
     var Constants = require('../Constants');
     var BaseUtils = require('../utils/BaseUtils');
@@ -18622,6 +19689,7 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
     
     var Series = require('../component/Series');
     var Options = require('../theme/options');
+    var Formatter = require('../utils/Formatter');
 
     var Map = BaseChart.extend({
         type:Constants.MAP_CHART,
@@ -18629,6 +19697,107 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
         doLayout:function(){
             var bubble = this.vanchart.getChart(Constants.BUBBLE_CHART);
             bubble && bubble.calculateBubbleRadius();
+
+            //百分比,标签,数据提示
+            this._calculateTextRelated([Constants.MAP_CHART, Constants.BUBBLE_CHART, Constants.SCATTER_CHART]);
+        },
+
+        _calculateTextRelated:function(chartType){
+
+            var series = this.getChartData(chartType);
+
+            var nameMap = {};
+
+            //计算百分比
+            for(var i = series.length - 1; i >= 0; i--){
+                var total = 0;
+                var points = series[i].points;
+
+                points.forEach(function(point){
+                    total = BaseUtils.accAdd(total, Math.abs(point.value));
+                });
+
+                points.forEach(function(point){
+                    point.percentage = Math.abs(BaseUtils.accDiv(total, point.value));
+
+                    nameMap[point.name] = nameMap[point.name] || [];
+                    nameMap[point.name].push(point);
+                });
+            }
+
+            var map = this;
+            for(var name in nameMap){
+                var points = nameMap[name];
+                points.forEach(function(point){
+
+                    point.points = points;
+                    //标签
+                    if(point.dataLabels && point.dataLabels.enabled){
+                        BaseUtils.extend(point, map.calculateMapLabel(point, point.dataLabels, chartType));
+                    }
+
+                    //数据点提示
+                    if(point.tooltip && point.tooltip.enabled){
+                        point.tooltipText = map._calculateTooltipContent(point.tooltip, point, points);
+                    }
+                });
+            }
+        },
+
+        calculateMapLabel:function(point, labelInfo, chartType){
+            if(!formatter){
+                return {};
+            }
+            var dataLabels = labelInfo || {};
+            var formatter =  dataLabels.formatter;
+            var useHtml = dataLabels.useHtml;
+
+            var labelPosition = chartType == Constants.SCATTER_CHART ? Constants.OUTSIDE : Constants.INSIDE;
+
+            var content = [];
+
+            if(typeof formatter == 'object'){
+
+                var label = formatter.identifier;
+
+                if(label.indexOf(NAME) != -1){
+                    var text = Formatter.format(point.name, formatter.nameFormat);
+                    var style = this.getCategorySeriesStyle(dataLabels, labelPosition);
+                    var dim = BaseUtils.getTextDimension(text, style, useHtml);
+                    content.push({text:text, style:style, dim:dim});
+                }
+
+                var line = [];
+                if(label.indexOf(SERIES) != -1){
+                    line.push(Formatter.format(point.seriesName, formatter.seriesFormat));
+                }
+
+                if(label.indexOf(VALUE) != -1){
+                    line.push(Formatter.format(point.value, formatter.valueFormat));
+                }
+
+                if(label.indexOf(PERCENT) != -1){
+                    line.push(Formatter.format(point.percentage, formatter.percentFormat));
+                }
+
+                if(line.length){
+                    var text = line.join(' ');
+                    var style = point.getValuePercentageStyle(dataLabels, labelPosition);
+                    var dim = BaseUtils.getTextDimension(text, style, useHtml);
+                    content.push({text:text, style:style, dim:dim});
+                }
+
+            }else{
+                point.pushCustomLabelContent(formatter, dataLabels, useHtml, content, labelPosition);
+            }
+
+            var labelDim = point.calculateTextDim(content);
+
+            return {
+                labelContent:content,
+                labelDim:labelDim
+            };
+
         },
 
         initLayerInfo:function(){
@@ -18685,6 +19854,18 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             return style;
         },
 
+        mergeSeriesAttributes:function(series){
+
+            var queryList = [
+                series.seriesOption,
+                this.option.plotOptions[series.type],
+                this.option.plotOptions,
+                Options[series.type].plotOptions
+            ];
+
+            series.mapStyle = this._getComputedMapStyle(queryList);
+        },
+
         mergeDataPointAttributes:function(point){
             var pointOption = point.pointOption;
             var queryList = [
@@ -18697,7 +19878,6 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var drill = QueryUtils.queryList(queryList, 'drill');
 
             //todo 如何指定其他的值
-            var location = BaseUtils.pick(pointOption.name, pointOption[0]);
             var value = BaseUtils.pick(pointOption.value, pointOption[1]);
 
             var series, geo;
@@ -18718,7 +19898,6 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
                 mapStyle:style,
                 drillSeries:series,
                 geo:geo,
-                location:location,
                 value:value
             }, true);
 
@@ -18762,6 +19941,10 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             }
 
             this.vanchart.refreshComponentsAndSeries();
+        },
+
+        _getFixedPos:function(){
+            return [0,0]
         }
     });
 
@@ -18797,6 +19980,11 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
     var END_STOP = 'end-gradual-stop';
 
     var PieSvgRender = BaseRender.extend({
+
+        init: function () {
+            this.lastData = {};
+        },
+        
         render:function(){
 
             var plotBounds = this.component.getPlotBounds();
@@ -19190,36 +20378,19 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
             }
         },
 
-        makeClickedState:function(d){
-            var element = this._getElementByData(d);
-            if(element){
-                element.style('fill', this._getClickedFill(d));
-            }
-        },
-
-        cancelClickedState:function(d){
-            var element = this._getElementByData(d);
-            if(element){
-                element.style('fill', this._getMouseOverFill(d));
-            }
-        },
-
-        //数据点形状的数据，移动到标签上的时候触发选中
-        makeChosenState:function(d){
-
-            var element = this._getElementByData(d);
-
-            if(element){
+        mouseOver:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
 
                 var self = this;
 
-                var pathNode = element.node();
+                var pathNode = event.target.node();
                 clearTimeout(pathNode.cancelChosenTimeout);
 
                 var arc = d3.svg.arc().innerRadius(d.series.innerRadius);
 
                 if(pathNode && !pathNode.isChosen){
-                    element
+                    event.target
                         .style('fill', function(d){
                             return self._getMouseOverFill(d);
                         })
@@ -19238,25 +20409,16 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
                     pathNode.isChosen = true;
                 }
             }
-
         },
 
-        _getElementByData:function(point){
-            return this._bodyG.select('.' + point.className);
-
-        },
-
-        //数据点形状的数据，移动出到标签上的时候取消选中
-        cancelChosenState:function(d){
-
-            var element = this._getElementByData(d);
-
-            if(element){
+        mouseOut:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
 
                 var arc = d3.svg.arc().innerRadius(d.series.innerRadius);
 
                 var self = this;
-                var pathNode = element.node();
+                var pathNode = event.target.node();
 
                 if(!pathNode || !pathNode.isChosen){
                     return;
@@ -19266,7 +20428,7 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
 
                 pathNode.cancelChosenTimeout = setTimeout(function(){
                     if(pathNode.isChosen){
-                        element
+                        event.target
                             .style('fill', function(d){
                                 return self._getFill(d);
                             })
@@ -19284,10 +20446,25 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
                         pathNode.isChosen = false;
                     }
                 },50);
+            }
+        },
 
+        mouseDown:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.style('fill', this._getClickedFill(d));
+            }
+        },
+
+        mouseUp:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.style('fill', this._getMouseOverFill(d));
             }
         }
     });
+
+    PieSvgRender.addInitHook(PieSvgRender.prototype.init);
 
     require('./RenderLibrary').register(Constants.PIE_SVG, PieSvgRender);
 
@@ -19323,7 +20500,6 @@ define('render/BarSvgRender',['require','./BaseRender','../utils/BaseUtils','../
 
             if(!this._bodyG){
                 this._bodyG = svgRoot.append('g');
-
                 this._labelG = svgRoot.append('g');
                 this._updateChartBodyTranslate([this._bodyG, this._labelG]);
             } else {
@@ -19332,9 +20508,7 @@ define('render/BarSvgRender',['require','./BaseRender','../utils/BaseUtils','../
 
             var barData = this.component.getVisibleChartData();
 
-            var barSeriesS = this._bodyG
-                .selectAll('g.' + BAR_SERIES_GROUP)
-                .data(barData, function(d){return d.className});
+            var barSeriesS = this._bodyG.selectAll('g.' + BAR_SERIES_GROUP).data(barData, function(d){return d.className});
 
             this._dropSeries(barSeriesS);
 
@@ -19368,6 +20542,7 @@ define('render/BarSvgRender',['require','./BaseRender','../utils/BaseUtils','../
                             var currentH = height * (1 - d3.ease('back')(t));
                             return bottomY - currentH + 'px';
                         }
+
                     })
                     .attrTween('height', function(d){
                         var height = d.height;
@@ -19398,8 +20573,7 @@ define('render/BarSvgRender',['require','./BaseRender','../utils/BaseUtils','../
                 var updateDelay = lastEmptySize < chart.emptySeries ? EXIT_ANIMATION_TIME : 0;
                 var createDelay = lastEmptySize > chart.emptySeries ? UPDATE_ANIMATION_TIME : 0;
 
-                barS.empty() ? chart._crateInitialBarElement(barS, createDelay)
-                    : chart._updateBarTransition(barS, updateDelay);
+                barS.empty() ? chart._crateInitialBarElement(barS, createDelay) : chart._updateBarTransition(barS, updateDelay);
 
                 //这两步是自动刷新的时候可能出现的
                 if(!barS.enter().empty()){
@@ -19407,7 +20581,6 @@ define('render/BarSvgRender',['require','./BaseRender','../utils/BaseUtils','../
                 }
 
                 barS.exit().remove();
-
             });
         },
 
@@ -19701,54 +20874,54 @@ define('render/BarSvgRender',['require','./BaseRender','../utils/BaseUtils','../
 
         },
 
-        _getElementByData:function(point){
-            return this._bodyG.select('.' + point.className);
+        mouseOver:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target
+                    .style({
+                        'stroke':d.mouseOverColor,
+                        'fill':this._getMouseOverFill(d),
+                        'stroke-width':d.borderWidth,
+                        'stroke-opacity':0.35
+                    })
+                    .interrupt(Constants.SELECT_ANIMATION)
+                    .transition(Constants.SELECT_ANIMATION)
+                    .duration(100)
+                    .ease('ease-out-in')
+                    .style('stroke-width', CHOSEN_STROKE_WIDTH);
+            }
         },
 
-        //数据点形状的数据，移动到标签上的时候触发选中
-        makeChosenState:function(d){
+        mouseOut:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
 
-            this._getElementByData(d)
-                .style('stroke', d.mouseOverColor)
-                .style('fill', this._getMouseOverFill(d))
-                .style('stroke-width', d.borderWidth)
-                .style('stroke-opacity', 0.35)
-                .interrupt(Constants.SELECT_ANIMATION)
-                .transition(Constants.SELECT_ANIMATION)
-                .duration(100)
-                .ease('ease-out-in')
-                .style('stroke-width', CHOSEN_STROKE_WIDTH);
+                event.target
+                    .interrupt(Constants.SELECT_ANIMATION)
+                    .transition(Constants.SELECT_ANIMATION);
+
+                event.target
+                    .style('fill', this._getFill(d))
+                    .style('stroke', d.borderColor)
+                    .style('stroke-opacity', 1)
+                    .style('stroke-width', d.borderWidth);
+            }
         },
 
-        //数据点形状的数据，移动出到标签上的时候取消选中
-        cancelChosenState:function(d){
-
-            var element = this._getElementByData(d);
-
-            element
-                .interrupt(Constants.SELECT_ANIMATION)
-                .transition(Constants.SELECT_ANIMATION);
-
-            element
-                .style('fill', this._getFill(d))
-                .style('stroke', d.borderColor)
-                .style('stroke-opacity', 1)
-                .style('stroke-width', d.borderWidth);
-
+        mouseDown:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.style('fill', this._getClickedFill(d));
+            }
         },
 
-        makeClickedState:function(d){
-            this._getElementByData(d)
-                .style('fill', this._getClickedFill(d));
-
-        },
-
-        cancelClickedState:function(d){
-
-            this._getElementByData(d)
-                .style('fill', this._getMouseOverFill(d));
-
+        mouseUp:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.style('fill', this._getMouseOverFill(d));
+            }
         }
+        
     });
 
     require('./RenderLibrary').register(Constants.BAR_SVG, BarSvgRender);
@@ -20174,139 +21347,107 @@ define('render/LineSvgRender',['require','./BaseRender','../utils/BaseUtils','..
             img.src = src;
         },
 
-        getElementByData:function(d){
-            return this._lineG.select('g.' + d.className);
+        seriesMouseOver:function(event){
+
+            if(event && event.target){
+
+                var d = event.target.datum();
+
+                var seriesClass = d.className;
+
+                this._lineG.select('g.' + seriesClass).select('g.' + AREA_G)
+                    .selectAll('path').transition(Constants.SELECT_ANIMATION).duration(100).ease('swing')
+                    .style('fill', function(d){
+                        return ColorUtils.getHighLightColor(d.fillColor);
+                    })
+                    .style('fill-opacity', CHOSEN_AREA_ALPHA);
+
+                this._lineG.select('g.' + seriesClass).select('g.' + PATH_G)
+                    .selectAll('path').transition(Constants.SELECT_ANIMATION).duration(100).ease('swing')
+                    .style('stroke', function(d){
+                        return ColorUtils.getHighLightColor(d.color);
+                    })
+                    .style('stroke-width', function(d){
+                        return d.lineData.lineWidth + 1;
+                    });
+
+                BaseUtils.toFront(this._lineG.select('g.' + seriesClass).node());
+
+                this._areaG.select('g.' + seriesClass)
+                    .selectAll('path').transition(Constants.SELECT_ANIMATION).duration(100).ease('swing')
+                    .style('fill', function(d){
+                        return ColorUtils.getHighLightColor(d.fillColor);
+                    })
+                    .style('fill-opacity', CHOSEN_AREA_ALPHA);
+            }
         },
 
-        makeClickedState:function(d){
+        seriesMouseOut:function(event){
 
-            this._makeMarkerClickedState(this._lineG, d);
+            if(event && event.target){
 
-            this._lineG
-                .select('g.' + (d.series.className))
-                .select('g.' + AREA_G)
-                .selectAll('path')
-                .style('fill', function(d){
-                    return ColorUtils.getClickColor(d.fillColor);
-                });
+                var d = event.target.datum();
 
-            this._areaG
-                .select('g.' + (d.series.className))
-                .selectAll('path')
-                .style('fill', function(d){
-                    return ColorUtils.getClickColor(d.fillColor);
-                });
+                var seriesClass = d.className;
+
+                this._lineG.select('g.' + seriesClass).select('g.' + AREA_G)
+                    .selectAll('path').transition(Constants.SELECT_ANIMATION).duration(100).ease('swing')
+                    .style('fill', function(d){
+                        return d.fillColor;
+                    })
+                    .style('fill-opacity', function(d){
+                        return d.fillColorOpacity;
+                    });
+
+                this._lineG.select('g.' + seriesClass).select('g.' + PATH_G)
+                    .selectAll('path').transition(Constants.SELECT_ANIMATION).duration(100).ease('swing')
+                    .style('stroke', function(d){
+                        return d.color;
+                    })
+                    .style('stroke-width', function(d){
+                        return d.lineData.lineWidth;
+                    });
+
+                this._areaG.select('g.' + seriesClass)
+                    .selectAll('path').transition(Constants.SELECT_ANIMATION).duration(100).ease('swing')
+                    .style('fill', function(d){
+                        return d.fillColor;
+                    })
+                    .style('fill-opacity', function(d){
+                        return d.fillColorOpacity;
+                    });
+            }
         },
 
-        cancelClickedState:function(d){
-
-            this._cancelMarkerClickedState(this._lineG, d);
-
-            this._lineG
-                .select('g.' + (d.series.className))
-                .select('g.' + AREA_G)
-                .selectAll('path')
-                .style('fill', function(d){
-                    return ColorUtils.getHighLightColor(d.fillColor);
-                });
-
-            this._areaG
-                .select('g.' + (d.series.className))
-                .select('g.' + PATH_G)
-                .selectAll('path')
-                .style('fill', function(d){
-                    return ColorUtils.getHighLightColor(d.fillColor);
-                });
-
+        mouseOver:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                this._makeMarkerChosenState(event.target, d);
+            }
         },
 
-        makeChosenState:function(d){
-            this._makeMarkerChosenState(this._lineG, d);
-
-            this._lineG
-                .select('g.' + (d.series.className))
-                .select('g.' + AREA_G)
-                .selectAll('path')
-                .transition(Constants.SELECT_ANIMATION)
-                .duration(100)
-                .ease('swing')
-                .style('fill', function(d){
-                    return ColorUtils.getHighLightColor(d.fillColor);
-                })
-                .style('fill-opacity', CHOSEN_AREA_ALPHA);
-
-            this._lineG
-                .select('g.' + (d.series.className))
-                .select('g.' + PATH_G)
-                .selectAll('path')
-                .transition(Constants.SELECT_ANIMATION)
-                .duration(100)
-                .ease('swing')
-                .style('stroke', function(d){
-                    return ColorUtils.getHighLightColor(d.color);
-                })
-                .style('stroke-width', function(d){
-                    return d.lineData.lineWidth + 1;
-                });
-
-            BaseUtils.toFront(this._lineG.select('g.' + (d.series.className)).node());
-
-            this._areaG
-                .select('g.' + (d.series.className))
-                .selectAll('path')
-                .transition(Constants.SELECT_ANIMATION)
-                .duration(100)
-                .ease('swing')
-                .style('fill', function(d){
-                    return ColorUtils.getHighLightColor(d.fillColor);
-                })
-                .style('fill-opacity', CHOSEN_AREA_ALPHA);
+        mouseOut:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                this._cancelMarkerChosenState(event.target, d);
+            }
         },
 
-        cancelChosenState:function(d){
-            this._cancelMarkerChosenState(this._lineG, d);
+        mouseDown:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                this._makeMarkerClickedState(event.target, d);
+            }
+        },
 
-            this._lineG
-                .select('g.' + (d.series.className))
-                .select('g.' + AREA_G)
-                .selectAll('path')
-                .transition(Constants.SELECT_ANIMATION)
-                .duration(100)
-                .ease('swing')
-                .style('fill', function(d){
-                    return d.fillColor;
-                })
-                .style('fill-opacity', function(d){
-                    return d.fillColorOpacity;
-                });
-
-            this._lineG
-                .select('g.' + (d.series.className))
-                .select('g.' + PATH_G)
-                .selectAll('path')
-                .transition(Constants.SELECT_ANIMATION)
-                .duration(100)
-                .ease('swing')
-                .style('stroke', function(d){
-                    return d.color;
-                })
-                .style('stroke-width', function(d){
-                    return d.lineData.lineWidth;
-                });
-
-            this._areaG
-                .select('g.' + (d.series.className))
-                .selectAll('path')
-                .transition(Constants.SELECT_ANIMATION)
-                .duration(100)
-                .ease('swing')
-                .style('fill', function(d){
-                    return d.fillColor;
-                })
-                .style('fill-opacity', function(d){
-                    return d.fillColorOpacity;
-                });
+        mouseUp:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                this._cancelMarkerClickedState(event.target, d);
+            }
         }
+        
+
     });
 
     require('./RenderLibrary').register(Constants.LINE_SVG, LineSvgRender);
@@ -20395,6 +21536,7 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
                     return GAUGE + ' ' + d.className;
                 })
                 .attr('transform', function(d){
+
                     return 'translate(' + Math.round(d.centerX) + ',' + Math.round(d.centerY) + ')';
                 })
                 .call(this._createGauge.bind(this));
@@ -20579,7 +21721,7 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
                 .endAngle(BaseUtils.toRadian(baseAngle))
                 .innerRadius(0).outerRadius(d.radius).toCenter(false);
 
-            var domain = d.componentAxis.scale.domain();
+            var domain = d.gaugeAxis.scale.domain();
             var scale = d3.scale.linear().domain(domain)
                 .range([BaseUtils.toRadian(-scaleAngle), BaseUtils.toRadian(scaleAngle)]);
 
@@ -20708,13 +21850,13 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
 
             var axisG = gaugeG.select('g.' + GAUGE_AXIS);
 
-            var tickData = d.componentAxis.getTickData();
+            var tickData = d.gaugeAxis.getTickData();
 
-            var axisOption = d.componentAxis.componentOption;
+            var axisOption = d.gaugeAxis.componentOption;
             var labelStyle = axisOption.labelStyle;
             var useHtml = axisOption.useHtml;
 
-            var minorTickData = d.componentAxis.getMinorTickData();
+            var minorTickData = d.gaugeAxis.getMinorTickData();
 
             var self = this;
 
@@ -20818,7 +21960,7 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
                 .innerRadius(0).outerRadius(d.radius)
                 .toCenter(false).closePath(false);
 
-            var domain = d.componentAxis.scale.domain();
+            var domain = d.gaugeAxis.scale.domain();
             var scale = d3.scale.linear().domain(domain)
                 .range([BaseUtils.toRadian(-135), BaseUtils.toRadian(135)]);
 
@@ -20905,7 +22047,7 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
 
         _createThermometer:function(gaugeG, d){
 
-            var domain = d.componentAxis.scale.domain();
+            var domain = d.gaugeAxis.scale.domain();
             var point = d.points[0];
 
             if(!point){
@@ -21013,9 +22155,9 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
 
             var axisG = gaugeG.select('g.' + GAUGE_AXIS);
 
-            var tickData = d.componentAxis.getTickData();
+            var tickData = d.gaugeAxis.getTickData();
 
-            var axisOption = d.componentAxis.componentOption;
+            var axisOption = d.gaugeAxis.componentOption;
             var labelStyle = axisOption.labelStyle;
             var useHtml = axisOption.useHtml;
 
@@ -21023,7 +22165,7 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
             var transX = plotBounds.x + d.centerX;
             var transY = plotBounds.y + d.centerY;
 
-            var minorTickData = d.componentAxis.getMinorTickData();
+            var minorTickData = d.gaugeAxis.getMinorTickData();
 
             var x1 = 'x1', y1 = 'y1', x2 = 'x2', y2 = 'y2';
             var dx = 'dx';
@@ -21136,7 +22278,7 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
             var arc = d3.svg.arc().startAngle(0)
                 .innerRadius(0).outerRadius(d.radius);
 
-            var domain = d.componentAxis.scale.domain();
+            var domain = d.gaugeAxis.scale.domain();
             var point = d.points[0];
 
             if(!point){
@@ -21333,209 +22475,214 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
             return this.component.vanchart.getIDPrefix() + d.className + 'mouseover';
         },
 
-        makeChosenState:function(d){
+        mouseOver:function(event){
 
-            var style = this.component.option.plotOptions.style;
-            var gauge = d.series;
-            var gaugeG = this._bodyG.select('g.' + gauge.className);
+            if(event && event.target){
+                var d = event.target.datum();
+                var style = this.component.option.plotOptions.style;
+                var gauge = d.series;
 
-            switch (style){
-                case Constants.GAUGE_POINTER:
-                case Constants.GAUGE_POINTER_SEMI:
+                switch (style){
+                    case Constants.GAUGE_POINTER:
+                    case Constants.GAUGE_POINTER_SEMI:
 
-                    break;
-                case Constants.GAUGE_RING:
+                        break;
+                    case Constants.GAUGE_RING:
 
-                    gaugeG
-                        .select('path.' + RING_ARC_PATH)
-                        .style('fill', d.mouseOverColor);
+                        event.target
+                            .select('path.' + RING_ARC_PATH)
+                            .style('fill', d.mouseOverColor);
 
-                    break;
-                case Constants.GAUGE_SLOT:
+                        break;
+                    case Constants.GAUGE_SLOT:
 
-                    var backgroundColor = ColorUtils.getHighLightColor(d.color);
-                    var needleColor = ColorUtils.getHighLightColor(gauge.needle);
+                        var backgroundColor = ColorUtils.getHighLightColor(d.color);
+                        var needleColor = ColorUtils.getHighLightColor(gauge.needle);
 
-                    gaugeG
-                        .select('path.' + SLOT_BACKGROUND)
-                        .style('stroke', ColorUtils.colorToHex(backgroundColor));
+                        event.target
+                            .select('path.' + SLOT_BACKGROUND)
+                            .style('stroke', ColorUtils.colorToHex(backgroundColor));
 
-                    gaugeG.select('circle.' + NEEDLE).style('fill', needleColor);
+                        event.target
+                            .select('circle.' + NEEDLE).style('fill', needleColor);
 
-                    break;
-                case Constants.GAUGE_THERMOMETER:
+                        break;
+                    case Constants.GAUGE_THERMOMETER:
 
-                    gaugeG
-                        .select('line.' + THERMOMETER_BACKGROUND)
-                        .style('stroke', "url(#" + this._getThermometerMouseOverGradualID(gauge) + ")");
+                        event.target
+                            .select('line.' + THERMOMETER_BACKGROUND)
+                            .style('stroke', "url(#" + this._getThermometerMouseOverGradualID(gauge) + ")");
 
-                    gaugeG
-                        .select('circle.' + NEEDLE)
-                        .style('stroke', ColorUtils.getHighLightColor(d.color))
-                        .style('fill', ColorUtils.getHighLightColor(gauge.needle));
+                        event.target
+                            .select('circle.' + NEEDLE)
+                            .style('stroke', ColorUtils.getHighLightColor(d.color))
+                            .style('fill', ColorUtils.getHighLightColor(gauge.needle));
 
-                    break;
+                        break;
+                }
             }
-
         },
 
-        cancelChosenState:function(d){
+        mouseOut:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
 
-            var style = this.component.option.plotOptions.style;
-            var gauge = d.series;
-            var gaugeG = this._bodyG.select('g.' + gauge.className);
+                var style = this.component.option.plotOptions.style;
+                var gauge = d.series;
 
-            switch (style){
-                case Constants.GAUGE_POINTER:
-                case Constants.GAUGE_POINTER_SEMI:
+                switch (style){
+                    case Constants.GAUGE_POINTER:
+                    case Constants.GAUGE_POINTER_SEMI:
 
-                    break;
-                case Constants.GAUGE_RING:
+                        break;
+                    case Constants.GAUGE_RING:
 
-                    gaugeG
-                        .select('path.' + RING_ARC_PATH)
-                        .style('fill', d.color);
+                        event.target
+                            .select('path.' + RING_ARC_PATH)
+                            .style('fill', d.color);
 
-                    break;
-                case Constants.GAUGE_SLOT:
+                        break;
+                    case Constants.GAUGE_SLOT:
 
-                    gaugeG
-                        .select('path.' + SLOT_BACKGROUND)
-                        .style('stroke', ColorUtils.colorToHex(d.color));
+                        event.target
+                            .select('path.' + SLOT_BACKGROUND)
+                            .style('stroke', ColorUtils.colorToHex(d.color));
 
-                    gaugeG.select('circle.' + NEEDLE).style('fill', gauge.needle);
+                        event.target
+                            .select('circle.' + NEEDLE).style('fill', gauge.needle);
 
-                    break;
-                case Constants.GAUGE_THERMOMETER:
+                        break;
+                    case Constants.GAUGE_THERMOMETER:
 
-                    gaugeG
-                        .select('line.' + THERMOMETER_BACKGROUND)
-                        .style('stroke', "url(#" + this._getThermometerGradualID(gauge) + ")");
+                        event.target
+                            .select('line.' + THERMOMETER_BACKGROUND)
+                            .style('stroke', "url(#" + this._getThermometerGradualID(gauge) + ")");
 
-                    gaugeG
-                        .select('circle.' + NEEDLE)
-                        .style('stroke', d.color)
-                        .style('fill', gauge.needle);
+                        event.target
+                            .select('circle.' + NEEDLE)
+                            .style('stroke', d.color)
+                            .style('fill', gauge.needle);
 
-                    break;
+                        break;
+                }
             }
-
         },
 
-        makeClickedState:function(d){
+        mouseDown:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                var gauge = d.series;
+                var style = this.component.option.plotOptions.style;
+                var circle = d3.svg.arc().startAngle(0).endAngle(2 * Math.PI).innerRadius(0);
 
-            var gauge = d.series;
-            var style = this.component.option.plotOptions.style;
-            var gaugeG = this._bodyG.select('g.' + gauge.className);
-            var circle = d3.svg.arc().startAngle(0).endAngle(2 * Math.PI).innerRadius(0);
+                switch (style){
+                    case Constants.GAUGE_POINTER:
+                    case Constants.GAUGE_POINTER_SEMI:
 
-            switch (style){
-                case Constants.GAUGE_POINTER:
-                case Constants.GAUGE_POINTER_SEMI:
+                        var hBackground = style == Constants.GAUGE_POINTER ? 0.16 : 0.11;
+                        var hinge = style == Constants.GAUGE_POINTER ? 0.07 : 0.055;
 
-                    var hBackground = style == Constants.GAUGE_POINTER ? 0.16 : 0.11;
-                    var hinge = style == Constants.GAUGE_POINTER ? 0.07 : 0.055;
+                        circle.outerRadius(hBackground * d.series.radius * 1.25);
+                        event.target.select('path.' + POINTER_HINGE_BACKGROUND).attr('d', circle());
 
-                    circle.outerRadius(hBackground * d.series.radius * 1.25);
-                    gaugeG.select('path.' + POINTER_HINGE_BACKGROUND).attr('d', circle());
+                        //枢纽
+                        circle.outerRadius(hinge * d.series.radius * 1.25);
+                        event.target.select('path.' + POINTER_HINGE).attr('d', circle());
 
-                    //枢纽
-                    circle.outerRadius(hinge * d.series.radius * 1.25);
-                    gaugeG.select('path.' + POINTER_HINGE).attr('d', circle());
+                        break;
+                    case Constants.GAUGE_RING:
 
-                    break;
-                case Constants.GAUGE_RING:
+                        event.target
+                            .select('path.' + RING_INNER_STROKE)
+                            .style('stroke', "url(#" + this._getRingClickedGradualID() + ")");
 
-                    gaugeG
-                        .select('path.' + RING_INNER_STROKE)
-                        .style('stroke', "url(#" + this._getRingClickedGradualID() + ")");
+                        event.target.select('path.' + RING_ARC_PATH).style('fill', d.clickColor);
 
-                    gaugeG.select('path.' + RING_ARC_PATH).style('fill', d.clickColor);
+                        break;
+                    case Constants.GAUGE_SLOT:
 
-                    break;
-                case Constants.GAUGE_SLOT:
+                        var backgroundColor = ColorUtils.getColorWithDivider(d.color, 1/0.95);
+                        var needleColor = ColorUtils.getColorWithDivider(gauge.needle, 1/0.95);
 
-                    var backgroundColor = ColorUtils.getColorWithDivider(d.color, 1/0.95);
-                    var needleColor = ColorUtils.getColorWithDivider(gauge.needle, 1/0.95);
+                        event.target
+                            .select('path.' + SLOT_BACKGROUND)
+                            .style('stroke', ColorUtils.colorToHex(backgroundColor));
 
-                    gaugeG
-                        .select('path.' + SLOT_BACKGROUND)
-                        .style('stroke', ColorUtils.colorToHex(backgroundColor));
+                        event.target.select('circle.' + NEEDLE).style('fill', needleColor);
 
-                    gaugeG.select('circle.' + NEEDLE).style('fill', needleColor);
+                        break;
+                    case Constants.GAUGE_THERMOMETER:
 
-                    break;
-                case Constants.GAUGE_THERMOMETER:
+                        event.target
+                            .select('line.' + THERMOMETER_BACKGROUND)
+                            .style('stroke', "url(#" + this._getThermometerClickedGradualID(gauge) + ")");
 
-                    gaugeG
-                        .select('line.' + THERMOMETER_BACKGROUND)
-                        .style('stroke', "url(#" + this._getThermometerClickedGradualID(gauge) + ")");
+                        event.target
+                            .select('circle.' + NEEDLE)
+                            .style('stroke', ColorUtils.getClickColor(d.color))
+                            .style('fill', ColorUtils.getClickColor(gauge.needle));
 
-                    gaugeG
-                        .select('circle.' + NEEDLE)
-                        .style('stroke', ColorUtils.getClickColor(d.color))
-                        .style('fill', ColorUtils.getClickColor(gauge.needle));
-
-                    break;
+                        break;
+                }
             }
-
         },
 
-        cancelClickedState:function(d){
+        mouseUp:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                var gauge = d.series;
+                var style = this.component.option.plotOptions.style;
+                var circle = d3.svg.arc().startAngle(0).endAngle(2 * Math.PI).innerRadius(0);
 
-            var gauge = d.series;
-            var style = this.component.option.plotOptions.style;
-            var gaugeG = this._bodyG.select('g.' + gauge.className);
-            var circle = d3.svg.arc().startAngle(0).endAngle(2 * Math.PI).innerRadius(0);
+                switch (style){
+                    case Constants.GAUGE_POINTER:
+                    case Constants.GAUGE_POINTER_SEMI:
 
-            switch (style){
-                case Constants.GAUGE_POINTER:
-                case Constants.GAUGE_POINTER_SEMI:
+                        var hBackground = style == Constants.GAUGE_POINTER ? 0.16 : 0.11;
+                        var hinge = style == Constants.GAUGE_POINTER ? 0.07 : 0.055;
 
-                    var hBackground = style == Constants.GAUGE_POINTER ? 0.16 : 0.11;
-                    var hinge = style == Constants.GAUGE_POINTER ? 0.07 : 0.055;
+                        circle.outerRadius(hBackground * d.series.radius);
+                        event.target.select('path.' + POINTER_HINGE_BACKGROUND).attr('d', circle());
 
-                    circle.outerRadius(hBackground * d.series.radius);
-                    gaugeG.select('path.' + POINTER_HINGE_BACKGROUND).attr('d', circle());
+                        //枢纽
+                        circle.outerRadius(hinge * d.series.radius);
+                        event.target.select('path.' + POINTER_HINGE).attr('d', circle());
 
-                    //枢纽
-                    circle.outerRadius(hinge * d.series.radius);
-                    gaugeG.select('path.' + POINTER_HINGE).attr('d', circle());
+                        break;
+                    case Constants.GAUGE_RING:
 
-                    break;
-                case Constants.GAUGE_RING:
+                        event.target.select('path.' + RING_INNER_STROKE)
+                            .style('stroke', "url(#" + this._getRingGradualID() + ")");
 
-                    gaugeG.select('path.' + RING_INNER_STROKE)
-                        .style('stroke', "url(#" + this._getRingGradualID() + ")");
+                        event.target.select('path.' + RING_ARC_PATH)
+                            .style('fill', d.mouseOverColor);
 
-                    gaugeG.select('path.' + RING_ARC_PATH)
-                        .style('fill', d.mouseOverColor);
+                        break;
+                    case Constants.GAUGE_SLOT:
 
-                    break;
-                case Constants.GAUGE_SLOT:
+                        var backgroundColor = ColorUtils.getHighLightColor(d.color);
+                        var needleColor = ColorUtils.getHighLightColor(gauge.needle);
 
-                    var backgroundColor = ColorUtils.getHighLightColor(d.color);
-                    var needleColor = ColorUtils.getHighLightColor(gauge.needle);
+                        event.target
+                            .select('path.' + SLOT_BACKGROUND)
+                            .style('stroke', ColorUtils.colorToHex(backgroundColor));
 
-                    gaugeG
-                        .select('path.' + SLOT_BACKGROUND)
-                        .style('stroke', ColorUtils.colorToHex(backgroundColor));
+                        event.target.select('circle.' + NEEDLE).style('fill', needleColor);
 
-                    gaugeG.select('circle.' + NEEDLE).style('fill', needleColor);
+                        break;
+                    case Constants.GAUGE_THERMOMETER:
 
-                    break;
-                case Constants.GAUGE_THERMOMETER:
+                        event.target
+                            .select('line.' + THERMOMETER_BACKGROUND)
+                            .style('stroke', "url(#" + this._getThermometerMouseOverGradualID(gauge) + ")");
 
-                    gaugeG
-                        .select('line.' + THERMOMETER_BACKGROUND)
-                        .style('stroke', "url(#" + this._getThermometerMouseOverGradualID(gauge) + ")");
+                        event.target
+                            .select('circle.' + NEEDLE)
+                            .style('stroke', ColorUtils.getHighLightColor(d.color))
+                            .style('fill', ColorUtils.getHighLightColor(gauge.needle));
 
-                    gaugeG
-                        .select('circle.' + NEEDLE)
-                        .style('stroke', ColorUtils.getHighLightColor(d.color))
-                        .style('fill', ColorUtils.getHighLightColor(gauge.needle));
-
-                    break;
+                        break;
+                }
             }
         }
     });
@@ -22047,88 +23194,70 @@ define('render/RadarSvgRender',['require','./BaseRender','../utils/BaseUtils','.
             this._drawSvgDataLabels(this._labelG, allPoints, center[0], center[1], delay);
         },
 
-        makeClickedState:function(d){
-
-            if(d.columnType){
-
-                this._bodyG.select('path.' + d.className).style('fill', d.clickColor);
-
-            }else{
-                this._makeMarkerClickedState(this._bodyG, d);
-
-                this._bodyG.select('g.' + d.series.className)
-                    .select('path.' + SERIES_FILL)
-                    .style('fill', ColorUtils.getClickColor(d.series.fillColor))
-            }
-
-        },
-
-        cancelClickedState:function(d){
-
-            if(d.columnType){
-
-                this._bodyG.select('path.' + d.className).style('fill', d.mouseOverColor);
-
-            }else{
-
-                this._cancelMarkerClickedState(this._bodyG, d);
-
-                this._bodyG.select('g.' + d.series.className)
-                    .select('path.' + SERIES_FILL)
-                    .style('fill', ColorUtils.getHighLightColor(d.series.fillColor))
-
-            }
-        },
-
-        makeChosenState:function(d){
-
-            if(d.columnType){
-                this._bodyG.select('path.' + d.className)
-                    .style('stroke', d.mouseOverColor)
-                    .style('fill', d.mouseOverColor)
-                    .style('stroke-width', d.borderWidth)
-                    .style('stroke-opacity', 0.35)
-                    .interrupt()
-                    .transition()
-                    .duration(100)
-                    .ease('ease-out-in')
-                    .style('stroke-width', 6);
-            }else{
-                this._makeMarkerChosenState(this._bodyG, d);
-
-                this._bodyG.select('g.' + d.series.className)
-                    .select('path.' + SERIES_FILL)
-                    .style('fill', ColorUtils.getHighLightColor(d.series.fillColor));
-
-                BaseUtils.toFront(this._bodyG.select('g.' + (d.series.className)).node());
-            }
-
-        },
-
-        cancelChosenState:function(d){
-
-            if(d.columnType){
-
-                this._bodyG.select('path.' + d.className)
-                    .interrupt()
-                    .transition()
-                    .style('fill', d.color)
-                    .style('stroke', d.borderColor)
-                    .style('stroke-opacity', 1)
-                    .style('stroke-width', d.borderWidth);
-
-            }else{
-                this._cancelMarkerChosenState(this._bodyG, d);
-
-                this._bodyG.select('g.' + d.series.className)
-                    .select('path.' + SERIES_FILL)
-                    .style('fill', d.series.fillColor)
-            }
-        },
-
         _getRadarClipID:function(){
             return 'radarClip' + this.component.vanchart.getIDPrefix();
+        },
+
+        mouseOver:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                if(d.columnType){
+                    event.target
+                        .style('stroke', d.mouseOverColor)
+                        .style('fill', d.mouseOverColor)
+                        .style('stroke-width', d.borderWidth)
+                        .style('stroke-opacity', 0.35)
+                        .interrupt()
+                        .transition()
+                        .duration(100)
+                        .ease('ease-out-in')
+                        .style('stroke-width', 6);
+                }else{
+                    this._makeMarkerChosenState(event.target, d);
+                }
+            }
+        },
+
+        mouseOut:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+
+                if(d.columnType){
+                    event.target.interrupt().transition()
+                        .style('fill', d.color)
+                        .style('stroke', d.borderColor)
+                        .style('stroke-opacity', 1)
+                        .style('stroke-width', d.borderWidth);
+                }else{
+                    this._cancelMarkerChosenState(event.target, d);
+                }
+
+            }
+        },
+
+        mouseDown:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                if(d.columnType){
+                    event.target.style('fill', d.clickColor);
+                }else{
+                    this._makeMarkerClickedState(event.target, d);
+                }
+            }
+        },
+
+        mouseUp:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                
+                if(d.columnType){
+                    event.target.style('fill', d.mouseOverColor);
+                }else{
+                    this._cancelMarkerClickedState(event.target, d);
+                }
+            }
         }
+
     });
 
     // function (radar){
@@ -22662,7 +23791,7 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                             .selectAll('text')
                             .data(d.points);
 
-                        self._createBubbles(d, labels, bubbles, supportAnimation);
+                        self._createBubbles(bubbles, supportAnimation);
                     })
                 }, supportAnimation ? BUBBLE_EXIT_TIME + 100 : 0)
             } else {
@@ -22691,7 +23820,7 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
 
                     clearTimeout(self._animationTimeOut[d.className]);
                     self._animationTimeOut[d.className] = setTimeout(function () {
-                        parentG
+                        var labels = parentG
                             .selectAll('text')
                             .data(d.points)
                             .enter()
@@ -22806,59 +23935,66 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
             });
         },
 
-        _getElementByData:function(point){
-            var element = this._bodyG.select('.' + point.className);
-            return this.component.isForceBubble() && this.component.isUpdateWithForce() ? element.select('circle') : element;
-        },
-
-        makeChosenState:function(d){
+        mouseOver:function(event){
             if(this.component.isLargeMode()){
                 return;
             }
 
-            this._getElementByData(d)
-                .style('stroke', d.mouseOverColor)
-                .style('stroke-width', 0)
-                .style('stroke-opacity', 0.35)
-                .style('fill', d.mouseOverColor)
-                .interrupt(Constants.SELECT_ANIMATION)
-                .transition(Constants.SELECT_ANIMATION)
-                .duration(BUBBLE_CHOSEN_TIME)
-                .ease('back-out')
-                .style('stroke-width', CHOSEN_STROKE_WIDTH);
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target
+                    .style({
+                        'stroke':d.mouseOverColor,
+                        'stroke-width':0,
+                        'stroke-opacity':0.35,
+                        'fill':d.mouseOverColor
+                    })
+                    .interrupt(Constants.SELECT_ANIMATION)
+                    .transition(Constants.SELECT_ANIMATION)
+                    .duration(BUBBLE_CHOSEN_TIME)
+                    .ease('back-out')
+                    .style('stroke-width', CHOSEN_STROKE_WIDTH)
+            }
         },
 
-        cancelChosenState:function(d){
+        mouseOut:function(event){
+
             if(this.component.isLargeMode()){
                 return;
             }
 
-            this._getElementByData(d)
-                .style('fill', d.color)
-                .style('fill-opacity', d.fillColorOpacity)
-                .interrupt(Constants.SELECT_ANIMATION)
-                .transition(Constants.SELECT_ANIMATION)
-                .style('stroke-width', 0);
+            if(event && event.target){
+                var d = event.target.datum();
+
+                event.target
+                    .style('fill', d.color)
+                    .style('fill-opacity', d.fillColorOpacity)
+                    .interrupt(Constants.SELECT_ANIMATION)
+                    .transition(Constants.SELECT_ANIMATION);
+
+                event.target
+                    .style('stroke-width', 0);
+            }
         },
 
-        makeClickedState:function(d){
+        mouseDown:function(event){
+
             if(this.component.isLargeMode()){
                 return;
             }
 
-            this._getElementByData(d)
-                .style('fill', d.clickColor);
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.style('fill', d.clickColor);
+            }
         },
 
-        cancelClickedState:function(d){
-            if(this.component.isLargeMode()){
-                return;
+        mouseUp:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.style('fill', d.mouseOverColor);
             }
-
-            this._getElementByData(d)
-                .style('fill', d.mouseOverColor);
         }
-
     });
 
     require('./RenderLibrary').register(Constants.BUBBLE_SVG, BubbleSvgRender);
@@ -23150,27 +24286,31 @@ define('render/ScatterSvgRender',['require','./BaseRender','../utils/BaseUtils',
                 .style('stroke-width', d.lineWidth);
         },
 
-        makeChosenState:function(d){
-            if(this._bodyG) {
-                this._makeMarkerChosenState(this._bodyG, d, 3, 200);
+        mouseOver:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                this._makeMarkerChosenState(event.target, d);
             }
         },
 
-        cancelChosenState:function(d){
-            if(this._bodyG) {
-                this._cancelMarkerChosenState(this._bodyG, d);
+        mouseOut:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                this._cancelMarkerChosenState(event.target, d);
             }
         },
 
-        makeClickedState:function(d){
-            if(this._bodyG) {
-                this._makeMarkerClickedState(this._bodyG, d);
+        mouseDown:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                this._makeMarkerClickedState(event.target, d);
             }
         },
 
-        cancelClickedState:function(d){
-            if(this._bodyG) {
-                this._cancelMarkerClickedState(this._bodyG, d);
+        mouseUp:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                this._cancelMarkerClickedState(event.target, d);
             }
         }
     });
@@ -23193,10 +24333,25 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../Constants','./B
         render:function(){
             var map = this.component, geo = map.vanchart.getComponent(Constants.GEO_COMPONENT);
             var leaflet = map.vanchart._leaflet, featureMap = geo.getFeatureMap(map.vanchart.series);
+            var tooltip = map.vanchart.getTooltip();
             var eventHandler = function(feature, layer){
                 layer.on({
-                    click:function(){map.drillDown(feature);}
-                })
+                    click:function(){
+                        map.drillDown(feature);
+                    },
+
+                    mouseover:function(){
+                        d3.select(layer._path).style('stroke-width', 2);
+                    },
+
+                    mouseout:function(){
+                        d3.select(layer._path).style('stroke-width', feature.borderWidth);
+                    },
+
+                    mousemove:function(){
+                        tooltip.showWithPoint(feature);
+                    }
+                });
             };
 
             //区块地图
@@ -23215,6 +24370,9 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../Constants','./B
             this._areaLayer = this._areaLayer || L.geoJson([], areaOptions).addTo(leaflet);
             this._updateAreaLayerGroup(this._areaLayer, featureMap.areaFeatures, function(d){return d.properties.id});
 
+            this._areaLabelLayer = this._areaLabelLayer || L.layerGroup().addTo(leaflet);
+            this._updatePointLayerGroup(this._areaLabelLayer, L.text, featureMap.areaText, null, function(d){return d.properties.id});
+
             //气泡地图
             var keyFunction = function(d){return d.className};
             var bubbleOptions = {
@@ -23231,6 +24389,9 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../Constants','./B
             this._bubbleLayer = this._bubbleLayer || L.layerGroup().addTo(leaflet);
             this._updatePointLayerGroup(this._bubbleLayer, L.circleMarker, featureMap.bubbleFeatures, bubbleOptions, keyFunction);
 
+            this._bubbleLabelLayer = this._bubbleLabelLayer || L.layerGroup().addTo(leaflet);
+            this._updatePointLayerGroup(this._bubbleLabelLayer, L.text, featureMap.bubbleText, null, keyFunction);
+
             //散点地图
             var scatterOptions = {
                 style:function(feature){
@@ -23244,6 +24405,9 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../Constants','./B
             this._scatterLayer = this._scatterLayer || L.layerGroup().addTo(leaflet);
             this._updatePointLayerGroup(this._scatterLayer, L.scatterMarker, featureMap.scatterFeatures, scatterOptions, keyFunction);
 
+            this._scatterLabelLayer = this._scatterLabelLayer || L.layerGroup().addTo(leaflet);
+            this._updatePointLayerGroup(this._scatterLabelLayer, L.text, featureMap.scatterText, null, keyFunction);
+
             //图片类型的标记点
             var imageOptions = {
                 style:function(feature){
@@ -23255,6 +24419,9 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../Constants','./B
 
             this._imageLayer = this._imageLayer || L.layerGroup().addTo(leaflet);
             this._updatePointLayerGroup(this._imageLayer, L.marker, featureMap.imageFeatures, imageOptions, keyFunction);
+
+            this._imageLabelLayer = this._imageLabelLayer || L.layerGroup().addTo(leaflet);
+            this._updatePointLayerGroup(this._imageLabelLayer, L.text, featureMap.imageText, null, keyFunction);
         },
 
         _updatePointLayerGroup:function(layerGroup, layerFunc, features, options, keyFunction){
@@ -23264,8 +24431,8 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../Constants','./B
 
             for(var i = selection.enter.length - 1; i >= 0; i--){
                 var point = selection.enter[i];
-                var layer = layerFunc(this.getLatLng(point), options.style.call(null, point), point);
-                options.onEachLayer.call(null, point, layer);
+                var layer = layerFunc(this.getLatLng(point), options && options.style.call(null, point), point);
+                options && options.onEachLayer.call(null, point, layer);
                 layerGroup.addLayer(layer);
             }
             selection.exit.forEach(function(layer){layerGroup.removeLayer(layer);});
@@ -23609,60 +24776,49 @@ define('render/BaseAxisSvgRender',['require','./BaseRender','../utils/BaseUtils'
             this._drawAxisTitle(titleBounds);
         },
 
-        _getBandByPosition:function(pos){
-
-            var axis = this.component;
-            var plotBounds = this.component.getPlotBounds();
-            var x = pos[0] - plotBounds.x;
-            var scale = axis.scale;
-
-            var ticks = this.component._getTickValuesWithEndValue();
-
-            var index;
-            switch (axis.type) {
-                case Constants.CATEGORY_AXIS_COMPONENT:
-                    var bounds = axis.bounds;
-                    var categories = axis.getCategories();
-                    var unitLength = categories.length ? bounds.width/categories.length : bounds.width;
-                    index = axis.isAxisReversed() ? categories.length - 1 - Math.floor(x/unitLength) : Math.floor(x/unitLength);
-                    break;
-                case Constants.DATE_AXIS_COMPONENT:
-                    index = BaseUtils.date2int(scale.invert(x));
-                    break;
-                default:
-                    index = scale.invert(x);
-            }
-
-            // var from = ticks[index];
-            // var to = ticks[index];
-            //
-            // var drawBand = {
-            //     color: 'rgba(98,179,240,0.5)',
-            //     x: plotBounds.x + scale(band.from),
-            //     y: plotBounds.y,
-            //     width: scale(band.to) - scale(band.from),
-            //     height: plotBounds.height
-            // };
-        },
-
         drawHighlightBand: function (pos) {
 
+            var axis = this.component;
+            if (!axis._getBandByPosition) {
+                return;
+            }
 
-            var drawBand = this._getBandByPosition(pos);
+            var drawBand = axis._getBandByPosition(pos);
+            var highlightType = axis.getHighlightType();
 
-            this._axisG.select('.' + HIGHLIGHT_BAND).remove();
+            this.removeHighlightBand();
 
-            this._axisG
-                .append('rect')
-                .attr('class', HIGHLIGHT_BAND)
-                .attr('x', drawBand.x)
-                .attr('y', drawBand.y)
-                .attr('width', drawBand.width)
-                .attr('height', drawBand.height)
-                .style('fill', drawBand.color);
+            switch (highlightType) {
+                case 'band':
+                    this._axisG
+                        .append('rect')
+                        .attr('class', HIGHLIGHT_BAND)
+                        .attr('x', drawBand.x)
+                        .attr('y', drawBand.y)
+                        .attr('width', drawBand.width)
+                        .attr('height', drawBand.height)
+                        .style('fill', 'rgba(98,179,240,0.2)');
+
+                    break;
+                case 'line':
+                default:
+                    this._axisG
+                        .append('line')
+                        .attr('class', HIGHLIGHT_BAND)
+                        .attr('x1', drawBand.x)
+                        .attr('y1', drawBand.y)
+                        .attr('x2', drawBand.x)
+                        .attr('y2', drawBand.y + drawBand.height)
+                        .attr('stroke', 'rgb(140,140,140)')
+                        .attr('stroke-width', '1');
+            }
 
         },
 
+        removeHighlightBand: function () {
+            this._axisG.select('.' + HIGHLIGHT_BAND).remove();
+        },
+        
         _drawPlotBands:function(g){
 
             var plotBands = this.component._preCalculatePlotBands();
@@ -23877,7 +25033,7 @@ define('render/BaseAxisSvgRender',['require','./BaseRender','../utils/BaseUtils'
             var useHtml = cfg.useHtml && !cfg.labelRotation;
             var labelStyle = cfg.labelStyle;
             var labelHeight = BaseUtils.getTextHeight(labelStyle);
-            var tickPadding = cfg.tickPadding + tickLength;
+            var tickPadding = cfg.tickPadding + tickLength || 0;
 
             var orient = this.component.getPosition();
             var sign = (orient == Constants.TOP || orient == Constants.LEFT) ? -1 : 1;
@@ -26994,7 +28150,7 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
             var arc = d3.svg.arc().startAngle(0).endAngle(2 * Math.PI)
                 .innerRadius(0).outerRadius(d.radius);
 
-            var domain = d.componentAxis.scale.domain();
+            var domain = d.gaugeAxis.scale.domain();
             var scale = d3.scale.linear().domain(domain)
                 .range([BaseUtils.toRadian(-150), BaseUtils.toRadian(150)]);
 
@@ -27042,7 +28198,7 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
                 .endAngle(BaseUtils.toRadian(98))
                 .innerRadius(0).outerRadius(d.radius).toCenter(false);
 
-            var domain = d.componentAxis.scale.domain();
+            var domain = d.gaugeAxis.scale.domain();
             var scale = d3.scale.linear().domain(domain)
                 .range([BaseUtils.toRadian(-90), BaseUtils.toRadian(90)]);
 
@@ -27169,13 +28325,13 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
 
         _drawPointerTicks:function(paper, gaugeSet, d, scale){
 
-            var tickData = d.componentAxis.getTickData();
+            var tickData = d.gaugeAxis.getTickData();
 
-            var axisOption = d.componentAxis.componentOption;
+            var axisOption = d.gaugeAxis.componentOption;
             var labelStyle = axisOption.labelStyle;
             var useHtml = axisOption.useHtml;
 
-            var minorTickData = d.componentAxis.getMinorTickData();
+            var minorTickData = d.gaugeAxis.getMinorTickData();
 
             var self = this;
 
@@ -27290,7 +28446,7 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
                 })
             );
 
-            var domain = d.componentAxis.scale.domain();
+            var domain = d.gaugeAxis.scale.domain();
             var startRadian = BaseUtils.toRadian(-135);
             var scale = d3.scale.linear().domain(domain).range([startRadian, BaseUtils.toRadian(135)]);
             var point = d.points[0];
@@ -27345,7 +28501,7 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
 
         _createHorizontalThermometer:function(paper, gaugeSet, d){
 
-            var domain = d.componentAxis.scale.domain();
+            var domain = d.gaugeAxis.scale.domain();
             var point = d.points[0];
             if(!point){
                 return;
@@ -27395,13 +28551,13 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
         },
 
         _drawHorizontalThermometerTicks:function(paper, gaugeSet, d, scale){
-            var tickData = d.componentAxis.getTickData();
+            var tickData = d.gaugeAxis.getTickData();
 
-            var axisOption = d.componentAxis.componentOption;
+            var axisOption = d.gaugeAxis.componentOption;
             var labelStyle = axisOption.labelStyle;
             var useHtml = axisOption.useHtml;
 
-            var minorTickData = d.componentAxis.getMinorTickData();
+            var minorTickData = d.gaugeAxis.getMinorTickData();
 
             var plotBounds = this.component.getPlotBounds();
             var transX = plotBounds.x + d.centerX;
@@ -27459,7 +28615,7 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
 
         _createVerticalThermometer:function(paper, gaugeSet, d){
 
-            var domain = d.componentAxis.scale.domain();
+            var domain = d.gaugeAxis.scale.domain();
             var point = d.points[0];
             if(!point){
                 return;
@@ -27510,13 +28666,13 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
 
         _drawVerticalThermometerTicks:function(paper, gaugeSet, d, scale){
 
-            var tickData = d.componentAxis.getTickData();
+            var tickData = d.gaugeAxis.getTickData();
 
-            var axisOption = d.componentAxis.componentOption;
+            var axisOption = d.gaugeAxis.componentOption;
             var labelStyle = axisOption.labelStyle;
             var useHtml = axisOption.useHtml;
 
-            var minorTickData = d.componentAxis.getMinorTickData();
+            var minorTickData = d.gaugeAxis.getMinorTickData();
 
             var plotBounds = this.component.getPlotBounds();
             var transX = plotBounds.x + d.centerX;
@@ -30867,6 +32023,8 @@ require('render/TitleSvgRender');
 require('render/CategoryAxisSvgRender');
 require('render/ValueAxisSvgRender');
 require('render/DateAxisSvgRender');
+require('render/RadiusAxisSvgRender');
+require('render/AngleAxisSvgRender');
 require('render/LegendSvgRender');
 require('render/ToolbarSvgRender');
 require('render/DataSheetSvgRender');
@@ -30899,6 +32057,8 @@ require('render/LegendVmlRender');
 require('render/DateAxisVmlRender');
 require('render/ValueAxisVmlRender');
 require('render/CategoryAxisVmlRender');
+require('render/AngleAxisVmlRender');
+require('render/RadiusAxisVmlRender');
 require('render/TitleVmlRender');
 require('render/RangeLegendVmlRender');
 require('render/DrillToolsVmlRender');

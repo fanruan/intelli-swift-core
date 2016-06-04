@@ -248,7 +248,7 @@ $(function () {
         },
 
         getTextSizeWidth: function (text, fontSize) {
-            var span = $("<span></span>").addClass("text-width-span").appendTo($("body"));
+            var span = $("<span></span>").addClass("text-width-span").appendTo($("#container"));
 
             if (fontSize == null) {
                 fontSize = 12;
@@ -266,7 +266,7 @@ $(function () {
         //获取滚动条的宽度
         getScrollWidth: function () {
             if (!this._scrollWidth) {
-                var ul = $("<ul>").width(20).addClass("y-overflow-scroll").appendTo("body");
+                var ul = $("<ul>").width(20).addClass("y-overflow-scroll").appendTo($("#container"));
                 this._scrollWidth = ul[0].offsetWidth - ul[0].clientWidth;
                 ul.destroy();
             }
