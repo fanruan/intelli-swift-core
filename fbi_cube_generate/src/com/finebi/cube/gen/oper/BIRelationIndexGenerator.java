@@ -43,27 +43,26 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
             buildRelationIndex();
             long costTime=System.currentTimeMillis()-t;
-            biLogManager.infoRelation(getRelaionColumeKeyInfo(),costTime, -999);
+//            biLogManager.infoRelation(getRelaionColumeKeyInfo(),costTime, -999);
             return null;
         } catch (Exception e) {
-            biLogManager.errorRelation(getRelaionColumeKeyInfo(),e.getMessage(), -999);
+//            biLogManager.errorRelation(getRelaionColumeKeyInfo(),e.getMessage(), -999);
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
         }
     }
 
-    public RelationColumnKey getRelaionColumeKeyInfo() {
-        ICubeFieldSource field = null;
-        BITableSourceRelation biTableSourceRelation=null;
-        List<BITableSourceRelation> relations =new ArrayList<BITableSourceRelation>();
-        relations.add(biTableSourceRelation);
+//    public RelationColumnKey getRelaionColumeKeyInfo() {
+//        ICubeFieldSource field = null;
+//        BITableSourceRelation biTableSourceRelation=null;
+//        List<BITableSourceRelation> relations =new ArrayList<BITableSourceRelation>();
+//        relations.add(biTableSourceRelation);
+//
+//relation.getForeignTable();
+//        return new RelationColumnKey(field,relations);
+//    }
 
-relation.getForeignTable();
-        relation
-        return new RelationColumnKey(field,relations);
-    }
-    
     
     @Override
     public void release() {
