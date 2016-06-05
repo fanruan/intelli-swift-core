@@ -1,5 +1,8 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -10,14 +13,15 @@ import com.fr.bi.cal.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.bridge.StableFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class created on 2016/4/7.
@@ -38,32 +42,79 @@ public class BIRelationIndexGenerator extends BIProcessor {
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         biLogManager.logRelationStart(-999);
-        long t=System.currentTimeMillis();
+        long t = System.currentTimeMillis();
         try {
-
             buildRelationIndex();
-            long costTime=System.currentTimeMillis()-t;
-//            biLogManager.infoRelation(getRelaionColumeKeyInfo(),costTime, -999);
+            long costTime = System.currentTimeMillis() - t;
+            biLogManager.infoRelation(getRelaionColumeKeyInfo(), costTime, -999);
             return null;
         } catch (Exception e) {
-//            biLogManager.errorRelation(getRelaionColumeKeyInfo(),e.getMessage(), -999);
+            biLogManager.errorRelation(getRelaionColumeKeyInfo(), e.getMessage(), -999);
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
         }
     }
 
-//    public RelationColumnKey getRelaionColumeKeyInfo() {
-//        ICubeFieldSource field = null;
-//        BITableSourceRelation biTableSourceRelation=null;
-//        List<BITableSourceRelation> relations =new ArrayList<BITableSourceRelation>();
-//        relations.add(biTableSourceRelation);
-//
-//relation.getForeignTable();
-//        return new RelationColumnKey(field,relations);
-//    }
+    public RelationColumnKey getRelaionColumeKeyInfo() {
+        BITableSourceRelation tableRelation = getTableRelation(this.relation);
+        ICubeFieldSource field = tableRelation.getPrimaryField();
+        List<BITableSourceRelation> relations = new ArrayList<BITableSourceRelation>();
+        relations.add(tableRelation);
+        return new RelationColumnKey(field, relations);
+    }
 
-    
+    private BITableSourceRelation getTableRelation(BICubeRelation relation) {
+        ICubeFieldSource primaryField = null;
+        ICubeFieldSource foreignField = null;
+        CubeTableSource primaryTable = null;
+        CubeTableSource foreignTable = null;
+        Set<CubeTableSource> allTableSource = getAllTableSource();
+        for (CubeTableSource cubeTableSource : allTableSource) {
+            if (ComparatorUtils.equals(relation.getPrimaryTable().getSourceID(), cubeTableSource.getSourceID())) {
+                primaryTable = cubeTableSource;
+                Set<CubeTableSource> primarySources = null;
+                primarySources.add(cubeTableSource);
+                for (ICubeFieldSource iCubeFieldSource : primaryTable.getFieldsArray(primarySources)) {
+                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), primaryField.getFieldName())) {
+                        primaryField = iCubeFieldSource;
+                    }
+                }
+                break;
+            }
+        }
+        for (CubeTableSource cubeTableSource : allTableSource) {
+        if (ComparatorUtils.equals(relation.getForeignTable().getSourceID(), cubeTableSource.getSourceID())) {
+            foreignTable = cubeTableSource;
+            Set<CubeTableSource> foreignSource = null;
+            foreignSource.add(cubeTableSource);
+            for (ICubeFieldSource iCubeFieldSource : foreignTable.getFieldsArray(foreignSource)) {
+                if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), foreignField.getFieldName())) {
+                    foreignField = iCubeFieldSource;
+                }
+            }
+        }
+            break;
+    }
+        BITableSourceRelation biTableSourceRelation=new BITableSourceRelation(primaryField,foreignField,primaryTable,foreignTable);
+        return  biTableSourceRelation;
+    }
+
+    private Set<CubeTableSource> getAllTableSource() {
+        Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
+        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(-999);
+        HashSet<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
+        for (IBusinessPackageGetterService pack : packs) {
+            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
+            while (tIt.hasNext()) {
+                BIBusinessTable table = tIt.next();
+                cubeTableSourceSet.add(table.getTableSource());
+            }
+        }
+        return cubeTableSourceSet;
+    }
+
+
     @Override
     public void release() {
 
@@ -144,5 +195,5 @@ public class BIRelationIndexGenerator extends BIProcessor {
         }
 
     }
-    
+
 }

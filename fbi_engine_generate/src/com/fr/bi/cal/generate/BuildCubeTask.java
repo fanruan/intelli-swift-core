@@ -21,6 +21,7 @@ import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -74,6 +75,7 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
+        BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }
 
     @Override
@@ -85,6 +87,8 @@ public class BuildCubeTask implements CubeTask {
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
+        }finally {
+            BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
         }
     }
 
