@@ -145,7 +145,12 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 delete newyAxis.formatter;
                 config.yAxis.push(newyAxis);
                 break;
-
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DONUT:
+                config.plotOptions.dataLabels.align = "outside";
+                config.plotOptions.dataLabels.connectorWidth = "outside";
+                config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+                break;
         }
         addOptionsToConfig();
         return [result, config];
@@ -397,10 +402,10 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         function formatChartRadarStyle(){
             switch (self.chart_radar_type) {
                 case BICst.CHART_STYLE.POLYGON:
-                    config.plotOptions.roseType = "polygon";
+                    config.plotOptions.shape = "polygon";
                     break;
                 case BICst.CHART_STYLE.CIRCLE:
-                    config.plotOptions.roseType = "circle";
+                    config.plotOptions.shape = "circle";
                     break;
             }
         }

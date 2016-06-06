@@ -1001,23 +1001,23 @@ BICst.AREA_CHART_STYLE_GROUP = [{
 
 //饼图类型
 BICst.PIE_CHART_STYLE_GROUP = [{
-    text: "饼图",
+    cls: "pie-chart-style-normal-icon",
     value: BICst.CHART_STYLE.NORMAL
 }, {
-    text: "等弧玫瑰图",
+    cls: "pie-chart-style-equal-arc-rose-icon",
     value: BICst.CHART_STYLE.EQUAL_ARC_ROSE
 }, {
-    text: "不等弧玫瑰图",
+    cls: "pie-chart-style-not-equal-arc-rose-icon",
     value: BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE
 }];
 
 //雷达图线性
 BICst.RADAR_CHART_STYLE_GROUP = [{
-    text: "圆形",
-    value: BICst.CHART_STYLE.CIRCLE
-}, {
-    text: "多边形",
+    cls: "radar-chart-style-polygon-icon",
     value: BICst.CHART_STYLE.POLYGON
+}, {
+    cls: "radar-chart-style-circle-icon",
+    value: BICst.CHART_STYLE.CIRCLE
 }];
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{

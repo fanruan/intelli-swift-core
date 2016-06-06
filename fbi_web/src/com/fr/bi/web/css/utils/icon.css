@@ -581,6 +581,81 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_area_vertical.png');
   _background: none;
 }
+.pie-chart-style-normal-icon .x-icon,
+.pie-chart-style-normal-icon:hover .x-icon,
+.pie-chart-style-normal-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_normal.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_normal.png');
+  _background: none;
+}
+.pie-chart-style-normal-icon.native .x-icon,
+.pie-chart-style-normal-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_normal.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_normal.png');
+  _background: none;
+}
+.pie-chart-style-equal-arc-rose-icon .x-icon,
+.pie-chart-style-equal-arc-rose-icon:hover .x-icon,
+.pie-chart-style-equal-arc-rose-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_equal_arc_rose.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_equal_arc_rose.png');
+  _background: none;
+}
+.pie-chart-style-equal-arc-rose-icon.native .x-icon,
+.pie-chart-style-equal-arc-rose-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_equal_arc_rose.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_equal_arc_rose.png');
+  _background: none;
+}
+.pie-chart-style-not-equal-arc-rose-icon .x-icon,
+.pie-chart-style-not-equal-arc-rose-icon:hover .x-icon,
+.pie-chart-style-not-equal-arc-rose-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_not_equal_arc_rose.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_not_equal_arc_rose.png');
+  _background: none;
+}
+.pie-chart-style-not-equal-arc-rose-icon.native .x-icon,
+.pie-chart-style-not-equal-arc-rose-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_not_equal_arc_rose.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_pie_not_equal_arc_rose.png');
+  _background: none;
+}
+.radar-chart-style-polygon-icon .x-icon,
+.radar-chart-style-polygon-icon:hover .x-icon,
+.radar-chart-style-polygon-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_polygon.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_polygon.png');
+  _background: none;
+}
+.radar-chart-style-polygon-icon.native .x-icon,
+.radar-chart-style-polygon-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_polygon.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_polygon.png');
+  _background: none;
+}
+.radar-chart-style-circle-icon .x-icon,
+.radar-chart-style-circle-icon:hover .x-icon,
+.radar-chart-style-circle-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_circle.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_circle.png');
+  _background: none;
+}
+.radar-chart-style-circle-icon.native .x-icon,
+.radar-chart-style-circle-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_circle.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_circle.png');
+  _background: none;
+}
 .example-excel-icon .x-icon,
 .example-excel-icon:hover .x-icon,
 .example-excel-icon:active .x-icon {
