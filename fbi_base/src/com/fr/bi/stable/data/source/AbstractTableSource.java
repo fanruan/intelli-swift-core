@@ -97,7 +97,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
             ICubeTableService tableIndex = loader.getTableIndex(this);
             return createPreviewJSONFromTableIndex(fields, tableIndex);
         } catch (Exception e) {
-            return null;
+            throw e;
         } finally {
             loader.releaseCurrentThread();
         }
