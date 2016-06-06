@@ -128,7 +128,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
         this.reportName.on(BI.TextButton.EVENT_CHANGE, function () {
             FS.tabPane.addItem({
                 title: report.text,
-                src: FR.servletURL + report.buildUrl + "&edit=_bi_edit_"
+                src: FR.servletURL + report.buildUrl
             });
         });
 

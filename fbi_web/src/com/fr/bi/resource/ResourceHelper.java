@@ -1759,6 +1759,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/allreports/item/allreports.card.item.css",
                 "com/fr/bi/web/css/components/allreports/hangout/reporthangout.css",
 
+                //分享给我的
+                "com/fr/bi/web/css/components/share/sharetome.css",
+                "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
+
         };
     }
 
@@ -2466,6 +2470,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/allreports/item/allreports.list.item.js",
                 "com/fr/bi/web/js/components/allreports/item/allreports.card.item.js",
                 "com/fr/bi/web/js/components/allreports/hangout/reporthangout.js",
+
+                //分享给我
+                "com/fr/bi/web/js/components/share/sharetome.js",
+                "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
 
                 //工程配置
                 "com/fr/bi/web/js/config.js"

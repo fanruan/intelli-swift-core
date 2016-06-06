@@ -6,6 +6,7 @@ import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -30,6 +31,7 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
     private int mergeType;
     @BICoreField
     private List<MergeColumn> columns;
+    @BIIgnoreField
     private transient IETLOperator transOp;
     @Override
     public String xmlTag() {

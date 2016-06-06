@@ -3,4 +3,6 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-sort-filter-combo .bi-list-view {
   color: #808080;
+  font-size: 12px;
+  font-weight: normal;
 }
