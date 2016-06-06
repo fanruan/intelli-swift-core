@@ -111,7 +111,7 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
         card.on(BI.IconButton.EVENT_CHANGE, function () {
             FS.tabPane.addItem({
                 title: report.text,
-                src: FR.servletURL + report.buildUrl + "&edit=_bi_edit_"
+                src: FR.servletURL + report.buildUrl
             });
         });
 
