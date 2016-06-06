@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by Connery on 2015/12/31.
  */
-public class XMLMapValueWriter extends XMLIterableValueWriter {
+public class XMLMapValueWriter extends XMLCollectionValueWriter {
     public XMLMapValueWriter(BIBeanXMLWriterWrapper beanWrapper, Map<String, ArrayList<BIBeanXMLWriterWrapper>> disposedBeans) {
         super(beanWrapper, disposedBeans);
     }

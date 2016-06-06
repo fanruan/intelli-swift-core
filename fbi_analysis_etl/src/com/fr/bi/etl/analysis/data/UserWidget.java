@@ -10,6 +10,7 @@ import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BIWeblet;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -33,11 +34,12 @@ public class UserWidget {
     private BIWidget widget;
     @BICoreField
     private long userId;
-
+    @BIIgnoreField
     private Object lock = new Object();
 
+    @BIIgnoreField
     private UserSession session;
-
+    @BIIgnoreField
     private transient Map<Integer, List> tempValue = new ConcurrentHashMap<Integer, List>();
 
     public UserWidget(BIWidget widget, long userId) {
