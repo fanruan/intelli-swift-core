@@ -59,7 +59,10 @@ public class BIPlate extends AbstractFSPlate {
         initPlugin();
         registerEntrySomething();
         initOOMKillerForLinux();
-        StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class).generateCubes();
+        BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
+        if (markedObject.checkCubeStatus(-999)) {
+            markedObject.generateCubes();
+        }
     }
 
     private void registerEntrySomething(){
