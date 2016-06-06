@@ -461,6 +461,12 @@
                 BICst.DEFAULT_CHART_SETTING.chart_color;
         },
 
+        getWSChartStyleByID: function(wid){
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_style) ? ws.chart_style :
+                BICst.DEFAULT_CHART_SETTING.chart_style;
+        },
+
         getWSChartLineTypeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.chart_line_type) ? ws.chart_line_type :
@@ -651,6 +657,18 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_grid_line) ? ws.show_grid_line :
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
+        },
+
+        getWSShowZoomByID: function(wid){
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
+                BICst.DEFAULT_CHART_SETTING.show_zoom;
+        },
+
+        getWSNullContinueByID: function(wid){
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
+                BICst.DEFAULT_CHART_SETTING.null_continue;
         },
 
         getWSTextDirectionByID: function(wid) {

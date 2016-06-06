@@ -154,6 +154,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             if(BI.isNotEmptyArray(self.chart_color)){
                 config.colors = self.chart_color;
             }
+            formatChartStyle();
             formatChartLineStyle();
             formatChartPieStyle();
             formatChartRadarStyle();
@@ -164,17 +165,18 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     config.yAxis[0].formatter = formatTickInXYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
                 }
                 formatNumberLevelInYaxis(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                config.yAxis[0].title.text = self.left_y_axis_title + getXYAxisUnit(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                config.yAxis[0].title.text = self.show_left_y_axis_title === true ? config.yAxis[0].title.text : "";
+                config.yAxis[0].title.text = getXYAxisUnit(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                config.yAxis[0].title.text = self.show_left_y_axis_title === true ? self.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
                 config.yAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
                 config.yAxis[0].title.rotation = self.constants.ROTATION;
+
             }
             if(BI.has(config, "yAxis") && config.yAxis.length > 1){
                 config.yAxis[1].formatter = formatTickInXYaxis(self.right_y_axis_style, self.constants.RIGHT_AXIS);
                 config.yAxis[1].reversed = self.right_y_axis_reversed ? !config.yAxis[1].reversed : config.yAxis[1].reversed;
                 formatNumberLevelInYaxis(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                config.yAxis[1].title.text = self.right_y_axis_title + getXYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                config.yAxis[1].title.text = self.show_right_y_axis_title === true ? config.yAxis[1].title.text : "";
+                config.yAxis[1].title.text = getXYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                config.yAxis[1].title.text = self.show_right_y_axis_title === true ? self.right_y_axis_title + config.yAxis[1].title.text : config.yAxis[1].title.text;
                 config.yAxis[1].gridLineWidth = self.show_grid_line === true ? 1 : 0;
                 config.yAxis[1].title.rotation = self.constants.ROTATION;
             }
@@ -182,10 +184,10 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 config.yAxis[2].formatter = formatTickInXYaxis(self.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
                 config.yAxis[2].reversed = self.right_y_axis_second_reversed ? !config.yAxis[1].reversed : config.yAxis[2].reversed;
                 formatNumberLevelInYaxis(self.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
-                config.yAxis[2].title.text = self.right_y_axis_second_title + getXYAxisUnit(self.right_y_axis_number_level, self.constants.RIGHT_AXIS_SECOND);
-                config.yAxis[2].title.text = self.show_right_y_axis_second_title === true ? config.yAxis[2].title.text : "";
+                config.yAxis[2].title.text = getXYAxisUnit(self.right_y_axis_second_number_level, self.constants.RIGHT_AXIS);
+                config.yAxis[2].title.text = self.show_right_y_axis_second_title === true ? self.right_y_axis_second_title + config.yAxis[2].title.text : config.yAxis[2].title.text;
                 config.yAxis[2].gridLineWidth = self.show_grid_line === true ? 1 : 0;
-                config.yAxis[1].title.rotation = self.constants.ROTATION;
+                config.yAxis[2].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "xAxis") && config.xAxis.length > 0){
                 if(config.chartType === "bar"){
@@ -332,18 +334,30 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     break;
             }
             if(position === self.constants.X_AXIS){
-                self.x_axis_unit !== "" && (unit = unit + "/" + self.x_axis_unit)
+                self.x_axis_unit !== "" && (unit = unit + self.x_axis_unit)
             }
             if(position === self.constants.LEFT_AXIS){
-                self.left_y_axis_unit !== "" && (unit = unit + "/" + self.left_y_axis_unit)
+                self.left_y_axis_unit !== "" && (unit = unit + self.left_y_axis_unit)
             }
             if(position === self.constants.RIGHT_AXIS){
-                self.right_y_axis_unit !== "" && (unit = unit + "/" + self.right_y_axis_unit)
+                self.right_y_axis_unit !== "" && (unit = unit + self.right_y_axis_unit)
             }
             if(position === self.constants.RIGHT_AXIS_SECOND){
-                self.right_y_axis_second_unit !== "" && (unit = unit + "/" + self.right_y_axis_second_unit)
+                self.right_y_axis_second_unit !== "" && (unit = unit + self.right_y_axis_second_unit)
             }
             return "(" + unit + ")";
+        }
+
+        function formatChartStyle(){
+            switch (self.chart_style) {
+                case BICst.CHART_STYLE.STYLE_GRADUAL:
+                    config.style = "gradual";
+                    break;
+                case BICst.CHART_STYLE.STYLE_NORMAL:
+                default:
+                    config.style = "normal";
+                    break;
+            }
         }
 
         function formatChartLineStyle(){
@@ -411,6 +425,9 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             if(config.dataSheet.enabled === true){
                 config.xAxis[0].showLabel = false;
             }
+            config.zoom.zoomTool.visible = self.show_zoom;
+            self.show_zoom === true && delete config.dataSheet;
+            config.plotOptions.connectNulls = self.null_continue;
         }
     },
 
@@ -423,6 +440,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.right_y_axis_title = options.right_y_axis_title || "";
         this.right_y_axis_second_title = options.right_y_axis_second_title || "";
         this.chart_color = options.chart_color || [];
+        this.chart_style = options.chart_style || BICst.CHART_STYLE.STYLE_NORMAL;
         this.chart_line_type = options.chart_line_type || BICst.CHART_STYLE.NORMAL;
         this.chart_pie_type = options.chart_pie_type || BICst.CHART_STYLE.NORMAL;
         this.chart_inner_radius = options.chart_inner_radius || 0;
@@ -452,6 +470,8 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.show_data_label = options.show_data_label || false;
         this.show_data_table = options.show_data_table || false;
         this.show_grid_line = options.show_grid_line;
+        this.show_zoom = options.show_zoom || false;
+        this.null_continue = options.null_continue;
         this.text_direction = options.text_direction;
     },
 

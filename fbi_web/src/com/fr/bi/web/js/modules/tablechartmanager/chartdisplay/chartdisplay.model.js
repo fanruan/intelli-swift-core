@@ -162,7 +162,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var data = BI.map(left.c, function (idx, obj) {
                     return {
                         "x": obj.n,
-                        "y": obj.s.c[id].s,
+                        "y": obj.s.c[id].s[0],
                         targetIds: [targetIds[0]]
                     };
                 });
@@ -373,7 +373,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
-                return [this._formatDataForMap(data)];
+                var da = this._formatDataForMap(data);
+                return BI.isEmptyArray(da) ? da : [da];
         }
     },
 
