@@ -94,8 +94,8 @@ public class BIBeanXMLWriterWrapper extends BIBeanWriterWrapper {
     public XMLValueWriter generateWriter(Map<String, ArrayList<BIBeanXMLWriterWrapper>> disposedBeans) {
         if (BIFieldUtils.isBasicType(beanClass)) {
             return new XMLBasicValueWriter(this, disposedBeans);
-        } else if (BIFieldUtils.isIterableType(beanClass)) {
-            return new XMLIterableValueWriter(this, disposedBeans);
+        } else if (BIFieldUtils.isCollectionType(beanClass)) {
+            return new XMLCollectionValueWriter(this, disposedBeans);
         } else if (BIFieldUtils.isMapType(beanClass)) {
             return new XMLMapValueWriter(this, disposedBeans);
         } else if (BIFieldUtils.isArrayType(beanClass)) {

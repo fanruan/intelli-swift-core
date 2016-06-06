@@ -9,9 +9,7 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/24.
@@ -37,15 +35,6 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
         return userId;
     }
 
-    /**
-     * @return
-     */
-    @Override
-    public Set<String> getSourceUsedMD5() {
-        HashSet<String> set = new HashSet<String>();
-        set.add(fetchObjectCore().getIDValue());
-        return set;
-    }
 
     @Override
     public boolean containsIDParentsWithMD5(String md5) {

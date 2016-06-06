@@ -136,7 +136,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
     }
 
     @Override
-    public int getTableVersion(BIKey key) {
+    public long getTableVersion(BIKey key) {
         return tableVersion;
     }
 

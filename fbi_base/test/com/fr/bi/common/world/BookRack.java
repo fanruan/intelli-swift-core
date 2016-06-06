@@ -17,7 +17,7 @@ public class BookRack {
     @BIElementType(implemented = ArrayList.class, genericType = Book.class)
     private List<Book> books;
     @BIJSONElement
-    private Person owner;
+    private Person owner = new Person();
     @BIJSONElement
     private Map<BookTag, List<Book>> category;
 

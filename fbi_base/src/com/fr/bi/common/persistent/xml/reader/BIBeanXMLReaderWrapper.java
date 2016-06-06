@@ -32,7 +32,7 @@ public class BIBeanXMLReaderWrapper extends BIBeanReaderWrapper {
     public XMLValueReader generateReader(Map<String, BIBeanXMLReaderWrapper> generatedBean) {
         if (BIFieldUtils.isBasicType(beanClass)) {
             return new XMLBasicValueReader(this, generatedBean);
-        } else if (BIFieldUtils.isIterableType(beanClass)) {
+        } else if (BIFieldUtils.isCollectionType(beanClass)) {
             return new XMLCollectionValueReader(this, generatedBean);
         } else if (BIFieldUtils.isMapType(beanClass)) {
             return new XMLMapValueReader(this, generatedBean);
