@@ -48,7 +48,7 @@ public class BISourceDataTransport extends BIProcessor {
         this.version = version;
         initialParents(parentTableSource);
     }
-    
+
 
 
     private void initialParents(Set<CubeTableSource> parentTableSource) {
@@ -66,20 +66,32 @@ public class BISourceDataTransport extends BIProcessor {
 
         try {
             recordTableInfo();
+            /*column的log先暂时不分开录,一张表下所有column读取时间都一致*/
+            long columnTime=System.currentTimeMillis();
             long count = transport();
-
+            if (null!=tableSource.getPersistentTable()) {
+                long columneCostTime=System.currentTimeMillis()-columnTime;
+                for (ICubeFieldSource iCubeFieldSource : tableEntityService.getFieldInfo()) {
+                    biLogManager.infoColumn(tableSource.getPersistentTable(),iCubeFieldSource.getFieldName(),columneCostTime, -999);
+                }
+            }
             if (count >= 0) {
                 tableEntityService.recordRowCount(count);
                 tableEntityService.addVersion(version);
             }
-            long costTime=System.currentTimeMillis()-t;
-            biLogManager.infoTable(tableSource.getPersistentTable(),costTime, -999);
+            long tableCostTime=System.currentTimeMillis()-t;
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, -999);
+
+            }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
-            biLogManager.errorTable(tableSource.getPersistentTable(),e.getMessage(), -999);
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), -999);
+            }
         } finally {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -129,8 +141,10 @@ public class BISourceDataTransport extends BIProcessor {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
         ICubeFieldSource[] cubeFieldSources = new ICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
+            fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
+
         return this.tableSource.read(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {

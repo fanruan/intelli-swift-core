@@ -12,8 +12,8 @@ public class LogManageTest extends BICubeTestBase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-biNationTablesTest=new BINationTablesTest();        
-        
+        biNationTablesTest = new BINationTablesTest();
+
     }
 
     public void testLog() {
@@ -21,7 +21,7 @@ biNationTablesTest=new BINationTablesTest();
         biNationTablesTest.testFieldPathIndex();
         biLogManager.logEnd(-999);
         try {
-            assertTrue(biLogManager.createJSON(-999).getJSONArray("tables").length()==biNationTablesTest.getTablesAmount());
+            assertTrue(biLogManager.createJSON(-999).getJSONArray("tables").length() == biNationTablesTest.getTablesAmount());
         } catch (Exception e) {
             assertFalse(true);
         }

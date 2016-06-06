@@ -73,10 +73,10 @@ public class BIRelationIndexGenerator extends BIProcessor {
         for (CubeTableSource cubeTableSource : allTableSource) {
             if (ComparatorUtils.equals(relation.getPrimaryTable().getSourceID(), cubeTableSource.getSourceID())) {
                 primaryTable = cubeTableSource;
-                Set<CubeTableSource> primarySources = null;
+                Set<CubeTableSource> primarySources = new HashSet<CubeTableSource>();
                 primarySources.add(cubeTableSource);
                 for (ICubeFieldSource iCubeFieldSource : primaryTable.getFieldsArray(primarySources)) {
-                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), primaryField.getFieldName())) {
+                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(),relation.getPrimaryField().getColumnName())) {
                         primaryField = iCubeFieldSource;
                     }
                 }
@@ -84,18 +84,18 @@ public class BIRelationIndexGenerator extends BIProcessor {
             }
         }
         for (CubeTableSource cubeTableSource : allTableSource) {
-        if (ComparatorUtils.equals(relation.getForeignTable().getSourceID(), cubeTableSource.getSourceID())) {
-            foreignTable = cubeTableSource;
-            Set<CubeTableSource> foreignSource = null;
-            foreignSource.add(cubeTableSource);
-            for (ICubeFieldSource iCubeFieldSource : foreignTable.getFieldsArray(foreignSource)) {
-                if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), foreignField.getFieldName())) {
-                    foreignField = iCubeFieldSource;
+            if (ComparatorUtils.equals(relation.getForeignTable().getSourceID(), cubeTableSource.getSourceID())) {
+                foreignTable = cubeTableSource;
+                Set<CubeTableSource> foreignSource = new HashSet<CubeTableSource>();
+                foreignSource.add(cubeTableSource);
+                for (ICubeFieldSource iCubeFieldSource : foreignTable.getFieldsArray(foreignSource)) {
+                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getForeignField().getColumnName())) {
+                        foreignField = iCubeFieldSource;
+                    }
                 }
+                break;
             }
         }
-            break;
-    }
         BITableSourceRelation biTableSourceRelation=new BITableSourceRelation(primaryField,foreignField,primaryTable,foreignTable);
         return  biTableSourceRelation;
     }

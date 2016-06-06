@@ -7,14 +7,16 @@ import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.cal.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.stable.bridge.StableFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -58,14 +60,25 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        BILogManagerProvider biLogManager = BIConfigureManagerCenter.getLogManager();
-        biLogManager.logIndexStart(-999);
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t=System.currentTimeMillis();
-        initial();
-        buildTableIndex();
-        long costTime=System.currentTimeMillis()-t;
-        biLogManager.infoTableIndex(tableSource.getPersistentTable(),costTime, Long.valueOf(-999));
-        return null;
+
+        biLogManager.logIndexStart(-999);
+        try {
+            initial();
+            buildTableIndex();
+            long costTime=System.currentTimeMillis()-t;
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.infoTableIndex(tableSource.getPersistentTable(), costTime, Long.valueOf(-999));
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), -999);
+            }
+        } finally {
+            return null;
+        }
     }
 
     @Override
