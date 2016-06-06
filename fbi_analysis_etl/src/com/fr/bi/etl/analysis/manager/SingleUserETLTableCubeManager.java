@@ -9,11 +9,13 @@ import com.fr.bi.common.inter.Release;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.tableobj.ETLTableObject;
+import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.stable.StringUtils;
 
 import java.io.File;
 
@@ -91,7 +93,12 @@ public class SingleUserETLTableCubeManager implements Release {
 				}
 			}
 		}
-		updateTask.add(new UserETLUpdateTask(source));
+        long version = 0;
+        if (!tq.isEmpty()){
+            version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));
+            tq.releaseObject();
+        }
+		updateTask.add(new UserETLUpdateTask(source, version));
 	}
 	
 	
@@ -99,8 +106,14 @@ public class SingleUserETLTableCubeManager implements Release {
         return BIFileUtils.checkDir(new File(BIPathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue())));
     }
 	
-	protected boolean isCubeGenerating(){
-        return !updateTask.isEmpty();
+	protected boolean checkVersion(){
+        if (tq.isEmpty() || !updateTask.isEmpty()){
+            return false;
+        } else {
+            long version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));
+            tq.releaseObject();
+            return new UserETLUpdateTask(source, version).check();
+        }
     }
 
 	/**

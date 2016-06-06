@@ -99,7 +99,7 @@ public interface ICubeTableService extends Release {
 
     BIKey getColumnIndex(BusinessField field);
 
-    int getTableVersion(BIKey key);
+    long getTableVersion(BIKey key);
 
     /**
      * 获取第columnindex列值分别为values的分组索引

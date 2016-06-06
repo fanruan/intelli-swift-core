@@ -83,20 +83,6 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         return userId;
     }
 
-    /**
-     * @return
-
-     */
-    @Override
-    public Set<String> getSourceUsedMD5() {
-        Set<String> set = new HashSet<String>();
-        for (UserCubeTableSource source : getParents()){
-            if (source.getType() == Constants.TABLE_TYPE.USER_BASE){
-                set.addAll(source.getSourceUsedMD5());
-            }
-        }
-        return set;
-    }
 
     @Override
     public boolean containsIDParentsWithMD5(String md5) {
@@ -109,6 +95,16 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
             }
         }
         return false;
+    }
+
+    @Override
+    public Set<AnalysisCubeTableSource> getSourceUsedAnalysisETLSource() {
+        Set<AnalysisCubeTableSource> set = new HashSet<AnalysisCubeTableSource>();
+        for (AnalysisCubeTableSource source : getParents()){
+            set.add(source);
+            set.addAll(source.getSourceUsedAnalysisETLSource());
+        }
+        return set;
     }
 
     @Override

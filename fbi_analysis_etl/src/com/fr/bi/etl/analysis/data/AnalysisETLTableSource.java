@@ -10,9 +10,7 @@ import com.fr.bi.stable.data.db.*;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -27,21 +25,20 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     private String name;
     @BICoreField
     private List<AnalysisETLSourceField> fieldList;
-//
-//    @Override
-//    public IPersistentTable getPersistentTable() {
-//        if (dbTable == null) {
-//            dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
-//            for (AnalysisETLSourceField c : fieldList){
-//                dbTable.addColumn(new PersistentField(c.getFieldName(), c.getFieldType()));
-//            }
-//        }
-//        return dbTable;
-//    }
 
     @Override
     public List<AnalysisETLSourceField> getFieldsList() {
         return fieldList;
+    }
+
+    @Override
+    public Set<AnalysisCubeTableSource> getSourceUsedAnalysisETLSource() {
+        Set<AnalysisCubeTableSource> set = new HashSet<AnalysisCubeTableSource>();
+        for (AnalysisCubeTableSource source : getParents()){
+            set.add(source);
+            set.addAll(source.getSourceUsedAnalysisETLSource());
+        }
+        return set;
     }
 
     @Override
