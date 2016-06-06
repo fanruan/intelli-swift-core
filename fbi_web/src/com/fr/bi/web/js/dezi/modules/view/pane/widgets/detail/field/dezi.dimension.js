@@ -110,8 +110,8 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         this.usedCheck.setEnable(true);
         this.usedCheck.setSelected(isUsed);
         var wType = BI.Utils.getWidgetTypeByID(wId);
-        if ((wType !== BICst.WIDGET.TABLE ||
-            wType !== BICst.WIDGET.CROSS_TABLE ||
+        if ((wType !== BICst.WIDGET.TABLE &&
+            wType !== BICst.WIDGET.CROSS_TABLE &&
             wType !== BICst.WIDGET.COMPLEX_TABLE)
             && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION2
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
