@@ -98,6 +98,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
             AbstractIndexGenerator generator = new BeforeIndexGenerator(cube, source,
                     CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getSources(), log);
             BIConfigureManagerCenter.getLogManager().infoTable(source.getPersistentTable(), 0, biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().infoTableReading(source.getPersistentTable(), 0, biUser.getUserId());
             generator.generateCube();
             generator = createSimpleIndexGenerator();
             generator.generateCube();

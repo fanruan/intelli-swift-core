@@ -68,6 +68,8 @@ public class BINationDataFactory {
         source.setFieldList(columns);
         source.setContents(content);
         source.setSourceID("nations");
+        source.getPersistentTable();
+        
         return source;
     }
 }

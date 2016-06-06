@@ -1,7 +1,6 @@
 package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
-import com.finebi.cube.gen.arrange.BICubeOperationManager4Test;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
 import com.finebi.cube.gen.oper.BISourceDataTransport;
@@ -13,8 +12,6 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.tools.BINationDataFactory;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.utils.BITableKeyUtils;
-import com.fr.bi.cal.log.BILogManager;
-import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -24,38 +21,39 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.general.ComparatorUtils;
-import com.fr.stable.bridge.StableFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wuk on 16/5/17.
  */
 public class BINationTablesTest extends BICubeTestBase {
     private BISourceDataTransport dataTransport;
-    private BICubeOperationManager4Test operationManager;
-    private BILogManagerProvider biLogManagerProvider;
+    private Set<CubeTableSource> cubeTableSourceSet;
     @Override
     protected void setUp() throws Exception {
-        StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
         super.setUp();
     }
 
-
-    public void testLogStart() throws Exception {
-        StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
-        long s = System.currentTimeMillis();
-        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        biLogManager.logStart(-999);
-        biLogManager.createJSON(-999);
-        biLogManager.logEnd(-999);
-
+    public BINationTablesTest() throws Exception {
+        super.setUp();
+       
+        init();
     }
 
-    
+    private void init() {
+        CubeTableSource tableNation = BINationDataFactory.createTableNation();
+        CubeTableSource tablePerson = BINationDataFactory.createTablePerson();
+        this.cubeTableSourceSet=new HashSet<CubeTableSource>();
+        cubeTableSourceSet.add(tableNation);
+        cubeTableSourceSet.add(tablePerson);
+    }
+
+
+    public int getTablesAmount() {
+        return cubeTableSourceSet.size();
+    }
+
     public void testFieldPathIndex() {
         try {
 

@@ -65,8 +65,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
     }
 
     private BITableSourceRelation getTableRelation(BICubeRelation relation) {
-        ICubeFieldSource primaryField = new ICubeFieldSource() {
-        };
+        ICubeFieldSource primaryField = null;
         ICubeFieldSource foreignField = null;
         CubeTableSource primaryTable = null;
         CubeTableSource foreignTable = null;
@@ -77,7 +76,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 Set<CubeTableSource> primarySources = new HashSet<CubeTableSource>();
                 primarySources.add(cubeTableSource);
                 for (ICubeFieldSource iCubeFieldSource : primaryTable.getFieldsArray(primarySources)) {
-                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), primaryField.getFieldName())) {
+                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(),relation.getPrimaryField().getColumnName())) {
                         primaryField = iCubeFieldSource;
                     }
                 }
@@ -87,15 +86,15 @@ public class BIRelationIndexGenerator extends BIProcessor {
         for (CubeTableSource cubeTableSource : allTableSource) {
         if (ComparatorUtils.equals(relation.getForeignTable().getSourceID(), cubeTableSource.getSourceID())) {
             foreignTable = cubeTableSource;
-            Set<CubeTableSource> foreignSource = null;
+            Set<CubeTableSource> foreignSource = new HashSet<CubeTableSource>();
             foreignSource.add(cubeTableSource);
             for (ICubeFieldSource iCubeFieldSource : foreignTable.getFieldsArray(foreignSource)) {
-                if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), foreignField.getFieldName())) {
+                if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getForeignField().getColumnName())) {
                     foreignField = iCubeFieldSource;
                 }
             }
-        }
             break;
+        }
     }
         BITableSourceRelation biTableSourceRelation=new BITableSourceRelation(primaryField,foreignField,primaryTable,foreignTable);
         return  biTableSourceRelation;

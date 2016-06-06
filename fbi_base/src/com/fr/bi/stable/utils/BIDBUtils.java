@@ -2,8 +2,10 @@ package com.fr.bi.stable.utils;
 
 import com.fr.base.FRContext;
 import com.fr.base.TableData;
+import com.fr.bi.cal.log.BILogManager;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.dbdealer.*;
@@ -25,6 +27,7 @@ import com.fr.general.data.DataModel;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
+import com.fr.stable.bridge.StableFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.*;
@@ -584,6 +587,9 @@ public class BIDBUtils {
         Statement stmt = null;
         ResultSet rs = null;
         try {
+            BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+            long t=System.currentTimeMillis();
+            
             conn = sql.getSqlConn();
             String originalCharSetName = connection.getOriginalCharsetName();
             String newCharSetName = connection.getNewCharsetName();
@@ -593,7 +599,6 @@ public class BIDBUtils {
             String sqlString = createSqlString(dialect, columns);
             sql.setSelect(sqlString);
             String query = dealWithSqlCharSet(sql.toString(), connection);
-            long t = System.currentTimeMillis();
             BILogger.getLogger().info("Start Query sql:" + query);
             stmt = createStatement(conn, dialect);
             try {

@@ -77,7 +77,6 @@ public class BICubeOperationManager {
 
     private boolean isFieldIndexGenerated(CubeTableSource tableSource) {
         return registeredFieldIndex.contains(tableSource);
-
     }
 
     private void addGeneratedTable(CubeTableSource tableSource) {
