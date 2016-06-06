@@ -65,7 +65,8 @@ public class BIRelationIndexGenerator extends BIProcessor {
     }
 
     private BITableSourceRelation getTableRelation(BICubeRelation relation) {
-        ICubeFieldSource primaryField = null;
+        ICubeFieldSource primaryField = new ICubeFieldSource() {
+        };
         ICubeFieldSource foreignField = null;
         CubeTableSource primaryTable = null;
         CubeTableSource foreignTable = null;
@@ -73,7 +74,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         for (CubeTableSource cubeTableSource : allTableSource) {
             if (ComparatorUtils.equals(relation.getPrimaryTable().getSourceID(), cubeTableSource.getSourceID())) {
                 primaryTable = cubeTableSource;
-                Set<CubeTableSource> primarySources = null;
+                Set<CubeTableSource> primarySources = new HashSet<CubeTableSource>();
                 primarySources.add(cubeTableSource);
                 for (ICubeFieldSource iCubeFieldSource : primaryTable.getFieldsArray(primarySources)) {
                     if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), primaryField.getFieldName())) {
