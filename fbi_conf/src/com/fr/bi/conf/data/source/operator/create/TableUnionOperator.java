@@ -147,7 +147,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
     @Override
     public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         int st = (int) Math.ceil(start / parents.size());
-        int ed = (int) Math.ceil(end / parents.size());
+        int ed = Math.max(1,(int) Math.ceil(end / parents.size()));
         List<ICubeTableService> tis = new ArrayList<ICubeTableService>();
         for (CubeTableSource s : parents) {
             tis.add(loader.getTableIndex(s, st, ed));
