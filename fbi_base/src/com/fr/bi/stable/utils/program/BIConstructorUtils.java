@@ -4,8 +4,10 @@ import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import sun.misc.Unsafe;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Map;
@@ -112,7 +114,7 @@ public class BIConstructorUtils {
     /**
      * 处理基础类型装包的问题。
      *
-     * @param targetClass
+     * @param constructors
      * @param paramClass
      * @return
      * @throws NoSuchMethodException
@@ -226,10 +228,22 @@ public class BIConstructorUtils {
                     }
                 }
                 return constructorWithPara.newInstance(value);
-            } catch (Exception ignore) {
-                BILogger.getLogger().error(ignore.getMessage(), ignore);
+            } catch (Exception defaultParaException) {
+                try {
+                    return unsafeConstructObject(clazz);
+                } catch (NoSuchFieldException ignore) {
+                    BILogger.getLogger().error(ignore.getMessage(), ignore);
+                }
+
             }
         }
         throw new NoSuchMethodException();
+    }
+
+    public static <T> T unsafeConstructObject(Class<T> clazz) throws NoSuchFieldException, IllegalAccessException, InstantiationException {
+        Field f = Unsafe.class.getDeclaredField("theUnsafe"); //Internal reference
+        f.setAccessible(true);
+        Unsafe unsafe = (Unsafe) f.get(null);
+        return (T) unsafe.allocateInstance(clazz);
     }
 }

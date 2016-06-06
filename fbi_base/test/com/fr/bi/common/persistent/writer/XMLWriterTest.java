@@ -1,8 +1,10 @@
 package com.fr.bi.common.persistent.writer;
 
 import com.fr.bi.common.persistent.xml.reader.BIBeanXMLReaderWrapper;
+import com.fr.bi.common.persistent.xml.reader.XMLNormalValueReader;
 import com.fr.bi.common.persistent.xml.reader.XMLPersistentReader;
 import com.fr.bi.common.persistent.xml.writer.BIBeanXMLWriterWrapper;
+import com.fr.bi.common.persistent.xml.writer.XMLNormalValueWriter;
 import com.fr.bi.common.persistent.xml.writer.XMLPersistentWriter;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -169,6 +171,48 @@ public class XMLWriterTest extends TestCase {
             BIIgnore4Test result = (BIIgnore4Test) get(o, "ignore");
             assertEquals(result.getA(), (""));
             assertFalse(ComparatorUtils.equals(result.getB(), ("")));
+
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertFalse(true);
+        }
+    }
+
+    public void testIgnoreStaticControlWrite() {
+        try {
+            BIIgnore4Test ignore4Test = new BIIgnore4Test("a", "b");
+            XMLNormalValueWriter.IS_IGNORED_FIELD_USABLE = false;
+            XMLNormalValueReader.IS_IGNORED_FIELD_USABLE = false;
+
+            generate(ignore4Test, "IgnoreStaticControlWrite");
+            Object o = BIConstructorUtils.forceConstructObject(Class.forName(BIIgnore4Test.class.getName()));
+            BIIgnore4Test result = (BIIgnore4Test) get(o, "IgnoreStaticControlWrite");
+            assertEquals(result.getA(), ("a"));
+            assertEquals(result.getB(), ("b"));
+
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertFalse(true);
+        }
+    }
+
+    public void testIgnoreStaticControlRead() {
+        try {
+            BIIgnore4Test ignore4Test = new BIIgnore4Test("a", "b");
+            XMLNormalValueWriter.IS_IGNORED_FIELD_USABLE = false;
+            XMLNormalValueReader.IS_IGNORED_FIELD_USABLE = false;
+
+            generate(ignore4Test, "IgnoreStaticControlWrite");
+            Object o = BIConstructorUtils.forceConstructObject(Class.forName(BIIgnore4Test.class.getName()));
+            BIIgnore4Test result = (BIIgnore4Test) get(o, "IgnoreStaticControlWrite");
+            assertEquals(result.getA(), ("a"));
+            assertEquals(result.getB(), ("b"));
+            XMLNormalValueReader.IS_IGNORED_FIELD_USABLE = true;
+            Object ignoreFieldObj = BIConstructorUtils.forceConstructObject(Class.forName(BIIgnore4Test.class.getName()));
+
+            result = (BIIgnore4Test) get(ignoreFieldObj, "IgnoreStaticControlWrite");
+            assertEquals(result.getA(), (""));
+            assertEquals(result.getB(), ("b"));
 
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
