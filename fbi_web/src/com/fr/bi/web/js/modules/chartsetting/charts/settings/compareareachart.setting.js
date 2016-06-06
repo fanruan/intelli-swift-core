@@ -1,9 +1,9 @@
 /**
- * @class BI.CompareChartsSetting
+ * @class BI.CompareAreaChartsSetting
  * @extends BI.Widget
  * 对比柱状样式
  */
-BI.CompareChartsSetting = BI.inherit(BI.Widget, {
+BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
 
     constant: {
         SINGLE_LINE_HEIGHT: 60,
@@ -22,13 +22,13 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
     },
 
     _defaultConfig: function(){
-        return BI.extend(BI.CompareChartsSetting.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.CompareAreaChartsSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
         })
     },
 
     _init: function(){
-        BI.CompareChartsSetting.superclass._init.apply(this, arguments);
+        BI.CompareAreaChartsSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         this.colorSelect = BI.createWidget({
@@ -38,21 +38,95 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         this.colorSelect.populate(BICst.CHART_COLORS);
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
+        });
+
+        //风格——1、2、3
+        this.chartStyleGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        this.chartTypeGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.AREA_CHART_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
+            type: "bi.horizontal",
             cls: "single-line-settings",
-            items: {
-                left: [{
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Table_Sheet_Style"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Chart_Color"),
-                    cls: "line-title"
-                }, this.colorSelect]
-            },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+                    cls: "attr-names"
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.colorSelect]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Table_Style"),
+                    cls: "attr-names",
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.chartStyleGroup]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Type"),
+                    cls: "attr-names",
+                    lgap: this.constant.SIMPLE_H_GAP2
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.chartTypeGroup]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                })
+            }]
         });
 
         //格式和数量级
@@ -64,7 +138,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.numberLevellY = BI.createWidget({
@@ -75,7 +149,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.rYAxisStyle = BI.createWidget({
@@ -86,7 +160,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.rYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.numberLevelrY = BI.createWidget({
@@ -97,7 +171,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevelrY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         //单位
@@ -110,7 +184,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.RYUnit = BI.createWidget({
@@ -122,7 +196,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.RYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         //显示标题
@@ -134,7 +208,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleLY = BI.createWidget({
@@ -144,7 +218,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
             cls: "unit-input"
         });
         this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.isShowTitleRY = BI.createWidget({
@@ -155,7 +229,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleRY = BI.createWidget({
@@ -166,7 +240,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.editTitleRY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         //轴逆序
@@ -177,7 +251,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.reversedLY.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.reversedRY = BI.createWidget({
@@ -187,7 +261,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.reversedRY.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         //横轴文本方向
@@ -202,7 +276,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
             }
         });
         this.text_direction.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.isShowTitleX = BI.createWidget({
@@ -213,7 +287,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleX = BI.createWidget({
@@ -224,7 +298,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.CompareChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         //图例
@@ -236,7 +310,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -247,7 +321,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         //数据表格
@@ -258,7 +332,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataTable.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -269,7 +343,18 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
+        });
+
+        //图表缩放滚轮
+        this.showZoom = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Zoom"),
+            width: 140
+        });
+
+        this.showZoom.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({
@@ -301,6 +386,9 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.gridLine]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.showZoom]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -464,7 +552,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, rYAxis, xAxis, otherAttr],
+            items: [tableStyle, lYAxis, rYAxis, xAxis, showElement, otherAttr],
             hgap: 10
         })
     },
@@ -473,6 +561,8 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
+        this.chartTypeGroup.setValue(BI.Utils.getWSChartLineTypeByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.rYAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
@@ -490,6 +580,7 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
+        this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -500,6 +591,8 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
+            chart_style: this.chartStyleGroup.getValue()[0],
+            chart_line_type: this.chartTypeGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             right_y_axis_style: this.rYAxisStyle.getValue()[0],
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
@@ -516,13 +609,16 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
             show_data_table: this.showDataTable.isSelected(),
-            show_grid_line: this.gridLine.isSelected()
+            show_grid_line: this.gridLine.isSelected(),
+            show_zoom: this.showZoom.isSelected()
         }
     },
 
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
+        this.chartStyleGroup.setValue(v.chart_style);
+        this.chartTypeGroup.setValue(v.chart_line_type);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.rYAxisStyle.setValue(v.right_y_axis_style);
         this.numberLevellY.setValue(v.left_y_axis_number_level);
@@ -540,7 +636,8 @@ BI.CompareChartsSetting = BI.inherit(BI.Widget, {
         this.showDataLabel.setSelected(v.show_data_label);
         this.showDataTable.setSelected(v.show_data_table);
         this.gridLine.setSelected(v.show_grid_line);
+        this.showZoom.setSelected(v.show_zoom);
     }
 });
-BI.CompareChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.compare_chart_setting", BI.CompareChartsSetting);
+BI.CompareAreaChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.compare_area_chart_setting", BI.CompareAreaChartsSetting);

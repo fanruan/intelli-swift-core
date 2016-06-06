@@ -49,7 +49,7 @@ DirectionPathChooserView = BI.inherit(BI.View, {
                     "direction": -1
                 }]]
         });
-        pathchooser.setValue();
+        //pathchooser.setValue();
         BI.createWidget({
             type: "bi.absolute",
             element: vessel,
