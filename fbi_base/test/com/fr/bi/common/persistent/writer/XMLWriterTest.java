@@ -6,6 +6,8 @@ import com.fr.bi.common.persistent.xml.reader.XMLPersistentReader;
 import com.fr.bi.common.persistent.xml.writer.BIBeanXMLWriterWrapper;
 import com.fr.bi.common.persistent.xml.writer.XMLNormalValueWriter;
 import com.fr.bi.common.persistent.xml.writer.XMLPersistentWriter;
+import com.fr.bi.common.world.BookRack;
+import com.fr.bi.common.world.people.Student;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
@@ -90,12 +92,10 @@ public class XMLWriterTest extends TestCase {
     public void testMapPersonTwo() {
         MapPart part = MapPart.generatePersonTwo();
         checkEquals(part, "MapPersonTwo");
-//        generate(part, "MapPersonTwo");
     }
 
     public void testMapTwo() {
         MapPart part = MapPart.generateTwo();
-//        generate(part, "MapTwo");
         checkEquals(part, "MapTwo");
 
     }
@@ -117,10 +117,16 @@ public class XMLWriterTest extends TestCase {
 
     public void testNormalOnePerson() {
         NormalPart part = NormalPart.generateOnePerson();
-//        generate(part, "NormalOnePerson");
         checkEquals(part, "NormalOnePerson");
     }
 
+    /**
+     * 将目标对象生成xml，再依据xml构造一个新的对象，
+     * 两个对象进行严格的对象判断。
+     *
+     * @param obj  目标对象
+     * @param name xml保存的名字
+     */
     private void checkEquals(Object obj, String name) {
         try {
             generate(obj, name);
@@ -229,5 +235,17 @@ public class XMLWriterTest extends TestCase {
             BILogger.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
+    }
+
+    public void testFieldDefaultType() {
+        BookRack rack = new BookRack();
+        Student student = new Student();
+        rack.setOwner(student);
+        checkEquals(rack, "FieldDefaultType");
+    }
+
+    public void testIterable() {
+        IterableObj integers = new IterableObj();
+        checkEquals(integers, "testIterable");
     }
 }
