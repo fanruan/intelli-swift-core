@@ -241,6 +241,11 @@ public class XMLWriterTest extends TestCase {
         BookRack rack = new BookRack();
         Student student = new Student();
         rack.setOwner(student);
-        checkEquals(rack,"FieldDefaultType");
+        checkEquals(rack, "FieldDefaultType");
+    }
+
+    public void testIterable() {
+        IterableObj integers = new IterableObj();
+        checkEquals(integers, "testIterable");
     }
 }
