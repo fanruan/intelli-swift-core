@@ -4,6 +4,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -279,7 +280,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         JSONArray dimensionRelationsJa = dimensionAndTargetPathsJa.getJSONArray(dimensionRelationIndex);
                         String primaryFieldId = dimensionRelationsJa.optJSONObject(0).optJSONObject("primaryKey").optString("field_id");
                         String foreignFieldId = dimensionRelationsJa.optJSONObject(0).optJSONObject("foreignKey").optString("field_id");
-                        if (ComparatorUtils.equals(BIIDUtils.getTableIDFromFieldID(primaryFieldId), BIIDUtils.getTableIDFromFieldID(foreignFieldId))) {
+                        if (ComparatorUtils.equals(BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(primaryFieldId)).getTableBelongTo(), BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(foreignFieldId)).getTableBelongTo())) {
                             relationMap.put(targetId, relationList);
                         } else {
                             for (int j = 0; j < dimensionRelationsJa.length(); j++) {
