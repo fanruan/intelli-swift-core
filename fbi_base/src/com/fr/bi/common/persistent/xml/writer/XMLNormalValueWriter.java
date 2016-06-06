@@ -17,6 +17,14 @@ import java.util.Map;
  * Created by Connery on 2015/12/31.
  */
 public class XMLNormalValueWriter extends XMLValueWriter {
+
+    public static boolean IS_IGNORED_FIELD_USABLE = true;
+
+    @Override
+    protected String getDisposedUUID(Object obj) {
+        return super.getDisposedUUID(obj);
+    }
+
     public XMLNormalValueWriter(BIBeanXMLWriterWrapper beanWrapper, Map<String, ArrayList<BIBeanXMLWriterWrapper>> disposedBeans) {
         super(beanWrapper, disposedBeans);
     }
@@ -74,7 +82,11 @@ public class XMLNormalValueWriter extends XMLValueWriter {
     }
 
     private boolean needDispose(Field field) {
-        return !field.isAnnotationPresent(BIIgnoreField.class);
+        return !isIgnore(field);
+    }
+
+    private boolean isIgnore(Field field) {
+        return IS_IGNORED_FIELD_USABLE && field.isAnnotationPresent(BIIgnoreField.class);
     }
 
     private void fieldTagStart(Field field, XMLPrintWriter writer) {
@@ -85,4 +97,5 @@ public class XMLNormalValueWriter extends XMLValueWriter {
     private void fieldTagEnd(XMLPrintWriter writer) {
         writer.end();
     }
+
 }

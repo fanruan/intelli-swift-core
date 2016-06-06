@@ -2,10 +2,10 @@ package com.fr.bi.web.report.services;
 
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
+import com.fr.bi.fs.entry.BIReportEntry;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.EntryControl;
-import com.fr.fs.web.platform.entry.BIReportEntry;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;

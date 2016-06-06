@@ -136,7 +136,7 @@ public class BIWebUtils {
                                           HttpServletResponse res, final String sessionID, Locale locale) throws Exception {
         SessionDealWith.closeSession(sessionID);
         Map<String, String> map = new HashMap<String, String>();
-        map.put("message", Inter.getLocText("BI-Contarct_No_Package", locale));
+        map.put("message", Inter.getLocText("BI-Contact_No_Package", locale));
         map.put("removeLoadingView", "yes");
         writeData(req, res, "/com/fr/bi/web/html/bi_error_message.html", map);
     }
@@ -175,7 +175,7 @@ public class BIWebUtils {
             dealWithEmptyPack(req, res, sessionID, locale);
             return;
         }
-        if (BICubeConfigureCenter.getPackageManager().isPackagesEmpty(userId)) {
+        if (!BIConfigureManagerCenter.getAuthorityManager().hasAuthPackageByUser(userId)) {
             dealWithNORightPack(req, res, sessionID, locale);
             return;
         }

@@ -9,6 +9,9 @@ import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.utils.BIModuleManager;
 import com.fr.bi.fs.BITableMapper;
+import com.fr.bi.fs.entry.BIReportEntry;
+import com.fr.bi.fs.entry.BIReportEntryDAO;
+import com.fr.bi.fs.entry.EntryConstants;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.ResourceHelper;
@@ -20,8 +23,8 @@ import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.RelationFCMapper;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.base.entity.PlatformManageModule;
+import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
-import com.fr.fs.dao.BIReportEntryDAO;
 import com.fr.fs.dao.EntryDAO;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
@@ -54,8 +57,16 @@ public class BIPlate extends AbstractFSPlate {
         super.initData();
         startModules();
         initPlugin();
+        registerEntrySomething();
         initOOMKillerForLinux();
         StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class).generateCubes();
+    }
+
+    private void registerEntrySomething(){
+        EntryPoolFactory.registerEntryDAO(EntryConstants.BIREPORT, BIReportEntryDAO.getInstance());
+        EntryPoolFactory.registerEntry("bireport", BIReportEntry.class);
+        EntryPoolFactory.registerEntryTableNames(new String[]{BIReportEntry.TABLE_NAME});
+        EntryPoolFactory.registerMobileEntryTableNames(new String[]{BIReportEntry.TABLE_NAME});
     }
 
     private void initOOMKillerForLinux() {
@@ -227,13 +238,13 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public ObjectTableMapper[] mappers4Register() {
-        ObjectTableMapper[] mappers = new ObjectTableMapper[]{
+        return new ObjectTableMapper[]{
                 BITableMapper.BI_REPORT_NODE.TABLE_MAPPER,
                 BITableMapper.BI_SHARED_REPORT_NODE.TABLE_MAPPER,
                 BITableMapper.BI_CREATED_TEMPLATE_FOLDER.TABLE_MAPPER,
-                BITableMapper.BI_REPORT_NODE_LOCK.TABLE_MAPPER
+                BITableMapper.BI_REPORT_NODE_LOCK.TABLE_MAPPER,
+                BIReportEntry.TABLE_MAPPER
         };
-        return mappers;
     }
 
     @Override
