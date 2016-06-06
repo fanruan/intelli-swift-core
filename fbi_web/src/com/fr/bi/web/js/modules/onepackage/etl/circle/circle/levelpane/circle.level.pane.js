@@ -86,7 +86,10 @@ BI.CircleLevelPane = BI.inherit(BI.LoadingPane, {
     },
 
     getValue: function(){
-        return this.button_group.getValue();
+        return {
+            floors: this.button_group.getValue(),
+            field_length: this.field_length
+        };
     },
 
     isValid: function(){
