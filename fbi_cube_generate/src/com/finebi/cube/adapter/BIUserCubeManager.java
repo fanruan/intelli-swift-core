@@ -18,6 +18,7 @@ import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
+import com.fr.fs.control.UserControl;
 
 /**
  * This class created on 2016/4/15.
@@ -39,7 +40,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
     public BIUserCubeManager(BIUser user) {
         this.user = user;
         ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(user.getUserId())));
+        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(UserControl.getInstance().getSuperManagerID())));
         cube = new BICube(resourceRetrievalService, discovery);
     }
 
