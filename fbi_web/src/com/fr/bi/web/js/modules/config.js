@@ -967,37 +967,57 @@ BICst.TABLE_STYLE_GROUP = [{
     value: BICst.TABLE_STYLE.STYLE3
 }];
 
+//坐标轴图风格
+BICst.AXIS_STYLE_GROUP = [{
+    cls: "axis-chart-style-normal-icon",
+    value: BICst.CHART_STYLE.STYLE_NORMAL
+}, {
+    cls: "axis-chart-style-gradual-icon",
+    value: BICst.CHART_STYLE.STYLE_GRADUAL
+}];
+
 //折线图和面积图线形
 BICst.LINE_CHART_STYLE_GROUP = [{
-    text: "折线",
+    cls: "line-chart-style-broken-icon",
     value: BICst.CHART_STYLE.NORMAL
 }, {
-    text: "曲线",
+    cls: "line-chart-style-curve-icon",
     value: BICst.CHART_STYLE.CURVE
 }, {
-    text: "直角折线",
+    cls: "line-chart-style-vertical-icon",
+    value: BICst.CHART_STYLE.RIGHT_ANGLE
+}];
+
+BICst.AREA_CHART_STYLE_GROUP = [{
+    cls: "area-chart-style-broken-icon",
+    value: BICst.CHART_STYLE.NORMAL
+}, {
+    cls: "area-chart-style-curve-icon",
+    value: BICst.CHART_STYLE.CURVE
+}, {
+    cls: "area-chart-style-vertical-icon",
     value: BICst.CHART_STYLE.RIGHT_ANGLE
 }];
 
 //饼图类型
 BICst.PIE_CHART_STYLE_GROUP = [{
-    text: "饼图",
+    cls: "pie-chart-style-normal-icon",
     value: BICst.CHART_STYLE.NORMAL
 }, {
-    text: "等弧玫瑰图",
+    cls: "pie-chart-style-equal-arc-rose-icon",
     value: BICst.CHART_STYLE.EQUAL_ARC_ROSE
 }, {
-    text: "不等弧玫瑰图",
+    cls: "pie-chart-style-not-equal-arc-rose-icon",
     value: BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE
 }];
 
 //雷达图线性
 BICst.RADAR_CHART_STYLE_GROUP = [{
-    text: "圆形",
-    value: BICst.CHART_STYLE.CIRCLE
-}, {
-    text: "多边形",
+    cls: "radar-chart-style-polygon-icon",
     value: BICst.CHART_STYLE.POLYGON
+}, {
+    cls: "radar-chart-style-circle-icon",
+    value: BICst.CHART_STYLE.CIRCLE
 }];
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
@@ -1027,6 +1047,7 @@ BICst.DEFAULT_CHART_SETTING = {
 
     //图
     chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+    chart_style: BICst.CHART_STYLE.STYLE_NORMAL,
     chart_line_type: BICst.CHART_STYLE.NORMAL,
     chart_pie_type: BICst.CHART_STYLE.NORMAL,
     chart_radar_type: BICst.CHART_STYLE.CIRCLE,
@@ -1059,7 +1080,9 @@ BICst.DEFAULT_CHART_SETTING = {
     chart_legend: BICst.CHART_LEGENDS.NOT_SHOW,
     show_data_label: false,
     show_data_table: false,
-    show_grid_line: true
+    show_grid_line: true,
+    show_zoom: false,
+    null_continue: true
 };
 
 BICst.CAL_TARGET_TYPE = [{

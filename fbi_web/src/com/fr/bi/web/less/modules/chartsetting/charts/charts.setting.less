@@ -2,6 +2,16 @@
 .bi-charts-setting{
   & .single-line-settings{
     border-top: 1px solid @color-bi-border-line;
+    & .chart-style-font{
+      border: 1px solid @color-bi-border-default;
+      .border-radius(2px);
+      &:hover{
+        background: @color-bi-background-gray;
+      }
+      &.active{
+        border: 1px solid @color-bi-border-highlight;
+      }
+    }
     & .line-title{
       font-size: @font-size-14;
       color: @color-bi-text-gray;

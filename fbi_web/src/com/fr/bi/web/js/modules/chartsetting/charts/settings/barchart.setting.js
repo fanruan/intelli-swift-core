@@ -41,18 +41,62 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
         });
 
+        //风格——1、2、3
+        this.chartStyleGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
         var tableStyle = BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
+            type: "bi.horizontal",
             cls: "single-line-settings",
-            items: {
-                left: [{
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Table_Sheet_Style"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Chart_Color"),
-                    cls: "line-title"
-                }, this.colorSelect]
-            },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+                    cls: "attr-names"
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.colorSelect]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Table_Style"),
+                    cls: "attr-names",
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.chartStyleGroup]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                })
+            }]
         });
 
         //格式和数量级
@@ -336,6 +380,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
@@ -356,6 +401,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
+            chart_style: this.chartStyleGroup.getValue()[0],
             x_axis_style: this.lYAxisStyle.getValue()[0],
             x_axis_number_level: this.numberLevellY.getValue()[0],
             x_axis_unit: this.LYUnit.getValue(),
@@ -373,6 +419,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
+        this.chartStyleGroup.setValue(v.chart_style);
         this.lYAxisStyle.setValue(v.x_axis_style);
         this.numberLevellY.setValue(v.x_axis_number_level);
         this.LYUnit.setValue(v.x_axis_unit);
