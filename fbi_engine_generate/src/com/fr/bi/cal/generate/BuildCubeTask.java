@@ -88,6 +88,12 @@ public class BuildCubeTask implements CubeTask {
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }finally {
+            try {
+                BIConfigureManagerCenter.getLogManager().createJSON(-999);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
         }
     }
