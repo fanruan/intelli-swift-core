@@ -3,6 +3,7 @@ package com.fr.bi.etl.analysis.data;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.etl.analysis.Constants;
@@ -20,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator, AnalysisCubeTableSource> implements AnalysisCubeTableSource {
 
+    @BIIgnoreField
     private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
 
     private int invalidIndex = -1;
