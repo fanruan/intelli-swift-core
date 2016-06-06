@@ -6,6 +6,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
@@ -14,6 +15,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONArray;
@@ -154,6 +156,29 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
+    public Set<AnalysisCubeTableSource> getSourceUsedAnalysisETLSource() {
+        HashSet<AnalysisCubeTableSource> set = new HashSet<AnalysisCubeTableSource>();
+        set.add(this);
+        for (BITargetAndDimension dim : widget.getViewDimensions()){
+            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
+                CubeTableSource source = dim.createTableKey().getTableSource();
+                if (source.getType() ==  Constants.TABLE_TYPE.BASE || source.getType() ==  Constants.TABLE_TYPE.ETL){
+                    set.addAll(((AnalysisCubeTableSource)source).getSourceUsedAnalysisETLSource());
+                }
+            }
+        }
+        for (BITargetAndDimension target : widget.getViewTargets()){
+            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
+                CubeTableSource source = target.createTableKey().getTableSource();
+                if (source.getType() ==  Constants.TABLE_TYPE.BASE || source.getType() ==  Constants.TABLE_TYPE.ETL){
+                    set.addAll(((AnalysisCubeTableSource)source).getSourceUsedAnalysisETLSource());
+                }
+            }
+        }
+        return set;
+    }
+
+    @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo =  super.createJSON();
         JSONObject widget = new JSONObject();
@@ -171,5 +196,24 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         jo.put("etlType", etlType);
         jo.put("operator", widget);
         return jo;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Set<CubeTableSource> getSourceUsedBaseSource() {
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+        for (BITargetAndDimension dim : widget.getViewDimensions()){
+            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
+                set.addAll(dim.createTableKey().getTableSource().getSourceUsedBaseSource());
+            }
+        }
+        for (BITargetAndDimension target : widget.getViewTargets()){
+            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
+                set.addAll(target.createTableKey().getTableSource().getSourceUsedBaseSource());
+            }
+        }
+        return set;
     }
 }

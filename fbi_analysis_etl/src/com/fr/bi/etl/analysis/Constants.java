@@ -19,15 +19,15 @@ public class Constants {
     }
 
     public static final class TABLE_TYPE {
-        public static final int TEMP = 0x1;
+        public static final int TEMP = 0x6;
 
-        public static final int BASE = 0x2;
+        public static final int BASE = 0x7;
 
-        public static final int ETL = 0x3;
+        public static final int ETL = 0x8;
 
-        public static final int USER_BASE = 0x4;
+        public static final int USER_BASE = 0x9;
 
-        public static final int USER_ETL = 0x5;
+        public static final int USER_ETL = 0xa;
 
     }
 
