@@ -50,7 +50,7 @@ public class TableIndexAdapter implements ICubeTableService {
     }
 
     @Override
-    public int getTableVersion(BIKey key) {
+    public long getTableVersion(BIKey key) {
         throw NULL_EXCEPTION;
     }
 

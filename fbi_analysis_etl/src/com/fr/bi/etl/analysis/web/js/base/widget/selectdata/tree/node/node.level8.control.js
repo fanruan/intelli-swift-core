@@ -36,10 +36,6 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         }, 2000);
     },
 
-    _createChecker : function (id, time) {
-       
-    },
-
     _showWarningPop : function (id) {
         var self = this;
         var warningPopover = BI.createWidget({
