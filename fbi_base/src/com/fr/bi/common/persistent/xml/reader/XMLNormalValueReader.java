@@ -1,17 +1,21 @@
 package com.fr.bi.common.persistent.xml.reader;
 
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.common.persistent.xml.BIXMLTag;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.xml.XMLableReader;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
  * Created by Connery on 2016/1/2.
  */
 public class XMLNormalValueReader extends XMLValueReader {
+    public static boolean IS_IGNORED_FIELD_USABLE = true;
+
     public XMLNormalValueReader(BIBeanXMLReaderWrapper beanWrapper, Map<String, BIBeanXMLReaderWrapper> generatedBean) {
         super(beanWrapper, generatedBean);
     }
@@ -23,6 +27,7 @@ public class XMLNormalValueReader extends XMLValueReader {
             String fieldClass = xmLableReader.getAttrAsString("class", "null");
             String uuid = xmLableReader.getAttrAsString(BIXMLTag.APPEND_INFO, "null");
             BIBeanXMLReaderWrapper wrapper;
+
             Object fieldValue = beanWrapper.getOriginalValue(fieldName);
             /**
              * 增加对数组类型的判断
@@ -54,11 +59,22 @@ public class XMLNormalValueReader extends XMLValueReader {
             }
             wrapper.generateReader(generatedBean).readValue(xmLableReader);
             if (wrapper.getBean() != null) {
-                beanWrapper.setOriginalValue(fieldName, wrapper.getBean());
+                Field field = beanWrapper.getField(fieldName);
+                if (needSetValue(field)) {
+                    beanWrapper.setOriginalValue(fieldName, wrapper.getBean());
+                }
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
 
+    }
+
+    private boolean needSetValue(Field field) {
+        return !isIgnore(field);
+    }
+
+    private boolean isIgnore(Field field) {
+        return IS_IGNORED_FIELD_USABLE && field.isAnnotationPresent(BIIgnoreField.class);
     }
 }
