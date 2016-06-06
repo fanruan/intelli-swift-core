@@ -23,7 +23,7 @@ public class BIVersionUtils {
      * @return int值
      */
     public static int createRelationVersionValue(ICubeDataLoader loader, List<? extends BITableSourceRelation> relations) {
-        List<Integer> res = new ArrayList<Integer>();
+        List<Long> res = new ArrayList<Long>();
         ICubeFieldSource start = getRelationPrimField(relations);
         if (start == null) {
             return 0;
