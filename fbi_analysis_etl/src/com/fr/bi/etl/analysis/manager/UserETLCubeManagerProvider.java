@@ -29,7 +29,7 @@ public interface UserETLCubeManagerProvider extends Release{
 	 */
 	String getCubePath(String md5);
 
-    boolean isCubeGenerating(String md5);
+    boolean checkVersion(AnalysisCubeTableSource source, BIUser user);
 
     void envChanged();
 

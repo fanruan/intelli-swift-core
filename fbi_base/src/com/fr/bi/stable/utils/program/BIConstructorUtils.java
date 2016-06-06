@@ -6,10 +6,7 @@ import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import sun.misc.Unsafe;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.Map;
 
 /**
@@ -245,5 +242,13 @@ public class BIConstructorUtils {
         f.setAccessible(true);
         Unsafe unsafe = (Unsafe) f.get(null);
         return (T) unsafe.allocateInstance(clazz);
+    }
+
+    public static Object constructArrayObject(Class clazz, int size) {
+        if ( size >= 0) {
+            return Array.newInstance(clazz, size);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
     }
 }

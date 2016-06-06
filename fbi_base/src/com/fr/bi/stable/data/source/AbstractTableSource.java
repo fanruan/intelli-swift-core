@@ -147,6 +147,13 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
+    public Set<CubeTableSource> getSourceUsedBaseSource() {
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+        set.add(this);
+        return set;
+    }
+
+    @Override
     public int getType() {
         return 0;
     }

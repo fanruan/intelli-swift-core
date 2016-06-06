@@ -77,7 +77,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         SingleUserETLTableCubeManager manager = threadMap.get(md5Key);
         if(manager == null){
             synchronized (threadMap) {
-                manager = threadMap.get(source.fetchObjectCore().getIDValue());
+                manager = threadMap.get(md5Key);
                 if(manager == null){
                     manager = new SingleUserETLTableCubeManager(ut);
                     threadMap.put(md5Key, manager);
@@ -202,8 +202,8 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 	}
 
     @Override
-    public boolean isCubeGenerating(String md5) {
-        return threadMap.containsKey(md5) && threadMap.get(md5).isCubeGenerating();
+    public boolean checkVersion(AnalysisCubeTableSource source, BIUser user) {
+        return createManager(source, user).checkVersion();
     }
 
 }

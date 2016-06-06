@@ -351,4 +351,17 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
     public List<S> getParents() {
         return parents;
     }
+
+    /**
+     * @return
+
+     */
+    @Override
+    public Set<CubeTableSource> getSourceUsedBaseSource() {
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+        for (CubeTableSource source : getParents()){
+            set.addAll(source.getSourceUsedBaseSource());
+        }
+        return set;
+    }
 }
