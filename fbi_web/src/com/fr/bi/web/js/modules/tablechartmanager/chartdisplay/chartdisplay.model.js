@@ -97,11 +97,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 array[0].push(data[idx]);
             }
             if(BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
-                array.length === 1 && array.push([]);
+                while (array.length < 2){array.push([]);}
                 array[1].push(data[idx]);
             }
             if(BI.has(view, BICst.REGION.TARGET3) && BI.contains(view[BICst.REGION.TARGET3], tId)){
-                array.length === 2 && array.push([]);
+                while (array.length < 3){array.push([]);}
                 array[2].push(data[idx]);
             }
         });
@@ -397,9 +397,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     }
                     count++;
                 });
-                if(BI.isNotEmptyArray(t)){
-                    types.push(t);
-                }
+                types.push(t);
             });
             if(BI.isEmptyArray(types)){
                 types.push([type]);

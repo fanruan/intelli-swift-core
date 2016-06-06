@@ -10,7 +10,7 @@ BI.extend(BIDezi, {
             },
             index: function () {
                 BI.Factory.createView("", BIDezi.Views.get("/"), BI.extend({}, options, BIDezi.Models.get("")), {
-                    element: "body"
+                    element: "#wrapper"
                 }, null);
             }
         });

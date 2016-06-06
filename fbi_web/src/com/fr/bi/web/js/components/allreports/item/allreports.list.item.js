@@ -22,25 +22,31 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
             roles: o.roles,
             users: o.users
         });
-        if(this.status !== BICst.REPORT_STATUS.NORMAL) {
+        if(this.status === BICst.REPORT_STATUS.APPLYING) {
             this.hangoutIcon = BI.createWidget({
-                type: "bi.icon_change_button",
-                cls: "normal-mark",
+                type: "bi.icon_button",
+                cls: "report-apply-hangout-ing-font normal-mark",
+                title: BI.i18nText("BI-Hangout_Now"),
                 invisible: true,
-                stopPropagation: true
+                stopPropagation: true,
+                width: 40,
+                height: 40,
+                iconWidth: 16,
+                iconHeight: 16
             });
-            this.hangoutIcon.on(BI.IconChangeButton.EVENT_CHANGE, function () {
+            this.hangoutIcon.on(BI.IconButton.EVENT_CHANGE, function () {
                 self._onClickHangout();
             });
-            this.hangoutIcon.setVisible(false);
-            
+        }
+
+        if(this.status !== BICst.REPORT_STATUS.NORMAL) {
             this.markIcon = BI.createWidget({
                 type: "bi.icon_change_button",
                 cls: "mark-icon",
                 width: 12,
                 height: 12
             });
-            this._refreshHangout();
+            this._refreshMarkIcon();
         }
 
         var userName = this.model.getUserNameByUserId(report.createBy);
@@ -62,6 +68,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
             popup: {
                 el: {
                     type: "bi.vertical",
+                    cls: "info-card",
                     items: [{
                         type: "bi.label",
                         text: BI.i18nText("BI-Users") + ": " + userName,
@@ -98,9 +105,10 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
         infoIcon.setVisible(false);
 
         var timeText = BI.createWidget({
-            type: 'bi.label',
+            type: "bi.label",
             cls: "template-file-item-date",
-            text: FR.date2Str(new Date(report.lastModify), "yyyy.MM.dd HH:mm:ss")
+            text: FR.date2Str(new Date(report.lastModify), "yyyy.MM.dd HH:mm:ss"),
+            height: 40
         });
 
         this.element.hover(function () {
@@ -120,7 +128,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
         this.reportName.on(BI.TextButton.EVENT_CHANGE, function () {
             FS.tabPane.addItem({
                 title: report.text,
-                src: FR.servletURL + report.buildUrl + "&edit=_bi_edit_"
+                src: FR.servletURL + report.buildUrl
             });
         });
 
@@ -155,43 +163,50 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
                     width: "fill"
                 }, {
                     el: {
-                        type: "bi.left_right_vertical_adapt",
-                        items: {
-                            left: [this.hangoutIcon || BI.createWidget(), infoIcon],
-                            right: [timeText]
-                        },
-                        llgap: 20,
-                        rrgap: 20
+                        type: "bi.absolute",
+                        items: [{
+                            el: this.hangoutIcon || BI.createWidget(),
+                            top: 0,
+                            left: 0
+                        }, {
+                            el: infoIcon,
+                            top: 0,
+                            left: 60
+                        }, {
+                            el: timeText,
+                            top: 0,
+                            right: 10
+                        }]
                     },
                     width: 260
                 }]
         });
     },
 
+    _refreshMarkIcon: function(){
+        if(this.status === BICst.REPORT_STATUS.APPLYING) {
+            this.markIcon.setIcon("report-apply-hangout-ing-font");
+            this.markIcon.setTitle(BI.i18nText("BI-Report_Hangout_Applying"));
+            return;
+        }
+        this.markIcon.setIcon("report-hangout-font");
+        this.markIcon.setTitle(BI.i18nText("BI-Hangouted"));
+    },
+
     _onClickHangout: function(){
+        var self = this, o = this.options;
         BI.Popovers.remove(this._constant.PATH_CHOOSER);
         var pathChooser = BI.createWidget({
             type: "bi.report_hangout_path_chooser",
             reportName: this.options.report.text
         });
         pathChooser.on(BI.ReportHangoutPathChooser.EVENT_SAVE, function(){
-             
+            o.onHangout(this.getValue());
+            self.hangoutIcon.destroy();
+            self.status = BICst.REPORT_STATUS.HANGOUT;
+            self._refreshMarkIcon();
         });
         BI.Popovers.create(this._constant.PATH_CHOOSER, pathChooser, {width: 400, height: 340}).open(this._constant.PATH_CHOOSER);
-    },
-
-    _refreshHangout: function(){
-        if(this.status === BICst.REPORT_STATUS.APPLYING) {
-            this.hangoutIcon.setIcon("report-apply-hangout-ing-font");
-            this.markIcon.setIcon("report-apply-hangout-ing-font");
-            this.hangoutIcon.setTitle(BI.i18nText("BI-Hangout_Now"));
-            this.markIcon.setTitle(BI.i18nText("BI-Report_Hangout_Applying"));
-            return;
-        }
-        this.hangoutIcon.setIcon("report-cancel-hangout-font");
-        this.hangoutIcon.setTitle(BI.i18nText("BI-Cancel_Hangout"));
-        this.markIcon.setIcon("report-hangout-font");
-        this.markIcon.setTitle(BI.i18nText("BI-Hangouted"));
     }
 });
 $.shortcut("bi.all_reports_list_item", BI.AllReportsListItem);

@@ -1,9 +1,7 @@
 package com.fr.bi.web.report.services;
 
-import com.fr.bi.fs.BIDAOUtils;
-import com.fr.bi.fs.BIReportNode;
-import com.fr.bi.fs.BITemplateFolderNode;
-import com.fr.bi.fs.HSQLBITemplateFolderDAO;
+import com.fr.bi.fs.*;
+import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -42,14 +40,19 @@ public class BITemplateFolderDeleteAction extends ActionNoSessionCMD {
                 JSONArray reports = jo.getJSONArray("reports");
                 JSONArray folders = jo.getJSONArray("folders");
                 for(int i = 0; i < reports.length(); i++){
-                    BIDAOUtils.deleteBIReportById(userId, reports.optLong(i));
+                    long reportId = reports.optLong(i);
+                    BIDAOUtils.deleteBIReportById(userId, reportId);
+                    //删除的时候同时清一下share
+                    UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).removeSharedByReport(reportId, userId);
                 }
                 for(int i = 0; i < folders.length(); i++){
                     HSQLBITemplateFolderDAO.getInstance().deleteByFolderID(folders.getString(i));
                 }
                 break;
             case DELETE_REPORT:
-                BIDAOUtils.deleteBIReportById(userId, Long.parseLong(id));
+                long reportId = Long.parseLong(id);
+                BIDAOUtils.deleteBIReportById(userId, reportId);
+                UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).removeSharedByReport(reportId, userId);
                 break;
         }
     }

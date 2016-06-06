@@ -288,7 +288,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
             if (BI.isNull(f)){
                 msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
                 return true;
-            } else if (dimension.group.type !== BICst.GROUP.ID_GROUP &&  f.field_type !== dimension._src.field_type){
+            } else if ((BI.isNull(dimension.group) || dimension.group.type !== BICst.GROUP.ID_GROUP) &&  f.field_type !== dimension._src.field_type){
                 msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
                 return true;
             }

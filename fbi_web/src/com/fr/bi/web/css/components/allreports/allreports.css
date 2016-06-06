@@ -16,7 +16,7 @@
   color: #1a1a1a;
   font-size: 14px;
 }
-.bi-all-reports .push-bar .report-count {
+.bi-all-reports .push-bar .reports-count {
   color: #009de3;
   font-size: 14px;
 }
@@ -35,4 +35,10 @@
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
+}
+.bi-all-reports .all-reports-view .view-button {
+  background: #d4dadd;
+}
+.bi-all-reports .all-reports-view .view-button.active {
+  background: #ffffff;
 }

@@ -20,7 +20,7 @@ BI.extend(BIConf, {
             },
             index: function () {
                 BI.Factory.createView("", BIConf.Views.get(""), BIConf.Models.get(""), {
-                    element: "body"
+                    element: "#wrapper"
                 }, null);
             },
             tasklist: function (action) {

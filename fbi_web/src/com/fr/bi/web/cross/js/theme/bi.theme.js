@@ -45,32 +45,37 @@ FS.THEME.config4navigation.onAfterInit = function () {
         BI.Popovers.create(id, newAnalysisBox, {width: 400, height: 320}).open(id);
         newAnalysisBox.setTemplateNameFocus();
     });
-    var dataConfig = BI.createWidget({
-        type: "bi.icon_text_item",
-        cls: "data-config-font bi-data-config-button",
-        text: BI.i18nText("BI-Data_Setting"),
-        height: 60,
-        width: 120,
-        iconWidth: 20,
-        iconHeight: 20
-    });
-    dataConfig.on(BI.IconTextItem.EVENT_CHANGE, function () {
-        FS.tabPane.addItem({
-            title: BI.i18nText('BI-Data_Setting'),
-            src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane'
-        });
-    });
-    header.addItems([{
+    header.addItem({
         el: newAnalysis,
-        right: 340,
-        top: 0,
-        bottom: 0
-    }, {
-        el: dataConfig,
         right: 220,
         top: 0,
         bottom: 0
-    }]);
+    });
+    if(FS.config.isAdmin) {
+        var dataConfig = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "data-config-font bi-data-config-button",
+            text: BI.i18nText("BI-Data_Setting"),
+            height: 60,
+            width: 120,
+            iconWidth: 20,
+            iconHeight: 20
+        });
+        dataConfig.on(BI.IconTextItem.EVENT_CHANGE, function () {
+            FS.tabPane.addItem({
+                title: BI.i18nText('BI-Data_Setting'),
+                src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane'
+            });
+        });
+        header.addItem({
+            el: dataConfig,
+            right: 220,
+            top: 0,
+            bottom: 0
+        });
+        header.attr("items")[0].right = 340;
+        header.resize();
+    }
 };
 
 /**
