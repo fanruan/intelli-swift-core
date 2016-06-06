@@ -103,7 +103,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
     private Set<CubeTableSource> getAllTableSource() {
         Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
         Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(-999);
-        HashSet<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
         for (IBusinessPackageGetterService pack : packs) {
             Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
             while (tIt.hasNext()) {
