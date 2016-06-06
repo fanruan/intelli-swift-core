@@ -167,7 +167,7 @@ public class BIMultiTableIndex implements ICubeTableService {
     }
 
     @Override
-    public int getTableVersion(BIKey key) {
+    public long getTableVersion(BIKey key) {
         return childs.get(key).getTableVersion(key);
     }
 
