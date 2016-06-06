@@ -57,6 +57,16 @@ body {
   -moz-outline: 0 none;
   outline: 0 none;
 }
+#wrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
 a {
   outline: none;
   text-decoration: none;
