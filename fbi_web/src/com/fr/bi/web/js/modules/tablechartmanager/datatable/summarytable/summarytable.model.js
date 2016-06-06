@@ -98,17 +98,17 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     isShowNumber: function () {
         return this.showNumber;
     },
-    
+
     getThemeColor: function(){
         return this.themeColor;
     },
-    
+
     getTableForm: function(){
-        return this.tableForm;  
+        return this.tableForm;
     },
-    
+
     getTableStyle: function(){
-        return this.tableStyle;  
+        return this.tableStyle;
     },
 
     setPageOperator: function (pageOperator) {
@@ -613,17 +613,17 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         type: "bi.target_body_normal_cell",
                         text: v,
                         dId: tId,
-                        cls: "summary-cell last"
+                        cls: "summary-cell"
                     });
                 });
-                // item.children.push({
-                //     type: "bi.page_table_cell",
-                //     text: this.data.s[0],
-                //     tag: BI.UUID(),
-                //     isSum: true,
-                //     values: outerValues
-                // })
-                item.values = outerValues;
+                item.children.push({
+                    type: "bi.page_table_cell",
+                    text: this.data.s[0],
+                    tag: BI.UUID(),
+                    isSum: true,
+                    values: outerValues
+                });
+                item.values = item;
             }
         }
         this.items = [item];
@@ -708,8 +708,12 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     outerValues.push({
                         type: "bi.target_body_normal_cell",
                         text: v,
-                        dId: tId
+                        dId: tId,
+                        cls: "summary-cell last"
                     });
+                });
+                BI.each(sums, function(i, sum){
+                    sums[i].cls = "summary-cell last"
                 });
                 sums = sums.concat(outerValues);
             }
@@ -844,7 +848,11 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             if (BI.isNull(item.children)) {
                 BI.each(self.targetIds, function (i, tId) {
                     crossHeaderItems.push(item);
-                })
+                });
+                //无指标是否也应当直接push进去 bug 95334
+                if(self.targetIds.length === 0) {
+                    crossHeaderItems.push(item);
+                }
             } else {
                 crossHeaderItems.push(item);
             }

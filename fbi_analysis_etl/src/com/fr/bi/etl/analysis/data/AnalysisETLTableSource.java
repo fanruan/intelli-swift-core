@@ -3,6 +3,7 @@ package com.fr.bi.etl.analysis.data;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.etl.analysis.Constants;
@@ -10,9 +11,7 @@ import com.fr.bi.stable.data.db.*;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -20,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator, AnalysisCubeTableSource> implements AnalysisCubeTableSource {
 
+    @BIIgnoreField
     private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
 
     private int invalidIndex = -1;
@@ -27,21 +27,20 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     private String name;
     @BICoreField
     private List<AnalysisETLSourceField> fieldList;
-//
-//    @Override
-//    public IPersistentTable getPersistentTable() {
-//        if (dbTable == null) {
-//            dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
-//            for (AnalysisETLSourceField c : fieldList){
-//                dbTable.addColumn(new PersistentField(c.getFieldName(), c.getFieldType()));
-//            }
-//        }
-//        return dbTable;
-//    }
 
     @Override
     public List<AnalysisETLSourceField> getFieldsList() {
         return fieldList;
+    }
+
+    @Override
+    public Set<AnalysisCubeTableSource> getSourceUsedAnalysisETLSource() {
+        Set<AnalysisCubeTableSource> set = new HashSet<AnalysisCubeTableSource>();
+        for (AnalysisCubeTableSource source : getParents()){
+            set.add(source);
+            set.addAll(source.getSourceUsedAnalysisETLSource());
+        }
+        return set;
     }
 
     @Override

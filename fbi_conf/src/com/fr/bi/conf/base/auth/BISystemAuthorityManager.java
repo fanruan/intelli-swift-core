@@ -42,6 +42,24 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
     }
 
     @Override
+    public List<BIPackageID> getAuthPackagesByUser(long userId) {
+        try {
+            return getValue(UserControl.getInstance().getSuperManagerID()).getAuthPackagesByUser(userId);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasAuthPackageByUser(long userId) {
+        return UserControl.getInstance().getSuperManagerID() == userId ||
+                (getAuthPackagesByUser(userId) != null &&
+                        getAuthPackagesByUser(userId).size() > 0);
+    }
+
+
+    @Override
     public JSONObject createJSON(long userId) throws Exception {
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).createJSON(userId);
@@ -65,7 +83,7 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
         super.persistUserData(userId);
     }
 
-    public Map<BIPackageID, List<BIPackageAuthority>> getPackagesAuth(long userId){
+    public Map<BIPackageID, List<BIPackageAuthority>> getPackagesAuth(long userId) {
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getPackagesAuth(userId);
         } catch (BIKeyAbsentException e) {

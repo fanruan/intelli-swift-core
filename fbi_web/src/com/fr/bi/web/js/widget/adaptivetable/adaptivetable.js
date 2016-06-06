@@ -76,6 +76,8 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
+            self._initRegionSize();
+            self.table.resize();
             self._resizeHeader();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
         });
@@ -114,16 +116,6 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             self._resizeHeader();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
-
-        if (o.isNeedFreeze === true) {
-            BI.nextTick(function () {
-                if (self.element.is(":visible")) {
-                    self._initRegionSize();
-                    self.table.resize();
-                    self._resizeHeader();
-                }
-            });
-        }
     },
 
     _initRegionSize: function () {
@@ -252,6 +244,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     setColumnSize: function (columnSize) {
         this.table.setColumnSize(columnSize);
+        this._resizeRegion();
         this._resizeHeader();
     },
 
@@ -265,6 +258,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     setHeaderColumnSize: function (columnSize) {
         this.table.setHeaderColumnSize(columnSize);
+        this._resizeRegion();
         this._resizeHeader();
     },
 

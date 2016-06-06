@@ -40,6 +40,26 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
+        //风格——1、2、3
+        this.chartStyleGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
         var tableStyle = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
@@ -59,6 +79,17 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Table_Style"),
+                    cls: "attr-names",
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.chartStyleGroup]
                     },
                     lgap: this.constant.SIMPLE_H_GAP
                 }], {
@@ -284,6 +315,29 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
+        //图表缩放滚轮
+        this.showZoom = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Zoom"),
+            width: 140
+        });
+
+        this.showZoom.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
+        //空值连续nullContinue
+        this.nullContinue = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Null_Continue"),
+            invisible: BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.COMBINE_CHART,
+            width: 115
+        });
+
+        this.nullContinue.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+        });
+
         var showElement = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
@@ -313,6 +367,12 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.gridLine]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.showZoom]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.nullContinue]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -492,6 +552,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.rYAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
@@ -511,6 +572,8 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
+        this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
+        this.nullContinue.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -521,6 +584,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
+            chart_style: this.chartStyleGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             right_y_axis_style: this.rYAxisStyle.getValue()[0],
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
@@ -539,13 +603,16 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
             show_data_table: this.showDataTable.isSelected(),
-            show_grid_line: this.gridLine.isSelected()
+            show_grid_line: this.gridLine.isSelected(),
+            show_zoom: this.showZoom.isSelected(),
+            null_continue: this.nullContinue.isSelected()
         }
     },
 
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
+        this.chartStyleGroup.setValue(v.chart_style);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.rYAxisStyle.setValue(v.right_y_axis_style);
         this.numberLevellY.setValue(v.left_y_axis_number_level);
@@ -565,6 +632,8 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.showDataLabel.setSelected(v.show_data_label);
         this.showDataTable.setSelected(v.show_data_table);
         this.gridLine.setSelected(v.show_grid_line);
+        this.showZoom.setSelected(v.show_zoom);
+        this.nullContinue.setSelected(v.null_continue);
     }
 });
 BI.ChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
