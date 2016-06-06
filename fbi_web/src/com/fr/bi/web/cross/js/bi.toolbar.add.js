@@ -32,7 +32,7 @@ $.extend(FS.Plugin.ReportManagerAddon, {
                         new BI.BIReportDialog({
                             onSave: function(data){
                                 data.parentId = self.DIR.dirTabletree.getSelectedNodes()[0].id.substr(1);
-                                self.DIR._addOrEditBI(data);
+                                FS.ExtendBI.addOrEditBI(data);
                             }
                         });
                     }
