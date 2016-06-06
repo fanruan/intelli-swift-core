@@ -249,7 +249,7 @@ public class BICoreModule extends AbstractModule {
      *
      */
     private void registerTableAddColumn() {
-        addTableColumn4NewConnection(BITableMapper.BI_REPORT_NODE.TABLE_NAME, new Column(BITableMapper.BI_REPORT_NODE.FIELD_STATE, Types.INTEGER, new ColumnSize(10)));
+        addTableColumn4NewConnection(BITableMapper.BI_REPORT_NODE.TABLE_NAME, new Column(BITableMapper.BI_REPORT_NODE.FIELD_STATUS, Types.INTEGER, new ColumnSize(10)));
     }
 
     private static void addTableColumn4NewConnection(String tableName, Column column) {

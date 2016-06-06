@@ -49,10 +49,9 @@ public class BuildCubeTask implements CubeTask {
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
 
-    
 
-    public BuildCubeTask(BIUser biUser,CubeBuildStuff cubeBuildStuff) {
-        this.cubeBuildStuff=cubeBuildStuff;
+    public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
+        this.cubeBuildStuff = cubeBuildStuff;
         this.biUser = biUser;
 
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
@@ -60,8 +59,6 @@ public class BuildCubeTask implements CubeTask {
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
 
     }
-
-    
 
 
     @Override
@@ -93,10 +90,10 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void run() {
-        
+
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-        
-        
+
+
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
         operationManager.initialWatcher();
 
@@ -105,6 +102,7 @@ public class BuildCubeTask implements CubeTask {
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getRelationPaths());
         manager.registerTableRelationPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
+        operationManager.setVersionMap(cubeBuildStuff.getVersions());
         operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
         operationManager.generateRelationBuilder(cubeBuildStuff.getTableSourceRelationSet());
         operationManager.generateTableRelationPath(relationPathSet);

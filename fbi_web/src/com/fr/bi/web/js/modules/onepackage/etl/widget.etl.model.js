@@ -97,6 +97,67 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.relations = relations;
     },
 
+    //根据etlValue为会改变关联的etl操作设置关联
+    setRelationsByETLValue: function (etl) {
+        var self = this;
+        var etlValue = etl.etl_value;
+        var relations = this.getRelations();
+        var primKeyMap = relations["primKeyMap"], foreignKeyMap = relations["foreignKeyMap"];
+        var connectionSet = relations["connectionSet"];
+        if(etl.etl_type === "circle"){
+            //设置1:N的关联
+            BI.each(etlValue.floors, function (idx, floor) {
+                var primaryId = getFieldIdByFieldName(etlValue.id_field_name);
+                var foreignId = getFieldIdByFieldName(floor.name);
+                connectionSet.push({
+                    primaryKey: {
+                        field_id: primaryId
+                    },
+                    foreignKey: {
+                        field_id: foreignId
+                    }
+                });
+                if(!primKeyMap[primaryId]){
+                    primKeyMap[primaryId] = [];
+                }
+                primKeyMap[primaryId].push({
+                    primaryKey: {
+                        field_id: primaryId
+                    },
+                    foreignKey: {
+                        field_id: foreignId
+                    }
+                });
+                if(!foreignKeyMap[foreignId]){
+                    foreignKeyMap[foreignId] = [];
+                }
+                foreignKeyMap[foreignId].push({
+                    primaryKey: {
+                        field_id: primaryId
+                    },
+                    foreignKey: {
+                        field_id: foreignId
+                    }
+                });
+            });
+        }
+        this.setRelations(relations);
+
+        function getFieldIdByFieldName(field_name){
+            var id = null;
+            BI.find(self.fields, function(idx, fieldArray){
+                return BI.find(fieldArray, function(i, field){
+                    if(field.field_name === field_name){
+                        id = field.id;
+                        return true;
+                    }
+                    return false;
+                });
+            });
+            return id;
+        }
+    },
+
     getTranslations: function () {
         return BI.deepClone(this.translations);
     },
@@ -249,15 +310,15 @@ BI.ETLModel = BI.inherit(FR.OB, {
                 self._addId2Tables(tables[i].tables, ids);
                 tables[i] = BI.extend(table, {
                     id: id,
-                    tables: tables[i].tables,
-                    translations: self.getTranslations(),
-                    relations: self.getRelations()
+                    tables: tables[i].tables
+                    //translations: self.getTranslations(),
+                    //relations: self.getRelations()
                 });
             } else {
                 tables[i] = BI.extend(table, {
-                    id: id,
-                    translations: self.getTranslations(),
-                    relations: self.getRelations()
+                    id: id
+                    //translations: self.getTranslations(),
+                    //relations: self.getRelations()
                 });
             }
             ids[id] = tables[i];
@@ -273,15 +334,15 @@ BI.ETLModel = BI.inherit(FR.OB, {
                 self._addUUID2Tables(tables[i].tables, ids);
                 tables[i] = BI.extend(table, {
                     id: id,
-                    tables: tables[i].tables,
-                    translations: self.getTranslations(),
-                    relations: self.getRelations()
+                    tables: tables[i].tables
+                    //translations: self.getTranslations(),
+                    //relations: self.getRelations()
                 });
             } else {
                 tables[i] = BI.extend(table, {
-                    id: id,
-                    translations: self.getTranslations(),
-                    relations: self.getRelations()
+                    id: id
+                    //translations: self.getTranslations(),
+                    //relations: self.getRelations()
                 });
             }
             ids[id] = tables[i];

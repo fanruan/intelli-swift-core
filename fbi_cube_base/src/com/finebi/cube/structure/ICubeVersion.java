@@ -8,9 +8,9 @@ import com.fr.bi.common.inter.Release;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeVersion extends Release{
-    int getVersion();
+public interface ICubeVersion extends Release {
+    long getVersion();
 
-    void addVersion(int version);
+    void addVersion(long version);
 
 }

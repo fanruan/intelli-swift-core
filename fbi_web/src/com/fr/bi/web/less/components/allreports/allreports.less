@@ -12,7 +12,7 @@
       color: @color-bi-text-black;
       font-size: @font-size-14;
     }
-    & .report-count{
+    & .reports-count{
       color: @color-bi-text-highlight;
       font-size: @font-size-14;
     }
@@ -28,5 +28,13 @@
     background: @color-bi-background-default;
     border: 1px solid @color-bi-border-normal;
     .border-radius(2px);
+  }
+  & .all-reports-view{
+    & .view-button{
+      background: @color-bi-background-dark;
+      &.active{
+        background: @color-bi-background-default;
+      }
+    }
   }
 }

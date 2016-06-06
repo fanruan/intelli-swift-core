@@ -104,25 +104,22 @@ public class BICubeTablePropertyTest extends TestCase {
 
     }
 
-    public void versionAvailable() {
+    public void testVersionAvailable() {
         synchronized (this.getClass()) {
 
             try {
-                assertFalse(property.isRowCountReaderAvailable());
-                assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
-                int version = 10;
-                property.recordTableGenerateVersion(version);
-                assertFalse(property.isRowCountReaderAvailable());
-                assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertTrue(property.isVersionWriterAvailable());
-                assertEquals(property.getTableVersion(), version);
-                assertFalse(property.isRowCountReaderAvailable());
-                assertFalse(property.isRowCountWriterAvailable());
-                assertTrue(property.isVersionReaderAvailable());
-                assertTrue(property.isVersionWriterAvailable());
+
+                long version = 10;
+                property.addVersion(version);
+                assertEquals(version,property.getVersion());
+
+                version = 100;
+                property.addVersion(version);
+                assertEquals(version,property.getVersion());
+
+                version = 1;
+                property.addVersion(version);
+                assertEquals(version,property.getVersion());
             } catch (Exception e) {
                 assertFalse(true);
             } finally {
@@ -146,8 +143,6 @@ public class BICubeTablePropertyTest extends TestCase {
             lastTimeAvailable();
             setUp();
 
-            versionAvailable();
-            setUp();
 
             rowCountReadAvailable();
         } catch (Exception e) {
@@ -161,8 +156,6 @@ public class BICubeTablePropertyTest extends TestCase {
             synchronized (this.getClass()) {
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertFalse(property.isTimeStampReaderAvailable());
                 assertFalse(property.isTimeStampWriterAvailable());
 
@@ -171,8 +164,6 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertFalse(property.isTimeStampReaderAvailable());
                 assertTrue(property.isTimeStampWriterAvailable());
 
@@ -180,8 +171,6 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertTrue(property.isTimeStampReaderAvailable());
                 assertTrue(property.isTimeStampWriterAvailable());
             }
@@ -203,8 +192,6 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertFalse(property.isTimeStampReaderAvailable());
                 assertFalse(property.isTimeStampWriterAvailable());
                 assertFalse(property.isFieldReaderAvailable());
@@ -218,8 +205,6 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertFalse(property.isTimeStampReaderAvailable());
                 assertFalse(property.isTimeStampWriterAvailable());
                 assertFalse(property.isFieldReaderAvailable());
@@ -231,8 +216,6 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertFalse(property.isTimeStampReaderAvailable());
                 assertFalse(property.isTimeStampWriterAvailable());
                 assertTrue(property.isFieldReaderAvailable());
@@ -257,8 +240,6 @@ public class BICubeTablePropertyTest extends TestCase {
                 setUp();
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertFalse(property.isTimeStampReaderAvailable());
                 assertFalse(property.isTimeStampWriterAvailable());
                 assertFalse(property.isFieldWriterAvailable());
@@ -271,8 +252,6 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertFalse(property.isTimeStampReaderAvailable());
                 assertFalse(property.isTimeStampWriterAvailable());
                 assertTrue(property.isFieldReaderAvailable());
@@ -298,8 +277,6 @@ public class BICubeTablePropertyTest extends TestCase {
                 setUp();
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertFalse(property.isTimeStampReaderAvailable());
                 assertFalse(property.isTimeStampWriterAvailable());
                 assertFalse(property.isFieldWriterAvailable());
@@ -313,8 +290,6 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertFalse(property.isVersionReaderAvailable());
-                assertFalse(property.isVersionWriterAvailable());
                 assertFalse(property.isTimeStampReaderAvailable());
                 assertFalse(property.isTimeStampWriterAvailable());
                 assertTrue(property.isFieldReaderAvailable());

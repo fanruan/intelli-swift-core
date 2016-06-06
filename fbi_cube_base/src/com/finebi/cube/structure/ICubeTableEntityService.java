@@ -25,7 +25,6 @@ public interface ICubeTableEntityService extends ICubeTableEntityGetterService {
 
     void recordTableStructure(List<ICubeFieldSource> fields);
 
-    void recordTableGenerateVersion(int version);
 
     void recordRowCount(long rowCount);
 

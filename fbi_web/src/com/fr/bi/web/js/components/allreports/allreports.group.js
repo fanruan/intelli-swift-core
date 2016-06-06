@@ -61,29 +61,6 @@ BI.AllReportsGroup = BI.inherit(BI.Widget, {
             self._populateByPage();
         });
 
-        var viewType = BI.createWidget({
-            type: "bi.segment",
-            cls: "folder-report-view",
-            items: BI.createItems([{
-                cls: "folder-list-view folder-view",
-                value: BI.AllReports.SHOW_LIST
-            }, {
-                cls: "folder-card-view folder-view",
-                value: BI.AllReports.SHOW_CARD
-            }], {
-                type: "bi.icon_button",
-                width: 25,
-                height: 25
-            }),
-            width: 60,
-            height: 25
-        });
-        viewType.on(BI.Segment.EVENT_CHANGE, function(v){
-            self.viewType = v;
-            self._onViewTypeChange();
-        });
-        viewType.setValue(BI.AllReports.SHOW_LIST);
-
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -97,15 +74,12 @@ BI.AllReportsGroup = BI.inherit(BI.Widget, {
                 el: this.pager,
                 right: 30,
                 bottom: 0
-            }, {
-                el: viewType,
-                left: 30,
-                bottom: 20
             }]
         })
     },
 
-    _onViewTypeChange: function () {
+    onViewTypeChange: function (v) {
+        this.viewType = v;
         switch (this.viewType) {
             case BI.AllReports.SHOW_LIST:
                 this.reportGroup.attr("layouts", [{
@@ -134,8 +108,17 @@ BI.AllReportsGroup = BI.inherit(BI.Widget, {
                 type: self.viewType === BI.AllReports.SHOW_LIST ? "bi.all_reports_list_item" : "bi.all_reports_card_item",
                 report: report,
                 users: self.users,
-                roles: self.roles
-            })
+                roles: self.roles,
+                onHangout: function(data){
+                    self.fireEvent(BI.AllReportsGroup.EVENT_HANGOUT, report, data);
+                }
+            });
+        });
+        items = BI.sortBy(items, function(i, item){
+            return item.report.lastModify
+        }).reverse();
+        items = BI.sortBy(items, function(i, item){
+            return item.report.status;
         });
         this.reportGroup.populate(items);
     },
@@ -151,4 +134,5 @@ BI.AllReportsGroup = BI.inherit(BI.Widget, {
         
     }
 });
+BI.AllReportsGroup.EVENT_HANGOUT = "EVENT_HANGOUT";
 $.shortcut("bi.all_reports_group", BI.AllReportsGroup);

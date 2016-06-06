@@ -78,6 +78,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
             self.name.setValue();
             self.status.setValue();
             self.lastModify.setValue();
+            self.fireEvent(BI.AllReportsFilter.EVENT_CHANGE, true);
         });
         this.filterPane = BI.createWidget({
             type: "bi.absolute",
@@ -323,22 +324,22 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
     _statusCreator: function (options, callback) {
         var items = [{
             text: BI.i18nText("BI-Report_Hangout_Applying"),
-            value: this._constant.REPORT_STATUS_APPLYING,
+            value: BICst.REPORT_STATUS.APPLYING,
             title: BI.i18nText("BI-Report_Hangout_Applying")
         }, {
             text: BI.i18nText("BI-Not_Apply_Hangout"),
-            value: this._constant.REPORT_STATUS_NORMAL,
+            value: BICst.REPORT_STATUS.NORMAL,
             title: BI.i18nText("BI-Not_Apply_Hangout")
         }, {
             text: BI.i18nText("BI-Hangouted"),
-            value: this._constant.REPORT_STATUS_HANGOUT,
+            value: BICst.REPORT_STATUS.HANGOUT,
             title: BI.i18nText("BI-Hangouted")
         }];
         callback(items);
     },
 
     getValue: function () {
-        var sDepart = this.depart.getValue(), sRole = this.role.getValue, sUser = this.name.getValue(), sStatus = this.status.getValue();
+        var sDepart = this.depart.getValue(), sRole = this.role.getValue(), sUser = this.name.getValue(), sStatus = this.status.getValue();
         var sDepartType = sDepart.type || BI.Selection.Multi,
             sRoleType = sRole.type || BI.Selection.Multi,
             sUserType = sUser.type || BI.Selection.Multi,
