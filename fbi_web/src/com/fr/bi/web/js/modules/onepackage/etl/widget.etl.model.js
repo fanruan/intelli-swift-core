@@ -54,7 +54,40 @@ BI.ETLModel = BI.inherit(FR.OB, {
                 self.allFields[field.id] = field;
             })
         });
+        removeRelationsOfNotExistFields();
         this.fields = fields;
+
+        function removeRelationsOfNotExistFields(){
+            var preFieldIds = BI.pluck(BI.flatten(self.fields), "id");
+            var newFieldIds = BI.pluck(BI.flatten(fields), "id");
+            if(newFieldIds.length < preFieldIds.length){
+                var relation = self.getRelations();
+                var connectionSet = relation.connectionSet;
+                var primKeyMap = relation.primKeyMap;
+                var foreignKeyMap = relation.foreignKeyMap;
+                var diffFieldIds = BI.difference(preFieldIds, newFieldIds);
+                BI.remove(connectionSet, function(i, obj){
+                    return BI.isNotNull(obj) && (BI.contains(diffFieldIds, obj.primaryKey.field_id) || BI.contains(diffFieldIds, obj.foreignKey.field_id));
+                }, self);
+                BI.remove(primKeyMap, function(id){
+                    return BI.contains(diffFieldIds, id);
+                }, self);
+                BI.remove(foreignKeyMap, function(id){
+                    return BI.contains(diffFieldIds, id);
+                }, self);
+                BI.each(primKeyMap, function(id, mapArray) {
+                    BI.remove(mapArray, function(i, obj){
+                        return BI.isNotNull(obj) && (BI.contains(diffFieldIds, obj.primaryKey.field_id) || BI.contains(diffFieldIds, obj.foreignKey.field_id));
+                    }, self);
+                });
+                BI.each(foreignKeyMap, function(id, mapArray) {
+                    BI.remove(mapArray, function(i, obj){
+                        return BI.isNotNull(obj) && (BI.contains(diffFieldIds, obj.primaryKey.field_id) || BI.contains(diffFieldIds, obj.foreignKey.field_id));
+                    }, self);
+                });
+                self.setRelations(relation);
+            }
+        }
     },
 
 

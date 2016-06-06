@@ -66,15 +66,18 @@ BI.CombineChart = BI.inherit(BI.Widget, {
 
     _formatItems: function(items){
         var result = [], self = this, o = this.options;
+        var yAxisIndex = 0;
         BI.each(items, function(i, belongAxisItems){
             var combineItems = BI.ChartCombineFormatItemFactory.combineItems(o.types[i], belongAxisItems);
+            BI.isEmptyArray(combineItems) && --yAxisIndex;
             BI.each(combineItems, function(j, axisItems){
                 if(BI.isArray(axisItems)){
                     result = BI.concat(result, axisItems);
                 }else{
-                    result.push(BI.extend(axisItems, {"yAxis": i}));
+                    result.push(BI.extend(axisItems, {"yAxis": yAxisIndex}));
                 }
             });
+            yAxisIndex++;
         });
         var typess=[];
         BI.each(o.types, function(idx, types){
