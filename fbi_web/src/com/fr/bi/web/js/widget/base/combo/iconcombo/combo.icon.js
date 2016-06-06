@@ -11,6 +11,7 @@ BI.IconCombo = BI.inherit(BI.Widget, {
             width: 25,
             height: 25,
             iconClass: "",
+            el: {},
             direction: "bottom",
             adjustLength: 3,//调整的距离
             adjustXOffset: 0,
@@ -23,7 +24,7 @@ BI.IconCombo = BI.inherit(BI.Widget, {
     _init: function () {
         BI.IconCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.trigger = BI.createWidget({
+        this.trigger = BI.createWidget(o.el, {
             type: "bi.icon_combo_trigger",
             iconClass: o.iconClass,
             title: o.title,
