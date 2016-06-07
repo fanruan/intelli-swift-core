@@ -14,6 +14,7 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 
 import java.util.Set;
@@ -66,7 +67,7 @@ public class BIDataSourceManager extends BISystemDataManager<DataSourceCompoundS
                     if (value != null) {
                         putKeyValue(key, value);
                     }
-                    Set<BusinessTable> allTable = BICubeConfigureCenter.getPackageManager().getAllTables(-999);
+                    Set<BusinessTable> allTable = BICubeConfigureCenter.getPackageManager().getAllTables(UserControl.getInstance().getSuperManagerID());
                     initialDataSource(allTable);
                 } catch (Exception e) {
                     throw BINonValueUtils.beyondControl();
@@ -83,7 +84,7 @@ public class BIDataSourceManager extends BISystemDataManager<DataSourceCompoundS
 
     public DataSourceCompoundService getInstance() {
         try {
-            return getValue(-999L);
+            return getValue(UserControl.getInstance().getSuperManagerID());
 
         } catch (BIKeyAbsentException e) {
             throw BINonValueUtils.beyondControl(e);

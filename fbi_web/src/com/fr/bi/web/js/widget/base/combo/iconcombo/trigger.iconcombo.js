@@ -8,6 +8,7 @@ BI.IconComboTrigger = BI.inherit(BI.Trigger, {
     _defaultConfig: function () {
         return BI.extend(BI.IconComboTrigger.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-icon-combo-trigger",
+            el: {},
             items: [],
             iconClass: "",
             width: 25,
@@ -18,7 +19,7 @@ BI.IconComboTrigger = BI.inherit(BI.Trigger, {
     _init: function () {
         BI.IconComboTrigger.superclass._init.apply(this, arguments);
         var o = this.options, self = this;
-        this.button = BI.createWidget({
+        this.button = BI.createWidget(o.el, {
             type: "bi.icon_change_button",
             cls: "icon-combo-trigger-icon " + o.iconClass,
             disableSelected: true,

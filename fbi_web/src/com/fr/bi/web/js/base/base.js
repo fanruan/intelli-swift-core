@@ -741,15 +741,28 @@ if (!window.BI) {
         },
 
         isNaturalNumber: function (number) {
-            return BI.isInteger(number) && number >= 0;
+            if (/^\d+$/.test(number)) {
+                return true;
+            }
+            return false;
         },
 
         isPositiveInteger: function (number) {
-            return BI.isInteger(number) && number > 0;
+            if (/\+?[1-9][0-9]*$/.test(number)) {
+                return true;
+            }
+            return false;
+        },
+
+        isNegativeInteger: function (number) {
+            if (/^\-[1-9][0-9]*$/.test(number)) {
+                return true;
+            }
+            return false;
         },
 
         isInteger: function (number) {
-            if (/^[0-9]*$/.test(number)) {
+            if (/^\-?\d+$/.test(number)) {
                 return true;
             }
             return false;

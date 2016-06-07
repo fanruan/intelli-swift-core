@@ -41,6 +41,26 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
+        //风格——1、2、3
+        this.chartSyleGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.chartSyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
+        });
+
         var tableStyle = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
@@ -60,6 +80,17 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Table_Style"),
+                    cls: "attr-names",
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.chartSyleGroup]
                     },
                     lgap: this.constant.SIMPLE_H_GAP
                 }], {
@@ -315,7 +346,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -326,7 +357,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         //数据表格
@@ -337,7 +368,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataTable.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -348,7 +379,18 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
+        });
+
+        //图表缩放滚轮
+        this.showZoom = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Zoom"),
+            width: 140
+        });
+
+        this.showZoom.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({
@@ -380,6 +422,9 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.gridLine]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.showZoom]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -609,6 +654,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartSyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.rYAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
         this.rYAxis2Style.setValue(BI.Utils.getWSRightYAxis2StyleByID(wId));
@@ -634,6 +680,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
+        this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -645,6 +692,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
+            chart_style: this.chartSyleGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             right_y_axis_style: this.rYAxisStyle.getValue()[0],
             right_y_axis_second_style: this.rYAxis2Style.getValue()[0],
@@ -669,13 +717,15 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
             show_data_table: this.showDataTable.isSelected(),
-            show_grid_line: this.gridLine.isSelected()
+            show_grid_line: this.gridLine.isSelected(),
+            show_zoom: this.showZoom.isSelected()
         }
     },
 
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
+        this.chartSyleGroup.setValue(v.chart_style);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.rYAxisStyle.setValue(v.right_y_axis_style);
         this.rYAxis2Style.setValue(v.right_y_axis_second_style);
@@ -701,6 +751,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         this.showDataLabel.setSelected(v.show_data_label);
         this.showDataTable.setSelected(v.show_data_table);
         this.gridLine.setSelected(v.show_grid_line);
+        this.showZoom.setSelected(v.show_zoom);
     }
 });
 BI.MultiAxisChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

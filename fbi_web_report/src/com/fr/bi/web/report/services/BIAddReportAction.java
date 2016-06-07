@@ -45,7 +45,6 @@ public class BIAddReportAction extends ActionNoSessionCMD {
         if(popConfig == null) {
             JSONObject reportJO = new JSONObject();
             reportJO.put("widgets", new JSONObject());
-            reportJO.put("layoutType", 0);
             popConfig = reportJO.toString();
         }
         BIDesignReport report = new BIDesignReport(new BIDesignSetting(popConfig));

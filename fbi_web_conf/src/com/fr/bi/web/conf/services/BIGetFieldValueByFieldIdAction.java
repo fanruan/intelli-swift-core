@@ -1,12 +1,15 @@
 package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -31,11 +34,12 @@ public class BIGetFieldValueByFieldIdAction extends AbstractBIConfigureAction {
             WebUtils.printAsJSON(res, new JSONObject());
             return;
         }
-        String tableId = BIIDUtils.getTableIDFromFieldID(fieldId);
-        BITableID tId = new BITableID(tableId);
+        BusinessField businessField = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId));
+        String tableID = businessField.getTableBelongTo().getID().getIdentityValue();
+        BITableID tId = new BITableID(tableID);
         long userId = ServiceUtils.getCurrentUserID(req);
         CubeTableSource source = BusinessTableHelper.getTableDataSource(tId);
-        Set set = source.getFieldDistinctNewestValues(BIIDUtils.getFieldNameFromFieldID(fieldId), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
+        Set set = source.getFieldDistinctNewestValues(businessField.getFieldName(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
         String filterConfigString = WebUtils.getHTTPRequestParameter(req, "filterConfig");
         String keyword = null;
         List<String> selected_value = new ArrayList<String>();
