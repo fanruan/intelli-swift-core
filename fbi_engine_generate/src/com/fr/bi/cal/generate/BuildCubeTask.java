@@ -115,8 +115,8 @@ public class BuildCubeTask implements CubeTask {
         operationManager.generateTableRelationPath(relationPathSet);
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
-            BIConfigureManagerCenter.getLogManager().reLationSet(cubeBuildStuff.getTableSourceRelationSet());
-            BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getAllSingleSources());
+            BIConfigureManagerCenter.getLogManager().reLationSet(cubeBuildStuff.getTableSourceRelationSet(),biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getAllSingleSources(),biUser.getUserId());
             router.deliverMessage(generateMessageDataSourceStart());
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);

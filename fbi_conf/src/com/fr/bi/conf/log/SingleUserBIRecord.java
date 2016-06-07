@@ -45,6 +45,8 @@ public class SingleUserBIRecord implements BIRecord {
         cube_end = null;
         index_start = null;
         loop_error.clear();
+        cubeTableSourceSet=new HashSet<CubeTableSource>();
+        biTableSourceRelationSet=new HashSet<BITableSourceRelation>();
     }
 
     /**
@@ -243,6 +245,26 @@ public class SingleUserBIRecord implements BIRecord {
         return cube_end;
     }
 
+    /**
+     * 获取所有需要更新的relation信息
+     *
+     * @param biTableSourceRelationHashSet
+     */
+    @Override
+    public void reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet) {
+        this.biTableSourceRelationSet=biTableSourceRelationHashSet;
+    }
+
+    /**
+     * 获取所有需要更新的tableSource信息
+     *
+     * @param cubeTableSources
+     */
+    @Override
+    public void cubeTableSourceSet(Set<CubeTableSource> cubeTableSources) {
+        cubeTableSourceSet=cubeTableSources;
+    }
+
     private void BITableLogSort(List<BITableLog> log) {
         Collections.sort(log, new Comparator<BITableLog>() {
             @Override
@@ -353,7 +375,8 @@ public class SingleUserBIRecord implements BIRecord {
         res.put("tables", table_log);
         res.put("connections", connection_log);
         res.put("readingdb", reading_log);
-        res.put("relationamount", BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId).size());
+        res.put("relationamount",this.biTableSourceRelationSet.size());
+        res.put("cubeTableSourceamount",this.cubeTableSourceSet.size());
         dealWithLoopValue(loop);
         List<BITableLog> output = new ArrayList<BITableLog>();
         addTableLog(error, output);
