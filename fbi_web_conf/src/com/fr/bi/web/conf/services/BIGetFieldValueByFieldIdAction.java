@@ -4,6 +4,7 @@ import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
@@ -33,7 +34,7 @@ public class BIGetFieldValueByFieldIdAction extends AbstractBIConfigureAction {
             WebUtils.printAsJSON(res, new JSONObject());
             return;
         }
-        BusinessField businessField = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(fieldId));
+        BusinessField businessField = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId));
         String tableID = businessField.getTableBelongTo().getID().getIdentityValue();
         BITableID tId = new BITableID(tableID);
         long userId = ServiceUtils.getCurrentUserID(req);
