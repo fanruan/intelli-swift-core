@@ -9,13 +9,17 @@ import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.cal.log.BILogManager;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.bridge.StableFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,6 +50,7 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
 
+
     private void initialParents(Set<CubeTableSource> parentTableSource) {
         if (parentTableSource != null) {
             for (CubeTableSource tableSource : parentTableSource) {
@@ -56,14 +61,27 @@ public class BISourceDataTransport extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        recordTableInfo();
-        long count = transport();
-
-        if (count >= 0) {
-            tableEntityService.recordRowCount(count);
-            tableEntityService.addVersion(version);
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        long t=System.currentTimeMillis();
+        try {
+            recordTableInfo();
+            long count = transport();
+            if (count >= 0) {
+                tableEntityService.recordRowCount(count);
+                tableEntityService.addVersion(version);
+            }
+            long tableCostTime=System.currentTimeMillis()-t;
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            }
+        } finally {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -113,8 +131,10 @@ public class BISourceDataTransport extends BIProcessor {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
         ICubeFieldSource[] cubeFieldSources = new ICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
+            fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
+
         return this.tableSource.read(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {

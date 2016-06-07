@@ -1,7 +1,9 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeBuildStuffManager;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
@@ -134,16 +136,13 @@ public class CubeRunner {
 
     private void generateCube() {
         setStatue(Status.LOADED);
-        addTask(new CheckTask(biUser.getUserId()));
+//        addTask(new CheckTask(biUser.getUserId()));
+        CubeBuildStuff cubeBuildStuff= new CubeBuildStuffManager(new BIUser((biUser.getUserId())));
+        CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser,cubeBuildStuff),biUser.getUserId());
     }
 
     private void start() {
         backup();
-//        if (object == null) {
-//            object = new CubeBuildStuffManager(biUser);
-//            object.initialCubeStuff();
-//        }
-
     }
 
     private void backup() {
@@ -173,6 +172,10 @@ public class CubeRunner {
     }
 
     public CubeBuildStuffManager getCubeGeneratingObjects() {
+                if (object == null) {
+            object = new CubeBuildStuffManager(biUser);
+            object.initialCubeStuff();
+        }
         return object;
     }
 

@@ -2,8 +2,10 @@ package com.fr.bi.stable.utils;
 
 import com.fr.base.FRContext;
 import com.fr.base.TableData;
+import com.fr.bi.cal.log.BILogManager;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.dbdealer.*;
@@ -25,6 +27,7 @@ import com.fr.general.data.DataModel;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
+import com.fr.stable.bridge.StableFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.*;
@@ -559,15 +562,28 @@ public class BIDBUtils {
         @SuppressWarnings("rawtypes")
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, columns);
         int ilen = dealers.length;
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        long columnTime=System.currentTimeMillis();
         while (rs.next()) {
             for (int i = 0; i < ilen; i++) {
                 Object value = dealers[i].dealWithResultSet(rs);
                 traversal.actionPerformed(new BIDataValue(row, i, value));
             }
             row++;
+            /*每运行一千行为column存取一次log
+            * 所有column时间一致*/
+            if (row%1000==0&&null != columns[0].getTableBelongTo().getPersistentTable()){
+                for (int i = 0; i < ilen; i++) {
+                        biLogManager.infoColumn(columns[0].getTableBelongTo().getPersistentTable(), columns[i].getFieldName(), System.currentTimeMillis() - columnTime, -999);
+                }
+            }
+        }
+        for (int i = 0; i < ilen; i++) {
+            biLogManager.infoColumn(columns[0].getTableBelongTo().getPersistentTable(), columns[i].getFieldName(), System.currentTimeMillis() - columnTime, -999);
         }
         return row;
     }
+
 
     public static long runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal) {
         return runSQL(sql, columns, traversal, 0);
@@ -584,6 +600,8 @@ public class BIDBUtils {
         Statement stmt = null;
         ResultSet rs = null;
         try {
+            BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+            long t = System.currentTimeMillis();
             conn = sql.getSqlConn();
             String originalCharSetName = connection.getOriginalCharsetName();
             String newCharSetName = connection.getNewCharsetName();
@@ -593,7 +611,6 @@ public class BIDBUtils {
             String sqlString = createSqlString(dialect, columns);
             sql.setSelect(sqlString);
             String query = dealWithSqlCharSet(sql.toString(), connection);
-            long t = System.currentTimeMillis();
             BILogger.getLogger().info("Start Query sql:" + query);
             stmt = createStatement(conn, dialect);
             try {
