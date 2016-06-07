@@ -21,6 +21,7 @@ import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
  */
 public abstract class AbstractDimensionCalculator implements DimensionCalculator, BICoreService {
     protected List<BITableSourceRelation> relations;
+    protected List<BITableSourceRelation> directToDimenRelations;
     protected BIDimension dimension;
     protected BusinessField field;
 
@@ -38,6 +40,15 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         field = field == null ? dimension.getStatisticElement() : field;
         this.field = field;
         this.relations = relations;
+        this.directToDimenRelations = new ArrayList<BITableSourceRelation>();
+    }
+
+    public AbstractDimensionCalculator(BIDimension dimension, BusinessField field, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations) {
+        this.dimension = dimension;
+        field = field == null ? dimension.getStatisticElement() : field;
+        this.field = field;
+        this.relations = relations;
+        this.directToDimenRelations = directToDimensionRelations;
     }
 
     public AbstractDimensionCalculator() {
@@ -105,6 +116,11 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     @Override
     public List<BITableSourceRelation> getRelationList() {
         return relations;
+    }
+
+    @Override
+    public List<BITableSourceRelation> getDirectToDimensionRelationList() {
+        return directToDimenRelations;
     }
 
     @Override

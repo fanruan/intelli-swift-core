@@ -23,6 +23,11 @@ public class StringDimensionCalculator extends AbstractDimensionCalculator {
         super(dimension, column, relations);
     }
 
+    public StringDimensionCalculator(BIDimension dimension, BusinessField column, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations) {
+        super(dimension, column, relations, directToDimensionRelations);
+    }
+
+
     @Override
     public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
         try {
