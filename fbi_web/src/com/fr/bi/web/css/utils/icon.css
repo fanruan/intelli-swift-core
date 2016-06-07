@@ -656,6 +656,96 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_circle.png');
   _background: none;
 }
+.dashboard-chart-style-360-icon .x-icon,
+.dashboard-chart-style-360-icon:hover .x-icon,
+.dashboard-chart-style-360-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_1.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_1.png');
+  _background: none;
+}
+.dashboard-chart-style-360-icon.native .x-icon,
+.dashboard-chart-style-360-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_1.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_1.png');
+  _background: none;
+}
+.dashboard-chart-style-180-icon .x-icon,
+.dashboard-chart-style-180-icon:hover .x-icon,
+.dashboard-chart-style-180-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_2.png');
+  _background: none;
+}
+.dashboard-chart-style-180-icon.native .x-icon,
+.dashboard-chart-style-180-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_2.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_2.png');
+  _background: none;
+}
+.dashboard-chart-style-percent-icon .x-icon,
+.dashboard-chart-style-percent-icon:hover .x-icon,
+.dashboard-chart-style-percent-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_4.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_4.png');
+  _background: none;
+}
+.dashboard-chart-style-percent-icon.native .x-icon,
+.dashboard-chart-style-percent-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_4.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_4.png');
+  _background: none;
+}
+.dashboard-chart-style-percent-scale-slot-icon .x-icon,
+.dashboard-chart-style-percent-scale-slot-icon:hover .x-icon,
+.dashboard-chart-style-percent-scale-slot-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_5.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_5.png');
+  _background: none;
+}
+.dashboard-chart-style-percent-scale-slot-icon.native .x-icon,
+.dashboard-chart-style-percent-scale-slot-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_5.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_5.png');
+  _background: none;
+}
+.dashboard-chart-style-vertical-tube-icon .x-icon,
+.dashboard-chart-style-vertical-tube-icon:hover .x-icon,
+.dashboard-chart-style-vertical-tube-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_6.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_6.png');
+  _background: none;
+}
+.dashboard-chart-style-vertical-tube-icon.native .x-icon,
+.dashboard-chart-style-vertical-tube-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_6.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_6.png');
+  _background: none;
+}
+.dashboard-chart-style-horizontal-tube-icon .x-icon,
+.dashboard-chart-style-horizontal-tube-icon:hover .x-icon,
+.dashboard-chart-style-horizontal-tube-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_7.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_7.png');
+  _background: none;
+}
+.dashboard-chart-style-horizontal-tube-icon.native .x-icon,
+.dashboard-chart-style-horizontal-tube-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_7.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_dashboard_7.png');
+  _background: none;
+}
 .example-excel-icon .x-icon,
 .example-excel-icon:hover .x-icon,
 .example-excel-icon:active .x-icon {

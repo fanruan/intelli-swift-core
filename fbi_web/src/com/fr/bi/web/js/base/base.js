@@ -741,21 +741,28 @@ if (!window.BI) {
         },
 
         isNaturalNumber: function (number) {
-            if (/^\\d+$/.test(number)) {
+            if (/^\d+$/.test(number)) {
                 return true;
             }
             return false;
         },
 
         isPositiveInteger: function (number) {
-            if (/^[1-9][0-9]*$/.test(number)) {
+            if (/\+?[1-9][0-9]*$/.test(number)) {
+                return true;
+            }
+            return false;
+        },
+
+        isNegativeInteger: function (number) {
+            if (/^\-[1-9][0-9]*$/.test(number)) {
                 return true;
             }
             return false;
         },
 
         isInteger: function (number) {
-            if (/^-?\\d+$/.test(number)) {
+            if (/^\-?\d+$/.test(number)) {
                 return true;
             }
             return false;

@@ -386,13 +386,18 @@ BICst.CHART_STYLE = {
     NOT_EQUAL_ARC_ROSE: 5, //不等弧玫瑰图
     CIRCLE: 6,          //圆形雷达
     POLYGON: 7,          //多边形雷达
+    HALF_DASHBOARD: 9,//180'的仪表盘
+    PERCENT_DASHBOARD: 10,//百分比的仪表盘
+    PERCENT_SCALE_SLOT: 11,//带刻度槽的仪表盘
+    VERTICAL_TUBE: 12,      //竖起来的试管型仪表盘
+    HORIZONTAL_TUBE: 13,//横过来的试管型仪表盘
 
     //风格
-    STYLE_NORMAL: 8,       //普通风格
-    STYLE_GRADUAL: 9,      //渐变
-    STYLE_TRANSPARENT: 10,   //透明
-    STYLE_GRADUAL_HIGHLIGHT: 11, //渐变高亮
-    STYLE_3D: 12            //3d
+    STYLE_NORMAL: 21,       //普通风格
+    STYLE_GRADUAL: 22,      //渐变
+    STYLE_TRANSPARENT: 23,   //透明
+    STYLE_GRADUAL_HIGHLIGHT: 24, //渐变高亮
+    STYLE_3D: 25            //3d
 };
 
 BICst.PIE_ANGLES = {

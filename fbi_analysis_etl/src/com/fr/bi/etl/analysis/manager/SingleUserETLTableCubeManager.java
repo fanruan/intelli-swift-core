@@ -107,7 +107,7 @@ public class SingleUserETLTableCubeManager implements Release {
     }
 	
 	protected boolean checkVersion(){
-        if (tq.isEmpty() || !updateTask.isEmpty()){
+        if (tq.isEmpty()){
             return false;
         } else {
             long version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));

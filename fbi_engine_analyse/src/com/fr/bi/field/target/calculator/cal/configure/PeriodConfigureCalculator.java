@@ -57,15 +57,12 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
             if (cursor_node != null && start_group == 0 && !ComparatorUtils.equals(last_node.getParent(), cursor_node.getParent())) {
                 last_node = null;
             }
-        }
-        for (int i = 0; i < nodeList.size(); i++) {
             try {
-                nodeList.get(nodeList.size() - i - 1).call();
-            } catch (Exception e) {
+                CubeBaseUtils.invokeCalculatorThreads(nodeList);
+            } catch (InterruptedException e) {
                 FRContext.getLogger().error(e.getMessage(), e);
             }
         }
-
 
     }
 
@@ -137,7 +134,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 Object value = getValueFromLast(way);
                 if (value != null) {
                     if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                        cursor_node.setSummaryValue(createTargetGettingKey(), cursor_node.getSummaryValue(getCalKey()).doubleValue() / (Double) value);
+                        cursor_node.setSummaryValue(createTargetGettingKey(), (cursor_node.getSummaryValue(getCalKey()).doubleValue() - (Double) value) / (Double) value);
                     } else {
                         cursor_node.setSummaryValue(createTargetGettingKey(), value);
                     }
