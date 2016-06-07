@@ -4,7 +4,6 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
-import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.log.BILogManager;
 import com.fr.bi.common.inter.Traversal;
@@ -76,16 +75,6 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public IPersistentTable reGetBiTable() {
         return super.reGetBiTable();
-    }
-
-    @Override
-    public BICore fetchObjectCore() {
-        try {
-            return new BICoreGenerator(this).fetchObjectCore();
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        }
-        return BIBasicCore.EMPTY_CORE;
     }
 
     public static void main(String[] args) {

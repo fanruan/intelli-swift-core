@@ -27,6 +27,7 @@ import java.util.List;
 public class TableMergeOperator extends AbstractCreateTableETLOperator{
     public static final String XML_TAG = "TableMergeOperator";
     private static final int MERGE_TYPE_UNION = 5;
+    private static final int MERGE_TYPE_RIGNT_JOIN = 2;
     @BICoreField
     private int mergeType;
     @BICoreField
@@ -149,7 +150,7 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
         }
 
         public boolean isLeft() {
-            return columns[0].index == 0;
+            return columns.length == 2 ? mergeType != MERGE_TYPE_RIGNT_JOIN :columns[0].index == 0;
         }
 
         @Override

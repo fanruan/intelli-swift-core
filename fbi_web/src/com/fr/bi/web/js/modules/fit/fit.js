@@ -313,6 +313,10 @@ BI.Fit = BI.inherit(BI.Widget, {
         return flag;
     },
 
+    resize: function () {
+        this.arrangement.resize();
+    },
+
     populate: function () {
         var self = this;
         var layoutType = Data.SharingPool.get("layoutType");

@@ -23,7 +23,7 @@ BI.ColorChooserPopup = BI.inherit(BI.Widget, {
 
         this.colorEditor.on(BI.ColorPickerEditor.EVENT_CHANGE, function () {
             self.setValue(this.getValue());
-            self.fireEvent(BI.ColorChooserPopup.EVENT_CHANGE, arguments);
+            self.fireEvent(BI.ColorChooserPopup.EVENT_VALUE_CHANGE, arguments);
         });
 
         this.storeColors = BI.createWidget({
@@ -188,5 +188,6 @@ BI.ColorChooserPopup = BI.inherit(BI.Widget, {
         return this.colorEditor.getValue();
     }
 });
+BI.ColorChooserPopup.EVENT_VALUE_CHANGE = "ColorChooserPopup.EVENT_VALUE_CHANGE";
 BI.ColorChooserPopup.EVENT_CHANGE = "ColorChooserPopup.EVENT_CHANGE";
 $.shortcut("bi.color_chooser_popup", BI.ColorChooserPopup);

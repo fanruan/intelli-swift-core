@@ -240,6 +240,7 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
                 columnTypes[i] = BIDBUtils.biTypeToSql(field.getInt("field_type"));
             }
         }
+        clearCore();
     }
 
 //    @Override

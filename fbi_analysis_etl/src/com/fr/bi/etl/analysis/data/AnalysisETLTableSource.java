@@ -88,7 +88,8 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
         throw new RuntimeException("Only UserTableSource can read");
     }
 
-    public AnalysisETLTableSource(List<AnalysisETLSourceField> fieldList, String name) {
+    public AnalysisETLTableSource(List<AnalysisETLSourceField> fieldList, String name, List<IETLOperator> operators, List<AnalysisCubeTableSource> parents) {
+        super(operators, parents);
         this.fieldList = fieldList;
         this.name = name;
     }
