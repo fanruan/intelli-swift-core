@@ -142,4 +142,9 @@ public class CubeGeneratingTableIndexLoader extends CubeAbstractLoader {
     public SingleUserNIOReadManager getNIOReaderManager() {
         return NIOUtils.getGeneratingManager(biUser.getUserId());
     }
+
+    @Override
+    public long getVersion() {
+        return 0;
+    }
 }

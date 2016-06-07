@@ -221,9 +221,8 @@ public class BICubeTableEntity implements ICubeTableEntityService {
         return tableProperty.isRowCountAvailable();
     }
 
-    @Override
-    public long getVersion() {
-        return tableProperty.getVersion();
+    public long getCubeVersion() {
+        return tableProperty.getCubeVersion();
     }
 
     @Override

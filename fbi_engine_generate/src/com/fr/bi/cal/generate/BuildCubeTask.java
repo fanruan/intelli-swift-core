@@ -87,9 +87,10 @@ public class BuildCubeTask implements CubeTask {
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
-        }finally {
+        } finally {
             try {
                 BIConfigureManagerCenter.getLogManager().createJSON(UserControl.getInstance().getSuperManagerID());
+                cube.addVersion(System.currentTimeMillis());
             } catch (Exception e) {
                 e.printStackTrace();
             }

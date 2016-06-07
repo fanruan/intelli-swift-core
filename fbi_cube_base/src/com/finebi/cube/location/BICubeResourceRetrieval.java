@@ -41,6 +41,28 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
         }
     }
 
+    @Override
+    public ICubeResourceLocation retrieveRootResource(String sourceID) throws BICubeResourceAbsentException {
+        synchronized (locationMap) {
+            try {
+                return retrieveResource(sourceID);
+            } catch (BICubeResourceAbsentException ignore) {
+                try {
+                    ICubeResourceLocation rootLocation = buildRootLocation(sourceID);
+                    registerResource(sourceID, rootLocation);
+                    return rootLocation;
+                } catch (URISyntaxException changeSyntax) {
+                    BILogger.getLogger().error(changeSyntax.getMessage(), changeSyntax);
+
+                } catch (BICubeResourceDuplicateException ignoreDuplicate) {
+                    BILogger.getLogger().error("ignore below error");
+                    BILogger.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
+                }
+                throw new BICubeResourceAbsentException("Please check Table Source:" + sourceID);
+            }
+        }
+    }
+
     private ICubeResourceLocation buildLocation(String rootURI, String child) throws URISyntaxException {
         return new BICubeLocation(rootURI, child);
     }
@@ -69,6 +91,10 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     }
 
     private ICubeResourceLocation buildTableLocation(String sourceID) throws URISyntaxException {
+        return buildLocation(cubeConfiguration.getRootURI().toString(), sourceID);
+    }
+
+    private ICubeResourceLocation buildRootLocation(String sourceID) throws URISyntaxException {
         return buildLocation(cubeConfiguration.getRootURI().toString(), sourceID);
     }
 

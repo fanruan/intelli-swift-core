@@ -1,7 +1,6 @@
-package com.fr.bi.cal.log;
+package com.fr.bi.conf.log;
 
 
-import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;

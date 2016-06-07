@@ -130,4 +130,9 @@ public class PartCubeDataLoader implements ICubeDataLoader {
             }
         }
     }
+
+    @Override
+    public long getVersion() {
+        return 0;
+    }
 }

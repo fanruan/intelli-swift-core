@@ -149,8 +149,7 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
         return null;
     }
 
-    @Override
-    public long getVersion() {
+    public long getCubeVersion() {
         return 0;
     }
 
