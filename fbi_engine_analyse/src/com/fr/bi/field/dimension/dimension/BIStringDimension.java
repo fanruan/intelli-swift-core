@@ -20,7 +20,7 @@ public class BIStringDimension extends BIAbstractDimension {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         JSONObject group = jo.optJSONObject("group");
-        if(group == null || !group.has("type")){
+        if (group == null || !group.has("type")) {
             group = new JSONObject().put("type", BIReportConstant.GROUP.ID_GROUP);
         }
         this.group = BIGroupFactory.parseStringGroup(group);
@@ -43,6 +43,11 @@ public class BIStringDimension extends BIAbstractDimension {
     @Override
     public DimensionCalculator createCalculator(BusinessField column, List<BITableSourceRelation> relations) {
         return new StringDimensionCalculator(this, column, relations);
+    }
+
+    @Override
+    public DimensionCalculator createCalculator(BusinessField column, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations) {
+        return new StringDimensionCalculator(this, column, relations, directToDimensionRelations);
     }
 
 }
