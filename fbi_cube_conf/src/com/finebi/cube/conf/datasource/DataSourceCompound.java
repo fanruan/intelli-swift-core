@@ -130,6 +130,16 @@ public class DataSourceCompound implements DataSourceCompoundService {
          * 那么tableID和BusinessTable也要被删除。
          */
         businessTabledDataSource.removeBusinessTable(businessTable.getID());
+        List<BusinessField> fields = BusinessTableHelper.getTableFields(businessTable);
+        for (BusinessField field : fields) {
+            if (containFieldSource(field.getFieldID())) {
+                try {
+                    removeBusinessField(field.getFieldID());
+                } catch (BIKeyAbsentException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

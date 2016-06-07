@@ -2,8 +2,11 @@ package com.fr.bi.conf.base.auth;
 
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
-import com.fr.fs.control.UserControl;
+import com.fr.fs.control.CompanyRoleControl;
+import com.fr.fs.control.CustomRoleControl;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -30,10 +33,15 @@ public class BIAuthorityManager {
 
     public List<BIPackageID> getAuthPackagesByUser(long userId) throws Exception {
         List<BIPackageID> packageIDs = new ArrayList<BIPackageID>();
-        Set<CustomRole> roles = UserControl.getInstance().getSRoles(userId);
-        List<Long> roleIds = new ArrayList<Long>();
-        for (CustomRole role : roles) {
-            roleIds.add(role.getId());
+        Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(userId);
+        Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(userId);
+        List<Long> comRoleIds = new ArrayList<Long>();
+        List<Long> cusRoleIds = new ArrayList<Long>();
+        for (CustomRole role : cusRoles) {
+            cusRoleIds.add(role.getId());
+        }
+        for (CompanyRole role : comRoles) {
+            comRoleIds.add(role.getId());
         }
         Iterator<Map.Entry<BIPackageID, List<BIPackageAuthority>>> iterator = this.packagesAuth.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -44,7 +52,8 @@ public class BIAuthorityManager {
                 BIPackageAuthority auth = authorities.get(i);
                 long roleId = auth.getRoleId();
                 //TODO 过滤
-                if(roleIds.contains(roleId)) {
+                if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
+                        (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
                     packageIDs.add(pId);
                 }
             }

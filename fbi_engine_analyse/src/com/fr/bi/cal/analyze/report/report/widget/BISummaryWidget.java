@@ -12,10 +12,12 @@ import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.dimension.BIDimensionFactory;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
 import com.fr.bi.field.target.BITargetFactory;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.module.BIModule;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
@@ -264,7 +266,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
                             JSONObject srcJo = targetRelationJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
                             String fieldId = srcJo.getString("field_id");
-                            dimensionMap.put(targetId, BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(fieldId)));
+                            dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
                         }
                     }
                     if (targetRelationJo.has("target_relation")) {

@@ -461,7 +461,7 @@
                 BICst.DEFAULT_CHART_SETTING.chart_color;
         },
 
-        getWSChartStyleByID: function(wid){
+        getWSChartStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.chart_style) ? ws.chart_style :
                 BICst.DEFAULT_CHART_SETTING.chart_style;
@@ -539,7 +539,7 @@
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_second_number_level;
         },
 
-        getWSLeftYAxisNumLevelByID: function(wid) {
+        getWSLeftYAxisNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_number_level) ? ws.left_y_axis_number_level :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
@@ -557,7 +557,7 @@
                 BICst.DEFAULT_CHART_SETTING.x_axis_number_level;
         },
 
-        getWSLeftYAxisUnitByID: function(wid) {
+        getWSLeftYAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_unit) ? ws.left_y_axis_unit :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_unit;
@@ -605,37 +605,37 @@
                 BICst.DEFAULT_CHART_SETTING.show_right_y_axis_second_title;
         },
 
-        getWSLeftYAxisTitleByID: function(wid) {
+        getWSLeftYAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_title) ? ws.left_y_axis_title :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_title;
         },
 
-        getWSRightYAxisTitleByID: function(wid) {
+        getWSRightYAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right_y_axis_title) ? ws.right_y_axis_title :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_title;
         },
 
-        getWSRightYAxis2TitleByID: function(wid) {
+        getWSRightYAxis2TitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right_y_axis_second_title) ? ws.right_y_axis_second_title :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_second_title;
         },
 
-        getWSShowXAxisTitleByID: function(wid) {
+        getWSShowXAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_x_axis_title) ? ws.show_x_axis_title :
                 BICst.DEFAULT_CHART_SETTING.show_x_axis_title;
         },
 
-        getWSXAxisTitleByID: function(wid) {
+        getWSXAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.x_axis_title) ? ws.x_axis_title :
                 BICst.DEFAULT_CHART_SETTING.x_axis_title;
         },
 
-        getWSLeftYAxisReversedByID: function(wid) {
+        getWSLeftYAxisReversedByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_reversed) ? ws.left_y_axis_reversed :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_reversed;
@@ -653,43 +653,43 @@
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_second_reversed;
         },
 
-        getWSChartLegendByID: function(wid) {
+        getWSChartLegendByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.chart_legend) ? ws.chart_legend :
                 BICst.DEFAULT_CHART_SETTING.chart_legend;
         },
 
-        getWSShowDataLabelByID: function(wid) {
+        getWSShowDataLabelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_data_label) ? ws.show_data_label :
                 BICst.DEFAULT_CHART_SETTING.show_data_label;
         },
 
-        getWSShowDataTableByID: function(wid) {
+        getWSShowDataTableByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_data_table) ? ws.show_data_table :
                 BICst.DEFAULT_CHART_SETTING.show_data_table;
         },
 
-        getWSShowGridLineByID: function(wid) {
+        getWSShowGridLineByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_grid_line) ? ws.show_grid_line :
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
         },
 
-        getWSShowZoomByID: function(wid){
+        getWSShowZoomByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
                 BICst.DEFAULT_CHART_SETTING.show_zoom;
         },
 
-        getWSNullContinueByID: function(wid){
+        getWSNullContinueByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.null_continue) ? ws.null_continue :
                 BICst.DEFAULT_CHART_SETTING.null_continue;
         },
 
-        getWSTextDirectionByID: function(wid) {
+        getWSTextDirectionByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.text_direction) ? ws.text_direction :
                 BICst.DEFAULT_CHART_SETTING.text_direction;
@@ -768,7 +768,7 @@
             var self = this;
             var allDimIds = this.getAllDimensionIDs(wid);
             return !BI.some(allDimIds, function (i, dId) {
-                checkDimension(dId)
+                return checkDimension(dId)
             });
 
             function checkDimension(dId) {
@@ -791,7 +791,7 @@
                         if (BI.isNotNull(self.getDimensionTypeByID(dId))) {
                             checkDimension(dId)
                         } else if (BI.isNull(Pool.fields[id])) {
-                            return true;
+                            return false;
                         }
 
                     });

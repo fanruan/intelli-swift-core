@@ -146,6 +146,11 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     }
 
     @Override
+    public Set<CubeTableSource> getSourceUsedBaseSource() {
+        return null;
+    }
+
+    @Override
     public BICore fetchObjectCore() {
         return BIBasicCore.generateValueCore(ID);
     }

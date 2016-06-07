@@ -4,14 +4,12 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.utils.algorithem.BIRandomUitils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -55,6 +53,13 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     @Override
     public boolean isIndependent() {
         return true;
+    }
+
+    @Override
+    public Set<CubeTableSource> getSourceUsedBaseSource() {
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+        set.add(this);
+        return set;
     }
 
     private void initialStatic() {
@@ -641,7 +646,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
 
     @Override
     public IPersistentTable getPersistentTable() {
-        return null;
+        return  new PersistentTable(StringUtils.EMPTY,getTableName(), StringUtils.EMPTY);
     }
 
     @Override

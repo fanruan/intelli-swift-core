@@ -7,10 +7,12 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -43,7 +45,7 @@ public class BINationDataSourceTool extends AbstractCubeTableSource{
 
     @Override
     public IPersistentTable getPersistentTable() {
-        return null;
+        return  new PersistentTable(StringUtils.EMPTY, getSourceID(), StringUtils.EMPTY);
     }
 
     @Override

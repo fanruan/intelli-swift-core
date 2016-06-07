@@ -13,16 +13,13 @@ import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by GUY on 2015/2/28.
  */
 public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
-
+    BICore fetchObjectCore();
     IPersistentTable getPersistentTable();
 
     String getSourceID();
@@ -117,4 +114,6 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
     void refresh();
 
     boolean isIndependent();
+
+    Set<CubeTableSource> getSourceUsedBaseSource();
 }

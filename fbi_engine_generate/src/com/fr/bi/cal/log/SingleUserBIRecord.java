@@ -49,7 +49,9 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordRelationStart() {
-        relation_start = new Date();
+        if(relation_start==null) {
+            relation_start = new Date();
+        }
     }
 
     /**
@@ -65,7 +67,9 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordIndexStart() {
-        index_start = new Date();
+        if(index_start==null) {
+            index_start = new Date();
+        }
     }
 
     /**
