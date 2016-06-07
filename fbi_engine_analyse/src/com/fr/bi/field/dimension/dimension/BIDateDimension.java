@@ -56,6 +56,11 @@ public class BIDateDimension extends BIAbstractDimension {
         return new DateDimensionCalculator(this, column, relations);
     }
 
+    @Override
+    public DimensionCalculator createCalculator(BusinessField column, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations) {
+        return new DateDimensionCalculator(this, column, relations, directToDimensionRelations);
+    }
+
     private Object insertZero(int time) {
         if (time < 10) {
             return "0" + time;

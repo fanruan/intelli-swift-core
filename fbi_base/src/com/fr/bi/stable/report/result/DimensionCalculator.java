@@ -48,6 +48,8 @@ public interface DimensionCalculator extends FCloneable {
 
     List<BITableSourceRelation> getRelationList();
 
+    List<BITableSourceRelation> getDirectToDimensionRelationList();
+
     BIKey createKey();
 
     Comparator getComparator();
