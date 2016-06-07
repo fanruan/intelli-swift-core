@@ -7,7 +7,7 @@ import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
-import com.fr.bi.cal.log.BILogManager;
+import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;

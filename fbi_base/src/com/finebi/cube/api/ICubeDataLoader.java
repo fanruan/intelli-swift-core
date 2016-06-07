@@ -38,4 +38,6 @@ public interface ICubeDataLoader extends Release {
     void releaseCurrentThread();
 
     ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end);
+
+    long getVersion();
 }

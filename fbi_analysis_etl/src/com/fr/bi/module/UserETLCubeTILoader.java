@@ -100,4 +100,9 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
             }
         }
 	}
+
+    @Override
+    public long getVersion() {
+        return 0;
+    }
 }
