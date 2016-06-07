@@ -106,6 +106,18 @@ BI.ChartCombineFormatItemFactory = {
                     "align": "inside",
                     "enabled": false
                 },
+                "percentageLabel": {
+                    "formatter": {
+                        "identifier": "${PERCENT}",
+                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
+                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                    },
+                    "style": {"fontFamily": "Verdana", "color": "rgba(51,51,51,1.0)", "fontSize": "14pt", "fontWeight": "bold"},
+                    "align": "bottom",
+                    "enabled": true
+                },
                 "valueLabel": {
                     "formatter": {
                         "identifier": "${SERIES}${VALUE}",
@@ -281,6 +293,7 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.PIE:
                 return BI.extend({"chartType": "pie"}, config);
             case BICst.WIDGET.DASHBOARD:
+                delete config.dataSheet;
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:

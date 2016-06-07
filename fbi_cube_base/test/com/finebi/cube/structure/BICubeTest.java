@@ -51,5 +51,9 @@ public class BICubeTest extends BICubeTestBase {
         }
     }
 
-
+    public void testCubeVersion() {
+        long time = System.currentTimeMillis();
+        cube.addVersion(time);
+        assertEquals(time, cube.getCubeVersion());
+    }
 }

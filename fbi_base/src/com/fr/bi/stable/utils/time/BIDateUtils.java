@@ -130,7 +130,7 @@ public class BIDateUtils {
         if(end == null){
             end = new BIDay(Integer.parseInt(yearMap.lastKey().toString()), Integer.parseInt(monthMap.lastKey().toString()), Integer.parseInt(dayMap.lastKey().toString()));
         }
-        if (start.compareTo(end) < 0){
+        if (start.compareTo(end) <= 0){
             gvi = createRangeIndex(yearMap, start.getYear() + 1, end.getYear());
             GroupValueIndex startYear = yearMap.getGroupIndex(new Integer[]{start.getYear()})[0];
             if (startYear != null){

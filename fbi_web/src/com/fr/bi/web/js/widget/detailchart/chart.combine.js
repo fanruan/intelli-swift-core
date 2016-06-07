@@ -10,6 +10,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         RIGHT_AXIS: 1,
         RIGHT_AXIS_SECOND: 2,
         X_AXIS: 3,
+        DASHBOARD_AXIS:4,
         ROTATION: -90,
 
         NORMAL: 1,
@@ -89,6 +90,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         };
         switch (typess[0]){
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.LINE:
@@ -163,6 +165,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             formatChartLineStyle();
             formatChartPieStyle();
             formatChartRadarStyle();
+            formatChartDashboardStyle();
             formatElementAttrs();
             if(BI.has(config, "yAxis") && config.yAxis.length > 0){
                 config.yAxis[0].reversed = self.left_y_axis_reversed ? !config.yAxis[0].reversed : config.yAxis[0].reversed;
@@ -350,6 +353,9 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             if(position === self.constants.RIGHT_AXIS_SECOND){
                 self.right_y_axis_second_unit !== "" && (unit = unit + self.right_y_axis_second_unit)
             }
+            if(position === self.constants.DASHBOARD_AXIS){
+                self.dashboard_unit !== "" && (unit = unit + self.dashboard_unit)
+            }
             return "(" + unit + ")";
         }
 
@@ -382,6 +388,43 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     break;
             }
         }
+
+        function formatChartDashboardStyle(){
+            switch (self.chart_dashboard_type) {
+                case BICst.CHART_STYLE.HALF_DASHBOARD:
+                    config.plotOptions.style = "pointer_semi";
+                    break;
+                case BICst.CHART_STYLE.PERCENT_DASHBOARD:
+                    config.plotOptions.style = "ring";
+                    break;
+                case BICst.CHART_STYLE.PERCENT_SCALE_SLOT:
+                    config.plotOptions.style = "slot";
+                    break;
+                case BICst.CHART_STYLE.HORIZONTAL_TUBE:
+                    config.plotOptions.style = "thermometer";
+                    config.plotOptions.thermometerLayout = "horizontal";
+                    config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
+                    config.plotOptions.valueLabel.align = "bottom";
+                    config.plotOptions.percentageLabel.align = "bottom";
+                    break;
+                case BICst.CHART_STYLE.VERTICAL_TUBE:
+                    config.plotOptions.style = "thermometer";
+                    config.plotOptions.thermometerLayout = "vertical";
+                    config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
+                    config.plotOptions.valueLabel.align = "left";
+                    config.plotOptions.percentageLabel.align = "left";
+                    break;
+                case BICst.CHART_STYLE.NORMAL:
+                default:
+                    config.plotOptions.style = "pointer";
+                    break;
+            }
+            formatNumberLevelInYaxis(self.dashboard_number_level, self.constants.LEFT_AXIS);
+            config.plotOptions.valueLabel.formatter = function(){
+                return getXYAxisUnit(self.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+            };
+        }
+
         function formatChartPieStyle(){
             switch (self.chart_pie_type){
                 case BICst.CHART_STYLE.EQUAL_ARC_ROSE:
@@ -426,9 +469,11 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     break;
             }
             config.plotOptions.dataLabels.enabled = self.show_data_label;
-            config.dataSheet.enabled = self.show_data_table;
-            if(config.dataSheet.enabled === true){
-                config.xAxis[0].showLabel = false;
+            if(BI.has(config, "dataSheet")){
+                config.dataSheet.enabled = self.show_data_table;
+                if(config.dataSheet.enabled === true){
+                    config.xAxis[0].showLabel = false;
+                }
             }
             config.zoom.zoomTool.visible = self.show_zoom;
             self.show_zoom === true && delete config.dataSheet;
@@ -448,6 +493,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.chart_style = options.chart_style || BICst.CHART_STYLE.STYLE_NORMAL;
         this.chart_line_type = options.chart_line_type || BICst.CHART_STYLE.NORMAL;
         this.chart_pie_type = options.chart_pie_type || BICst.CHART_STYLE.NORMAL;
+        this.chart_dashboard_type = options.chart_dashboard_type || BICst.CHART_STYLE.NORMAL;
         this.chart_inner_radius = options.chart_inner_radius || 0;
         this.chart_total_angle = options.chart_total_angle || BICst.PIE_ANGLES.TOTAL;
         this.chart_radar_type = options.chart_radar_type || BICst.CHART_STYLE.NORMAL;
@@ -464,9 +510,11 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.right_y_axis_second_reversed = options.right_y_axis_second_reversed || false;
         this.x_axis_number_level = options.x_axis_number_level || BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.left_y_axis_number_level = options.left_y_axis_number_level || BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
+        this.dashboard_number_level = options.dashboard_number_level || BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.right_y_axis_number_level = options.right_y_axis_number_level || BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.right_y_axis_second_number_level = options.right_y_axis_second_number_level || BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.x_axis_unit = options.x_axis_unit || "";
+        this.dashboard_unit = options.dashboard_unit || "";
         this.left_y_axis_unit = options.left_y_axis_unit || "";
         this.right_y_axis_unit = options.right_y_axis_unit || "";
         this.right_y_axis_second_unit = options.right_y_axis_second_unit || "";

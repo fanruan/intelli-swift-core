@@ -27,6 +27,11 @@ public class NoneDimensionCalculator implements DimensionCalculator {
     }
 
     @Override
+    public List<BITableSourceRelation> getDirectToDimensionRelationList() {
+        return relations;
+    }
+
+    @Override
     public BusinessField getField() {
         return field;
     }

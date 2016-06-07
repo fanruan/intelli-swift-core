@@ -3,11 +3,7 @@ package com.fr.bi.stable.engine.index;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 
@@ -68,5 +64,10 @@ public class CubeTILoaderAdapter implements ICubeDataLoader {
     @Override
     public void clear() {
 
+    }
+
+    @Override
+    public long getVersion() {
+        return 0;
     }
 }

@@ -13,12 +13,15 @@ import com.fr.bi.common.BICoreWrapper;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +31,7 @@ import java.util.List;
  */
 public abstract class AbstractDimensionCalculator implements DimensionCalculator, BICoreService {
     protected List<BITableSourceRelation> relations;
+    protected List<BITableSourceRelation> directToDimenRelations;
     protected BIDimension dimension;
     protected BusinessField field;
 
@@ -36,6 +40,15 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         field = field == null ? dimension.getStatisticElement() : field;
         this.field = field;
         this.relations = relations;
+        this.directToDimenRelations = new ArrayList<BITableSourceRelation>();
+    }
+
+    public AbstractDimensionCalculator(BIDimension dimension, BusinessField field, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations) {
+        this.dimension = dimension;
+        field = field == null ? dimension.getStatisticElement() : field;
+        this.field = field;
+        this.relations = relations;
+        this.directToDimenRelations = directToDimensionRelations;
     }
 
     public AbstractDimensionCalculator() {
@@ -106,6 +119,11 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
+    public List<BITableSourceRelation> getDirectToDimensionRelationList() {
+        return directToDimenRelations;
+    }
+
+    @Override
     public BIKey createKey() {
         return dimension.createKey(field);
     }
@@ -142,7 +160,20 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
 
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
-        ICubeColumnIndexReader getter = loader.getTableIndex(getTableSourceFromField()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
+        //默认设置field本身为关联主键
+        CubeTableSource usedTableSource = getTableSourceFromField();
+        BIKey usedColumnKey = dimension.createKey(field);
+        //多对多处理,这里默认relationList的第一个关联是公共主表关联
+        if (getRelationList().size() > 0) {
+            ICubeFieldSource primaryField = getRelationList().get(0).getPrimaryField();
+            CubeTableSource primaryTableSource = primaryField.getTableBelongTo();
+            //不用判断,直接从关联中取主键
+//            if (!ComparatorUtils.equals(field.getTableBelongTo().getTableSource().getSourceID(), primaryTableSource.getSourceID())) {
+            usedTableSource = primaryTableSource;
+            usedColumnKey = new IndexKey(primaryField.getFieldName());
+//            }
+        }
+        ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
         if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
