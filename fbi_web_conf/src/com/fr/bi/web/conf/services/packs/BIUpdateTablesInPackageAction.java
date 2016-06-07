@@ -3,6 +3,7 @@ package com.fr.bi.web.conf.services.packs;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.*;
+import com.finebi.cube.conf.pack.imp.BIPackageFindTableSourceConfigManager;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
@@ -53,6 +54,8 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
             BICubeConfigureCenter.getAliasManager().persistData(userId);
             BICubeConfigureCenter.getDataSourceManager().persistData(userId);
+            BIPackageFindTableSourceConfigManager biPackageFindTableSourceConfigManager=new BIPackageFindTableSourceConfigManager(-999);
+            biPackageFindTableSourceConfigManager.getUnGeneratedPackages();
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
