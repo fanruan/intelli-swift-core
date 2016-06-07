@@ -21,11 +21,11 @@ public class BINumberDimension extends BIAbstractDimension {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         JSONObject group = jo.optJSONObject("group");
-        if(group == null || !group.has("type")){
+        if (group == null || !group.has("type")) {
             group = new JSONObject().put("type", BIReportConstant.GROUP.AUTO_GROUP);
         }
         JSONObject sort = jo.optJSONObject("sort");
-        if(sort == null || !sort.has("type")){
+        if (sort == null || !sort.has("type")) {
             sort = new JSONObject().put("type", BIReportConstant.SORT.NONE);
         }
         this.sort = BISortFactory.parseSort(sort);
@@ -52,10 +52,15 @@ public class BINumberDimension extends BIAbstractDimension {
         return new NumberDimensionCalculator(this, column, relations);
     }
 
+    @Override
+    public DimensionCalculator createCalculator(BusinessField column, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations) {
+        return new NumberDimensionCalculator(this, column, relations, directToDimensionRelations);
+    }
+
 
     @Override
     public Object getValueByType(Object data) {
-        if (group.getType() == BIReportConstant.GROUP.ID_GROUP){
+        if (group.getType() == BIReportConstant.GROUP.ID_GROUP) {
             return data == null ? null : Double.parseDouble(data.toString());
         }
         return data == null ? StringUtils.EMPTY : data.toString();
