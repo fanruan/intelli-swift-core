@@ -7,10 +7,8 @@ import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
-import com.fr.bi.common.BIMD5CoreWrapper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.*;
@@ -22,7 +20,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import javax.activation.UnsupportedDataTypeException;
 import java.util.*;
 
 /**
@@ -54,6 +51,9 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return fetchObjectCore().getIDValue();
     }
 
+    protected void clearCore(){
+        this.core = null;
+    }
     @Override
     public BICore fetchObjectCore() {
         if (core == null || core == BIBasicCore.EMPTY_CORE){
@@ -69,6 +69,8 @@ public abstract class AbstractTableSource implements CubeTableSource {
             }
         }
         return core;
+
+
     }
 
     //重新获取数据 guy
@@ -288,9 +290,6 @@ public abstract class AbstractTableSource implements CubeTableSource {
         dbTable = null;
     }
 
-    public void setMd5(String md5) {
-//        this.md5 = md5;
-    }
 
     @Override
     public Object clone() {
@@ -361,16 +360,6 @@ public abstract class AbstractTableSource implements CubeTableSource {
         Map<BICore, CubeTableSource> map = new HashMap<BICore, CubeTableSource>();
         map.put(fetchObjectCore(), this);
         return map;
-    }
-
-    public class BITableSourceCore extends BIMD5CoreWrapper {
-        public BITableSourceCore(Object... attributes) throws UnsupportedDataTypeException, BIAmountLimitUnmetException {
-            this("");
-        }
-
-        public BITableSourceCore(String md5) throws UnsupportedDataTypeException, BIAmountLimitUnmetException {
-            super(md5);
-        }
     }
 
     @Override

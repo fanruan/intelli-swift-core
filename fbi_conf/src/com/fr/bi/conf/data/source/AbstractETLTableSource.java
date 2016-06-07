@@ -58,10 +58,6 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
         this.parents = parents;
     }
 
-    public void setOperators(List<O> operators) {
-        this.oprators = operators;
-    }
-
     public O getETLOperator(BICore core) {
         for (int i = 0; i < oprators.size(); i++) {
             if (ComparatorUtils.equals(oprators.get(i).fetchObjectCore(), core)) {
@@ -75,10 +71,6 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
         return oprators;
     }
 
-
-    public void setParents(List<S> parents) {
-        this.parents = parents;
-    }
 
     @Override
     public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
