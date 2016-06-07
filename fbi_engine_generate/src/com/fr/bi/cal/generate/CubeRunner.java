@@ -64,6 +64,7 @@ public class CubeRunner {
 
                         } catch (Exception e) {
                             BILogger.getLogger().error(e.getMessage(), e);
+//                            StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class).errorTable();
                         } finally {
                             cubeTask.end();
                             finish();

@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
+//tod kary 现在只能监听cube生成过程中产生的异常，后期可考虑监听所有和cube相关的异常
 public class BILogManager implements BILogManagerProvider {
 
 
