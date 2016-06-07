@@ -234,14 +234,14 @@ BI.ChartCombineFormatItemFactory = {
                 "hidden": true,
                 "toImage": {"enabled": true},
                 "sort": {"enabled": true},
-                "enabled": true,
+                "enabled": false,
                 "fullScreen": {"enabled": true}
             },
             "plotBorderWidth": 0,
             "colors": ["rgb(99,178,238)", "rgb(118,218,145)"],
             "borderRadius": 0,
             "borderWidth": 0,
-            "style": "gradual",
+            "style": "normal",
             "plotShadow": false,
             "plotBorderRadius": 0
         };

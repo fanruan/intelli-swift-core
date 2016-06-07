@@ -25,7 +25,7 @@ public class BICubeRelationEntityTest extends BICubeTestBase {
     public void testVersionWriteRead() {
         try {
             relationEntityService.addVersion(100);
-            assertEquals(100, relationEntityService.getVersion());
+            assertEquals(100, relationEntityService.getCubeVersion());
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

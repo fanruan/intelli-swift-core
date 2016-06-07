@@ -151,7 +151,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public long getTableVersion(BIKey key) {
-        return  primaryTable.getVersion();
+        return  primaryTable.getCubeVersion();
     }
 
     @Override

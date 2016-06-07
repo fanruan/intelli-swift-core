@@ -111,15 +111,15 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 long version = 10;
                 property.addVersion(version);
-                assertEquals(version,property.getVersion());
+                assertEquals(version,property.getCubeVersion());
 
                 version = 100;
                 property.addVersion(version);
-                assertEquals(version,property.getVersion());
+                assertEquals(version,property.getCubeVersion());
 
                 version = 1;
                 property.addVersion(version);
-                assertEquals(version,property.getVersion());
+                assertEquals(version,property.getCubeVersion());
             } catch (Exception e) {
                 assertFalse(true);
             } finally {

@@ -9,6 +9,9 @@ import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.stable.bridge.StableFactory;
 import junit.framework.TestCase;
 
 /**
@@ -23,6 +26,7 @@ public class BICubeTestBase extends TestCase {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     protected BICubeTableEntity tableEntity;
+    protected BILogManager biLogManager;
 
     @Override
     protected void setUp() throws Exception {
@@ -31,6 +35,8 @@ public class BICubeTestBase extends TestCase {
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         tableEntity = (BICubeTableEntity) cube.getCubeTableWriter(BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()));
+        StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
+         biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
     }
 
     public void testVoid() {

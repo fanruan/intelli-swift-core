@@ -9,7 +9,6 @@ import com.fr.stable.xml.XMLReadable;
 import com.fr.stable.xml.XMLableReader;
 
 import java.beans.IntrospectionException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
@@ -140,7 +139,7 @@ public abstract class XMLValueReader {
     }
 
     protected Object constructArrayObject(Class clazz, int size) {
-        return Array.newInstance(clazz, size);
+        return BIConstructorUtils.constructArrayObject(clazz, size);
     }
 
     private BIBeanXMLReaderWrapper getGeneratedWrapper(String uuid) {

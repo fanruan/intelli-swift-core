@@ -45,7 +45,8 @@ public class BusinessFieldSource extends BIBasicDataSource<BIFieldID, BusinessFi
 
     @Override
     public void editBusinessField(BIFieldID id, BusinessField source) throws BIKeyDuplicateException, BIKeyAbsentException {
-        editBusinessField(id, source);
+        removeSource(id);
+        addBusinessField(id, source);
     }
 
     @Override

@@ -54,17 +54,15 @@ public class AnalysisETLSourceFactory {
                 BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, baseSource);
                 return baseSource;
             default :
-                AnalysisETLTableSource source = new AnalysisETLTableSource(fieldList, name);
                 JSONArray parents = jo.getJSONArray("parents");
                 List<AnalysisCubeTableSource> ps = new ArrayList<AnalysisCubeTableSource>();
                 for (int i = 0; i < parents.length(); i ++){
                     ps.add(createOneTableSource(parents.getJSONObject(i), userId));
                 }
+                AnalysisETLTableSource source = new AnalysisETLTableSource(fieldList, name,AnalysisETLOperatorFactory.createOperatorsByJSON(jo, userId), ps );
                 if (jo.has("invalidIndex")){
-                    source.setInvalidIndex(jo.getInt("invalidIndex"));
-                }
-                source.setParents(ps);
-                source.setOperators(AnalysisETLOperatorFactory.createOperatorsByJSON(jo, userId));
+                source.setInvalidIndex(jo.getInt("invalidIndex"));
+            }
                 return source;
         }
     }

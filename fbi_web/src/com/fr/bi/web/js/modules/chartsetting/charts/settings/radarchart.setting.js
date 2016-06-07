@@ -1,7 +1,7 @@
 /**
  * @class BI.RadarChartSetting
  * @extends BI.Widget
- * 百分比堆积，百分比柱状样式
+ * 雷达，堆积雷达样式
  */
 BI.RadarChartSetting = BI.inherit(BI.Widget, {
 
@@ -41,20 +41,42 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
+        this.chartStyleGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
         this.chartTypeGroup = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.RADAR_CHART_STYLE_GROUP, {
-                type: "bi.text_button",
-                extraCls: "table-style-font",
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
                 width: this.constant.BUTTON_WIDTH,
-                height: this.constant.BUTTON_HEIGHT
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
             }),
             layouts: [{
-                type: "bi.left"
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
             }]
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -76,6 +98,17 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Table_Style"),
+                    cls: "attr-names",
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.chartStyleGroup]
                     },
                     lgap: this.constant.SIMPLE_H_GAP
                 }, {
@@ -303,6 +336,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.chartTypeGroup.setValue(BI.Utils.getWSChartRadarTypeByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
@@ -320,6 +354,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
+            chart_style: this.chartStyleGroup.getValue()[0],
             chart_radar_type: this.chartTypeGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
@@ -335,6 +370,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
+        this.chartStyleGroup.setValue(v.chart_style);
         this.chartTypeGroup.setValue(v.chart_radar_type);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.numberLevellY.setValue(v.left_y_axis_number_level);
