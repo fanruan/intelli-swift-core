@@ -53,7 +53,6 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                                 // self.cubeTree.populate(data);
                                 self.cubeTree.setText(JSON.stringify(data));
                             })
-
                         }
 
                     }]

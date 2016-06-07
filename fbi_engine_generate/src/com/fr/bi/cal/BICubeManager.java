@@ -1,12 +1,9 @@
 package com.fr.bi.cal;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeBuildStuffManager;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.base.provider.AllUserTravel;
-import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.BIUserUtils;
@@ -149,7 +146,6 @@ public class BICubeManager implements BICubeManagerProvider {
             @Override
             public void start(long userId) {
                 getCubeManager(userId).generateCubes();
-                
             }
         });
     }

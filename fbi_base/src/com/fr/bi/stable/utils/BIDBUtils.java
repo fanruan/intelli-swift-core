@@ -562,15 +562,28 @@ public class BIDBUtils {
         @SuppressWarnings("rawtypes")
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, columns);
         int ilen = dealers.length;
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        long columnTime=System.currentTimeMillis();
         while (rs.next()) {
             for (int i = 0; i < ilen; i++) {
                 Object value = dealers[i].dealWithResultSet(rs);
                 traversal.actionPerformed(new BIDataValue(row, i, value));
             }
             row++;
+            /*每运行一千行为column存取一次log
+            * 所有column时间一致*/
+            if (row%1024==0&&null != columns[0].getTableBelongTo().getPersistentTable()){
+                for (int i = 0; i < ilen; i++) {
+                        biLogManager.infoColumn(columns[0].getTableBelongTo().getPersistentTable(), columns[i].getFieldName(), System.currentTimeMillis() - columnTime, -999);
+                }
+            }
+        }
+        for (int i = 0; i < ilen; i++) {
+            biLogManager.infoColumn(columns[0].getTableBelongTo().getPersistentTable(), columns[i].getFieldName(), System.currentTimeMillis() - columnTime, -999);
         }
         return row;
     }
+
 
     public static long runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal) {
         return runSQL(sql, columns, traversal, 0);
@@ -588,8 +601,7 @@ public class BIDBUtils {
         ResultSet rs = null;
         try {
             BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-            long t=System.currentTimeMillis();
-            
+            long t = System.currentTimeMillis();
             conn = sql.getSqlConn();
             String originalCharSetName = connection.getOriginalCharsetName();
             String newCharSetName = connection.getNewCharsetName();

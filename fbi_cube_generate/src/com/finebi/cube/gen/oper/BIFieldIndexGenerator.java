@@ -62,7 +62,6 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t=System.currentTimeMillis();
-
         biLogManager.logIndexStart(-999);
         try {
             initial();

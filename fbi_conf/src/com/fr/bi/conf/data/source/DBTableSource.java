@@ -154,7 +154,7 @@ public class DBTableSource extends AbstractTableSource {
     public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
         long rowCount = 0;
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        long t=System.currentTimeMillis();
+        long t = System.currentTimeMillis();
         try {
             rowCount = BIDBUtils.runSQL(BIDBUtils.getSQLStatement(dbName, tableName), fields, new Traversal<BIDataValue>() {
                 @Override
@@ -166,10 +166,9 @@ public class DBTableSource extends AbstractTableSource {
                     }
                 }
             });
-            if(fields.length>0) {
+            if (fields.length > 0) {
                 biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, -999);
             }
-
         } catch (Throwable e) {
             BILogger.getLogger().error(e.getMessage(), e);
             throw new RuntimeException(e);

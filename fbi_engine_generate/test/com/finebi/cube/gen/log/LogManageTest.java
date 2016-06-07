@@ -13,7 +13,6 @@ public class LogManageTest extends BICubeTestBase {
     protected void setUp() throws Exception {
         super.setUp();
         biNationTablesTest = new BINationTablesTest();
-
     }
 
     public void testLog() {

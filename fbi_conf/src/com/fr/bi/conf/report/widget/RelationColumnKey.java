@@ -24,8 +24,6 @@ public class RelationColumnKey implements JSONCreator{
         this.relations = relations;
     }
 
-    
-
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */

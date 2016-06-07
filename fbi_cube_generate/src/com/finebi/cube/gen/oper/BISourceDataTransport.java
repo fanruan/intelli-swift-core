@@ -66,15 +66,7 @@ public class BISourceDataTransport extends BIProcessor {
 
         try {
             recordTableInfo();
-            /*column的log先暂时不分开录,一张表下所有column读取时间都一致*/
-            long columnTime=System.currentTimeMillis();
             long count = transport();
-            if (null!=tableSource.getPersistentTable()) {
-                long columneCostTime=System.currentTimeMillis()-columnTime;
-                for (ICubeFieldSource iCubeFieldSource : tableEntityService.getFieldInfo()) {
-                    biLogManager.infoColumn(tableSource.getPersistentTable(),iCubeFieldSource.getFieldName(),columneCostTime, -999);
-                }
-            }
             if (count >= 0) {
                 tableEntityService.recordRowCount(count);
                 tableEntityService.addVersion(version);

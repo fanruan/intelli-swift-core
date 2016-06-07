@@ -58,7 +58,6 @@ public class BuildCubeTask implements CubeTask {
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-
     }
 
 
@@ -93,7 +92,6 @@ public class BuildCubeTask implements CubeTask {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
         }
     }
@@ -102,8 +100,6 @@ public class BuildCubeTask implements CubeTask {
     public void run() {
 
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-
-
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
         operationManager.initialWatcher();
 
