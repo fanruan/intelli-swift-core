@@ -73,13 +73,13 @@ public class BISourceDataTransport extends BIProcessor {
             }
             long tableCostTime=System.currentTimeMillis()-t;
             if (null!=tableSource.getPersistentTable()) {
-                biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, -999);
+                biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
 
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
             if (null!=tableSource.getPersistentTable()) {
-                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), -999);
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             }
         } finally {
             return null;

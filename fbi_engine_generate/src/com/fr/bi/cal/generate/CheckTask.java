@@ -5,7 +5,6 @@ import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.file.BIPathUtils;
-import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
 public class CheckTask extends AllTask {
@@ -22,7 +21,6 @@ public class CheckTask extends AllTask {
 
     @Override
     public JSONObject createJSON() throws Exception {
-        UserControl.getInstance().getSuperManagerID();
         return super.createJSON();
     }
 

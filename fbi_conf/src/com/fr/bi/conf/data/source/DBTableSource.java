@@ -27,6 +27,7 @@ import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.general.data.DataModel;
@@ -156,7 +157,7 @@ public class DBTableSource extends AbstractTableSource {
                 }
             });
             if (fields.length > 0) {
-                biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, -999);
+                biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, UserControl.getInstance().getSuperManagerID());
             }
         } catch (Throwable e) {
             BILogger.getLogger().error(e.getMessage(), e);

@@ -18,6 +18,7 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.bridge.StableFactory;
 
@@ -41,15 +42,15 @@ public class BIRelationIndexGenerator extends BIProcessor {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        biLogManager.logRelationStart(-999);
+        biLogManager.logRelationStart(UserControl.getInstance().getSuperManagerID());
         long t = System.currentTimeMillis();
         try {
             buildRelationIndex();
             long costTime = System.currentTimeMillis() - t;
-            biLogManager.infoRelation(getRelaionColumeKeyInfo(), costTime, -999);
+            biLogManager.infoRelation(getRelaionColumeKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
             return null;
         } catch (Exception e) {
-            biLogManager.errorRelation(getRelaionColumeKeyInfo(), e.getMessage(), -999);
+            biLogManager.errorRelation(getRelaionColumeKeyInfo(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
@@ -102,7 +103,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
     private Set<CubeTableSource> getAllTableSource() {
         Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
-        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(-999);
+        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(UserControl.getInstance().getSuperManagerID());
         for (IBusinessPackageGetterService pack : packs) {
             Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
             while (tIt.hasNext()) {

@@ -24,6 +24,7 @@ import com.fr.data.dao.RelationFCMapper;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.base.entity.PlatformManageModule;
 import com.fr.fs.control.EntryPoolFactory;
+import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
 import com.fr.fs.dao.EntryDAO;
 import com.fr.general.FRLogger;
@@ -60,7 +61,7 @@ public class BIPlate extends AbstractFSPlate {
         registerEntrySomething();
         initOOMKillerForLinux();
         BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
-        if (markedObject.checkCubeStatus(-999)) {
+        if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
             markedObject.generateCubes();
         }
     }

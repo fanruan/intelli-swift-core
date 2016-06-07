@@ -26,6 +26,7 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
@@ -88,7 +89,7 @@ public class BuildCubeTask implements CubeTask {
             BILogger.getLogger().error(e.getMessage(), e);
         }finally {
             try {
-                BIConfigureManagerCenter.getLogManager().createJSON(-999);
+                BIConfigureManagerCenter.getLogManager().createJSON(UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -143,7 +144,7 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public long getUserId() {
-        return -999;
+        return UserControl.getInstance().getSuperManagerID();
     }
 
     @Override
