@@ -2,6 +2,8 @@ package com.fr.bi.cal.stable.cube.memory;
 
 import com.fr.bi.base.ValueConverter;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.file.MemoryColumnFile;
@@ -9,6 +11,7 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.index.CubeGenerator;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -18,6 +21,8 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
+import com.fr.stable.StringUtils;
+import org.apache.jute.Index;
 
 import java.util.Comparator;
 import java.util.List;
@@ -91,15 +96,19 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     @Override
     public GroupValueIndex getIndexByRow(int row, SingleUserNIOReadManager manager) {
-        return createGroupByType(null, null, null).getGroupIndex(new Object[]{detail.get(row)})[0];
+        return  this.initGetter(new IndexKey(StringUtils.EMPTY)).getGroupIndex(new Object[]{detail.get(row)})[0];
     }
 
     @Override
     public ICubeColumnIndexReader createGroupByType(BIKey key, List<BITableSourceRelation> relationList, SingleUserNIOReadManager manager) {
+        return this.initGetter(key);
+    }
+
+    private ICubeColumnIndexReader initGetter (BIKey key) {
         if (getter == null){
             synchronized (getterLock){
                 if (getter == null){
-                    getter = createGroupByType(ValueConverter.DEFAULT , ComparatorFacotry.createASCComparator());
+                    getter = createGroupByType(key, ValueConverter.DEFAULT , ComparatorFacotry.createASCComparator());
                 }
             }
         }
@@ -113,7 +122,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
 
 
-    public CubeTreeMap createGroupByType(ValueConverter converter, Comparator comparator) {
+    public CubeTreeMap createGroupByType(BIKey key, ValueConverter converter, Comparator comparator) {
         CubeTreeMap getter = new CubeTreeMap(comparator);
         Map<Object, IntList> treeMap = new TreeMap<Object, IntList>();
         for (int i = 0; i < detail.size(); i ++){
@@ -121,9 +130,12 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
             Object value = t;
             if(t != null) {
                 value = converter.result2Value(t);
+                if(value instanceof Integer) {
+                    value = ((Integer) value).longValue();
+                }
             }
             if(value == null) {
-                value = createEmptyValue();
+                value = createEmptyValue(key);
             }
             IntList list = treeMap.get(value);
             if (list == null) {
@@ -138,7 +150,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         return getter;
     }
 
-    protected abstract  T createEmptyValue();
+    protected abstract Object createEmptyValue(BIKey key);
 
     @Override
     public IndexFile getLinkIndexFile(BIKey key, List list) {

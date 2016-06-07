@@ -1,5 +1,6 @@
 package com.fr.bi.cal.stable.cube.memory;
 
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -15,11 +16,16 @@ public class MemoryDoubleColumn extends AbstractSingleMemoryColumn<Double> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Double>();
+        detail = new AnyIndexArray<Double>(new NullChecker<Double>() {
+            @Override
+            public boolean isNull(Double v) {
+                return v == null || Double.isNaN(v);
+            }
+        });
     }
 
 
-    protected   Double createEmptyValue() {
+    protected   Object createEmptyValue(BIKey key) {
         return Double.NaN;
     }
 }

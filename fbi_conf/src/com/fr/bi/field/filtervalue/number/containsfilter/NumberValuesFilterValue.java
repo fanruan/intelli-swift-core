@@ -97,7 +97,19 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
                 }
             }
             return v;
-        } else {
+        } if(firstKey instanceof Integer) {
+            Iterator<Double> iter = valueSet.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                Double d = iter.next();
+                if(Double.isNaN(d)) {
+                    v[i++] = Integer.MAX_VALUE;
+                } else {
+                    v[i++] = d.intValue();
+                }
+            }
+            return v;
+        }else {
             return  valueSet.toArray(new Double[valueSet.size()]);
         }
     }
