@@ -3,6 +3,7 @@ package com.fr.bi.conf.base.cube;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.field.BusinessFieldHelper;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -46,7 +47,7 @@ public class BICubeConfManager {
 
     public Object getFieldValue(long userId) {
         try {
-            BusinessField field = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(loginField));
+            BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(loginField));
             CubeTableSource source = field.getTableBelongTo().getTableSource();
             Set set = source.getFieldDistinctNewestValues(field.getFieldName(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
             return set;
