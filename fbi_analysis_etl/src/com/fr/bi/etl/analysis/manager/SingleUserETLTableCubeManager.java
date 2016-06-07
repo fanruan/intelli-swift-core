@@ -68,7 +68,7 @@ public class SingleUserETLTableCubeManager implements Release {
 					updateTask.setCheck(new BrokenTraversal<UserETLUpdateTask>() {
 						@Override
 						public boolean actionPerformed(UserETLUpdateTask data) {
-							return checkCubePath();
+							return checkCubePath(data.getPath());
 						}
 					});
 					updateTask.setTraversal(new Traversal<UserETLUpdateTask>() {
@@ -102,12 +102,12 @@ public class SingleUserETLTableCubeManager implements Release {
 	}
 	
 	
-    private boolean checkCubePath() {
-        return BIFileUtils.checkDir(new File(BIPathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue())));
+    private boolean checkCubePath(String path) {
+        return BIFileUtils.checkDir(new File(BIPathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue()), path));
     }
 	
 	protected boolean checkVersion(){
-        if (tq.isEmpty() || !updateTask.isEmpty()){
+        if (tq.isEmpty()){
             return false;
         } else {
             long version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));

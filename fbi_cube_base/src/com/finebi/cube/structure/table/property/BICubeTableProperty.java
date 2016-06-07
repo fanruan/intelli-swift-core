@@ -376,9 +376,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         return null;
     }
 
-    @Override
-    public long getVersion() {
-        return version.getVersion();
+    public long getCubeVersion() {
+        return version.getCubeVersion();
     }
 
     @Override

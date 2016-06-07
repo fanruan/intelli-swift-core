@@ -235,9 +235,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         return hostTable.getFieldNamesFromParent();
     }
 
-    @Override
-    public long getVersion() {
-        return hostTable.getVersion();
+    public long getCubeVersion() {
+        return hostTable.getCubeVersion();
     }
 
     @Override

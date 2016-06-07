@@ -6,10 +6,13 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.connection.DirectTableConnection;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -18,6 +21,7 @@ import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class BIConfUtils {
     public static DirectTableConnection createDirectTableConnection(List<BITableSourceRelation> relation, ICubeDataLoader loader) {
@@ -34,6 +38,8 @@ public class BIConfUtils {
         }
         return temp;
     }
+
+
 
     public static DirectTableConnection createDirectTableConnection(BITableSourceRelation[] relationList, ICubeDataLoader loader) {
         DirectTableConnection temp = null;

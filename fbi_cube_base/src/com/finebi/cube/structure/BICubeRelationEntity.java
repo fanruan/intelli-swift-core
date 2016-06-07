@@ -67,9 +67,8 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
         return indexDataService.isEmpty();
     }
 
-    @Override
-    public long getVersion() {
-        return version.getVersion();
+    public long getCubeVersion() {
+        return version.getCubeVersion();
     }
 
     @Override

@@ -148,9 +148,8 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         indexDataService.addNULLIndex(position, groupValueIndex);
     }
 
-    @Override
-    public long getVersion() {
-        return cubeVersion.getVersion();
+    public long getCubeVersion() {
+        return cubeVersion.getCubeVersion();
     }
 
     @Override
