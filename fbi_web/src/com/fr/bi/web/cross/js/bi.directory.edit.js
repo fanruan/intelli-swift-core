@@ -1,7 +1,7 @@
 ;(function ($) {
     FS.Plugin.DirectoryContentEditor.push({
 
-        acceptType: function (type) {
+        acceptTypeByString: function (type) {
             return type == 'bi';
         },
 
@@ -66,5 +66,46 @@
             });
         }
 
+    });
+
+    FS.Plugin.EntrySupporter.push({
+
+        cacheData : [],
+
+        acceptTypeByNumber : function (type) {
+            return '7' == type;
+        },
+
+        ui : function (hyperLinkIndex) {
+            var catalogs = [FR.i18nText("FS-Generic-WF_Name"), FR.i18nText("FS-Report-BI_Analysis")];
+            var catalogWidths = [156, 300];
+            var tName = 'bi';
+            this.biTable = this.createTable(catalogs, catalogWidths, tName, hyperLinkIndex).hide();
+            return this.biTable;
+        },
+
+        update : function (data) {
+            this.cacheData.push(data);
+        },
+
+        populate : function () {
+            var data = this._getData();
+            FS.REPORTMGR.biTable.popTableData(data, this.cacheData);
+            //  需要清空缓存的值
+            this.cacheData = [];
+        },
+
+        _getData : function () {
+            var result = [];
+            for (var i = 0, len = this.cacheData.length; i < len; i++) {
+                var file = this.cacheData[i];
+                var fileData = [file.text, {reportName:file.reportName, reportId:file.reportId}, file.id];
+                result.push(fileData);
+            }
+            return result;
+        },
+        fillCoverData : function () {
+            return 'bireport';
+        }
     });
 })(jQuery);
