@@ -5,6 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -24,6 +25,8 @@ public class SingleUserBIRecord implements BIRecord {
     private Date cube_end;
     private Date index_start;
     private long userId;
+    private Set<CubeTableSource> cubeTableSourceSet;
+    private Set<BITableSourceRelation> biTableSourceRelationSet;
 
     SingleUserBIRecord(long userId) {
         this.userId = userId;
