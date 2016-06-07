@@ -44,7 +44,6 @@ public class BIUserCubeManager implements ICubeDataLoader {
     }
 
 
-
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
 
         return new BICubeTableAdapter(cube, tableSource);
@@ -89,5 +88,10 @@ public class BIUserCubeManager implements ICubeDataLoader {
     @Override
     public void clear() {
 
+    }
+
+    @Override
+    public long getVersion() {
+        return cube.getCubeVersion();
     }
 }
