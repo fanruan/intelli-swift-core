@@ -4,10 +4,12 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.TableData;
+import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.common.BIMD5CoreWrapper;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -35,6 +37,8 @@ public abstract class AbstractTableSource implements CubeTableSource {
     //表的唯一标识
     protected Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
     protected PersistentTable dbTable;
+    @BIIgnoreField
+    private BICore core;
 
     protected AbstractTableSource() {
 
@@ -52,7 +56,19 @@ public abstract class AbstractTableSource implements CubeTableSource {
 
     @Override
     public BICore fetchObjectCore() {
-        return new BICoreGenerator(this).fetchObjectCore();
+        if (core == null || core == BIBasicCore.EMPTY_CORE){
+            synchronized (this){
+                if (core == null){
+                    try {
+                        core =  new BICoreGenerator(this).fetchObjectCore();
+                    } catch (Exception e){
+                        BILogger.getLogger().error(e.getMessage(), e);
+                        core =  BIBasicCore.EMPTY_CORE;
+                    }
+                }
+            }
+        }
+        return core;
     }
 
     //重新获取数据 guy

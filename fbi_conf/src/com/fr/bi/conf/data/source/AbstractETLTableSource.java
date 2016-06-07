@@ -2,9 +2,7 @@ package com.fr.bi.conf.data.source;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
-import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
@@ -126,17 +124,6 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
         }
         return result;
     }
-
-    @Override
-    public BICore fetchObjectCore() {
-        try {
-            return new BICoreGenerator(this).fetchObjectCore();
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        }
-        return BIBasicCore.EMPTY_CORE;
-    }
-
 
     @Override
     public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {
