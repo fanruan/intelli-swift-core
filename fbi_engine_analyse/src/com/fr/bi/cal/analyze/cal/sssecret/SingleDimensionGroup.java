@@ -15,22 +15,27 @@ import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
+import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.AbstractTableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
+import com.fr.third.org.apache.poi.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeSet;
 
 
 /**
@@ -248,6 +253,32 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     private NewRootNodeChild getCurrentNodeChild(Entry entry) {
         Object keyValue = entry.getKey();
         GroupValueIndex gvi = (GroupValueIndex) entry.getValue();
+        //多对多
+        if (column.getDirectToDimensionRelationList().size() > 0) {
+            //默认第一个位置放的是主表
+            CubeTableSource primaryTableSource = column.getDirectToDimensionRelationList().get(0).getPrimaryTable();
+            ICubeFieldSource primaryFieldSource = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
+            final Set<String> keyValueSet = new LinkedHashSet<String>();
+            final ICubeColumnIndexReader dimensionGetter = getLoader().getTableIndex(column.getField().getTableBelongTo().getTableSource()).loadGroup(column.createKey());
+            ICubeColumnIndexReader primaryTableGetter = getLoader().getTableIndex(primaryTableSource).loadGroup(new IndexKey(primaryFieldSource.getFieldName()), column.getDirectToDimensionRelationList());
+            primaryTableGetter.getGroupIndex(new Object[]{keyValue})[0].Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    keyValueSet.add(dimensionGetter.getOriginalValue(row).toString());
+                }
+            });
+            String[] keyValueArray = keyValueSet.toArray(new String[keyValueSet.size()]);
+            String keyValueString = StringUtils.EMPTY;
+            for (int i = 0; i < keyValueArray.length; i++) {
+                if (i == keyValueArray.length - 1) {
+                    keyValueString += keyValueArray[i];
+                } else {
+                    keyValueString += keyValueArray[i] + ",";
+                }
+            }
+            keyValue = keyValueString;
+        }
+
         NewDiskBaseRootNodeChild childNode = new NewDiskBaseRootNodeChild(column, keyValue);
         childNode.setGroupValueIndex(root.getGroupValueIndex().AND(gvi));
         return childNode;

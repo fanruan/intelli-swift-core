@@ -84,6 +84,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
                 }
             }
         }
+		manager.addTask();
         return manager;
     }
 
