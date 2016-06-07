@@ -164,7 +164,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         CubeTableSource usedTableSource = getTableSourceFromField();
         BIKey usedColumnKey = dimension.createKey(field);
         //多对多处理,这里默认relationList的第一个关联是公共主表关联
-        if (getRelationList().size() > 0) {
+        if (getDirectToDimensionRelationList().size() > 0) {
             ICubeFieldSource primaryField = getRelationList().get(0).getPrimaryField();
             CubeTableSource primaryTableSource = primaryField.getTableBelongTo();
             //不用判断,直接从关联中取主键
