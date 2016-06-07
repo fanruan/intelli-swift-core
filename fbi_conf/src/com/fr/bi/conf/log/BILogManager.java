@@ -5,6 +5,7 @@ import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.GeneralContext;
@@ -15,7 +16,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
+//tod kary 现在只能监听cube生成过程中产生的异常，后期可考虑监听所有和cube相关的异常
+//edit kary 修改获取整体relation和cubetablesource的方法，以适应部分更新功能
 public class BILogManager implements BILogManagerProvider {
 
 
@@ -196,6 +198,22 @@ public class BILogManager implements BILogManagerProvider {
     public void loopRelation(Set<ArrayKey<BITableSourceRelation>> set, long userId) {
         getInstance(userId).loopRelation(set);
     }
+    /**
+     * 获取所有需要更新的relation信息
+     */
+    @Override
+    public Set<BITableSourceRelation> reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet) {
+        return biTableSourceRelationHashSet;
+    }
+    /**
+     * 获取所有需要更新的tableSource信息
+     */
+    @Override
+    public Set<CubeTableSource> cubeTableSourceSet(Set<CubeTableSource> cubeTableSources) {
+        return cubeTableSources;
+    }
+
+
 
     /**
      * 创建JSON

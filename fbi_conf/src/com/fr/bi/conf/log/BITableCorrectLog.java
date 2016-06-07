@@ -16,8 +16,8 @@ public class BITableCorrectLog extends BITableLog {
     private static final long serialVersionUID = 8556623220342935484L;
     private long getValueFromDB = -1L;
 
-    private long indexTime = -1L;
-
+    //    private long indexTime = -1L;
+    private long indexTime = 0L;
     private Map<String, BIColumnLog> columnList = new LinkedHashMap<String, BIColumnLog>();
 
 

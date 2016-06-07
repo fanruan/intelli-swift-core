@@ -89,7 +89,6 @@ public class BuildCubeTask implements CubeTask {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             try {
-                BIConfigureManagerCenter.getLogManager().createJSON(UserControl.getInstance().getSuperManagerID());
                 cube.addVersion(System.currentTimeMillis());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -116,6 +115,8 @@ public class BuildCubeTask implements CubeTask {
         operationManager.generateTableRelationPath(relationPathSet);
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
+            BIConfigureManagerCenter.getLogManager().reLationSet(cubeBuildStuff.getTableSourceRelationSet());
+            BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getAllSingleSources());
             router.deliverMessage(generateMessageDataSourceStart());
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);
