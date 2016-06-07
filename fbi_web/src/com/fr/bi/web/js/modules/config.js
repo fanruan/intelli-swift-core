@@ -1011,13 +1011,34 @@ BICst.PIE_CHART_STYLE_GROUP = [{
     value: BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE
 }];
 
-//雷达图线性
+//雷达图类性
 BICst.RADAR_CHART_STYLE_GROUP = [{
     cls: "radar-chart-style-polygon-icon",
     value: BICst.CHART_STYLE.POLYGON
 }, {
     cls: "radar-chart-style-circle-icon",
     value: BICst.CHART_STYLE.CIRCLE
+}];
+
+//仪表盘类型
+BICst.DASHBOARD_CHART_STYLE_GROUP = [{
+    cls: "dashboard-chart-style-360-icon",
+    value: BICst.CHART_STYLE.NORMAL
+}, {
+    cls: "dashboard-chart-style-180-icon",
+    value: BICst.CHART_STYLE.HALF_DASHBOARD
+}, {
+    cls: "dashboard-chart-style-percent-icon",
+    value: BICst.CHART_STYLE.PERCENT_DASHBOARD
+}, {
+    cls: "dashboard-chart-style-percent-scale-slot-icon",
+    value: BICst.CHART_STYLE.PERCENT_SCALE_SLOT
+}, {
+    cls: "dashboard-chart-style-vertical-tube-icon",
+    value: BICst.CHART_STYLE.VERTICAL_TUBE
+}, {
+    cls: "dashboard-chart-style-horizontal-tube-icon",
+    value: BICst.CHART_STYLE.HORIZONTAL_TUBE
 }];
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
@@ -1051,6 +1072,7 @@ BICst.DEFAULT_CHART_SETTING = {
     chart_line_type: BICst.CHART_STYLE.NORMAL,
     chart_pie_type: BICst.CHART_STYLE.NORMAL,
     chart_radar_type: BICst.CHART_STYLE.CIRCLE,
+    chart_dashboard_type: BICst.CHART_STYLE.NORMAL,
     chart_inner_radius: 0,
     chart_total_angle: BICst.PIE_ANGLES.TOTAL,
     left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
@@ -1058,10 +1080,12 @@ BICst.DEFAULT_CHART_SETTING = {
     right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    dashboard_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     right_y_axis_second_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     left_y_axis_unit: "",
+    dashboard_unit: "",
     x_axis_unit: "",
     right_y_axis_unit: "",
     right_y_axis_second_unit: "",

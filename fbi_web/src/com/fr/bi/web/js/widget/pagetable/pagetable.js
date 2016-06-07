@@ -191,9 +191,11 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_INIT);
+            self._dealWithPager();
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
+            self._dealWithPager();
         });
 
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {

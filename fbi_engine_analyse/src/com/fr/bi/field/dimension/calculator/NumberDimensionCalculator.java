@@ -24,6 +24,10 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
         super(dimension, column, relations);
     }
 
+    public NumberDimensionCalculator(BIDimension dimension, BusinessField field, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations) {
+        super(dimension, field, relations, directToDimensionRelations);
+    }
+
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
         ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
