@@ -37,7 +37,114 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
+        });
+
+        this.chartTypeGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.DASHBOARD_CHART_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+            self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
+        });
+
+        //数量级和单位
+        this.numberLevellY = BI.createWidget({
+            type: "bi.segment",
+            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: this.constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_LEVEL
+        });
+
+        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
+        });
+
+        this.LYUnit = BI.createWidget({
+            type: "bi.sign_editor",
+            width: this.constant.EDITOR_WIDTH,
+            height: this.constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            watermark: BI.i18nText("BI-Custom_Input")
+        });
+
+        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
+        });
+
+        var tableStyle = BI.createWidget({
+            type: "bi.horizontal",
+            cls: "single-line-settings",
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Table_Sheet_Style"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Type"),
+                    cls: "attr-names",
+                    lgap: this.constant.SIMPLE_H_GAP2
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.chartTypeGroup]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                })
+            }]
+        });
+
+        var lYAxis = BI.createWidget({
+            type: "bi.horizontal_adapt",
+            cls: "single-line-settings",
+            verticalAlign: "top",
+            lgap: this.constant.SIMPLE_H_GAP,
+            items: [{
+                type: "bi.label",
+                textHeight: 60,
+                text: BI.i18nText("BI-Dashboard"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Num_Level"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.numberLevellY]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Unit_Normal"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.LYUnit]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: this.constant.SIMPLE_H_GAP
+            }]
         });
 
         var otherAttr = BI.createWidget({
@@ -57,7 +164,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [otherAttr],
+            items: [tableStyle, lYAxis, otherAttr],
             hgap: 10
         })
     },
@@ -65,16 +172,25 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
     populate: function(){
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+        this.chartTypeGroup.setValue(BI.Utils.getWSChartDashboardTypeByID(wId));
+        this.numberLevellY.setValue(BI.Utils.getWSDashboardNumLevelByID(wId));
+        this.LYUnit.setValue(BI.Utils.getWSDashboardUnitByID(wId));
     },
 
     getValue: function(){
         return {
-            transfer_filter: this.transferFilter.isSelected()
+            transfer_filter: this.transferFilter.isSelected(),
+            chart_dashboard_type: this.chartTypeGroup.getValue()[0],
+            dashboard_number_level: this.numberLevellY.getValue()[0],
+            dashboard_unit: this.LYUnit.getValue()
         }
     },
 
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
+        this.chartTypeGroup.setValue(v.chart_dashboard_type);
+        this.numberLevellY.setValue(v.dashboard_number_level);
+        this.LYUnit.setValue(v.dashboard_unit);
     }
 });
 BI.DashboardChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
