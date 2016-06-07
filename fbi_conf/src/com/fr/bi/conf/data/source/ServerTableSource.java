@@ -11,6 +11,7 @@ import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
+import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.impl.DBTableData;
 import com.fr.file.DatasourceManager;
 import com.fr.general.data.DataModel;
@@ -48,7 +49,7 @@ public class ServerTableSource extends DBTableSource {
             }
             SqlSettedStatement settedStatement = new SqlSettedStatement(((DBTableData) tableData).getDatabase());
             settedStatement.setSql("SELECT distinct " + fieldName + " FROM " + "(" +((DBTableData) tableData).getQuery() + ") " + "t");
-            BIDBUtils.runSQL(settedStatement, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
+            BICubeDBUtils.runSQL(settedStatement, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue data) {
                     set.add(data.getValue());
@@ -175,7 +176,7 @@ public class ServerTableSource extends DBTableSource {
     private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, ICubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
         sql.setFrom( "(" + query + ") " + "t");
-        return BIDBUtils.runSQL(sql, fields, new Traversal<BIDataValue>() {
+        return BICubeDBUtils.runSQL(sql, fields, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
                 try {
