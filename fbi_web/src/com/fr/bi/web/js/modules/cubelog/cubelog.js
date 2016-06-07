@@ -16,13 +16,9 @@ BI.CubeLog = BI.inherit(BI.Widget, {
     _init: function () {
         BI.CubeLog.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        //  this.cubeTree = BI.createWidget({
-        //     type: "bi.cube_log_tree"
-        //    
-        // });
-         this.cubeTree = BI.createWidget({
-            type: "bi.label"
-           
+        this.cubeTree = BI.createWidget({
+            type: "bi.cube_log_tree"
+
         });
 
         BI.createWidget({
@@ -48,10 +44,9 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                         text: BI.i18nText("BI-Refresh"),
                         height: 28,
                         level: "ignore",
-                        handler: function(){
-                            BI.Utils.getCubeLog(function(data){
-                                // self.cubeTree.populate(data);
-                                self.cubeTree.setText(JSON.stringify(data));
+                        handler: function () {
+                            BI.Utils.getCubeLog(function (data) {
+                                self.cubeTree.populate(self._formatItems(data));
                             })
                         }
 
@@ -60,14 +55,104 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 height: 50
             }, self.cubeTree]
         });
-        BI.Utils.getCubeLog(function(data){
-            // self.cubeTree.populate(data);
-            self.cubeTree.setText(JSON.stringify(data));
+        BI.Utils.getCubeLog(function (data) {
+            self.cubeTree.populate(self._formatItems(data));
         })
+    },
+
+    _formatSecond: function (time) {
+        if (time < 1000) {
+            return time + BI.i18nText("BI-Millisecond");
+        }
+        return time / 1000 + BI.i18nText("BI-Seconds");
+    },
+
+    _formatItems: function (data) {
+        var self = this;
+        //一些基本节点
+        var items = [{
+            id: BI.CubeLog.ERROR_MES_NODE,
+            pId: -1,
+            type: "bi.cube_log_wrong_info_node",
+            open: true,
+            isParent: true,
+            count: data.errors.length
+        }, {
+            id: BI.CubeLog.READ_DB_NODE,
+            pId: -1,
+            text: BI.i18nText("BI-Transfer_Data_Time"),
+            second: 0,
+            isParent: true
+        }, {
+            id: BI.CubeLog.INDEX_NODE,
+            pId: -1,
+            text: BI.i18nText("BI-Generate_Data_Time"),
+            second: 0,
+            isParent: true
+        }, {
+            id: BI.CubeLog.RELATION_NODE,
+            pId: -1,
+            text: BI.i18nText("BI-Field_Connection_Time"),
+            second: 0,
+            isParent: true
+        }];
+        var readDBTime = 0, createIndexTime = 0, createRelationTime = 0;
+        //错误信息
+        var errors = data.errors;
+        BI.each(errors, function (i, er) {
+            items.push({
+                id: BI.UUID(),
+                pId: BI.CubeLog.ERROR_MES_NODE,
+                text: er
+            })
+        });
+
+        //读取数据时间
+        var readDB = data.readingdb;
+        BI.each(readDB, function (i, table) {
+            items.push({
+                id: BI.UUID(),
+                pId: BI.CubeLog.READ_DB_NODE,
+                text: table.tableName + BI.i18nText("BI-Init_Fetch_Data") + self._formatSecond(table.time)
+            });
+            readDBTime += table.time
+        });
+
+        //生成索引时间
+        var createIndex = data.craeteindex;
+        BI.each(createIndex, function (i, index) {
+            items.push({
+                id: BI.UUID(),
+                pId: BI.CubeLog.INDEX_NODE,
+                text: ""
+            });
+            createIndexTime += index.time;
+        });
+
+        //关联
+        var relations = data.connections;
+        BI.each(relations, function (i, relation) {
+            items.push({
+                id: BI.UUID(),
+                pId: BI.CubeLog.RELATION_NODE,
+                text: BI.i18nText("BI-Relations") + "-"
+            });
+            createRelationTime += relation.time;
+        });
+        items[1].second = readDBTime;
+        items[2].second = createIndexTime;
+        items[3].second = createRelationTime;
+        return items;
     },
 
     populate: function () {
 
     }
+});
+BI.extend(BI.CubeLog, {
+    ERROR_MES_NODE: 1,
+    READ_DB_NODE: 2,
+    INDEX_NODE: 3,
+    RELATION_NODE: 4
 });
 $.shortcut('bi.cube_log', BI.CubeLog);

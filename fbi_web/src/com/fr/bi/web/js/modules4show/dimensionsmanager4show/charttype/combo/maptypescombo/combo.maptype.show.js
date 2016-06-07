@@ -1,12 +1,12 @@
 /**
  * Created by GUY on 2016/2/2.
  *
- * @class BI.MapTypeCombo
+ * @class BI.MapTypeComboShow
  * @extend BI.Widget
  */
-BI.MapTypeCombo = BI.inherit(BI.Widget, {
+BI.MapTypeComboShow = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.MapTypeCombo.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.MapTypeComboShow.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-map-type-combo",
             width: 25,
             height: 25
@@ -14,7 +14,7 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
     },
 
     _init: function () {
-        BI.MapTypeCombo.superclass._init.apply(this, arguments);
+        BI.MapTypeComboShow.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.trigger = BI.createWidget({
             type: "bi.icon_combo_trigger",
@@ -27,12 +27,12 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
             iconHeight: o.iconHeight
         });
         this.popup = BI.createWidget({
-            type: "bi.map_type_popup"
+            type: "bi.map_type_popup_show"
         });
         this.popup.on(BI.MapTypePopup.EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.mapTypeCombo.hideView();
-            self.fireEvent(BI.MapTypeCombo.EVENT_CHANGE);
+            self.fireEvent(BI.MapTypeComboShow.EVENT_CHANGE);
         });
         this.popup.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
@@ -65,7 +65,7 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
     },
 
     setEnable: function (v) {
-        BI.MapTypeCombo.superclass.setEnable.apply(this, arguments);
+        BI.MapTypeComboShow.superclass.setEnable.apply(this, arguments);
         this.mapTypeCombo.setEnable(v);
     },
 
@@ -73,5 +73,5 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
         return this.mapTypeCombo.getValue();
     }
 });
-BI.MapTypeCombo.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.map_type_combo", BI.MapTypeCombo);
+BI.MapTypeComboShow.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.map_type_combo_show", BI.MapTypeComboShow);
