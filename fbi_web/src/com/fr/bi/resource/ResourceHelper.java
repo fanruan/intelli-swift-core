@@ -80,7 +80,7 @@ public class ResourceHelper {
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
             for (IBusinessPackageGetterService p : packs) {
-                if(!authPacks.contains(p.getID())) {
+                if(UserControl.getInstance().getSuperManagerID() != userId && !authPacks.contains(p.getID())) {
                     continue;
                 }
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
