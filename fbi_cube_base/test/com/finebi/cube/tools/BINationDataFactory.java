@@ -4,7 +4,6 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +67,7 @@ public class BINationDataFactory {
         source.setFieldList(columns);
         source.setContents(content);
         source.setSourceID("nations");
+        source.getPersistentTable();
         return source;
     }
 }

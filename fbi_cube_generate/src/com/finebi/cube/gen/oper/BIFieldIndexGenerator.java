@@ -7,12 +7,17 @@ import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
+import com.fr.bi.cal.log.BILogManager;
+import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
+import com.fr.stable.bridge.StableFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -56,9 +61,24 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        initial();
-        buildTableIndex();
-        return null;
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        long t=System.currentTimeMillis();
+        biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
+        try {
+            initial();
+            buildTableIndex();
+            long costTime=System.currentTimeMillis()-t;
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.infoTableIndex(tableSource.getPersistentTable(), costTime, Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            }
+        } finally {
+            return null;
+        }
     }
 
     @Override

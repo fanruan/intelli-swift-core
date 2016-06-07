@@ -16,8 +16,13 @@ BI.CubeLog = BI.inherit(BI.Widget, {
     _init: function () {
         BI.CubeLog.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var cubeTree = BI.createWidget({
-            type: "bi.cube_log_tree"
+        //  this.cubeTree = BI.createWidget({
+        //     type: "bi.cube_log_tree"
+        //    
+        // });
+         this.cubeTree = BI.createWidget({
+            type: "bi.label"
+           
         });
 
         BI.createWidget({
@@ -42,14 +47,22 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                         type: "bi.button",
                         text: BI.i18nText("BI-Refresh"),
                         height: 28,
-                        level: "ignore"
+                        level: "ignore",
+                        handler: function(){
+                            BI.Utils.getCubeLog(function(data){
+                                // self.cubeTree.populate(data);
+                                self.cubeTree.setText(JSON.stringify(data));
+                            })
+                        }
+
                     }]
                 },
                 height: 50
-            }, cubeTree]
+            }, self.cubeTree]
         });
-        BI.Utils.getCubeLog(function(){
-
+        BI.Utils.getCubeLog(function(data){
+            // self.cubeTree.populate(data);
+            self.cubeTree.setText(JSON.stringify(data));
         })
     },
 
