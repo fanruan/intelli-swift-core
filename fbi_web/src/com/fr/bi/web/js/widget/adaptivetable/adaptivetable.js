@@ -233,6 +233,15 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             if (sumLeft < regionColumnSize[0] || regionColumnSize[0] >= (sumLeft + sumRight)) {
                 this.table.setRegionColumnSize([sumLeft, "fill"]);
             }
+            var maxWidth = this.table.element.width();
+            if (regionColumnSize[0] < 15 || regionColumnSize[1] < 15) {
+                var freezeCols = o.freezeCols;
+                if (freezeCols.length > 0) {
+                    this.table.setRegionColumnSize([maxWidth * 1.0 / 3, "fill"]);
+                } else {
+                    this.table.setRegionColumnSize([0, "fill"]);
+                }
+            }
         }
     },
 
