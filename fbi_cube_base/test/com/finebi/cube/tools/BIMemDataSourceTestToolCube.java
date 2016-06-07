@@ -646,7 +646,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
 
     @Override
     public IPersistentTable getPersistentTable() {
-        return  new PersistentTable(StringUtils.EMPTY,getTableName()+UUID.randomUUID().toString(), StringUtils.EMPTY);
+        return  new PersistentTable(StringUtils.EMPTY,getTableName(), StringUtils.EMPTY);
     }
 
     @Override

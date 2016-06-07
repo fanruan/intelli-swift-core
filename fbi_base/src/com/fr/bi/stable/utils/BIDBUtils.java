@@ -572,7 +572,7 @@ public class BIDBUtils {
             row++;
             /*每运行一千行为column存取一次log
             * 所有column时间一致*/
-            if (row%1024==0&&null != columns[0].getTableBelongTo().getPersistentTable()){
+            if (row%1000==0&&null != columns[0].getTableBelongTo().getPersistentTable()){
                 for (int i = 0; i < ilen; i++) {
                         biLogManager.infoColumn(columns[0].getTableBelongTo().getPersistentTable(), columns[i].getFieldName(), System.currentTimeMillis() - columnTime, -999);
                 }

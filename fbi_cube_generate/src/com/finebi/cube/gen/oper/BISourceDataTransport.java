@@ -63,7 +63,6 @@ public class BISourceDataTransport extends BIProcessor {
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t=System.currentTimeMillis();
-
         try {
             recordTableInfo();
             long count = transport();
@@ -74,7 +73,6 @@ public class BISourceDataTransport extends BIProcessor {
             long tableCostTime=System.currentTimeMillis()-t;
             if (null!=tableSource.getPersistentTable()) {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
-
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
