@@ -2,6 +2,7 @@ package com.fr.bi.field.target.target;
 
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.field.BusinessFieldHelper;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -30,7 +31,7 @@ public class BICounterTarget extends BISummaryTarget {
             /**
              * Connery：
              */
-            BusinessField field = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(distinct_field_id));
+            BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(distinct_field_id));
             IPersistentTable table = field.getTableBelongTo().getTableSource().getPersistentTable();
             PersistentField c = table.getField(field.getFieldName());
             if (c == null) {
