@@ -1,6 +1,7 @@
 package com.fr.bi.cal.log;
 
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -317,7 +318,10 @@ public class SingleUserBIRecord implements BIRecord {
         }
 
     }
-
+    public int relationAmout(long userId) {
+        int size = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId).size();
+        return size;
+    }
     /**
      * 创建JSON
      *
@@ -350,6 +354,7 @@ public class SingleUserBIRecord implements BIRecord {
         res.put("tables", table_log);
         res.put("connections", connection_log);
         res.put("readingdb", reading_log);
+        res.put("realationamount",relationAmout(this.userId));
         dealWithLoopValue(loop);
         List<BITableLog> output = new ArrayList<BITableLog>();
         addTableLog(error, output);
