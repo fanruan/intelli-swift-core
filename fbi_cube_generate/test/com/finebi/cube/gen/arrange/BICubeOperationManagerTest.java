@@ -36,6 +36,9 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
 
     }
 
+    public BICubeOperationManagerTest() throws Exception {
+        super.setUp();
+    }
     public void testBasic() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();

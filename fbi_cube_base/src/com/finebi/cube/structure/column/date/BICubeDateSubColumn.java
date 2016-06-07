@@ -65,9 +65,8 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
         columnEntity.recordSizeOfGroup(size);
     }
 
-    @Override
-    public long getVersion() {
-        return columnEntity.getVersion();
+    public long getCubeVersion() {
+        return columnEntity.getCubeVersion();
     }
 
     @Override

@@ -4,11 +4,12 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
-import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.CubeConstant;
@@ -19,6 +20,7 @@ import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.SybaseDialect;
@@ -26,11 +28,13 @@ import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -73,16 +77,6 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public IPersistentTable reGetBiTable() {
         return super.reGetBiTable();
-    }
-
-    @Override
-    public BICore fetchObjectCore() {
-        try {
-            return new BICoreGenerator(this).fetchObjectCore();
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        }
-        return BIBasicCore.EMPTY_CORE;
     }
 
     public static void main(String[] args) {
@@ -150,8 +144,10 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
         long rowCount = 0;
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        long t = System.currentTimeMillis();
         try {
-            rowCount = BIDBUtils.runSQL(BIDBUtils.getSQLStatement(dbName, tableName), fields, new Traversal<BIDataValue>() {
+            rowCount = BICubeDBUtils.runSQL(BIDBUtils.getSQLStatement(dbName, tableName), fields, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue v) {
                     try {
@@ -161,6 +157,9 @@ public class DBTableSource extends AbstractTableSource {
                     }
                 }
             });
+            if (fields.length > 0) {
+                biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, UserControl.getInstance().getSuperManagerID());
+            }
         } catch (Throwable e) {
             BILogger.getLogger().error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -186,7 +185,7 @@ public class DBTableSource extends AbstractTableSource {
         if (field == null) {
             return set;
         }
-        BIDBUtils.runSQL(BIDBUtils.getDistinctSQLStatement(dbName, tableName, fieldName), new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
+        BICubeDBUtils.runSQL(BIDBUtils.getDistinctSQLStatement(dbName, tableName, fieldName), new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 set.add(data.getValue());

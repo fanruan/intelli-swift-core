@@ -222,8 +222,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public long getVersion() {
+    public long getCubeVersion() {
         throw new UnsupportedOperationException();
     }
 

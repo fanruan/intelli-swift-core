@@ -9,7 +9,7 @@ import com.fr.bi.common.inter.Release;
  * @since 4.0
  */
 public interface ICubeVersion extends Release {
-    long getVersion();
+    long getCubeVersion();
 
     void addVersion(long version);
 

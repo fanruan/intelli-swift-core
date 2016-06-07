@@ -21,10 +21,12 @@ import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
@@ -57,7 +59,6 @@ public class BuildCubeTask implements CubeTask {
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-
     }
 
 
@@ -74,6 +75,7 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
+        BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }
 
     @Override
@@ -85,6 +87,14 @@ public class BuildCubeTask implements CubeTask {
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
+        } finally {
+            try {
+                BIConfigureManagerCenter.getLogManager().createJSON(UserControl.getInstance().getSuperManagerID());
+                cube.addVersion(System.currentTimeMillis());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
         }
     }
 
@@ -92,8 +102,6 @@ public class BuildCubeTask implements CubeTask {
     public void run() {
 
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-
-
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
         operationManager.initialWatcher();
 
@@ -137,7 +145,7 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public long getUserId() {
-        return -999;
+        return UserControl.getInstance().getSuperManagerID();
     }
 
     @Override

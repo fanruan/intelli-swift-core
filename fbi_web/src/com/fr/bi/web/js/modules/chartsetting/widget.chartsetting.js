@@ -129,12 +129,20 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                 });
                 break;
             case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.COMPARE_AREA:
                 this.chartSetting = BI.createWidget({
-                    type: "bi.compare_chart_setting",
+                    type: "bi.compare_column_chart_setting",
                     wId: wId
                 });
-                this.chartSetting.on(BI.CompareChartsSetting.EVENT_CHANGE, function () {
+                this.chartSetting.on(BI.CompareColumnChartsSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.COMPARE_AREA:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.compare_area_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.CompareAreaChartsSetting.EVENT_CHANGE, function () {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;

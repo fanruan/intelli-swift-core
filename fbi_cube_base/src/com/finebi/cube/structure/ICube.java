@@ -33,7 +33,7 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
  * @see ICubeResourceRetrievalService 数据位置检索
  * @since 4.0
  */
-public interface ICube {
+public interface ICube extends ICubeVersion {
     /**
      * 获得表的操作接口
      *

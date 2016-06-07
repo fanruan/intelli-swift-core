@@ -16,6 +16,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BICollectionUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -164,7 +165,7 @@ public class BIBusinessTable implements BusinessTable {
                     break;
             }
         }
-        fields.put(getID().getIdentity() + BICubeConfigureCenter.getAliasManager().getTransManager(-999).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"), createCountField());
+        fields.put(getID().getIdentity() + BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"), createCountField());
         countList.add(createCountField());
         ja.put(stringList).put(numberList).put(dateList).put(countList);
         JSONObject result = new JSONObject();
@@ -188,11 +189,11 @@ public class BIBusinessTable implements BusinessTable {
     private JSONObject createCountField() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("field_type", DBConstant.COLUMN.COUNTER);
-        jo.put("field_name", BICubeConfigureCenter.getAliasManager().getTransManager(-999).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
+        jo.put("field_name", BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
         jo.put("table_id", getID().getIdentity());
         jo.put("is_usable", false);
         //记录数的id先暂时用拼接
-        jo.put("id", jo.optString("table_id") + BICubeConfigureCenter.getAliasManager().getTransManager(-999).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
+        jo.put("id", jo.optString("table_id") + BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
         return jo;
     }
 

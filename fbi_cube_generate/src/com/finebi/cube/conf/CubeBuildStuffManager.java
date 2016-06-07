@@ -114,7 +114,13 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
 
     @Override
     public Map<CubeTableSource, Long> getVersions() {
-        return new HashMap<CubeTableSource, Long>();
+        Set<CubeTableSource> allTable = getAllSingleSources();
+        Map<CubeTableSource, Long> result = new HashMap<CubeTableSource, Long>();
+        Long version = System.currentTimeMillis();
+        for (CubeTableSource table : allTable) {
+            result.put(table, version);
+        }
+        return result;
     }
 
     private Set<BITableRelation> filterRelation(Set<BITableRelation> tableRelationSet) {

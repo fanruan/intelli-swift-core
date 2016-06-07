@@ -42,20 +42,42 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
+        this.chartStyleGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
         this.chartTypeGroup = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.PIE_CHART_STYLE_GROUP, {
-                type: "bi.text_button",
-                extraCls: "table-style-font",
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
                 width: this.constant.BUTTON_WIDTH,
-                height: this.constant.BUTTON_HEIGHT
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
             }),
             layouts: [{
-                type: "bi.left"
+                type: "bi.vertical_adapt",
+                height: this.constant.SINGLE_LINE_HEIGHT
             }]
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
-            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -81,6 +103,17 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
                     lgap: this.constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
+                    text: BI.i18nText("BI-Table_Style"),
+                    cls: "attr-names",
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.chartStyleGroup]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
                     text: BI.i18nText("BI-Type"),
                     cls: "attr-names",
                     lgap: this.constant.SIMPLE_H_GAP2
@@ -101,7 +134,14 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
             type: "bi.sign_editor",
             width: this.constant.EDITOR_WIDTH,
             height: this.constant.EDITOR_HEIGHT,
-            cls: "unit-input"
+            cls: "unit-input",
+            errorText: BI.i18nText("BI-Please_Enter_Number_1_To_100"),
+            validationChecker: function(v){
+                if(BI.isNaturalNumber(v)){
+                    return BI.parseInt(v) <= 100 && BI.parseInt(v) >= 0;
+                }
+                return false;
+            }
         });
 
         this.innerRadius.on(BI.SignEditor.EVENT_CONFIRM, function(){
@@ -244,6 +284,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.chartTypeGroup.setValue(BI.Utils.getWSChartPieTypeByID(wId));
         this.totalAngle.setValue(BI.Utils.getWSChartTotalAngleByID(wId));
         this.innerRadius.setValue(BI.Utils.getWSChartInnerRadiusByID(wId));
@@ -256,6 +297,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
+            chart_style: this.chartStyleGroup.getValue()[0],
             chart_pie_type: this.chartTypeGroup.getValue()[0],
             chart_total_angle: this.totalAngle.getValue()[0],
             chart_inner_radius: this.innerRadius.getValue(),
@@ -267,6 +309,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
+        this.chartStyleGroup.setValue(v.chart_style);
         this.chartTypeGroup.setValue(v.chart_pie_type);
         this.totalAngle.setValue(v.chart_total_angle);
         this.innerRadius.setValue(v.chart_inner_radius);

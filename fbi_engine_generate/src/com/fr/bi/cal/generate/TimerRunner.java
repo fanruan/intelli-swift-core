@@ -45,7 +45,6 @@ public class TimerRunner {
                 public void run() {
                     CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManager(biUser);
                     CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser,cubeBuildStuff),biUser.getUserId());
-//                    CubeGenerationManager.getCubeManager().addTask(new AllTask(biUser.getUserId()), biUser.getUserId());
                 }
 
             }, startDate, scheduleTime);
@@ -62,7 +61,6 @@ public class TimerRunner {
                         public void run() {
                             CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable(action.getTableKey(),biUser.getUserId());
                             CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser,cubeBuildStuff),biUser.getUserId());
-//                            CubeGenerationManager.getCubeManager().addTask(new SingleTableTask(action.getTableKey(), biUser.getUserId()), biUser.getUserId());
                         }
                     };
                 }

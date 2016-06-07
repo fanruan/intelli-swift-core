@@ -376,13 +376,21 @@ BICst.TABLE_STYLE = {
 };
 
 BICst.CHART_STYLE = {
+    //类型
     NORMAL: 1,      //普通形态
     RIGHT_ANGLE: 2,        //直角线形
     CURVE: 3,     //曲线
     EQUAL_ARC_ROSE: 4, //等弧玫瑰图
     NOT_EQUAL_ARC_ROSE: 5, //不等弧玫瑰图
     CIRCLE: 6,          //圆形雷达
-    POLYGON: 7          //多边形雷达
+    POLYGON: 7,          //多边形雷达
+
+    //风格
+    STYLE_NORMAL: 8,       //普通风格
+    STYLE_GRADUAL: 9,      //渐变
+    STYLE_TRANSPARENT: 10,   //透明
+    STYLE_GRADUAL_HIGHLIGHT: 11, //渐变高亮
+    STYLE_3D: 12            //3d
 };
 
 BICst.PIE_ANGLES = {

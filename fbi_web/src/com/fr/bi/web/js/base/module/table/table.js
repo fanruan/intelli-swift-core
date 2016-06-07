@@ -309,7 +309,11 @@ BI.Table = BI.inherit(BI.Widget, {
             };
             var resizeResizer = function (size, position) {
                 var rowSize = self.getCalculateRegionRowSize();
+                var columnSize = self.getCalculateRegionColumnSize();
                 var height = rowSize[0] + rowSize[1];
+                if (size.width > columnSize[0] + columnSize[1] - 80) {
+                    size.width = columnSize[0] + columnSize[1] - 80;
+                }
                 resizer.element.css({
                     "left": position.left + "px",
                     "width": size.width + "px",
@@ -324,7 +328,7 @@ BI.Table = BI.inherit(BI.Widget, {
             if (isRight) {
                 var options = {
                     handles: "w",
-                    minWidth: 15,
+                    minWidth: 80,
                     helper: "clone",
                     start: function (event, ui) {
                         createResizer(ui.size, ui.position);
@@ -354,7 +358,7 @@ BI.Table = BI.inherit(BI.Widget, {
             } else {
                 var options = {
                     handles: "e",
-                    minWidth: 15,
+                    minWidth: 80,
                     helper: "clone",
                     start: function (event, ui) {
                         createResizer(ui.size, ui.position);

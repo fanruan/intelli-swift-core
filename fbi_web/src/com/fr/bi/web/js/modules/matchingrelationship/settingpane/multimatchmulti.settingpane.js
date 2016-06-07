@@ -234,8 +234,8 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
     setValue: function (v) {
         v = this._assertValue(v);
         this.lpath = v[0];
-        this.lpath = v[1];
-        this.pathChooser.setValue(this._unpackValueByValue(v));
+        this.rpath = v[1];
+        this.pathChooser.setValue(this._unpackValueByValue({lpath: this.lpath, rpath: this.rpath}));
     },
 
     getValue: function () {
