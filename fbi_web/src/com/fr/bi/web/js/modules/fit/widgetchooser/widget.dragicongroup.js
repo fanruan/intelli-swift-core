@@ -145,17 +145,15 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
             }
             var dragCombo = BI.createWidget({
                 type: "bi.icon_combo",
-                width: 36,
+                direction: "right",
+                adjustLength: -1,
                 height: 30,
-                iconClass: item.cls,
-                items: item.children,
-                iconWidth: 24,
-                iconHeight: 24,
+                width: 36,
+                minWidth: 50,
                 el: {
                     el: el
                 },
-                direction: "right",
-                adjustLength: -1
+                popup: childIcons
             });
             icons.push(dragCombo);
         });

@@ -12,6 +12,10 @@ BI.IconCombo = BI.inherit(BI.Widget, {
             height: 25,
             iconClass: "",
             el: {},
+            popup: {},
+            minWidth: 100,
+            maxWidth: 230,
+            maxHeight: 300,
             direction: "bottom",
             adjustLength: 3,//调整的距离
             adjustXOffset: 0,
@@ -34,7 +38,7 @@ BI.IconCombo = BI.inherit(BI.Widget, {
             iconWidth: o.iconWidth,
             iconHeight: o.iconHeight
         });
-        this.popup = BI.createWidget({
+        this.popup = BI.createWidget(o.popup, {
             type: "bi.icon_combo_popup",
             chooseType: o.chooseType,
             items: o.items
@@ -58,8 +62,9 @@ BI.IconCombo = BI.inherit(BI.Widget, {
             el: this.trigger,
             popup: {
                 el: this.popup,
-                maxWidth: 230,
-                maxHeight: 300
+                maxWidth: o.maxWidth,
+                maxHeight: o.maxHeight,
+                minWidth: o.minWidth
             }
         });
     },
