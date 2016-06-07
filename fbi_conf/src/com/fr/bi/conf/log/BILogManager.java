@@ -1,11 +1,10 @@
-package com.fr.bi.cal.log;
+package com.fr.bi.conf.log;
 
 
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.GeneralContext;
@@ -73,8 +72,7 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表错误日志
-     *
-     * @param table 表
+     *  @param table 表
      * @param text  内容
      */
     @Override
@@ -84,9 +82,8 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
-     *
      * @param table   表
-     * @param seconds 时间(秒)
+     * @param seconds  时间(秒)
      * @param percent 百分比
      */
     @Override
@@ -96,9 +93,8 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
-     *
      * @param table   表
-     * @param seconds 时间(秒)
+     * @param seconds  时间(秒)
      * @param percent 百分比
      */
     @Override
@@ -108,9 +104,8 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表读日志
-     *
-     * @param table   表
-     * @param seconds 时间(秒)
+     * @param table 表
+     * @param seconds  时间(秒)
      */
     @Override
     public void infoTableReading(IPersistentTable table, long seconds, long userId) {
@@ -119,8 +114,7 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
-     *
-     * @param table   表
+     * @param table 表
      * @param seconds 时间(秒)
      */
     @Override
@@ -130,8 +124,7 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
-     *
-     * @param table   表
+     * @param table 表
      * @param seconds 时间(秒)
      */
     @Override
@@ -142,7 +135,6 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
-     *
      * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
@@ -155,7 +147,6 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
-     *
      * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
@@ -167,8 +158,7 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 错误日志
-     *
-     * @param ck   列关键字
+     *  @param ck   列关键字
      * @param text 内容
      */
     @Override
@@ -178,9 +168,8 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 错误日志
-     *
      * @param ck      列关键字
-     * @param seconds 时间(秒)
+     * @param seconds  时间(秒)
      * @param percent 百分比
      */
     @Override
@@ -190,9 +179,8 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 错误日志
-     *
-     * @param ck      列关键字
-     * @param seconds 时间(秒)
+     *  @param ck 列关键字
+     * @param seconds  时间(秒)
      */
     @Override
     public void infoRelation(RelationColumnKey ck, long seconds, long userId) {

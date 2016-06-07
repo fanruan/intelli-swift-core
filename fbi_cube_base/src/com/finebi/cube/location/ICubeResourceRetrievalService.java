@@ -35,6 +35,8 @@ public interface ICubeResourceRetrievalService {
 
     ICubeResourceLocation retrieveResource(ITableKey table) throws BICubeResourceAbsentException;
 
+    ICubeResourceLocation retrieveRootResource(String sourceID) throws BICubeResourceAbsentException;
+
     /**
      * 获得关联的资源位置。
      *

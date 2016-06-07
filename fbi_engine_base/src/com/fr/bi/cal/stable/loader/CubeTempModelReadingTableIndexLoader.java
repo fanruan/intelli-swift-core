@@ -306,4 +306,9 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
         }
         return manager;
     }
+
+    @Override
+    public long getVersion() {
+        return 0;
+    }
 }

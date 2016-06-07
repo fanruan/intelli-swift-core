@@ -56,7 +56,7 @@ public class BICubeVersionTest extends TestCase {
             version.addVersion(1);
             assertTrue(version.isWriterAvailable());
             assertFalse(version.isReaderAvailable());
-            assertEquals(version.getVersion(), 1);
+            assertEquals(version.getCubeVersion(), 1);
             assertTrue(version.isWriterAvailable());
             assertTrue(version.isReaderAvailable());
         } catch (Exception e) {

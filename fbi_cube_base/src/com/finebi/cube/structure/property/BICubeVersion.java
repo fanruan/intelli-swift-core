@@ -27,8 +27,7 @@ public class BICubeVersion extends BICubeLongProperty implements ICubeVersion {
     }
 
 
-    @Override
-    public long getVersion() {
+    public long getCubeVersion() {
         try {
             return getReader().getSpecificValue(0);
         } catch (BIResourceInvalidException e) {
