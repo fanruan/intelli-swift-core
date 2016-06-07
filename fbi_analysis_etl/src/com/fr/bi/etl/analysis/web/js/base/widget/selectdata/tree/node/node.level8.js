@@ -30,7 +30,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             iconWidth: o.iconWidth,
             iconHeight: o.iconHeight
         })
-        var icon = BI.createWidget({
+        this.icon = BI.createWidget({
             type:"bi.center_adapt",
             cls : "icon-analysis-table",
             height: o.height,
@@ -93,7 +93,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                 el: this.checkbox
             }, {
                 width : 23,
-               el: icon
+               el: this.icon
             },{
                 el: this.text
             }, {
@@ -145,6 +145,19 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             }, 600)
         }
         this.loadingBar.setPercent(percent);
+    },
+
+    setEnable: function (b) {
+        BI.assert(b, [true, false]);
+        if (b === true) {
+            this.options.disabled = false;
+        } else if (b === false) {
+            this.options.disabled = true;
+        }
+        this.checkbox.setEnable(b);
+        this.text.setEnable(b);
+        this.icon.setEnable(b);
+        this.tip.setEnable(b);
     },
 
     doRedMark: function () {

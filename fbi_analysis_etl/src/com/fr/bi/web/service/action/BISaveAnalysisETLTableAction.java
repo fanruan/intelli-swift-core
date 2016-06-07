@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
-        long userId = ServiceUtils.getCurrentUserID(req);
+        final long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         String newId = WebUtils.getHTTPRequestParameter(req, "new_id");
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
@@ -48,11 +48,8 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
             table.setSource(source);
             table.setDescribe(oldTable.getDescribe());
         }
-        BICubeConfigureCenter.getAliasManager().persistData(userId);
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
         BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
-        BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-        BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
         BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
         JSONObject result = new JSONObject();
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
@@ -68,6 +65,13 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         result.put("tables", tables);
         result.put("fields", fields);
         WebUtils.printAsJSON(res, result);
+        new Thread (){
+            public void  run () {
+                BICubeConfigureCenter.getAliasManager().persistData(userId);
+                BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
+                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
+            }
+        }.start();
     }
 
     @Override
