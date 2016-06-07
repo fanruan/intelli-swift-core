@@ -47,16 +47,8 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
         return generated;
     }
 
-    public void setGenerated(T generated) {
-        this.generated = generated;
-    }
-
     public T getGenerating() {
         return generating;
-    }
-
-    public void setGenerating(T generating) {
-        this.generating = generating;
     }
 
     @Override
@@ -77,9 +69,7 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
     @Override
     public boolean add(T obj) {
         generatorQueue.add(obj);
-        synchronized (qThread) {
-            qThread.notifyAll();
-        }
+        notifyThread();
         return true;
     }
 

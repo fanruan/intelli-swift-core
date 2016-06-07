@@ -93,8 +93,15 @@ public abstract class AbstractTableSource implements CubeTableSource {
 
     @Override
     public JSONObject createPreviewJSONFromCube(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
-        ICubeTableService tableIndex = loader.getTableIndex(this);
-        return createPreviewJSONFromTableIndex(fields, tableIndex);
+        try {
+            ICubeTableService tableIndex = loader.getTableIndex(this);
+            return createPreviewJSONFromTableIndex(fields, tableIndex);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            loader.releaseCurrentThread();
+        }
+
     }
 
     public JSONObject createPreviewJSONFromTableIndex(ArrayList<String> fields, ICubeTableService tableIndex) throws Exception {

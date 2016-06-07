@@ -35,7 +35,7 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
 
     populate: function (data) {
         var self = this, o = this.options;
-        var value = data.value;
+        var value = data.value, fieldNames = data.fields;
         var fieldIds = BI.Utils.getFieldIDsOfTableID(BI.Utils.getTableIdByFieldID(o.value.field_id || o.value));
         var currentId = BI.isNotNull(o.value.group) ? (o.value.field_id + o.value.group.type) : o.value;
         var tableId = BI.Utils.getTableIdByFieldID(BI.isNotNull(o.value.field_id) ? o.value.field_id : o.value);
@@ -49,7 +49,8 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
         var dateGroup = [BICst.GROUP.Y, BICst.GROUP.S, BICst.GROUP.M, BICst.GROUP.W, BICst.GROUP.YMD, BICst.GROUP.YMDHMS];
         BI.each(sortedFieldIds, function (i, fId) {
             var fieldName = BI.Utils.getFieldNameByID(fId);
-            var index = fieldIds.indexOf(fId);
+            // var index = fieldIds.indexOf(fId);
+            var index = fieldNames.indexOf(fieldName);
             //日期类型特殊处理
             if (BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.DATE) {
                 var check = {};

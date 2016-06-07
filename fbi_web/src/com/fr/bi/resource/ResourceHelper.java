@@ -2,6 +2,7 @@ package com.fr.bi.resource;
 
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.BITableRelation;
@@ -19,9 +20,7 @@ import com.fr.stable.bridge.Transmitter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 读取各种资源的帮助类
@@ -60,14 +59,25 @@ public class ResourceHelper {
         JSONObject fields = new JSONObject();
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
+        List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
         try {
             groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
-            packages = BIModuleUtils.createPackJSON(userId, req.getLocale());
+            JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
+            //前台能看到的业务包
+            for(BIPackageID pId : authPacks){
+                if(allPacks.has(pId.getIdentityValue())){
+                    packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
+                }
+            }
+
             translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
             relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
             for (IBusinessPackageGetterService p : packs) {
+                if(!authPacks.contains(p.getID())) {
+                    continue;
+                }
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
                     JSONObject jo = t.createJSONWithFieldsInfo(BICubeManager.getInstance().fetchCubeLoader(userId));
                     JSONObject tableFields = jo.getJSONObject("tableFields");
@@ -1214,7 +1224,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/lineareachart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/barchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/scatterchart.setting.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/settings/comparechart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/comparecolumnchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/compareareachart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/dashboardchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/donutchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/fallaxischart.setting.js",
