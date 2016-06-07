@@ -10,6 +10,7 @@ import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -63,6 +64,10 @@ public class ResourceHelper {
         try {
             groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
+            //管理员
+            if(UserControl.getInstance().getSuperManagerID() == userId) {
+                packages = allPacks;
+            }
             //前台能看到的业务包
             for(BIPackageID pId : authPacks){
                 if(allPacks.has(pId.getIdentityValue())){
