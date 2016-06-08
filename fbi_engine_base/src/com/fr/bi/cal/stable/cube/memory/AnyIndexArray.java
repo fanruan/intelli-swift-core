@@ -10,12 +10,9 @@ public class AnyIndexArray<E>  {
 
     private int size;
 
-    private NullChecker<E> checker;
-
-    public AnyIndexArray(NullChecker<E> checker) {
+    public AnyIndexArray() {
         this.list = new Object[CAPACITY];
         size = 0;
-        this.checker = checker;
     }
 
     public int size() {
@@ -26,8 +23,7 @@ public class AnyIndexArray<E>  {
         if (index >= size || index < 0){
             throw new ArrayIndexOutOfBoundsException(index);
         }
-        E e =  (E) list[index];
-        return checker.isNull(e) ? null : e;
+        return (E) list[index];
     }
 
     public void add(int index, E element) {
@@ -35,7 +31,6 @@ public class AnyIndexArray<E>  {
             throw new ArrayIndexOutOfBoundsException(index);
         }
         checkIndex(index);
-        element = checker.isNull(element) ? null : element;
         list[index] = element;
         size = Math.max(size, index + 1);
     }

@@ -57,15 +57,40 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     }
 
     public GroupValueIndex getIndex(T groupValue) {
+        if (groupValue == null) {
+            return getNullValueIndex(groupValue);
+        } else {
+            return getNormalValueIndex(groupValue);
+        }
+    }
+
+    private GroupValueIndex getNormalValueIndex(T groupValue) {
         try {
-            int position = columnReaderService.getPositionOfGroup(groupValue);
-            //todo lookup 抛出异常代替返回-1
-            if (position == -1) {
-                return GVIFactory.createAllEmptyIndexGVI();
+            if (groupValue != null) {
+                int position = columnReaderService.getPositionOfGroup(groupValue);
+                //todo lookup 抛出异常代替返回-1
+                if (position == -1) {
+                    return GVIFactory.createAllEmptyIndexGVI();
+                }
+                return indexDataGetterService.getBitmapIndex(position);
+            } else {
+                throw BINonValueUtils.beyondControl("Please invoke Null value method");
+
             }
-            return indexDataGetterService.getBitmapIndex(position);
         } catch (BIResourceInvalidException e) {
             throw BINonValueUtils.beyondControl(e);
+        } catch (BICubeIndexException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    private GroupValueIndex getNullValueIndex(T groupValue) {
+        try {
+            if (groupValue == null) {
+                return columnReaderService.getNULLIndex(0);
+            } else {
+                throw BINonValueUtils.beyondControl("Please invoke Normal value method");
+            }
         } catch (BICubeIndexException e) {
             throw BINonValueUtils.beyondControl(e);
         }
