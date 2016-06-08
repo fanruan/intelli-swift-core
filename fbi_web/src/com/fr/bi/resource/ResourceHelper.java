@@ -1362,11 +1362,20 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.targetshow.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.detailshow.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/abstract.regionshow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.count.target.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.datedimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.numberdimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.stringdimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.target.combo.show.js",
+
+                //dimension show
+                "com/fr/bi/web/js/modules4show/dimension4show/abstract.dimensiontarget.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/abstract.dimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.numberdimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.datedimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.stringdimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.count.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.calculate.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detaildate.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailformula.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
 
                 //实时报表进度条
                 "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",
