@@ -12,9 +12,6 @@ import com.finebi.cube.structure.ICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.common.factory.BIMateFactory;
-import com.fr.bi.common.factory.IModuleFactory;
-import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -26,8 +23,6 @@ import com.fr.fs.control.UserControl;
  * @author Connery
  * @since 4.0
  */
-@BIMandatedObject(module = IModuleFactory.CUBE_BASE_MODULE, factory = BIMateFactory.CUBE_BASE
-        , implement = ICubeDataLoader.class)
 public class BIUserCubeManager implements ICubeDataLoader {
     private BIUser user;
     private ICube cube;
@@ -46,9 +41,9 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
 
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
-
         return new BICubeTableAdapter(cube, tableSource);
     }
+
 
     @Override
     public BIKey getFieldIndex(BusinessField column) {
