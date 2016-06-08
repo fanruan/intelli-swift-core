@@ -35,18 +35,7 @@ public class MemoryStringColumn extends AbstractSingleMemoryColumn<String> {
     }
 
     @Override
-    protected Object createEmptyValue(BIKey key) {
-        return StringUtils.EMPTY;
-    }
-
-
-    @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<String>(new NullChecker<String>() {
-            @Override
-            public boolean isNull(String s) {
-                return StringUtils.isEmpty(s);
-            }
-        });
+        detail = new AnyIndexArray<String>();
     }
 }

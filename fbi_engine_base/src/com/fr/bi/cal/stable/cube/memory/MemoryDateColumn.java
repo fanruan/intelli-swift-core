@@ -32,12 +32,7 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Long>(new NullChecker<Long>() {
-            @Override
-            public boolean isNull(Long v) {
-                return v ==null || v == Long.MAX_VALUE;
-            }
-        });
+        detail = new AnyIndexArray<Long>();
     }
 
     @Override
@@ -67,31 +62,6 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
         } else {
             return super.createGroupByType(key, relationList, manager);
         }
-    }
-
-    @Override
-    protected Object createEmptyValue(BIKey key) {
-//       if (key instanceof IndexTypeKey) {
-//           int type = ((IndexTypeKey) key).getType();
-//           switch (type) {
-//               case  BIReportConstant.GROUP.Y: {
-//                   return Integer.MAX_VALUE;
-//               }
-//               case BIReportConstant.GROUP.M: {
-//                   return Integer.MAX_VALUE;
-//               }
-//               case  BIReportConstant.GROUP.S: {
-//                   return Integer.MAX_VALUE;
-//               }
-//               case  BIReportConstant.GROUP.MD: {
-//                   return Integer.MAX_VALUE;
-//               }
-//               case  BIReportConstant.GROUP.W: {
-//                   return Integer.MAX_VALUE;
-//               }
-//           }
-//       }
-        return Long.MAX_VALUE;
     }
 
 

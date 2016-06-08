@@ -19,16 +19,7 @@ public class MemoryLongColumn extends AbstractSingleMemoryColumn<Long> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Long>(new NullChecker<Long>() {
-            @Override
-            public boolean isNull(Long v) {
-                return v ==null || v == Long.MAX_VALUE;
-            }
-        });
+        detail = new AnyIndexArray<Long>();
     }
 
-    @Override
-    protected Object createEmptyValue(BIKey key) {
-        return Long.MAX_VALUE;
-    }
 }
