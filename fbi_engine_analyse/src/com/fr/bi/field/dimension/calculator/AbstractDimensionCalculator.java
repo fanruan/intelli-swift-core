@@ -167,11 +167,8 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         if (getDirectToDimensionRelationList().size() > 0) {
             ICubeFieldSource primaryField = getRelationList().get(0).getPrimaryField();
             CubeTableSource primaryTableSource = primaryField.getTableBelongTo();
-            //不用判断,直接从关联中取主键
-//            if (!ComparatorUtils.equals(field.getTableBelongTo().getTableSource().getSourceID(), primaryTableSource.getSourceID())) {
             usedTableSource = primaryTableSource;
             usedColumnKey = new IndexKey(primaryField.getFieldName());
-//            }
         }
         ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);

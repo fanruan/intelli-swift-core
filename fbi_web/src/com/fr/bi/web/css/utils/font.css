@@ -3072,13 +3072,22 @@
   content: "\e6ab";
   color: #009de3;
 }
-.widget-combo-filter-font .b-font:before {
+.widget-tools-filter-font .b-font:before {
   content: "\e60f";
   color: #009de3;
 }
-.widget-combo-filter-font.native .b-font:before,
-.widget-combo-filter-font.disabled .b-font:before {
+.widget-tools-filter-font.native .b-font:before,
+.widget-tools-filter-font.disabled .b-font:before {
   content: "\e60f";
+  color: #009de3;
+}
+.widget-tools-clear-font .b-font:before {
+  content: "\e63d";
+  color: #009de3;
+}
+.widget-tools-clear-font.native .b-font:before,
+.widget-tools-clear-font.disabled .b-font:before {
+  content: "\e63d";
   color: #009de3;
 }
 .widget-combo-linkage-font .b-font:before {

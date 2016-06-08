@@ -3,7 +3,10 @@
  */
 BIShow.ContentWidgetModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
-        return BI.extend(BIShow.ContentWidgetModel.superclass._defaultConfig.apply(this, arguments), {});
+        return BI.extend(BIShow.ContentWidgetModel.superclass._defaultConfig.apply(this, arguments), {
+            style: {},
+            content: ""
+        });
     },
 
     _init: function () {

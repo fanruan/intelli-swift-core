@@ -82,25 +82,14 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
     _createTools: function(){
         var self = this;
         this.tools = BI.createWidget({
-            type: "bi.widget_combo",
-            cls: "operator-region",
-            wId: this.model.get("id")
+            type: "bi.icon_button",
+            cls: "widget-tools-clear-font show-tools",
+            title: BI.i18nText("BI-Clear_Selected_Value"),
+            width: 16,
+            height: 16
         });
-        this.tools.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
-            switch (type) {
-                case BICst.DASHBOARD_CONTROL_CLEAR:
-                    self._resetValue();
-                    break;
-                case BICst.DASHBOARD_WIDGET_RENAME:
-                    self.title.focus();
-                    break;
-                case BICst.DASHBOARD_WIDGET_COPY:
-                    self.model.copy();
-                    break;
-                case BICst.DASHBOARD_WIDGET_DELETE:
-                    self.model.destroy();
-                    break;
-            }
+        this.tools.on(BI.IconButton.EVENT_CHANGE, function(){
+            self._resetValue();
         });
         this.tools.setVisible(false);
     },

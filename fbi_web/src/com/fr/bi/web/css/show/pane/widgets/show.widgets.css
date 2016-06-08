@@ -44,3 +44,6 @@
 .bi-dashboard-widget .dashboard-title.active {
   cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
 }
+.bi-dashboard-widget .show-tools {
+  font-size: 16px;
+}

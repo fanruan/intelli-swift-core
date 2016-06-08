@@ -2,7 +2,7 @@ BIShow.DetailTableModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIShow.DetailTableModel.superclass._defaultConfig.apply(this), {
             name: "",
-            bounds: {},
+            bounds:{},
             type: BICst.WIDGET.DETAIL,
             dimensions: {},
             view: {},
@@ -11,12 +11,8 @@ BIShow.DetailTableModel = BI.inherit(BI.Model, {
         })
     },
 
-    _static: function () {
-
-    },
-
     change: function (changed) {
-        if (BI.has(changed, "detail")) {
+        if(BI.has(changed, "detail")){
             this.set(this.get("detail"));
         }
     },
@@ -29,7 +25,8 @@ BIShow.DetailTableModel = BI.inherit(BI.Model, {
                 view: this.get("view"),
                 type: this.get("type"),
                 page: this.get("page"),
-                settings: this.get("settings")
+                settings: this.get("settings"),
+                filter_value: this.get("filter_value")
             }
         }, {
             silent: true
