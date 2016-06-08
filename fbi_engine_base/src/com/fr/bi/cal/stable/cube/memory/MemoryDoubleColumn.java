@@ -16,16 +16,8 @@ public class MemoryDoubleColumn extends AbstractSingleMemoryColumn<Double> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Double>(new NullChecker<Double>() {
-            @Override
-            public boolean isNull(Double v) {
-                return v == null || Double.isNaN(v);
-            }
-        });
+        detail = new AnyIndexArray<Double>();
     }
 
 
-    protected   Object createEmptyValue(BIKey key) {
-        return Double.NaN;
-    }
 }

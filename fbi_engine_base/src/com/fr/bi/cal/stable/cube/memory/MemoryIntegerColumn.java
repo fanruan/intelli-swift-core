@@ -17,16 +17,7 @@ public class MemoryIntegerColumn extends AbstractSingleMemoryColumn<Integer> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Integer>(new NullChecker<Integer>() {
-            @Override
-            public boolean isNull(Integer v) {
-                return v ==null || v == Integer.MAX_VALUE;
-            }
-        });
+        detail = new AnyIndexArray<Integer>();
     }
 
-    @Override
-    protected Object createEmptyValue(BIKey key) {
-        return Integer.MAX_VALUE;
-    }
 }

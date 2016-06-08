@@ -19,8 +19,10 @@ import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
+import com.fr.stable.Constants;
 import com.fr.stable.StringUtils;
 import org.apache.jute.Index;
 
@@ -35,7 +37,7 @@ import java.util.TreeMap;
 public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<T> {
     private static final String UNSUPPORT = "MemoryColumn Not Support Group Key";
     private String fieldName;
-    protected CubeTreeMap getter;
+    protected ICubeColumnIndexReader getter;
     protected Object getterLock = new Object();
     protected AnyIndexArray<T> detail;
 
@@ -122,9 +124,10 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
 
 
-    public CubeTreeMap createGroupByType(BIKey key, ValueConverter converter, Comparator comparator) {
+    public ICubeColumnIndexReader createGroupByType(BIKey key, ValueConverter converter, Comparator comparator) {
         CubeTreeMap getter = new CubeTreeMap(comparator);
         Map<Object, IntList> treeMap = new TreeMap<Object, IntList>();
+        IntList nullList = new IntList();
         for (int i = 0; i < detail.size(); i ++){
             T t = detail.get(i);
             Object value = t;
@@ -134,23 +137,22 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
                     value = ((Integer) value).longValue();
                 }
             }
-            if(value == null) {
-                value = createEmptyValue(key);
+            if(value != null) {
+                IntList list = treeMap.get(value);
+                if (list == null) {
+                    list = new IntList();
+                    treeMap.put(value, list);
+                }
+                list.add(i);
+            } else {
+                nullList.add(i);
             }
-            IntList list = treeMap.get(value);
-            if (list == null) {
-                list = new IntList();
-                treeMap.put(value, list);
-            }
-            list.add(i);
         }
         for (Map.Entry<Object, IntList> entry : treeMap.entrySet()){
             getter.put(entry.getKey(), GVIFactory.createGroupVauleIndexBySimpleIndex(entry.getValue()));
         }
-        return getter;
+        return nullList.size() == 0 ? getter : new CubeIndexGetterWithNullValue(getter, GVIFactory.createGroupVauleIndexBySimpleIndex(nullList));
     }
-
-    protected abstract Object createEmptyValue(BIKey key);
 
     @Override
     public IndexFile getLinkIndexFile(BIKey key, List list) {
