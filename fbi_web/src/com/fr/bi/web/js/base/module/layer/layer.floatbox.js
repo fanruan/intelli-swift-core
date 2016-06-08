@@ -21,7 +21,22 @@ BI.FloatBox = BI.inherit(BI.Widget, {
         this._north = BI.createWidget();
         this.element.draggable({
             cursor: BICst.cursorUrl,
-            handle: ".bi-message-title"
+            handle: ".bi-message-title",
+            drag: function (e, ui) {
+                var W = $("body").width(), H = $("body").height();
+                if (ui.position.left + o.width > W) {
+                    ui.position.left = W - o.width;
+                }
+                if (ui.position.top + o.height > H) {
+                    ui.position.top = H - o.height;
+                }
+                if (ui.position.left < 0) {
+                    ui.position.left = 0;
+                }
+                if (ui.position.top < 0) {
+                    ui.position.top = 0;
+                }
+            }
         });
         this._south = BI.createWidget();
         BI.createWidget({
