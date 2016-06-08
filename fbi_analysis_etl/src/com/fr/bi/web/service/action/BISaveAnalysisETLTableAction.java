@@ -1,7 +1,6 @@
 package com.fr.bi.web.service.action;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
@@ -37,12 +36,12 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
             String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
             JSONObject jo = new JSONObject(tableJSON);
             JSONArray items = jo.getJSONArray(Constants.ITEMS);
-            BICubeConfigureCenter.getAliasManager().setAliasName(tableId, tableName, userId);
+            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
             source = AnalysisETLSourceFactory.createTableSource(items, userId);
             table.setSource(source);
         } else {
             table = new AnalysisBusiTable(newId, userId);
-            BICubeConfigureCenter.getAliasManager().setAliasName(newId, tableName, userId);
+            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(newId, tableName, userId);
             AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
             source = oldTable.getSource();
             table.setSource(source);
@@ -67,7 +66,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         WebUtils.printAsJSON(res, result);
         new Thread (){
             public void  run () {
-                BICubeConfigureCenter.getAliasManager().persistData(userId);
+                BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
                 BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
                 BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
             }

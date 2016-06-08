@@ -66,7 +66,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
         while (it.hasNext()) {
             BIDateValue dk = it.next();
             Object[] keys = getter.createKey(1);
-            keys[0] = dk.getValue();
+            keys[0] = dk == null ? null : dk.getValue();
             GroupValueIndex cgvi = getter.getGroupIndex(keys)[0];
             if (gvi == null) {
                 gvi = cgvi;

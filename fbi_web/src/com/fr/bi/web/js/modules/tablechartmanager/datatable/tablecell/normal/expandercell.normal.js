@@ -37,7 +37,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         var dGroup = BI.Utils.getDimensionGroupByID(o.dId);
         if(BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
             var date = new Date(BI.parseInt(text));
-            text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+            text = date.print("%Y-%X-%d");
         }
         
         var cls = "expander-cell-text";

@@ -1,6 +1,5 @@
 package com.fr.bi.web.service.action;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.web.utils.WebUtils;
@@ -20,8 +19,8 @@ public class BIRenameAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String describe = WebUtils.getHTTPRequestParameter(req, "describe");
         BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId).setDescribe(describe);
         BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-    BICubeConfigureCenter.getAliasManager().setAliasName(tableId, tableName, userId);
-       BICubeConfigureCenter.getAliasManager().persistData(userId);
+        BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
+        BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
     }
 
     @Override
