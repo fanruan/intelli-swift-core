@@ -22,7 +22,7 @@ public class XMLArrayValueWriter extends XMLValueWriter {
     @Override
     void writeContent(XMLPrintWriter writer) throws IllegalAccessException, InvocationTargetException, IntrospectionException {
         Object[] array = checkObjectArray(beanWrapper.getBean());
-        if (array != null && array.length > 0) {
+        if (array != null && array.length >= 0) {
             if (!beanWrapper.getProperty()) {
                 writer.startTAG("array");
             }

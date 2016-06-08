@@ -76,7 +76,12 @@ public class SingleUserETLTableCubeManager implements Release {
 						@Override
 						public void actionPerformed(UserETLUpdateTask data) {
 							try {
-								if(data.check()){
+								long version = 0;
+								if (!tq.isEmpty()){
+									version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));
+									tq.releaseObject();
+								}
+								if(data.check(version)){
 									return;
 								}
 								data.start();
@@ -93,12 +98,8 @@ public class SingleUserETLTableCubeManager implements Release {
 				}
 			}
 		}
-        long version = 0;
-        if (!tq.isEmpty()){
-            version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));
-            tq.releaseObject();
-        }
-		updateTask.add(new UserETLUpdateTask(source, version));
+
+		updateTask.add(new UserETLUpdateTask(source));
 	}
 	
 	
@@ -112,7 +113,7 @@ public class SingleUserETLTableCubeManager implements Release {
         } else {
             long version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));
             tq.releaseObject();
-            return new UserETLUpdateTask(source, version).check();
+            return new UserETLUpdateTask(source).check(version);
         }
     }
 
