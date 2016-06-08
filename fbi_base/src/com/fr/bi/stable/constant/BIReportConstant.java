@@ -243,8 +243,18 @@ public class BIReportConstant {
 
         public final static int DIMENSION_TARGET_VALUE_FILTER = 0x60;
 
-        public final static int DIMENSION_SELF_FILTER = 0x611;
+        public final static int DIMENSION_SELF_FILTER = 0x61;
 
+    }
+
+    public static final class DIMENSION_FILTER_DATE {
+        public final static int CONTAIN = 0x62;
+
+        public final static int NOT_CONTAIN = 0x63;
+
+        public final static int BEGIN_WITH = 0x64;
+
+        public final static int END_WITH = 0x65;
     }
 
     public static final class TARGET_TYPE {

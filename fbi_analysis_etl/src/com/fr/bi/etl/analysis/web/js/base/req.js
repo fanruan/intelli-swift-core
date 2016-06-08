@@ -30,7 +30,15 @@ BI.ETLReq = {
     reqEditTable: function(data, callback){
         data.sessionID = Data.SharingPool.get("sessionID");
         BI.requestAsync("fr_bi_analysis_etl", "edit_table", data, function(res){
-            callback(res);
+            if(res['used']){
+                BI.Msg.confirm(BI.i18nText("BI-Warning"), BI.i18nText("BI-ETL_Table_Edit_Warning"), function (v) {
+                    if(v === true) {
+                        callback(res);
+                    }
+                })
+            } else {
+                callback(res);
+            }
         })
     },
 

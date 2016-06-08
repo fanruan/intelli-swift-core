@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.fr.stable.fun.Service;
@@ -20,6 +21,8 @@ public interface BIModule {
     //TODO Connery Analysis 这种大模块间的就别继承了。改动代价远大于写几行代码
 
     BISystemPackageConfigurationProvider getBusiPackManagerProvider();
+
+    BIAliasManagerProvider getAliasManagerProvider();
 
     ICubeDataLoaderCreator getCubeDataLoaderCreator();
 

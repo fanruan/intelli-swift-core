@@ -82,6 +82,11 @@ public class BICoreModule extends AbstractModule {
     }
 
     @Override
+    public BIAliasManagerProvider getAliasManagerProvider() {
+        return StableFactory.getMarkedObject(BIAliasManagerProvider.XML_TAG, BIAliasManagerProvider.class);
+    }
+
+    @Override
     public ICubeDataLoaderCreator getCubeDataLoaderCreator() {
         return StableFactory.getMarkedObject(ICubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
     }
