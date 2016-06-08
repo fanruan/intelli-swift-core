@@ -20,6 +20,10 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             type: "bi.cube_log_tree"
 
         });
+        this.processBar = BI.createWidget({
+            type: "bi.progress_bar",
+            width: "100%"
+        });
 
         BI.createWidget({
             type: "bi.vertical",
@@ -45,19 +49,42 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                         height: 28,
                         level: "ignore",
                         handler: function () {
-                            BI.Utils.getCubeLog(function (data) {
-                                self.cubeTree.populate(self._formatItems(data));
-                            })
+                            self._refreshLog();
                         }
-
                     }]
                 },
                 height: 50
-            }, self.cubeTree]
+            }, {
+                type: "bi.htape",
+                items: [{
+                    el: {
+                        type: "bi.label",
+                        text: BI.i18nText("BI-All_Proccess"),
+                        cls: "process-label",
+                        height: 30
+                    },
+                    width: 90
+                }, {
+                    el: this.processBar
+                }],
+                height: 30
+            }, this.cubeTree],
+            vgap: 10
         });
+        this._refreshLog();
+        this.interval = setInterval(function () {
+            self._refreshLog();
+        }, 5000);
+    },
+
+    _refreshLog: function(){
+        var self = this;
         BI.Utils.getCubeLog(function (data) {
+            if (BI.isNotNull(data.cube_end) || BI.isNull(data.cube_start)) {
+                self.interval && clearInterval(self.interval);
+            }
             self.cubeTree.populate(self._formatItems(data));
-        })
+        });
     },
 
     _formatSecond: function (time) {
@@ -99,12 +126,17 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         var readDBTime = 0, createIndexTime = 0, createRelationTime = 0;
         //错误信息
         var errors = data.errors;
+        var children = [];
         BI.each(errors, function (i, er) {
-            items.push({
-                id: BI.UUID(),
-                pId: BI.CubeLog.ERROR_MES_NODE,
-                text: er
+            children.push({
+                value: er.error_text
             })
+        });
+        items.push({
+            type: "bi.cube_log_wrong_info_item",
+            id: BI.UUID(),
+            pId: BI.CubeLog.ERROR_MES_NODE,
+            items: children
         });
 
         //读取数据时间
@@ -119,23 +151,36 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         });
 
         //生成索引时间
-        var createIndex = data.craeteindex;
-        BI.each(createIndex, function (i, index) {
+        var tables = data.tables;
+        BI.each(tables, function (i, table) {
+            var columns = table.column;
+            var id = BI.UUID();
             items.push({
-                id: BI.UUID(),
+                id: id,
                 pId: BI.CubeLog.INDEX_NODE,
-                text: ""
+                text: table.tableName + BI.i18nText("BI-Generated_Time") + self._formatSecond(table.time)
             });
-            createIndexTime += index.time;
+            BI.each(columns, function (j, column) {
+                items.push({
+                    id: BI.UUID(),
+                    pId: id,
+                    text: BI.i18nText("BI-Sen_Generated_Field_Index_1", column.name) + self._formatSecond(column.time)
+                })
+            });
+            createIndexTime += table.time;
         });
 
         //关联
         var relations = data.connections;
         BI.each(relations, function (i, relation) {
+            var re = relation.relation;
             items.push({
                 id: BI.UUID(),
                 pId: BI.CubeLog.RELATION_NODE,
-                text: BI.i18nText("BI-Relations") + "-"
+                text: BI.i18nText("BI-Relations") + "-" +
+                re.primaryTableName + "." + re.primaryFieldName + "->"
+                + re.foreignTableName + "." + re.foreignFieldName +
+                BI.i18nText("BI-Generated_Time") + self._formatSecond(relation.time)
             });
             createRelationTime += relation.time;
         });

@@ -28,17 +28,21 @@ public class CubeLinkedHashMap extends LinkedHashMap implements
 
     @Override
     public int sizeOfGroup() {
-        return 0;
+        return size();
     }
 
     @Override
     public GroupValueIndex[] getGroupIndex(Object[] keys) {
         java.util.List<GroupValueIndex> list = new java.util.ArrayList<GroupValueIndex>();
         for (int i = 0; i < keys.length; i++) {
-            list.add((GroupValueIndex) get(keys[i]));
+            list.add(getIndex(keys[i]));
         }
 
         return list.toArray(new GroupValueIndex[list.size()]);
+    }
+
+    public GroupValueIndex getIndex(Object key) {
+        return (GroupValueIndex)get(key);
     }
 
     @Override
@@ -119,8 +123,4 @@ public class CubeLinkedHashMap extends LinkedHashMap implements
 	}
 
 
-    @Override
-    public int getClassType() {
-        return 0;
-    }
 }

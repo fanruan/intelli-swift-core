@@ -21,12 +21,27 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 
     @Override
     public int sizeOfGroup() {
-        return 0;
+        return getter.sizeOfGroup() + 1;
+    }
+
+    public GroupValueIndex getIndex (Object groupValues) {
+        if(groupValues == null) {
+            return nullIndex;
+        } else {
+            return getter.getIndex(groupValues);
+        }
     }
 
     @Override
     public GroupValueIndex[] getGroupIndex(Object[] groupValues) {
-        throw new UnsupportedOperationException();
+        if(groupValues == null) {
+            return new GroupValueIndex[0];
+        }
+        GroupValueIndex[] gvi = new GroupValueIndex[groupValues.length];
+        for(int i = 0; i < gvi.length; i++) {
+            gvi[i] = getIndex(groupValues[i]);
+        }
+        return gvi;
     }
    
     /**
@@ -167,8 +182,4 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 		return getter.nonPrecisionSize() + 1;
 	}
 
-    @Override
-    public int getClassType() {
-        return 0;
-    }
 }

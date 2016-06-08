@@ -6,26 +6,22 @@ BIShow.StringWidgetModel = BI.inherit(BI.Model, {
             type: BICst.WIDGET.STRING,
             dimensions: {},
             view: {},
-            filter_value: {}
+            value: {}
         })
-    },
-
-    _static: function () {
-
     },
 
     change: function (changed) {
         if (BI.has(changed, "detail")) {
             this.set(this.get("detail"));
         }
-        if (BI.has(changed, "dimensions")) {
+        if (BI.has(changed, "value")){
             this.tmp({
                 detail: {
                     name: this.get("name"),
-                    dimensions: changed.dimensions,
+                    dimensions: this.get("dimensions"),
                     view: this.get("view"),
                     type: this.get("type"),
-                    filter_value: this.get("filter_value")
+                    value: this.get("value")
                 }
             }, {
                 silent: true
@@ -40,7 +36,7 @@ BIShow.StringWidgetModel = BI.inherit(BI.Model, {
                 dimensions: this.get("dimensions"),
                 view: this.get("view"),
                 type: this.get("type"),
-                filter_value: this.get("filter_value")
+                value: this.get("value")
             }
         }, {
             silent: true
@@ -48,10 +44,10 @@ BIShow.StringWidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
-        if (this.has("changeSort")) {
+        if(this.has("changeSort")){
             var dimensions = this.get("dimensions");
             var key = BI.keys(dimensions)[0];
-            if (BI.isNotNull(key)) {
+            if(BI.isNotNull(key)){
                 var sort = this.get("changeSort");
                 dimensions[key].sort = {type: sort.type, target_id: key};
                 this.set("dimensions", dimensions);
