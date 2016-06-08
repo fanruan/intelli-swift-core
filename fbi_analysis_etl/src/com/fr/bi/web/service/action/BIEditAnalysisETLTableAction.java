@@ -41,7 +41,7 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
 
         for (BusinessTable businessTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()){
             AnalysisCubeTableSource ss = (AnalysisCubeTableSource) businessTable.getTableSource();
-            if (!ComparatorUtils.equals(ss, source) && ss.getSourceUsedAnalysisETLSource().contains(source)){
+            if (!ComparatorUtils.equals(ss, busiTable.getTableSource()) && ss.getSourceUsedAnalysisETLSource().contains(busiTable.getTableSource())){
                 jo.put("used", true);
             }
         }

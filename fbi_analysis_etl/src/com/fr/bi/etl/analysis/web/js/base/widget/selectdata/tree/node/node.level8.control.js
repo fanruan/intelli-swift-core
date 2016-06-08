@@ -7,11 +7,11 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         return BI.extend(BI.SelectDataLevel8NodeController.superclass._defaultConfig.apply(this, arguments), {})
     },
 
-    checkUsable: function (id) {
+    getMarkArguments: function (id, text) {
         if (BI.isNotEmptyArray(BI.Utils.getFieldIDsOfTableID(id))){
-            this.widget.doRedMark()
+            return [];
         } else {
-            this.widget.unRedMark()
+            return[text];
         }
     },
     _init: function () {
