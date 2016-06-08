@@ -97,7 +97,6 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
 //        }
 //        return md5;
 //    }
-
     @Override
     public IPersistentTable getBITable(IPersistentTable[] tables) {
         IPersistentTable persistentTable = getBITable();
@@ -105,22 +104,30 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
             IPersistentTable parent = tables[k];
             for (int i = 0; i < getDimensions().length; i++) {
                 if (parent.getField(getDimensions()[i].getName()).getBIType() == DBConstant.COLUMN.DATE) {
-                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), getDimensions()[i].getGroup().getType() ==  BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
+                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), getDimensions()[i].getGroup().getType() == BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
                 } else if (parent.getField(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.NUMBER) {
                     PersistentField pfield = parent.getField(getDimensions()[i].getName());
                     /**
                      * 数值类型自定义分组，类型要为String类型
                      */
-                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(),  getDimensions()[i].getGroup().getType() ==  BIReportConstant.GROUP.ID_GROUP ? pfield.getSqlType() : BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
+                    persistentTable.addColumn(generateSumNumberGroup(getDimensions()[i], pfield));
                 } else {
                     persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), parent.getField(dimensions[i].getName()).getSqlType(), parent.getField(dimensions[i].getName()).getColumnSize()));
                 }
             }
             for (int i = 0; i < getTargets().length; i++) {
-                persistentTable.addColumn(new PersistentField(getTargets()[i].getNameText(),BIDBUtils.biTypeToSql(targets[i].getColumnType()), parent.getField(targets[i].getName()).getColumnSize()));
+                persistentTable.addColumn(new PersistentField(getTargets()[i].getNameText(), BIDBUtils.biTypeToSql(targets[i].getColumnType()), parent.getField(targets[i].getName()).getColumnSize()));
             }
         }
         return persistentTable;
+    }
+
+    private PersistentField generateSumNumberGroup(SumByGroupDimension sum, PersistentField parentField) {
+        int type = BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING);
+        if (sum.getGroup().getType() == BIReportConstant.GROUP.ID_GROUP || sum.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
+            type = parentField.getSqlType();
+        }
+        new PersistentField(sum.getNameText(), type, 30);
     }
 
     @Override
@@ -131,9 +138,9 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
 
     @Override
     public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
-        if (start == 0){
+        if (start == 0) {
             end = Integer.MAX_VALUE;
-            return  write(travel, loader.getTableIndex(getSingleParentMD5(parents), start, end));
+            return write(travel, loader.getTableIndex(getSingleParentMD5(parents), start, end));
         } else {
             return 0;
         }
@@ -236,13 +243,13 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
             if (view.has(BIReportConstant.REGION.TARGET1)) {
                 targetTypeArray = view.getJSONArray(BIReportConstant.REGION.TARGET1);
             }
-            for(int i = 0; i < dimensionTypeArray.length(); ++i){
+            for (int i = 0; i < dimensionTypeArray.length(); ++i) {
                 JSONObject dimension = dimensionsAndTargets.optJSONObject(dimensionTypeArray.getString(i));
                 SumByGroupDimension dim = new SumByGroupDimension();
                 dim.parseJSON(dimension);
                 dims.add(dim);
             }
-            for(int i = 0; i < targetTypeArray.length(); ++i){
+            for (int i = 0; i < targetTypeArray.length(); ++i) {
                 JSONObject tar = dimensionsAndTargets.optJSONObject(targetTypeArray.getString(i));
                 SumByGroupTarget target = new SumByGroupTarget();
                 target.parseJSON(tar);
@@ -254,14 +261,14 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
     }
 
     private SumByGroupTarget[] getTargets() {
-        if(this.targets == null) {
+        if (this.targets == null) {
             return new SumByGroupTarget[0];
         }
         return this.targets;
     }
 
     private SumByGroupDimension[] getDimensions() {
-        if(this.dimensions == null) {
+        if (this.dimensions == null) {
             return new SumByGroupDimension[0];
         }
         return this.dimensions;
