@@ -298,7 +298,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
                         String primaryFieldId = targetRelationsJa.optJSONObject(0).optJSONObject("primaryKey").optString("field_id");
                         String foreignFieldId = targetRelationsJa.optJSONObject(0).optJSONObject("foreignKey").optString("field_id");
-                        if (ComparatorUtils.equals(BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(primaryFieldId)).getTableBelongTo(), BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(foreignFieldId)).getTableBelongTo())) {
+                        if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo())) {
                             relationMap.put(targetId, relationList);
                         } else {
                             for (int j = 0; j < targetRelationsJa.length(); j++) {
