@@ -60,6 +60,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             this._refreshDimensions();
         }
         if (BI.has(changed, "view")) {
+            this.dimensionsManager.populate();
             this._refreshDimensions();
         }
     },

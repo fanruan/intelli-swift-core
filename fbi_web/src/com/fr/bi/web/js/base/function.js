@@ -14,6 +14,7 @@ $(function () {
          */
         createDistinctName: function (array, name) {
             var src = name, idx = 1;
+            name = name || "";
             while (true) {
                 if (!ArrayUtils.getItemByName(array, name)) {
                     break;
