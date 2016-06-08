@@ -75,7 +75,7 @@ public class ResourceHelper {
                 }
             }
 
-            translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
+            translations = BIModuleUtils.createAliasJSON(userId);
             relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
