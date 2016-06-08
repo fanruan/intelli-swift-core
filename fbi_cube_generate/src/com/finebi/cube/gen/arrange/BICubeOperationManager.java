@@ -320,7 +320,8 @@ public class BICubeOperationManager {
         }
     }
 
-    public void generateTableRelationPath(Set<BITableSourceRelationPath> relationPathSet,Set<IStatusTag>dependsStatusTag) {
+//    public void generateTableRelationPath(Set<BITableSourceRelationPath> relationPathSet,Set<IStatusTag>dependsStatusTag) {
+        public void generateTableRelationPath(Set<BITableSourceRelationPath> relationPathSet) {
         if (relationPathSet != null && !relationPathSet.isEmpty()) {
             Iterator<BITableSourceRelationPath> it = relationPathSet.iterator();
             while (it.hasNext()) {
