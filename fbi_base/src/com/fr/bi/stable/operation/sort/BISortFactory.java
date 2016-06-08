@@ -13,7 +13,7 @@ public class BISortFactory {
         ISort sort = null;
         int dimensionType = jo.optInt("dimension_type");
         int sortType = jo.optInt("type", BIReportConstant.SORT.ASC);
-        if (dimensionType != BIReportConstant.TARGET_TYPE.STRING) {
+        if (dimensionType == BIReportConstant.TARGET_TYPE.NUMBER || dimensionType == BIReportConstant.TARGET_TYPE.DATE) {
             if (sortType == BIReportConstant.SORT.ASC) {
                 sortType = BIReportConstant.SORT.NUMBER_ASC;
             }
