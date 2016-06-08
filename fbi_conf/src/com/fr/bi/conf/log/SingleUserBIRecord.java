@@ -9,6 +9,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -385,7 +386,7 @@ public class SingleUserBIRecord implements BIRecord {
                 tableInfo.put(jsonObject);
             }
         }
-        res.put("allRelationInfo",null!=this.biTableSourceRelationSet?this.biTableSourceRelationSet:"");
+        res.put("allRelationInfo",this.biTableSourceRelationSet);
         res.put("allTableInfo",tableInfo);
         dealWithLoopValue(loop);
         List<BITableLog> output = new ArrayList<BITableLog>();

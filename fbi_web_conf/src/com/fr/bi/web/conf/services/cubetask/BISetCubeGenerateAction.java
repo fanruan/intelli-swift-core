@@ -43,10 +43,8 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
             CubeTaskBuild.CubeBuild(userId,cubeBuildStuffManager);            
         }else{
             CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
-
             BIPackageTableSourceConfigManager biPackageFindTableSourceConfigManager=new BIPackageTableSourceConfigManager();
             Set<BIBusinessTable> tableSources4Genrate = biPackageFindTableSourceConfigManager.getTableSources4Genrate(userId);
-
             cubeBuildStuff=new CubeBuildStuffManagerByTableSources(tableSources4Genrate,userId);
             CubeTaskBuild.CubeBuild(userId, cubeBuildStuff);
         }
