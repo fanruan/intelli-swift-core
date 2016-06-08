@@ -76,7 +76,11 @@ public class SumByGroupDimension implements JSONTransform, BICoreService {
         Object obj;
         switch (group.getType()){
             case BIReportConstant.GROUP.M:
-                obj = ((Number) value).longValue() + 1;
+                long v =  ((Number) value).longValue();
+                if(v == Long.MAX_VALUE) {
+                    return null;
+                }
+                obj = v + 1;
                 break;
             case BIReportConstant.GROUP.Y:
             case BIReportConstant.GROUP.S:

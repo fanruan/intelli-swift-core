@@ -103,18 +103,18 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         IPersistentTable persistentTable = getBITable();
         for (int k = 0; k < tables.length; k++) {
             IPersistentTable parent = tables[k];
-            for (int i = 0; i < dimensions.length; i++) {
-                if (parent.getField(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.DATE) {
-                    persistentTable.addColumn(new PersistentField(dimensions[i].getNameText(), dimensions[i].getGroup().getType() ==  BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
+            for (int i = 0; i < getDimensions().length; i++) {
+                if (parent.getField(getDimensions()[i].getName()).getBIType() == DBConstant.COLUMN.DATE) {
+                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), getDimensions()[i].getGroup().getType() ==  BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
                 } else if (parent.getField(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.NUMBER) {
-                    PersistentField pfield = parent.getField(dimensions[i].getName());
-                    persistentTable.addColumn(new PersistentField(dimensions[i].getNameText(),  dimensions[i].getGroup().getType() !=  BIReportConstant.GROUP.AUTO_GROUP ? pfield.getSqlType() : BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
+                    PersistentField pfield = parent.getField(getDimensions()[i].getName());
+                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(),  getDimensions()[i].getGroup().getType() !=  BIReportConstant.GROUP.AUTO_GROUP ? pfield.getSqlType() : BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
                 } else {
-                    persistentTable.addColumn(new PersistentField(dimensions[i].getNameText(), parent.getField(dimensions[i].getName()).getSqlType(), parent.getField(dimensions[i].getName()).getColumnSize()));
+                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), parent.getField(dimensions[i].getName()).getSqlType(), parent.getField(dimensions[i].getName()).getColumnSize()));
                 }
             }
-            for (int i = 0; i < targets.length; i++) {
-                persistentTable.addColumn(new PersistentField(targets[i].getNameText(),BIDBUtils.biTypeToSql(targets[i].getColumnType()), parent.getField(targets[i].getName()).getColumnSize()));
+            for (int i = 0; i < getTargets().length; i++) {
+                persistentTable.addColumn(new PersistentField(getTargets()[i].getNameText(),BIDBUtils.biTypeToSql(targets[i].getColumnType()), parent.getField(targets[i].getName()).getColumnSize()));
             }
         }
         return persistentTable;
@@ -137,17 +137,20 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
     }
 
     private int write(Traversal<BIDataValue> travel, ICubeTableService ti) {
-        if (dimensions == null || dimensions.length == 0) {
+        if (getDimensions().length == 0) {
             return writeNoDimensionIndex(travel, ti);
         }
         GroupLine line = new GroupLine(ti, travel);
         ICubeColumnIndexReader[] getters = new ICubeColumnIndexReader[dimensions.length];
         for (int i = 0; i < getters.length; i++) {
-            getters[i] = dimensions[i].getGroup().createGroupedMap(ti.loadGroup(dimensions[i].createKey(), new ArrayList<BITableSourceRelation>()));
+            getters[i] = getDimensions()[i].getGroup().createGroupedMap(ti.loadGroup(getDimensions()[i].createKey(), new ArrayList<BITableSourceRelation>()));
         }
         Iterator<Entry<Object, GroupValueIndex>> iter = getters[0].iterator();
         while (iter.hasNext()) {
             Entry<Object, GroupValueIndex> entry = iter.next();
+//            if(entry.getKey() == null) {
+//                continue;
+//            }
             line.fill(0, entry.getKey());
             writeIndexLineByLine(ti, entry.getValue(), getters, 1, line);
         }
@@ -155,8 +158,8 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
     }
 
     private int writeNoDimensionIndex(Traversal<BIDataValue> travel, ICubeTableService ti) {
-        for (int i = 0; i < targets.length; i++) {
-            travel.actionPerformed(new BIDataValue(0, i, targets[i].getSumValue(ti, ti.getAllShowIndex())));
+        for (int i = 0; i < getTargets().length; i++) {
+            travel.actionPerformed(new BIDataValue(0, i, getTargets()[i].getSumValue(ti, ti.getAllShowIndex())));
         }
         return 1;
     }
@@ -165,7 +168,7 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         if (pgvi == null || pgvi.getRowsCountWithData() == 0) {
             return;
         }
-        if (colIndex == dimensions.length) {
+        if (colIndex == getDimensions().length) {
             line.cal(pgvi);
             return;
         }
@@ -247,6 +250,20 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         this.targets = tars.toArray(new SumByGroupTarget[tars.size()]);
     }
 
+    private SumByGroupTarget[] getTargets() {
+        if(this.targets == null) {
+            return new SumByGroupTarget[0];
+        }
+        return this.targets;
+    }
+
+    private SumByGroupDimension[] getDimensions() {
+        if(this.dimensions == null) {
+            return new SumByGroupDimension[0];
+        }
+        return this.dimensions;
+    }
+
     /**
      * 锟斤拷取锟接节点，应锟矫会被XMLableReader.readXMLObject()锟斤拷锟矫讹拷锟?
      *
@@ -298,16 +315,16 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         private GroupLine(ICubeTableService ti, Traversal<BIDataValue> travel) {
             this.ti = ti;
             this.travel = travel;
-            values = new Object[dimensions.length + targets.length];
+            values = new Object[getDimensions().length + getTargets().length];
         }
 
         private void fill(int index, Object value) {
-            values[index] = dimensions[index].getKeyValue(value);
+            values[index] = getDimensions()[index].getKeyValue(value);
         }
 
         private void cal(GroupValueIndex gvi) {
-            for (int i = 0; i < targets.length; i++) {
-                values[i + dimensions.length] = targets[i].getSumValue(ti, gvi);
+            for (int i = 0; i < getTargets().length; i++) {
+                values[i + getDimensions().length] = getTargets()[i].getSumValue(ti, gvi);
             }
             write();
         }

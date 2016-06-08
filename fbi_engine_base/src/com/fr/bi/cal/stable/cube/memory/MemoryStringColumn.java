@@ -27,7 +27,7 @@ public class MemoryStringColumn extends AbstractSingleMemoryColumn<String> {
         if (getter == null){
             synchronized (getterLock){
                 if (getter == null){
-                    getter = createGroupByType(ValueConverter.DEFAULT ,ComparatorFacotry.CHINESE_ASC);
+                    getter = createGroupByType(key, ValueConverter.DEFAULT ,ComparatorFacotry.CHINESE_ASC);
                 }
             }
         }
@@ -35,13 +35,18 @@ public class MemoryStringColumn extends AbstractSingleMemoryColumn<String> {
     }
 
     @Override
-    protected String createEmptyValue() {
+    protected Object createEmptyValue(BIKey key) {
         return StringUtils.EMPTY;
     }
 
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<String>();
+        detail = new AnyIndexArray<String>(new NullChecker<String>() {
+            @Override
+            public boolean isNull(String s) {
+                return StringUtils.isEmpty(s);
+            }
+        });
     }
 }
