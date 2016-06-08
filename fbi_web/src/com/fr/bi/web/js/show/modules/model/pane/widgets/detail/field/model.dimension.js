@@ -5,10 +5,10 @@ BIShow.DimensionModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIShow.DimensionModel.superclass._defaultConfig.apply(this, arguments), {
             _src: {},
-            sort: {type: BICst.SORT.ASC},
-            group: {type: BICst.GROUP.ID_GROUP},
             dimension_map: {},
             settings: {},
+            sort: {},
+            group: {},
             type: "",
             name: "",
             used: true
@@ -24,7 +24,7 @@ BIShow.DimensionModel = BI.inherit(BI.Model, {
     },
 
 
-    change: function (change) {
+    change: function (change, prev) {
         var self = this, groupsItems = [], sortItems = [], groupMap = {}, sortedItems = [];
         if (BI.isNotNull(change.sort)) {
             var sortObject = self.get("sort");
@@ -63,6 +63,17 @@ BIShow.DimensionModel = BI.inherit(BI.Model, {
                 });
                 self.set("sort", sortObject)
             }
+            if (this.get("type") === BICst.TARGET_TYPE.NUMBER) {
+                var sort = this.get("sort");
+                if (this.get("group").type === BICst.GROUP.ID_GROUP) {
+                    if (!BI.has(sort, "type") || sort.type === BICst.SORT.CUSTOM) {
+                        self.set("sort", {type: BICst.SORT.ASC, sort_target: this.get("id")})
+                    }
+                }
+                if (BI.isNotNull(prev.group) && prev.group.type === BICst.GROUP.ID_GROUP && (change.group.type === BICst.GROUP.AUTO_GROUP || change.group.type === BICst.GROUP.CUSTOM_NUMBER_GROUP)) {
+                    self.set("sort", {type: BICst.SORT.CUSTOM});
+                }
+            }
         }
     },
 
@@ -75,6 +86,7 @@ BIShow.DimensionModel = BI.inherit(BI.Model, {
         if (this.has("changeGroup")) {
             var group = this.get("changeGroup");
             this.set("group", {type: group.type, details: []});
+            return true;
         }
         return false;
     }
