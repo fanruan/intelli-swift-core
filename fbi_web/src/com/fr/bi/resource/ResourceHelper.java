@@ -75,7 +75,7 @@ public class ResourceHelper {
                 }
             }
 
-            translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
+            translations = BIModuleUtils.createAliasJSON(userId);
             relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
@@ -928,6 +928,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/target/factory.filteritem.target.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/factory.filteritem.dimension.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.stringfield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.datefield.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/widget.selectdata4dimensioncombo.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/widget.selectdata4targetcombo.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.numberfield.js",
@@ -1218,6 +1219,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/forcebubble.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/mapchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/crosstable/widget.crosstable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
 

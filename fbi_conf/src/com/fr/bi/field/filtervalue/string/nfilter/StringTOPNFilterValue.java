@@ -35,7 +35,7 @@ public class StringTOPNFilterValue extends StringNFilterValue implements NFilter
         } else {
             nline = parentNode.getChildBottomNValueLine(count + 1 - N);
         }
-        return nline != null && node.getComparator().compare(nline, node.getData()) <= 0;
+        return nline != null && node.getComparator().compare(node.getData(), nline) <= 0;
     }
 
 }
