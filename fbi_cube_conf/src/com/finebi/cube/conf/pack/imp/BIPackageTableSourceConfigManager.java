@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.pack.imp;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.BIPackageFindTableSourceConfigProvider;
+import com.finebi.cube.conf.BIPackageTableSourceConfigProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -17,10 +17,10 @@ import java.util.Set;
 /**
  * Created by wuk on 16/6/8.
  */
-public class BIPackageFindTableSourceConfigManager  implements BIPackageFindTableSourceConfigProvider {
+public class BIPackageTableSourceConfigManager implements BIPackageTableSourceConfigProvider {
 
     @Override
-    public Set<CubeTableSource> getPackages4Genrate(long userId) {
+    public Set<CubeTableSource> getTableSources4Genrate(long userId) {
         BISystemPackageConfigurationProvider packageManager = BICubeConfigureCenter.getPackageManager();
         Set<BIBusinessPackage> packages4CubeGenerate = packageManager.getPackages4CubeGenerate(userId);
         Set<IBusinessPackageGetterService> iBusinessPackageGetterServiceSet=new HashSet<IBusinessPackageGetterService>();

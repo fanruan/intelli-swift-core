@@ -89,20 +89,4 @@ public class BIUserPackageConfigurationManager {
         }
         return false;
     }
-    public Set<BIBusinessPackage> getPackages4CubeGenerate(){
-        Set<BIBusinessPackage> analysisPackageManagerAllPackages = packageConfigManager.getAnalysisPackageManager().getAllPackages();
-        Set<BIBusinessPackage> currentPackageManagerAllPackages = packageConfigManager.getCurrentPackageManager().getAllPackages();
-        Set<BIBusinessPackage> packageSet=new HashSet<BIBusinessPackage>();
-        for (BIBusinessPackage currentPackageManagerAllPackage : currentPackageManagerAllPackages) {
-            if (!analysisPackageManagerAllPackages.contains(currentPackageManagerAllPackage)){
-                try {
-                    packageSet.add((BIBusinessPackage) currentPackageManagerAllPackage.clone());
-                } catch (CloneNotSupportedException e) {
-                    BILogger.getLogger().error(e.getMessage());
-                }
-            }
-        }
-        return packageSet;
-    }
-
 }

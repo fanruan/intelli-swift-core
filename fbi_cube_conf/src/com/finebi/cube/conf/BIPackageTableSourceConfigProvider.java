@@ -7,8 +7,8 @@ import java.util.Set;
 /**
  * Created by 49597 on 2016/6/8.
  */
-public interface BIPackageFindTableSourceConfigProvider {
+public interface BIPackageTableSourceConfigProvider {
 
-    Set<CubeTableSource> getPackages4Genrate(long userId);
+    Set<CubeTableSource> getTableSources4Genrate(long userId);
 
 }
