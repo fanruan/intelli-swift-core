@@ -12,11 +12,6 @@ public static void registerModuleBeans(){
 	try{
 		IFactoryService xmlFactory =((IFactoryService) BIMateFactory.getInstance().getObject( IFactoryService.CONF_XML , new Object[]{}));
 		try{
-			xmlFactory.registerClass("com.fr.bi.etl.analysis.data.AnalysisDataSource",com.fr.bi.etl.analysis.manager.BIXMLAnalysisDataSourceManager.class);}
-		catch(BIFactoryKeyDuplicateException ignore){
-			 BILogger.getLogger().error(ignore.getMessage(),ignore);	
-			}
-		try{
 			xmlFactory.registerClass("com.fr.bi.etl.analysis.manager.SingleUserAnalysisBusiPackManager",com.fr.bi.etl.analysis.manager.SingleUserAnalysisBusiPackManager.class);}
 		catch(BIFactoryKeyDuplicateException ignore){
 			 BILogger.getLogger().error(ignore.getMessage(),ignore);	

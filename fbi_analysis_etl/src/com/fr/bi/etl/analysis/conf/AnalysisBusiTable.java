@@ -21,6 +21,7 @@ import java.util.List;
 public class AnalysisBusiTable extends BIBusinessTable {
 
     private String describe;
+    private String name;
     private long userId;
 
     public AnalysisBusiTable(String id, long userId) {
