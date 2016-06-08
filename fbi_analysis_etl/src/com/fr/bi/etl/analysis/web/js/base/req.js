@@ -29,7 +29,15 @@ BI.ETLReq = {
 
     reqEditTable: function(data, callback){
         data.sessionID = Data.SharingPool.get("sessionID");
+        var mask = BI.createWidget({
+            type: "bi.etl_loading_mask",
+            masker: 'body',
+            text: BI.i18nText("BI-Loading")
+        });
         BI.requestAsync("fr_bi_analysis_etl", "edit_table", data, function(res){
+            if(mask != null) {
+                mask.destroy()
+            }
             if(res['used']){
                 BI.Msg.confirm(BI.i18nText("BI-Warning"), BI.i18nText("BI-ETL_Table_Edit_Warning"), function (v) {
                     if(v === true) {

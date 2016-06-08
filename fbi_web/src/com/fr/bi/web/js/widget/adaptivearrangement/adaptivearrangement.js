@@ -48,7 +48,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
     _initResizable: function (item) {
         var self = this, o = this.options;
         item.element.css("zIndex", ++this.zIndex);
-        item.element.click(function () {
+        item.element.mousedown(function () {
             item.element.css("zIndex", ++self.zIndex);
         });
         o.resizable && item.element.resizable({

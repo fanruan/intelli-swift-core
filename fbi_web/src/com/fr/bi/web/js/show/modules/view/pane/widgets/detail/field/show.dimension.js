@@ -136,10 +136,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
     _createStringCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.dimension_string_combo",
+            type: "bi.dimension_string_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_STRING_COMBO.ASCEND:
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
@@ -185,10 +185,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
     _createNumberCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.dimension_number_combo",
+            type: "bi.dimension_number_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_NUMBER_COMBO.ASCEND:
                     self.model.set("sort", {type: BICst.SORT.ASC, sort_target: s});
@@ -226,10 +226,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
     _createDateCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.dimension_date_combo",
+            type: "bi.dimension_date_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_DATE_COMBO.DATE:
                     self.model.set("group", {type: BICst.GROUP.YMD});
