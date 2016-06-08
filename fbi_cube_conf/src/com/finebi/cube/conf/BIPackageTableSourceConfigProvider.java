@@ -1,6 +1,6 @@
 package com.finebi.cube.conf;
 
-import com.fr.bi.stable.data.source.CubeTableSource;
+import com.finebi.cube.conf.table.BIBusinessTable;
 
 import java.util.Set;
 
@@ -9,6 +9,6 @@ import java.util.Set;
  */
 public interface BIPackageTableSourceConfigProvider {
 
-    Set<CubeTableSource> getTableSources4Genrate(long userId);
+    Set<BIBusinessTable> getTableSources4Genrate(long userId);
 
 }
