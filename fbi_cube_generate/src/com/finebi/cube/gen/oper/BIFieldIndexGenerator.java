@@ -69,7 +69,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             buildTableIndex();
             long costTime=System.currentTimeMillis()-t;
             if (null!=tableSource.getPersistentTable()) {
-                biLogManager.infoTableIndex(tableSource.getPersistentTable(), costTime, Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+                biLogManager.infoColumn(tableSource.getPersistentTable(),hostBICubeFieldSource.getFieldName(),costTime,Long.valueOf(UserControl.getInstance().getSuperManagerID()));
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);

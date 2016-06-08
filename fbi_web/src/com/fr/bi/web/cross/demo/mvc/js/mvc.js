@@ -624,7 +624,7 @@ $(function () {
         },
         index: function () {
             BI.Factory.createView("", TViews.get(""), BI.extend({}, TModels.get("")), {
-                element: "body"
+                element: "#wrapper"
             }, null);
         }
     });

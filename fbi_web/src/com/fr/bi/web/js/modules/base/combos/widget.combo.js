@@ -43,6 +43,10 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
 
     _rebuildItems: function () {
         var wId = this.options.wId;
+        var isEdit = Data.SharingPool.get("edit");
+        if(!isEdit) {
+            return this._createShowComboItems();
+        }
         switch (BI.Utils.getWidgetTypeByID(wId)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -76,9 +80,6 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 return this._createWidgetComboItems();
             case BICst.WIDGET.DETAIL:
                 return this._createDetailWidgetComboItems();
-
-            case BICst.WIDGET.TABLE_SHOW:
-                return BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS_SHOW;
 
             case BICst.WIDGET.DATE:
             case BICst.WIDGET.YEAR :
@@ -258,6 +259,48 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 cls: "widget-combo-delete"
             }]
         ]
+    },
+
+    _createShowComboItems: function () {
+        var wId = this.options.wId;
+        var children = [{
+            value: BICst.WIDGET.TABLE,
+            text: BI.i18nText("BI-Group_Table"),
+            cls: "dot-e-font"
+        }, {
+            value: BICst.WIDGET.TABLE,
+            text: BI.i18nText("BI-Cross_Table"),
+            cls: "dot-e-font"
+        }, {
+            value: BICst.WIDGET.TABLE,
+            text: BI.i18nText("BI-Complex_Table"),
+            cls: "dot-e-font"
+        }];
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if (wType !== BICst.WIDGET.TABLE &&
+            wType !== BICst.WIDGET.CROSS_TABLE &&
+            wType !== BICst.WIDGET.COMPLEX_TABLE) {
+            children.push({
+                value: wType,
+                text: BI.i18nText(),
+                cls: "dot-e-font"
+            })
+        }
+        return [
+            [{
+                text: BI.i18nText("BI-Show_Filters"),
+                cls: "widget-combo-show-filter-font",
+                value: BICst.DASHBOARD_WIDGET_FILTER
+            }],
+            [{
+                el: {
+                    text: BI.i18nText("BI-Chart_Type"),
+                    iconCls1: "widget-combo-show-filter-font",
+                    value: BICst.DASHBOARD_WIDGET_SWITCH_CHART
+                },
+                children: children
+            }]
+        ];
     },
 
     setValue: function (v) {
