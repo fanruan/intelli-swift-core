@@ -5,6 +5,7 @@ import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
@@ -85,7 +86,10 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if (jo.has("sort")) {
-            this.sort = BISortFactory.parseSort(jo.optJSONObject("sort"));
+            JSONObject sortJo = jo.optJSONObject("sort");
+            //汇总表中过滤全是string类型
+            sortJo.put("dimension_type", BIReportConstant.TARGET_TYPE.STRING);
+            this.sort = BISortFactory.parseSort(sortJo);
             JSONObject s = jo.getJSONObject("sort");
             if (s.has("sort_target")) {
                 this.sort_target = s.optString("sort_target");

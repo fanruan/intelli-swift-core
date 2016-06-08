@@ -56,11 +56,10 @@ BI.View = BI.inherit(BI.V, {
     actionEnd: function () {
         var self = this;
         var _F = this._F.slice(0);
+        this._F = [];
         BI.each(_F, function (i, f) {
-            self._F.remove(f);
             f.f.apply(self, f.arg);
         });
-        this._F = [];
         return this;
     },
 

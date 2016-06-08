@@ -36,6 +36,15 @@ public class BIDay {
         this.year = year;
         this.month = month;
         this.day = day;
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, day);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        this.time = c.getTimeInMillis();
     }
 
     public int getYear() {
