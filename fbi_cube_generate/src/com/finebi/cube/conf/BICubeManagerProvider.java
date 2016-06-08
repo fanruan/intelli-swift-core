@@ -65,5 +65,4 @@ public interface BICubeManagerProvider {
 
     boolean isReplacing(long userId);
 
-
 }
