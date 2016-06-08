@@ -117,6 +117,11 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
         }
+        if((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION1
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1){
+            this.usedCheck.setEnable(false);
+        }
     },
 
     _checkDimensionName: function (name) {

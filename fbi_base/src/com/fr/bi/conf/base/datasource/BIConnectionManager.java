@@ -178,7 +178,7 @@ public class BIConnectionManager extends XMLFileManager {
         while (nameIt.hasNext()) {
             String name = nameIt.next();
             JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
-            if (c != null && testConnection(c)) {
+            if (c != null) {
                 if (isMicrosoftAccessDatabase(c)) {
                     continue;
                 }
@@ -204,14 +204,16 @@ public class BIConnectionManager extends XMLFileManager {
 
     private boolean needSchema(Connection c) {
         java.sql.Connection conn = null;
-        try {
-            conn = c.createConnection();
-            Dialect dialcet = DialectFactory.generateDialect(conn, c.getDriver());
-            return dialcet instanceof OracleDialect || dialcet instanceof MSSQLDialect;
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        } finally {
-            DBUtils.closeConnection(conn);
+        if (testConnection(c)) {
+            try {
+                conn = c.createConnection();
+                Dialect dialcet = DialectFactory.generateDialect(conn, c.getDriver());
+                return dialcet instanceof OracleDialect || dialcet instanceof MSSQLDialect;
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            } finally {
+                DBUtils.closeConnection(conn);
+            }
         }
         return false;
     }

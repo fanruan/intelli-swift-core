@@ -1,10 +1,12 @@
 package com.fr.bi.web.service.action;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -22,7 +24,7 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         JSONObject jo = new JSONObject();
         jo.put("id", tableId);
-        jo.put("name", BICubeConfigureCenter.getAliasManager().getAliasName(tableId, userId));
+        jo.put("name", BIAnalysisETLManagerCenter.getAliasManagerProvider().getAliasName(tableId, userId));
         AnalysisBusiTable busiTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
         jo.put("describe", busiTable.getDescribe());
         JSONObject source = busiTable.getSource().createJSON();
@@ -35,6 +37,13 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
             items = new JSONArray();
             items.put(source);
             table.put(Constants.ITEMS, items);
+        }
+
+        for (BusinessTable businessTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()){
+            AnalysisCubeTableSource ss = (AnalysisCubeTableSource) businessTable.getTableSource();
+            if (!ComparatorUtils.equals(ss, busiTable.getTableSource()) && ss.getSourceUsedAnalysisETLSource().contains(busiTable.getTableSource())){
+                jo.put("used", true);
+            }
         }
         jo.put("table",table);
         WebUtils.printAsJSON(res, jo);

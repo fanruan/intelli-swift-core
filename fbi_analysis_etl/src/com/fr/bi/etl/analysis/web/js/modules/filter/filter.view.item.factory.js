@@ -78,8 +78,12 @@ BI.ETLFilterViewItemFactory = {
         var v =[];
         if (BI.isNotNull(value)){
             BI.each(value.type === BI.Selection.All ? value.assist : value.value, function(i, item){
-                var d = new Date(item);
-                v.push(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
+                if(item === "") {
+                    v.push(item)
+                } else {
+                    var d = FR.str2Date(item);
+                    v.push(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
+                }
             });
         }
 
@@ -124,7 +128,7 @@ BI.ETLFilterViewItemFactory = {
 
     _getDateText : function(d){
         if (BI.isNotNull(d)){
-            var date = new Date(d)
+            var date = FR.str2Date(d)
             return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
         }
         return '-';

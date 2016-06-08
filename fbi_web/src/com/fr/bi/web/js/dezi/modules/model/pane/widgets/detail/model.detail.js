@@ -164,7 +164,13 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 if(usableT.length > 1) {
                     BI.each(view[BICst.REGION.DIMENSION2], function(i, d){
                         dims[d].used = false;
-                    })
+                    });
+                    var type = this.get("type");
+                    if(type === BICst.WIDGET.PIE || type === BICst.WIDGET.DASHBOARD){
+                        BI.each(view[BICst.REGION.DIMENSION1], function(i, d){
+                            dims[d].used = false;
+                        });
+                    }
                 }
                 this.set("dimensions", dims);
             }
@@ -215,8 +221,8 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
     local: function () {
         var self = this;
         if (this.has("addDimension")) {
-            var dimensions = this.get("dimensions");
             var dimension = this.get("addDimension");
+            var dimensions = this.get("dimensions");
             var view = this.get("view");
             var src = dimension.src;
             var dId = dimension.dId;

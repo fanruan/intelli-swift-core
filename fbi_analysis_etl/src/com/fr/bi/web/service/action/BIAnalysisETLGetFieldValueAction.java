@@ -56,7 +56,7 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
     }
 
     private Object getText(Object ob, int fieldType) {
-        if (fieldType == DBConstant.COLUMN.DATE){
+        if (ob != null && fieldType == DBConstant.COLUMN.DATE){
             return DateUtils.format(new Date((Long)ob));
         }
         return ob == null ? StringUtils.EMPTY : ob;

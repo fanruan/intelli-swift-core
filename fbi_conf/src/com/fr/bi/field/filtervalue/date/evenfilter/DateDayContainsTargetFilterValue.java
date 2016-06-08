@@ -6,6 +6,8 @@ import com.fr.bi.stable.data.key.date.BIDayValue;
 import com.fr.bi.stable.utils.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
+import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import java.util.HashSet;
 
@@ -21,7 +23,15 @@ public class DateDayContainsTargetFilterValue extends DateKeyTargetFilterValue{
             JSONObject valueOb = jo.getJSONObject("filter_value");
             JSONArray ja = valueOb.getJSONArray("value");
             for (int i = 0, len = ja.length(); i < len; i++) {
-                valueSet.add(new BIDayValue(DateUtils.parse(ja.getString(i)).getTime()));
+                String v = ja.getString(i);
+                if(StringUtils.isEmpty(v)) {
+                    valueSet.add(null);
+                } else {
+                    try {
+                        valueSet.add(new BIDayValue(DateUtils.parse(ja.getString(i)).getTime()));
+                    } catch (Exception e) {
+                    }
+                }
             }
         }
     }
