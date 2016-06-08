@@ -1,7 +1,6 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -13,7 +12,7 @@ import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.*;
 
-import static com.finebi.cube.conf.BICubeConfigureCenter.*;
+import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager;
 
 /**
  * Created by 49597 on 2016/6/8.
@@ -44,9 +43,10 @@ public class CubeBuildStuffManagerByTableSources implements CubeBuildStuff {
           Set<CubeTableSource> cubeTableSourceHashSet=new HashSet<CubeTableSource>();
         for (BIBusinessTable biBusinessTable : tableSources4Genrate) {
             cubeTableSourceHashSet.add(biBusinessTable.getTableSource());
-            Set<BITableRelation> primaryContainer = getTableRelationManager().getPrimaryRelation(biUser.getUserId(), biBusinessTable).getContainer();
+            Set<BITableRelation> primaryRelaitons = getTableRelationManager().getPrimaryRelation(biUser.getUserId(), biBusinessTable).getContainer();
             Set<BITableRelation> foreignContainer = getTableRelationManager().getForeignRelation(biUser.getUserId(), biBusinessTable).getContainer();
-            tableRelationSet.add(primaryRelation)
+            primaryRelaitons.addAll(foreignContainer);
+            tableRelationSet=primaryRelaitons;
         }
         this.allSingleSources = set2Set(calculateTableSource(cubeTableSourceHashSet));
     }
