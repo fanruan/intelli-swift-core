@@ -167,4 +167,5 @@ public class BICubeManager implements BICubeManagerProvider {
     public boolean isReplacing(long userId) {
         return getCubeManager(userId).isReplacing();
     }
+
 }

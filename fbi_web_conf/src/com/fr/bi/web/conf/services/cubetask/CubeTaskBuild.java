@@ -14,6 +14,8 @@ public class CubeTaskBuild {
     private static BICubeManagerProvider cubeManager= CubeGenerationManager.getCubeManager();
 
     public static void CubeBuild(long userId,CubeBuildStuff cubeBuildStuff){
+//        BIPackageFindTableSourceConfigManager biPackageFindTableSourceConfigManager=new BIPackageFindTableSourceConfigManager();
+//        Set<CubeTableSource> cubeTableSources = biPackageFindTableSourceConfigManager.getPackages4Genrate(userId);
         cubeManager.addTask(new BuildCubeTask(new BIUser(userId),cubeBuildStuff),userId);
     }
 }

@@ -354,4 +354,6 @@ public class BIPackageConfigManager implements Release {
         }
         return result;
     }
+
+
 }
