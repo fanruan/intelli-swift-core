@@ -315,8 +315,10 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function(id, da){
                         if(position === item.yAxis){
                             if(item.type === BICst.WIDGET.BAR){
+                                da.x = da.x || 0;
                                 da.x = da.x.div(magnify);
                             }else{
+                                da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                             }
                         }
@@ -519,7 +521,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.right_y_axis_unit = options.right_y_axis_unit || "";
         this.right_y_axis_second_unit = options.right_y_axis_second_unit || "";
         this.x_axis_title = options.x_axis_title || "";
-        this.chart_legend = options.chart_legend || BICst.CHART_LEGENDS.NOT_SHOW;
+        this.chart_legend = options.chart_legend || BICst.CHART_LEGENDS.BOTTOM;
         this.show_data_label = options.show_data_label || false;
         this.show_data_table = options.show_data_table || false;
         this.show_grid_line = options.show_grid_line;
