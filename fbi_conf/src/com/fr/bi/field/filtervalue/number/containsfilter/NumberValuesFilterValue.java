@@ -91,14 +91,36 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
             while (iter.hasNext()) {
                 Double d = iter.next();
                 if(Double.isNaN(d)) {
-                    v[i++] = Long.MAX_VALUE;
+                    v[i++] = null;
                 } else {
                     v[i++] = d.longValue();
                 }
             }
             return v;
+        } if(firstKey instanceof Integer) {
+            Iterator<Double> iter = valueSet.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                Double d = iter.next();
+                if(Double.isNaN(d)) {
+                    v[i++] = null;
+                } else {
+                    v[i++] = d.intValue();
+                }
+            }
+            return v;
         } else {
-            return  valueSet.toArray(new Double[valueSet.size()]);
+            Iterator<Double> iter = valueSet.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                Double d = iter.next();
+                if(Double.isNaN(d)) {
+                    v[i++] = null;
+                } else {
+                    v[i++] = d;
+                }
+            }
+            return v;
         }
     }
 

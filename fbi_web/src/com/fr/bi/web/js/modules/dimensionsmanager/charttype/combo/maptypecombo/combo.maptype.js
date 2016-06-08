@@ -31,13 +31,13 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
         });
         this.popup.on(BI.MapTypePopup.EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
-            self.MapTypeCombo.hideView();
+            self.mapTypeCombo.hideView();
             self.fireEvent(BI.MapTypeCombo.EVENT_CHANGE);
         });
         this.popup.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        this.MapTypeCombo = BI.createWidget({
+        this.mapTypeCombo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
             direction: "bottom",
@@ -53,24 +53,24 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
     },
 
     showView: function () {
-        this.MapTypeCombo.showView();
+        this.mapTypeCombo.showView();
     },
 
     hideView: function () {
-        this.MapTypeCombo.hideView();
+        this.mapTypeCombo.hideView();
     },
 
     setValue: function (v) {
-        this.MapTypeCombo.setValue(v);
+        this.mapTypeCombo.setValue(v);
     },
 
     setEnable: function (v) {
         BI.MapTypeCombo.superclass.setEnable.apply(this, arguments);
-        this.MapTypeCombo.setEnable(v);
+        this.mapTypeCombo.setEnable(v);
     },
 
     getValue: function () {
-        return this.MapTypeCombo.getValue();
+        return this.mapTypeCombo.getValue();
     }
 });
 BI.MapTypeCombo.EVENT_CHANGE = "EVENT_CHANGE";

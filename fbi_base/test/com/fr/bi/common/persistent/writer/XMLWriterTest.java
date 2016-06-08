@@ -284,6 +284,12 @@ public class XMLWriterTest extends TestCase {
 
         checkEquals(arrayPart, "testGroupValueIndex");
     }
+    public void testArrayEmpty() {
+        ArrayPart arrayPart = new ArrayPart();
+        Integer[] array = new Integer[0];
+        arrayPart.setIntegers(array);
+        checkEquals(arrayPart, "testGroupValueIndex");
+    }
 
 //    public void testOriginalArray() {
 //        Integer[] array = new Integer[3];

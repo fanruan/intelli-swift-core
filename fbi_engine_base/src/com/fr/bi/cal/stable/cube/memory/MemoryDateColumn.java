@@ -4,13 +4,16 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDateDetailGetter;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
+import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.finebi.cube.relation.BITableSourceRelation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +37,7 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
 
     @Override
     public GroupValueIndex getIndexByRow(int row, SingleUserNIOReadManager manager) {
-        return createGroupByType(null, null, null).getGroupIndex(new Object[]{detail.get(row)})[0];
+        return this.createGroupByType(new IndexKey(""), new ArrayList<BITableSourceRelation>(), manager).getGroupIndex(new Object[]{detail.get(row)})[0];
     }
 
     @Override
@@ -51,7 +54,7 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
                 Object l = locks.get(type);
                 synchronized (l) {
                     if (getters.get(type) == null) {
-                        getters.put(type, createGroupByType(ValueConverterFactory.createDateValueConverterByGroupType(type), ComparatorFacotry.createASCComparator()));
+                        getters.put(type, createGroupByType(key, ValueConverterFactory.createDateValueConverterByGroupType(type), ComparatorFacotry.createASCComparator()));
                     }
                 }
             }
@@ -59,11 +62,6 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
         } else {
             return super.createGroupByType(key, relationList, manager);
         }
-    }
-
-    @Override
-    protected Long createEmptyValue() {
-        return Long.MAX_VALUE;
     }
 
 

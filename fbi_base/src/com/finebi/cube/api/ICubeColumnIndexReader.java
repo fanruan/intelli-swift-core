@@ -11,6 +11,8 @@ public interface ICubeColumnIndexReader<T> {
 
     GroupValueIndex[] getGroupIndex(T[] groupValues);
 
+    GroupValueIndex getIndex(T groupValue);
+
     T firstKey();
 
     T lastKey();
@@ -75,5 +77,4 @@ public interface ICubeColumnIndexReader<T> {
 
     int sizeOfGroup();
 
-    int getClassType();
 }
