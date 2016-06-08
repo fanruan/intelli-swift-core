@@ -137,15 +137,17 @@ BI.Model = BI.inherit(BI.M, {
         var self = this;
         this._start = false;
         var _gets = this._gets.slice(0), _F = this._F.slice(0);
-        this._gets = [];
-        this._hass = {};
-        this._F = [];
         BI.each(_gets, function (i, action) {
+            self._gets.remove(action);
             self.unset(action, {silent: true});
         });
         BI.each(_F, function (i, fn) {
+            self._F.remove(fn);
             fn.f.apply(self, fn.arg);
         });
+        this._gets = [];
+        this._hass = {};
+        this._F = [];
         return this;
     },
 
