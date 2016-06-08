@@ -125,7 +125,9 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
             filter = TargetFilterFactory.parseFilter(jo.getJSONObject("conditions"), userId);
         }
         if (jo.has("sort")) {
-            this.sort = BISortFactory.parseSort(jo.optJSONObject("sort"));
+            JSONObject sortJo = jo.optJSONObject("sort");
+            sortJo.put("dimension_type",jo.optInt("type"));
+            this.sort = BISortFactory.parseSort(sortJo);
         }
         if (jo.has("filter_value")) {
             this.filter = TargetFilterFactory.parseFilter(jo.getJSONObject("filter_value"), userId);

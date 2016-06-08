@@ -1,5 +1,6 @@
 package com.fr.bi.cal.stable.cube.memory;
 
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -21,8 +22,4 @@ public class MemoryLongColumn extends AbstractSingleMemoryColumn<Long> {
         detail = new AnyIndexArray<Long>();
     }
 
-    @Override
-    protected Long createEmptyValue() {
-        return Long.MAX_VALUE;
-    }
 }

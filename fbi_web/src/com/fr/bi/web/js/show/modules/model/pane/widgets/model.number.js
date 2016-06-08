@@ -6,26 +6,22 @@ BIShow.NumberWidgetModel = BI.inherit(BI.Model, {
             type: BICst.WIDGET.NUMBER,
             dimensions: {},
             view: {},
-            filter_value: {}
+            value: {}
         })
-    },
-
-    _static: function () {
-
     },
 
     change: function (changed) {
         if (BI.has(changed, "detail")) {
             this.set(this.get("detail"));
         }
-        if (BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "value")) {
             this.tmp({
                 detail: {
                     name: this.get("name"),
                     dimensions: this.get("dimensions"),
                     view: this.get("view"),
                     type: this.get("type"),
-                    filter_value: changed.filter_value
+                    value: changed.value
                 }
             }, {
                 silent: true
@@ -40,7 +36,7 @@ BIShow.NumberWidgetModel = BI.inherit(BI.Model, {
                 dimensions: this.get("dimensions"),
                 view: this.get("view"),
                 type: this.get("type"),
-                filter_value: this.get("filter_value")
+                value: this.get("value")
             }
         }, {
             silent: true

@@ -9,7 +9,6 @@ import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONObject;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -143,12 +142,12 @@ public interface BILogManagerProvider {
     /**
      * 获取所有需要更新的relation信息
      */
-    Set<BITableSourceRelation> reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet);
+    void reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet, long userId);
 
     /**
      * 获取所有需要更新的tableSource信息
      */
-    Set<CubeTableSource> cubeTableSourceSet(Set<CubeTableSource> cubeTableSources);
+    void cubeTableSourceSet(Set<CubeTableSource> cubeTableSources, long userId);
 
     JSONObject createJSON(long userId) throws Exception;
 

@@ -1,5 +1,6 @@
 package com.fr.bi.cal.stable.cube.memory;
 
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -19,7 +20,4 @@ public class MemoryDoubleColumn extends AbstractSingleMemoryColumn<Double> {
     }
 
 
-    protected   Double createEmptyValue() {
-        return Double.NaN;
-    }
 }

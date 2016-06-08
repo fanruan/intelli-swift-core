@@ -35,16 +35,16 @@ BIShow.NumberWidgetView = BI.inherit(BI.View, {
             type: "bi.absolute",
             element: vessel,
             items: [{
-                el: this.tools,
-                top: 0,
-                right: 10
-            }, {
                 el: this.title,
                 top: 10,
                 left: 10
             }, {
                 el: this.combo,
                 top: 10,
+                right: 10
+            }, {
+                el: this.tools,
+                top: 0,
                 right: 10
             }]
         });
@@ -82,32 +82,14 @@ BIShow.NumberWidgetView = BI.inherit(BI.View, {
     _createTools: function(){
         var self = this;
         this.tools = BI.createWidget({
-            type: "bi.widget_combo",
-            cls: "operator-region",
-            wId: this.model.get("id")
+            type: "bi.icon_button",
+            cls: "widget-tools-clear-font show-tools",
+            title: BI.i18nText("BI-Clear_Selected_Value"),
+            width: 16,
+            height: 16
         });
-        this.tools.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
-            switch (type) {
-                case BICst.DASHBOARD_WIDGET_EXPAND:
-                    self._expandWidget();
-                    break;
-                case BICst.DASHBOARD_CONTROL_CLEAR:
-                    self._resetValue();
-                    break;
-                case BICst.DASHBOARD_WIDGET_RENAME:
-                    self.title.focus();
-                    break;
-                case BICst.DASHBOARD_WIDGET_COPY:
-                    self.model.copy();
-                    break;
-                case BICst.DASHBOARD_WIDGET_DELETE:
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
-                        if (v === true) {
-                            self.model.destroy();
-                        }
-                    });
-                    break;
-            }
+        this.tools.on(BI.IconButton.EVENT_CHANGE, function(){
+            self._resetValue();
         });
         this.tools.setVisible(false);
     },
@@ -121,27 +103,23 @@ BIShow.NumberWidgetView = BI.inherit(BI.View, {
         var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
         // width =  5 + 10 + (4 + nameWidth + 4) + 10 + comboWidth + 10 + 5
         if(height < 100) {
-            // this.widget.attr("items")[0].left = 10;
-            // this.widget.attr("items")[0].right = "";
-            this.widget.attr("items")[2].top = 10;
+            this.widget.attr("items")[1].top = 10;
             if(width < minComboWidth + minNameWidth + 48) {
                 this.combo.setVisible(false);
-                this.widget.attr("items")[1].right = 10;
+                this.widget.attr("items")[0].right = 10;
             } else if(width < nameWidth + minComboWidth + 48) {
                 this.combo.setVisible(true);
-                this.widget.attr("items")[1].right = minComboWidth + 25;
-                this.widget.attr("items")[2].left = width - 15 - minComboWidth;
+                this.widget.attr("items")[0].right = minComboWidth + 25;
+                this.widget.attr("items")[1].left = width - 15 - minComboWidth;
             } else {
                 this.combo.setVisible(true);
-                this.widget.attr("items")[1].right = width - 33 - nameWidth;
-                this.widget.attr("items")[2].left = 33 + nameWidth;
+                this.widget.attr("items")[0].right = width - 33 - nameWidth;
+                this.widget.attr("items")[1].left = 33 + nameWidth;
             }
         } else {
-            // this.widget.attr("items")[0].left = "";
-            // this.widget.attr("items")[0].right = 10;
-            this.widget.attr("items")[1].right = 10;
-            this.widget.attr("items")[2].top = 50;
-            this.widget.attr("items")[2].left = 10;
+            this.widget.attr("items")[0].right = 10;
+            this.widget.attr("items")[1].top = 50;
+            this.widget.attr("items")[1].left = 10;
         }
         this.widget.resize();
     },
