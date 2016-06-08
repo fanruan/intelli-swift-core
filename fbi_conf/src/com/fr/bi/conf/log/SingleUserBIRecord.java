@@ -384,7 +384,7 @@ public class SingleUserBIRecord implements BIRecord {
             tableInfo.put(jsonObject);
         }
         res.put("allRelationInfo",this.biTableSourceRelationSet);
-        res.put("AllTableInfo",tableInfo);
+        res.put("allTableInfo",tableInfo);
         dealWithLoopValue(loop);
         List<BITableLog> output = new ArrayList<BITableLog>();
         addTableLog(error, output);
