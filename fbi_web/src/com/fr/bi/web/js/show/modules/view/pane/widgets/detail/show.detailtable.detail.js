@@ -1,6 +1,6 @@
 /**
  * @class BIShow.DetailTableDetailView
- * @extend BI.View
+ * @extends BI.View
  * 明细表的详细设置————诡异的命名
  */
 BIShow.DetailTableDetailView = BI.inherit(BI.View, {
@@ -76,8 +76,9 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: "bi.detail_select_data_pane",
-                    cls: "widget-select-data-pane"
+                    type: BI.Utils.isRealTime() ? "bi.detail_select_data_4_realtime" : "bi.detail_detail_table_select_data",
+                    cls: "widget-select-data-pane",
+                    wId: this.model.get("id")
                 },
                 left: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
                 top: this.constants.DETAIL_GAP_NORMAL,
@@ -91,17 +92,10 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
     _buildCenter: function () {
         var self = this;
         var table = this._createTable();
-        this.center = BI.createWidget({
-            type: "bi.default",
-            cls: "widget-center-wrapper"
-        });
-        this.region = BI.createWidget({
-            type: "bi.detail_region"
-        });
-
-
         var tab = BI.createWidget({
             type: "bi.data_style_tab",
+            cls: "widget-top-wrapper",
+            wId: this.model.get("id"),
             cardCreator: BI.bind(self._createTabs, this)
         });
 
@@ -111,14 +105,13 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.border",
-                    cls: "widget-show-data-pane",
                     items: {
                         north: {
                             el: tab,
                             height: this.constants.DETAIL_DATA_STYLE_HEIGHT,
                             bottom: this.constants.DETAIL_GAP_NORMAL
                         },
-                        center: this.table
+                        center: table
                     }
                 },
                 left: 0,
@@ -134,13 +127,29 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager_show",
+            type: "bi.dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
+                var relationItem = op.relationItem;
+                if (BI.isNotNull(relationItem)) {
+                    self.model.set("setRelation", {
+                        dId: dId,
+                        relationItem: op.relationItem
+                    });
+                }
+
                 if (!dimensionsVessel[dId]) {
                     dimensionsVessel[dId] = BI.createWidget({
                         type: "bi.layout"
                     });
+                    var dimensions = self.model.cat("dimensions");
+                    if (!BI.has(dimensions, dId)) {
+                        self.model.set("addDimension", {
+                            dId: dId,
+                            regionType: regionType,
+                            src: op
+                        });
+                    }
                 }
                 self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
                 return dimensionsVessel[dId];
@@ -165,8 +174,29 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
         });
     },
 
+
+    /**
+     * 图表样式设置
+     * @returns {*}
+     * @private
+     */
+    _createStyle: function () {
+        var self = this;
+        this.chartSetting = BI.createWidget({
+            type: "bi.chart_setting",
+            chartType: this.model.get("type"),
+            settings: this.model.get("settings")
+        });
+        this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
+            self.model.set("settings", BI.extend(self.model.get("settings"), v));
+        });
+        return this.chartSetting;
+    },
+
+
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
+            this.dimensionsManager.populate();
         }
     },
 
@@ -180,31 +210,43 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
     },
 
     _createTable: function () {
-        this.table = BI.createWidget({
+        var self = this;
+        var table = BI.createWidget({
             type: "bi.detail_table",
             cls: "widget-center-wrapper",
             wId: this.model.get("id")
         });
-        return this.table;
+        table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
+            self.model.set(ob);
+        });
+        this.tablePopulate = BI.debounce(BI.bind(table.populate, table), 0);
+        return table;
     },
 
 
     change: function (changed, prev) {
         if (BI.has(changed, "dimensions") ||
+            BI.has(changed, "sort_sequence") ||
             BI.has(changed, "view") ||
-            (BI.has(changed, "page") && changed.page !== 0) ||
+            BI.has(changed, "filter_value") ||
             (BI.has(changed, "target_relation"))) {
-            this.table.populate();
+            this.tablePopulate();
         }
         if (BI.has(changed, "settings")) {
-            this.table.populate();
-        }
-        if (BI.has(changed, "dimensions")) {
+            this.tablePopulate();
         }
     },
 
 
     local: function () {
+        if (this.model.has("addDimension")) {
+            this.model.get("addDimension");
+            return true;
+        }
+        if (this.model.has("addCalculate")) {
+            this.model.get("addCalculate");
+            return true;
+        }
         if (this.model.has("sorted")) {
             this.model.get("sorted");
             return true;
@@ -215,6 +257,6 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
-        this.table.populate();
+        this.tablePopulate();
     }
 });

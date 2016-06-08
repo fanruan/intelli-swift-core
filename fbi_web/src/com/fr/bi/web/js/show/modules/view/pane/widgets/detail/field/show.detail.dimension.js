@@ -7,8 +7,11 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
 
     constants: {
         DIMENSION_BUTTON_HEIGHT: 25,
-        COMBO_WIDTH: 25,
-        CONTAINER_HEIGHT: 25
+        COMBO_WIDTH: 60,
+        CHECKBOX_WIDTH: 25,
+        CONTAINER_HEIGHT: 25,
+        ICON_BUTTON_WIDTH: 12,
+        ICON_BUTTON_POS: 2
     },
 
     _defaultConfig: function () {
@@ -18,21 +21,27 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
     },
 
     _init: function () {
-        alert('show.detail.dimension.js!:render');
         BIShow.DetailDimensionView.superclass._init.apply(this, arguments);
     },
 
     change: function (changed) {
-
+        if (BI.has(changed, "name")) {
+            this.editor.setValue(this.model.get("name"));
+        }
+        if (BI.has(changed, "used")) {
+            this.usedCheck.setSelected(this.model.get("used"))
+        }
+        if (BI.has(changed, "filter_value")) {
+            this.htape.attr("items")[this.constants.ICON_BUTTON_POS].width = (BI.isEmpty(changed.filter_value) ? 0 : this.constants.ICON_BUTTON_WIDTH);
+            this.htape.resize();
+        }
     },
 
     _render: function (vessel) {
-
         var self = this;
         this.usedCheck = BI.createWidget({
             type: "bi.checkbox"
         });
-        this.usedCheck.setSelected(this.model.get("used"));
         this.usedCheck.on(BI.Checkbox.EVENT_CHANGE, function () {
             self.model.set("used", self.usedCheck.isSelected());
         });
@@ -44,51 +53,63 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
                 return self._checkDimensionName(self.editor.getValue());
             }
         });
-        this.editor.setValue(this.model.get("name"));
-        this.editor.setState(this.model.get("name"));
         this.editor.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.model.set("name", self.editor.getValue());
         });
 
+        this.iconButton = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "filter-font",
+            height: this.constants.DIMENSION_BUTTON_HEIGHT
+        });
+
+        this.iconButton.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._buildFilterPane();
+        });
+
 
         switch (this.model.get("type")) {
-            case BICst.COLUMN.STRING:
+            case BICst.TARGET_TYPE.STRING:
                 this._createStringCombo();
                 break;
-            case BICst.COLUMN.NUMBER:
+            case BICst.TARGET_TYPE.NUMBER:
                 this._createNumberCombo();
                 break;
-            case BICst.COLUMN.DATE:
+            case BICst.TARGET_TYPE.DATE:
                 this._createDateCombo();
+                break;
+            case BICst.TARGET_TYPE.FORMULA:
+                this._createFormulaCombo();
                 break;
             default :
                 this._createStringCombo();
         }
-
+        var filterIconWidth = BI.isEmpty(this.model.get("filter_value")) ? 0 : this.constants.ICON_BUTTON_WIDTH;
+        this.htape = BI.createWidget({
+            type: "bi.htape",
+            height: this.constants.CONTAINER_HEIGHT,
+            items: [{
+                el: {
+                    type: "bi.center_adapt",
+                    items: [this.usedCheck]
+                },
+                width: this.constants.CHECKBOX_WIDTH
+            }, this.editor, {el: this.iconButton, width: filterIconWidth},
+                {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.combo]
+                    },
+                    width: this.constants.CHECKBOX_WIDTH
+                }]
+        });
 
         BI.createWidget({
             type: "bi.default",
             element: vessel,
-            tagName: "li",
             height: this.constants.CONTAINER_HEIGHT,
             data: {id: this.model.get("id")},
-            items: [{
-                type: "bi.border",
-                height: this.constants.CONTAINER_HEIGHT,
-                items: {
-                    west: {
-                        el: {
-                            type: "bi.center_adapt",
-                            items: [this.usedCheck]
-                        },
-                        width: this.constants.COMBO_WIDTH
-                    },
-                    center: {
-                        el: this.editor
-                    },
-                    east: {el: this.combo, width: this.constants.COMBO_WIDTH}
-                }
-            }]
+            items: [this.htape]
         });
     },
 
@@ -118,6 +139,7 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
                     self._buildFilterPane();
                     break;
                 case BICst.DETAIL_STRING_COMBO.HYPERLINK:
+                    self._buildHyperlinkPane();
                     break;
                 case BICst.DETAIL_STRING_COMBO.DELETE:
                     self._deleteDimension();
@@ -125,7 +147,7 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
                 case BICst.DETAIL_STRING_COMBO.INFO:
                     break;
             }
-        })
+        });
     },
 
     _createNumberCombo: function () {
@@ -137,11 +159,13 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
         this.combo.on(BI.DetailNumberDimensionCombo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.DETAIL_NUMBER_COMBO.FORM_SETTING:
+                    self._buildStyleSettingPane();
                     break;
                 case BICst.DETAIL_NUMBER_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
                 case BICst.DETAIL_NUMBER_COMBO.HYPERLINK:
+                    self._buildHyperlinkPane();
                     break;
                 case BICst.DETAIL_NUMBER_COMBO.DELETE:
                     self._deleteDimension();
@@ -161,21 +185,28 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
         this.combo.on(BI.DetailDateDimensionCombo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.DETAIL_DATE_COMBO.YMD:
+                    self.model.set("group", {type: BICst.GROUP.YMD});
                     break;
                 case BICst.DETAIL_DATE_COMBO.YMD_HMS:
+                    self.model.set("group", {type: BICst.GROUP.YMDHMS});
                     break;
                 case BICst.DETAIL_DATE_COMBO.YEAR:
+                    self.model.set("group", {type: BICst.GROUP.Y});
                     break;
                 case BICst.DETAIL_DATE_COMBO.SEASON:
+                    self.model.set("group", {type: BICst.GROUP.S});
                     break;
                 case BICst.DETAIL_DATE_COMBO.MONTH:
+                    self.model.set("group", {type: BICst.GROUP.M});
                     break;
                 case BICst.DETAIL_DATE_COMBO.WEEK:
+                    self.model.set("group", {type: BICst.GROUP.W});
                     break;
                 case BICst.DETAIL_DATE_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
                 case BICst.DETAIL_DATE_COMBO.HYPERLINK:
+                    self._buildHyperlinkPane();
                     break;
                 case BICst.DETAIL_DATE_COMBO.DELETE:
                     self._deleteDimension();
@@ -183,14 +214,13 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
                 case BICst.DETAIL_DATE_COMBO.INFO:
                     break;
             }
-        })
+        });
     },
 
     _createFormulaCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.detail_formula_dimension_combo",
-            dId: this.model.get("id")
+            type: "bi.detail_formula_dimension_combo"
         });
         this.combo.on(BI.DetailFormulaDimensionCombo.EVENT_CHANGE, function (v) {
             switch (v) {
@@ -200,16 +230,64 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
                     self._updateFormula();
                     break;
                 case BICst.DETAIL_FORMULA_COMBO.HYPERLINK:
+                    self._buildHyperlinkPane();
                     break;
                 case BICst.DETAIL_FORMULA_COMBO.DELETE:
                     self._deleteDimension();
                     break;
             }
-        })
+        });
+
+        this.calculateTargetButton = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "calculate-target-font",
+            height: this.constants.DIMENSION_BUTTON_HEIGHT
+        });
+
+        this.calculateTargetButton.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._updateFormula()
+        });
     },
 
     _buildFilterPane: function () {
-        BIShow.FloatBoxes.open("detailTargetFilter", "conditions", {}, this, {id: this.model.get("id")});
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.target_filter_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.DimensionFilterPopup.EVENT_CHANGE, function (v) {
+            self.model.set("filter_value", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
+    },
+
+    _buildStyleSettingPane: function () {
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.target_style_setting",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.TargetStyleSetting.EVENT_CHANGE, function () {
+            self.model.set("settings", this.getValue());
+        });
+        BI.Popovers.create(id, popup).open(id);
+    },
+
+    _buildHyperlinkPane: function(){
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.hyper_link_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.HyperLinkPopup.EVENT_CHANGE, function (v) {
+            self.model.set("hyperlink", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
     },
 
     _deleteDimension: function () {
@@ -218,33 +296,22 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
 
     _updateFormula: function () {
         var self = this;
-        var id = this.model.get("id");
-        var wId = BI.Utils.getWidgetIDByDimensionID(id);
-        var dimensions = BI.Utils.getAllDimensionIDs(wId);
-        var value = this.model.get("value");
-        var fieldItems = [];
-        BI.each(dimensions, function (i, id) {
-            var type = BI.Utils.getDimensionTypeByID(id);
-            if (type === BICst.COLUMN.NUMBER) {
-                fieldItems.push({
-                    text: BI.Utils.getDimensionNameByID(id),
-                    value: BI.Utils.getDimensionNameByID(id),
-                    fieldType: type
-                })
-            }
+        var dId = this.model.get("id");
+        this.popup = BI.createWidget({
+            type: "bi.calculate_target_popup_detail",
+            wId: BI.Utils.getWidgetIDByDimensionID(dId),
+            targetId: dId
         });
-        var detailCalculate = BI.createWidget({
-            type: "bi.detail_table_calculate",
-            fieldItems: fieldItems
+        this.popup.on(BI.CalculateTargetPopupDetail.EVENT_CHANGE, function () {
+            var data = self.popup.getValue().data;
+            self.model.set({
+                _src: data._src,
+                name: data.name
+            });
+
         });
-        BI.Popovers.create("addCalculate", detailCalculate).open("addCalculate");
-        detailCalculate.on(BI.DetailTableCalculate.EVENT_SAVE, function () {
-            self.model.set("valueChange", detailCalculate.getValue());
-        });
-        detailCalculate.setValue(value);
-        detailCalculate.on(BI.DetailTableCalculate.EVENT_CLOSE, function () {
-            BI.Popovers.remove("addCalculate");
-        });
+        BI.Popovers.remove(dId + "calculate_set");
+        BI.Popovers.create(dId + "calculate_set", this.popup).open(dId + "calculate_set");
     },
 
     local: function () {
@@ -252,6 +319,8 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
-
+        this.usedCheck.setSelected(this.model.get("used"));
+        this.editor.setValue(this.model.get("name"));
+        this.editor.setState(this.model.get("name"));
     }
 });

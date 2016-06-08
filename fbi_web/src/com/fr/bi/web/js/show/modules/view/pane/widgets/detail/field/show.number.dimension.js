@@ -11,8 +11,6 @@ BIShow.NumberDimensionView = BI.inherit(BI.View, {
         })
     },
 
-    events: {},
-
     _init: function () {
         BIShow.NumberDimensionView.superclass._init.apply(this, arguments);
     },

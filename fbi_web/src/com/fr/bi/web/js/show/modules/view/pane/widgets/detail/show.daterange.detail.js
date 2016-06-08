@@ -86,7 +86,8 @@ BIShow.DateRangeDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: "bi.select_date",
+                    type: BI.Utils.isRealTime() ? "bi.select_date_4_realtime" : "bi.select_date",
+                    wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
                 left: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
@@ -150,13 +151,21 @@ BIShow.DateRangeDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager_show",
+            type: "bi.dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
                 if (!dimensionsVessel[dId]) {
                     dimensionsVessel[dId] = BI.createWidget({
                         type: "bi.layout"
                     });
+                    var dimensions = self.model.cat("dimensions");
+                    if (!BI.has(dimensions, dId)) {
+                        self.model.set("addDimension", {
+                            dId: dId,
+                            regionType: regionType,
+                            src: op
+                        });
+                    }
                     self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
                 }
                 return dimensionsVessel[dId];
@@ -184,10 +193,15 @@ BIShow.DateRangeDetailView = BI.inherit(BI.View, {
 
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
+            this.dimensionsManager.populate();
         }
     },
 
     local: function () {
+        if (this.model.has("addDimension")) {
+            this.model.get("addDimension");
+            return true;
+        }
         return false;
     },
 
@@ -199,7 +213,6 @@ BIShow.DateRangeDetailView = BI.inherit(BI.View, {
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
-        var filter = this.model.get("filter_value");
-        this.combo.setValue(filter.filter_value || {});
+        this.combo.setValue(this.model.get("value"));
     }
 });
