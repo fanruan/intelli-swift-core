@@ -127,7 +127,7 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         if (sum.getGroup().getType() == BIReportConstant.GROUP.ID_GROUP || sum.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
             type = parentField.getSqlType();
         }
-        new PersistentField(sum.getNameText(), type, 30);
+        return new PersistentField(sum.getNameText(), type, 30);
     }
 
     @Override
