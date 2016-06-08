@@ -78,8 +78,12 @@ BI.ETLFilterViewItemFactory = {
         var v =[];
         if (BI.isNotNull(value)){
             BI.each(value.type === BI.Selection.All ? value.assist : value.value, function(i, item){
-                var d = new Date(item);
-                v.push(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
+                if(item === "") {
+                    v.push(item)
+                } else {
+                    var d = new Date(item);
+                    v.push(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
+                }
             });
         }
 
