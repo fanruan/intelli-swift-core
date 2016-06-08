@@ -201,11 +201,6 @@ BICst.DASHBOARD_WIDGETS = [[{
     title: BI.i18nText("BI-Scatter"),
     value: BICst.WIDGET.SCATTER,
     cls: "drag-scatter-icon"
-}, {
-    text: BI.i18nText("BI-Funnel_Chart"),
-    title: BI.i18nText("BI-Funnel_Chart"),
-    value: BICst.WIDGET.FUNNEL,
-    cls: "drag-funnel-icon"
 }], [{
     text: BI.i18nText("BI-Detail_Table"),
     title: BI.i18nText("BI-Detail_Table"),
@@ -624,6 +619,49 @@ BICst.DIMENSION_TAR_FILTER_NUMBER_COMBO = [[{
 }, {
     text: BI.i18nText("BI-Last_N"),
     value: BICst.DIMENSION_FILTER_NUMBER.BOTTOM_N,
+    cls: "dot-e-font"
+}]];
+
+//dimension date
+BICst.DIMENSION_FILTER_DATE_COMBO = [[{
+    text: BI.i18nText("BI-In"),
+    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Contain"),
+    value: BICst.DIMENSION_FILTER_DATE.CONTAIN,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Contain"),
+    value: BICst.DIMENSION_FILTER_DATE.NOT_CONTAIN,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.DIMENSION_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Begin_With"),
+    value: BICst.DIMENSION_FILTER_DATE.BEGIN_WITH,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-End_With"),
+    value: BICst.DIMENSION_FILTER_DATE.END_WITH,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Top_N"),
+    value: BICst.DIMENSION_FILTER_STRING.TOP_N,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Last_N"),
+    value: BICst.DIMENSION_FILTER_STRING.BOTTOM_N,
     cls: "dot-e-font"
 }]];
 
@@ -1101,7 +1139,7 @@ BICst.DEFAULT_CHART_SETTING = {
     show_x_axis_title: false,
     x_axis_title: "",
     text_direction: 0,
-    chart_legend: BICst.CHART_LEGENDS.NOT_SHOW,
+    chart_legend: BICst.CHART_LEGENDS.BOTTOM,
     show_data_label: false,
     show_data_table: false,
     show_grid_line: true,
@@ -1327,6 +1365,14 @@ BICst.CHART_LEGEND = [{
     text: BI.i18nText("BI-Hidden"),
     value: BICst.CHART_LEGENDS.NOT_SHOW
 }, {
+    text: BI.i18nText("BI-Ju_xia"),
+    value: BICst.CHART_LEGENDS.BOTTOM
+}, {
+    text: BI.i18nText("BI-Ju_Right"),
+    value: BICst.CHART_LEGENDS.RIGHT
+}];
+
+BICst.MAP_CHART_LEGEND = [{
     text: BI.i18nText("BI-Ju_xia"),
     value: BICst.CHART_LEGENDS.BOTTOM
 }, {
