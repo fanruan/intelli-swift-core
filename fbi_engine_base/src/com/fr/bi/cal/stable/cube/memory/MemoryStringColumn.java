@@ -27,18 +27,12 @@ public class MemoryStringColumn extends AbstractSingleMemoryColumn<String> {
         if (getter == null){
             synchronized (getterLock){
                 if (getter == null){
-                    getter = createGroupByType(ValueConverter.DEFAULT ,ComparatorFacotry.CHINESE_ASC);
+                    getter = createGroupByType(key, ValueConverter.DEFAULT ,ComparatorFacotry.CHINESE_ASC);
                 }
             }
         }
         return getter;
     }
-
-    @Override
-    protected String createEmptyValue() {
-        return StringUtils.EMPTY;
-    }
-
 
     @Override
     protected void initDetail() {

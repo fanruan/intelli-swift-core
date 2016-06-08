@@ -51,19 +51,20 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return fetchObjectCore().getIDValue();
     }
 
-    protected void clearCore(){
+    protected void clearCore() {
         this.core = null;
     }
+
     @Override
     public BICore fetchObjectCore() {
-        if (core == null || core == BIBasicCore.EMPTY_CORE){
-            synchronized (this){
-                if (core == null){
+        if (core == null || core == BIBasicCore.EMPTY_CORE) {
+            synchronized (this) {
+                if (core == null) {
                     try {
-                        core =  new BICoreGenerator(this).fetchObjectCore();
-                    } catch (Exception e){
+                        core = new BICoreGenerator(this).fetchObjectCore();
+                    } catch (Exception e) {
                         BILogger.getLogger().error(e.getMessage(), e);
-                        core =  BIBasicCore.EMPTY_CORE;
+                        core = BIBasicCore.EMPTY_CORE;
                     }
                 }
             }
@@ -239,7 +240,8 @@ public abstract class AbstractTableSource implements CubeTableSource {
      */
     @Override
     public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
-        return getFields().values().toArray(new ICubeFieldSource[getFields().values().size()]);
+        Collection<ICubeFieldSource> values = getFields().values();
+        return values.toArray(new ICubeFieldSource[values.size()]);
     }
 
     private Map<String, ICubeFieldSource> getFieldFromPersistentTable() {
@@ -310,8 +312,8 @@ public abstract class AbstractTableSource implements CubeTableSource {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-//        result = prime * result
-//                + ((fetchObjectCore() == null) ? 0 : md5.hashCode());
+        result = prime * result
+                + fetchObjectCore().hashCode();
         return result;
     }
 

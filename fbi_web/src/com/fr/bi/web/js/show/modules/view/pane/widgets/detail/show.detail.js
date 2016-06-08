@@ -1,11 +1,8 @@
 /**
- * 报表详细设置预览页面
- *
- * Created by kary on 2016/4/7.
- * @class BIShow.DetailView
- * @extends BI.BarPopoverSection
+ * Created by GUY on 2015/6/24.
  */
 BIShow.DetailView = BI.inherit(BI.BarFloatSection, {
+
     constants: {
         DETAIL_NORTH_HEIGHT: 40,
         DETAIL_TAB_HEIGHT: 40,
@@ -17,7 +14,9 @@ BIShow.DetailView = BI.inherit(BI.BarFloatSection, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BIShow.DetailView.superclass._defaultConfig.apply(this, arguments), {});
+        return BI.extend(BIShow.DetailView.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-widget-attribute-setter"
+        })
     },
 
     _init: function () {

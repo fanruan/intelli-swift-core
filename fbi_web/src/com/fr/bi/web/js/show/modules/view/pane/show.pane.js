@@ -11,7 +11,9 @@ BIShow.PaneView = BI.inherit(BI.View, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BIShow.PaneView.superclass._defaultConfig.apply(this, arguments), {})
+        return BI.extend(BIShow.PaneView.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-pane-view-show"
+        })
     },
 
     _init: function () {
@@ -56,8 +58,26 @@ BIShow.PaneView = BI.inherit(BI.View, {
     },
 
     _createNorth: function () {
+        var viewChange = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "toolbar-edit-font",
+            text: BI.i18nText("BI-Edit_Report"),
+            height: 30,
+            width: 80
+        });
+        viewChange.on(BI.IconTextItem.EVENT_CHANGE, function () {
+            var reportId = Data.SharingPool.get("reportId");
+            var createBy = Data.SharingPool.get("createBy");
+            window.location.href = FR.servletURL + "?op=fr_bi&cmd=bi_init&id=" + reportId + "&createBy=" + createBy + "&edit=_bi_edit_";
+        });
         return BI.createWidget({
-            type: "bi.layout"
+            type: "bi.absolute",
+            cls: "dashboard-toolbar",
+            items: [{
+                el: viewChange,
+                top: 0,
+                left: 110
+            }]
         })
     },
 

@@ -11,6 +11,7 @@ import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
+import com.fr.stable.StringUtils;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ public abstract class AbstractGVIRunner implements GVIRunner {
     protected transient BusinessTable target;
     protected transient Map<String, TargetFilter> filterMap;
     protected BIUser biUser;
+
     public AbstractGVIRunner(GroupValueIndex gvi, BIDetailWidget widget, ICubeDataLoader loader, long userId) {
         biUser = new BIUser(userId);
         this.gvi = gvi;
@@ -53,7 +55,9 @@ public abstract class AbstractGVIRunner implements GVIRunner {
                     continue;
                 }
                 int sortIndex = getIndexById(sortTargets[i]);
-                int c = target.getSort().getComparator().compare(o1.getValues()[sortIndex], o2.getValues()[sortIndex]);
+                String o1Value = o1.getValues()[sortIndex] != null ? o1.getValues()[sortIndex].toString() : StringUtils.EMPTY;
+                String o2Value = o2.getValues()[sortIndex] != null ? o2.getValues()[sortIndex].toString() : StringUtils.EMPTY;
+                int c = target.getSort().getComparator().compare(o1Value, o2Value);
                 if (c != 0) {
                     return c;
                 }
@@ -70,7 +74,7 @@ public abstract class AbstractGVIRunner implements GVIRunner {
     private int getIndexById(String dId) {
         int index = -1;
         for (int i = 0; i < viewDimension.length; i++) {
-            if(BIComparatorUtils.isExactlyEquals(dId, viewDimension[i].getValue())) {
+            if (BIComparatorUtils.isExactlyEquals(dId, viewDimension[i].getValue())) {
                 index = i;
             }
         }

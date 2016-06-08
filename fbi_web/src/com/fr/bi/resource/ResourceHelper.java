@@ -65,12 +65,12 @@ public class ResourceHelper {
             groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
             //管理员
-            if(UserControl.getInstance().getSuperManagerID() == userId) {
+            if (UserControl.getInstance().getSuperManagerID() == userId) {
                 packages = allPacks;
             }
             //前台能看到的业务包
-            for(BIPackageID pId : authPacks){
-                if(allPacks.has(pId.getIdentityValue())){
+            for (BIPackageID pId : authPacks) {
+                if (allPacks.has(pId.getIdentityValue())) {
                     packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
                 }
             }
@@ -80,7 +80,7 @@ public class ResourceHelper {
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
             for (IBusinessPackageGetterService p : packs) {
-                if(UserControl.getInstance().getSuperManagerID() != userId && !authPacks.contains(p.getID())) {
+                if (UserControl.getInstance().getSuperManagerID() != userId && !authPacks.contains(p.getID())) {
                     continue;
                 }
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
@@ -176,9 +176,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/show.view.manage.js",
                 "com/fr/bi/web/js/show/modules/model/show.model.js",
                 "com/fr/bi/web/js/show/modules/model/pane/model.pane.js",
+
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.widget.js",
-
-
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.detailtable.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.string.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.query.js",
@@ -186,27 +185,17 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.date.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.daterange.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.number.js",
+                "com/fr/bi/web/js/show/modules/model/pane/widgets/model.tree.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.year.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.yearmonth.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.yearquarter.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.string.detail.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.tree.detail.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.year.detail.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.yearmonth.detail.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.yearquarter.detail.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.number.detail.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.date.detail.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.detail.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.detailtable.detail.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.daterange.detail.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.content.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.image.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.web.js",
+                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.detail.js",
+                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/model.detailtable.detail.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/model.dimension.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/model.detail.dimension.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/model.string.dimension.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/model.number.dimension.js",
-                "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/model.date.dimension.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/model.target.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/filter/model.dimensionfilter.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/filter/model.targetfilter.js",
@@ -215,7 +204,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/numbercustomgroup/model.number.custom.group.js",
                 "com/fr/bi/web/js/show/modules/view/show.view.js",
                 "com/fr/bi/web/js/show/modules/view/pane/show.pane.js",
+
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.widget.js",
+                "com/fr/bi/web/js/show/modules/view/pane/widgets/show.detailtable.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.string.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.tree.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.date.js",
@@ -225,24 +216,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.daterange.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.number.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.widgets.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.string.detail.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.tree.detail.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.date.detail.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.number.detail.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.detail.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.year.detail.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.yearmonth.detail.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.yearquarter.detail.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.detailtable.detail.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.daterange.detail.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.content.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.image.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.web.js",
+                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.detail.js",
+                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/show.detailtable.detail.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/show.dimension.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/show.detail.dimension.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/show.string.dimension.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/show.number.dimension.js",
-                "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/show.date.dimension.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/show.target.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/customgroup/show.customgroup.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/customsort/show.customsort.js",
@@ -810,8 +790,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/model.dimensionsmanagershow.js",
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/regionsmanagershow.js",
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/dimensionsmanagershow.js",
-                "com/fr/bi/web/js/modules/dimensionsmanagers4show/charttype/combo/combo.tabletypeshow.js",
-                "com/fr/bi/web/js/modules/dimensionsmanagers4show/charttype/charttypeshow.js",
+                "com/fr/bi/web/js/modules/dimensionsmanagers4show/charttype/combo/combo.tabletype.show.js",
+                "com/fr/bi/web/js/modules/dimensionsmanagers4show/charttype/charttype.show.js",
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/regions/region.dimensionshow.js",
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/regions/region.targetshow.js",
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/regions/region.detailshow.js",
@@ -1374,8 +1354,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/model.dimensionsmanagershow.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regionsmanagershow.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/dimensionsmanagershow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletypeshow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/charttypeshow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/combo.maptype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/popup.maptype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/charttype.show.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.dimensionshow.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.targetshow.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.detailshow.js",
@@ -1756,7 +1738,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                 */
+                */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
@@ -2093,7 +2075,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                 */
+                */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2147,7 +2129,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                 */
+                */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2447,7 +2429,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                 */
+                */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 

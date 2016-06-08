@@ -56,16 +56,13 @@ public class UserETLUpdateTask implements CubeTask {
 	private Date start;
 	private Date end;
 
-    private long oldVersion;
-
     private BIUser biUser;
     @BIIgnoreField
     protected BICube cube;
 
 
-    public UserETLUpdateTask(UserCubeTableSource source, long oldVersion) {
+    public UserETLUpdateTask(UserCubeTableSource source) {
         this.source = source;
-        this.oldVersion = oldVersion;
         this.biUser = new BIUser(source.getUserId());
         this.cube = new BICube(new BICubeResourceRetrieval(new ICubeConfiguration() {
             @Override
@@ -191,15 +188,15 @@ public class UserETLUpdateTask implements CubeTask {
 	/**
 	 * @return
 	 */
-	public boolean check() {
+	public boolean check(long oldVersion) {
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
-        return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion();
+        return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion(oldVersion);
 	}
 	
 	/**
 	 * @return
 	 */
-	private boolean checkSourceVersion() {
+	private boolean checkSourceVersion(long oldVersion) {
 		return oldVersion == getTableVersion();
 	}
 	

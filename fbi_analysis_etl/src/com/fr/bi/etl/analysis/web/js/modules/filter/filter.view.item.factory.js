@@ -16,7 +16,9 @@ BI.ETLFilterViewItemFactory = {
             }));
         }
         BI.each(itemsArray, function(i, item){
-            item = item || ''
+            if(BI.isNull(item)) {
+                item = ""
+            }
             if (BI.isArray(item)){
                 var vertical = BI.createWidget({
                     type : 'bi.vertical_adapt'
