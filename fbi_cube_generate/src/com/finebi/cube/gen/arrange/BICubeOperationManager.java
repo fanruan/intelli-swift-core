@@ -320,7 +320,7 @@ public class BICubeOperationManager {
         }
     }
 
-    public void generateTableRelationPath(Set<BITableSourceRelationPath> relationPathSet) {
+    public void generateTableRelationPath(Set<BITableSourceRelationPath> relationPathSet,Set<IStatusTag>dependsStatusTag) {
         if (relationPathSet != null && !relationPathSet.isEmpty()) {
             Iterator<BITableSourceRelationPath> it = relationPathSet.iterator();
             while (it.hasNext()) {
@@ -337,7 +337,8 @@ public class BICubeOperationManager {
                     frontPath.copyFrom(path);
                     frontPath.removeLastRelation();
                     operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, frontPath.getSourceID()));
-
+//for (IStatusTag statusTag:dependsStatusTag){
+//    operation.subscribe(statusTag);
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
 
                 } catch (Exception e) {
