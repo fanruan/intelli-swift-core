@@ -37,7 +37,7 @@ public abstract class AbstractSort implements ISort {
         Iterator it = baseMap.iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
-            treeMap.put(entry.getKey(), entry.getValue());
+            treeMap.put(entry.getKey().toString(), entry.getValue().toString());
         }
         return treeMap;
     }
