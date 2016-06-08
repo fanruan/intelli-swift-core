@@ -21,22 +21,28 @@ BI.DetailDateDimensionCombo = BI.inherit(BI.Widget, {
             items: [
                 [{
                     text: BI.i18nText("BI-Date"),
-                    value: BICst.DETAIL_DATE_COMBO.YMD
+                    value: BICst.DETAIL_DATE_COMBO.YMD,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Year_Fen"),
-                    value: BICst.DETAIL_DATE_COMBO.YEAR
+                    value: BICst.DETAIL_DATE_COMBO.YEAR,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Multi_Date_Quarter"),
-                    value: BICst.DETAIL_DATE_COMBO.SEASON
+                    value: BICst.DETAIL_DATE_COMBO.SEASON,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Multi_Date_Month"),
-                    value: BICst.DETAIL_DATE_COMBO.MONTH
+                    value: BICst.DETAIL_DATE_COMBO.MONTH,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Week_XingQi"),
-                    value: BICst.DETAIL_DATE_COMBO.WEEK
+                    value: BICst.DETAIL_DATE_COMBO.WEEK,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Time_ShiKe"),
-                    value: BICst.DETAIL_DATE_COMBO.YMD_HMS
+                    value: BICst.DETAIL_DATE_COMBO.YMD_HMS,
+                    cls: "dot-e-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Filter_Setting"),

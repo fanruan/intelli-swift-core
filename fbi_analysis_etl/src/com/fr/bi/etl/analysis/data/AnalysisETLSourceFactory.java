@@ -7,6 +7,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -48,10 +49,17 @@ public class AnalysisETLSourceFactory {
             case Constants.ETL_TYPE.SELECT_DATA :
                 return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, StringUtils.EMPTY);
             case Constants.ETL_TYPE.SELECT_NONE_DATA :
-                AnalysisBusiTable table = new AnalysisBusiTable(UUID.randomUUID().toString(), userId);
-                AnalysisBaseTableSource baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, table.getID().getIdentity());
-                table.setSource(baseSource);
-                BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, baseSource);
+                AnalysisBaseTableSource temp = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, StringUtils.EMPTY);
+                BusinessTable businessTable = getAnyTableWithSource(temp);
+                AnalysisBaseTableSource baseSource = null;
+                if (businessTable == null){
+                    AnalysisBusiTable table = new AnalysisBusiTable(UUID.randomUUID().toString(), userId);
+                    baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, table.getID().getIdentity());
+                    table.setSource(baseSource);
+                    BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, baseSource);
+                } else {
+                    baseSource = (AnalysisBaseTableSource) businessTable.getTableSource();
+                }
                 return baseSource;
             default :
                 JSONArray parents = jo.getJSONArray("parents");
@@ -65,6 +73,15 @@ public class AnalysisETLSourceFactory {
             }
                 return source;
         }
+    }
+
+    private static BusinessTable getAnyTableWithSource(AnalysisBaseTableSource temp) {
+        for (BusinessTable table :  BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()){
+            if (ComparatorUtils.equals(table.getTableSource().getSourceID(), temp.getSourceID())){
+                return table;
+            }
+        }
+        return null;
     }
 
     private static BIWidget createWidget(JSONObject jo, long userId) throws Exception {

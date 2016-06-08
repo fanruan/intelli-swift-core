@@ -22,13 +22,23 @@
 
 .bi-dashboard-widget{
   background: @color-bi-background-default;
-  & .dashboard-title-left > a > div {
-      text-align: left !important;
-      font-size: @font-size-16 !important;
+  & .dashboard-title-left{
+    & .shelter-editor-text{
+      cursor: default;
+      & .bi-text{
+        text-align: left !important;
+        font-size: @font-size-16 !important;
+      }
+    }
   }
-  & .dashboard-title-center > a > div {
-      text-align: center !important;
-      font-size: @font-size-16 !important;
+  & .dashboard-title-center{
+    & .shelter-editor-text{
+      cursor: default;
+      & .bi-text{
+        text-align: center !important;
+        font-size: @font-size-16 !important;
+      }
+    }
   }
   & .operator-region{
     z-index: @zIndex-layer;

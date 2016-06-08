@@ -91,7 +91,7 @@ BI.CalculateTargetAbstractPeriodValuePane = BI.inherit(BI.Widget, {
                             width: 478
                         }],
                         hgap: 10,
-                        height: 200
+                        height: 240
                     }
                 }
             ]

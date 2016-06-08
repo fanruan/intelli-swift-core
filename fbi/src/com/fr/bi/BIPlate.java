@@ -1,12 +1,14 @@
 package com.fr.bi;
 
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
+import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.utils.BIModuleManager;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.entry.BIReportEntry;
@@ -61,12 +63,18 @@ public class BIPlate extends AbstractFSPlate {
         registerEntrySomething();
         initOOMKillerForLinux();
         BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
+        loadMemoryData();
         if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
             markedObject.generateCubes();
         }
     }
 
-    private void registerEntrySomething(){
+    public void loadMemoryData() {
+        BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID());
+        BIConnectionManager.getInstance();
+    }
+
+    private void registerEntrySomething() {
         EntryPoolFactory.registerEntryDAO(EntryConstants.BIREPORT, BIReportEntryDAO.getInstance());
         EntryPoolFactory.registerEntry("bireport", BIReportEntry.class);
         EntryPoolFactory.registerEntryTableNames(new String[]{BIReportEntry.TABLE_NAME});
@@ -76,13 +84,13 @@ public class BIPlate extends AbstractFSPlate {
     private void initOOMKillerForLinux() {
         String os = System.getProperty("os.name");
         BILogger.getLogger().info("OS:" + os);
-        if(os.toUpperCase().contains("LINUX")){
+        if (os.toUpperCase().contains("LINUX")) {
             String name = ManagementFactory.getRuntimeMXBean().getName();
             String pid = name.split("@")[0];
             try {
-                String cmd = "echo -17 > /proc/" + pid +"/oom_adj";
+                String cmd = "echo -17 > /proc/" + pid + "/oom_adj";
                 BILogger.getLogger().info("execute command:" + cmd);
-                Runtime.getRuntime().exec(new String[]{"/bin/sh","-c", cmd});
+                Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});
             } catch (IOException e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }

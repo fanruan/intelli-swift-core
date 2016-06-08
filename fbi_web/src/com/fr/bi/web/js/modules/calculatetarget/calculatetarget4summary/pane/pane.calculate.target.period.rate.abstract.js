@@ -22,7 +22,6 @@ BI.CalculateTargetAbstractPeriodRatePane = BI.inherit(BI.Widget, {
 
         this.logicValuePane = BI.createWidget({
             type: "bi.vertical",
-            cls: "cal-pane"
         });
 
         var divisionLabel = BI.createWidget({
@@ -33,8 +32,7 @@ BI.CalculateTargetAbstractPeriodRatePane = BI.inherit(BI.Widget, {
         });
 
         this.logicPane = BI.createWidget({
-            type: "bi.vertical",
-            cls: "cal-pane"
+            type: "bi.vertical"
         });
 
 
@@ -65,7 +63,7 @@ BI.CalculateTargetAbstractPeriodRatePane = BI.inherit(BI.Widget, {
 
 
         BI.createWidget({
-            type: "bi.vertical",
+            type: "bi.vtape",
             element: this.element,
             items: [
                 {
@@ -77,41 +75,79 @@ BI.CalculateTargetAbstractPeriodRatePane = BI.inherit(BI.Widget, {
                             el: this.valueCombo,
                             width: 480
                         }],
-                        height: 30,
                         hgap: 10
                     },
+                    height: 30,
                     bgap: 10
-                },
-                {
+                }, {
                     el: {
                         type: "bi.htape",
                         items: [{
                             el: logicLabel
                         }, {
-                            el: {
-                                type: "bi.vtape",
-                                items: [
-                                    {
-                                        el: this.tipLabel,
-                                        height: 30
-                                    },
-                                    {
-                                        el: this.logicValuePane,
-                                        height: 30
-                                    },
-                                    {
-                                        el: divisionLabel,
-                                        height: 30
-                                    },
-                                    {
-                                        el: this.logicPane
-                                    }
-                                ]
-                            },
-                            width: 478
+                            el: this.tipLabel,
+                            width: 480
                         }],
-                        hgap: 10,
-                        height: 200
+                        hgap: 10
+                    },
+                    height: 30,
+                    bgap: 10
+                }, {
+                    el: {
+                        type: "bi.htape",
+                        items: [
+                            {
+                                el: {
+                                    type: 'bi.layout'
+                                }
+                            }, {
+                                el: {
+                                    type: "bi.htape",
+                                    items: [{
+                                        el: {
+                                            type: "bi.vtape",
+                                            cls: "cal-pane",
+                                            items: [{
+                                                el: this.logicValuePane,
+                                                height: 30
+                                            },
+                                                {
+                                                    el: divisionLabel,
+                                                    height: 30
+                                                },
+                                                {
+                                                    el: this.logicPane
+                                                }]
+                                        }
+                                    }, {
+                                        el: {
+                                            type: "bi.vertical_adapt",
+                                            items: [{
+                                                type: "bi.label",
+                                                value: BI.i18nText("BI-Minus"),
+                                                textAlign: "center",
+                                                width: 30
+                                            }]
+                                        },
+                                        width: 30
+                                    }, {
+                                        el: {
+                                            type: "bi.vertical_adapt",
+                                            cls: "cal-pane",
+                                            items: [{
+                                                type: "bi.label",
+                                                value: 1,
+                                                textAlign: "center",
+                                                width: 30
+                                            }]
+                                        },
+                                        width: 30
+                                    }]
+                                },
+                                width: 480
+                            }],
+                        hgap: 10
+
                     }
                 }
             ]
