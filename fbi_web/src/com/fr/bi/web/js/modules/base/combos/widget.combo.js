@@ -130,11 +130,13 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 children: [{
                     text: BI.i18nText("BI-Position_Left"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
-                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
+                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Position_Center"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS_CENTER,
-                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
+                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER,
+                    cls: "dot-e-font"
                 }]
             }],
             [{
@@ -185,11 +187,13 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 children: [{
                     text: BI.i18nText("BI-Position_Left"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
-                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
+                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Position_Center"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS_CENTER,
-                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
+                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER,
+                    cls: "dot-e-font"
                 }]
             }],
             [{
