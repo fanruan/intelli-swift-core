@@ -20,6 +20,7 @@ import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.calculator.cal.configure.AbstractConfigureCalulator;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
@@ -882,7 +883,7 @@ public class CubeIndexLoader {
             row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), new ArrayList<BITableSourceRelation>());
         }
         TargetCalculator summary = CountCalculator.NONE_TARGET_COUNT_CAL;
-        BusinessTable tableBelongTo = BusinessFieldHelper.getBusinessTable(row[0].getField());
+        BusinessTable tableBelongTo =row[0].getField().getTableBelongTo();
         GroupValueIndex gvi = widget.createFilterGVI(row, tableBelongTo, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(tableBelongTo));
         NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(BIBusinessTable.createEmptyTable(), gvi, session.getLoader());
         RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, rowDimension, expander, session, summary, widget, useRealData);
