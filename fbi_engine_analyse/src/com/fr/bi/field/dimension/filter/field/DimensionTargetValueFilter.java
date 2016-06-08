@@ -38,9 +38,9 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
      */
     @Override
     public List<String> getUsedTargets() {
-        if(target_id == null){
+        if (target_id == null) {
             return new ArrayList<String>();
-        }else{
+        } else {
             List<String> result = new ArrayList<String>();
             result.add(target_id);
             return result;
@@ -94,7 +94,7 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
     @Override
     public boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
         TargetCalculator targetCalculator = targetsMap.get(target_id);
-        if(targetCalculator != null){
+        if (targetCalculator != null) {
             return filterValue.showNode(node, targetsMap.get(target_id).createTargetGettingKey(), loader);
         }
         return filterValue.showNode(node, null, loader);

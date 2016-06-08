@@ -178,7 +178,7 @@ public class BIConnectionManager extends XMLFileManager {
         while (nameIt.hasNext()) {
             String name = nameIt.next();
             JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
-            if (c != null && testConnection(c)) {
+            if (c != null) {
                 if (isMicrosoftAccessDatabase(c)) {
                     continue;
                 }

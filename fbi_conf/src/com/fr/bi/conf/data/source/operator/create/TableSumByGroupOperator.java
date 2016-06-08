@@ -108,7 +108,10 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
                     persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), getDimensions()[i].getGroup().getType() ==  BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
                 } else if (parent.getField(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.NUMBER) {
                     PersistentField pfield = parent.getField(getDimensions()[i].getName());
-                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(),  getDimensions()[i].getGroup().getType() !=  BIReportConstant.GROUP.AUTO_GROUP ? pfield.getSqlType() : BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
+                    /**
+                     * 数值类型自定义分组，类型要为String类型
+                     */
+                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(),  getDimensions()[i].getGroup().getType() ==  BIReportConstant.GROUP.ID_GROUP ? pfield.getSqlType() : BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
                 } else {
                     persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), parent.getField(dimensions[i].getName()).getSqlType(), parent.getField(dimensions[i].getName()).getColumnSize()));
                 }
