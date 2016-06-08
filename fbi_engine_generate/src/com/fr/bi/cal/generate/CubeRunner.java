@@ -64,7 +64,6 @@ public class CubeRunner {
 
                         } catch (Exception e) {
                             BILogger.getLogger().error(e.getMessage(), e);
-//                            StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class).errorTable();
                         } finally {
                             cubeTask.end();
                             finish();
@@ -137,7 +136,6 @@ public class CubeRunner {
 
     private void generateCube() {
         setStatue(Status.LOADED);
-//        addTask(new CheckTask(biUser.getUserId()));
         CubeBuildStuff cubeBuildStuff= new CubeBuildStuffManager(new BIUser((biUser.getUserId())));
         CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser,cubeBuildStuff),biUser.getUserId());
     }
@@ -155,8 +153,6 @@ public class CubeRunner {
         BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-//        BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-//        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableRelationSet());
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         renameToCurrentDirect();

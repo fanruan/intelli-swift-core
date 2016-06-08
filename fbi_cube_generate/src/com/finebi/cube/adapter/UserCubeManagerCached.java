@@ -2,14 +2,22 @@ package com.finebi.cube.adapter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.ICube;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
+import com.fr.fs.control.UserControl;
 
 /**
  * This class created on 2016/6/8.
@@ -24,9 +32,13 @@ public class UserCubeManagerCached implements ICubeDataLoader {
     private BIUserCubeManager hostCubeManager;
     private CubeTableCache cubeTableCache;
 
-    public UserCubeManagerCached(long userID, ICube cube) {
-        hostCubeManager = new BIUserCubeManager(userID, cube);
+    public UserCubeManagerCached(BIUser user) {
+        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(UserControl.getInstance().getSuperManagerID())));
+        ICube cube = new BICube(resourceRetrievalService, discovery);
+        hostCubeManager = new BIUserCubeManager(user.getUserId(), cube);
         cubeTableCache = new CubeTableCache(hostCubeManager);
+
     }
 
     @Override

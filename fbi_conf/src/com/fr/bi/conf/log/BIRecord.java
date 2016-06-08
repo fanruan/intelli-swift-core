@@ -3,6 +3,7 @@ package com.fr.bi.conf.log;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONCreator;
 
@@ -122,4 +123,14 @@ public interface BIRecord extends JSONCreator {
      void loopRelation(Set<ArrayKey<BITableSourceRelation>> set);
 
      Date getEnd();
+
+    /**
+     * 获取所有需要更新的relation信息
+     */
+    void reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet);
+
+    /**
+     * 获取所有需要更新的tableSource信息
+     */
+    void cubeTableSourceSet(Set<CubeTableSource> cubeTableSources);
 }

@@ -1,6 +1,7 @@
 package com.finebi.cube.conf.pack.imp;
 
 import com.finebi.cube.conf.BISystemDataManager;
+import com.finebi.cube.conf.pack.IPackagesManagerService;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
@@ -12,9 +13,11 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -211,4 +214,23 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     public Set<BusinessTable> getAllTables(long userId) {
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAllTables();
     }
+    @Override
+    public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId){
+        IPackagesManagerService analysisPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisPackageManager();
+        IPackagesManagerService currentPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getCurrentPackageManager();
+        Set<BIBusinessPackage> analysisPackageManagerAllPackages = analysisPackageManager.getAllPackages();
+        Set<BIBusinessPackage> currentPackageManagerAllPackages = currentPackageManager.getAllPackages();
+        Set<BIBusinessPackage> packageSet=new HashSet<BIBusinessPackage>();
+        for (BIBusinessPackage currentPackageManagerAllPackage : currentPackageManagerAllPackages) {
+            if (!analysisPackageManagerAllPackages.contains(currentPackageManagerAllPackage)){
+                try {
+                    packageSet.add((BIBusinessPackage) currentPackageManagerAllPackage.clone());
+                } catch (CloneNotSupportedException e) {
+                    BILogger.getLogger().error(e.getMessage());
+                }
+            }
+        }
+        return packageSet;
+    }
+
 }

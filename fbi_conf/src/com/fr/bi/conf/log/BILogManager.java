@@ -202,15 +202,15 @@ public class BILogManager implements BILogManagerProvider {
      * 获取所有需要更新的relation信息
      */
     @Override
-    public Set<BITableSourceRelation> reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet) {
-        return biTableSourceRelationHashSet;
+    public void reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet, long userId) {
+        getInstance(userId).reLationSet(biTableSourceRelationHashSet);
     }
     /**
      * 获取所有需要更新的tableSource信息
      */
     @Override
-    public Set<CubeTableSource> cubeTableSourceSet(Set<CubeTableSource> cubeTableSources) {
-        return cubeTableSources;
+    public void cubeTableSourceSet(Set<CubeTableSource> cubeTableSources, long userId) {
+       getInstance(userId).cubeTableSourceSet(cubeTableSources);
     }
 
 
