@@ -292,4 +292,6 @@ public interface BISystemPackageConfigurationProvider {
     Boolean isPackageTaggedSpecificGroup(long userId, BIPackageID packageID, BIGroupTagName groupTagName) throws BIGroupAbsentException;
 
     Set<BusinessTable> getAllTables(long userId);
+
+    Set<BIBusinessPackage> getPackages4CubeGenerate(long userId);
 }

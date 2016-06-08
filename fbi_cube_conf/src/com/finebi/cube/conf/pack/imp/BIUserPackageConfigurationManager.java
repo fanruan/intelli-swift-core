@@ -89,6 +89,4 @@ public class BIUserPackageConfigurationManager {
         }
         return false;
     }
-
-
 }

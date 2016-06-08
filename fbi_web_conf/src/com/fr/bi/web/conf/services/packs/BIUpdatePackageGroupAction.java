@@ -26,7 +26,6 @@ public class BIUpdatePackageGroupAction extends
         String groupString = WebUtils.getHTTPRequestParameter(req, "groups");
         long userId = ServiceUtils.getCurrentUserID(req);
         updatePackageGroup(groupString, userId);
-
     }
 
     /**
