@@ -60,7 +60,7 @@ BIDezi.View = BI.inherit(BI.View, {
                 popConfig: self.model.get("popConfig")
             }, function(res, model){
                 if (BI.isNotNull(res) && BI.isNotNull(res.reportId)) {
-                    BI.Msg.toast("BI-Save_As_Success");
+                    BI.Msg.toast(BI.i18nText("BI-Save_As_Success"));
                 }
             });
         });
