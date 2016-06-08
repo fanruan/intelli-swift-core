@@ -4,15 +4,17 @@
  * 指标过滤model
  */
 BIShow.DimensionFilterModel = BI.inherit(BI.Model, {
-    _defaultConfig: function () {
-        return BI.extend(BIShow.DimensionFilterModel.superclass._defaultConfig.apply(this, arguments), {});
+    _defaultConfig: function(){
+        return BI.extend(BIShow.DimensionFilterModel.superclass._defaultConfig.apply(this, arguments), {
+
+        });
     },
 
-    _init: function () {
+    _init: function(){
         BIShow.DimensionFilterModel.superclass._init.apply(this, arguments);
     },
 
-    local: function () {
+    local: function(){
         //if(this.has("changeCondition")){
         //    var conditions = this.get("changeCondition");
         //    if(BI.isEmpty(conditions)){

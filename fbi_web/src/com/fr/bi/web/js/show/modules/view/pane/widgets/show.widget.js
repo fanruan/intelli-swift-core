@@ -150,7 +150,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
         var filterIcon = BI.createWidget({
             type: "bi.icon_button",
-            cls: "widget-combo-filter-font dashboard-title-detail",
+            cls: "widget-tools-filter-font dashboard-title-detail",
             width: 16,
             height: 16
         });

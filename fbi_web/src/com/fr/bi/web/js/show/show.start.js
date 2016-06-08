@@ -10,7 +10,7 @@ BI.extend(BIShow, {
             },
             index: function () {
                 BI.Factory.createView("", BIShow.Views.get("/"), BI.extend({}, options, BIShow.Models.get("")), {
-                    element: "body"
+                    element: "#wrapper"
                 }, null);
             }
         });
