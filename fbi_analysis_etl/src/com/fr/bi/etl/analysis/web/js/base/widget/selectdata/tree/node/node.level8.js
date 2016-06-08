@@ -116,6 +116,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             }]
         })
         self.loadingBar.setVisible(false);
+        self.controller.checkUsable(this.options.id);
         self.controller.startChecker(this.options.id);
     },
 
