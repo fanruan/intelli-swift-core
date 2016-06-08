@@ -49,7 +49,7 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
             cls: "bi-list-view",
             items: [{
                 el: (this.floatLayer[name] = BI.createWidget({
-                    type: 'bi.center_adapt',
+                    type: 'bi.absolute',
                     items: [floatbox]
                 })),
                 left: 0,
@@ -89,7 +89,14 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
         this.modal && container.element.__buildZIndexMask__(this.zindex++);
         this.get(name).setZindex(this.zindex++);
         this.floatContainer[name].visible();
-        this.get(name).show();
+        var floatbox = this.get(name);
+        floatbox.show();
+        var W = $(this.options.render).width(), H = $(this.options.render).height();
+        var w = floatbox.element.width(), h = floatbox.element.height();
+        floatbox.element.css({
+            left: (W - w) / 2 + "px",
+            top: (H - h) / 2 + "px"
+        });
         return this;
     },
 
