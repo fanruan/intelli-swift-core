@@ -130,10 +130,10 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
     _createStringCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.detail_string_dimension_combo",
+            type: "bi.detail_string_dimension_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.DetailStringDimensionCombo.EVENT_CHANGE, function (v) {
+        this.combo.on(BI.DetailStringDimensionComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.DETAIL_STRING_COMBO.FILTER:
                     self._buildFilterPane();
@@ -153,10 +153,10 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
     _createNumberCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.detail_number_dimension_combo",
+            type: "bi.detail_number_dimension_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.DetailNumberDimensionCombo.EVENT_CHANGE, function (v) {
+        this.combo.on(BI.DetailNumberDimensionComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.DETAIL_NUMBER_COMBO.FORM_SETTING:
                     self._buildStyleSettingPane();
@@ -179,10 +179,10 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
     _createDateCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.detail_date_dimension_combo",
+            type: "bi.detail_date_dimension_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.DetailDateDimensionCombo.EVENT_CHANGE, function (v) {
+        this.combo.on(BI.DetailDateDimensionComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.DETAIL_DATE_COMBO.YMD:
                     self.model.set("group", {type: BICst.GROUP.YMD});
@@ -220,9 +220,9 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
     _createFormulaCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.detail_formula_dimension_combo"
+            type: "bi.detail_formula_dimension_combo_show"
         });
-        this.combo.on(BI.DetailFormulaDimensionCombo.EVENT_CHANGE, function (v) {
+        this.combo.on(BI.DetailFormulaDimensionComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.DETAIL_FORMULA_COMBO.FORM_SETTING:
                     break;

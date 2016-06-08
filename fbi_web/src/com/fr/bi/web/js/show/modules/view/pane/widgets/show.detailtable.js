@@ -118,78 +118,40 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             self._expandWidget();
         });
 
-        var combo = BI.createWidget({
-            type: "bi.widget_combo",
-            wId: this.model.get("id")
+        var filterIcon = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "widget-tools-filter-font dashboard-title-detail",
+            width: 16,
+            height: 16
         });
-        combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
-            switch (type) {
-                case BICst.DASHBOARD_WIDGET_SHOW_NAME:
-                    var settings = self.model.get("settings");
-                    settings.show_name = !settings.show_name;
-                    self.model.set("settings", settings);
-                    self._refreshLayout();
-                    break;
-                case BICst.DASHBOARD_WIDGET_RENAME:
-                    self.title.focus();
-                    break;
-                case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
-                    var settings = self.model.get("settings");
-                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
-                    self.model.set("settings", settings);
-                    self._refreshLayout();
-                    break;
-                case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
-                    var settings = self.model.get("settings");
-                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
-                    self.model.set("settings", settings);
-                    self._refreshLayout();
-                    break;
-                case BICst.DASHBOARD_WIDGET_FILTER:
-                    if (BI.isNull(self.filterPane)) {
-                        self.filterPane = BI.createWidget({
-                            type: "bi.widget_filter",
-                            wId: self.model.get("id")
-                        });
-                        self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
-                            self.model.set(widget);
-                        });
-                        BI.createWidget({
-                            type: "bi.absolute",
-                            element: self.element,
-                            items: [{
-                                el: self.filterPane,
-                                top: 32,
-                                left: 0,
-                                right: 0,
-                                bottom: 0
-                            }]
-                        });
-                        return;
-                    }
-                    self.filterPane.setVisible(!self.filterPane.isVisible());
-                    break;
-                case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(self.model.get("name")));
-                    break;
-                case BICst.DASHBOARD_WIDGET_COPY :
-                    self.model.copy();
-                    break;
-                case BICst.DASHBOARD_WIDGET_DELETE :
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
-                        if (v === true) {
-                            self.model.destroy();
-                        }
-                    });
-                    break;
+        filterIcon.on(BI.IconButton.EVENT_CHANGE, function(){
+            if (BI.isNull(self.filterPane)) {
+                self.filterPane = BI.createWidget({
+                    type: "bi.widget_filter",
+                    wId: self.model.get("id")
+                });
+                self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
+                    self.model.set(widget);
+                });
+                BI.createWidget({
+                    type: "bi.absolute",
+                    element: self.element,
+                    items: [{
+                        el: self.filterPane,
+                        top: 32,
+                        left: 0,
+                        right: 0,
+                        bottom: 0
+                    }]
+                });
+                return;
             }
+            self.filterPane.setVisible(!self.filterPane.isVisible());
         });
-
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [expand, combo],
+            items: [ filterIcon, expand],
             hgap: 3
         });
         this.tools.setVisible(false);
@@ -224,10 +186,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
 
     _expandWidget: function () {
         var wId = this.model.get("id");
-        var type = this.model.get("type");
-        this.addSubVessel("detail", "body", {
-            isLayer: true
-        }).skipTo("detail", "detail", "detail", {}, {
+        BIShow.FloatBoxes.open("detail", "detail", {}, this, {
             id: wId
         })
     },

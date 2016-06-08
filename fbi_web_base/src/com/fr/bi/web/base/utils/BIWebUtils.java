@@ -209,7 +209,7 @@ public class BIWebUtils {
         map.put("description", node.getDescription());
         Date cubeTime = BIConfigureManagerCenter.getLogManager().getCubeEnd(userId);
         if(cubeTime != null) {
-            map.put("__version__", cubeTime.getTime());
+            map.put("__version__", cubeTime.getTime() + userId);
         }
         boolean isEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         isEdit = sessionIDInfo.setEdit(isEdit);
