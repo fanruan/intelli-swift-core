@@ -10,7 +10,7 @@ BIDezi.Model = BI.inherit(BI.Model, {
 
     _init: function () {
         BIDezi.Model.superclass._init.apply(this, arguments);
-        Data.SharingPool.put("_createby", this.get('createby'));
+        Data.SharingPool.put("createBy", this.get('createBy'));
         Data.SharingPool.put("sessionID", this.get('sessionID'));
         Data.SharingPool.put("edit", this.get('edit') === '_bi_edit_');
         Data.SharingPool.put("description", this.get('description'));

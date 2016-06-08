@@ -1,17 +1,13 @@
-/**
- * Created by wuk on 16/4/15.
- */
 BIShow.TreeDetailView = BI.inherit(BI.View, {
 
     constants: {
         DETAIL_NORTH_HEIGHT: 40,
         DETAIL_TAB_HEIGHT: 40,
         DETAIL_WEST_WIDTH: 280,
-        DETAIL_DATA_STYLE_HEIGHT: 320,
+        DETAIL_DATA_STYLE_HEIGHT: 240,
         DETAIL_GAP_NORMAL: 10,
-        DETAIL_PANE_HORIZONTAL_GAP: 20,
-        DETAIL_TITLE_WIDTH: 400,
-        DETAIL_TITLE_HEIGHT: 22
+        DETAIL_PANE_HORIZONTAL_GAP: 20
+
     },
 
     _defaultConfig: function () {
@@ -25,54 +21,45 @@ BIShow.TreeDetailView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
-        this.main = BI.createWidget({
+        BI.createWidget({
             type: "bi.border",
             element: vessel,
             items: {
-                north: {
-                    el: this._buildNorth(),
-                    height: this.constants.DETAIL_NORTH_HEIGHT
-                },
-                west: {
-                    el: this._buildWest(),
-                    width: this.constants.DETAIL_WEST_WIDTH
-                },
-                center: {
-                    el: this._buildCenter()
-                }
+                north: {el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT},
+                west: {el: this._buildWest(), width: this.constants.DETAIL_WEST_WIDTH},
+                center: {el: this._buildCenter()}
             }
         });
     },
 
     _buildNorth: function () {
         var self = this;
-        var widgetNameEditor = BI.createWidget({
+        var input = BI.createWidget({
             type: "bi.text_editor",
-            value: this.model.get("name"),
-            height: this.constants.DETAIL_TITLE_HEIGHT,
-            width: this.constants.DETAIL_TITLE_WIDTH
-        });
+            height: 22,
+            width: 400,
+            validationChecker: function (v) {
 
-        widgetNameEditor.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self.model.set("name", widgetNameEditor.getValue());
+            }
         });
-
-        var complete = BI.createWidget({
+        input.setValue(this.model.get("name"));
+        input.on(BI.TextEditor.EVENT_CONFIRM, function () {
+            self.model.set("name", input.getValue());
+        });
+        var shrink = BI.createWidget({
             type: "bi.button",
             height: 25,
             title: BI.i18nText('BI-Return_To_Dashboard'),
-            text: BI.i18nText('BI-Detail_Set_Complete')
+            text: BI.i18nText('BI-Detail_Set_Complete'),
+            handler: function () {
+                self.notifyParentEnd();
+            }
         });
-
-        complete.on(BI.Button.EVENT_CHANGE, function () {
-            self.notifyParentEnd(true);
-        });
-
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             items: {
-                left: [widgetNameEditor],
-                right: [complete]
+                left: [input],
+                right: [shrink]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
             rhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP
@@ -84,7 +71,8 @@ BIShow.TreeDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: "bi.select_string",
+                    type: BI.Utils.isRealTime() ? "bi.select_string_4_realtime" : "bi.select_string",
+                    wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
                 left: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
@@ -98,7 +86,6 @@ BIShow.TreeDetailView = BI.inherit(BI.View, {
 
     _buildCenter: function () {
         var combo = this._createCombo();
-
         var top = BI.createWidget({
             type: "bi.vtape",
             cls: "widget-top-wrapper",
@@ -144,20 +131,38 @@ BIShow.TreeDetailView = BI.inherit(BI.View, {
         });
     },
 
+
     _createRegion: function () {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager_show",
+            type: "bi.dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
+                var relationItem = op.relationItem;
+                if (BI.isNotNull(relationItem)) {
+                    self.model.set("setRelation", {
+                        dId: dId,
+                        relationItem: op.relationItem
+                    });
+                }
+
                 if (!dimensionsVessel[dId]) {
                     dimensionsVessel[dId] = BI.createWidget({
                         type: "bi.layout"
                     });
-                    self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
+                    var dimensions = self.model.cat("dimensions");
+                    if (!BI.has(dimensions, dId)) {
+                        self.model.set("addDimension", {
+                            dId: dId,
+                            regionType: regionType,
+                            src: op
+                        });
+                    }
                 }
+                self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
                 return dimensionsVessel[dId];
+
             }
         });
 
@@ -166,39 +171,57 @@ BIShow.TreeDetailView = BI.inherit(BI.View, {
             self.model.set(values);
             this.populate();
         });
+
+
         return this.dimensionsManager;
     },
 
     _createCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.big_value_chooser_combo",
+            type: "bi.multi_tree_combo",
             itemsCreator: function (op, callback) {
-                callback();
-            }
+                var data = BI.extend({
+                    floors: BI.size(self.model.get("dimensions"))
+                }, op);
+                BI.Utils.getWidgetDataByID(self.model.get("id"), function (jsonData) {
+                    callback(jsonData);
+                }, {tree_options: data})
+            },
         });
-        this.combo.on(BI.NumericalInterval.EVENT_CHANGE, function () {
-            self.model.set("value", this.getValue());
+        this.combo.on(BI.MultiTreeCombo.EVENT_CONFIRM, function () {
+            self.model.set("value", self.combo.getValue());
         });
         return this.combo;
     },
 
+    splice: function (old, key1, key2) {
+        if (key1 === "dimensions") {
+            this.dimensionsManager.populate();
+        }
+    },
+
+
+    change: function (changed, prev) {
+        if (BI.has(changed, "value")) {
+            this.combo.setValue(this.model.get("value"))
+        }
+    },
+
+
     local: function () {
+        if (this.model.has("addDimension")) {
+            this.model.get("addDimension");
+            return true;
+        }
+        if (this.model.has("sorted")) {
+            this.model.get("sorted");
+            return true;
+        }
         return false;
     },
 
-    change: function (changed, prev) {
-        if (BI.has(changed, "dimensions")) {
-        }
-    },
-
-    splice: function (old, key1, key2) {
-        if (key1 === "dimensions") {
-        }
-    },
-
     refresh: function () {
-        var self = this;
         this.dimensionsManager.populate();
         this.combo.setValue(this.model.get("value"));
     }

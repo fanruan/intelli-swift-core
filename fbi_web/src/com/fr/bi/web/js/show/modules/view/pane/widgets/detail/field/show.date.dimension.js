@@ -3,7 +3,7 @@ BIShow.DateDimensionView = BI.inherit(BI.View, {
     constants: {
         DIMENSION_BUTTON_HEIGHT: 25,
         COMBO_WIDTH: 25,
-        LABEL_GAP: 5
+        LABEL_GAP : 5
     },
 
     _defaultConfig: function () {
@@ -11,8 +11,6 @@ BIShow.DateDimensionView = BI.inherit(BI.View, {
             baseCls: "bi-dimension"
         })
     },
-
-    events: {},
 
     _init: function () {
         BIShow.DateDimensionView.superclass._init.apply(this, arguments);
@@ -31,7 +29,7 @@ BIShow.DateDimensionView = BI.inherit(BI.View, {
         this.label = BI.createWidget({
             type: "bi.label",
             textAlign: "left",
-            lgap: this.constants.LABEL_GAP,
+            lgap : this.constants.LABEL_GAP,
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
             cls: "bi-dimension-name"
         });

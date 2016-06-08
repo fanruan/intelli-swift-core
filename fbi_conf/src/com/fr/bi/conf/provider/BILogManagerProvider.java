@@ -1,13 +1,15 @@
 package com.fr.bi.conf.provider;
 
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONObject;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -39,14 +41,16 @@ public interface BILogManagerProvider {
 
     /**
      * 表错误日志
-     *  @param table 表
+     *
+     * @param table 表
      * @param text  内容
      */
     void errorTable(IPersistentTable table, String text, long userId);
 
     /**
      * 表日志
-     *  @param table   表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      * @param percent 百分比
      */
@@ -54,7 +58,8 @@ public interface BILogManagerProvider {
 
     /**
      * 表日志
-     *  @param table   表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      * @param percent 百分比
      */
@@ -62,28 +67,32 @@ public interface BILogManagerProvider {
 
     /**
      * 表读日志
-     *  @param table   表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      */
     void infoTableReading(IPersistentTable table, long seconds, long userId);
 
     /**
      * 表日志
-     *  @param table   表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      */
     void infoTable(IPersistentTable table, long seconds, long userId);
 
     /**
      * 表日志
-     *  @param table   表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      */
     void infoTableIndex(IPersistentTable table, long seconds, long userId);
 
     /**
      * 表日志
-     *  @param table      表
+     *
+     * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
      * @param percent    百分比
@@ -92,7 +101,8 @@ public interface BILogManagerProvider {
 
     /**
      * 表日志
-     *  @param table      表
+     *
+     * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
      */
@@ -129,6 +139,16 @@ public interface BILogManagerProvider {
      * @param map map对象
      */
     void loopRelation(Set<ArrayKey<BITableSourceRelation>> set, long userId);
+
+    /**
+     * 获取所有需要更新的relation信息
+     */
+    Set<BITableSourceRelation> reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet);
+
+    /**
+     * 获取所有需要更新的tableSource信息
+     */
+    Set<CubeTableSource> cubeTableSourceSet(Set<CubeTableSource> cubeTableSources);
 
     JSONObject createJSON(long userId) throws Exception;
 
