@@ -109,10 +109,10 @@ BIShow.TargetView = BI.inherit(BI.View, {
     createCommonCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.target_combo",
+            type: "bi.target_combo_show",
             dId: this.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.TARGET_COMBO.SUMMERY_TYPE:
                     self.model.set("group", {type: s});
@@ -141,10 +141,10 @@ BIShow.TargetView = BI.inherit(BI.View, {
     createCountCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.count_target_combo",
+            type: "bi.count_target_combo_show",
             dId: this.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.TARGET_COMBO.DEPEND_TYPE:
                     self.model.set("_src", {
@@ -174,10 +174,10 @@ BIShow.TargetView = BI.inherit(BI.View, {
     createCalculateCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.calculate_target_combo",
+            type: "bi.calculate_target_combo_show",
             dId: this.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v) {
+        this.combo.on(BI.AbstractDimensionTargetComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.CALCULATE_TARGET_COMBO.FORM_SETTING:
                     self._buildStyleSettingPane();

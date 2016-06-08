@@ -23,11 +23,17 @@
 .bi-dashboard-widget {
   background: #ffffff;
 }
-.bi-dashboard-widget .dashboard-title-left > a > div {
+.bi-dashboard-widget .dashboard-title-left .shelter-editor-text {
+  cursor: default;
+}
+.bi-dashboard-widget .dashboard-title-left .shelter-editor-text .bi-text {
   text-align: left !important;
   font-size: 16px !important;
 }
-.bi-dashboard-widget .dashboard-title-center > a > div {
+.bi-dashboard-widget .dashboard-title-center .shelter-editor-text {
+  cursor: default;
+}
+.bi-dashboard-widget .dashboard-title-center .shelter-editor-text .bi-text {
   text-align: center !important;
   font-size: 16px !important;
 }
