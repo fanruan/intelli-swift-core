@@ -239,7 +239,8 @@ public abstract class AbstractTableSource implements CubeTableSource {
      */
     @Override
     public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
-        return getFields().values().toArray(new ICubeFieldSource[getFields().values().size()]);
+        Collection<ICubeFieldSource> values =  getFields().values();
+        return values.toArray(new ICubeFieldSource[values.size()]);
     }
 
     private Map<String, ICubeFieldSource> getFieldFromPersistentTable() {

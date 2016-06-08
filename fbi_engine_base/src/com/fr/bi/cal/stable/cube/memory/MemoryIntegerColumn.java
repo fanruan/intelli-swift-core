@@ -5,30 +5,28 @@ import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 
-import java.util.ArrayList;
-
 /**
  * Created by 小灰灰 on 2016/1/14.
  */
-public class MemoryLongColumn extends AbstractSingleMemoryColumn<Long> {
+public class MemoryIntegerColumn extends AbstractSingleMemoryColumn<Integer> {
     @Override
-    public DetailGetter<Long> createDetailGetter(SingleUserNIOReadManager manager) {
-        return new MemoryDetailGetter<Long>(detail);
+    public DetailGetter<Integer> createDetailGetter(SingleUserNIOReadManager manager) {
+        return new MemoryDetailGetter<Integer>(detail);
     }
 
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Long>(new NullChecker<Long>() {
+        detail = new AnyIndexArray<Integer>(new NullChecker<Integer>() {
             @Override
-            public boolean isNull(Long v) {
-                return v ==null || v == Long.MAX_VALUE;
+            public boolean isNull(Integer v) {
+                return v ==null || v == Integer.MAX_VALUE;
             }
         });
     }
 
     @Override
     protected Object createEmptyValue(BIKey key) {
-        return Long.MAX_VALUE;
+        return Integer.MAX_VALUE;
     }
 }

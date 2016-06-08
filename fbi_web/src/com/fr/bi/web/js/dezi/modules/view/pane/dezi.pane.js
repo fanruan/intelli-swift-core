@@ -125,6 +125,18 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         this.redoButton.on(BI.IconTextIconItem.EVENT_CHANGE, function () {
             self.model.set("redo", true);
         });
+        var viewChange  = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "toolbar-preview-font",
+            text: BI.i18nText("BI-Preview_Report"),
+            height: 30,
+            width: 80
+        });
+        viewChange.on(BI.IconTextIconItem.EVENT_CHANGE, function(){
+            var reportId = Data.SharingPool.get("reportId");
+            var createBy = Data.SharingPool.get("createBy");
+            window.location.href = FR.servletURL + "?op=fr_bi&cmd=bi_init&id=" + reportId + "&createBy=" + createBy;
+        });
         return BI.createWidget({
             type: "bi.absolute",
             cls: "dashboard-toolbar",
@@ -136,6 +148,10 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 el: this.redoButton,
                 top: 0,
                 left: 190
+            }, {
+                el: viewChange,
+                top: 0,
+                left: 270
             }]
         })
     },

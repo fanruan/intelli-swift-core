@@ -86,7 +86,8 @@ BIShow.StringDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: "bi.select_string",
+                    type: BI.Utils.isRealTime() ? "bi.select_string_4_realtime" : "bi.select_string",
+                    wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
                 left: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
@@ -150,14 +151,22 @@ BIShow.StringDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager_show",
+            type: "bi.dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
                 if (!dimensionsVessel[dId]) {
                     dimensionsVessel[dId] = BI.createWidget({
                         type: "bi.layout"
                     });
-                    self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
+                    self.addSubVessel(dId, dimensionsVessel[dId]);
+                    var dimensions = self.model.cat("dimensions");
+                    if (!BI.has(dimensions, dId)) {
+                        self.model.set("addDimension", {
+                            dId: dId,
+                            regionType: regionType,
+                            src: op
+                        });
+                    }
                 }
                 return dimensionsVessel[dId];
             }
@@ -165,6 +174,12 @@ BIShow.StringDetailView = BI.inherit(BI.View, {
 
         this.dimensionsManager.on(BI.DimensionsManager.EVENT_CHANGE, function () {
             var values = this.getValue();
+            var dimArr = values.view[BICst.REGION.DIMENSION1];
+            values.view[BICst.REGION.DIMENSION1] = [BI.last(dimArr)];
+            var dimensions = self.model.get("dimensions");
+            var newDimensions = {};
+            newDimensions[BI.last(dimArr)] = dimensions[BI.last(dimArr)];
+            values.dimensions = newDimensions;
             self.model.set(values);
             this.populate();
         });
@@ -185,10 +200,15 @@ BIShow.StringDetailView = BI.inherit(BI.View, {
 
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
+            this.dimensionsManager.populate();
         }
     },
 
     local: function () {
+        if (this.model.has("addDimension")) {
+            this.model.get("addDimension");
+            return true;
+        }
         return false;
     },
 
@@ -197,15 +217,23 @@ BIShow.StringDetailView = BI.inherit(BI.View, {
             this.combo.setValue();
         }
         if (BI.has(changed, "dimensions")) {
-            if (BI.size(changed.dimensions) === BI.size(prev.dimensions)) {
-                this.dimensionsManager.populate();
-            }
+            this._refreshDimensions();
         }
+    },
+
+    _refreshDimensions: function () {
+        var self = this;
+        BI.each(self.model.cat("view"), function (regionType, dids) {
+            BI.each(dids, function (i, dId) {
+                self.skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
+            });
+        });
     },
 
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
-        this.combo.setValue(this.model.get("filter_value"));
+        this._refreshDimensions();
+        this.combo.setValue(this.model.get("value"));
     }
 });

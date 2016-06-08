@@ -2,7 +2,6 @@ package com.fr.bi.conf.report.widget;
 
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
 
@@ -56,15 +55,20 @@ public class RelationColumnKey implements JSONCreator{
     public JSONObject createJSON() throws Exception {
         JSONObject jo = field.createJSON();
         List<BITableSourceRelation> relations = getRelations();
-        JSONArray ja = new JSONArray();
+        JSONObject ja = new JSONObject();
         /**
          * Connery:Pony说不用createJSON，但是外面有调用的，删不掉。
+         * kary:不要删，日志用得着
          */
-//        if (relations != null) {
-//            for (BITableSourceRelation relation : relations) {
+        if (relations != null) {
+            for (BITableSourceRelation relation : relations) {
 //                ja.put(relation.createJSON());
-//            }
-//        }
+                ja.put("primaryTableName",relation.getPrimaryTable().getTableName());
+                ja.put("primaryFieldName",relation.getPrimaryField().getFieldName());
+                ja.put("foreignTableName",relation.getForeignTable().getTableName());
+                ja.put("foreignFieldName",relation.getForeignField().getFieldName());
+            }
+        }
         jo.put("relation", ja);
         return jo;
     }
