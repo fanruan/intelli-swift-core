@@ -72,6 +72,7 @@ public class BIPlate extends AbstractFSPlate {
     public void loadMemoryData() {
         BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID());
         BIConnectionManager.getInstance();
+        BIConnectionManager.getInstance();
     }
 
     private void registerEntrySomething() {
