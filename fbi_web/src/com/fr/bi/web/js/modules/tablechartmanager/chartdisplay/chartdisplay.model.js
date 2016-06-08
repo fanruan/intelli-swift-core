@@ -189,6 +189,32 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 return obj;
             });
         }
+        if(BI.has(data, "s")){
+            var type = BI.Utils.getWidgetTypeByID(o.wId);
+            if(type === BICst.WIDGET.PIE){
+                var adjustData = BI.map(data.s, function (idx, value) {
+                    return {
+                        x: BI.Utils.getDimensionNameByID(targetIds[idx]),
+                        y: value,
+                        targetIds: [targetIds[idx]]
+                    };
+                });
+                var obj = {};
+                obj.data = adjustData;
+                return [obj];
+            }else{
+                return BI.map(data.s, function (idx, value) {
+                    return {
+                        name: BI.Utils.getDimensionNameByID(targetIds[idx]),
+                        data: [{
+                            x: "",
+                            y: value,
+                            targetIds: [targetIds[idx]]
+                        }]
+                    };
+                });
+            }
+        }
         return [];
     },
 

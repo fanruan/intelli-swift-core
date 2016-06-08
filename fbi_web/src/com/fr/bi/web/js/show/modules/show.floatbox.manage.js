@@ -50,6 +50,7 @@ BIShow.FloatBoxes = new (BI.inherit(BI.FloatBoxRouter, {
             case BICst.WIDGET.TREE:
                 return "BIShow.TreeDetailView";
             case BICst.WIDGET.RESET:
+                break;
         }
     }
 }));

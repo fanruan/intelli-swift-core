@@ -75,7 +75,7 @@ public class ResourceHelper {
                 }
             }
 
-            translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
+            translations = BIModuleUtils.createAliasJSON(userId);
             relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(userId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
@@ -928,6 +928,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filteritems/target/factory.filteritem.target.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/factory.filteritem.dimension.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.stringfield.js",
+                "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.datefield.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/widget.selectdata4dimensioncombo.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/target/widget.selectdata4targetcombo.js",
                 "com/fr/bi/web/js/modules/filter/filteritems/dimension/item.numberfield.js",
@@ -1218,6 +1219,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/forcebubble.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/mapchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/crosstable/widget.crosstable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
 
@@ -1362,11 +1364,20 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.targetshow.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.detailshow.js",
                 "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/abstract.regionshow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.count.target.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.datedimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.numberdimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.stringdimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/widget/widget.target.combo.show.js",
+
+                //dimension show
+                "com/fr/bi/web/js/modules4show/dimension4show/abstract.dimensiontarget.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/abstract.dimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.numberdimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.datedimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.stringdimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.count.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.calculate.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detaildate.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailformula.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
 
                 //实时报表进度条
                 "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",

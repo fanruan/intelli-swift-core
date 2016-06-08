@@ -2,6 +2,7 @@ package com.fr.bi.conf.utils;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.field.BusinessField;
@@ -14,6 +15,7 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
@@ -119,4 +121,12 @@ public class BIModuleUtils {
         return null;
     }
 
+    public static JSONObject createAliasJSON(long userId) throws JSONException {
+        JSONObject jo = new JSONObject();
+        for (BIModule module : BIModuleManager.getModules()) {
+            BIAliasManagerProvider provider = module.getAliasManagerProvider();
+            jo.join(provider.getAliasJSON(userId));
+        }
+        return jo;
+    }
 }
