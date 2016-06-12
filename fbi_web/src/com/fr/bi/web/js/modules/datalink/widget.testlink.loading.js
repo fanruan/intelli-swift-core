@@ -92,7 +92,7 @@ BI.TestLinkLoadingMask = BI.inherit(BI.Widget, {
                     cls: "test-connection-success-comment",
                     height: 30
                 }]);
-                BI.nextTick(function(){
+                setTimeout(function(){
                     BI.Maskers.remove(self.maskId);
                 }, 3000);
                 if(BI.isNotNull(data.schemas)){
