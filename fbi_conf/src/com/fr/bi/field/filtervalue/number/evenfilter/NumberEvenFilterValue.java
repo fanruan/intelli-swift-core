@@ -76,7 +76,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
             Map.Entry entry = (Map.Entry) it.next();
             Number v = (Number) entry.getKey();
             GroupValueIndex g = (GroupValueIndex) entry.getValue();
-            if (isMatchValue(v.doubleValue())) {
+            if (v != null && isMatchValue(v.doubleValue())) {
                 if (gvi == null) {
                     gvi = g;
                 } else {

@@ -161,7 +161,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
             Map.Entry entry = (Map.Entry) it.next();
             Number v = (Number) entry.getKey();
             GroupValueIndex g = (GroupValueIndex) entry.getValue();
-            if (gi.contains(v.doubleValue())) {
+            if (v != null && gi.contains(v.doubleValue())) {
                 if (gvi == null) {
                     gvi = g;
                 } else {
