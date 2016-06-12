@@ -1,5 +1,7 @@
 package com.fr.bi.stable.utils;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.TargetCalculator;
 
@@ -51,6 +53,22 @@ public class BICollectionUtils {
                 dest.put(entry.getKey(), entry.getValue());
             }
         }
+    }
+
+
+    public static <T> T lastUnNullKey(ICubeColumnIndexReader<T> baseMap) {
+        T lastKey = baseMap.lastKey();
+        if(lastKey == null) {
+            Iterator<Map.Entry<T, GroupValueIndex>> iter = baseMap.previousIterator(lastKey);
+            while(iter.hasNext()) {
+                Map.Entry<T, GroupValueIndex> entry = iter.next();
+                lastKey = entry.getKey();
+                if(lastKey != null) {
+                    break;
+                }
+            }
+        }
+        return lastKey;
     }
 
 }
