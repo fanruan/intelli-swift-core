@@ -118,6 +118,7 @@ BI.ConfTargetNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             field_name: v.field.field_name,
             table: v.table
         }));
+        o.afterValueChange.apply(self, arguments);
     },
 
     getValue: function () {

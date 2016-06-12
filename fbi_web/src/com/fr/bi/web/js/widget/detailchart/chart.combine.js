@@ -97,7 +97,6 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.ACCUMULATE_AREA:
-            case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.COMPARE_AXIS:
@@ -107,6 +106,8 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
                 config.xAxis = [];
                 var newxAxis  = this._axisConfig();
                 newxAxis.position = "bottom";

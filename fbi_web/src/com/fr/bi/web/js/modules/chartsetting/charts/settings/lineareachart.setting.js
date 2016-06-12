@@ -592,6 +592,39 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
 
     populate: function(){
         var wId = this.options.wId;
+
+        var view = BI.Utils.getWidgetViewByID(wId);
+        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
+        var titleX = BI.Utils.getWSXAxisTitleByID(wId);
+        var titleRY = BI.Utils.getWSRightYAxisTitleByID(wId);
+        if(titleLY === ""){
+            BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleLY = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
+        if(titleX === ""){
+            BI.any(view[BICst.REGION.DIMENSION1], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleX = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
+        if(titleRY === ""){
+            BI.any(view[BICst.REGION.TARGET2], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleRY = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
+
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
@@ -605,9 +638,9 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
         this.isShowTitleRY.setSelected(BI.Utils.getWSShowRightYAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
-        this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
-        this.editTitleRY.setValue(BI.Utils.getWSRightYAxisTitleByID(wId));
-        this.editTitleX.setValue(BI.Utils.getWSXAxisTitleByID(wId));
+        this.editTitleLY.setValue(titleLY);
+        this.editTitleRY.setValue(titleRY);
+        this.editTitleX.setValue(titleX);
         this.reversedLY.setSelected(BI.Utils.getWSLeftYAxisReversedByID(wId));
         this.reversedRY.setSelected(BI.Utils.getWSRightYAxisReversedByID(wId));
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));

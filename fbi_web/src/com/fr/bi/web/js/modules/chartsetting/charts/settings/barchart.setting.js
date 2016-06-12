@@ -379,6 +379,26 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
 
     populate: function(){
         var wId = this.options.wId;
+        var view = BI.Utils.getWidgetViewByID(wId);
+        var titleLY = BI.Utils.getWSXAxisTitleByID(wId), titleX = BI.Utils.getWSLeftYAxisTitleByID(wId);
+        if(titleLY === ""){
+            BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleLY = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
+        if(titleX === ""){
+            BI.any(view[BICst.REGION.DIMENSION1], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleX = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
@@ -387,8 +407,8 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
-        this.editTitleLY.setValue(BI.Utils.getWSXAxisTitleByID(wId));
-        this.editTitleX.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
+        this.editTitleLY.setValue(titleX);
+        this.editTitleX.setValue(titleLY);
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
