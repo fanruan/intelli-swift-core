@@ -29,7 +29,7 @@ public class BIModifyDataLinkAction extends AbstractBIConfigureAction {
             String oldName = WebUtils.getHTTPRequestParameter(req, "oldName");
             BIConnectionManager.getInstance().updateConnection(linkData, oldName);
         }
-
+        BIConnectionManager.getInstance().updateAvailableConnection();
     }
 
     @Override
