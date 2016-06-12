@@ -40,7 +40,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
     @BICoreField
     protected boolean closemax;
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 

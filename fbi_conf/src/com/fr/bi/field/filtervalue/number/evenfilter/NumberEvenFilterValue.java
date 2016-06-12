@@ -43,7 +43,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
     protected double V = 0.0;
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 
