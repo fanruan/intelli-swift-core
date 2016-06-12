@@ -20,9 +20,5 @@ BIDezi.ImageWidgetModel = BI.inherit(BI.Model, {
 
     local: function(){
         return false;
-    },
-
-    updateURL: function(){
-        return this.cmd("widget_setting");
     }
 });

@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -209,6 +210,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
 
     @Override
     public Set<CubeTableSource> getAllSingleSources() {
+        BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(allSingleSources,biUser.getUserId());
         return allSingleSources;
     }
 
@@ -280,6 +282,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
      */
     @Override
     public Set<BITableSourceRelation> getTableSourceRelationSet() {
+        BIConfigureManagerCenter.getLogManager().reLationSet(tableSourceRelationSet,biUser.getUserId());
         return tableSourceRelationSet;
     }
 

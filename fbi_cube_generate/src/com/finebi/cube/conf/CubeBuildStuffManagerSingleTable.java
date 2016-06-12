@@ -41,8 +41,6 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
     public void init(BusinessTable businessTable) {
 
         try {
-
-//            businessTable = BusinessTableHelper.getBusinessTable(businessTable.getID());
             Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId());
             this.packs = packs;
             this.sources = new HashSet<CubeTableSource>();
