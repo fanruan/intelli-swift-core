@@ -243,7 +243,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.isShowTitleRY2.on(BI.Controller.EVENT_CHANGE, function(){
-            this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
+            this.isSelected() ? self.editTitleRY2.setVisible(true) : self.editTitleRY2.setVisible(false);
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -307,6 +307,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
             height: this.constant.EDITOR_HEIGHT,
             cls: "unit-input",
             value: "0",
+            errorText: BI.i18nText("BI-Please_Enter_Number_From_To_To", -90, 90),
             validationChecker: function(v){
                 return BI.isInteger(v) && v >= -90 && v <= 90;
             }

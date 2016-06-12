@@ -190,7 +190,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             }
             if(BI.has(config, "yAxis") && config.yAxis.length > 2){
                 config.yAxis[2].formatter = formatTickInXYaxis(self.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
-                config.yAxis[2].reversed = self.right_y_axis_second_reversed ? !config.yAxis[1].reversed : config.yAxis[2].reversed;
+                config.yAxis[2].reversed = self.right_y_axis_second_reversed ? !config.yAxis[2].reversed : config.yAxis[2].reversed;
                 formatNumberLevelInYaxis(self.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
                 config.yAxis[2].title.text = getXYAxisUnit(self.right_y_axis_second_number_level, self.constants.RIGHT_AXIS);
                 config.yAxis[2].title.text = self.show_right_y_axis_second_title === true ? self.right_y_axis_second_title + config.yAxis[2].title.text : config.yAxis[2].title.text;
@@ -199,13 +199,14 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             }
             if(BI.has(config, "xAxis") && config.xAxis.length > 0){
                 if(config.chartType === "bar"){
+                    config.yAxis[0].labelRotation = self.text_direction;
                     config.xAxis[0].formatter = formatTickInXYaxis(self.x_axis_style, self.constants.X_AXIS);
                     formatNumberLevelInXaxis(self.x_axis_number_level);
                     config.xAxis[0].title.text = self.x_axis_title + getXYAxisUnit(self.x_axis_number_level, self.constants.X_AXIS);
                 }else{
                     config.xAxis[0].title.text = self.x_axis_title;
+                    config.xAxis[0].labelRotation = self.text_direction;
                 }
-                config.xAxis[0].labelRotation = self.text_direction;
                 config.xAxis[0].title.text = self.show_x_axis_title === true ? config.xAxis[0].title.text : "";
                 config.xAxis[0].title.align = "center";
                 config.xAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
@@ -264,7 +265,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]}"
+            return "function(){if(this>0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
         }
 
         function formatNumberLevelInXaxis(type){
@@ -314,7 +315,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 BI.each(result, function(idx, item){
                     BI.each(item.data, function(id, da){
                         if(position === item.yAxis){
-                            if(item.type === BICst.WIDGET.BAR){
+                            if(item.type === "bar"){
                                 da.x = da.x || 0;
                                 da.x = da.x.div(magnify);
                             }else{
@@ -328,10 +329,10 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         }
 
         function getXYAxisUnit(numberLevelType, position){
-            var unit = BI.i18nText("BI-Count");
+            var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    unit = BI.i18nText("BI-Count");
+                    unit = "";
                     break;
                 case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
                     unit = BI.i18nText("BI-Wan");
@@ -358,7 +359,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             if(position === self.constants.DASHBOARD_AXIS){
                 self.dashboard_unit !== "" && (unit = unit + self.dashboard_unit)
             }
-            return "(" + unit + ")";
+            return unit === "" ? unit : "(" + unit + ")";
         }
 
         function formatChartStyle(){

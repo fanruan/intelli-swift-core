@@ -148,22 +148,9 @@ public class BIBusinessTable implements BusinessTable {
             /**
              * Connery:错用createJson，传递了一个Loader进去
              */
-            JSONObject fieldJson = field.createJSON(loader);
-            fields.put(field.getFieldID().getIdentityValue(), fieldJson);
-            switch(field.getFieldType()){
-                case DBConstant.COLUMN.STRING:
-                    stringList.add(fieldJson);
-                    break;
-                case DBConstant.COLUMN.NUMBER:
-                    numberList.add(fieldJson);
-                    break;
-                case DBConstant.COLUMN.DATE:
-                    dateList.add(fieldJson);
-                    break;
-                default:
-                    stringList.add(fieldJson);
-                    break;
-            }
+            JSONObject filedJson = field.createJSON(loader);
+            fields.put(field.getFieldID().getIdentityValue(), filedJson);
+            stringList.add(filedJson);
         }
         fields.put(getID().getIdentity() + BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"), createCountField());
         countList.add(createCountField());

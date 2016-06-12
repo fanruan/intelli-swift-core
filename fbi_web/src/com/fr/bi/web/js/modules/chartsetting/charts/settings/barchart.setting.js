@@ -164,6 +164,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
             height: this.constant.EDITOR_HEIGHT,
             cls: "unit-input",
             value: "0",
+            errorText: BI.i18nText("BI-Please_Enter_Number_From_To_To", -90, 90),
             validationChecker: function(v){
                 return BI.isInteger(v) && v >= -90 && v <= 90;
             }
@@ -384,10 +385,10 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
-        this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
-        this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
-        this.editTitleX.setValue(BI.Utils.getWSXAxisTitleByID(wId));
+        this.isShowTitleLY.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
+        this.isShowTitleX.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.editTitleLY.setValue(BI.Utils.getWSXAxisTitleByID(wId));
+        this.editTitleX.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));

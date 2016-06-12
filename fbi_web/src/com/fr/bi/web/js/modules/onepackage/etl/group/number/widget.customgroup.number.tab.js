@@ -239,7 +239,7 @@ BI.ConfNumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
 
         //(max - min) / 5
         var tmp = max - min + "";
-        var p = BI.parseFloat(tmp.substring(2)) / 5 + "";
+        var p = BI.parseFloat(tmp.substring(2)).div(5) + "";
         var len = tmp.split(".")[1].length - p.split(".")[0].length;
         s = "0.";
         while (len-- > 0){

@@ -57,6 +57,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         // 维度used属性显示逻辑
         // 1、各个类型不受切换影响；2、表格不受影响；
         // 3、图表的分类或系列最多只能有一个显示；4、当图表的used指标多于1的时候，系列不可用也不勾选
+        // 5、对比柱状/面积/条形图,范围面积,多值轴组合,瀑布,气泡,力学,散点,漏斗这些个图指标区域是单选的
         var dimensions = BI.Utils.getWidgetDimensionsByID(wId);
 
         //处理切换后的
@@ -81,6 +82,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         var usedTargets = BI.Utils.getAllUsableTargetDimensionIDs(wId);
         BI.each(this.viewMap[newType], function (regionId, dIds) {
             var dim1Found = false, dim2Found = false, series = [];
+            var tar1Found = false, tar2Found = false, tar3Found = false;
             BI.each(dIds, function (i, dId) {
                 if (regionId === BICst.REGION.DIMENSION1) {
                     if (dim1Found === true) {
@@ -108,6 +110,45 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                         }
                     }
                     return;
+                }
+                if((newType === BICst.WIDGET.COMPARE_AXIS || newType === BICst.WIDGET.COMPARE_AREA ||
+                    newType === BICst.WIDGET.COMPARE_BAR || newType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART||
+                    newType === BICst.WIDGET.RANGE_AREA || newType === BICst.WIDGET.FALL_AXIS||
+                    newType === BICst.WIDGET.BUBBLE || newType === BICst.WIDGET.FORCE_BUBBLE ||
+                    newType === BICst.WIDGET.SCATTER) && regionId >= BICst.REGION.TARGET1){
+                    if (regionId === BICst.REGION.TARGET1) {
+                        if (tar1Found === true) {
+                            dimensions[dId].used = false;
+                            self.dimensionsMap[newType][dId] = dimensions[dId];
+                        }
+                        if (tar1Found === false) {
+                            BI.Utils.isDimensionUsable(dId) && (tar1Found = true);
+                            self.dimensionsMap[newType][dId] = dimensions[dId];
+                        }
+                        return;
+                    }
+                    if (regionId === BICst.REGION.TARGET2) {
+                        if (tar2Found === true) {
+                            dimensions[dId].used = false;
+                            self.dimensionsMap[newType][dId] = dimensions[dId];
+                        }
+                        if (tar2Found === false) {
+                            BI.Utils.isDimensionUsable(dId) && (tar2Found = true);
+                            self.dimensionsMap[newType][dId] = dimensions[dId];
+                        }
+                        return;
+                    }
+                    if (regionId === BICst.REGION.TARGET3) {
+                        if (tar3Found === true) {
+                            dimensions[dId].used = false;
+                            self.dimensionsMap[newType][dId] = dimensions[dId];
+                        }
+                        if (tar3Found === false) {
+                            BI.Utils.isDimensionUsable(dId) && (tar3Found = true);
+                            self.dimensionsMap[newType][dId] = dimensions[dId];
+                        }
+                        return;
+                    }
                 }
                 self.dimensionsMap[newType][dId] = dimensions[dId];
             });

@@ -282,6 +282,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
             height: this.constant.EDITOR_HEIGHT,
             cls: "unit-input",
             value: "0",
+            errorText: BI.i18nText("BI-Please_Enter_Number_From_To_To", -90, 90),
             validationChecker: function(v){
                 return BI.isInteger(v) && v >= -90 && v <= 90;
             }
