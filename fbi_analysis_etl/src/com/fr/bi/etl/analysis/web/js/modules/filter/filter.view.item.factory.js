@@ -128,7 +128,7 @@ BI.ETLFilterViewItemFactory = {
 
     _getDateText : function(d){
         if (BI.isNotNull(d)){
-            var date = FR.str2Date(d)
+            var date = new Date(d)
             return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
         }
         return '-';

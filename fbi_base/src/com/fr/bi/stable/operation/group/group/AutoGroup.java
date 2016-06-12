@@ -5,6 +5,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.AbstractGroup;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 
@@ -29,8 +30,16 @@ public class AutoGroup extends AbstractGroup {
 
     @Override
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
-        double tiMax = ((Number) baseMap.lastKey()).doubleValue();
-        double tiMin = ((Number) baseMap.firstKey()).doubleValue();
+        Number lastKey = (Number)BICollectionUtils.lastUnNullKey(baseMap);
+        double tiMax = 0d;
+        if(lastKey != null){
+            tiMax = lastKey.doubleValue();
+        }
+        Number firstKey = ((Number) baseMap.firstKey());
+        double tiMin = 0d;
+        if(firstKey != null) {
+            tiMin = firstKey.doubleValue();
+        }
         double interval = this.interval;
         if (!hasInterval) {
             interval = initGroup(tiMin, tiMax);
@@ -39,7 +48,11 @@ public class AutoGroup extends AbstractGroup {
         Iterator<Map.Entry<Number, GroupValueIndex>> it = baseMap.iterator();
         while (it.hasNext()) {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
-            double key = entry.getKey().doubleValue();
+            Number k = entry.getKey();
+            if(k == null) {
+                continue;
+            }
+            double key = k.doubleValue();
             GroupValueIndex gvi = entry.getValue();
             String groupName = getAutoGroupName(key, interval, tiMax);
             GroupValueIndex g = (GroupValueIndex) resultMap.get(groupName);
