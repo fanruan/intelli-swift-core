@@ -301,9 +301,9 @@ BICst.SVG_MAP_TYPE = [{
     value: BICst.MAP_TYPE.JIANGSU,
     cls: "drag-map-svg-icon"
 }, {
-    text: BI.i18nText("BI-SHANGDONG"),
+    text: BI.i18nText("BI-SHANDONG"),
     title: BI.i18nText("BI-SHANDONG"),
-    value: BICst.MAP_TYPE.SHANGDONG,
+    value: BICst.MAP_TYPE.SHANDONG,
     cls: "drag-map-svg-icon"
 }];
 

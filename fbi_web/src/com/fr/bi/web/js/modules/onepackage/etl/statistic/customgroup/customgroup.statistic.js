@@ -26,7 +26,7 @@ BI.CustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
 
     rebuildNorth: function (north) {
         var o = this.options;
-        var dimensionName = o.model.getDimensionNameById(this.options.dId);
+        var dimensionName = o.model.getDimensionNameById(o.dId);
         var name = BI.i18nText("BI-Custom_Group_Detail", dimensionName);
         BI.createWidget({
             type: "bi.label",
