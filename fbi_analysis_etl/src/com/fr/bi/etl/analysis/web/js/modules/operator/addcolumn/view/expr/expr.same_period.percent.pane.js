@@ -20,6 +20,20 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodPercentPane  = BI.inherit(BI.Analys
             tgap : self._constants.GAP,
             height : self._constants.SECOND_DETAIL_HEIGHT
         });
+        self.thrid = BI.createWidget({
+            type : 'bi.vertical',
+            cls : 'detail-view',
+            lgap : self._constants.GAP,
+            height : self._constants.FIRST_DETAIL_HEIGHT,
+            items : [ BI.createWidget({
+                type : 'bi.label',
+                cls : 'detail-label',
+                textAlign : 'center',
+                height : 25,
+                text : 1,
+                title : 1
+            })]
+        });
         return BI.createWidget({
             type : 'bi.vertical',
             width : self._constants.DETAIL_WIDTH,
@@ -50,6 +64,18 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodPercentPane  = BI.inherit(BI.Analys
                 },
                 {
                     el : self.secondDetail
+                },
+                {
+                    el : BI.createWidget({
+                        type : 'bi.label',
+                        cls : 'label-name',
+                        text : BI.i18nText('BI-Minus'),
+                        textAlign : 'center',
+                        height : self._constants.LABEL_HEIGHT
+                    })
+                },
+                {
+                    el : self.thrid
                 }
             ]
         });

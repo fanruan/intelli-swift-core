@@ -46,7 +46,7 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             operationManager = new BICubeOperationManager4Test(cube, setSource);
             operationManager.initialWatcher();
             manager.registerDataSource(BIMemoryDataSourceFactory.getDataSourceSet());
-//            manager.registerDataSource(setSource);
+            manager.registerDataSource(setSource);
             Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
             relations.add(BITableSourceRelationTestTool.getMemoryAB());
             relations.add(BITableSourceRelationTestTool.getMemoryBC());
