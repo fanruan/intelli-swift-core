@@ -2,9 +2,7 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeBuildStuffManager;
-import com.finebi.cube.conf.CubeBuildStuffManagerByTableSources;
 import com.finebi.cube.conf.CubeBuildStuffManagerSingleTable;
-import com.finebi.cube.conf.pack.imp.BIPackageTableSourceConfigManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.BITableID;
@@ -15,7 +13,6 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
 
 public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
 
@@ -43,9 +40,9 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
             CubeTaskBuild.CubeBuild(userId,cubeBuildStuffManager);            
         }else{
             CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
-            BIPackageTableSourceConfigManager biPackageFindTableSourceConfigManager=new BIPackageTableSourceConfigManager();
-            Set<BIBusinessTable> tableSources4Genrate = biPackageFindTableSourceConfigManager.getTableSources4Genrate(userId);
-            cubeBuildStuff=new CubeBuildStuffManagerByTableSources(tableSources4Genrate,userId);
+//            BIPackageTableSourceConfigManager biPackageFindTableSourceConfigManager=new BIPackageTableSourceConfigManager();
+//            Set<BIBusinessTable> tableSources4Genrate = biPackageFindTableSourceConfigManager.getTableSources4Genrate(userId);
+//            cubeBuildStuff=new CubeBuildStuffManagerIncremental(tableSources4Genrate,userId);
             CubeTaskBuild.CubeBuild(userId, cubeBuildStuff);
         }
     }

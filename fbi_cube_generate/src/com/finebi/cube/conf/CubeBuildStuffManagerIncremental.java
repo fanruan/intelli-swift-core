@@ -22,9 +22,9 @@ import java.util.*;
 import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager;
 
 /**
- * Created by 49597 on 2016/6/8.
+ * Created by kary on 2016/6/8.
  */
-public class CubeBuildStuffManagerByTableSources implements CubeBuildStuff {
+public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     private Set<CubeTableSource> allSingleSources;
     private Set<BIBusinessTable> tableSources4Genrate;
@@ -33,10 +33,8 @@ public class CubeBuildStuffManagerByTableSources implements CubeBuildStuff {
     private Set<List<Set<CubeTableSource>>> dependTableResource;
     private Set<BITableRelation> tableRelationSet;
     private Set<BITableRelationPath> tableSourceRelationPaths;
-//    private Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap;
-//    private Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap;
 
-    public CubeBuildStuffManagerByTableSources(Set<BIBusinessTable> tableSources4Genrate, long userId) {
+    public CubeBuildStuffManagerIncremental(Set<BIBusinessTable> tableSources4Genrate, long userId) {
         this.biUser = new BIUser(userId);
         this.tableSources4Genrate = tableSources4Genrate;
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));

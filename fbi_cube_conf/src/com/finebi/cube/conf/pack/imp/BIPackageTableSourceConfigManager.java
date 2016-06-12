@@ -15,6 +15,7 @@ import java.util.Set;
 
 /**
  * Created by wuk on 16/6/8.
+ * 新增业务包后更新，获取所有新增的tableSource
  */
 public class BIPackageTableSourceConfigManager implements BIPackageTableSourceConfigProvider {
 private BISystemPackageConfigurationProvider packageManager;
