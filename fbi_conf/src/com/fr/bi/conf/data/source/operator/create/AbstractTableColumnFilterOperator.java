@@ -14,6 +14,8 @@ import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.CubeTILoaderAdapter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.gvi.GVIFactory;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
@@ -98,6 +100,9 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
                     return user.getUserId();
                 }
             });
+            if(fgvi == null) {
+                fgvi = GVIFactory.createAllShowIndexGVI(tableIndex.getRowCount());
+            }
             if (fgvi.BrokenableTraversal(new BrokenTraversalAction() {
                 @Override
                 public boolean actionPerformed(int row) {

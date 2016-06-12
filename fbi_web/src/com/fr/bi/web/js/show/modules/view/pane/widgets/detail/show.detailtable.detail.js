@@ -3,7 +3,7 @@
  * @extends BI.View
  * 明细表的详细设置————诡异的命名
  */
-BIShow.DetailTableDetailView = BI.inherit(BI.View, {
+BIShow.DetailTableDetailView = BI.inherit(BI.BarFloatSection, {
 
     constants: {
         DETAIL_NORTH_HEIGHT: 40,
@@ -25,103 +25,17 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
         BIShow.DetailTableDetailView.superclass._init.apply(this, arguments);
     },
 
-    _render: function (vessel) {
+    rebuildCenter: function (center) {
+        var o = this.options;
         BI.createWidget({
             type: "bi.border",
-            element: vessel,
+            element: center,
             items: {
-                north: {el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT},
-                west: {el: this._buildWest(), width: this.constants.DETAIL_WEST_WIDTH},
-                center: {el: this._buildCenter()}
+                center: {el: this._createTypeAndData()}
             }
         });
+
     },
-
-    _buildNorth: function () {
-        var self = this;
-        var input = BI.createWidget({
-            type: "bi.text_editor",
-            height: 22,
-            width: 400,
-            validationChecker: function (v) {
-
-            }
-        });
-        input.setValue(this.model.get("name"));
-        input.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self.model.set("name", input.getValue());
-        });
-        var shrink = BI.createWidget({
-            type: "bi.button",
-            height: 25,
-            title: BI.i18nText('BI-Return_To_Dashboard'),
-            text: BI.i18nText('BI-Detail_Set_Complete'),
-            handler: function () {
-                self.notifyParentEnd();
-            }
-        });
-        return BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
-            items: {
-                left: [input],
-                right: [shrink]
-            },
-            lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
-            rhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP
-        });
-    },
-
-    _buildWest: function () {
-        return BI.createWidget({
-            type: "bi.absolute",
-            items: [{
-                el: {
-                    type: BI.Utils.isRealTime() ? "bi.detail_select_data_4_realtime" : "bi.detail_detail_table_select_data",
-                    cls: "widget-select-data-pane",
-                    wId: this.model.get("id")
-                },
-                left: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
-                top: this.constants.DETAIL_GAP_NORMAL,
-                bottom: this.constants.DETAIL_GAP_NORMAL,
-                right: this.constants.DETAIL_PANE_HORIZONTAL_GAP
-            }],
-            cls: "widget-attr-west"
-        });
-    },
-
-    _buildCenter: function () {
-        var self = this;
-        var table = this._createTable();
-        var tab = BI.createWidget({
-            type: "bi.data_style_tab",
-            cls: "widget-top-wrapper",
-            wId: this.model.get("id"),
-            cardCreator: BI.bind(self._createTabs, this)
-        });
-
-        return BI.createWidget({
-            type: "bi.absolute",
-            cls: "widget-attr-center",
-            items: [{
-                el: {
-                    type: "bi.border",
-                    items: {
-                        north: {
-                            el: tab,
-                            height: this.constants.DETAIL_DATA_STYLE_HEIGHT,
-                            bottom: this.constants.DETAIL_GAP_NORMAL
-                        },
-                        center: table
-                    }
-                },
-                left: 0,
-                right: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
-                top: this.constants.DETAIL_GAP_NORMAL,
-                bottom: this.constants.DETAIL_GAP_NORMAL
-            }]
-        });
-    },
-
 
     _createTypeAndData: function () {
         var self = this;
@@ -167,96 +81,8 @@ BIShow.DetailTableDetailView = BI.inherit(BI.View, {
         return this.dimensionsManager;
     },
 
-    _createStyle: function () {
-        return BI.createWidget({
-            type: "bi.label",
-            text: "Style"
-        });
-    },
-
-
-    /**
-     * 图表样式设置
-     * @returns {*}
-     * @private
-     */
-    _createStyle: function () {
-        var self = this;
-        this.chartSetting = BI.createWidget({
-            type: "bi.chart_setting",
-            chartType: this.model.get("type"),
-            settings: this.model.get("settings")
-        });
-        this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
-            self.model.set("settings", BI.extend(self.model.get("settings"), v));
-        });
-        return this.chartSetting;
-    },
-
-
-    splice: function (old, key1, key2) {
-        if (key1 === "dimensions") {
-            this.dimensionsManager.populate();
-        }
-    },
-
-    _createTabs: function (v) {
-        switch (v) {
-            case BICst.DETAIL_TAB_TYPE_DATA:
-                return this._createTypeAndData();
-            case BICst.DETAIL_TAB_STYLE:
-                return this._createStyle();
-        }
-    },
-
-    _createTable: function () {
-        var self = this;
-        var table = BI.createWidget({
-            type: "bi.detail_table",
-            cls: "widget-center-wrapper",
-            wId: this.model.get("id")
-        });
-        table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
-            self.model.set(ob);
-        });
-        this.tablePopulate = BI.debounce(BI.bind(table.populate, table), 0);
-        return table;
-    },
-
-
-    change: function (changed, prev) {
-        if (BI.has(changed, "dimensions") ||
-            BI.has(changed, "sort_sequence") ||
-            BI.has(changed, "view") ||
-            BI.has(changed, "filter_value") ||
-            (BI.has(changed, "target_relation"))) {
-            this.tablePopulate();
-        }
-        if (BI.has(changed, "settings")) {
-            this.tablePopulate();
-        }
-    },
-
-
-    local: function () {
-        if (this.model.has("addDimension")) {
-            this.model.get("addDimension");
-            return true;
-        }
-        if (this.model.has("addCalculate")) {
-            this.model.get("addCalculate");
-            return true;
-        }
-        if (this.model.has("sorted")) {
-            this.model.get("sorted");
-            return true;
-        }
-        return false;
-    },
-
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
-        this.tablePopulate();
     }
 });

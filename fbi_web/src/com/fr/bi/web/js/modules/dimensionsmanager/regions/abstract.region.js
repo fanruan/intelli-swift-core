@@ -137,10 +137,15 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
 
     populate: function (dimensions) {
         var self = this, o = this.options;
-        BI.DOM.hang(self.store);
+        BI.DOM.hang(this.store);
+        var store = this.store;
         this.store = {};
         BI.each(dimensions, function (i, did) {
-            self.store[did] = self._createDimension(did);
+            if (store[did]) {
+                self.store[did] = store[did];
+            } else {
+                self.store[did] = self._createDimension(did);
+            }
             self.center.addItem(self.store[did]);
         })
     }

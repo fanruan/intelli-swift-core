@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.fr.bi.cluster.ClusterAdapter;
@@ -67,6 +68,11 @@ public class AnalysisETLModule extends AbstractModule {
     }
 
     @Override
+    public BIAliasManagerProvider getAliasManagerProvider() {
+        return BIAnalysisETLManagerCenter.getAliasManagerProvider();
+    }
+
+    @Override
     public ICubeDataLoaderCreator getCubeDataLoaderCreator() {
         return StableFactory.getMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), ICubeDataLoaderCreator.class);
     }
@@ -76,6 +82,7 @@ public class AnalysisETLModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIAnalysisBusiPackManagerProvider.XML_TAG, getBusiPackProvider());
         StableFactory.registerMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, getDataSourceProvider());
         StableFactory.registerMarkedObject(UserETLCubeManagerProvider.class.getName(), new UserETLCubeManager());
+        StableFactory.registerMarkedObject(BIAnalysisETLAliasManager.class.getName(), new BIAnalysisETLAliasManager());
         StableFactory.registerMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), UserETLCubeDataLoaderCreator.getInstance());
     }
 

@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.fr.stable.bridge.StableFactory;
 
@@ -17,5 +18,9 @@ public class BIAnalysisETLManagerCenter {
 
     public static UserETLCubeManagerProvider getUserETLCubeManagerProvider(){
         return StableFactory.getMarkedObject(UserETLCubeManagerProvider.class.getName(), UserETLCubeManagerProvider.class);
+    }
+
+    public static BIAliasManagerProvider getAliasManagerProvider(){
+        return StableFactory.getMarkedObject(BIAnalysisETLAliasManager.class.getName(), BIAliasManagerProvider.class);
     }
 }

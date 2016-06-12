@@ -24,8 +24,7 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -34,11 +33,23 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BIConnectionManager extends XMLFileManager {
     private static final String XML_TAG = "BIConnectionManager";
     private Map<String, BIConnection> connMap = new ConcurrentHashMap<String, BIConnection>();
-
+    private Map<String, JDBCDatabaseConnection> availableConnection = new HashMap<String, JDBCDatabaseConnection>();
     private static BIConnectionManager manager;
 
     private BIConnectionManager() {
 
+    }
+
+    public void updateAvailableConnection() {
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
+        while (nameIt.hasNext()) {
+            String name = nameIt.next();
+            JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
+            if (c != null && testConnection(c)) {
+                availableConnection.put(name, c);
+            }
+        }
     }
 
     public static BIConnectionManager getInstance() {
@@ -46,6 +57,7 @@ public class BIConnectionManager extends XMLFileManager {
             if (manager == null) {
                 manager = new BIConnectionManager();
                 manager.readXMLFile();
+                manager.updateAvailableConnection();
             }
             return manager;
         }
@@ -175,10 +187,10 @@ public class BIConnectionManager extends XMLFileManager {
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
 
         int index = 0;
-        while (nameIt.hasNext()) {
-            String name = nameIt.next();
-            JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
-            if (c != null && testConnection(c)) {
+        for (Map.Entry<String, JDBCDatabaseConnection> connectionMap : availableConnection.entrySet()) {
+            String name = connectionMap.getKey();
+            JDBCDatabaseConnection c = connectionMap.getValue();
+            if (c != null) {
                 if (isMicrosoftAccessDatabase(c)) {
                     continue;
                 }
@@ -204,14 +216,16 @@ public class BIConnectionManager extends XMLFileManager {
 
     private boolean needSchema(Connection c) {
         java.sql.Connection conn = null;
-        try {
-            conn = c.createConnection();
-            Dialect dialcet = DialectFactory.generateDialect(conn, c.getDriver());
-            return dialcet instanceof OracleDialect || dialcet instanceof MSSQLDialect;
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        } finally {
-            DBUtils.closeConnection(conn);
+        if (testConnection(c)) {
+            try {
+                conn = c.createConnection();
+                Dialect dialcet = DialectFactory.generateDialect(conn, c.getDriver());
+                return dialcet instanceof OracleDialect || dialcet instanceof MSSQLDialect;
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            } finally {
+                DBUtils.closeConnection(conn);
+            }
         }
         return false;
     }

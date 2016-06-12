@@ -9,6 +9,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -376,12 +377,14 @@ public class SingleUserBIRecord implements BIRecord {
         res.put("connections", connection_log);
         res.put("readingdb", reading_log);
         JSONArray tableInfo = new JSONArray();
-        for (CubeTableSource cubeTableSource : cubeTableSourceSet) {
-            JSONObject jsonObject=new JSONObject();
-            Set<CubeTableSource> tableSourceSet =new  HashSet<CubeTableSource>();
-            tableSourceSet.add(cubeTableSource);
-            jsonObject.put(cubeTableSource.getTableName(),cubeTableSource.getSelfFields(tableSourceSet));
-            tableInfo.put(jsonObject);
+        if (null!=cubeTableSourceSet) {
+            for (CubeTableSource cubeTableSource : cubeTableSourceSet) {
+                JSONObject jsonObject = new JSONObject();
+                Set<CubeTableSource> tableSourceSet = new HashSet<CubeTableSource>();
+                tableSourceSet.add(cubeTableSource);
+                jsonObject.put(cubeTableSource.getTableName(), cubeTableSource.getSelfFields(tableSourceSet));
+                tableInfo.put(jsonObject);
+            }
         }
         res.put("allRelationInfo",this.biTableSourceRelationSet);
         res.put("allTableInfo",tableInfo);
