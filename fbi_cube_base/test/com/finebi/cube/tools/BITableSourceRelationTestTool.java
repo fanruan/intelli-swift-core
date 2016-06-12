@@ -3,6 +3,7 @@ package com.finebi.cube.tools;
 
 import com.finebi.cube.relation.BIRowField;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 
 /**
  * This class created on 2016/3/9.
@@ -31,6 +32,7 @@ public class BITableSourceRelationTestTool {
         return new BITableSourceRelation(BIRowField.rowNumberField, BIRowField.rowNumberField, BIMemoryDataSourceFactory.generateTableA(), BIMemoryDataSourceFactory.generateTableB());
     }
 
+
     public static BITableSourceRelation getMemoryBC() {
         return new BITableSourceRelation(BIRowField.rowNumberField, BIRowField.rowNumberField, BIMemoryDataSourceFactory.generateTableB(), BIMemoryDataSourceFactory.generateTableC());
     }
@@ -38,5 +40,10 @@ public class BITableSourceRelationTestTool {
     public static BITableSourceRelation getMemoryCD() {
         return new BITableSourceRelation(BIRowField.rowNumberField, BIRowField.rowNumberField, BIMemoryDataSourceFactory.generateTableC(), BIMemoryDataSourceFactory.generateTableD());
     }
-
+    public static BITableSourceRelation getABWithoutRowField() {
+//        public BICubeFieldSource(CubeTableSource tableBelongTo, String fieldName, int classType, int fieldSize)
+        BICubeFieldSource primaryIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceA(), "id", 0, 10);
+        BICubeFieldSource foreignIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceB(), "id", 0, 10);
+        return new BITableSourceRelation(primaryIdField,foreignIdField, BITableSourceTestTool.getDBTableSourceA(), BITableSourceTestTool.getDBTableSourceB());
+    }
 }
