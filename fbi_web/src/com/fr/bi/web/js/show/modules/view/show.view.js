@@ -2,7 +2,12 @@
  * Created by GUY on 2015/6/24.
  */
 BIShow.View = BI.inherit(BI.View, {
-
+    _defaultConfig: function () {
+        return BI.extend(BIShow.PaneView.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-dezi-view-show"
+        })
+    },
+    
     _init: function () {
         BIShow.View.superclass._init.apply(this, arguments);
         var self = this;
