@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by 49597 on 2016/6/12.
+ * Created by kary on 2016/6/12.
  */
 public class BILogManagerTest extends TestCase {
     protected BILogManagerProvider biLogManager;
@@ -48,7 +48,7 @@ public class BILogManagerTest extends TestCase {
                 }
             }
             Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
-            relations.add(BITableSourceRelationTestTool.getABWithoutRowField());
+            relations.add(BITableSourceRelationTestTool.getABWithBICubeFieldSource());
             for (BITableSourceRelation relation : relations) {
                 biLogManager.infoRelation(getRelaionColumeKeyInfo(relation), 1000, -999);
             }

@@ -40,7 +40,7 @@ public class BITableSourceRelationTestTool {
     public static BITableSourceRelation getMemoryCD() {
         return new BITableSourceRelation(BIRowField.rowNumberField, BIRowField.rowNumberField, BIMemoryDataSourceFactory.generateTableC(), BIMemoryDataSourceFactory.generateTableD());
     }
-    public static BITableSourceRelation getABWithoutRowField() {
+    public static BITableSourceRelation getABWithBICubeFieldSource() {
 //        public BICubeFieldSource(CubeTableSource tableBelongTo, String fieldName, int classType, int fieldSize)
         BICubeFieldSource primaryIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceA(), "id", 0, 10);
         BICubeFieldSource foreignIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceB(), "id", 0, 10);
