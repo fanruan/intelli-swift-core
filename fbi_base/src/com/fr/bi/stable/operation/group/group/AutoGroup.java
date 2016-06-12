@@ -54,16 +54,16 @@ public class AutoGroup extends AbstractGroup {
             }
             double key = k.doubleValue();
             GroupValueIndex gvi = entry.getValue();
-            String groupName = getAutoGroupName(key, interval, tiMax);
+            String groupName = getAutoGroupName(key, interval);
             GroupValueIndex g = (GroupValueIndex) resultMap.get(groupName);
             resultMap.put(groupName, gvi.OR(g));
         }
         return resultMap;
     }
 
-    private String getAutoGroupName(double value, double interval, double tiMax) {
+    private String getAutoGroupName(double value, double interval) {
         int index = (int) ((value - start) / interval);
-        if(value == tiMax){
+        if(value == start + interval * 5){
             return nFormat.format(start + interval * (index - 1)) + "-" + nFormat.format(start + interval * index);
         }
         return nFormat.format(start + interval * index) + "-" + nFormat.format(start + interval * (index + 1));

@@ -28,10 +28,14 @@ BI.extend(BI.Utils, {
     },
 
     getDescribe : function (id) {
-        var table =  BI.find(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
-            return item.id === id
-        })
-        return table.describe;
+        if (BI.isNotEmptyArray(BI.Utils.getFieldIDsOfTableID(id))){
+            var table =  BI.find(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+                return item.id === id
+            })
+            return table.describe;
+        } else {
+            return BI.i18nText('BI-ETL_Temp_Table_Go_On_Editing')
+        }
     },
     getAllETLTableNames : function (id) {
         var names = [];

@@ -46,6 +46,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "type")) {
             this.tableChartPopupulate();
+            this._refreshDimensions();
         }
         if (BI.has(changed, "settings")) {
             var diffs = BI.deepDiff(changed.settings, prev.settings);

@@ -391,6 +391,26 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
     populate: function(){
         var wId = this.options.wId;
+        var view = BI.Utils.getWidgetViewByID(wId);
+        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId), titleX = BI.Utils.getWSXAxisTitleByID(wId);
+        if(titleLY === ""){
+            BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleLY = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
+        if(titleX === ""){
+            BI.any(view[BICst.REGION.DIMENSION1], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleX = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
@@ -401,8 +421,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         this.XUnit.setValue(BI.Utils.getWSXAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
-        this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
-        this.editTitleX.setValue(BI.Utils.getWSXAxisTitleByID(wId));
+        this.editTitleLY.setValue(titleLY);
+        this.editTitleX.setValue(titleX);
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
