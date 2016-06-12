@@ -9,7 +9,7 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
         DETAIL_WIDTH : 230,
         LIST_HEIGHT : 164,
         FIRST_DETAIL_HEIGHT : 25,
-        SECOND_DETAIL_HEIGHT : 100,
+        SECOND_DETAIL_HEIGHT : 60,
         LIST_DOWN_HEIGHT : 138,
         LABEL_WIDTH : 60
     },
