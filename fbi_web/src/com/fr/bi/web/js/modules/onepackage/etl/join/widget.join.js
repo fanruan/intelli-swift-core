@@ -400,6 +400,7 @@ BI.Join = BI.inherit(BI.Widget, {
                     type: "bi.join_result_header",
                     mergeResult: this.model.getJoinNames()
                 });
+                this.joinResultHeader.populate(this.model.getJoinNames(), this.model.getJoinFieldsName());
                 this.joinResultHeader.on(BI.JoinResultHeader.EVENT_CHANGE, function(joinNames){
                     self.model.setJoinNames(joinNames);
                 });
@@ -440,7 +441,7 @@ BI.Join = BI.inherit(BI.Widget, {
         }
         if(this.model.checkMergeFields()) {
             this.resultTab.setSelect(this.constants.SHOW_HEADER);
-            this.joinResultHeader.populate(this.model.getJoinNames());
+            this.joinResultHeader.populate(this.model.getJoinNames(), this.model.getJoinFieldsName());
         } else {
             this.resultTab.setSelect(this.constants.SHOW_TIP);
         }

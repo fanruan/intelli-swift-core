@@ -48,7 +48,7 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
         //所有被选中的，对于日期的，可以使用fId+group拼接成id
         var dateGroup = [BICst.GROUP.Y, BICst.GROUP.S, BICst.GROUP.M, BICst.GROUP.W, BICst.GROUP.YMD, BICst.GROUP.YMDHMS];
         BI.each(sortedFieldIds, function (i, fId) {
-            var fieldName = BI.Utils.getFieldNameByID(fId);
+            var fieldName = BI.Utils.getOriginalFieldNameByID(fId);
             // var index = fieldIds.indexOf(fId);
             var index = fieldNames.indexOf(fieldName);
             //日期类型特殊处理
