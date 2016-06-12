@@ -79,7 +79,7 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
     @Override
     public Iterator<Map.Entry> iterator(Object start) {
         if (start == null){
-            Iterator iter = getter.iterator(getter.lastKey());
+            Iterator iter = getter.iterator(getter.firstKey());
             if (iter.hasNext()){
                 iter.next();
             }
@@ -98,7 +98,7 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
     @Override
     public Iterator<Map.Entry> previousIterator(Object start) {
         if (start == null){
-            Iterator iter = getter.previousIterator(getter.firstKey());
+            Iterator iter = getter.previousIterator(getter.lastKey());
             if (iter.hasNext()){
                 iter.next();
             }

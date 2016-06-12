@@ -330,7 +330,7 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
 	public T lastKey() {
     	return getKey(size() - 1);
     }
-    
+
 	@Override
 	public long nonPrecisionSize() {
 		return size();
