@@ -61,7 +61,6 @@ public class CubeRunner {
                         try {
                             cubeTask.start();
                             cubeTask.run();
-
                         } catch (Exception e) {
                             BILogger.getLogger().error(e.getMessage(), e);
                         } finally {

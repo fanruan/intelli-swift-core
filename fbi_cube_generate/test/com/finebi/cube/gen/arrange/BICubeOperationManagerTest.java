@@ -19,10 +19,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Future;
 
 /**
@@ -43,6 +40,7 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
     public BICubeOperationManagerTest() throws Exception {
         super.setUp();
     }
+
     public void testBasic() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
@@ -50,14 +48,12 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             operationManager = new BICubeOperationManager4Test(cube, setSource);
             operationManager.initialWatcher();
             manager.registerDataSource(BIMemoryDataSourceFactory.getDataSourceSet());
-            manager.registerDataSource(setSource);
             Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
             relations.add(BITableSourceRelationTestTool.getMemoryAB());
             relations.add(BITableSourceRelationTestTool.getMemoryBC());
             manager.registerRelation(relations);
             Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
             pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
-            manager.registerTableRelationPath(pathSet);
             operationManager.generateRelationBuilder(relations);
             operationManager.generateTableRelationPath(pathSet);
             operationManager.generateDataSource(BIMemoryDataSourceFactory.getDataSourceSetMap());
@@ -78,36 +74,38 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
+
     public void testDependPath() {
         try {
+//            testBasic();
+            /*添加表D及相关的relation*/
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
             Set<CubeTableSource> setSource = new HashSet<CubeTableSource>();
             operationManager = new BICubeOperationManager4Test(cube, setSource);
             operationManager.initialWatcher();
-            manager.registerDataSource(BIMemoryDataSourceFactory.getDataSourceSet());
-            manager.registerDataSource(setSource);
+            Set<CubeTableSource> dataSourceSet = new HashSet<CubeTableSource>();
+            dataSourceSet.add(BIMemoryDataSourceFactory.generateTableC());
+            dataSourceSet.add(BIMemoryDataSourceFactory.generateTableB());
+            manager.registerDataSource(dataSourceSet);
             Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
-            relations.add(BITableSourceRelationTestTool.getMemoryAB());
             relations.add(BITableSourceRelationTestTool.getMemoryBC());
             manager.registerRelation(relations);
             Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
             pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
             /*解开path依赖*/
-           Set<IStatusTag> dependsStatusTag=new HashSet<IStatusTag>();
+            Map<BITableSourceRelationPath, Set<IStatusTag>> setSetMap = new HashMap<BITableSourceRelationPath, Set<IStatusTag>>();
             if (pathSet != null && !pathSet.isEmpty()) {
-                Iterator<BITableSourceRelationPath> it = pathSet.iterator();
-                while (it.hasNext()) {
-                    BITableSourceRelationPath path = it.next();
-                        String sourceID = path.getSourceID();
-                        BITableSourceRelationPath frontPath = new BITableSourceRelationPath();
-                        frontPath.copyFrom(path);
-                        frontPath.removeLastRelation();
-                        dependsStatusTag.add(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, frontPath.getSourceID()));
+                for (BITableSourceRelationPath biTableSourceRelationPath : pathSet) {
+                    Set<IStatusTag> dependsStatusTag = new HashSet<IStatusTag>();
+                    BITableSourceRelationPath frontPath = new BITableSourceRelationPath();
+                    frontPath.copyFrom(biTableSourceRelationPath);
+                    frontPath.removeLastRelation();
+                    dependsStatusTag.add(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, new BITableSourceRelationPath(biTableSourceRelationPath.getLastRelation()).getSourceID()));
+                    setSetMap.put(biTableSourceRelationPath, dependsStatusTag);
                 }
             }
-            manager.registerTableRelationPath(pathSet);
             operationManager.generateRelationBuilder(relations);
-            operationManager.generateTableRelationPath(pathSet,dependsStatusTag);
+            operationManager.generateTableRelationPath(setSetMap);
             operationManager.generateDataSource(BIMemoryDataSourceFactory.getDataSourceSetMap());
 
             IRouter router = BIFactoryHelper.getObject(IRouter.class);
@@ -118,14 +116,12 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             Map<String, Integer> map = BICubeBuildProbeTool.INSTANCE.getFlag();
             assertTrue(map.containsKey("tablePath"));
             assertTrue(map.containsKey("RelationIndex"));
-            checkTable((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableA(), map);
-            checkTable((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableB(), map);
-            checkTable((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableC(), map);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
     }
+
     public void testTable() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();

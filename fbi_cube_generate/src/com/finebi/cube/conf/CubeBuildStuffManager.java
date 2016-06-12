@@ -328,6 +328,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
             setForeignKeyMap(foreignKeyMap);
             setRelationPaths(convertPaths(BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId())));
             rootPath = BIPathUtils.createBasePath();
+//            rootPath="C:\\Users\\49597\\Documents\\fineBI\\env\\WebReport\\WEB-INF\\resources\\cubes";
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }

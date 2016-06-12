@@ -32,8 +32,7 @@ private BISystemPackageConfigurationProvider packageManager;
                 BILogger.getLogger().error(e.getMessage());
             }
         }
-        Set<BIBusinessTable> sources = getTableSources(iBusinessPackageGetterServiceSet, userId);
-        return sources;
+        return getTableSources(iBusinessPackageGetterServiceSet, userId);
     }
 
     public Set<BIBusinessTable> getTableSources(Set<IBusinessPackageGetterService> packs, long userId) {

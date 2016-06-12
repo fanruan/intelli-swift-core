@@ -347,6 +347,29 @@ public class BICubeOperationManager {
         }
     }
 
+    public void generateTableRelationPath(Map<BITableSourceRelationPath, Set<IStatusTag>> setSetMap) {
+        for (BITableSourceRelationPath biTableSourceRelationPath : setSetMap.keySet()) {
+            if (biTableSourceRelationPath != null) {
+                try {
+                    String sourceID = biTableSourceRelationPath.getSourceID();
+                    BIOperation<Object> operation = new BIOperation<Object>(
+                            sourceID,
+                            getTablePathBuilder(cube, biTableSourceRelationPath));
+                    operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+                    operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                    for (IStatusTag statusTag : setSetMap.get(biTableSourceRelationPath)) {
+                        operation.subscribe(statusTag);
+                    }
+                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                } catch (Exception e) {
+                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
+                }
+            }
+            subscribePathFinish();
+        }
+
+    }
+
     public void generateTableRelationPath(Set<BITableSourceRelationPath> relationPathSet, Set<IStatusTag> dependsStatusTag) {
         if (relationPathSet != null && !relationPathSet.isEmpty()) {
             Iterator<BITableSourceRelationPath> it = relationPathSet.iterator();
@@ -359,8 +382,12 @@ public class BICubeOperationManager {
                             getTablePathBuilder(cube, path));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, new BITableSourceRelationPath(path.getLastRelation()).getSourceID()));
+                    BITableSourceRelationPath frontPath = new BITableSourceRelationPath();
+                    frontPath.copyFrom(path);
+                    frontPath.removeLastRelation();
+                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, frontPath.getSourceID()));
                     for (IStatusTag statusTag : dependsStatusTag) {
-//                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, new BITableSourceRelationPath(path.getLastRelation()).getSourceID()));
                         operation.subscribe(statusTag);
                         pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                     }
