@@ -29,6 +29,7 @@ public class BIImportDBTableConnectionExecutor {
         Map<String, DBTableSource> oldTableSources = new HashMap<String, DBTableSource>(allTableSources);//已经在包内的表
         allTableSources.putAll(newTableSources);
         allTableSources.putAll(tool.getAllBusinessPackDBSourceMap(userId));
+        allFieldIdMap.putAll(tool.getAllBusinessPakFieldIdMap(userId));
         Set<BITableRelation> relationsSet = new HashSet<BITableRelation>();
         Iterator<Map.Entry<String, DBTableSource>> sit = allTableSources.entrySet().iterator();
         while (sit.hasNext()) {
