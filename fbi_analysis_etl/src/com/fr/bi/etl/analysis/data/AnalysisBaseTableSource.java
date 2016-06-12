@@ -71,7 +71,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     private int getSqlType(int index) {
-        if (widget.getType() == BIReportConstant.WIDGET.TABLE){
+        if (widget.getType() != BIReportConstant.WIDGET.DETAIL){
             return getTableWidgetSqlType(index);
         } else {
             return getDetailWidgetSqlType(index);

@@ -24,8 +24,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
         this.table = BI.createWidget({
             type: "bi.style_table",
-            color: BICst.DEFAULT_CHART_SETTING.theme_color,
-            style: BI.StyleTable.STYLE1,
             el: {
                 type: "bi.page_table",
                 el: {
@@ -35,6 +33,9 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                                 type: "bi.table_tree"
                             }
                         }
+                    },
+                    sequence: {
+                        type: "bi.sequence_table_tree_number"
                     }
                 },
                 itemsCreator: function (op, populate) {
@@ -116,8 +117,15 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             self.pager.setValue(vPage);
             callback(items, header, [], []);
 
+            //显示序号
+            if (BI.Utils.getWSShowNumberByID(widgetId)) {
+                self.table.showSequence();
+            } else {
+                self.table.hideSequence();
+            }
+
             //设置样式和颜色
-            self.table.setStyleAndColor(BI.StyleTable.STYLE1, BICst.DEFAULT_CHART_SETTING.theme_color);
+            self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(widgetId), BI.Utils.getWSThemeColorByID(widgetId));
         }, ob);
     },
 

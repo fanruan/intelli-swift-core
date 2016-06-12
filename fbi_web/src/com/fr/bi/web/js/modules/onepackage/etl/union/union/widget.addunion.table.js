@@ -80,6 +80,13 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
                 value: i
             })
         });
+        var title = "";
+        if(BI.isNotNull(isValidOb.comment)) {
+            title = isValidOb.comment;
+        }
+        if(BI.isNotNull(allFields[fArray[index]])) {
+            title = allFields[fArray[index]].field_name;
+        }
         var combo = BI.createWidget({
             type: "bi.text_value_combo",
             height: 30,
@@ -88,7 +95,7 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
             items: tFields,
             el: {
                 tipType: isValidOb.valid === true ? "success" : "warning",
-                title: isValidOb.valid === true ? allFields[fArray[index]].field_name : isValidOb.comment
+                title: title
             }
         });
         combo.setValue(fArray[index]);

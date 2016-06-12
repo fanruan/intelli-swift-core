@@ -31,7 +31,7 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
         return valid;
     },
 
-    populate: function(mergeResult) {
+    populate: function(mergeResult, joinNames) {
         var self = this;
         this.mergeResult = mergeResult;
         var items = [];
@@ -64,13 +64,31 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
                     nameEditor.focus();
                 }
             });
+            var cls = "";
+            if(name.isLeft === true) {
+                cls = "table-color0";
+                BI.some(joinNames, function(j, jNames){
+                    if(jNames[0] === name.column_name) {
+                        cls = "table-color2";
+                        return true;
+                    }
+                });
+            } else {
+                cls = "table-color1";
+                BI.some(joinNames, function(j, jNames){
+                    if(jNames[1] === name.column_name) {
+                        cls = "table-color2";
+                        return true;
+                    }
+                });
+            }
             items.push({
                 type: "bi.left_right_vertical_adapt",
                 items: {
                     left: [nameEditor],
                     right: [editorIcon]
                 },
-                cls: name.isLeft === true ? "table-color0" : "table-color1",
+                cls: cls,
                 height: "100%"
             });
         });

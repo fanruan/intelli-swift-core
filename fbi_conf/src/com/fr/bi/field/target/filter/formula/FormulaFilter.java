@@ -3,13 +3,15 @@
  */
 package com.fr.bi.field.target.filter.formula;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -110,8 +112,9 @@ public class FormulaFilter extends AbstractTargetFilter {
     }
 
     private GroupValueIndex createFormulaIndex(ICubeTableService ti) {
-        Map<String, BIKey> columnMap = BIFormularUtils.createColumnIndexMap(expression, ti);
-        String formular = "=" + expression;
+        String transExpression = replaceRelatedParaNames();
+        Map<String, BIKey> columnMap = BIFormularUtils.createColumnIndexMap(transExpression, ti);
+        String formular = "=" + transExpression;
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
         Matcher matcher = pat.matcher(formular);
         int parameterCount = 0;
@@ -130,6 +133,23 @@ public class FormulaFilter extends AbstractTargetFilter {
             }
         }
         return gvi;
+    }
+
+    /**
+     * 分析那边传过来的是fieldId, 要把它变成fieldName
+     * @return 转换过后的expression副本
+     */
+    private String replaceRelatedParaNames() {
+        String result = expression;
+        Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
+        Matcher matcher = pat.matcher(expression);
+        while (matcher.find()) {
+            String matchStr = matcher.group(0);
+            if(matchStr.contains(BIReportConstant.FIELD_ID.HEAD)){
+                result = expression.replaceAll(matchStr.substring(2, matchStr.length() - 1), BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(matchStr.substring(BIReportConstant.FIELD_ID.HEAD.length() + 2, matchStr.length() - 1))).getFieldName());
+            }
+        }
+        return result;
     }
 
 

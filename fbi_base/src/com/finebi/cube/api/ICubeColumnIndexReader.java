@@ -16,7 +16,6 @@ public interface ICubeColumnIndexReader<T> {
     T firstKey();
 
     T lastKey();
-
     /**
      * entry的set
      *
