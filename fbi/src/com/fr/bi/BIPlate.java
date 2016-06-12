@@ -19,6 +19,7 @@ import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIClassUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.MToMRelationFCMapper;
 import com.fr.data.dao.ObjectTableMapper;
@@ -70,8 +71,14 @@ public class BIPlate extends AbstractFSPlate {
     }
 
     public void loadMemoryData() {
-        BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID());
-        BIConnectionManager.getInstance();
+        try {
+            BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID());
+            BIConnectionManager.getInstance();
+            BICubeConfigureCenter.getTableRelationManager().getAllTablePath(UserControl.getInstance().getSuperManagerID());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 
     private void registerEntrySomething() {
