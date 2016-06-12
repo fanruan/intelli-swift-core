@@ -1,10 +1,8 @@
 package com.fr.bi.web.conf.utils;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -43,19 +41,6 @@ public class BIImportDBTableConnectionRelationTool {
     }
 
 
-    public Map<String, String> getAllBusinessPakFieldIdMap(long userId) {
-        Map<String, String> fieldIdMap = new HashMap<String, String>();
-        for (IBusinessPackageGetterService pack : BICubeConfigureCenter.getPackageManager().getAllPackages(userId)) {
-            for (Object table : pack.getBusinessTables()) {
-                BITableID tableId = ((BIBusinessTable) table).getID();
-                BusinessTable packTable = BusinessTableHelper.getBusinessTable(tableId);
-                for (BusinessField field : packTable.getFields()) {
-                    fieldIdMap.put(tableId.getIdentityValue() + field.getFieldName(), field.getFieldID().getIdentityValue());
-                }
-            }
-        }
-        return fieldIdMap;
-    }
 
     public Map<String, Set<BIDBTableField>> getAllRelationOfConnection(Connection conn, String schemaName, String tableName) {
         return BIDBUtils.getAllRelationOfConnection(conn, schemaName, tableName);
