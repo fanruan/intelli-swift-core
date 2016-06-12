@@ -62,7 +62,7 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         long index = 0;
         while (it.hasNext()) {
             IETLOperator op = it.next();
-            index = op.writePartIndex(travel, parents, loader, startCol, 0, Integer.MAX_VALUE);
+            index = op.writeIndexWithParents(travel, parents, loader, startCol);
             startCol++;
         }
         return index;

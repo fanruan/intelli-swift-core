@@ -71,6 +71,45 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
     private static final int STEP = 100;
 
     @Override
+    public int writeIndexWithParents(final Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol) {
+        final FinalInt currentRow = new FinalInt();
+        final ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
+        currentRow.value = -1;
+        final FinalInt writeRow = new FinalInt();
+        IPersistentTable ptable = parents.get(0).getPersistentTable();
+        final List<PersistentField> columns = ptable.getFieldList();
+        GroupValueIndex fgvi = createFilterIndex(parents, new CubeTILoaderAdapter() {
+
+            public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
+                return ti;
+            }
+
+            @Override
+            public ICubeTableService getTableIndex(CubeTableSource tableSource) {
+                return ti;
+            }
+            public long getUserId() {
+                return user.getUserId();
+            }
+        });
+        if(fgvi == null) {
+            fgvi = GVIFactory.createAllShowIndexGVI(ti.getRowCount());
+        }
+        fgvi.BrokenableTraversal(new BrokenTraversalAction() {
+            @Override
+            public boolean actionPerformed(int row){
+                currentRow.value++;
+                for (int i = 0; i < columns.size(); i++) {
+                    travel.actionPerformed(new BIDataValue(writeRow.value, i, ti.getRow(new IndexKey(columns.get(i).getFieldName()), row)));
+                }
+                writeRow.value++;
+                return false;
+            }
+        });
+        return writeRow.value;
+    }
+
+    @Override
     public int writePartIndex(final Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, final int start, final int end) {
         boolean hasAllCalculatorFilter = hasAllCalculatorFilter();
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), 0, hasAllCalculatorFilter ? Integer.MAX_VALUE : STEP);
