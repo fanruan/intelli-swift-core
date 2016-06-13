@@ -13,7 +13,9 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
     },
 
     change: function (changed) {
-
+        if (BI.has(changed, "bounds")) {
+            this.image.resize();
+        }
     },
 
     _render: function (vessel) {
