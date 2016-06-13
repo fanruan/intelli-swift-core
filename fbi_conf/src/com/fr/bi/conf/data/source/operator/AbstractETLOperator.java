@@ -1,6 +1,9 @@
 package com.fr.bi.conf.data.source.operator;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.*;
+import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -62,6 +65,11 @@ public abstract class AbstractETLOperator implements IETLOperator {
 
     @Override
     public abstract String xmlTag();
+
+    @Override
+    public int writeIndexWithParents(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol) {
+        return writePartIndex(travel, parents, loader, startCol, 0, Integer.MAX_VALUE);
+    }
 
     @Override
     public BICore fetchObjectCore() {

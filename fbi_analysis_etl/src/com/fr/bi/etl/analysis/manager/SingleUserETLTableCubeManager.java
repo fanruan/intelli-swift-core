@@ -89,7 +89,7 @@ public class SingleUserETLTableCubeManager implements Release {
 								data.end();
 								tq.add(new ETLTableObject(source, data.getPath()));
 							} catch (Exception e){
-								BILogger.getLogger().error(e.getMessage());
+								BILogger.getLogger().error(e.getMessage(), e);
 							} finally {
 							}
 						}

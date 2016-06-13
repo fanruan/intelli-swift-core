@@ -16,5 +16,5 @@ public interface FilterValue<T> extends FieldFilter, XMLable, RowFilter<T> {
 
     boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader);
 
-    boolean isTopOrBottomFilterValue();
+    boolean isAllCalculatorFilter();
 }

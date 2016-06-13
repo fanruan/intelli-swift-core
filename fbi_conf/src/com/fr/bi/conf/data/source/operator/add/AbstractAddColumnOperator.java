@@ -73,6 +73,7 @@ public abstract class AbstractAddColumnOperator extends AbstractETLOperator {
         writer.attr("column_type", columnType);
     }
 
+
     @Override
     public IPersistentTable getBITable(IPersistentTable[] tables) {
         IPersistentTable biTable = getBITable();
