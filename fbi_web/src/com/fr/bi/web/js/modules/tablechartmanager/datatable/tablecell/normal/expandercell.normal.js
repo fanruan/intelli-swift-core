@@ -145,7 +145,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                     },
                     children: downChildren
                 }]];
-                this.populate(items);
+                this.populate(BI.deepClone(items));
             });
             drillCombo.on(BI.DownListCombo.EVENT_SON_VALUE_CHANGE, function(v){
                 drillCallback(v);
