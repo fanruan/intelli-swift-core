@@ -625,11 +625,11 @@ BICst.DIMENSION_TAR_FILTER_NUMBER_COMBO = [[{
 //dimension date
 BICst.DIMENSION_FILTER_DATE_COMBO = [[{
     text: BI.i18nText("BI-In"),
-    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE,
+    value: BICst.DIMENSION_FILTER_DATE.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE,
+    value: BICst.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Contain"),
@@ -641,11 +641,11 @@ BICst.DIMENSION_FILTER_DATE_COMBO = [[{
     cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
-    value: BICst.DIMENSION_FILTER_STRING.IS_NULL,
+    value: BICst.DIMENSION_FILTER_DATE.IS_NULL,
     cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_Null"),
-    value: BICst.DIMENSION_FILTER_STRING.NOT_NULL,
+    value: BICst.DIMENSION_FILTER_DATE.NOT_NULL,
     cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Begin_With"),
@@ -657,11 +657,11 @@ BICst.DIMENSION_FILTER_DATE_COMBO = [[{
     cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Top_N"),
-    value: BICst.DIMENSION_FILTER_STRING.TOP_N,
+    value: BICst.DIMENSION_FILTER_DATE.TOP_N,
     cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Last_N"),
-    value: BICst.DIMENSION_FILTER_STRING.BOTTOM_N,
+    value: BICst.DIMENSION_FILTER_DATE.BOTTOM_N,
     cls: "dot-e-font"
 }]];
 
