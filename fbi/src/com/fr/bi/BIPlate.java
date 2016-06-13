@@ -76,7 +76,6 @@ public class BIPlate extends AbstractFSPlate {
             BIConnectionManager.getInstance();
             BICubeConfigureCenter.getTableRelationManager().getAllTablePath(UserControl.getInstance().getSuperManagerID());
         } catch (Exception e) {
-            e.printStackTrace();
             throw BINonValueUtils.beyondControl(e);
         }
     }
