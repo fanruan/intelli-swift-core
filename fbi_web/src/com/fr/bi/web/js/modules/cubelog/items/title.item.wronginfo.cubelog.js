@@ -10,7 +10,7 @@ BI.CubeLogWrongInfoItemTitle = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CubeLogWrongInfoItemTitle.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-cube-log-wrong-info-item-title",
-            text: "关联: 以下表的关联关系造成死循环",
+            // text: "关联: 以下表的关联关系造成死循环",
             height: 30,
             open: true
         });

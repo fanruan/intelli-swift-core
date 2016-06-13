@@ -41,6 +41,7 @@ public class BIConnectionManager extends XMLFileManager {
     }
 
     public void updateAvailableConnection() {
+        availableConnection.clear();
         DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
