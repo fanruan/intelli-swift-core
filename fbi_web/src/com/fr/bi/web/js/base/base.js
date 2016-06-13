@@ -665,7 +665,7 @@ if (!window.BI) {
                 var copies = callbacks.slice(0);
                 callbacks = [];
                 for (var i = 0; i < copies.length; i++) {
-                    copies[i]();
+                    copies[i].func.apply(null, copies[i].args);
                 }
             }
 
@@ -684,12 +684,9 @@ if (!window.BI) {
             } else {
                 timerFunc = setTimeout
             }
-            return function (cb, ctx) {
-                var func = ctx
-                    ? function () {
-                    cb.call(ctx)
-                } : cb;
-                callbacks.push(func);
+            return function (cb) {
+                var args = [].slice.call(arguments, 1);
+                callbacks.push({func: cb, args: args});
                 if (pending) return;
                 pending = true;
                 timerFunc(nextTickHandler, 0);
