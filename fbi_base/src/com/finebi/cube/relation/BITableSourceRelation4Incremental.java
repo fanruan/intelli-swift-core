@@ -22,4 +22,19 @@ public class BITableSourceRelation4Incremental {
     public CubeTableSource getCubeTableSource() {
         return cubeTableSource;
     }
+
+    public boolean primaryTableGenerated() {
+        if (null == cubeTableSource) {
+            return false;
+        }else {
+           return cubeTableSource.getSourceID().equals(biTableSourceRelation.getPrimaryTable().getSourceID());
+        }
+    }
+    public boolean foreignTableGenerated() {
+        if (null == cubeTableSource) {
+            return false;
+        }else {
+            return cubeTableSource.getSourceID().equals(biTableSourceRelation.getForeignTable().getSourceID());
+        }
+    }
 }

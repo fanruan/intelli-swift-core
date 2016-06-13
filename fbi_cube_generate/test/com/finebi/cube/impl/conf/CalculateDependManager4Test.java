@@ -11,6 +11,9 @@ public class CalculateDependManager4Test extends CalculateDependManager{
 
     @Override
     public void setOriginal(Set<BIBusinessTable> analysisTables) {
+        for (BIBusinessTable analysisTable : analysisTables) {
+            analysisTableSources.add(analysisTable.getTableSource());
+        }
 
     }
 }
