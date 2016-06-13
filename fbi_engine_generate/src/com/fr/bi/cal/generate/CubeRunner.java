@@ -2,7 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.CubeBuildStuffManager;
+import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
@@ -61,7 +61,6 @@ public class CubeRunner {
                         try {
                             cubeTask.start();
                             cubeTask.run();
-
                         } catch (Exception e) {
                             BILogger.getLogger().error(e.getMessage(), e);
                         } finally {

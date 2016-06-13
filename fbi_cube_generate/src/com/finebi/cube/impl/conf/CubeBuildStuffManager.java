@@ -1,6 +1,9 @@
-package com.finebi.cube.conf;
+package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -328,6 +331,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
             setForeignKeyMap(foreignKeyMap);
             setRelationPaths(convertPaths(BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId())));
             rootPath = BIPathUtils.createBasePath();
+//            rootPath="C:\\Users\\49597\\Documents\\fineBI\\env\\WebReport\\WEB-INF\\resources\\cubes";
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }

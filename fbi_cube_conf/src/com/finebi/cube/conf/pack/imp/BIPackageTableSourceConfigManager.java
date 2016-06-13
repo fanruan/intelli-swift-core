@@ -6,6 +6,7 @@ import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
 
@@ -15,14 +16,14 @@ import java.util.Set;
 
 /**
  * Created by wuk on 16/6/8.
+ * 新增业务包后更新，获取所有新增的table
  */
 public class BIPackageTableSourceConfigManager implements BIPackageTableSourceConfigProvider {
-private BISystemPackageConfigurationProvider packageManager;
-    @Override
-    public Set<BIBusinessTable> getTableSources4Genrate(long userId) {
-        packageManager = BICubeConfigureCenter.getPackageManager();
+
+    public Set<BIBusinessTable> getTable4Generate(long userId) {
+        BISystemPackageConfigurationProvider packageManager = BICubeConfigureCenter.getPackageManager();
         Set<BIBusinessPackage> packages4CubeGenerate = packageManager.getPackages4CubeGenerate(userId);
-        Set<IBusinessPackageGetterService> iBusinessPackageGetterServiceSet=new HashSet<IBusinessPackageGetterService>();
+        Set<IBusinessPackageGetterService> iBusinessPackageGetterServiceSet = new HashSet<IBusinessPackageGetterService>();
         for (BIBusinessPackage biBusinessPackage : packages4CubeGenerate) {
             try {
                 IBusinessPackageGetterService iBusinessPackageGetterService = BICubeConfigureCenter.getPackageManager().getPackage(userId, biBusinessPackage.getID());
@@ -31,8 +32,13 @@ private BISystemPackageConfigurationProvider packageManager;
                 BILogger.getLogger().error(e.getMessage());
             }
         }
-        Set<BIBusinessTable> sources = getTableSources(iBusinessPackageGetterServiceSet, userId);
-        return sources;
+        return getTableSources(iBusinessPackageGetterServiceSet, userId);
+    }
+
+    @Override
+    public Set<BusinessTable> getAllTables(long userId) {
+        BISystemPackageConfigurationProvider packageManager = BICubeConfigureCenter.getPackageManager();
+        return packageManager.getAllTables(userId);
     }
 
     public Set<BIBusinessTable> getTableSources(Set<IBusinessPackageGetterService> packs, long userId) {
