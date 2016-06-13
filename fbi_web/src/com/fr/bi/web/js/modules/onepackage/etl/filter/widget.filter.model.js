@@ -75,6 +75,10 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
         return tables;
     },
 
+    getAllFields: function () {
+        return BI.deepClone(this.old_tables.fields);
+    },
+
     getOperatorTableName: function () {
         return this.tmp_operatorTableName;
     },
@@ -139,7 +143,7 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
         }
         return filter;
 
-        function parseComplexDate(v){
+        function parseComplexDate(v) {
             var type = v.type, value = v.value;
             var date = new Date();
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();

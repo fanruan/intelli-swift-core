@@ -41,7 +41,11 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         var north = BI.createWidget({
             type: "bi.border",
             items: {
-                center: {el: this.titleName}
+                west: {
+                    el: this.titleName,
+                    height: this.constants.REGION_HEIGHT_NORMAL,
+                    left: this.constants.REGION_DIMENSION_GAP
+                }
             },
             cls: "region-north"
         });

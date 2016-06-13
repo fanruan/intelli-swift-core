@@ -79,6 +79,7 @@ BI.ButtonMap = BI.inherit(BI.ButtonTree, {
             if (self.buttons[val(item)]) {
                 var ob = self.buttons[val(item)];
                 args[0] = item.items || item;
+                args[2] = item;
                 ob.populate && ob.populate.apply(ob, args);
             } else {
                 willCreated.push(item);
