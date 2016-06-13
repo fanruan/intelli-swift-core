@@ -185,7 +185,8 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             items.push({
                 id: id,
                 pId: BI.CubeLog.INDEX_NODE,
-                text: table.tableName + BI.i18nText("BI-Generated_Time") + self._formatSecond(table.time),
+                text: table.tableName + BI.i18nText("BI-Generated_Time"),
+                second: table.time,
                 level: 1
             });
             BI.each(columns, function (j, column) {
@@ -212,7 +213,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 BI.i18nText("BI-Generated_Time") + self._formatSecond(relation.time),
                 level: 1
             });
-            createRelationTime = createIndexTime > relation.time ? createRelationTime : relation.time;
+            createRelationTime = createRelationTime > relation.time ? createRelationTime : relation.time;
         });
         items[1].second = readDBTime;
         items[2].second = createIndexTime;

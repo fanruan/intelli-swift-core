@@ -81,4 +81,9 @@ public class SQLTableSource extends ServerTableSource {
     public int getType() {
         return BIBaseConstant.TABLETYPE.SQL;
     }
+
+    @Override
+    public String getTableName() {
+        return this.sqlName;
+    }
 }
