@@ -248,13 +248,26 @@ public class BIReportConstant {
     }
 
     public static final class DIMENSION_FILTER_DATE {
-        public final static int CONTAIN = 0x62;
 
-        public final static int NOT_CONTAIN = 0x63;
+        public final static int BELONG_VALUE = 0x62;
 
-        public final static int BEGIN_WITH = 0x64;
+        public final static int NOT_BELONG_VALUE = 0x63;
 
-        public final static int END_WITH = 0x65;
+        public final static int IS_NULL = 0x64;
+
+        public final static int NOT_NULL = 0x65;
+
+        public final static int TOP_N = 0x66;
+
+        public final static int BOTTOM_N = 0x67;
+
+        public final static int CONTAIN = 0x68;
+
+        public final static int NOT_CONTAIN = 0x69;
+
+        public final static int BEGIN_WITH = 0x6a;
+
+        public final static int END_WITH = 0x6b;
     }
 
     public static final class TARGET_TYPE {

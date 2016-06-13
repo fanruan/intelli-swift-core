@@ -117,22 +117,9 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         }
     },
 
-    similar: function (ob, key) {
-        if (key === "widgets") {
-            var obj = {};
-            obj.type = ob.type;
-            obj.name = this._generateWidgetName(ob.name);
-            obj.dimensions = ob.dimensions;
-            obj.view = ob.view;
-            obj.bounds = {
-                height: ob.bounds.height,
-                width: ob.bounds.width,
-                left: ob.bounds.left + 15,
-                top: ob.bounds.top + 15
-            };
-            obj.settings = ob.settings;
-            obj.value = ob.value;
-            return obj;
+    similar: function (ob, key1, key2) {
+        if (key1 === "widgets") {
+            return BI.Utils.getWidgetCopyByID(key2);
         }
     },
 
