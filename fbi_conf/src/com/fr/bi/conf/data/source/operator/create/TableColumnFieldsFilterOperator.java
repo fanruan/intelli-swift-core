@@ -167,7 +167,7 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
 
         public boolean hasAllCalculatorFilter() {
             for (TargetFilter f : filter) {
-                if (f.hasAllCalculatorFilter()) {
+                if (f != null && f.hasAllCalculatorFilter()) {
                     return true;
                 }
             }
