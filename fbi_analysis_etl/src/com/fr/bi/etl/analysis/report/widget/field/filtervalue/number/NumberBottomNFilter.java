@@ -17,11 +17,6 @@ public class NumberBottomNFilter extends NumberSmallOrEqualsCLFilter {
 	 */
 	private static final long serialVersionUID = 7362372295014642285L;
 
-
-    @Override
-    public boolean isTopOrBottomFilterValue() {
-        return true;
-    }
 	@Override
 	public void parseJSON(JSONObject jo , long userId) throws Exception{
 		super.parseJSON(jo, userId);

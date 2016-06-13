@@ -57,7 +57,7 @@ public abstract class StringNFilterValue extends AbstractFilterValue<String> imp
     }
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return true;
     }
     @Override

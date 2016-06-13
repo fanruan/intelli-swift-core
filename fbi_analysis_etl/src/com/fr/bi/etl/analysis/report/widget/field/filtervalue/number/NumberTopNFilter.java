@@ -27,9 +27,5 @@ public class NumberTopNFilter extends NumberLargeOrEqualsCLFilter {
             }
 		}
 	}
-    @Override
-    public boolean isTopOrBottomFilterValue() {
-        return true;
-    }
 
 }
