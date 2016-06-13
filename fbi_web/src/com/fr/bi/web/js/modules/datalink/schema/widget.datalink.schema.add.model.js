@@ -16,6 +16,7 @@ BI.AddSchemaDataLinkModel = BI.inherit(FR.OB, {
         this.newCharsetName = info.newCharsetName || "";
         this.originalCharsetName = info.originalCharsetName || "";
         this.schema = info.schema || "";
+        this.copy = info.copy;
         if(BI.isNotNull(info.copy)){
             this.oldName = "";
         }
@@ -126,6 +127,10 @@ BI.AddSchemaDataLinkModel = BI.inherit(FR.OB, {
 
     setSchema: function(schema){
         this.schema = schema;
+    },
+    
+    isCopy: function(){
+        return this.copy;  
     },
 
     checkDataLinkName: function(name){

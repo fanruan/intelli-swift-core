@@ -43,6 +43,8 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     
     load: function () {
         this._refreshLoginInfo();
+        this.packageTree.populate();
+        this._onTreeTypeChange();
     },
 
     local: function () {

@@ -22,7 +22,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             comment = BI.i18nText("BI-New_Add_Connection") + "(" + database + ")";
         } else {
             database = this.model.getDatabaseByDriver();
-            comment = BI.i18nText("BI-Modify_Data_Connection") + "(" + database + ")";
+            comment = BI.i18nText(this.model.isCopy() === true ? "BI-Copy_Data_Link" : "BI-Modify_Data_Connection") + "(" + database + ")";
         }
         BI.createWidget({
             type: "bi.label",
