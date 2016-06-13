@@ -18,8 +18,7 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
         BI.AuthorityPackagesTree.superclass._init.apply(this, arguments);
         var self = this;
         this.tree = BI.createWidget({
-            type: "bi.switch_tree",
-            items: BI.Utils.getAllGroupedPackagesTree()
+            type: "bi.switch_tree"
         });
         this.tree.on(BI.SwitchTree.EVENT_CHANGE, function () {
             self.fireEvent(BI.AuthorityPackagesTree.EVENT_CHANGE);
@@ -37,7 +36,7 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
             }],
             hgap: 10
         });
-
+        this.populate();
     },
     
     getSelectType: function () {
@@ -85,7 +84,7 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-
+        this.tree.populate( BI.Utils.getAllGroupedPackagesTree());
     }
 });
 BI.AuthorityPackagesTree.EVENT_TYPE_CHANGE = "AuthorityPackagesTree.EVENT_TYPE_CHANGE";

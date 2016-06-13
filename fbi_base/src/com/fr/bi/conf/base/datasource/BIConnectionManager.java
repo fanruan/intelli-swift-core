@@ -24,7 +24,9 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -182,15 +184,44 @@ public class BIConnectionManager extends XMLFileManager {
     }
 
 
+//    public JSONObject createJSON() throws JSONException {
+//        JSONObject jsonObject = new JSONObject();
+//        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+//        Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
+//
+//        int index = 0;
+//        for (Map.Entry<String, JDBCDatabaseConnection> connectionMap : availableConnection.entrySet()) {
+//            String name = connectionMap.getKey();
+//            JDBCDatabaseConnection c = connectionMap.getValue();
+//            if (c != null) {
+//                if (isMicrosoftAccessDatabase(c)) {
+//                    continue;
+//                }
+//                JSONObject jo = new JSONObject();
+//                jo.put("name", name);
+//                jo.put("driver", c.getDriver());
+//                jo.put("url", c.getURL());
+//                jo.put("user", c.getUser());
+//                jo.put("password", c.getPassword());
+//                jo.put("originalCharsetName", StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
+//                jo.put("newCharsetName", StringUtils.alwaysNotNull(c.getNewCharsetName()));
+//                jo.put("schema", getSchema(name));
+//                jsonObject.put("link" + index++, jo);
+//            }
+//        }
+//
+//        return jsonObject;
+//    }
+
     public JSONObject createJSON() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
 
         int index = 0;
-        for (Map.Entry<String, JDBCDatabaseConnection> connectionMap : availableConnection.entrySet()) {
-            String name = connectionMap.getKey();
-            JDBCDatabaseConnection c = connectionMap.getValue();
+        while (nameIt.hasNext()) {
+            String name = nameIt.next();
+            JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
             if (c != null) {
                 if (isMicrosoftAccessDatabase(c)) {
                     continue;

@@ -49,7 +49,7 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
     }
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 
