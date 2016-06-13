@@ -168,6 +168,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             formatChartRadarStyle();
             formatChartDashboardStyle();
             formatElementAttrs();
+            self.tooltipFormatter !== "" && (config.plotOptions.tooltip.formatter = self.tooltipFormatter);
             if(BI.has(config, "yAxis") && config.yAxis.length > 0){
                 config.yAxis[0].reversed = self.left_y_axis_reversed ? !config.yAxis[0].reversed : config.yAxis[0].reversed;
                 if(config.chartType !== "bar"){
@@ -530,6 +531,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.show_zoom = options.show_zoom || false;
         this.null_continue = options.null_continue;
         this.text_direction = options.text_direction;
+        this.tooltipFormatter = options.tooltipFormatter;
     },
 
     populate: function (items, options, types) {

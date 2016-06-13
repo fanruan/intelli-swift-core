@@ -106,6 +106,10 @@ BI.PartFieldModel = BI.inherit(BI.Widget, {
         return this.isGenerated;
     },
 
+    getRelations: function () {
+        return this.relations;
+    },
+
     populate: function (info) {
         var etlValue = info.tableInfo.etl_value;
         this.reopen = info.reopen;
@@ -113,5 +117,6 @@ BI.PartFieldModel = BI.inherit(BI.Widget, {
         this.tables = info.tableInfo.tables;
         this.old_tables = BI.extend(info.tableInfo, {id: BI.UUID()});
         this.isGenerated = info.isGenerated;
+        this.relations = info.relations;
     }
 });

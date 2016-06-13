@@ -655,7 +655,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     reopen: true,
                     isGenerated: status.isGenerated,
-                    tableInfo: table
+                    tableInfo: table,
+                    relations: self.model.getRelations()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1034,7 +1035,8 @@ BI.ETL = BI.inherit(BI.Widget, {
             info: {
                 reopen: false,
                 isGenerated: false,
-                tableInfo: self.model.getTableById(tId)
+                tableInfo: self.model.getTableById(tId),
+                relations: self.model.getRelations()
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
