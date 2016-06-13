@@ -40,6 +40,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
                 self.model.set("immediateUpdate", true);
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                self.cubeLog.refreshLog(true);
             }
         });
 
@@ -62,6 +63,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
                 if(isAlling === true || isChecking === true || isSingleing === true) {
                     self.immediateButton.setEnable( false );
                     self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                    self.cubeLog.refreshLog(true);
                 } else {
                     self.immediateButton.setEnable(true);
                     self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
@@ -72,9 +74,8 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
 
     _createCheckInterval: function(){
         var self = this;
-        setInterval(function(){
+        this.interval = setInterval(function(){
             self._checkCubeStatus();
-            // self._checkCubeLogStatus();
         }, 5000)
     },
 
@@ -85,15 +86,12 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
     },
 
     _buildLog: function(){
-        var self=this;
         return this.cubeLog = BI.createWidget({
             type: "bi.cube_log"
         })
         
     },
-    // _checkCubeLogStatus: function(){
-    //     this.cubeLog.refresh();
-    // },
+
     refresh: function(){
         this._checkCubeStatus();
         this._createCheckInterval();

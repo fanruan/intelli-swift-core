@@ -429,6 +429,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             if(BI.isEmptyArray(types)){
                 types.push([type]);
             }
+            BI.each(data, function(idx, item){
+                var i = BI.UUID();
+                var type = types[idx];
+                BI.each(item, function(id, it){
+                    type[id] === BICst.WIDGET.ACCUMULATE_AXIS && BI.extend(it, {stack: i});
+                });
+            });
             if(type === BICst.WIDGET.MAP || type === BICst.WIDGET.GIS_MAP){
                 options.geo = {data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)]}
             }

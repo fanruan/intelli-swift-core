@@ -243,7 +243,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.isShowTitleRY2.on(BI.Controller.EVENT_CHANGE, function(){
-            this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
+            this.isSelected() ? self.editTitleRY2.setVisible(true) : self.editTitleRY2.setVisible(false);
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -307,6 +307,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
             height: this.constant.EDITOR_HEIGHT,
             cls: "unit-input",
             value: "0",
+            errorText: BI.i18nText("BI-Please_Enter_Number_From_To_To", -90, 90),
             validationChecker: function(v){
                 return BI.isInteger(v) && v >= -90 && v <= 90;
             }
@@ -652,6 +653,49 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
 
     populate: function(){
         var wId = this.options.wId;
+
+        var view = BI.Utils.getWidgetViewByID(wId);
+        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
+        var titleX = BI.Utils.getWSXAxisTitleByID(wId);
+        var titleRY = BI.Utils.getWSRightYAxisTitleByID(wId);
+        var titleRY2 = BI.Utils.getWSRightYAxis2TitleByID(wId);
+        if(titleLY === ""){
+            BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleLY = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
+        if(titleX === ""){
+            BI.any(view[BICst.REGION.DIMENSION1], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleX = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
+        if(titleRY === ""){
+            BI.any(view[BICst.REGION.TARGET2], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleRY = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
+        if(titleRY2 === ""){
+            BI.any(view[BICst.REGION.TARGET3], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleRY = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
+
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartSyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
@@ -668,10 +712,10 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         this.isShowTitleRY.setSelected(BI.Utils.getWSShowRightYAxisTitleByID(wId));
         this.isShowTitleRY2.setSelected(BI.Utils.getWSShowRightYAxis2TitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
-        this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
-        this.editTitleRY.setValue(BI.Utils.getWSRightYAxisTitleByID(wId));
-        this.editTitleRY2.setValue(BI.Utils.getWSRightYAxis2TitleByID(wId));
-        this.editTitleX.setValue(BI.Utils.getWSXAxisTitleByID(wId));
+        this.editTitleLY.setValue(titleLY);
+        this.editTitleRY.setValue(titleRY);
+        this.editTitleRY2.setValue(titleRY2);
+        this.editTitleX.setValue(titleX);
         this.reversedLY.setSelected(BI.Utils.getWSLeftYAxisReversedByID(wId));
         this.reversedRY.setSelected(BI.Utils.getWSRightYAxisReversedByID(wId));
         this.reversedRY2.setSelected(BI.Utils.getWSRightYAxis2ReversedByID(wId));

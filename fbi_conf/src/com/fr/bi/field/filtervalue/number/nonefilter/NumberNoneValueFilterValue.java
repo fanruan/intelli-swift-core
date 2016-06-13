@@ -24,7 +24,7 @@ public abstract class NumberNoneValueFilterValue extends AbstractFilterValue<Num
     private static final long serialVersionUID = 3099851820106421738L;
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 

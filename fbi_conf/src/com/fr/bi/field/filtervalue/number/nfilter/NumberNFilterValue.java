@@ -43,7 +43,7 @@ public abstract class NumberNFilterValue extends AbstractFilterValue<Number> imp
         return result;
     }
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
     @Override

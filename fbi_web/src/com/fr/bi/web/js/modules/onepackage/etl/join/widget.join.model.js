@@ -295,13 +295,13 @@ BI.JoinModel = BI.inherit(FR.OB, {
             if(self.joinStyle === BICst.ETL_JOIN_STYLE.RIGHT_JOIN){
                 self.joinNames.push({
                     isLeft: false,
-                    name: self._createDistinctName(allTableFields[1][row[1]].field_name),
+                    name: self._createDistinctName(allTableFields[0][row[0]].field_name + "/" + allTableFields[1][row[1]].field_name),
                     column_name: allTableFields[1][row[1]].field_name
                 })
             } else {
                 self.joinNames.push({
                     isLeft: true,
-                    name: self._createDistinctName(allTableFields[0][row[0]].field_name),
+                    name: self._createDistinctName(allTableFields[0][row[0]].field_name + "/" + allTableFields[1][row[1]].field_name),
                     column_name: allTableFields[0][row[0]].field_name
                 })
             }

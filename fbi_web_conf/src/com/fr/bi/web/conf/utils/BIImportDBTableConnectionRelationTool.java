@@ -40,6 +40,8 @@ public class BIImportDBTableConnectionRelationTool {
         return sources;
     }
 
+
+
     public Map<String, Set<BIDBTableField>> getAllRelationOfConnection(Connection conn, String schemaName, String tableName) {
         return BIDBUtils.getAllRelationOfConnection(conn, schemaName, tableName);
     }

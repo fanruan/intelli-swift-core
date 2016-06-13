@@ -166,10 +166,82 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         dims[d].used = false;
                     });
                     var type = this.get("type");
+                    //饼图和仪表盘有多个指标的时候，维度框不勾选且灰化= =
                     if(type === BICst.WIDGET.PIE || type === BICst.WIDGET.DASHBOARD){
                         BI.each(view[BICst.REGION.DIMENSION1], function(i, d){
                             dims[d].used = false;
                         });
+                    }
+                    //对比柱状/面积/条形图,范围面积,多值轴组合,瀑布,气泡,力学,散点,漏斗
+                    if(type === BICst.WIDGET.COMPARE_AXIS || type === BICst.WIDGET.COMPARE_AREA ||
+                        type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART||
+                        type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_AXIS||
+                        type === BICst.WIDGET.BUBBLE || type === BICst.WIDGET.FORCE_BUBBLE ||
+                        type === BICst.WIDGET.SCATTER){
+                        var preTar1Select = [], preTar2Select = [], preTar3Select = [];
+                        BI.each(preDims, function (dId, dim) {
+                            if (dim.used === true) {
+                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET1) {
+                                    preTar1Select.push(dId);
+                                }
+                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET2) {
+                                    preTar2Select.push(dId);
+                                }
+                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET3) {
+                                    preTar3Select.push(dId);
+                                }
+                            }
+                        });
+                        var tar1Change = false, tar2Change = false, tar3Change = false;
+                        BI.each(dims, function (dId, dim) {
+                            var rType = BI.Utils.getRegionTypeByDimensionID(dId);
+                            if (dim.used === true) {
+                                if (rType === BICst.REGION.TARGET1) {
+                                    if(!preTar1Select.contains(dId)){
+                                        //添加维度
+                                        if(BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims)){
+                                            dims[dId].used = false;
+                                        }else{
+                                            //维度间切换
+                                            tar1Change = true;
+                                        }
+                                    }
+                                }
+                                if (rType === BICst.REGION.TARGET2) {
+                                    if(!preTar2Select.contains(dId)){
+                                        if(BI.isNotEmptyArray(preTar2Select) && BI.size(dims) !== BI.size(preDims)){
+                                            dims[dId].used = false;
+                                        }else{
+                                            tar2Change = true;
+                                        }
+                                    }
+                                }
+                                if (rType === BICst.REGION.TARGET3) {
+                                    if(!preTar3Select.contains(dId)){
+                                        if(BI.isNotEmptyArray(preTar3Select) && BI.size(dims) !== BI.size(preDims)){
+                                            dims[dId].used = false;
+                                        }else{
+                                            tar3Change = true;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        if (tar1Change === true) {
+                            BI.each(preTar1Select, function (i, dId) {
+                                dims[dId].used = false;
+                            });
+                        }
+                        if (tar2Change === true) {
+                            BI.each(preTar2Select, function (i, dId) {
+                                dims[dId].used = false;
+                            })
+                        }
+                        if (tar3Change === true) {
+                            BI.each(preTar3Select, function (i, dId) {
+                                dims[dId].used = false;
+                            })
+                        }
                     }
                 }
                 this.set("dimensions", dims);
@@ -203,6 +275,32 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         }
                     }
                 });
+                if(wType === BICst.WIDGET.COMPARE_AXIS || wType === BICst.WIDGET.COMPARE_AREA ||
+                    wType === BICst.WIDGET.COMPARE_BAR || wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART||
+                    wType === BICst.WIDGET.RANGE_AREA || wType === BICst.WIDGET.FALL_AXIS||
+                    wType === BICst.WIDGET.BUBBLE || wType === BICst.WIDGET.FORCE_BUBBLE ||
+                    wType === BICst.WIDGET.SCATTER){
+                    BI.each(view, function (region, dims) {
+                        if (region >= BICst.REGION.TARGET1) {
+                            var adds = [], isPreSelect = false;
+                            BI.each(dims, function(i, dim){
+                                if(BI.isNotNull(preView[region]) && !preView[region].contains(dim)){
+                                    adds.push(dim);
+                                }
+                            });
+                            if(adds.length > 0) {
+                                BI.each(preView[region], function (i, dId) {
+                                    BI.Utils.isDimensionUsable(dId) && (isPreSelect = true);
+                                });
+                                if (isPreSelect === true) {
+                                    BI.each(adds, function(i, add){
+                                        dimensions[add].used = false;
+                                    });
+                                }
+                            }
+                        }
+                    });
+                }
                 this.set("dimensions", dimensions);
 
             }

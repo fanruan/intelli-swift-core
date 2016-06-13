@@ -2236,6 +2236,9 @@ public class ResourceHelper {
                 //时间区间控件
                 "com/fr/bi/web/js/widget/timeinterval/timeinterval.js",
 
+                "com/fr/bi/web/js/widget/timesetting/timesetting.day.js",
+                "com/fr/bi/web/js/widget/timesetting/timesetting.hour.js",
+
                 //选择字段树
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level0.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level1.js",

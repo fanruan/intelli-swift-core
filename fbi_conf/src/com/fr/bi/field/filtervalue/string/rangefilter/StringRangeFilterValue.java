@@ -56,7 +56,7 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
     }
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 
@@ -157,7 +157,7 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
      */
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
-        if (valueSet.getValues().isEmpty()) {
+        if (valueSet.getValues() == null || valueSet.getValues().isEmpty()) {
             return null;
         }
         return createFilterIndexByRelations(dimension.getRelationList(), dimension.createNoneSortGroupValueMapGetter(target, loader),

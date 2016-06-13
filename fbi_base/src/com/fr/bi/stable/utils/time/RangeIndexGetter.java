@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.utils.BICollectionUtils;
 
 /**
  * Created by daniel on 2016/6/8.
@@ -25,10 +26,34 @@ public class RangeIndexGetter {
     public GroupValueIndex createRangeIndex(BIDay start, BIDay end) {
         GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
         if(start == null){
-            start = new BIDay(Integer.parseInt(yearMap.firstKey().toString()), Integer.parseInt(monthMap.firstKey().toString()), Integer.parseInt(dayMap.firstKey().toString()));
+            Number firstYear = (Number)yearMap.firstKey();
+            Number firstMonth = (Number) monthMap.firstKey();
+            Number firstDay = (Number)dayMap.firstKey();
+            if(firstYear == null) {
+                firstYear = 0;
+            }
+            if(firstMonth == null) {
+                firstMonth = 0;
+            }
+            if(firstDay == null) {
+                firstDay = 0;
+            }
+            start = new BIDay(Integer.parseInt(firstYear.toString()), Integer.parseInt(firstMonth.toString()), Integer.parseInt(firstDay.toString()));
         }
         if(end == null){
-            end = new BIDay(Integer.parseInt(yearMap.lastKey().toString()), Integer.parseInt(monthMap.lastKey().toString()), Integer.parseInt(dayMap.lastKey().toString()));
+            Number lastYear = (Number)BICollectionUtils.lastUnNullKey(yearMap);
+            Number lastMonth = (Number) BICollectionUtils.lastUnNullKey(monthMap);
+            Number lastDay = (Number)BICollectionUtils.lastUnNullKey(dayMap);
+            if(lastYear == null) {
+                lastYear = 0;
+            }
+            if(lastMonth == null) {
+                lastMonth = 0;
+            }
+            if(lastDay == null) {
+                lastDay = 0;
+            }
+            end = new BIDay(Integer.parseInt(lastYear.toString()), Integer.parseInt(lastMonth.toString()), Integer.parseInt(lastDay.toString()));
         }
         if (start.compareTo(end) <= 0){
             if(start.getYear() != end.getYear()) {
@@ -52,7 +77,7 @@ public class RangeIndexGetter {
                     BIDay newStart = new BIDay(end.getYear(), end.getMonth(), 0);
                     gvi.or(createRangeIndex(newStart, end));
                 }
-            } else if(start.getDay() != end.getDay()) {
+            } else if(start.getDay() <= end.getDay()) {
                 //日
                 GroupValueIndex year = yearMap.getGroupIndex(new Integer[]{start.getYear()})[0];
                 if(year != null) {

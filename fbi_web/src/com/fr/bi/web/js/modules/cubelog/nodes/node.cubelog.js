@@ -14,7 +14,8 @@ BI.CubeLogNode = BI.inherit(BI.Widget, {
             second: 0,
             id: "",
             pId: "",
-            open: false
+            open: false,
+            level: 0
         });
     },
 
@@ -24,7 +25,7 @@ BI.CubeLogNode = BI.inherit(BI.Widget, {
         this.node = BI.createWidget({
             type: "bi.triangle_group_node",
             height: 40,
-            element: this.element,
+            // element: this.element,
             id: o.id,
             pId: o.pId,
             open: o.open,
@@ -33,6 +34,17 @@ BI.CubeLogNode = BI.inherit(BI.Widget, {
         });
         this.node.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+        });
+        BI.createWidget({
+            type: "bi.htape",
+            element: this.element,
+            items: [{
+                el: BI.createWidget(),
+                width: o.level * 10
+            }, {
+                el: this.node
+            }],
+            height: 40
         });
     },
 

@@ -167,13 +167,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         return this.dimensionsManager;
     },
 
-    _createStyle: function () {
-        return BI.createWidget({
-            type: "bi.label",
-            text: "Style"
-        });
-    },
-
 
     /**
      * 图表样式设置
@@ -185,8 +178,10 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         this.chartSetting = BI.createWidget({
             type: "bi.chart_setting",
             chartType: this.model.get("type"),
-            settings: this.model.get("settings")
+            settings: this.model.get("settings"),
+            wId: this.model.get("id")
         });
+        this.chartSetting.populate();
         this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
             self.model.set("settings", BI.extend(self.model.get("settings"), v));
         });

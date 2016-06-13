@@ -61,7 +61,7 @@ public abstract class DateRangeFilterValue extends AbstractFilterValue<Long> imp
     }
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 
