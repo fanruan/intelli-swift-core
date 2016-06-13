@@ -33,7 +33,7 @@ BIConf.View = BI.inherit(BI.View, {
             type: "bi.label",
             cls: "left-nav-title",
             textAlign: BI.HorizontalAlign.Left,
-            text: "FineBI Service",
+            text: BI.i18nText("BI-Data_Setting"),
             height: 60,
             hgap: 20
         })
