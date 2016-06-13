@@ -72,6 +72,11 @@ BI.TriangleGroupNode = BI.inherit(BI.NodeButton, {
     setOpened: function (v) {
         BI.TriangleGroupNode.superclass.setOpened.apply(this, arguments);
         this.checkbox.setSelected(v);
+    },
+
+    setText: function(text){
+        BI.TriangleGroupNode.superclass.setText.apply(this, arguments);
+        this.text.setText(text);
     }
 });
 

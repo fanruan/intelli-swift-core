@@ -42,7 +42,7 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
                 o.choosePath = relations;
                 self.pathShow.setValue(o.choosePath, o.dId);
                 self.tabWidget.setSelect(v);
-                self.fireEvent(BI.DetailTablePathSettingTab.EVENT_CHANGE, value)
+                self.fireEvent(BI.DetailTablePathSettingTab.EVENT_CHANGE, relations)
             } else {
                 self.tabWidget.setSelect(v);
             }

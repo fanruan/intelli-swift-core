@@ -29,7 +29,7 @@ BI.CubeLogNode = BI.inherit(BI.Widget, {
             id: o.id,
             pId: o.pId,
             open: o.open,
-            text: o.text + ": " + ((o.second >= 1000 ? Math.floor(o.second / 1000) : o.second) + (o.second >= 1000 ? "秒" : "毫秒")),
+            text: this._formatText(o.text, o.second),
             value: o.value
         });
         this.node.on(BI.Controller.EVENT_CHANGE, function () {
@@ -48,8 +48,14 @@ BI.CubeLogNode = BI.inherit(BI.Widget, {
         });
     },
 
-    populate: function () {
+    _formatText: function (text, second) {
+        return text + ": " + ((second >= 1000 ? Math.floor(second / 1000) : second) + (second >= 1000 ? "秒" : "毫秒"));
+    },
 
+    populate: function (node) {
+        if (BI.isPlainObject(node)) {
+            this.node.setText(this._formatText(node.text, node.second));
+        }
     },
 
     isSelected: function () {

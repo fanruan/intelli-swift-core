@@ -376,14 +376,12 @@ public class SingleUserBIRecord implements BIRecord {
         res.put("tables", table_log);
         res.put("connections", connection_log);
         res.put("readingdb", reading_log);
-        JSONArray tableInfo = new JSONArray();
+        JSONObject tableInfo = new JSONObject();
         if (null!=cubeTableSourceSet) {
             for (CubeTableSource cubeTableSource : cubeTableSourceSet) {
-                JSONObject jsonObject = new JSONObject();
                 Set<CubeTableSource> tableSourceSet = new HashSet<CubeTableSource>();
                 tableSourceSet.add(cubeTableSource);
-                jsonObject.put(cubeTableSource.getTableName(), cubeTableSource.getSelfFields(tableSourceSet));
-                tableInfo.put(jsonObject);
+                tableInfo.put(cubeTableSource.getTableName(), cubeTableSource.getSelfFields(tableSourceSet).size());
             }
         }
         res.put("allRelationInfo",this.biTableSourceRelationSet);

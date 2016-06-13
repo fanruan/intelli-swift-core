@@ -5,41 +5,43 @@
  */
 BI.PartFieldModel = BI.inherit(BI.Widget, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.PartFieldModel.superclass._defaultConfig.apply(this, arguments), {
             info: {}
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.PartFieldModel.superclass._init.apply(this, arguments);
         this.populate(this.options.info);
     },
 
-    getDefaultTableName: function(){
+    getDefaultTableName: function () {
         var self = this;
-        if(BI.isNotNull(this.old_tables.table_name)){
+        if (BI.isNotNull(this.old_tables.table_name)) {
             return this.old_tables.table_name + "_partial";
         }
         var tables = this.tables;
         var tableName = [];
-        function getDefaultName(tables){
+
+        function getDefaultName(tables) {
             //只取tables[0]
-            if(BI.isNotNull(tables[0].etl_type)){
+            if (BI.isNotNull(tables[0].etl_type)) {
                 tableName.push("_" + tables[0].etl_type);
                 getDefaultName(tables[0].tables);
             } else {
                 tableName.push(tables[0].table_name);
             }
         }
+
         getDefaultName(tables);
         //反向遍历
         tableName.reverse();
         var tableNameString = "";
-        BI.each(tableName, function(i, name){
+        BI.each(tableName, function (i, name) {
             tableNameString += name;
         });
-        if(self.reopen === true){
+        if (self.reopen === true) {
             tableNameString += "_partial";
         } else {
             tableNameString = tableNameString + "_" + self.old_tables.etl_type + "_partial";
@@ -50,13 +52,13 @@ BI.PartFieldModel = BI.inherit(BI.Widget, {
     /**
      * 预览时所需数据参数
      */
-    getPreTableStructure: function(){
+    getPreTableStructure: function () {
         return this.old_tables;
     },
 
-    getTableStructure: function(){
+    getTableStructure: function () {
         var tables = {};
-        if(this.reopen === true){
+        if (this.reopen === true) {
             tables = this.tables[0];
         } else {
             tables = this.old_tables;
@@ -64,13 +66,13 @@ BI.PartFieldModel = BI.inherit(BI.Widget, {
         return tables;
     },
 
-    getTablesDetailInfoByTables: function(callback){
-        BI.Utils.getTablesDetailInfoByTables([this.getTableStructure()], function(data){
+    getTablesDetailInfoByTables: function (callback) {
+        BI.Utils.getTablesDetailInfoByTables([this.getTableStructure()], function (data) {
             callback(data);
         });
     },
 
-    setFieldState: function(values){
+    setFieldState: function (values) {
         var fieldState = [];
         BI.each(values["notselectField"], function (idx, value) {
             fieldState.push({
@@ -85,6 +87,10 @@ BI.PartFieldModel = BI.inherit(BI.Widget, {
             });
         });
         this.fields_state = fieldState;
+    },
+
+    getAllFields: function () {
+        return BI.deepClone(this.old_tables.fields);
     },
 
     getFieldState: function () {
@@ -102,7 +108,7 @@ BI.PartFieldModel = BI.inherit(BI.Widget, {
         }
     },
 
-    isCubeGenerated: function(){
+    isCubeGenerated: function () {
         return this.isGenerated;
     },
 

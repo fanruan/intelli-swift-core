@@ -252,15 +252,24 @@ BI.Circle = BI.inherit(BI.Widget, {
                                     text: field
                                 });
                             });
+
+                            var fieldTypes = [];
+                            BI.each(self.model.getAllFields(), function (i, fs) {
+                                BI.each(fs, function (j, field) {
+                                    fieldTypes.push(field.field_type);
+                                });
+                            });
+
                             BI.each(values, function(i, value){
+                                var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
                                 BI.each(value, function(j, v){
                                     if(BI.isNotNull(items[j])){
                                         items[j].push({
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         });
                                     } else {
                                         items.push([{
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         }]);
                                     }
                                 });
@@ -321,6 +330,15 @@ BI.Circle = BI.inherit(BI.Widget, {
 
         return this.center;
     },
+
+    _formatDate: function (d) {
+        if (BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
+        var date = new Date(BI.parseInt(d));
+        return date.print("%Y/%X/%d %H:%M:%S")
+    },
+
 
     populate: function(info){
         var self = this;

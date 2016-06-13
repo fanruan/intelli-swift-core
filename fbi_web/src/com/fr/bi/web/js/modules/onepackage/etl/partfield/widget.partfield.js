@@ -28,14 +28,14 @@ BI.PartField = BI.inherit(BI.Widget, {
         SHOW_PREVIEW_TABLE: 3
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.PartField.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-etl-selectpartfield",
             info: {}
         });
     },
 
-    _init: function(){
+    _init: function () {
         BI.PartField.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.PartFieldModel({
@@ -63,24 +63,24 @@ BI.PartField = BI.inherit(BI.Widget, {
         this.populate(o.info);
     },
 
-    _checkMasker: function(){
-        if(BI.isNotNull(this.previewLoadingMasker)){
+    _checkMasker: function () {
+        if (BI.isNotNull(this.previewLoadingMasker)) {
             this.previewLoadingMasker.destroy();
             this.previewLoadingMasker = null;
         }
-        if(BI.isNotNull(this.loadingMasker)){
+        if (BI.isNotNull(this.loadingMasker)) {
             this.loadingMasker.destroy();
             this.loadingMasker = null;
         }
     },
 
 
-    _checkStatus: function(){
+    _checkStatus: function () {
         var fieldState = this.model.getFieldState();
-        var result = BI.filter(fieldState, function(idx, item){
+        var result = BI.filter(fieldState, function (idx, item) {
             return item.checked === true;
         });
-        if(result.length === 0 || result.length === fieldState.length){
+        if (result.length === 0 || result.length === fieldState.length) {
             this.save.setEnable(false);
             this.save.setTitle(BI.i18nText("BI-Please_Select_Needed_Field"));
             return;
@@ -98,7 +98,7 @@ BI.PartField = BI.inherit(BI.Widget, {
         this.displayResultArea.setSelect(this.constants.SHOW_PREVIEW_TIP);
     },
 
-    _buildNorth: function(){
+    _buildNorth: function () {
         return BI.createWidget({
             type: "bi.left",
             cls: "part-field-north",
@@ -112,29 +112,29 @@ BI.PartField = BI.inherit(BI.Widget, {
         })
     },
 
-    _buildSouth: function(){
+    _buildSouth: function () {
         var self = this;
 
         var cancel = BI.createWidget({
-            type:"bi.button",
-            level:"ignore",
-            text:BI.i18nText("BI-Cancel"),
+            type: "bi.button",
+            level: "ignore",
+            text: BI.i18nText("BI-Cancel"),
             height: this.constants.PART_FIELD_BUTTON_HEIGHT
         });
 
         this.save = BI.createWidget({
-            type:"bi.button",
-            text:BI.i18nText("BI-Save"),
+            type: "bi.button",
+            text: BI.i18nText("BI-Save"),
             tipType: "warning",
             height: this.constants.PART_FIELD_BUTTON_HEIGHT
         });
 
-        cancel.on(BI.Button.EVENT_CHANGE,function(){
+        cancel.on(BI.Button.EVENT_CHANGE, function () {
             self._checkMasker()
             self.fireEvent(BI.PartField.EVENT_CANCEL);
         });
 
-        this.save.on(BI.Button.EVENT_CHANGE,function(){
+        this.save.on(BI.Button.EVENT_CHANGE, function () {
             self._checkMasker();
             self.fireEvent(BI.PartField.EVENT_SAVE, self.model.getValue());
         });
@@ -152,13 +152,13 @@ BI.PartField = BI.inherit(BI.Widget, {
         });
     },
 
-    _buildWest: function(){
+    _buildWest: function () {
         var self = this;
         this.fieldList = BI.createWidget({
             type: "bi.select_part_field_list"
         });
 
-        this.fieldList.on(BI.SelectPartFieldList.EVENT_CHANGE,function(){
+        this.fieldList.on(BI.SelectPartFieldList.EVENT_CHANGE, function () {
             var value = self.fieldList.getValue();
             value = value.type === BI.ButtonGroup.CHOOSE_TYPE_MULTI ? value.value : value.assist;
             self.model.setFieldState({
@@ -176,14 +176,14 @@ BI.PartField = BI.inherit(BI.Widget, {
                     cls: "part-field-table-name",
                     items: [{
                         type: "bi.absolute",
-                        items:[{
-                            el:{
+                        items: [{
+                            el: {
                                 type: "bi.label",
                                 cls: "table-name-text",
                                 textAlign: "left",
                                 textHeight: this.constants.PART_FIELD_EDITOR_HEIGHT,
                                 width: this.constants.PART_FIELD_TABLE_NAME_WIDTH,
-                                text:BI.i18nText("BI-Table_Name") + ":"
+                                text: BI.i18nText("BI-Table_Name") + ":"
                             },
                             width: this.constants.PART_FIELD_TABLE_NAME_WIDTH,
                             top: this.constants.PART_FIELD_GAP_TEN,
@@ -195,7 +195,7 @@ BI.PartField = BI.inherit(BI.Widget, {
                         type: "bi.absolute",
                         items: [{
                             el: {
-                                type:"bi.label",
+                                type: "bi.label",
                                 height: this.constants.PART_FIELD_EDITOR_HEIGHT,
                                 width: this.constants.PART_FIELD_EDITOR_WIDTH,
                                 cls: "part-field-table-name-editor",
@@ -224,7 +224,7 @@ BI.PartField = BI.inherit(BI.Widget, {
                         top: 10,
                         left: 10,
                         right: 10,
-                        bottom:10
+                        bottom: 10
                     }]
                 }
             }],
@@ -234,7 +234,7 @@ BI.PartField = BI.inherit(BI.Widget, {
         return this.west;
     },
 
-    _buildCenter: function(){
+    _buildCenter: function () {
         var self = this;
         this.displayResultArea = BI.createWidget({
             type: "bi.tab",
@@ -242,8 +242,8 @@ BI.PartField = BI.inherit(BI.Widget, {
             cardCreator: BI.bind(_createTabs, this)
         });
 
-        function _createTabs(v){
-            switch(v) {
+        function _createTabs(v) {
+            switch (v) {
                 case this.constants.SHOW_PREVIEW_TIP:
                     return BI.createWidget({
                         type: "bi.center_adapt",
@@ -260,8 +260,8 @@ BI.PartField = BI.inherit(BI.Widget, {
                         height: this.constants.PREVIEW_BUTTON_HEIGHT,
                         width: this.constants.PREVIEW_BUTTON_WIDTH
                     });
-                    previewButton.on(BI.Button.EVENT_CHANGE, function(){
-                        if(!self.previewLoadingMasker){
+                    previewButton.on(BI.Button.EVENT_CHANGE, function () {
+                        if (!self.previewLoadingMasker) {
                             self.previewLoadingMasker = BI.createWidget({
                                 type: "bi.loading_mask",
                                 masker: self.center,
@@ -274,23 +274,32 @@ BI.PartField = BI.inherit(BI.Widget, {
                                 }
                             })
                         }
-                        BI.Utils.getPreviewDataByTableAndFields(self.model.getPreTableStructure(), [], function(data){
+                        BI.Utils.getPreviewDataByTableAndFields(self.model.getPreTableStructure(), [], function (data) {
                             var fields = data.fields, values = data.value;
                             var header = [], items = [];
-                            BI.each(fields, function(i, field){
+                            BI.each(fields, function (i, field) {
                                 header.push({
                                     text: field
                                 });
                             });
-                            BI.each(values, function(i, value){
-                                BI.each(value, function(j, v){
-                                    if(BI.isNotNull(items[j])){
+
+                            var fieldTypes = [];
+                            BI.each(self.model.getAllFields(), function (i, fs) {
+                                BI.each(fs, function (j, field) {
+                                    fieldTypes.push(field.field_type);
+                                });
+                            });
+
+                            BI.each(values, function (i, value) {
+                                var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
+                                BI.each(value, function (j, v) {
+                                    if (BI.isNotNull(items[j])) {
                                         items[j].push({
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         });
                                     } else {
                                         items.push([{
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         }]);
                                     }
                                 });
@@ -343,7 +352,15 @@ BI.PartField = BI.inherit(BI.Widget, {
         return this.center;
     },
 
-    populate: function(info){
+    _formatDate: function (d) {
+        if (BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
+        var date = new Date(BI.parseInt(d));
+        return date.print("%Y/%X/%d %H:%M:%S")
+    },
+
+    populate: function (info) {
         var self = this;
         this.model.populate(info);
         this.loadingMasker = BI.createWidget({
@@ -361,15 +378,15 @@ BI.PartField = BI.inherit(BI.Widget, {
         //刷新列表
         var states = this.model.getFieldState();
         var notselectedValue = [];
-        BI.each(states, function(idx, state){
-            if(state["checked"] === false){
+        BI.each(states, function (idx, state) {
+            if (state["checked"] === false) {
                 notselectedValue.push(state["field_name"]);
             }
         });
         this._checkStatus();
 
         var fields = [];
-        self.model.getTablesDetailInfoByTables(function(data){
+        self.model.getTablesDetailInfoByTables(function (data) {
             fields = data[0].fields;
             fields = fields[self.constants.PART_FIELD_TYPE_STRING].concat(fields[self.constants.PART_FIELD_TYPE_NUMBER]).concat(fields[self.constants.PART_FIELD_TYPE_DATE]);
             self.fieldList.populate(fields);
@@ -380,7 +397,7 @@ BI.PartField = BI.inherit(BI.Widget, {
 
         //刷新右侧预览区域
         var isGenerated = this.model.isCubeGenerated();
-        if(BI.isNotNull(isGenerated) && isGenerated === true){
+        if (BI.isNotNull(isGenerated) && isGenerated === true) {
             this.displayResultArea.setSelect(this.constants.SHOW_PREVIEW_BUTTON);
         } else {
             this.displayResultArea.setSelect(this.constants.SHOW_PREVIEW_TIP);

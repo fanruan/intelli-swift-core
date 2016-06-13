@@ -5,41 +5,43 @@
  */
 BI.ConvertModel = BI.inherit(BI.Widget, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.ConvertModel.superclass._defaultConfig.apply(this, arguments), {
             info: {}
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.ConvertModel.superclass._init.apply(this, arguments);
         this.populate(this.options.info);
     },
 
-    getDefaultTableName: function(){
+    getDefaultTableName: function () {
         var self = this;
-        if(BI.isNotNull(this.old_tables.table_name)){
+        if (BI.isNotNull(this.old_tables.table_name)) {
             return this.old_tables.table_name + "_convert";
         }
         var tables = this.tables;
         var tableName = [];
-        function getDefaultName(tables){
+
+        function getDefaultName(tables) {
             //只取tables[0]
-            if(BI.isNotNull(tables[0].etl_type)){
+            if (BI.isNotNull(tables[0].etl_type)) {
                 tableName.push("_" + tables[0].etl_type);
                 getDefaultName(tables[0].tables);
             } else {
                 tableName.push(tables[0].table_name);
             }
         }
+
         getDefaultName(tables);
         //反向遍历
         tableName.reverse();
         var tableNameString = "";
-        BI.each(tableName, function(i, name){
+        BI.each(tableName, function (i, name) {
             tableNameString += name;
         });
-        if(self.reopen === true){
+        if (self.reopen === true) {
             tableNameString += "_convert";
         } else {
             tableNameString = tableNameString + "_" + self.old_tables.etl_type + "_convert";
@@ -50,23 +52,23 @@ BI.ConvertModel = BI.inherit(BI.Widget, {
     /**
      * 预览时所需数据参数
      */
-    getPreTableStructure: function(){
+    getPreTableStructure: function () {
         return this.old_tables;
     },
 
-    getId: function(){
+    getId: function () {
         return this.id;
     },
 
-    getTablesDetailInfoByTables: function(callback){
-        BI.Utils.getTablesDetailInfoByTables([this.getTableStructure()], function(data){
+    getTablesDetailInfoByTables: function (callback) {
+        BI.Utils.getTablesDetailInfoByTables([this.getTableStructure()], function (data) {
             callback(data);
         });
     },
 
-    getTableStructure: function(){
+    getTableStructure: function () {
         var tables = {};
-        if(this.reopen === true){
+        if (this.reopen === true) {
             tables = this.tables[0];
         } else {
             tables = this.old_tables;
@@ -74,35 +76,39 @@ BI.ConvertModel = BI.inherit(BI.Widget, {
         return tables;
     },
 
-    setLCValue: function(value){
+    setLCValue: function (value) {
         this.lc_values = value;
     },
 
-    getLCValue: function(){
+    getLCValue: function () {
         return BI.clone(this.lc_values);
     },
 
-    setGroupName: function(value){
+    setGroupName: function (value) {
         this.group_name = value;
     },
 
-    getGroupName: function(){
+    getGroupName: function () {
         return this.group_name;
     },
 
-    setColumns: function(value){
+    getAllFields: function () {
+        return BI.deepClone(this.old_tables.fields);
+    },
+
+    setColumns: function (value) {
         this.columns = value;
     },
 
-    getColumns: function(){
+    getColumns: function () {
         return BI.clone(this.columns);
     },
 
-    setLCName: function(value){
+    setLCName: function (value) {
         this.lc_name = value;
     },
 
-    getLCName: function(){
+    getLCName: function () {
         return this.lc_name;
     },
 
@@ -111,24 +117,24 @@ BI.ConvertModel = BI.inherit(BI.Widget, {
         var tId = this.id, translations = this.getTranslations();
 
         var transText = [], text = [];
-        var assertArray = function(array){
-            if(BI.isEmpty(array[1])){
+        var assertArray = function (array) {
+            if (BI.isEmpty(array[1])) {
                 array[1] = array[0];
             }
             return array;
         };
 
-        BI.each(this.getLCValue(), function(idx, lc){
+        BI.each(this.getLCValue(), function (idx, lc) {
             lc = assertArray(lc);
-            BI.each(self.getColumns(), function(id,co){
+            BI.each(self.getColumns(), function (id, co) {
                 co = assertArray(co);
                 transText.push(lc[1] + "-" + co[1]);
                 text.push(lc[0] + "-" + co[0]);
             });
         });
 
-        BI.each(transText, function(idx, name){
-            if(!BI.contains(text, name)){
+        BI.each(transText, function (idx, name) {
+            if (!BI.contains(text, name)) {
                 translations[tId + text[idx]] = name;
             }
         });
@@ -147,11 +153,11 @@ BI.ConvertModel = BI.inherit(BI.Widget, {
         };
     },
 
-    getTranslations: function(){
+    getTranslations: function () {
         return BI.deepClone(this.translations);
     },
 
-    isCubeGenerated: function(){
+    isCubeGenerated: function () {
         return this.isGenerated;
     },
 
