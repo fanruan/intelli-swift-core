@@ -77,7 +77,7 @@ public class RangeIndexGetter {
                     BIDay newStart = new BIDay(end.getYear(), end.getMonth(), 0);
                     gvi.or(createRangeIndex(newStart, end));
                 }
-            } else if(start.getDay() != end.getDay()) {
+            } else if(start.getDay() <= end.getDay()) {
                 //日
                 GroupValueIndex year = yearMap.getGroupIndex(new Integer[]{start.getYear()})[0];
                 if(year != null) {

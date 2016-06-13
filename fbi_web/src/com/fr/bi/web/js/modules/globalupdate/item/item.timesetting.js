@@ -57,17 +57,17 @@ BI.TimeSettingItem = BI.inherit(BI.Widget, {
         this.frequency.setValue(o.frequency);
 
         this.day = BI.createWidget({
-            //type: "bi.day_time_setting"
+            type: "bi.day_time_setting"
         });
-        //this.day.on(BI.DayTimeSetting.EVENT_CHANGE, function(){
-        //    self.options.onSettingChange();
-        //});
+        this.day.on(BI.DayTimeSetting.EVENT_CHANGE, function(){
+           self.options.onSettingChange();
+        });
         this.hour = BI.createWidget({
-            //type: "bi.hour_time_setting"
+            type: "bi.hour_time_setting"
         });
-        //this.hour.on(BI.HourTimeSetting.EVENT_CHANGE, function(){
-        //    self.options.onSettingChange();
-        //});
+        this.hour.on(BI.HourTimeSetting.EVENT_CHANGE, function(){
+           self.options.onSettingChange();
+        });
         if(o.frequency === BICst.UPDATE_FREQUENCY.EVER_MONTH) {
             this.day.setVisible(true);
             this.hour.setVisible(false);

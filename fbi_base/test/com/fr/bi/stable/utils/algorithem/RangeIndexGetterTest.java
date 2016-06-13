@@ -88,6 +88,14 @@ public class RangeIndexGetterTest extends TestCase {
                 }
             }
         });
+        int count = 0;
+        for(int i = 0; i < dates.length; i++) {
+            long d = createDay(dates[i]).getTime();
+            if((s== null || d >= s.getTime() )&& (e== null || d <= e.getTime())) {
+                count++;
+            }
+        }
+        assertEquals(gvi.getRowsCountWithData(), count);
     }
 
 
@@ -109,6 +117,21 @@ public class RangeIndexGetterTest extends TestCase {
         CubeTreeMap<Integer> day = buildMap(dates, Calendar.DAY_OF_MONTH);
         int start = 5;
         int end = 6;
+        RangeIndexGetter getter = new RangeIndexGetter(year, month, day);
+        testResult(getter, dates, start, end);
+    }
+
+
+    public void testSameDay() {
+        long[] dates = new long[]{1428439009380L, 1443466793195L,
+                1379916772666L, 1407824913203L, 1458362238604L,
+                1380025029390L, 1423088932354L, 1465132082249L,
+                1385897551991L, 1384982841078L};
+        CubeTreeMap<Integer> year = buildMap(dates, Calendar.YEAR);
+        CubeTreeMap<Integer> month = buildMap(dates, Calendar.MONTH);
+        CubeTreeMap<Integer> day = buildMap(dates, Calendar.DAY_OF_MONTH);
+        int start = 5;
+        int end = 5;
         RangeIndexGetter getter = new RangeIndexGetter(year, month, day);
         testResult(getter, dates, start, end);
     }

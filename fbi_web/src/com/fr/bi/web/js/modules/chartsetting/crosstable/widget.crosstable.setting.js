@@ -261,20 +261,20 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }],
                 lgap: 5
-            }, {
-                type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Page_Max_Col"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.maxCol],
-                    width: this.constant.EDITOR_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: 5
+            // }, {
+            //     type: "bi.vertical_adapt",
+            //     items: [{
+            //         type: "bi.label",
+            //         text: BI.i18nText("BI-Page_Max_Col"),
+            //         cls: "attr-names",
+            //         height: this.constant.SINGLE_LINE_HEIGHT
+            //     }, {
+            //         type: "bi.center_adapt",
+            //         items: [this.maxCol],
+            //         width: this.constant.EDITOR_WIDTH,
+            //         height: this.constant.SINGLE_LINE_HEIGHT
+            //     }],
+            //     lgap: 5
             }],
             hgap: this.constant.SIMPLE_H_GAP
         });

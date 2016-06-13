@@ -15,6 +15,7 @@ BI.AddDataLinkModel = BI.inherit(FR.OB, {
         this.password = info.password || "";
         this.newCharsetName = info.newCharsetName || "";
         this.originalCharsetName = info.originalCharsetName || "";
+        this.copy = info.copy;
         if(BI.isNotNull(info.copy)){
             this.oldName = "";
         }
@@ -34,7 +35,7 @@ BI.AddDataLinkModel = BI.inherit(FR.OB, {
 
     getDatabaseKey: function(){
         var self = this;
-        var databaseKey = "";
+        var databaseKey = "OTHERS";
         var database = this.getDatabase();
         if(BI.isNotNull(database)){
             BI.some(BICst.DATABASE, function(key, value){
@@ -117,6 +118,10 @@ BI.AddDataLinkModel = BI.inherit(FR.OB, {
 
     setOriginalCharsetName: function(name){
         this.originalCharsetName = name;
+    },
+    
+    isCopy: function(){
+        return this.copy;  
     },
 
     checkDataLinkName: function(name){

@@ -57,8 +57,8 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
     }
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
-        return false;
+    public boolean isAllCalculatorFilter() {
+        return true;
     }
 
     @Override
