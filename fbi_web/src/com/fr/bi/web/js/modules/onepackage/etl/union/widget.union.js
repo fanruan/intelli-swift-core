@@ -396,7 +396,7 @@ BI.Union = BI.inherit(BI.Widget, {
     },
 
     _createTableItems: function(data, index){
-        var fields = data.fields, values = data.value;
+        var fields = data.fields, values = data.value, self = this;
         var header = [], items = [];
         BI.each(fields, function(i, field){
             header.push({
@@ -404,17 +404,27 @@ BI.Union = BI.inherit(BI.Widget, {
                 height: "100%"
             });
         });
+
+        var fieldTypes = [];
+        BI.each(this.model.getAllFields(), function (i, fs) {
+            BI.each(fs, function (j, field) {
+                fieldTypes.push(field.field_type);
+            });
+        });
+
+
         BI.each(values, function(i, value){
+            var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
             BI.each(value, function(j, v){
                 if(BI.isNotNull(items[j])){
                     items[j].push({
-                        text: v,
+                        text: isDate === true ? self._formatDate(v) : v,
                         height: "100%",
                         cls: "table-color" + index%5
                     });
                 } else {
                     items.push([{
-                        text: v,
+                        text: isDate === true ? self._formatDate(v) : v,
                         height: "100%",
                         cls: "table-color" + index%5
                     }]);
@@ -428,7 +438,7 @@ BI.Union = BI.inherit(BI.Widget, {
     },
 
     _createResultTableItems: function(data){
-        var fields = data.fields, values = data.value;
+        var fields = data.fields, values = data.value, self = this;
         var header = [], items = [], index = 0;
         var unionArray = this.model.getUnionArray();
         BI.each(fields, function(i, field){
@@ -437,7 +447,16 @@ BI.Union = BI.inherit(BI.Widget, {
                 height: "100%"
             });
         });
+
+        var fieldTypes = [];
+        BI.each(this.model.getAllFields(), function (i, fs) {
+            BI.each(fs, function (j, field) {
+                fieldTypes.push(field.field_type);
+            });
+        });
+
         BI.each(values, function(i, value){
+            var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
             var fieldArray = unionArray[i];
             var tableCount = 0, tableIndex = 0;
             BI.each(fieldArray, function(k, f){
@@ -455,13 +474,13 @@ BI.Union = BI.inherit(BI.Widget, {
             BI.each(value, function(j, v){
                 if(BI.isNotNull(items[j])){
                     items[j].push({
-                        text: v,
+                        text: isDate === true ? self._formatDate(v) : v,
                         height: "100%",
                         cls: index === -1 ? "result-table" : "table-color" + index%5
                     });
                 } else {
                     items.push([{
-                        text: v,
+                        text: isDate === true ? self._formatDate(v) : v,
                         height: "100%",
                         cls: index === -1 ? "result-table" : "table-color" + index%5
                     }]);
@@ -561,6 +580,14 @@ BI.Union = BI.inherit(BI.Widget, {
             this.saveButton.setEnable(false);
             this.saveButton.setWarningTitle(BI.i18nText("BI-ETL_Join_Wrong_Merge_Field"));
         }
+    },
+
+    _formatDate: function (d) {
+        if (BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
+        var date = new Date(BI.parseInt(d));
+        return date.print("%Y/%X/%d %H:%M:%S")
     },
 
     _refreshUnionTableAndResult: function(){
