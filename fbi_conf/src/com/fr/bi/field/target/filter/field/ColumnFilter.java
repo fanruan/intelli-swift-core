@@ -93,11 +93,11 @@ public abstract class ColumnFilter implements TargetFilter {
     }
 
     @Override
-    public boolean hasTopBottomFilterValue() {
+    public boolean hasAllCalculatorFilter() {
         if (filterValue == null){
             return false;
         }
-        return filterValue.isTopOrBottomFilterValue();
+        return filterValue.isAllCalculatorFilter();
     }
 
     @Override

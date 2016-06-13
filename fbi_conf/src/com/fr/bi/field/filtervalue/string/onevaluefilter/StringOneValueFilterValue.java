@@ -170,7 +170,7 @@ public abstract class StringOneValueFilterValue extends AbstractFilterValue<Stri
     }
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 

@@ -82,7 +82,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     }
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 

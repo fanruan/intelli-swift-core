@@ -2,20 +2,15 @@ package com.fr.bi.conf.data.source.operator.create;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.CubeTILoaderAdapter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
-import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
@@ -76,8 +71,48 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
     private static final int STEP = 100;
 
     @Override
+    public int writeIndexWithParents(final Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol) {
+        final FinalInt currentRow = new FinalInt();
+        final ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
+        currentRow.value = -1;
+        final FinalInt writeRow = new FinalInt();
+        IPersistentTable ptable = parents.get(0).getPersistentTable();
+        final List<PersistentField> columns = ptable.getFieldList();
+        GroupValueIndex fgvi = createFilterIndex(parents, new CubeTILoaderAdapter() {
+
+            public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
+                return ti;
+            }
+
+            @Override
+            public ICubeTableService getTableIndex(CubeTableSource tableSource) {
+                return ti;
+            }
+            public long getUserId() {
+                return user.getUserId();
+            }
+        });
+        if(fgvi == null) {
+            fgvi = GVIFactory.createAllShowIndexGVI(ti.getRowCount());
+        }
+        fgvi.BrokenableTraversal(new BrokenTraversalAction() {
+            @Override
+            public boolean actionPerformed(int row){
+                currentRow.value++;
+                for (int i = 0; i < columns.size(); i++) {
+                    travel.actionPerformed(new BIDataValue(writeRow.value, i, ti.getRow(new IndexKey(columns.get(i).getFieldName()), row)));
+                }
+                writeRow.value++;
+                return false;
+            }
+        });
+        return writeRow.value;
+    }
+
+    @Override
     public int writePartIndex(final Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, final int start, final int end) {
-        ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), 0, STEP);
+        boolean hasAllCalculatorFilter = hasAllCalculatorFilter();
+        ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), 0, hasAllCalculatorFilter ? Integer.MAX_VALUE : STEP);
         int index = 0;
         final FinalInt currentRow = new FinalInt();
         currentRow.value = -1;
@@ -122,13 +157,16 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
             })) {
                 break;
             }
+            if (hasAllCalculatorFilter){
+                break;
+            }
             index++;
             ti = loader.getTableIndex(getSingleParentMD5(parents), index* STEP, (index + 1)* STEP);
         }
-        while (ti.getRowCount() != 0 && !hasTopBottomFilter());
+        while (ti.getRowCount() != 0);
         return writeRow.value;
     }
 
-    protected abstract boolean hasTopBottomFilter();
+    protected abstract boolean hasAllCalculatorFilter();
 
 }

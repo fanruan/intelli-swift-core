@@ -43,7 +43,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
     protected double V = 0.0;
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 
@@ -76,7 +76,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
             Map.Entry entry = (Map.Entry) it.next();
             Number v = (Number) entry.getKey();
             GroupValueIndex g = (GroupValueIndex) entry.getValue();
-            if (isMatchValue(v.doubleValue())) {
+            if (v != null && isMatchValue(v.doubleValue())) {
                 if (gvi == null) {
                     gvi = g;
                 } else {
