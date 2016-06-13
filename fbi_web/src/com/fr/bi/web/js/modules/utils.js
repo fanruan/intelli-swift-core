@@ -35,6 +35,7 @@
                 });
                 if (!isGrouped) {
                     packStructure.push({
+                        id : pack.id,
                         text: pack.name,
                         value: pack.id
                     })
@@ -370,6 +371,115 @@
 
         getWidgetSortSequenceByID: function (wid) {
             return Data.SharingPool.get("widgets", wid, "sort_sequence") || [];
+        },
+
+        //获取指定widget的拷贝,拷贝信息只包含widget的自身信息，如维度指标及其相关属性
+        //不包含widge间的信息,如widget间的联动什么的
+        getWidgetCopyByID: function(wid){
+            var widget = Data.SharingPool.get("widgets", wid);
+            if(BI.isNotNull(widget)){
+                var obj = {};
+                obj.type = widget.type;
+                obj.name = BI.Func.createDistinctName(Data.SharingPool.get("widgets"), widget.name);
+                var dimTarIdMap = {};
+                var dimensions = {};
+                var view = {};
+                BI.each(widget.dimensions, function (idx) {
+                    var copy = createDimensionsAndTargets(idx);
+                    dimensions[copy.id] = copy.dimension;
+                });
+                BI.each(widget.view, function(region, dimIds){
+                    view[region] = [];
+                    BI.each(dimIds, function(idx, dId){
+                        view[region].push(dimTarIdMap[dId]);
+                    });
+                });
+                obj.dimensions = dimensions;
+                obj.view = view;
+                obj.bounds = {
+                    height: widget.bounds.height,
+                    width: widget.bounds.width,
+                    left: widget.bounds.left,
+                    top: widget.bounds.top
+                };
+                obj.settings = widget.settings;
+                obj.value = widget.value;
+                return obj;
+            }
+
+            function checkFilter(oldFilter, dId){
+                var filter = {};
+                var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
+                filter.filter_type = oldFilter.filter_type;
+                if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+                    filter.filter_value = [];
+                    BI.each(filterValue, function (i, value) {
+                        filter.filter_value.push(checkFilter(value));
+                    });
+                }else{
+                    filter.filter_value = oldFilter.filter_value;
+                    //防止死循环
+                    if(BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId){
+                        var result = createDimensionsAndTargets(oldFilter.target_id);
+                        filter.target_id = result.id;
+                    }
+                }
+                return filter;
+            }
+
+            function createDimensionsAndTargets(idx) {
+                var self = this;
+                var dimension = BI.deepClone(widget.dimensions[idx]);
+                if (BI.has(dimTarIdMap, idx)) {
+                    return {id: dimTarIdMap[idx], dimension: self.dimensions[dimTarIdMap[idx]] || dimension};
+                }
+                switch (widget.dimensions[idx].type) {
+                    case BICst.TARGET_TYPE.STRING:
+                    case BICst.TARGET_TYPE.NUMBER:
+                    case BICst.TARGET_TYPE.DATE:
+                        if (BI.has(widget.dimensions[idx], "dimension_map")) {
+                            dimension.dimension_map = {};
+                            BI.each(widget.dimensions[idx].dimension_map, function (id, map) {
+                                var result = createDimensionsAndTargets(id);
+                                dimension.dimension_map[result.id] = map;
+                            });
+                        }
+                        if(BI.has(widget.dimensions[idx], "filter_value")){
+                            dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx);
+                        }
+                        if(BI.has(widget.dimensions[idx], "sort")){
+                            dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
+                            if(BI.has(dimension.sort, "sort_target")){
+                                var result = self._createDimensionsAndTargets(dimension.sort.sort_target);
+                                dimension.sort.sort_target = result.id;
+                            }
+                        }
+                        break;
+                    case BICst.TARGET_TYPE.FORMULA:
+                    case BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE:
+                    case BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE:
+                    case BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE:
+                    case BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE:
+                    case BICst.TARGET_TYPE.SUM_OF_ABOVE:
+                    case BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP:
+                    case BICst.TARGET_TYPE.SUM_OF_ALL:
+                    case BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP:
+                    case BICst.TARGET_TYPE.RANK:
+                    case BICst.TARGET_TYPE.RANK_IN_GROUP:
+                        var expression = dimension._src.expression;
+                        BI.each(expression.ids, function (id, tId) {
+                            var result = createDimensionsAndTargets(tId);
+                            if (BI.has(expression, "formula_value")) {
+                                expression.formula_value = expression.formula_value.replace(tId, result.id);
+                            }
+                            expression.ids[id] = result.id;
+                        });
+                        break;
+                }
+                var id = BI.UUID();
+                dimTarIdMap[idx] = id;
+                return {id: id, dimension: dimension};
+            }
         },
 
         //settings  ---- start ----

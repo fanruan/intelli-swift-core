@@ -57,8 +57,8 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
     }
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
-        return false;
+    public boolean isAllCalculatorFilter() {
+        return true;
     }
 
     @Override
@@ -105,14 +105,11 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
 
     protected void parsAVGJSON(JSONObject jo) throws JSONException {
         getter = AvgLine.INSTANCE;
-        if (jo.has("value")) {
-            JSONObject value = jo.getJSONObject("value");
-            if (value.has("group")) {
-                JSONArray ja = value.getJSONArray("group");
-                this.dimension = new BIKey[ja.length()];
-                for (int i = 0; i < ja.length(); i++) {
-                    this.dimension[i] = new IndexKey(ja.getString(i));
-                }
+        if (jo.has("group")) {
+            JSONArray ja = jo.getJSONArray("group");
+            this.dimension = new BIKey[ja.length()];
+            for (int i = 0; i < ja.length(); i++) {
+                this.dimension[i] = new IndexKey(ja.getString(i));
             }
         }
     }

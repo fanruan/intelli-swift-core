@@ -14,7 +14,8 @@ BI.CubeLogNode = BI.inherit(BI.Widget, {
             second: 0,
             id: "",
             pId: "",
-            open: false
+            open: false,
+            level: 0
         });
     },
 
@@ -24,20 +25,37 @@ BI.CubeLogNode = BI.inherit(BI.Widget, {
         this.node = BI.createWidget({
             type: "bi.triangle_group_node",
             height: 40,
-            element: this.element,
+            // element: this.element,
             id: o.id,
             pId: o.pId,
             open: o.open,
-            text: o.text + ": " + ((o.second >= 1000 ? Math.floor(o.second / 1000) : o.second) + (o.second >= 1000 ? "秒" : "毫秒")),
+            text: this._formatText(o.text, o.second),
             value: o.value
         });
         this.node.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+        BI.createWidget({
+            type: "bi.htape",
+            element: this.element,
+            items: [{
+                el: BI.createWidget(),
+                width: o.level * 10
+            }, {
+                el: this.node
+            }],
+            height: 40
+        });
     },
 
-    populate: function () {
+    _formatText: function (text, second) {
+        return text + ": " + ((second >= 1000 ? Math.floor(second / 1000) : second) + (second >= 1000 ? "秒" : "毫秒"));
+    },
 
+    populate: function (node) {
+        if (BI.isPlainObject(node)) {
+            this.node.setText(this._formatText(node.text, node.second));
+        }
     },
 
     isSelected: function () {

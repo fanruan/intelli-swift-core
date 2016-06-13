@@ -165,9 +165,9 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
             return gf;
         }
 
-        public boolean hasTopBottomFilter() {
+        public boolean hasAllCalculatorFilter() {
             for (TargetFilter f : filter) {
-                if (f.hasTopBottomFilterValue()) {
+                if (f != null && f.hasAllCalculatorFilter()) {
                     return true;
                 }
             }
@@ -176,9 +176,9 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
     }
 
     @Override
-    protected boolean hasTopBottomFilter() {
+    protected boolean hasAllCalculatorFilter() {
         for (FilterItem item : filterList) {
-            if (item.hasTopBottomFilter()) {
+            if (item.hasAllCalculatorFilter()) {
                 return true;
             }
         }

@@ -52,6 +52,22 @@ BI.ImageButton = BI.inherit(BI.BasicButton, {
         this.options.height = h;
     },
 
+    setImageWidth: function (w) {
+        this.image.setWidth(w);
+    },
+
+    setImageHeight: function (h) {
+        this.image.setHeight(h);
+    },
+
+    getImageWidth: function () {
+        return this.image.element.width();
+    },
+
+    getImageHeight: function () {
+        return this.image.element.height();
+    },
+
     setSrc: function (src) {
         this.options.src = src;
         this.image.setSrc(src);

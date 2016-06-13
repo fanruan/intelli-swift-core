@@ -69,6 +69,11 @@ BI.AddFormulaFieldModel = BI.inherit(FR.OB, {
         return BI.deepClone(this.fields);
     },
 
+
+    getAllFields:function(){
+        return BI.deepClone(this.tableInfo.fields);
+    },
+
     getAllTables: function () {
         var tables = [this.getTableInfo()];
         if (this.isReopen() === true) {

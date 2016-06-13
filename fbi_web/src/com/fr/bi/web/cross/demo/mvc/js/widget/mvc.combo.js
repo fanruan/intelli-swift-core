@@ -338,15 +338,9 @@ ComboView = BI.inherit(BI.View, {
             width: 200
         });
 
-        var sss = BI.createWidget({
-            type: "bi.select_color_combo",
-            width: 200
-        });
-        sss.populate(BICst.CHART_COLORS);
-
         return BI.createWidget({
             type: "bi.left",
-            items: [combo, childCombo, monthCombo, yearCombo, sss],
+            items: [combo, childCombo, monthCombo, yearCombo],
             hgap: 20,
             vgap: 20
         })

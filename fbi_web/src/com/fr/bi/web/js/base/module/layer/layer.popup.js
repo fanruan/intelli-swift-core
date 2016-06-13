@@ -43,11 +43,9 @@ BI.PopupView = BI.inherit(BI.Widget, {
     _init: function () {
         BI.PopupView.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.times = 1;
 
         var fn = function (e) {
             e.stopPropagation();
-            return false;
         }, stop = function (e) {
             e.stopEvent();
             return false;
@@ -56,10 +54,9 @@ BI.PopupView = BI.inherit(BI.Widget, {
             "z-index": BI.zIndex_popup,
             "min-width": o.minWidth + "px",
             "max-width": o.maxWidth + "px"
-        }).bind({"click": fn});
+        }).bind({"click": fn, "mousewheel": fn});
         o.stopPropagation && this.element.bind({"mousedown": fn, "mouseup": fn, "mouseover": fn});
         o.stopEvent && this.element.bind({"mousedown": stop, "mouseup": stop, "mouseover": stop});
-
         this.tool = this._createTool();
         this.tab = this._createTab();
         this.view = this._createView();

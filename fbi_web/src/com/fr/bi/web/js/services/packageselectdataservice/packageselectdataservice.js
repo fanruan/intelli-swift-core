@@ -45,6 +45,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     populate(self._getTablesStructureByPackId(op.packageId));
                     return;
                 }
+                if (BI.isKey(op.node._keyword)) {
+                    populate(self._getFieldsStructureByTableIdAndKeyword(op.node.id, op.node._keyword), op.node._keyword);
+                    return;
+                }
                 if (BI.isNotNull(op.node.isParent)) {
                     if (op.node.fieldType === BICst.COLUMN.DATE) {
                         var newNode = BI.clone(op.node);
@@ -144,12 +148,13 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             type: "bi.detail_select_data_level0_node"
                         }, field2TableMap[finded.id || finded.value], {
                             isParent: true,
-                            open: true
+                            open: true,
+                            _keyword: keyword
                         }));
                         map[finded.pId] = true;
                     }
                 });
-                searchResult = searchResult.concat(sch.matched).concat(sch.finded);
+                //searchResult = searchResult.concat(sch.matched).concat(sch.finded);
                 matchResult = matchResult.concat(sch.matched);
             })
         }
@@ -253,6 +258,59 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 })
             }
         }
+        return fieldStructure;
+    },
+
+    _getFieldsStructureByTableIdAndKeyword: function (tableId, keyword) {
+        var fieldStructure = [];
+        var self = this, o = this.options;
+
+        var fields = o.fieldsCreator(tableId);
+        var search = [];
+        BI.each(fields, function (i, field) {
+            var fid = field.id;
+            var fieldName = BI.Utils.getFieldNameByID(fid);
+            search.push({
+                id: fid,
+                text: fieldName
+            })
+        });
+        var result = BI.Func.getSearchResult(search, keyword);
+        fields = result.matched.concat(result.finded);
+        BI.each(fields, function (i, field) {
+            var fid = field.id;
+            var fieldName = BI.Utils.getFieldNameByID(fid);
+            var title = BI.Utils.getTableNameByID(tableId) + "." + fieldName;
+            //日期类型-特殊处理
+            if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
+                var _type = "bi.detail_select_data_level1_item";
+                fieldStructure.push({
+                    id: fid,
+                    pId: tableId,
+                    wId: o.wId,
+                    _type: field.type || _type,
+                    type: "bi.detail_select_data_level1_date_node",
+                    fieldType: BI.Utils.getFieldTypeByID(fid),
+                    text: fieldName,
+                    title: title,
+                    value: fid,
+                    isParent: true
+                });
+                fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field));
+            } else {
+                fieldStructure.push(BI.extend({
+                    id: fid,
+                    pId: tableId,
+                    wId: o.wId,
+                    type: "bi.detail_select_data_level0_item",
+                    fieldType: BI.Utils.getFieldTypeByID(fid),
+                    text: fieldName,
+                    title: title,
+                    value: fid,
+                    drag: self._createDrag(fieldName)
+                }, field))
+            }
+        });
         return fieldStructure;
     },
 

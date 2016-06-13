@@ -27,13 +27,13 @@ BI.Join = BI.inherit(BI.Widget, {
         SHOW_BUTTON: 4
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.Join.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-etl-join"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.Join.superclass._init.apply(this, arguments);
         var o = this.options;
         this.model = new BI.JoinModel({
@@ -70,7 +70,7 @@ BI.Join = BI.inherit(BI.Widget, {
         })
     },
 
-    _buildWest: function(){
+    _buildWest: function () {
         var self = this;
         //重新选择表按钮
         this.changeJoinTable = BI.createWidget({
@@ -79,7 +79,7 @@ BI.Join = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Modify_Used_Tables"),
             height: this.constants.JOIN_EDITOR_HEIGHT
         });
-        this.changeJoinTable.on(BI.Button.EVENT_CHANGE, function(){
+        this.changeJoinTable.on(BI.Button.EVENT_CHANGE, function () {
             self._reselectJoinTable();
         });
         //合并依据表格
@@ -89,7 +89,7 @@ BI.Join = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Add_The_Merged_Basis"),
             height: this.constants.JOIN_BUTTON_HEIGHT
         });
-        addMergeButton.on(BI.Button.EVENT_CHANGE, function(){
+        addMergeButton.on(BI.Button.EVENT_CHANGE, function () {
             var joinFields = self.model.getJoinFields();
             joinFields.push([BI.TableAddUnion.UNION_FIELD_NULL, BI.TableAddUnion.UNION_FIELD_NULL]);
             self.model.setJoinFields(joinFields);
@@ -99,10 +99,10 @@ BI.Join = BI.inherit(BI.Widget, {
             type: "bi.table_add_union",
             tables: self.model.getAllTables()
         });
-        this.joinTableFields.on(BI.TableAddUnion.EVENT_REMOVE_UNION, function(index){
+        this.joinTableFields.on(BI.TableAddUnion.EVENT_REMOVE_UNION, function (index) {
             self._onRemoveOneJoinField(index);
         });
-        this.joinTableFields.on(BI.TableAddUnion.EVENT_CHANGE, function(row, col, nValue, oValue){
+        this.joinTableFields.on(BI.TableAddUnion.EVENT_CHANGE, function (row, col, nValue, oValue) {
             self._onJoinComboChanged(row, col, nValue);
         });
         this.mergeArea = BI.createWidget({
@@ -135,7 +135,7 @@ BI.Join = BI.inherit(BI.Widget, {
         this.joinType = BI.createWidget({
             type: "bi.join_type_group"
         });
-        this.joinType.on(BI.JoinTypeGroup.EVENT_CHANGE, function(){
+        this.joinType.on(BI.JoinTypeGroup.EVENT_CHANGE, function () {
             self.model.setJoinStyle(self.joinType.getValue()[0]);
             self._refreshJoinTableAndResult();
         });
@@ -146,14 +146,14 @@ BI.Join = BI.inherit(BI.Widget, {
                     type: "bi.left",
                     cls: "join-table-name",
                     items: [{
-                        type:"bi.label",
+                        type: "bi.label",
                         cls: "table-name-text",
-                        textAlign:"left",
-                        textHeight:this.constants.JOIN_EDITOR_HEIGHT,
-                        text:BI.i18nText("BI-Table_Name") + "：",
+                        textAlign: "left",
+                        textHeight: this.constants.JOIN_EDITOR_HEIGHT,
+                        text: BI.i18nText("BI-Table_Name") + "：",
                         lgap: 5
                     }, {
-                        type:"bi.label",
+                        type: "bi.label",
                         text: self.model.getDefaultTableName(),
                         height: this.constants.JOIN_EDITOR_HEIGHT,
                         width: this.constants.JOIN_EDITOR_WIDTH,
@@ -196,15 +196,15 @@ BI.Join = BI.inherit(BI.Widget, {
         })
     },
 
-    _buildSouth:function(){
+    _buildSouth: function () {
         var self = this;
         var cancelButton = BI.createWidget({
-            type:"bi.button",
-            level:"ignore",
-            text:BI.i18nText("BI-Cancel"),
+            type: "bi.button",
+            level: "ignore",
+            text: BI.i18nText("BI-Cancel"),
             height: this.constants.JOIN_BUTTON_HEIGHT
         });
-        cancelButton.on(BI.Button.EVENT_CHANGE,function(){
+        cancelButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.Join.EVENT_CANCEL);
         });
 
@@ -215,7 +215,7 @@ BI.Join = BI.inherit(BI.Widget, {
             height: this.constants.JOIN_BUTTON_HEIGHT
         });
 
-        this.saveButton.on(BI.Button.EVENT_CHANGE,function(){
+        this.saveButton.on(BI.Button.EVENT_CHANGE, function () {
             var data = {
                 connection_name: BICst.CONNECTION.ETL_CONNECTION,
                 etl_type: "join",
@@ -241,7 +241,7 @@ BI.Join = BI.inherit(BI.Widget, {
         });
     },
 
-    _buildCenter:function(){
+    _buildCenter: function () {
         //原始表预览区域
         this.previewTab = BI.createWidget({
             type: "bi.tab",
@@ -307,7 +307,7 @@ BI.Join = BI.inherit(BI.Widget, {
         });
     },
 
-    _createPreviewCard: function(v) {
+    _createPreviewCard: function (v) {
         var self = this;
         switch (v) {
             case this.constants.SHOW_TIP:
@@ -334,7 +334,7 @@ BI.Join = BI.inherit(BI.Widget, {
                     height: this.constants.PREVIEW_BUTTON_HEIGHT,
                     width: this.constants.PREVIEW_BUTTON_WIDTH
                 });
-                previewButton.on(BI.Button.EVENT_CHANGE, function(){
+                previewButton.on(BI.Button.EVENT_CHANGE, function () {
                     self.previewTab.setSelect(self.constants.SHOW_TABLE);
                     var tables = self.model.getJoinTables();
                     var count = tables.length + 1;
@@ -343,18 +343,18 @@ BI.Join = BI.inherit(BI.Widget, {
                         masker: self.element,
                         text: BI.i18nText("BI-Loading")
                     });
-                    var interval = setInterval(function(){
-                        if(count === 0){
+                    var interval = setInterval(function () {
+                        if (count === 0) {
                             mask.destroy();
                             clearInterval(interval);
                         }
                     }, 1000);
-                    BI.each(tables, function(i, table){
+                    BI.each(tables, function (i, table) {
                         var wrapper = BI.createWidget({
                             type: "bi.vertical",
                             hgap: self.constants.JOIN_GAP_TEN
                         });
-                        BI.Utils.getPreviewDataByTableAndFields(table, [], function(data){
+                        BI.Utils.getPreviewDataByTableAndFields(table, [], function (data) {
                             count--;
                             var item = self._createTableItems(data, i);
                             var tableView = BI.createWidget({
@@ -378,7 +378,7 @@ BI.Join = BI.inherit(BI.Widget, {
                         self.originalTablesArea.addItem(wrapper);
                     });
                     self.resultTab.setSelect(self.constants.SHOW_TABLE);
-                    BI.Utils.getPreviewDataByTableAndFields(self.model.getTableInfo(), [], function(data){
+                    BI.Utils.getPreviewDataByTableAndFields(self.model.getTableInfo(), [], function (data) {
                         count--;
                         var item = self._createResultTableItems(data);
                         self.resultTable.populate(item.items, item.header);
@@ -392,7 +392,7 @@ BI.Join = BI.inherit(BI.Widget, {
         }
     },
 
-    _createResultCard: function(v){
+    _createResultCard: function (v) {
         var self = this;
         switch (v) {
             case this.constants.SHOW_HEADER:
@@ -401,7 +401,7 @@ BI.Join = BI.inherit(BI.Widget, {
                     mergeResult: this.model.getJoinNames()
                 });
                 this.joinResultHeader.populate(this.model.getJoinNames(), this.model.getJoinFieldsName());
-                this.joinResultHeader.on(BI.JoinResultHeader.EVENT_CHANGE, function(joinNames){
+                this.joinResultHeader.on(BI.JoinResultHeader.EVENT_CHANGE, function (joinNames) {
                     self.model.setJoinNames(joinNames);
                 });
                 return this.joinResultHeader;
@@ -423,7 +423,7 @@ BI.Join = BI.inherit(BI.Widget, {
      * 刷新合并字段区域（页面左侧）
      * @private
      */
-    _populateMergeFieldArea: function(){
+    _populateMergeFieldArea: function () {
         this.joinType.setValue(this.model.getJoinStyle());
         this.joinTableFields.populate(this.model.getAllTables(), this.model.getJoinFields());
     },
@@ -432,14 +432,14 @@ BI.Join = BI.inherit(BI.Widget, {
      * 刷新预览区域（右侧）
      * @private
      */
-    _populateReviewResult: function(){
+    _populateReviewResult: function () {
         var isGenerated = this.model.isCubeGenerated();
-        if(BI.isNotNull(isGenerated) && isGenerated === true){
+        if (BI.isNotNull(isGenerated) && isGenerated === true) {
             this.previewTab.setSelect(this.constants.SHOW_BUTTON);
         } else {
             this.previewTab.setSelect(this.constants.SHOW_TIP);
         }
-        if(this.model.checkMergeFields()) {
+        if (this.model.checkMergeFields()) {
             this.resultTab.setSelect(this.constants.SHOW_HEADER);
             this.joinResultHeader.populate(this.model.getJoinNames(), this.model.getJoinFieldsName());
         } else {
@@ -447,28 +447,39 @@ BI.Join = BI.inherit(BI.Widget, {
         }
     },
 
-    _createTableItems: function(data, index){
+    _createTableItems: function (data, index) {
+        var self = this;
         var fields = data.fields, values = data.value;
         var header = [], items = [];
-        BI.each(fields, function(i, field){
+        BI.each(fields, function (i, field) {
             header.push({
                 text: field,
                 height: "100%"
             });
         });
-        BI.each(values, function(i, value){
-            BI.each(value, function(j, v){
-                if(BI.isNotNull(items[j])){
+
+        var fieldTypes = [];
+        BI.each(this.model.getAllFields(), function (i, fs) {
+            BI.each(fs, function (j, field) {
+                fieldTypes.push(field.field_type);
+            });
+        });
+
+
+        BI.each(values, function (i, value) {
+            var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
+            BI.each(value, function (j, v) {
+                if (BI.isNotNull(items[j])) {
                     items[j].push({
-                        text: v,
+                        text: isDate === true ? self._formatDate(v) : v,
                         height: "100%",
-                        cls: "table-color" + index%5
+                        cls: "table-color" + index % 5
                     });
                 } else {
                     items.push([{
-                        text: v,
+                        text: isDate === true ? self._formatDate(v) : v,
                         height: "100%",
-                        cls: "table-color" + index%5
+                        cls: "table-color" + index % 5
                     }]);
                 }
             });
@@ -479,27 +490,38 @@ BI.Join = BI.inherit(BI.Widget, {
         }
     },
 
-    _createResultTableItems: function(data){
-        var fields = data.fields, values = data.value;
+    _createResultTableItems: function (data) {
+        var fields = data.fields, values = data.value, self = this;
         var header = [], items = [];
         var joinNames = this.model.getJoinNames();
-        BI.each(fields, function(i, field){
+        BI.each(fields, function (i, field) {
             header.push({
                 text: field,
                 height: "100%"
             });
         });
-        BI.each(values, function(i, value){
-            BI.each(value, function(j, v){
-                if(BI.isNotNull(items[j])){
+
+
+        var fieldTypes = [];
+        BI.each(this.model.getAllFields(), function (i, fs) {
+            BI.each(fs, function (j, field) {
+                fieldTypes.push(field.field_type);
+            });
+        });
+
+
+        BI.each(values, function (i, value) {
+            var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
+            BI.each(value, function (j, v) {
+                if (BI.isNotNull(items[j])) {
                     items[j].push({
-                        text: v,
+                        text: isDate === true ? self._formatDate(v) : v,
                         height: "100%",
                         cls: joinNames[i].isLeft === true ? "table-color0" : "table-color1"
                     });
                 } else {
                     items.push([{
-                        text: v,
+                        text: isDate === true ? self._formatDate(v) : v,
                         height: "100%",
                         cls: joinNames[i].isLeft === true ? "table-color0" : "table-color1"
                     }]);
@@ -516,15 +538,15 @@ BI.Join = BI.inherit(BI.Widget, {
      * 刷新保存按钮状态
      * @private
      */
-    _checkSaveButtonStatus: function(){
+    _checkSaveButtonStatus: function () {
         var self = this;
         var joinFields = self.model.getJoinFields();
-        if(joinFields.length === 0){
+        if (joinFields.length === 0) {
             this.saveButton.setEnable(false);
             this.saveButton.setWarningTitle(BI.i18nText("BI-ETL_Join_Merge_Field_Not_Set"));
         } else {
             var isValid = self.model.checkMergeFields();
-            if(isValid === true){
+            if (isValid === true) {
                 this.saveButton.setEnable(true);
             } else {
                 this.saveButton.setEnable(false);
@@ -538,7 +560,7 @@ BI.Join = BI.inherit(BI.Widget, {
      * @param index
      * @private
      */
-    _onRemoveOneJoinField: function(index){
+    _onRemoveOneJoinField: function (index) {
         var self = this;
         var joinFields = self.model.getJoinFields();
         joinFields.splice(index, 1);
@@ -553,11 +575,11 @@ BI.Join = BI.inherit(BI.Widget, {
      * @param nValue
      * @private
      */
-    _onJoinComboChanged: function(row, col, nValue){
+    _onJoinComboChanged: function (row, col, nValue) {
         var self = this;
         var arr = self.model.getJoinFields();
         //先找到当前列中如果已包含nValue那么置为-1
-        BI.each(arr, function(i, fields){
+        BI.each(arr, function (i, fields) {
             fields[col] === nValue && (arr[i][col] = -1);
         });
         arr[row][col] = nValue;
@@ -569,7 +591,7 @@ BI.Join = BI.inherit(BI.Widget, {
      * 重新选择表
      * @private
      */
-    _reselectJoinTable: function(){
+    _reselectJoinTable: function () {
         var self = this;
         var selectTablePane = BI.createWidget({
             type: "bi.select_one_table_pane",
@@ -579,22 +601,31 @@ BI.Join = BI.inherit(BI.Widget, {
             translations: this.model.getTranslations()
         });
         BI.Layers.show(BICst.SELECT_ONE_TABLE_LAYER);
-        selectTablePane.on(BI.SelectOneTablePane.EVENT_CHANGE, function(tables){
+        selectTablePane.on(BI.SelectOneTablePane.EVENT_CHANGE, function (tables) {
             self.model.setJoinTables(tables);
             self._refreshJoinTableAndResult();
         });
     },
 
-    _refreshJoinTableAndResult: function(){
+
+    _formatDate: function (d) {
+        if (BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
+        var date = new Date(BI.parseInt(d));
+        return date.print("%Y/%X/%d %H:%M:%S")
+    },
+
+    _refreshJoinTableAndResult: function () {
         this._populateMergeFieldArea();
         this._populateReviewResult();
         this._checkSaveButtonStatus();
     },
 
-    populate: function(){
+    populate: function () {
         var self = this;
-        this.model.initData(function(){
-             self._refreshJoinTableAndResult();
+        this.model.initData(function () {
+            self._refreshJoinTableAndResult();
         });
     }
 });

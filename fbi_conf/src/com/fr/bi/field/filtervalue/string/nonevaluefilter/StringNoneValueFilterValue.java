@@ -101,7 +101,7 @@ public abstract class StringNoneValueFilterValue extends AbstractFilterValue<Str
     }
 
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
 }

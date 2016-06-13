@@ -68,10 +68,16 @@ public class BIFilterValueMap {
         put(BIReportConstant.DIMENSION_FILTER_NUMBER.NOT_NULL, NumberNotNullFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_NUMBER.TOP_N, NumberTopNFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_NUMBER.BOTTOM_N, NumberBottomNFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.BELONG_VALUE, StringINFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE, StringNotINFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_DATE.CONTAIN, YMDLikeFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_DATE.NOT_CONTAIN, YMDNotLikeFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_DATE.BEGIN_WITH, YMDStartWithFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_DATE.END_WITH, YMDEndWithFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.IS_NULL, StringNullFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.NOT_NULL, StringNotNullFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.TOP_N, StringTOPNFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.BOTTOM_N, StringBOTTOMNFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.BELONG_VALUE, StringINFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.BELONG_USER, StringINUserFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.NOT_BELONG_VALUE, StringNotINFilterValue.class);

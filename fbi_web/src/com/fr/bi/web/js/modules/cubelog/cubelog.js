@@ -49,7 +49,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                         height: 28,
                         level: "ignore",
                         handler: function () {
-                            self._refreshLog();
+                            self.refreshLog();
                         }
                     }]
                 },
@@ -71,20 +71,46 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             }, this.cubeTree],
             vgap: 10
         });
-        this._refreshLog();
-        this.interval = setInterval(function () {
-            self._refreshLog();
-        }, 5000);
+        this.refreshLog();
+
     },
 
-    _refreshLog: function(){
+    refreshLog: function (isStart) {
         var self = this;
+        if (isStart) {
+            this.processBar.setValue(0);
+        }
+        if (BI.isNull(this.interval)) {
+            this.interval = setInterval(function () {
+                self.refreshLog();
+            }, 300);
+        }
         BI.Utils.getCubeLog(function (data) {
-            if (BI.isNotNull(data.cube_end) || BI.isNull(data.cube_start)) {
+            if (!isStart && (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start)))) {
                 self.interval && clearInterval(self.interval);
+                delete self.interval;
             }
+            !isStart && self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
         });
+    },
+
+    _refreshProcess: function (data) {
+        if (BI.isNotNull(data.allRelationInfo)) {
+            var allFields = 0, generated = 0;
+            BI.each(data.allTableInfo, function (tName, size) {
+                allFields += size;
+            });
+            generated += data.connections.length;
+            BI.each(data.tables, function (i, table) {
+                generated += table.column.length;
+            });
+            var process = 1;
+            if (allFields !== 0) {
+                process = generated / allFields;
+            }
+            this.processBar.setValue(Math.ceil(process * 100));
+        }
     },
 
     _formatSecond: function (time) {
@@ -145,9 +171,10 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             items.push({
                 id: BI.UUID(),
                 pId: BI.CubeLog.READ_DB_NODE,
-                text: table.tableName + BI.i18nText("BI-Init_Fetch_Data") + self._formatSecond(table.time)
+                text: table.tableName + BI.i18nText("BI-Init_Fetch_Data") + self._formatSecond(table.time),
+                level: 1
             });
-            readDBTime += table.time
+            readDBTime = readDBTime > table.time ? readDBTime : table.time;
         });
 
         //生成索引时间
@@ -158,16 +185,19 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             items.push({
                 id: id,
                 pId: BI.CubeLog.INDEX_NODE,
-                text: table.tableName + BI.i18nText("BI-Generated_Time") + self._formatSecond(table.time)
+                text: table.tableName + BI.i18nText("BI-Generated_Time"),
+                second: table.time,
+                level: 1
             });
             BI.each(columns, function (j, column) {
                 items.push({
                     id: BI.UUID(),
                     pId: id,
-                    text: BI.i18nText("BI-Sen_Generated_Field_Index_1", column.name) + self._formatSecond(column.time)
+                    text: BI.i18nText("BI-Sen_Generated_Field_Index_1", column.name) + self._formatSecond(column.time),
+                    level: 2
                 })
             });
-            createIndexTime += table.time;
+            createIndexTime = createIndexTime > table.time ? createIndexTime : table.time;
         });
 
         //关联
@@ -180,9 +210,10 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Relations") + "-" +
                 re.primaryTableName + "." + re.primaryFieldName + "->"
                 + re.foreignTableName + "." + re.foreignFieldName +
-                BI.i18nText("BI-Generated_Time") + self._formatSecond(relation.time)
+                BI.i18nText("BI-Generated_Time") + self._formatSecond(relation.time),
+                level: 1
             });
-            createRelationTime += relation.time;
+            createRelationTime = createRelationTime > relation.time ? createRelationTime : relation.time;
         });
         items[1].second = readDBTime;
         items[2].second = createIndexTime;
