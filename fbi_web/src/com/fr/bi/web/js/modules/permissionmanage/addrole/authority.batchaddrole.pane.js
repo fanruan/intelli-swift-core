@@ -2,13 +2,13 @@
  * Created by Young's on 2016/5/16.
  */
 BI.AuthorityBatchAddRolePane = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.AuthorityBatchAddRolePane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-authority-batch-add-role-pane"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.AuthorityBatchAddRolePane.superclass._init.apply(this, arguments);
         var self = this;
         this.addRoleButton = BI.createWidget({
@@ -17,7 +17,7 @@ BI.AuthorityBatchAddRolePane = BI.inherit(BI.Widget, {
             height: 30
         });
         this.addRoleButton.setEnable(false);
-        this.addRoleButton.on(BI.Button.EVENT_CHANGE, function(){
+        this.addRoleButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.AuthorityBatchAddRolePane.EVENT_ADD_ROLE);
         });
 
@@ -46,12 +46,10 @@ BI.AuthorityBatchAddRolePane = BI.inherit(BI.Widget, {
         })
     },
 
-    populate: function(v){
-        if(BI.isNotNull(v)) {
-            var size = BI.uniq(v).length;
-            this.addRoleButton.setText(BI.i18nText("BI-Batch_Package_Add_Role", size));
-            this.addRoleButton.setEnable(size !== 0);
-        }
+    populate: function (v) {
+        var size = BI.uniq(v).length;
+        this.addRoleButton.setText(BI.i18nText("BI-Batch_Package_Add_Role", size));
+        this.addRoleButton.setEnable(size !== 0);
     }
 });
 BI.AuthorityBatchAddRolePane.EVENT_ADD_ROLE = "EVENT_ADD_ROLE";
