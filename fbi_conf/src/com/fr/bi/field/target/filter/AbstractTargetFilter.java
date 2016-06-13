@@ -28,7 +28,7 @@ public abstract class AbstractTargetFilter implements TargetFilter{
     }
 
     @Override
-    public boolean hasTopBottomFilterValue() {
+    public boolean hasAllCalculatorFilter() {
         return false;
     }
 }

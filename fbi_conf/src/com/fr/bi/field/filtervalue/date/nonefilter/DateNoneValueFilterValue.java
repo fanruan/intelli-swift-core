@@ -27,7 +27,7 @@ public abstract class DateNoneValueFilterValue extends AbstractFilterValue<Long>
         return this.getClass().getName().hashCode();
     }
     @Override
-    public boolean isTopOrBottomFilterValue() {
+    public boolean isAllCalculatorFilter() {
         return false;
     }
     @Override

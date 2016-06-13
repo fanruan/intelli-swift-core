@@ -75,7 +75,7 @@ public class TableColumnFilterOperator extends AbstractTableColumnFilterOperator
     }
 
     @Override
-    protected boolean hasTopBottomFilter() {
+    protected boolean hasAllCalculatorFilter() {
         return true;
     }
 
