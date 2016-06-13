@@ -117,8 +117,14 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
         this.down.setTitle("");
     },
     setValue: function (date) {
-        this.up.setValue(date.start);
-        this.down.setValue(date.end);
+        if (BI.isNotNull(date)){
+            if (BI.isNotNull(date.start)){
+                this.up.setValue(date.start);
+            }
+            if (BI.isNotNull(date.end)){
+                this.down.setValue(date.end);
+            }
+        }
     },
     getValue: function () {
         return {start: this.up.getValue(), end: this.down.getValue()};
