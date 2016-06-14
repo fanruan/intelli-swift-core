@@ -58,6 +58,8 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             this.tableChartPopupulate();
         }
         if (BI.has(changed, "dimensions")) {
+            //复制造成的dimensions的change,要先做一下populate,因为此时copy还没有创建子面板
+            this.dimensionsManager.populate();
             this._refreshDimensions();
         }
         if (BI.has(changed, "view")) {
