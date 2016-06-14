@@ -2,6 +2,7 @@ package com.fr.bi.web.service.action;
 
 import com.finebi.cube.api.BICubeManager;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
@@ -50,6 +51,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
         BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
         BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
+        BIConfigureManagerCenter.getLogManager().logVersion(userId);
         JSONObject result = new JSONObject();
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
         JSONObject translations = new JSONObject();

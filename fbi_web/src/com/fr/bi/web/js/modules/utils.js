@@ -428,10 +428,9 @@
             }
 
             function createDimensionsAndTargets(idx) {
-                var self = this;
                 var dimension = BI.deepClone(widget.dimensions[idx]);
                 if (BI.has(dimTarIdMap, idx)) {
-                    return {id: dimTarIdMap[idx], dimension: self.dimensions[dimTarIdMap[idx]] || dimension};
+                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
                 }
                 switch (widget.dimensions[idx].type) {
                     case BICst.TARGET_TYPE.STRING:
@@ -450,7 +449,7 @@
                         if(BI.has(widget.dimensions[idx], "sort")){
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
                             if(BI.has(dimension.sort, "sort_target")){
-                                var result = self._createDimensionsAndTargets(dimension.sort.sort_target);
+                                var result = createDimensionsAndTargets(dimension.sort.sort_target);
                                 dimension.sort.sort_target = result.id;
                             }
                         }
@@ -1880,6 +1879,12 @@
             BI.each(dimensions, function (dId, dimension) {
                 var filterValue = dimension.filter_value || {};
                 parseFilter(filterValue);
+            });
+
+            //考虑表头上指标过滤条件的日期类型
+            var target_filter = widget.filter_value;
+            BI.each(target_filter, function(tId, filter){
+                parseFilter(filter)
             });
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};

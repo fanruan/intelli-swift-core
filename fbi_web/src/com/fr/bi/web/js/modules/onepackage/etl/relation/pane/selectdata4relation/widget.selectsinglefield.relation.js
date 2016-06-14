@@ -90,14 +90,15 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
             BI.each(result, function (i, sch) {
                 BI.each(sch.finded, function (j, finded) {
                     if (!map[finded.pId]) {
+                        var isInvalid = self.allRelationTables.contains(finded.pId) || finded.pId === self.model.getTableIdByFieldId(self.model.getFieldId());
                         searchResult.push({
                             id: finded.pId,
                             type: "bi.select_data_level0_node",
                             text: translations[finded.pId],
                             value: finded.pId,
                             isParent: true,
-                            open: !self.allRelationTables.contains(finded.pId),
-                            disabled: self.allRelationTables.contains(finded.pId)
+                            open: !isInvalid,
+                            disabled: isInvalid
                         });
                         map[finded.pId] = true;
                     }

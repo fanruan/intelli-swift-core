@@ -58,6 +58,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     local: function () {
+        var self = this;
         if (this.model.has("dashboard")) {
             var dashboard = this.model.get("dashboard");
             //不刷新子组件
@@ -65,8 +66,14 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             return true;
         }
         if (this.model.has("addWidget")) {
-            this.model.get("addWidget");
+            var w = this.model.get("addWidget");
             this._refreshWidgets();
+            BI.nextTick(function () {
+                var widgets = self.cat("widgets");
+                self.skipTo(w.id + "/" + widgets[w.id].type, w.id, {
+                    expand: true
+                });
+            });
             return true;
         }
         if (this.model.has("undo")) {
@@ -125,14 +132,14 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         this.redoButton.on(BI.IconTextIconItem.EVENT_CHANGE, function () {
             self.model.set("redo", true);
         });
-        var viewChange  = BI.createWidget({
+        var viewChange = BI.createWidget({
             type: "bi.icon_text_item",
             cls: "toolbar-preview-font",
             text: BI.i18nText("BI-Preview_Report"),
             height: 30,
             width: 80
         });
-        viewChange.on(BI.IconTextIconItem.EVENT_CHANGE, function(){
+        viewChange.on(BI.IconTextIconItem.EVENT_CHANGE, function () {
             var reportId = Data.SharingPool.get("reportId");
             var createBy = Data.SharingPool.get("createBy");
             window.location.href = FR.servletURL + "?op=fr_bi&cmd=bi_init&id=" + reportId + "&createBy=" + createBy;

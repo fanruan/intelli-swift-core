@@ -157,6 +157,8 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
             var formulaData = self.model.getFormulaData();
             delete formulaData[id];
             self.model.setFormulaData(formulaData);
+            self.model.setGenerated(false);
+            self._refreshPane();
         });
 
         var addButton = BI.createWidget({
@@ -183,6 +185,7 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
                 var formulaData = self.model.getFormulaData();
                 formulaData[id] = data;
                 self.model.setFormulaData(formulaData);
+                self.model.setGenerated(false);
                 self._refreshPane();
             });
 

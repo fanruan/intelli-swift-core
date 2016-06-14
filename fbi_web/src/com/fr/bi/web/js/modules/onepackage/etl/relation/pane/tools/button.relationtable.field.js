@@ -20,14 +20,14 @@ BI.RelationTableFieldButton = BI.inherit(BI.BasicButton, {
             items: [{
                 type: "bi.label",
                 text: o.table_name,
+                title: o.table_name,
                 cls: "relation-table-name",
-                textHeight: 30,
-                whiteSpace: "normal"
+                height: 30
             }, {
                 type: "bi.label",
                 text: o.field_name,
-                textHeight: 30,
-                whiteSpace: "normal"
+                title: o.field_name,
+                height: 30
             }],
             width: 140
         })

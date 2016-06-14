@@ -51,27 +51,7 @@ BI.TargetRegionShow = BI.inherit(BI.AbstractRegion, {
         return container;
     },
 
-    _setCalculateTarget: function (dId, options) {
-        var o = this.options;
-        var dim = o.dimensionCreator(dId, this.options.regionType, options);
-        var container = BI.createWidget({
-            type: "bi.absolute",
-            cls: "target-container",
-            data: {
-                dId: dId
-            },
-            height: 25,
-            items: [{
-                el: dim,
-                left: 0,
-                top: 0,
-                right: 0,
-                bottom: 0
-            }]
-        });
-        this.store[dId] = container;
-        this.center.addItem(this.store[dId]);
-    },
+   
 
     getValue: function () {
         var result = [];

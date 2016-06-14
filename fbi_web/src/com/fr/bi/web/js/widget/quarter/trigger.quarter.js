@@ -95,7 +95,7 @@ BI.QuarterTrigger = BI.inherit(BI.Trigger, {
     },
 
     getKey: function () {
-        return this.editor.getValue() | 0;
+        return this.editor.getValue();
     }
 });
 BI.QuarterTrigger.EVENT_FOCUS = "EVENT_FOCUS";
