@@ -106,7 +106,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 generated += table.column.length;
             });
             var process = 1;
-            if (allFields !== 0) {
+            if (allFields !== 0 && BI.isNull(data.cube_end)) {
                 process = generated / allFields;
             }
             this.processBar.setValue(Math.ceil(process * 100));
