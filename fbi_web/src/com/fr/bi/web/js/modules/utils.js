@@ -1881,6 +1881,12 @@
                 parseFilter(filterValue);
             });
 
+            //考虑表头上指标过滤条件的日期类型
+            var target_filter = widget.filter_value;
+            BI.each(target_filter, function(tId, filter){
+                parseFilter(filter)
+            });
+
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             return widget;
         },
