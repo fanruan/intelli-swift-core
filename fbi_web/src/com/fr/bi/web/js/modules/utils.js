@@ -1073,14 +1073,6 @@
 
         },
 
-        getDimensionNumberMaxMinValueByID: function (dId) {
-            var field = Pool.fields[this.getFieldIDByDimensionID(dId)];
-            return {
-                max: field.max,
-                min: field.min
-            };
-        },
-
         getDimensionStyleOfChartByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 return Data.SharingPool.get("dimensions", did, "style_of_chart");

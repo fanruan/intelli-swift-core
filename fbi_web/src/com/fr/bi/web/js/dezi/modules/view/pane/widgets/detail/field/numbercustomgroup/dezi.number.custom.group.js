@@ -21,16 +21,17 @@ BIDezi.NumberCustomGroupView = BI.inherit(BI.BarFloatSection, {
 
     rebuildNorth: function (north) {
         var id = this.model.get("id");
-        var value = BI.Utils.getDimensionNumberMaxMinValueByID(id);
-        var max = value.max;
-        var min = value.min;
-        BI.createWidget({
-            type: "bi.label",
-            element: north,
-            text: BI.i18nText("BI-Grouping_Setting_Detail", min, max),
-            height: 50,
-            textAlign: "left",
-            lgap: 10
+        Data.BufferPool.getNumberFieldMinMaxValueById(BI.Utils.getFieldIDByDimensionID(id), function(value){
+            var max = value.max;
+            var min = value.min;
+            BI.createWidget({
+                type: "bi.label",
+                element: north,
+                text: BI.i18nText("BI-Grouping_Setting_Detail", min, max),
+                height: 50,
+                textAlign: "left",
+                lgap: 10
+            });
         });
         return true;
     },

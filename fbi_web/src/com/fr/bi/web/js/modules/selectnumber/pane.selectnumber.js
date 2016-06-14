@@ -47,4 +47,4 @@ BI.SelectNumberPane = BI.inherit(BI.Widget, {
     }
 });
 
-$.shortcut("bi.select_number_pane", BI.SelectNumberPane);
+$.shortcut("bi.select_number", BI.SelectNumberPane);

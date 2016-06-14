@@ -29,10 +29,6 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
 
         var self = this,o = this.options;
 
-        var value = BI.Utils.getDimensionNumberMaxMinValueByID(o.dId);
-        this.max = BI.parseInt(value.max);
-        this.min = BI.parseInt(value.min);
-
         this.tab = BI.createWidget({
             direction: "custom",
             type: "bi.tab",
@@ -301,24 +297,29 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
     },
 
     populate:function(configs){
+        var self = this, o = this.options;
         if(BI.isNull(configs)){
             return;
         }
-        var config = configs.group_value;
-        switch (configs.type) {
-            case BICst.NUMBER_INTERVAL_CUSTOM_GROUP_CUSTOM:
-                this.tab.setSelect(BI.NumberIntervalCustomGroupTab.Type_Group_Custom);
-                this.panel && this.panel.populate(this._createItems(BI.isNull(config) ? [] : (BI.isNull(config.group_nodes) ? [] : config.group_nodes)));
-                this.other && this.other.setValue(BI.isNull(config) ? config : config.use_other);
-                break;
-            case BICst.NUMBER_INTERVAL_CUSTOM_GROUP_AUTO:
-            default :
-                this.tab.setSelect(BI.NumberIntervalCustomGroupTab.Type_Group_Auto);
-                this.space = (BI.isNull(config) || BI.isNull(config.group_interval)) ? this._checkInterval() : BI.parseInt(config.group_interval);
-                this.editor && this.editor.setValue(this.space);
-                this.panel && this.panel.populate(this._createItems());
-                break;
-        }
+        Data.BufferPool.getNumberFieldMinMaxValueById(BI.Utils.getFieldIDByDimensionID(o.dId), function(value){
+            self.max = BI.parseInt(value.max);
+            self.min = BI.parseInt(value.min);
+            var config = configs.group_value;
+            switch (configs.type) {
+                case BICst.NUMBER_INTERVAL_CUSTOM_GROUP_CUSTOM:
+                    self.tab.setSelect(BI.NumberIntervalCustomGroupTab.Type_Group_Custom);
+                    self.panel && self.panel.populate(self._createItems(BI.isNull(config) ? [] : (BI.isNull(config.group_nodes) ? [] : config.group_nodes)));
+                    self.other && self.other.setValue(BI.isNull(config) ? config : config.use_other);
+                    break;
+                case BICst.NUMBER_INTERVAL_CUSTOM_GROUP_AUTO:
+                default :
+                    self.tab.setSelect(BI.NumberIntervalCustomGroupTab.Type_Group_Auto);
+                    self.space = (BI.isNull(config) || BI.isNull(config.group_interval)) ? self._checkInterval() : BI.parseInt(config.group_interval);
+                    self.editor && self.editor.setValue(self.space);
+                    self.panel && self.panel.populate(self._createItems());
+                    break;
+            }
+        });
     }
 });
 
