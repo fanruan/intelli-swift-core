@@ -2,7 +2,7 @@ BIDezi.DetailTableModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailTableModel.superclass._defaultConfig.apply(this), {
             name: "",
-            bounds:{},
+            bounds: {},
             type: BICst.WIDGET.DETAIL,
             dimensions: {},
             view: {},
@@ -12,7 +12,7 @@ BIDezi.DetailTableModel = BI.inherit(BI.Model, {
     },
 
     change: function (changed) {
-        if(BI.has(changed, "detail")){
+        if (BI.has(changed, "detail")) {
             this.set(this.get("detail"));
         }
     },
@@ -34,6 +34,10 @@ BIDezi.DetailTableModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         return false;
     },
 
