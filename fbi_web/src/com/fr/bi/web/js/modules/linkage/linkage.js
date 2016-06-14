@@ -47,7 +47,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 left: 141,
                 right: 0,
                 top: 30,
-                bottom: 30
+                bottom: 0
             }]
         });
 
