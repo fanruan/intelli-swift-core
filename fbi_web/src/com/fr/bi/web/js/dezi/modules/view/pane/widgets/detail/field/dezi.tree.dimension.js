@@ -67,9 +67,6 @@ BIDezi.TreeDimensionView = BI.inherit(BI.View, {
                 case BICst.CONTROL_COMBO.DELETE:
                     self._deleteDimension();
                     break;
-                case BICst.CONTROL_COMBO.RENAME:
-                    self._reName();
-                    break
             }
         });
     },

@@ -76,6 +76,12 @@ Data.Req = BIReq = {
         });
     },
 
+    reqDeziNumberFieldMinMaxValueByfieldId: function (data, callback) {
+        BI.requestAsync("fr_bi_dezi", "dezi_get_field_min_max_value", data, function (res) {
+            callback(res);
+        });
+    },
+
     reqRelationsByTableIds: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
             callback(res);

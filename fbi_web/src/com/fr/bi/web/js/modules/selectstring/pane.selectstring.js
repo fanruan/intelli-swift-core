@@ -47,4 +47,4 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
     }
 });
 
-$.shortcut("bi.select_string_pane", BI.SelectStringPane);
+$.shortcut("bi.select_string", BI.SelectStringPane);
