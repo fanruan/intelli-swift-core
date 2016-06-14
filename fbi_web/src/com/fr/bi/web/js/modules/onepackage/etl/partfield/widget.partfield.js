@@ -85,6 +85,14 @@ BI.PartField = BI.inherit(BI.Widget, {
             this.save.setTitle(BI.i18nText("BI-Please_Select_Needed_Field"));
             return;
         }
+        var relations = this.model.getRelations();
+        BI.remove(relations.primKeyMap, function(id){
+            return BI.contains(diffFieldIds, id);
+        }, this);
+        BI.remove(relations.foreignKeyMap, function(id){
+            return BI.contains(diffFieldIds, id);
+        }, this);
+
         this.save.setEnable(true);
         this.save.setTitle("");
         this.displayResultArea.setSelect(this.constants.SHOW_PREVIEW_TIP);
