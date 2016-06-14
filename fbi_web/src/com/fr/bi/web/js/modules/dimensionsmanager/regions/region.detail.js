@@ -102,8 +102,24 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
 
     _setCalculateTarget: function (dId, options) {
         var o = this.options;
-        o.dimensionCreator(dId, this._getRegionType(), options);
-
+        var dim = o.dimensionCreator(dId, this._getRegionType(), options);
+        var container = BI.createWidget({
+            type: "bi.absolute",
+            cls: "dimension-container",
+            data: {
+                dId: dId
+            },
+            height: 25,
+            items: [{
+                el: dim,
+                left: 0,
+                top: 0,
+                right: 0,
+                bottom: 0
+            }]
+        });
+        this.store[dId] = container;
+        this.center.addItem(this.store[dId]);
     },
 
     _createDimension: function (dId, options) {
