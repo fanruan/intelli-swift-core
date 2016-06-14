@@ -65,6 +65,14 @@ public class BILogManager implements BILogManagerProvider {
     }
 
     /**
+     * 版本替换
+     */
+    @Override
+    public void logVersion(long userId) {
+        getInstance(userId).recordVersion();
+    }
+
+    /**
      * 日志开始
      */
     @Override
@@ -232,8 +240,8 @@ public class BILogManager implements BILogManagerProvider {
     }
 
     @Override
-    public Date getCubeEnd(long userId) {
-        return getInstance(userId).getEnd();
+    public Date getConfigVersion(long userId) {
+        return getInstance(userId).getConfigVersion();
     }
 
 
