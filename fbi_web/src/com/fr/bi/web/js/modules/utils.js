@@ -376,6 +376,7 @@
         //获取指定widget的拷贝,拷贝信息只包含widget的自身信息，如维度指标及其相关属性
         //不包含widge间的信息,如widget间的联动什么的
         getWidgetCopyByID: function(wid){
+            var self = this;
             var widget = Data.SharingPool.get("widgets", wid);
             if(BI.isNotNull(widget)){
                 var obj = {};
@@ -439,8 +440,13 @@
                         if (BI.has(widget.dimensions[idx], "dimension_map")) {
                             dimension.dimension_map = {};
                             BI.each(widget.dimensions[idx].dimension_map, function (id, map) {
-                                var result = createDimensionsAndTargets(id);
-                                dimension.dimension_map[result.id] = map;
+                                //明细表dimensionmap存的key是tableId，与汇总表区分
+                                if(self.isDimensionExist(id)){
+                                    var result = createDimensionsAndTargets(id);
+                                    dimension.dimension_map[result.id] = map;
+                                }else{
+                                    dimension.dimension_map[id] = map;
+                                }
                             });
                         }
                         if(BI.has(widget.dimensions[idx], "filter_value")){
