@@ -31,6 +31,11 @@ public interface BIRecord extends JSONCreator {
      void recordEnd();
 
     /**
+     * 数据版本变化
+     */
+    void recordVersion();
+
+    /**
      * 日志开始
      */
      void recordIndexStart();
@@ -122,7 +127,7 @@ public interface BIRecord extends JSONCreator {
      */
      void loopRelation(Set<ArrayKey<BITableSourceRelation>> set);
 
-     Date getEnd();
+     Date getConfigVersion();
 
     /**
      * 获取所有需要更新的relation信息

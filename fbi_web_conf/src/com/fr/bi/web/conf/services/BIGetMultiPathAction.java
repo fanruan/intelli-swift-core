@@ -51,7 +51,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         JSONObject multiPathJo = getMultiPath(userId);
         JSONObject jo = new JSONObject();
         JSONObject translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
-        jo.put("cubeEnd", BIConfigureManagerCenter.getLogManager().getCubeEnd(userId));
+        jo.put("cubeEnd", BIConfigureManagerCenter.getLogManager().getConfigVersion(userId));
         jo.put("translations", translations);
         jo.put("relations", multiPathJo.optJSONArray("relations"));
         jo.put("disabledRelations", multiPathJo.optJSONArray("disabledRelations"));
