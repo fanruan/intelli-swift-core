@@ -35,6 +35,7 @@
                 });
                 if (!isGrouped) {
                     packStructure.push({
+                        id : pack.id,
                         text: pack.name,
                         value: pack.id
                     })
