@@ -1,5 +1,6 @@
 package com.fr.bi.web.service.action;
 
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.fs.web.service.ServiceUtils;
@@ -19,6 +20,7 @@ public class BIDeleteAnalysisETLTableAction extends AbstractAnalysisETLAction{
         BIAnalysisETLManagerCenter.getBusiPackManager().removeTable(tableId, userId);
         BIAnalysisETLManagerCenter.getDataSourceManager().removeBusinessTable(new BITableID(tableId));
         BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).removeTransName(tableId);
+        BIConfigureManagerCenter.getLogManager().logVersion(userId);
         new Thread(){
             @Override
             public void run() {

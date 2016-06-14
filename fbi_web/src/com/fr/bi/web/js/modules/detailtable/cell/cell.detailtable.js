@@ -150,6 +150,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         text = this._parseNumLevel(text, numLevel);
         text = this._parseFloatByDot(text, format);
+        item.setText(text);
 
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;

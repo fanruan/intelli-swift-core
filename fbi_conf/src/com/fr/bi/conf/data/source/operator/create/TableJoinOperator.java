@@ -146,7 +146,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             getter.add(lti.loadGroup(new IndexKey(left.get(i)), new ArrayList<BITableSourceRelation>()));
         }
         int index = 0;
-        int lleftCount = getColumnSize(true) - left.size();
+        int lleftCount = getColumnSize(true);
         GroupValueIndex rTotalGvi = null;
         long row = rti.getRowCount();
         for (int i = 0; i < row; i++) {
