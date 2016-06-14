@@ -257,7 +257,6 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             while (it.hasNext()) {
                 String key = it.next().toString();
                 JSONObject filter = targetFilter.getJSONObject(key);
-//                filter.put("target_id", key);
                 targetFilterMap.put(key, DimensionFilterFactory.parseFilter(filter, userId));
             }
         }
