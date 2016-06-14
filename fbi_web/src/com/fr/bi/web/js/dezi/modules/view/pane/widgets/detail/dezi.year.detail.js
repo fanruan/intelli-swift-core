@@ -48,16 +48,6 @@ BIDezi.YearDetailView = BI.inherit(BI.View, {
 
     _buildNorth: function () {
         var self = this;
-        var widgetNameEditor = BI.createWidget({
-            type: "bi.text_editor",
-            value: this.model.get("name"),
-            height: this.constants.DETAIL_TITLE_HEIGHT,
-            width: this.constants.DETAIL_TITLE_WIDTH
-        });
-
-        widgetNameEditor.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self.model.set("name", widgetNameEditor.getValue());
-        });
 
         var complete = BI.createWidget({
             type: "bi.button",
@@ -73,7 +63,6 @@ BIDezi.YearDetailView = BI.inherit(BI.View, {
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             items: {
-                left: [widgetNameEditor],
                 right: [complete]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
