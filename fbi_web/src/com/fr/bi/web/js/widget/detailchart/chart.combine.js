@@ -106,8 +106,6 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FUNNEL:
-            case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.ACCUMULATE_RADAR:
                 config.xAxis = [];
                 var newxAxis  = this._axisConfig();
                 newxAxis.position = "bottom";
@@ -153,6 +151,12 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 config.plotOptions.dataLabels.align = "outside";
                 config.plotOptions.dataLabels.connectorWidth = "outside";
                 config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+                break;
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                config.radiusAxis = [];
+                var newrAxis  = this._axisConfig();
+                config.radiusAxis.push(newrAxis);
                 break;
         }
         addOptionsToConfig();
@@ -212,6 +216,13 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 config.xAxis[0].title.text = self.show_x_axis_title === true ? config.xAxis[0].title.text : "";
                 config.xAxis[0].title.align = "center";
                 config.xAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
+            }
+            if(BI.has(config, "radiusAxis") && config.radiusAxis.length > 0){
+                config.radiusAxis[0].formatter = formatTickInXYaxis(self.left_y_axis_style, self.constants.LEFT_AXIS);
+                formatNumberLevelInYaxis(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                config.radiusAxis[0].title.text = getXYAxisUnit(self.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                config.radiusAxis[0].title.text = self.show_left_y_axis_title === true ? self.left_y_axis_title + config.radiusAxis[0].title.text : config.radiusAxis[0].title.text;
+                config.radiusAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
             }
         }
 
