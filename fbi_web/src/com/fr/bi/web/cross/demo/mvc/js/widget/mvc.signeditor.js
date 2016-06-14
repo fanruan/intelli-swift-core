@@ -19,6 +19,7 @@ SignEditorView = BI.inherit(BI.View, {
             watermark: "可以设置标记的输入框",
             text: "这是一个标记，点击它即可进行输入"
         })
+        editor.setValue(2);
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,

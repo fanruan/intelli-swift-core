@@ -75,7 +75,7 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
             List<JoinColumn> joinColumns = new ArrayList<JoinColumn>();
             for (int i = 0; i < this.columns.size(); i++){
                 MergeColumn c = this.columns.get(i);
-                JoinColumn joinColumn = new JoinColumn(c.name, c.isLeft(), c.columns[0].name);
+                JoinColumn joinColumn = new JoinColumn(c.name, c.isLeft(), c.getJoinName());
                 if (c.columns.length == 2){
                     left.add(c.columns[0].name);
                     right.add(c.columns[1].name);
@@ -151,6 +151,10 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
 
         public boolean isLeft() {
             return columns.length == 2 ? mergeType != MERGE_TYPE_RIGNT_JOIN :columns[0].index == 0;
+        }
+
+        protected String getJoinName(){
+            return columns.length == 2 && mergeType == MERGE_TYPE_RIGNT_JOIN ? columns[1].name : this.name;
         }
 
         @Override
