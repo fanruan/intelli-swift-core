@@ -114,7 +114,7 @@ BI.ETLFilterViewItemFactory = {
         if (filterValue.type !== BICst.ETL_FILTER_NUMBER_VALUE.AVG){
             return filterValue.value || '';
         }
-        return filterValue.value.type == BICst.ETL_FILTER_NUMBER_AVG_TYPE.ALL ? BI.i18nText("BI-ETL_Number_Avg_All") :  BI.i18nText("BI-ETL_Number_Avg_Inner");
+        return filterValue.groupType == BICst.ETL_FILTER_NUMBER_AVG_TYPE.ALL ? BI.i18nText("BI-ETL_Number_Avg_All") :  BI.i18nText("BI-ETL_Number_Avg_Inner");
     },
 
     _createNumberNTitleText : function (filterValue){
