@@ -33,12 +33,29 @@ public class ResourceHelper {
             return getDataJs(req, files);
         }
     };
-    public static Transmitter FormulaTransmitter = new Transmitter() {
+
+    public static class FormulaTransmitter implements Transmitter {
+        private String formula = null;
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
-            return getFormulaJS(files);
+            return transmit(files);
         }
-    };
+
+        public String transmit(String[] files) {
+            if (formula != null) {
+                return formula;
+            }
+            synchronized (this) {
+                if (formula == null) {
+                    formula = getFormulaJS(files);
+                }
+                return formula;
+            }
+        }
+    }
+
+    public static FormulaTransmitter FormulaTransmitter = new FormulaTransmitter();
+
 
     public static String[] getDataJS() {
         return new String[]{"/com/fr/bi/web/js/template/pool.data.js"};
@@ -124,7 +141,7 @@ public class ResourceHelper {
     }
 
 
-    private static String getFormulaJS(String[] files) {
+    public static String getFormulaJS(String[] files) {
         Map<String, Object> map = new HashMap<String, Object>();
         JSONArray array = new JSONArray();
         JSONArray formulaJos = FormulaCollections.getAllFormulaObject();
