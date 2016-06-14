@@ -141,7 +141,7 @@ public class ResourceHelper {
     }
 
 
-    public static String getFormulaJS(String[] files) {
+    private static String getFormulaJS(String[] files) {
         Map<String, Object> map = new HashMap<String, Object>();
         JSONArray array = new JSONArray();
         JSONArray formulaJos = FormulaCollections.getAllFormulaObject();
