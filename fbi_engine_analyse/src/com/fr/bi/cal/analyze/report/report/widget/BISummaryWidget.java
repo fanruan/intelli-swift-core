@@ -2,9 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -18,7 +16,6 @@ import com.fr.bi.field.dimension.BIDimensionFactory;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
 import com.fr.bi.field.target.BITargetFactory;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.module.BIModule;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
@@ -260,7 +257,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             while (it.hasNext()) {
                 String key = it.next().toString();
                 JSONObject filter = targetFilter.getJSONObject(key);
-                filter.put("target_id", key);
+//                filter.put("target_id", key);
                 targetFilterMap.put(key, DimensionFilterFactory.parseFilter(filter, userId));
             }
         }
