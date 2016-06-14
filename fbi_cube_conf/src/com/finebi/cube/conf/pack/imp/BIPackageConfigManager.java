@@ -66,7 +66,6 @@ public class BIPackageConfigManager implements Release {
         return currentPackageManager;
     }
 
-
     public BIUser getUser() {
         return user;
     }

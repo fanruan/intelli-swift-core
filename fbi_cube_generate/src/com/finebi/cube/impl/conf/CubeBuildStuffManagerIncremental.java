@@ -1,23 +1,22 @@
 package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.*;
-import com.finebi.cube.conf.pack.imp.BIPackageTableSourceConfigManager;
+import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CalculateDepend;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.fs.control.UserControl;
 
 import java.util.*;
 
@@ -29,56 +28,82 @@ import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager
 public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     private Set<CubeTableSource> allSingleSources;
-    private Set<BIBusinessTable> newTables;
+    private Set<CubeTableSource> sources;
+    private Set<BIBusinessTable> newBiBusinessTableSet;
     private ICubeConfiguration cubeConfiguration;
     private BIUser biUser;
     private Set<List<Set<CubeTableSource>>> dependTableResource;
     private Set<BITableRelation> tableRelationSet;
-    private Set<BITableRelationPath> tableSourceRelationPaths;
+    private Set<BITableSourceRelation> biTableSourceRelationSet;
+    private Set<BITableSourceRelationPath> biTableSourceRelationPathSet;
 
     public CubeBuildStuffManagerIncremental(Set<BIBusinessTable> newTables, long userId) {
-        this.allSingleSources = new HashSet<CubeTableSource>();
         this.biUser = new BIUser(userId);
-        this.newTables = newTables;
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-        this.tableRelationSet = new HashSet<BITableRelation>();
-        tableSourceRelationPaths = new HashSet<BITableRelationPath>();
+        this.newBiBusinessTableSet = newTables;
+        init();
         try {
-            init();
+            setResourcesAndDepends();
+            setRealationAndPath();
+            calculateDepends();
         } catch (BITableAbsentException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BITablePathConfusionException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BITableRelationConfusionException e) {
             BILogger.getLogger().error(e.getMessage());
         }
     }
 
-    private void init() throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
-        setResourcesAndDepends();
-        setRealationAndPath();
-        calculateDepends();
+    private void init() {
+        this.sources = new HashSet<CubeTableSource>();
+        this.allSingleSources = new HashSet<CubeTableSource>();
+        this.tableRelationSet = new HashSet<BITableRelation>();
+        biTableSourceRelationSet = new HashSet<BITableSourceRelation>();
+        biTableSourceRelationPathSet = new HashSet<BITableSourceRelationPath>();
     }
 
+
     private void calculateDepends() {
-        BIPackageTableSourceConfigProvider biPackageFindTableSourceConfigManager = new BIPackageTableSourceConfigManager();
-        Set<BIBusinessTable> analysisTables = biPackageFindTableSourceConfigManager.getTable4Generate(UserControl.getInstance().getSuperManagerID());
         CalculateDepend cal = new CalculateDependManager() {
             @Override
-            public void setOriginal(Set<BIBusinessTable> analysisTables) {
-                for (BIBusinessTable analysisTable : analysisTables) {
-                    analysisTableSources.add(analysisTable.getTableSource());
+            public void setOriginal(Set<CubeTableSource> cubeTableSources) {
+                if (null == analysisTableSources) {
+                    analysisTableSources = new HashSet<CubeTableSource>();
+                }
+                for (CubeTableSource analysisTableSource : cubeTableSources) {
+                    analysisTableSources.add(analysisTableSource);
                 }
             }
         };
-//        cal.setOriginal(analysisTables);
-        cal.calRelations(getTableSourceRelationSet());
-        cal.calRelationPath(this.getRelationPaths(), this.getTableSourceRelationSet());
+        cal.setOriginal(this.sources);
+        Set<BITableSourceRelation> biTableSourceRelationSetTemp = new HashSet<BITableSourceRelation>();
+        for (
+                BITableSourceRelation biTableSourceRelation
+                : this.biTableSourceRelationSet)
+
+        {
+            biTableSourceRelationSetTemp.add(cal.calRelations((biTableSourceRelation)));
+        }
+
+        this.biTableSourceRelationSet = biTableSourceRelationSetTemp;
+        Set<BITableSourceRelationPath> biTableSourceRelationPathSetTemp = new HashSet<BITableSourceRelationPath>();
+        for (
+                BITableSourceRelationPath biTableSourceRelationPath
+                : this.
+
+                getBiTableSourceRelationPathSet()
+
+                )
+
+        {
+            biTableSourceRelationPathSetTemp.add(cal.calRelationPath(biTableSourceRelationPath, this.biTableSourceRelationSet));
+        }
+
+        this.biTableSourceRelationPathSet = biTableSourceRelationPathSetTemp;
+        this.biTableSourceRelationSet = biTableSourceRelationSetTemp;
     }
 
     protected void setResourcesAndDepends() throws BITableAbsentException {
         Set<CubeTableSource> cubeTableSourceHashSet = new HashSet<CubeTableSource>();
-        for (BIBusinessTable biBusinessTable : newTables) {
+        for (BIBusinessTable biBusinessTable : newBiBusinessTableSet) {
+            sources.add(biBusinessTable.getTableSource());
             cubeTableSourceHashSet.add(biBusinessTable.getTableSource());
             Set<BITableRelation> primaryRelaitons = getTableRelationManager().getPrimaryRelation(biUser.getUserId(), biBusinessTable).getContainer();
             Set<BITableRelation> foreignRelaitons = getTableRelationManager().getForeignRelation(biUser.getUserId(), biBusinessTable).getContainer();
@@ -92,14 +117,20 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     private void setRealationAndPath() {
         try {
-            for (BITableRelation biTableRelation : tableRelationSet) {
-                Set<BITableRelationPath> allTablePath = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
-                for (BITableRelationPath biTableRelationPath : allTablePath) {
+            Set<BITableRelationPath> allTablePath = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
+            for (BITableRelationPath biTableRelationPath : allTablePath) {
+                for (BITableRelation biTableRelation : tableRelationSet) {
                     if (biTableRelationPath.getAllRelations().contains(biTableRelation)) {
-                        tableSourceRelationPaths.add(biTableRelationPath);
+                        biTableSourceRelationPathSet.add(convertBITableRelationPathToBITableSourceRelationPath(biTableRelationPath));
+                        break;
                     }
                 }
             }
+            for (BITableRelation biTableRelation : this.tableRelationSet) {
+                BITableSourceRelation biTableSourceRelation = convetTableRealtionToTableSourceRealtion(biTableRelation);
+                biTableSourceRelationSet.add(biTableSourceRelation);
+            }
+
         } catch (BITableRelationConfusionException e) {
             BILogger.getLogger().error(e.getMessage());
         } catch (BITablePathConfusionException e) {
@@ -136,13 +167,19 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
         CubeTableSource foreignTable = null;
         ICubeFieldSource primaryField = null;
         ICubeFieldSource foreignField = null;
-        try {
-            primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(biTableRelation.getPrimaryField().getTableBelongTo());
-            foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(biTableRelation.getForeignField().getTableBelongTo());
-            primaryTable = biTableRelation.getPrimaryTable().getTableSource();
-            foreignTable = biTableRelation.getForeignTable().getTableSource();
-        } catch (BIKeyAbsentException e) {
-            throw BINonValueUtils.beyondControl(e);
+        primaryTable = biTableRelation.getPrimaryTable().getTableSource();
+        foreignTable = biTableRelation.getForeignTable().getTableSource();
+        for (ICubeFieldSource iCubeFieldSource : primaryTable.getSelfFields(allSingleSources)) {
+            if (iCubeFieldSource.getFieldName().equals(biTableRelation.getPrimaryField().getFieldName())) {
+                primaryField = iCubeFieldSource;
+                break;
+            }
+        }
+        for (ICubeFieldSource iCubeFieldSource : foreignTable.getSelfFields(allSingleSources)) {
+            if (iCubeFieldSource.getFieldName().equals(biTableRelation.getForeignField().getFieldName())) {
+                foreignField = iCubeFieldSource;
+                break;
+            }
         }
         primaryField.setTableBelongTo(primaryTable);
         foreignField.setTableBelongTo(foreignTable);
@@ -154,9 +191,17 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
         );
     }
 
-    @Override
-    public Set<BITableSourceRelationPath> getRelationPaths() {
-        return new HashSet<BITableSourceRelationPath>();
+    private BITableSourceRelationPath convertBITableRelationPathToBITableSourceRelationPath(BITableRelationPath path) throws BITablePathConfusionException {
+        BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
+        for (BITableRelation biTableRelation : path.getAllRelations()) {
+            BITableSourceRelation biTableSourceRelation = convetTableRealtionToTableSourceRealtion(biTableRelation);
+            tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
+        }
+        return tableSourceRelationPath;
+    }
+
+    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
+        return this.biTableSourceRelationPathSet;
     }
 
 
@@ -167,12 +212,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     @Override
     public Set<BITableSourceRelation> getTableSourceRelationSet() {
-        Set<BITableSourceRelation> biTableSourceRelationSet = new HashSet<BITableSourceRelation>();
-        for (BITableRelation biTableRelation : this.tableRelationSet) {
-            BITableSourceRelation biTableSourceRelation = convetTableRealtionToTableSourceRealtion(biTableRelation);
-            biTableSourceRelationSet.add(biTableSourceRelation);
-        }
-        return biTableSourceRelationSet;
+        return this.biTableSourceRelationSet;
     }
 
     @Override
@@ -192,11 +232,17 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     @Override
     public Set<BITableRelation> getTableRelationSet() {
-        return new HashSet<BITableRelation>();
+        return this.tableRelationSet;
     }
 
     @Override
     public Map<CubeTableSource, Long> getVersions() {
-        return null;
+        Set<CubeTableSource> allTable = getAllSingleSources();
+        Map<CubeTableSource, Long> result = new HashMap<CubeTableSource, Long>();
+        Long version = System.currentTimeMillis();
+        for (CubeTableSource table : allTable) {
+            result.put(table, version);
+        }
+        return result;
     }
 }

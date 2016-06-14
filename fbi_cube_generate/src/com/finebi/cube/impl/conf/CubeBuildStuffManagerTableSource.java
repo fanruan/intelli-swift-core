@@ -68,8 +68,7 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
         return depends;
     }
 
-    @Override
-    public Set<BITableSourceRelationPath> getRelationPaths() {
+    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
         return new HashSet<BITableSourceRelationPath>();
     }
 

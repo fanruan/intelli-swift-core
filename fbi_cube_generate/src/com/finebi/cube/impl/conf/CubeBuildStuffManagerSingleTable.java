@@ -94,8 +94,7 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
     }
 
 
-    @Override
-    public Set<BITableSourceRelationPath> getRelationPaths() {
+    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
         return new HashSet<BITableSourceRelationPath>();
     }
 

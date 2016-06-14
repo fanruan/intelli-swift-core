@@ -2,11 +2,9 @@ package com.finebi.cube.conf.pack.imp;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BIPackageTableSourceConfigProvider;
-import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
 
@@ -20,9 +18,8 @@ import java.util.Set;
  */
 public class BIPackageTableSourceConfigManager implements BIPackageTableSourceConfigProvider {
 
-    public Set<BIBusinessTable> getTable4Generate(long userId) {
-        BISystemPackageConfigurationProvider packageManager = BICubeConfigureCenter.getPackageManager();
-        Set<BIBusinessPackage> packages4CubeGenerate = packageManager.getPackages4CubeGenerate(userId);
+    public Set<BIBusinessTable> getTables4Generate(long userId) {
+        Set<BIBusinessPackage> packages4CubeGenerate = BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
         Set<IBusinessPackageGetterService> iBusinessPackageGetterServiceSet = new HashSet<IBusinessPackageGetterService>();
         for (BIBusinessPackage biBusinessPackage : packages4CubeGenerate) {
             try {
@@ -35,11 +32,6 @@ public class BIPackageTableSourceConfigManager implements BIPackageTableSourceCo
         return getTableSources(iBusinessPackageGetterServiceSet, userId);
     }
 
-    @Override
-    public Set<BusinessTable> getAllTables(long userId) {
-        BISystemPackageConfigurationProvider packageManager = BICubeConfigureCenter.getPackageManager();
-        return packageManager.getAllTables(userId);
-    }
 
     public Set<BIBusinessTable> getTableSources(Set<IBusinessPackageGetterService> packs, long userId) {
         Set<BIBusinessTable> sources = new HashSet<BIBusinessTable>();

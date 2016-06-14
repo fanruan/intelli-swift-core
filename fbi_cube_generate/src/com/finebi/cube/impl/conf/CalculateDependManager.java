@@ -19,42 +19,37 @@ public abstract class CalculateDependManager implements CalculateDepend {
     public Set<CubeTableSource> analysisTableSources;
 
     @Override
-    public Set<BITableSourceRelation4Incremental> calRelations(Set<BITableSourceRelation> biTableSourceRelationSet) {
-        Set<BITableSourceRelation4Incremental> biTableSourceRelation4IncrementalSet = new HashSet<BITableSourceRelation4Incremental>();
-        for (BITableSourceRelation biTableSourceRelation : biTableSourceRelationSet) {
-            if (analysisTableSources.contains(biTableSourceRelation.getForeignTable())) {
-                biTableSourceRelation4IncrementalSet.add(new BITableSourceRelation4Incremental(biTableSourceRelation, biTableSourceRelation.getForeignTable()));
-            } else 
-            if (analysisTableSources.contains(biTableSourceRelation.getPrimaryTable())) {
-                biTableSourceRelation4IncrementalSet.add(new BITableSourceRelation4Incremental(biTableSourceRelation, biTableSourceRelation.getPrimaryTable()));
-            } else {
-                biTableSourceRelation4IncrementalSet.add(new BITableSourceRelation4Incremental(biTableSourceRelation, null));
-            }
+    public BITableSourceRelation4Incremental calRelations(BITableSourceRelation biTableSourceRelation) {
+        Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
+        if (analysisTableSources.contains(biTableSourceRelation.getForeignTable())) {
+            cubeTableSourceSet.add(biTableSourceRelation.getForeignTable());
         }
-        return biTableSourceRelation4IncrementalSet;
+        if (analysisTableSources.contains(biTableSourceRelation.getPrimaryTable())) {
+            cubeTableSourceSet.add(biTableSourceRelation.getForeignTable());
+        }
+        return new BITableSourceRelation4Incremental(biTableSourceRelation,cubeTableSourceSet);
     }
 
     @Override
-    public Set<BITableSourceRelationPath4Incremetal> calRelationPath(Set<BITableSourceRelationPath> biTableSourceRelationPathSet, Set<BITableSourceRelation> tableRelationSet) {
-        Set<BITableSourceRelationPath4Incremetal> biTableSourceRelationPath4IncremetalSet=new HashSet<BITableSourceRelationPath4Incremetal>();
-        for (BITableSourceRelationPath biTableSourceRelationPath : biTableSourceRelationPathSet) {
-            Set<BITableSourceRelation> biTableSourceRelationSet = new HashSet<BITableSourceRelation>();
-            try {
-                while (tableRelationSet.contains(biTableSourceRelationPath.getFirstRelation())) {
-                    biTableSourceRelationSet.add(biTableSourceRelationPath.getFirstRelation());
-                    biTableSourceRelationPath.removeFirstRelation();
-                }
-                while (tableRelationSet.contains(biTableSourceRelationPath.getLastRelation())) {
-                    biTableSourceRelationSet.add(biTableSourceRelationPath.getLastRelation());
-                    biTableSourceRelationPath.removeLastRelation();
-                }
-                BITableSourceRelationPath4Incremetal biTableSourceRelationPath4Incremetal = new BITableSourceRelationPath4Incremetal(biTableSourceRelationPath, biTableSourceRelationSet);
-                biTableSourceRelationPath4IncremetalSet.add(biTableSourceRelationPath4Incremetal);
-            } catch (BITablePathEmptyException e) {
-                BILogger.getLogger().error(e.getMessage());
+    public BITableSourceRelationPath4Incremetal calRelationPath(BITableSourceRelationPath biTableSourceRelationPath, Set<BITableSourceRelation> tableRelationSet) {
+        BITableSourceRelationPath4Incremetal biTableSourceRelationPath4Incremetal = null;
+        BITableSourceRelationPath pathCopy = new BITableSourceRelationPath();
+        pathCopy.copyFrom(biTableSourceRelationPath);
+        Set<BITableSourceRelation> biTableSourceRelationSet = new HashSet<BITableSourceRelation>();
+        try {
+            while (pathCopy.getAllRelations().size() > 1 && tableRelationSet.contains(pathCopy.getFirstRelation())) {
+                biTableSourceRelationSet.add(pathCopy.getFirstRelation());
+                pathCopy.removeFirstRelation();
             }
+            while (pathCopy.getAllRelations().size() > 1 && tableRelationSet.contains(pathCopy.getLastRelation())) {
+                biTableSourceRelationSet.add(pathCopy.getLastRelation());
+                pathCopy.removeLastRelation();
+            }
+            biTableSourceRelationPath4Incremetal = new BITableSourceRelationPath4Incremetal(biTableSourceRelationPath, biTableSourceRelationSet);
+        } catch (BITablePathEmptyException e) {
+            biTableSourceRelationPath4Incremetal = new BITableSourceRelationPath4Incremetal(biTableSourceRelationPath, null);
+            BILogger.getLogger().error(e.getMessage());
         }
-
-        return biTableSourceRelationPath4IncremetalSet;
+        return biTableSourceRelationPath4Incremetal;
     }
 }

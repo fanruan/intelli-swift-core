@@ -2,39 +2,20 @@ package com.finebi.cube.relation;
 
 import com.fr.bi.stable.data.source.CubeTableSource;
 
+import java.util.Set;
+
 /**
  * Created by kary on 2016/6/13.
  */
-public class BITableSourceRelation4Incremental {
-    protected BITableSourceRelation biTableSourceRelation;
-    //已经生成完成的tableSource
-    protected CubeTableSource cubeTableSource;
+public class BITableSourceRelation4Incremental extends BITableSourceRelation {
+    protected Set<CubeTableSource> cubeTableSourceSet;
 
-    public BITableSourceRelation4Incremental(BITableSourceRelation biTableSourceRelation, CubeTableSource cubeTableSource) {
-        this.biTableSourceRelation = biTableSourceRelation;
-        this.cubeTableSource = cubeTableSource;
+    public BITableSourceRelation4Incremental(BITableSourceRelation biTableSourceRelation, Set<CubeTableSource> cubeTableSourceSet) {
+        super(biTableSourceRelation.getPrimaryField(), biTableSourceRelation.getForeignField(), biTableSourceRelation.getPrimaryTable(), biTableSourceRelation.getForeignTable());
+        this.cubeTableSourceSet = cubeTableSourceSet;
     }
 
-    public BITableSourceRelation getBiTableSourceRelation() {
-        return biTableSourceRelation;
-    }
-
-    public CubeTableSource getCubeTableSource() {
-        return cubeTableSource;
-    }
-
-    public boolean primaryTableGenerated() {
-        if (null == cubeTableSource) {
-            return false;
-        }else {
-           return cubeTableSource.getSourceID().equals(biTableSourceRelation.getPrimaryTable().getSourceID());
-        }
-    }
-    public boolean foreignTableGenerated() {
-        if (null == cubeTableSource) {
-            return false;
-        }else {
-            return cubeTableSource.getSourceID().equals(biTableSourceRelation.getForeignTable().getSourceID());
-        }
+    public Set<CubeTableSource> getCubeTableSourceSet() {
+        return cubeTableSourceSet;
     }
 }

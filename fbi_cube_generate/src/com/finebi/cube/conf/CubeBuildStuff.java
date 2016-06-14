@@ -16,7 +16,7 @@ import java.util.Set;
 public interface CubeBuildStuff {
 
 
-    Set<BITableSourceRelationPath> getRelationPaths();
+    Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet();
 
     Set<CubeTableSource> getAllSingleSources();
 

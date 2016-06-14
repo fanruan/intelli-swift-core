@@ -144,8 +144,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         this.tableSourceRelationSet = convertRelations(this.tableRelationSet);
     }
 
-    @Override
-    public Set<BITableSourceRelationPath> getRelationPaths() {
+    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
         return relationPaths;
     }
 

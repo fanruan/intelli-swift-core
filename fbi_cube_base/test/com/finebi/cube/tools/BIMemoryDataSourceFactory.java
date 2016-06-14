@@ -128,7 +128,7 @@ public class BIMemoryDataSourceFactory {
         result.add(generate(generateTableC()));
         return result;
     }
-    public static Set<List<Set<CubeTableSource>>> getDataSourceSetMapWithAB() {
+    public static Set<List<Set<CubeTableSource>>> getDataSourceSetMapWithB() {
         Set<List<Set<CubeTableSource>>> result = new HashSet<List<Set<CubeTableSource>>>();
 //        result.add(generate(generateTableA()));
         result.add(generate(generateTableB()));

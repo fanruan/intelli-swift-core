@@ -39,7 +39,7 @@ public class CubeBuildStuffManagerTest extends TestCase {
         CubeBuildStuff cubeBuildStuffManager = new CubeBuildStuffManagerIncremental(null,-999);
         assertTrue(cubeBuildStuffManager.getAllSingleSources().size() == 0);
         assertTrue(cubeBuildStuffManager.getDependTableResource().size() == 0);
-        assertTrue(cubeBuildStuffManager.getRelationPaths().size() == 0);
+        assertTrue(cubeBuildStuffManager.getBiTableSourceRelationPathSet().size() == 0);
         assertTrue(cubeBuildStuffManager.getTableRelationSet().size() == 0);
         assertTrue(!cubeBuildStuffManager.getVersions().isEmpty());
     }
@@ -48,7 +48,7 @@ public class CubeBuildStuffManagerTest extends TestCase {
         CubeBuildStuff cubeBuildStuffManager = new CubeBuildStuffManager(new BIUser(-999));
         assertTrue(cubeBuildStuffManager.getAllSingleSources().size() == 0);
         assertTrue(cubeBuildStuffManager.getDependTableResource().size() == 0);
-        assertTrue(cubeBuildStuffManager.getRelationPaths().size() == 0);
+        assertTrue(cubeBuildStuffManager.getBiTableSourceRelationPathSet().size() == 0);
         assertTrue(cubeBuildStuffManager.getTableRelationSet().size() == 0);
         assertTrue(!cubeBuildStuffManager.getVersions().isEmpty());
     }

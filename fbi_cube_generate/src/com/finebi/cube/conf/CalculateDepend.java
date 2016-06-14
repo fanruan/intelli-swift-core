@@ -1,7 +1,10 @@
 package com.finebi.cube.conf;
 
-import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.relation.*;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation4Incremental;
+import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.relation.BITableSourceRelationPath4Incremetal;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Set;
 
@@ -10,8 +13,10 @@ import java.util.Set;
  * 为relation和path计算依赖
  */
 public interface CalculateDepend {
-    Set<BITableSourceRelation4Incremental> calRelations(Set<BITableSourceRelation> biTableSourceRelationSet);
-    Set<BITableSourceRelationPath4Incremetal> calRelationPath(Set<BITableSourceRelationPath> biTableSourceRelationPathSet, Set<BITableSourceRelation> tableRelationSet);
-    void setOriginal(Set<BIBusinessTable> analysisTables);
+    BITableSourceRelation4Incremental calRelations(BITableSourceRelation biTableSourceRelationSet);
+
+    BITableSourceRelationPath4Incremetal calRelationPath(BITableSourceRelationPath biTableSourceRelationPathSet, Set<BITableSourceRelation> tableRelationSet);
+
+    void setOriginal(Set<CubeTableSource> cubeTableSources);
 }
 
