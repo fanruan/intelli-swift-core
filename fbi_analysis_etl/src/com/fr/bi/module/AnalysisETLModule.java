@@ -18,6 +18,9 @@ import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.cluster.rpc.RPC;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
+import com.fr.web.ResourceHelper;
+
+import java.util.Locale;
 
 
 /**
@@ -39,6 +42,15 @@ public class AnalysisETLModule extends AbstractModule {
         StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DEZI_CSS, ETLResourcesHelper.getDefaultCss());
+    }
+
+    public void loadResources (Locale[] locales) {
+        if(locales != null) {
+            for(Locale locale : locales) {
+                ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS, locale);
+            }
+        }
+        ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
     }
 
     /**

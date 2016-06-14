@@ -55,6 +55,7 @@ import com.fr.web.core.db.PlatformDB;
 
 import java.sql.*;
 import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * Created by 小灰灰 on 2015/12/15.
@@ -346,6 +347,26 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_MODULE_CSS, ResourceHelper.getCommonCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, ResourceHelper.getFormulaCollectionJS(), ResourceHelper.FormulaTransmitter);
+    }
+
+    public void loadResources (Locale[] locales) {
+        if(locales != null) {
+            for(Locale locale : locales) {
+                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS, locale);
+                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS, locale);
+                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_CONF_JS, locale);
+                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS, locale);
+                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_SHOW_JS, locale);
+                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS, locale);
+                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_FORMULA_JS, locale);
+            }
+        }
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_SHOW_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_MODULE_CSS);
     }
 
     private void registerSystemManager() {

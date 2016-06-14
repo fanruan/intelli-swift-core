@@ -131,22 +131,6 @@ public class BIBusinessField implements BusinessField {
         return tableBelongTo;
     }
 
-    public JSONObject createJSON(ICubeDataLoader loader) throws Exception {
-        JSONObject jo = createJSON();
-        if (getFieldType() == DBConstant.COLUMN.NUMBER) {
-            ICubeTableService ti = null;
-            try {
-                ti = loader.getTableIndex(getTableBelongTo().getTableSource());
-            } catch (Exception e) {
-
-            }
-            jo.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, ti != null ? ti.getMAXValue(loader.getFieldIndex(this)) : 0);
-            jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? ti.getMINValue(loader.getFieldIndex(this)) : 0);
-        }
-        return jo;
-    }
-
-
     /**
      * 转成JSON
      *

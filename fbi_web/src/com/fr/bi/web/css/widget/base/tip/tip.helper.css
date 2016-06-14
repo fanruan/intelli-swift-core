@@ -5,6 +5,6 @@
   background-color: #009de3;
   font-size: 13px;
   color: #ffffff;
-  cursor: url(''${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur', auto'), -moz-zoom-out;
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
   opacity: 0.7;
 }

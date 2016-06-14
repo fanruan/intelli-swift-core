@@ -248,6 +248,18 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _onClickHeaderCellFilter: function (dId) {
         var self = this;
+        
+        function formatTargetFilter(filter, tId) {
+            if(filter.filter_type === BICst.FILTER_TYPE.AND || 
+            filter.filter_type === BICst.FILTER_TYPE.OR) {
+                BI.each(filter.filter_value, function(i, filter){
+                    formatTargetFilter(filter, tId);
+                });
+                return;
+            }
+            filter.target_id = tId;
+        }
+        
         BI.Popovers.remove(dId);
         if (BI.Utils.isDimensionByDimensionID(dId)) {
             var popup = BI.createWidget({
@@ -266,6 +278,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             });
             popup.on(BI.TargetSummaryFilterPopup.EVENT_CHANGE, function (v) {
                 var targetFilter = BI.Utils.getWidgetFilterValueByID(self.options.wId);
+                BI.isNotNull(v) && formatTargetFilter(v, dId);
                 targetFilter[dId] = v;
                 self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {filter_value: targetFilter});
             });
