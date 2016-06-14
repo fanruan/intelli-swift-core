@@ -44,7 +44,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 bottom: 0
             }, {
                 el: this.arrangement,
-                left: 91,
+                left: 141,
                 right: 0,
                 top: 30,
                 bottom: 30

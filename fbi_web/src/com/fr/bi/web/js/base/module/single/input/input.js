@@ -30,12 +30,10 @@ BI.Input = BI.inherit(BI.Single, {
                 self.fireEvent(BI.Input.EVENT_QUICK_DOWN);
             })
             .keyup(function (e) {
-                console.log("keyup")
                 self._keydown_ = true;
                 _keydown(e.keyCode);
             })
             .on("input propertychange", function (e) {
-                console.log("input")
                 self._keydown_ = true;
                 _keydown(e.keyCode);
             })

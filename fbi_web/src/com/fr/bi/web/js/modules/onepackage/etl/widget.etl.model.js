@@ -57,31 +57,31 @@ BI.ETLModel = BI.inherit(FR.OB, {
         removeRelationsOfNotExistFields();
         this.fields = fields;
 
-        function removeRelationsOfNotExistFields(){
+        function removeRelationsOfNotExistFields() {
             var preFieldIds = BI.pluck(BI.flatten(self.fields), "id");
             var newFieldIds = BI.pluck(BI.flatten(fields), "id");
-            if(newFieldIds.length < preFieldIds.length){
+            if (newFieldIds.length < preFieldIds.length) {
                 var relation = self.getRelations();
                 var connectionSet = relation.connectionSet;
                 var primKeyMap = relation.primKeyMap;
                 var foreignKeyMap = relation.foreignKeyMap;
                 var diffFieldIds = BI.difference(preFieldIds, newFieldIds);
-                BI.remove(connectionSet, function(i, obj){
+                BI.remove(connectionSet, function (i, obj) {
                     return BI.isNotNull(obj) && (BI.contains(diffFieldIds, obj.primaryKey.field_id) || BI.contains(diffFieldIds, obj.foreignKey.field_id));
                 }, self);
-                BI.remove(primKeyMap, function(id){
+                BI.remove(primKeyMap, function (id) {
                     return BI.contains(diffFieldIds, id);
                 }, self);
-                BI.remove(foreignKeyMap, function(id){
+                BI.remove(foreignKeyMap, function (id) {
                     return BI.contains(diffFieldIds, id);
                 }, self);
-                BI.each(primKeyMap, function(id, mapArray) {
-                    BI.remove(mapArray, function(i, obj){
+                BI.each(primKeyMap, function (id, mapArray) {
+                    BI.remove(mapArray, function (i, obj) {
                         return BI.isNotNull(obj) && (BI.contains(diffFieldIds, obj.primaryKey.field_id) || BI.contains(diffFieldIds, obj.foreignKey.field_id));
                     }, self);
                 });
-                BI.each(foreignKeyMap, function(id, mapArray) {
-                    BI.remove(mapArray, function(i, obj){
+                BI.each(foreignKeyMap, function (id, mapArray) {
+                    BI.remove(mapArray, function (i, obj) {
                         return BI.isNotNull(obj) && (BI.contains(diffFieldIds, obj.primaryKey.field_id) || BI.contains(diffFieldIds, obj.foreignKey.field_id));
                     }, self);
                 });
@@ -93,15 +93,14 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     _getCurrentFieldIdByFieldInfo: function (fieldInfo) {
         var id = BI.UUID();
-        var oldFields = this.fields;
-        BI.some(oldFields, function (i, fieldsArray) {
-            return BI.some(fieldsArray, function (index, fieldObj) {
-                if (fieldObj.field_name === fieldInfo.field_name) {
-                    id = fieldObj.id;
-                    return true
-                }
-                return false
-            })
+        //暂时从allFields里面获取原始的fieldId,allFields里面的数据不会删除,这个是个坑
+        var oldFields = this.allFields;
+        BI.some(oldFields, function (index, fieldObj) {
+            if (fieldObj.field_name === fieldInfo.field_name && fieldObj.table_id === fieldInfo.table_id) {
+                id = fieldObj.id;
+                return true
+            }
+            return false
         });
         return id;
     },
@@ -137,7 +136,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var relations = this.getRelations();
         var primKeyMap = relations["primKeyMap"], foreignKeyMap = relations["foreignKeyMap"];
         var connectionSet = relations["connectionSet"];
-        if(etl.etl_type === "circle"){
+        if (etl.etl_type === "circle") {
             //设置1:N的关联
             BI.each(etlValue.floors, function (idx, floor) {
                 var primaryId = getFieldIdByFieldName(etlValue.id_field_name);
@@ -150,7 +149,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
                         field_id: foreignId
                     }
                 });
-                if(!primKeyMap[primaryId]){
+                if (!primKeyMap[primaryId]) {
                     primKeyMap[primaryId] = [];
                 }
                 primKeyMap[primaryId].push({
@@ -161,7 +160,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
                         field_id: foreignId
                     }
                 });
-                if(!foreignKeyMap[foreignId]){
+                if (!foreignKeyMap[foreignId]) {
                     foreignKeyMap[foreignId] = [];
                 }
                 foreignKeyMap[foreignId].push({
@@ -176,11 +175,11 @@ BI.ETLModel = BI.inherit(FR.OB, {
         }
         this.setRelations(relations);
 
-        function getFieldIdByFieldName(field_name){
+        function getFieldIdByFieldName(field_name) {
             var id = null;
-            BI.find(self.fields, function(idx, fieldArray){
-                return BI.find(fieldArray, function(i, field){
-                    if(field.field_name === field_name){
+            BI.find(self.fields, function (idx, fieldArray) {
+                return BI.find(fieldArray, function (i, field) {
+                    if (field.field_name === field_name) {
                         id = field.id;
                         return true;
                     }
