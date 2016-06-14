@@ -2,21 +2,21 @@
  * Created by Young's on 2016/5/9.
  */
 BIDezi.GeneralQueryView = BI.inherit(BI.View, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BIDezi.GeneralQueryView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget"
         })
     },
-    
-    _init: function(){
+
+    _init: function () {
         BIDezi.GeneralQueryView.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function(){
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
     },
-    
-    _render: function(vessel){
+
+    _render: function (vessel) {
         var self = this;
         this._buildWidgetTitle();
         this._createTools();
@@ -24,7 +24,7 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
         this.filter = BI.createWidget({
             type: "bi.general_query_filter"
         });
-        this.filter.on(BI.GeneralQueryFilter.EVENT_CHANGE, function(){
+        this.filter.on(BI.GeneralQueryFilter.EVENT_CHANGE, function () {
             self.model.set("value", this.getValue());
         });
 
@@ -48,9 +48,9 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                 right: 110
             }]
         });
-        this.widget.element.hover(function(){
+        this.widget.element.hover(function () {
             self.tools.setVisible(true);
-        }, function(){
+        }, function () {
             self.tools.setVisible(false);
         });
     },
@@ -67,11 +67,11 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                 height: 30,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
-                validationChecker: function(v){
+                validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function(){
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
@@ -79,7 +79,7 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
         }
     },
 
-    _createTools: function(){
+    _createTools: function () {
         var self = this;
         this.tools = BI.createWidget({
             type: "bi.widget_combo",
@@ -105,16 +105,24 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
         this.tools.setVisible(false);
     },
 
-    _resetValue: function(){
+    _resetValue: function () {
         this.model.set("value", []);
         this.refresh();
     },
-    
-    change: function(){
+
+    local: function () {
+        if (this.model.has("expand")) {
+            this.model.get("expand");
+            return true;
+        }
+        return false;
+    },
+
+    change: function () {
         BI.Utils.broadcastAllWidgets2Refresh();
     },
-    
-    refresh: function(){
+
+    refresh: function () {
         this._buildWidgetTitle();
         this.filter.populate(this.model.get("value"));
     }

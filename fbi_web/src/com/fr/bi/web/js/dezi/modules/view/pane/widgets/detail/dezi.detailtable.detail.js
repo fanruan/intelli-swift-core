@@ -39,18 +39,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
 
     _buildNorth: function () {
         var self = this;
-        var input = BI.createWidget({
-            type: "bi.text_editor",
-            height: 22,
-            width: 400,
-            validationChecker: function (v) {
-
-            }
-        });
-        input.setValue(this.model.get("name"));
-        input.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self.model.set("name", input.getValue());
-        });
         var shrink = BI.createWidget({
             type: "bi.button",
             height: 25,
@@ -63,7 +51,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             items: {
-                left: [input],
                 right: [shrink]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
