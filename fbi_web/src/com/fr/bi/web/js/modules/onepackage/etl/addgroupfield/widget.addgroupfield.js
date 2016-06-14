@@ -98,6 +98,7 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
                 var id = data.id;
                 newGroupsData[id] = data;
                 self.model.setNewGroupsData(newGroupsData);
+                self.model.setGenerated(false);
                 self._refreshPane();
             });
 
@@ -137,6 +138,8 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
             var newGroupsData = self.model.getNewGroupsData();
             delete newGroupsData[id];
             self.model.newGroupsData = newGroupsData;
+            self.model.setGenerated(false);
+            self._refreshPane();
         });
 
         this.previewPane = BI.createWidget({
