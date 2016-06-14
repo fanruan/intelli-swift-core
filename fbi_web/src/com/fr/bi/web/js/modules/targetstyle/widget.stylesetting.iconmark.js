@@ -47,6 +47,7 @@ BI.IconMarkStyleSetting = BI.inherit(BI.Widget, {
         this.centerMark = BI.createWidget({
             type: "bi.sign_editor",
             width: 90,
+            errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
             validationChecker: function(v){
                 return BI.isNumeric(v);
             }
