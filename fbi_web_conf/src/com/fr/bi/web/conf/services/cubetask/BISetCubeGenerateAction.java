@@ -40,8 +40,8 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         }else{
              cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
         }
-//        CubeTaskBuild.CubeBuild(userId, cubeBuildStuff);
-        CubeTaskBuild.CubeBuild(userId);
+        CubeTaskBuild.CubeBuild(userId, cubeBuildStuff);
+//        CubeTaskBuild.CubeBuild(userId);
     }
 
 }
