@@ -24,7 +24,6 @@ public class CubeTaskBuild {
         if (null != cubeBuildStuff) {
             cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
         }
-
     }
 
     public static void CubeBuild(long userId) {

@@ -8,7 +8,9 @@ import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BITableSourceBuildWatcher;
 import com.finebi.cube.impl.operate.BIOperation;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation4Incremental;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.relation.BITableSourceRelationPath4Incremetal;
 import com.finebi.cube.router.status.IStatusTag;
 import com.finebi.cube.router.topic.ITopicTag;
 import com.finebi.cube.structure.BITableKey;
@@ -289,11 +291,78 @@ public class BICubeOperationManager {
         return operation;
     }
 
+    //    public void generateRelationBuilder(Set<BITableSourceRelation> relationSet) {
+//        if (relationSet != null && !relationSet.isEmpty()) {
+//            Iterator<BITableSourceRelation> it = relationSet.iterator();
+//            while (it.hasNext()) {
+//                BITableSourceRelation relation = it.next();
+//                try {
+//                    String sourceID = new BITableSourceRelationPath(relation).getSourceID();
+//                    BIOperation<Object> operation = new BIOperation<Object>(
+//                            sourceID,
+//                            getRelationBuilder(cube, relation));
+//                    operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+//                    operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+//                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getPrimaryTable().getSourceID()));
+//                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getForeignTable().getSourceID()));
+//                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+//                } catch (Exception e) {
+//                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
+//                }
+//            }
+//            subscribePathFinish();
+//        }
+//    }
+    /*
+    * 同时支持完整依赖和部分依赖
+    * */
     public void generateRelationBuilder(Set<BITableSourceRelation> relationSet) {
+        if (relationSet == null || relationSet.isEmpty()) {
+            return;
+        }
+        boolean isIncremental = false;
+        Set<BITableSourceRelation4Incremental> biTableSourceRelation4IncrementalSet = new HashSet<BITableSourceRelation4Incremental>();
+        for (BITableSourceRelation biTableSourceRelation : relationSet) {
+            isIncremental = biTableSourceRelation instanceof BITableSourceRelation4Incremental;
+            if (isIncremental) {
+                biTableSourceRelation4IncrementalSet.add((BITableSourceRelation4Incremental) biTableSourceRelation);
+            } else {
+                break;
+            }
+        }
+        if (isIncremental) {
+            generateRelation4Incremental(biTableSourceRelation4IncrementalSet);
+        } else {
+            generateRelation(relationSet);
+        }
+    }
+
+    private void generateRelation(Set<BITableSourceRelation> relationSet) {
+        Iterator<BITableSourceRelation> it = relationSet.iterator();
+        while (it.hasNext()) {
+            BITableSourceRelation relation = it.next();
+            try {
+                String sourceID = new BITableSourceRelationPath(relation).getSourceID();
+                BIOperation<Object> operation = new BIOperation<Object>(
+                        sourceID,
+                        getRelationBuilder(cube, relation));
+                operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+                operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getPrimaryTable().getSourceID()));
+                operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getForeignTable().getSourceID()));
+                pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e.getMessage(), e);
+            }
+        }
+        subscribePathFinish();
+    }
+
+    public void generateRelation4Incremental(Set<BITableSourceRelation4Incremental> relationSet) {
         if (relationSet != null && !relationSet.isEmpty()) {
-            Iterator<BITableSourceRelation> it = relationSet.iterator();
+            Iterator<BITableSourceRelation4Incremental> it = relationSet.iterator();
             while (it.hasNext()) {
-                BITableSourceRelation relation = it.next();
+                BITableSourceRelation4Incremental relation = it.next();
                 try {
                     String sourceID = new BITableSourceRelationPath(relation).getSourceID();
                     BIOperation<Object> operation = new BIOperation<Object>(
@@ -301,15 +370,17 @@ public class BICubeOperationManager {
                             getRelationBuilder(cube, relation));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getPrimaryTable().getSourceID()));
-                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, relation.getForeignTable().getSourceID()));
+                    Set<CubeTableSource> cubeTableSourceSet = relation.getCubeTableSourceSet();
+                    for (CubeTableSource cubeTableSource : cubeTableSourceSet) {
+                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
+                    }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
             }
-            subscribePathFinish();
         }
+        subscribePathFinish();
     }
 
     private void pathFinishSubscribe(IStatusTag partFinish) {
@@ -320,61 +391,98 @@ public class BICubeOperationManager {
         }
     }
 
+//    public void generateTableRelationPath(Map<BITableSourceRelationPath, Set<IStatusTag>> setSetMap) {
+//        for (BITableSourceRelationPath biTableSourceRelationPath : setSetMap.keySet()) {
+//            if (biTableSourceRelationPath != null) {
+//                try {
+//                    String sourceID = biTableSourceRelationPath.getSourceID();
+//                    BIOperation<Object> operation = new BIOperation<Object>(
+//                            sourceID,
+//                            getTablePathBuilder(cube, biTableSourceRelationPath));
+//                    operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+//                    operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+//                    for (IStatusTag statusTag : setSetMap.get(biTableSourceRelationPath)) {
+//                        operation.subscribe(statusTag);
+//                    }
+//                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+//                } catch (Exception e) {
+//                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
+//                }
+//            }
+//            subscribePathFinish();
+//        }
+//
+//    }
+
+    /*
+    * 同时支持完整依赖和部分依赖
+    * */
     public void generateTableRelationPath(Set<BITableSourceRelationPath> relationPathSet) {
-        if (relationPathSet != null && !relationPathSet.isEmpty()) {
-            Iterator<BITableSourceRelationPath> it = relationPathSet.iterator();
-            while (it.hasNext()) {
-                BITableSourceRelationPath path = it.next();
-                try {
-                    String sourceID = path.getSourceID();
-                    BIOperation<Object> operation = new BIOperation<Object>(
-                            sourceID,
-                            getTablePathBuilder(cube, path));
-                    operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
-                    operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, new BITableSourceRelationPath(path.getLastRelation()).getSourceID()));
-                    BITableSourceRelationPath frontPath = new BITableSourceRelationPath();
-                    frontPath.copyFrom(path);
-                    frontPath.removeLastRelation();
-                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, frontPath.getSourceID()));
-
-                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-
-                } catch (Exception e) {
-                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
-                }
+        if (relationPathSet == null || relationPathSet.isEmpty()) {
+            return;
+        }
+        boolean isIncremental = false;
+        Set<BITableSourceRelationPath4Incremetal> biTableSourceRelationPath4IncremetalSet = new HashSet<BITableSourceRelationPath4Incremetal>();
+        for (BITableSourceRelationPath biTableSourceRelationPath : relationPathSet) {
+            isIncremental = biTableSourceRelationPath instanceof BITableSourceRelationPath4Incremetal;
+            if (isIncremental) {
+                biTableSourceRelationPath4IncremetalSet.add((BITableSourceRelationPath4Incremetal) biTableSourceRelationPath);
+            } else {
+                break;
             }
-            subscribePathFinish();
+        }
+        if (isIncremental) {
+            generatePath4Incremental(biTableSourceRelationPath4IncremetalSet);
+        } else {
+            generatePath(relationPathSet);
         }
     }
 
-    public void generateFieldRelationPath(Map<ICubeFieldSource, BITableSourceRelationPath> relationPathMap) {
-        if (relationPathMap != null && !relationPathMap.isEmpty()) {
-            Iterator<Map.Entry<ICubeFieldSource, BITableSourceRelationPath>> it = relationPathMap.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<ICubeFieldSource, BITableSourceRelationPath> entry = it.next();
-                try {
-                    ICubeFieldSource field = entry.getKey();
-                    BITableSourceRelationPath path = entry.getValue();
-                    String sourceID = BICubeBuildTopicManager.fieldPathFragmentID(path);
-                    BIOperation<Object> operation = new BIOperation<Object>(
-                            sourceID,
-                            getFieldPathBuilder(cube, field, path));
-                    /**
-                     *
-                     */
-                    operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
-                    operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    operation.subscribe(BIStatusUtils.generateStatusFinish(BITopicUtils.generateTopicTag(path.getFirstRelation().getPrimaryTable().getSourceID()), path.getFirstRelation().getPrimaryField().getFieldName()));
-                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, path.getSourceID()));
-                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+    private void generatePath(Set<BITableSourceRelationPath> relationPathSet) {
+        Iterator<BITableSourceRelationPath> it = relationPathSet.iterator();
+        while (it.hasNext()) {
+            BITableSourceRelationPath path = it.next();
+            try {
+                String sourceID = path.getSourceID();
+                BIOperation<Object> operation = new BIOperation<Object>(
+                        sourceID,
+                        getTablePathBuilder(cube, path));
+                operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+                operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, new BITableSourceRelationPath(path.getLastRelation()).getSourceID()));
+                BITableSourceRelationPath frontPath = new BITableSourceRelationPath();
+                frontPath.copyFrom(path);
+                frontPath.removeLastRelation();
+                operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, frontPath.getSourceID()));
+                pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
 
-                } catch (Exception e) {
-                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
-                }
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e.getMessage(), e);
             }
-            subscribePathFinish();
         }
+        subscribePathFinish();
+    }
+
+    public void generatePath4Incremental(Set<BITableSourceRelationPath4Incremetal> biTableSourceRelationPath4IncremetalSet) {
+        for (BITableSourceRelationPath4Incremetal biTableSourceRelationPath4Incremetal : biTableSourceRelationPath4IncremetalSet) {
+            BITableSourceRelationPath path = biTableSourceRelationPath4Incremetal;
+            String sourceID = path.getSourceID();
+            try {
+                BIOperation<Object> operation = new BIOperation<Object>(
+                        sourceID,
+                        getTablePathBuilder(cube, path));
+                operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+                operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                for (BITableSourceRelation biTableSourceRelation : biTableSourceRelationPath4Incremetal.getBiTableSourceRelation()) {
+                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, new BITableSourceRelationPath(biTableSourceRelation).getSourceID()));
+                }
+                pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e.getMessage(), e);
+            }
+        }
+        subscribePathFinish();
     }
 
     long getVersion(CubeTableSource tableSource) {
