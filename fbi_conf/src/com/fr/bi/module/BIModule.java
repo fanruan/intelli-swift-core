@@ -6,6 +6,8 @@ import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.fr.stable.fun.Service;
 
+import java.util.Locale;
+
 /**
  * Created by 小灰灰 on 2015/12/11.
  */
@@ -26,5 +28,7 @@ public interface BIModule {
 
     ICubeDataLoaderCreator getCubeDataLoaderCreator();
 
-    public Service[] service4Register();
+    Service[] service4Register();
+
+    void loadResources(Locale[] locale);
 }

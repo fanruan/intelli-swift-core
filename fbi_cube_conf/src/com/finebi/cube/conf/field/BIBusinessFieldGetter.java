@@ -74,11 +74,6 @@ public class BIBusinessFieldGetter implements BusinessField {
     }
 
     @Override
-    public JSONObject createJSON(ICubeDataLoader loader) throws Exception {
-        return field.createJSON(loader);
-    }
-
-    @Override
     public JSONObject createJSON() throws Exception {
         return field.createJSON();
     }
