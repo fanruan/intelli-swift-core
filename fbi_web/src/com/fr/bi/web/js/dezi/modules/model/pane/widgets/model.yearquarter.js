@@ -44,6 +44,10 @@ BIDezi.YearQuarterWidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         return false;
     },
 

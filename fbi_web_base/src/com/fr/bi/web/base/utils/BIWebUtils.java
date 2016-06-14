@@ -207,7 +207,7 @@ public class BIWebUtils {
         map.put("reportName", node.getReportName() != null ? node.getReportName() : "null");
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
-        Date cubeTime = BIConfigureManagerCenter.getLogManager().getCubeEnd(userId);
+        Date cubeTime = BIConfigureManagerCenter.getLogManager().getConfigVersion(userId);
         if(cubeTime != null) {
             map.put("__version__", cubeTime.getTime() + userId);
         }

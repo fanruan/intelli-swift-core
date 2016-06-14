@@ -14,7 +14,7 @@ BI.TableFieldWithSearchPane = FR.extend(BI.Widget, {
         BI.TableFieldWithSearchPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var tableInfo = o.tableInfo;
-        var fields = tableInfo.fields;
+        var fields = tableInfo.isFinal === true ? tableInfo.fields : [];
         var searcher = BI.createWidget({
             type: "bi.searcher",
             el: {
