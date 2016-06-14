@@ -25,6 +25,7 @@ public class SingleUserBIRecord implements BIRecord {
     private Date relation_start;
     private Date cube_end;
     private Date index_start;
+    private Date confVersion;
     private long userId;
     private Set<CubeTableSource> cubeTableSourceSet;
     private Set<BITableSourceRelation> biTableSourceRelationSet;
@@ -66,6 +67,15 @@ public class SingleUserBIRecord implements BIRecord {
     @Override
     public void recordEnd() {
         cube_end = new Date();
+        recordVersion();
+    }
+
+    /**
+     * 日志结束
+     */
+    @Override
+    public void recordVersion() {
+        confVersion = new Date();
     }
 
     /**
@@ -242,8 +252,8 @@ public class SingleUserBIRecord implements BIRecord {
     }
 
     @Override
-    public Date getEnd() {
-        return cube_end;
+    public Date getConfigVersion() {
+        return confVersion;
     }
 
     /**
@@ -376,14 +386,12 @@ public class SingleUserBIRecord implements BIRecord {
         res.put("tables", table_log);
         res.put("connections", connection_log);
         res.put("readingdb", reading_log);
-        JSONArray tableInfo = new JSONArray();
+        JSONObject tableInfo = new JSONObject();
         if (null!=cubeTableSourceSet) {
             for (CubeTableSource cubeTableSource : cubeTableSourceSet) {
-                JSONObject jsonObject = new JSONObject();
                 Set<CubeTableSource> tableSourceSet = new HashSet<CubeTableSource>();
                 tableSourceSet.add(cubeTableSource);
-                jsonObject.put(cubeTableSource.getTableName(), cubeTableSource.getSelfFields(tableSourceSet));
-                tableInfo.put(jsonObject);
+                tableInfo.put(cubeTableSource.getTableName(), cubeTableSource.getSelfFields(tableSourceSet).size());
             }
         }
         res.put("allRelationInfo",this.biTableSourceRelationSet);

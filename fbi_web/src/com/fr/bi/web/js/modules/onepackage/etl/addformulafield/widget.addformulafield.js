@@ -157,6 +157,8 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
             var formulaData = self.model.getFormulaData();
             delete formulaData[id];
             self.model.setFormulaData(formulaData);
+            self.model.setGenerated(false);
+            self._refreshPane();
         });
 
         var addButton = BI.createWidget({
@@ -183,6 +185,7 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
                 var formulaData = self.model.getFormulaData();
                 formulaData[id] = data;
                 self.model.setFormulaData(formulaData);
+                self.model.setGenerated(false);
                 self._refreshPane();
             });
 
@@ -340,6 +343,7 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
     },
 
     _createTableItems: function (data) {
+        var self = this;
         var fields = data.fields, values = data.value;
         var header = [], items = [];
         BI.each(fields, function (i, field) {
@@ -347,19 +351,26 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
                 text: field
             });
         });
+
+        var fieldTypes = [];
+        BI.each(this.model.getAllFields(), function (i, fs) {
+            BI.each(fs, function (j, field) {
+                fieldTypes.push(field.field_type);
+            });
+        });
+
+
         BI.each(values, function (i, value) {
+            var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
             BI.each(value, function (j, v) {
                 if (BI.isNotNull(items[j])) {
-                    items[j].push({
-                        text: v
-                    });
+                    items[j].push({text: isDate === true ? self._formatDate(v) : v});
                 } else {
-                    items.push([{
-                        text: v
-                    }]);
+                    items.push([{text: isDate === true ? self._formatDate(v) : v}]);
                 }
             });
         });
+
         return {
             header: [header],
             items: items
@@ -421,6 +432,15 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
                 height: this.constants.PREVIEW_TABLE_HEIGHT
             });
         }
+    },
+
+
+    _formatDate: function (d) {
+        if (BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
+        var date = new Date(BI.parseInt(d));
+        return date.print("%Y/%X/%d %H:%M:%S")
     },
 
 

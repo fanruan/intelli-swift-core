@@ -310,6 +310,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     local: function () {
+        if (this.model.has("expand")) {
+            this.model.get("expand");
+            this._expandWidget();
+            return true;
+        }
         return false;
     },
 

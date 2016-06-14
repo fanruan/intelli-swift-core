@@ -83,10 +83,10 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         if (BI.isNull(this.interval)) {
             this.interval = setInterval(function () {
                 self.refreshLog();
-            }, 1000);
+            }, 300);
         }
         BI.Utils.getCubeLog(function (data) {
-            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
+            if (!isStart && (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start)))) {
                 self.interval && clearInterval(self.interval);
                 delete self.interval;
             }
@@ -97,12 +97,19 @@ BI.CubeLog = BI.inherit(BI.Widget, {
 
     _refreshProcess: function (data) {
         if (BI.isNotNull(data.allRelationInfo)) {
-            var count = data.allRelationInfo.length + data.allTableInfo.length;
+            var allFields = 0, generated = 0;
+            BI.each(data.allTableInfo, function (tName, size) {
+                allFields += size;
+            });
+            generated += data.connections.length;
+            BI.each(data.tables, function (i, table) {
+                generated += table.column.length;
+            });
             var process = 1;
-            if (count !== 0) {
-                process = (data.tables.length + data.connections.length) / count;
+            if (allFields !== 0 && BI.isNull(data.cube_end)) {
+                process = generated / allFields;
             }
-            this.processBar.setValue(process * 100);
+            this.processBar.setValue(Math.ceil(process * 100));
         }
     },
 
@@ -167,7 +174,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 text: table.tableName + BI.i18nText("BI-Init_Fetch_Data") + self._formatSecond(table.time),
                 level: 1
             });
-            readDBTime += table.time
+            readDBTime = readDBTime > table.time ? readDBTime : table.time;
         });
 
         //生成索引时间
@@ -178,7 +185,8 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             items.push({
                 id: id,
                 pId: BI.CubeLog.INDEX_NODE,
-                text: table.tableName + BI.i18nText("BI-Generated_Time") + self._formatSecond(table.time),
+                text: table.tableName + BI.i18nText("BI-Generated_Time"),
+                second: table.time,
                 level: 1
             });
             BI.each(columns, function (j, column) {
@@ -189,7 +197,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                     level: 2
                 })
             });
-            createIndexTime += table.time;
+            createIndexTime = createIndexTime > table.time ? createIndexTime : table.time;
         });
 
         //关联
@@ -205,7 +213,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 BI.i18nText("BI-Generated_Time") + self._formatSecond(relation.time),
                 level: 1
             });
-            createRelationTime += relation.time;
+            createRelationTime = createRelationTime > relation.time ? createRelationTime : relation.time;
         });
         items[1].second = readDBTime;
         items[2].second = createIndexTime;

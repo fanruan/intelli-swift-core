@@ -63,7 +63,6 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
                 if(isAlling === true || isChecking === true || isSingleing === true) {
                     self.immediateButton.setEnable( false );
                     self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
-                    self.cubeLog.refreshLog(true);
                 } else {
                     self.immediateButton.setEnable(true);
                     self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));

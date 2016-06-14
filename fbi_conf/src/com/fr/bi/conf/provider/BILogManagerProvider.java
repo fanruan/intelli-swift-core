@@ -34,6 +34,11 @@ public interface BILogManagerProvider {
     void logEnd(long userId);
 
     /**
+     * 数据版本变化
+     */
+    void logVersion(long userId);
+
+    /**
      * 日志开始
      */
     void logIndexStart(long userId);
@@ -153,5 +158,5 @@ public interface BILogManagerProvider {
 
     BIRecord getBILog(long userId);
 
-    Date getCubeEnd(long userId);
+    Date getConfigVersion(long userId);
 }
