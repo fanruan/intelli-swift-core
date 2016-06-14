@@ -93,6 +93,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     _getCurrentFieldIdByFieldInfo: function (fieldInfo) {
         var id = BI.UUID();
+        //暂时从allFields里面获取原始的fieldId,allFields里面的数据不会删除,这个是个坑
         var oldFields = this.allFields;
         BI.some(oldFields, function (index, fieldObj) {
             if (fieldObj.field_name === fieldInfo.field_name && fieldObj.table_id === fieldInfo.table_id) {
