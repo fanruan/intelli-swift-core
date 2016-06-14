@@ -357,6 +357,28 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return BI.isEmptyArray(items) ? items : [items];
     },
 
+    getToolTip: function (type) {
+        switch (type) {
+            case BICst.WIDGET.SCATTER:
+                if(this.targetIds < 2){
+                    return "";
+                }else{
+                    return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
+                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div>'}";
+                }
+            case BICst.WIDGET.BUBBLE:
+                if(this.targetIds < 3){
+                    return "";
+                }else{
+                    return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
+                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div><div>(大小)" + BI.Utils.getDimensionNameByID(this.targetIds[2])
+                        + ":'+ this.size +'</div>'}";
+                }
+            default:
+                return "";
+        }
+    },
+
     parseChartData: function (data) {
         var self = this, o = this.options;
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {

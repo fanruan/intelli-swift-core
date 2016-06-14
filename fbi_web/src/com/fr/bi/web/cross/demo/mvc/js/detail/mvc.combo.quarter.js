@@ -14,7 +14,7 @@ QuarterComboView = BI.inherit(BI.View, {
             type: "bi.quarter_combo",
             height: 30
         });
-        combo.setValue(2);
+        //combo.setValue(2);
         return combo;
     },
 
