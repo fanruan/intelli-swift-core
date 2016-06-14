@@ -140,7 +140,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
         generateTable.add(operators);
         if (operators.size() > 1) {
             Set<CubeTableSource> self = new HashSet<CubeTableSource>();
-            BIOccupiedCubeTableSource tableSource = new BIOccupiedCubeTableSource(this.getSourceID());
+            BIOccupiedCubeTableSource tableSource = new BIOccupiedCubeTableSource(this);
             self.add(tableSource);
             generateTable.add(self);
         }
