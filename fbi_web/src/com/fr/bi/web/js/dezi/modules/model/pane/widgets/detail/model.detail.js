@@ -61,16 +61,39 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
 
     duplicate: function (copy, key1, key2) {
         if (key1 === "dimensions") {
-            var views = this.get("view");
+            var regionType = BICst.REGION.DIMENSION1;
+            var views = this.get("view"), dimensions = this.get("dimensions");
             BI.each(views, function (region, arr) {
                 BI.each(arr, function (i, id) {
                     if (key2 == id) {
+                        regionType = region;
                         arr = arr.splice(i + 1, 0, copy);
                         return false;
                     }
                 })
             });
-            this.set("view", views);
+            if (regionType >= BICst.REGION.TARGET1) {//复制的是指标
+                var fId = BI.Utils.getFieldIDByDimensionID(copy);
+                if (BI.isNotEmptyString(fId)) {
+                    var targetTableId = BI.Utils.getTableIdByFieldID(fId);
+                    BI.each(dimensions, function (idx, dimension) {
+                        if (BI.Utils.isDimensionByDimensionID(idx)) {
+                            dimension.dimension_map = dimension.dimension_map || {};
+                            var dimensionTableId = BI.Utils.getTableIDByDimensionID(idx);
+                            var path = BI.Utils.getPathsFromTableAToTableB(dimensionTableId, targetTableId);
+                            if (path.length === 1) {
+                                var target_relation = path[0];
+                                dimension.dimension_map[copy] = {
+                                    _src: dimension._src,
+                                    target_relation: [target_relation]
+                                };
+                            }
+                        }
+                    });
+                }
+            }
+            this.set({"dimensions": dimensions, "view": views});
+            //this.set("view", views);
         }
     },
 
@@ -345,8 +368,8 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             if (idx === dId) {
                                 return;
                             }
-                            dimension.dimension_map = dimension.dimension_map || {};
                             if (BI.Utils.isDimensionByDimensionID(idx)) {
+                                dimension.dimension_map = dimension.dimension_map || {};
                                 var dimensionTableId = BI.Utils.getTableIDByDimensionID(idx);
                                 var path = BI.Utils.getPathsFromTableAToTableB(dimensionTableId, targetTableId);
                                 if (path.length === 1) {
