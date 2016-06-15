@@ -80,9 +80,11 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void end() {
+        Future<String> result = finishObserver.getOperationResult();
         try {
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
             BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuildStuff.getTableRelationSet());
+            BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
