@@ -63,7 +63,7 @@ import java.util.Locale;
 public class BICoreModule extends AbstractModule {
     @Override
     public void start() {
-        registProviders();
+        registerProviders();
         initDataSourcePool();
         registerClusterIfNeed();
         registerSystemManager();
@@ -93,7 +93,7 @@ public class BICoreModule extends AbstractModule {
     }
 
 
-    private void registProviders() {
+    private void registerProviders() {
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
         StableFactory.registerMarkedObject(BIAuthorityManageProvider.XML_TAG, new BISystemAuthorityManager());
