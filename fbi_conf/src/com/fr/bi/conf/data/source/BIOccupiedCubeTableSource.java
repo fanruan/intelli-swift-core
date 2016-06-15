@@ -181,7 +181,7 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
 
     @Override
     public Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
-        return null;
+        return hostTableSource.getParentFields(sources);
     }
 
     @Override
@@ -191,7 +191,7 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
 
     @Override
     public Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
-        return null;
+        return hostTableSource.getSelfFields(sources);
     }
 
 }
