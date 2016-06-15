@@ -45,11 +45,7 @@ public class AnalysisETLModule extends AbstractModule {
     }
 
     public void loadResources (Locale[] locales) {
-        if(locales != null) {
-            for(Locale locale : locales) {
-                ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS, locale);
-            }
-        }
+        ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
         ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
     }
 
