@@ -14,12 +14,9 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.model = new BI.SummaryTableModel({
             wId: this.options.wId
         });
-        this.wrapper = BI.createWidget({
-            type: "bi.absolute",
-            element: this.element
-        });
         this.table = BI.createWidget({
             type: "bi.style_table",
+            element: this.element,
             el: {
                 type: "bi.page_table",
                 isNeedFreeze: null,
@@ -78,13 +75,6 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         if (this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_NEXT || this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_PRE) {
             this.table.setVPage(this.model.getPage()[4]);
         }
-        this.wrapper.addItem({
-            el: this.table,
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0
-        })
     },
 
     _resizeTableColumnSize: function () {

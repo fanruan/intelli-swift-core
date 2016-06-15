@@ -10,6 +10,7 @@ BI.SelectDataTree = BI.inherit(BI.Widget, {
         return BI.extend(BI.SelectDataTree.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-select-data-tree",
             el: {},
+            expander: {},
             items: [],
             itemsCreator: BI.emptyFn
         });
@@ -21,13 +22,13 @@ BI.SelectDataTree = BI.inherit(BI.Widget, {
         this.tree = BI.createWidget({
             type: "bi.custom_tree",
             element: this.element,
-            expander: {
+            expander: BI.extend({
                 type: "bi.select_data_expander",
                 el: {},
                 popup: {
                     type: "bi.custom_tree"
                 }
-            },
+            }, o.expander),
             items: o.items,
             itemsCreator: o.itemsCreator,
 

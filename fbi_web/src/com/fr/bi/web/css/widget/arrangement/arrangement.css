@@ -5,6 +5,10 @@
   border: 1px solid #d4dadd;
   background: #009de3;
   z-index: 1000000000;
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), auto;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: grabbing;
 }
 .bi-arrangement .arrangement-block {
   z-index: 1000000000;

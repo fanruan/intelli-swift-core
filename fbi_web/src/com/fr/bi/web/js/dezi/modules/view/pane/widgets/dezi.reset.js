@@ -40,11 +40,11 @@ BIDezi.ResetView = BI.inherit(BI.View, {
                 el: resetButton,
                 left: 0,
                 right: 0,
-                bottom: 0
+                top: 8
             }, {
                 el: deleteButton,
                 right: 5,
-                bottom: 5
+                top: 13
             }]
         });
         veseel.hover(function () {
