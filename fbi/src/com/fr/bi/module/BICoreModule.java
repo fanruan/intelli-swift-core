@@ -358,7 +358,7 @@ public class BICoreModule extends AbstractModule {
                 com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS, locale);
                 com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_SHOW_JS, locale);
                 com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS, locale);
-                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_FORMULA_JS, locale);
+                ResourceHelper.FormulaTransmitter.transmit(ResourceHelper.getFormulaCollectionJS());
             }
         }
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
