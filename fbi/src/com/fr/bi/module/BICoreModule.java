@@ -350,17 +350,13 @@ public class BICoreModule extends AbstractModule {
     }
 
     public void loadResources (Locale[] locales) {
-        if(locales != null) {
-            for(Locale locale : locales) {
-                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS, locale);
-                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS, locale);
-                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_CONF_JS, locale);
-                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS, locale);
-                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_SHOW_JS, locale);
-                com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS, locale);
-                ResourceHelper.FormulaTransmitter.transmit(ResourceHelper.getFormulaCollectionJS());
-            }
-        }
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_CONF_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_SHOW_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS);
+        ResourceHelper.FormulaTransmitter.transmit(ResourceHelper.getFormulaCollectionJS());
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
