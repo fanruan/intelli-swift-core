@@ -6,7 +6,8 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             linkages: [],
             type: BICst.WIDGET.TABLE,
             dimensions: {},
-            view: {}
+            view: {},
+            settings: {}
         })
     },
 
@@ -41,6 +42,9 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             });
         }
         if (BI.has(changed, "filter_value")) {
+            this.refresh();
+        }
+        if (BI.has(changed, "settings")) {
             this.refresh();
         }
     },
