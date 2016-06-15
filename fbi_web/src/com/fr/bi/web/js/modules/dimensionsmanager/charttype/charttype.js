@@ -86,6 +86,7 @@ BI.ChartType = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
+        v = v || BICst.MAP_TYPE.CHINA;
         this.buttonTree.setValue(v);
     }
 });

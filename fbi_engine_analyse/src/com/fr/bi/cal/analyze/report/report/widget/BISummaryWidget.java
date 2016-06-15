@@ -104,7 +104,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             return new ArrayList<BITableSourceRelation>();
         }
         List<BITableRelation> relationList = relMap.get(tarId);
-        checkRelationExist(relationList, dimId, tarId);
+        //checkRelationExist(relationList, dimId, tarId);
         return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convert2TableSourceRelation(relationList);
     }
 

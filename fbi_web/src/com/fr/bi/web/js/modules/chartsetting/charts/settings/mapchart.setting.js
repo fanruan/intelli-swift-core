@@ -35,7 +35,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
             type: "bi.segment",
             width: this.constant.LEGEND_SEGMENT_WIDTH,
             height: this.constant.BUTTON_HEIGHT,
-            items: BICst.MAP_CHART_LEGEND
+            items: BICst.CHART_LEGEND
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
@@ -76,18 +76,6 @@ BI.MapSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.showDataLabel]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.showDataTable]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.gridLine]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.showZoom]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.nullContinue]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),

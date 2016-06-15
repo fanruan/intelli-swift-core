@@ -19,36 +19,16 @@ BI.MapTypePopup = BI.inherit(BI.Pane, {
         BI.MapTypePopup.superclass._init.apply(this, arguments);
         var o = this.options, self = this;
         this.popup = BI.createWidget({
-            type: "bi.select_data_tree",
-            el: {
-                el: {
-                    chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
-                }
+            type: "bi.custom_tree",
+            expander: {
+                isDefaultInit: true
             },
-            itemsCreator: function(op, populate){
-                if (!op.node) {
-                    populate([
-                        {
-                            id: 1,
-                            type: "bi.triangle_group_node",
-                            text: BI.i18nText("BI-SVG_Map"),
-                            value: 1,
-                            isParent: true,
-                            open: false
-                        }, {
-                            id: 2,
-                            type: "bi.triangle_group_node",
-                            text: BI.i18nText("BI-BIT_Map"),
-                            value: 2,
-                            isParent: true,
-                            open: false
-                        }
-                    ]);
-                    return;
-                }
-                if (BI.isNotNull(op.node.isParent)) {
-                    populate(self._createItemsByParentNodeId(op.node.id));
-                }
+            items: self._createItems(),
+            el: {
+                type: "bi.button_tree",
+                layouts: [{
+                    type: "bi.vertical"
+                }]
             }
         });
 
@@ -64,24 +44,37 @@ BI.MapTypePopup = BI.inherit(BI.Pane, {
             element: this.element,
             items: [this.popup]
         });
-
-        this.popup.populate();
     },
 
-    _createItemsByParentNodeId: function(pId){
-        var items = pId === this.constants.SVG_MAP ? BICst.SVG_MAP_TYPE : [];
-        return BI.map(items, function(idx, item){
-            return BI.extend({
+    _createItems: function () {
+        var items = [{
+            id: 1,
+            type: "bi.triangle_group_node",
+            text: BI.i18nText("BI-SVG_Map"),
+            value: 1,
+            isParent: true,
+            open: true
+        }, {
+            id: 2,
+            type: "bi.triangle_group_node",
+            text: BI.i18nText("BI-BIT_Map"),
+            value: 2,
+            isParent: true,
+            open: false
+        }];
+        BI.each(BICst.SVG_MAP_TYPE, function(idx, it){
+            items.push(BI.extend({
                 type: "bi.multilayer_icon_tree_leaf_item",
                 height: 30,
                 iconHeight: 24,
                 iconWidth: 24,
                 layer: 1,
                 id: BI.UUID(),
-                pId: pId,
-                iconCls: item.cls
-            }, item);
+                pId: 1,
+                iconCls: it.cls
+            }, it));
         });
+        return items;
     },
 
     getValue: function () {
