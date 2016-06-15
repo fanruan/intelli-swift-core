@@ -80,15 +80,16 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void end() {
-        Future<String> result = finishObserver.getOperationResult();
+//        Future<String> result = finishObserver.getOperationResult();
         try {
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
             BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuildStuff.getTableRelationSet());
-            BILogger.getLogger().info(result.get());
+//            BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             try {
+//                BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
                 cube.addVersion(System.currentTimeMillis());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -106,7 +107,7 @@ public class BuildCubeTask implements CubeTask {
 
         manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
         manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
-        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getRelationPaths());
+        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getBiTableSourceRelationPathSet());
         manager.registerTableRelationPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
         operationManager.setVersionMap(cubeBuildStuff.getVersions());

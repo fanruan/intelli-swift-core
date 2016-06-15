@@ -1,6 +1,7 @@
 package com.finebi.cube.conf;
 
 
+import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 

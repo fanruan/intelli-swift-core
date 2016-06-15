@@ -33,12 +33,29 @@ public class ResourceHelper {
             return getDataJs(req, files);
         }
     };
-    public static Transmitter FormulaTransmitter = new Transmitter() {
+
+    public static class FormulaTransmitter implements Transmitter {
+        private String formula = null;
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
-            return getFormulaJS(files);
+            return transmit(files);
         }
-    };
+
+        public String transmit(String[] files) {
+            if (formula != null) {
+                return formula;
+            }
+            synchronized (this) {
+                if (formula == null) {
+                    formula = getFormulaJS(files);
+                }
+                return formula;
+            }
+        }
+    }
+
+    public static FormulaTransmitter FormulaTransmitter = new FormulaTransmitter();
+
 
     public static String[] getDataJS() {
         return new String[]{"/com/fr/bi/web/js/template/pool.data.js"};
@@ -865,17 +882,14 @@ public class ResourceHelper {
                 //文本控件选字段
                 "com/fr/bi/web/js/modules/selectstring/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectstring/pane.selectstring.js",
-                "com/fr/bi/web/js/modules/selectstring/tab.selectstring.js",
 
                 //数值控件选字段
                 "com/fr/bi/web/js/modules/selectnumber/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectnumber/pane.selectnumber.js",
-                "com/fr/bi/web/js/modules/selectnumber/tab.selectnumber.js",
 
                 //日期控件选字段
                 "com/fr/bi/web/js/modules/selectdate/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectdate/pane.selectdate.js",
-                "com/fr/bi/web/js/modules/selectdate/tab.selectdate.js",
 
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.js",
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.model.js",

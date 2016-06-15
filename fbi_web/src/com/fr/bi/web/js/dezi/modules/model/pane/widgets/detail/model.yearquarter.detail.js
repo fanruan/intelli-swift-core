@@ -26,6 +26,12 @@ BIDezi.YearQuarterDetailModel = BI.inherit(BI.Model, {
                 });
                 BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
             }
+            if (BI.size(changed.dimensions) <= BI.size(prev.dimensions)) {
+                var res = BI.find(prev.dimensions, function (did, dimension) {
+                    return !BI.has(changed.dimensions, did);
+                });
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + res._src.id);
+            }
         }
     },
 

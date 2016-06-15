@@ -23,9 +23,13 @@ public class AvgCalculator extends FormulaCalculator {
 
     public AvgCalculator(BISummaryTarget target) {
         this.sum = new SumCalculator(target);
-        this.count = new CountCalculator(target, target.getStatisticElement().getFieldName());
+        this.count = new CountCalculator(target);
     }
 
+    @Override
+    public TargetGettingKey createTargetGettingKey() {
+        return new TargetGettingKey(createTargetKey(), getName());
+    }
 
     /**
      * 创建计算指标

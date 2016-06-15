@@ -48,4 +48,4 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
     }
 });
 
-$.shortcut("bi.select_date_pane", BI.SelectDatePane);
+$.shortcut("bi.select_date", BI.SelectDatePane);

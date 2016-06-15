@@ -214,17 +214,18 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     public Set<BusinessTable> getAllTables(long userId) {
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAllTables();
     }
+
     @Override
     public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId){
         IPackagesManagerService analysisPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisPackageManager();
         IPackagesManagerService currentPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getCurrentPackageManager();
-        Set<BIBusinessPackage> analysisPackageManagerAllPackages = analysisPackageManager.getAllPackages();
-        Set<BIBusinessPackage> currentPackageManagerAllPackages = currentPackageManager.getAllPackages();
+        Set<BIBusinessPackage> analysisPackages = analysisPackageManager.getAllPackages();
+        Set<BIBusinessPackage> currentPackages = currentPackageManager.getAllPackages();
         Set<BIBusinessPackage> packageSet=new HashSet<BIBusinessPackage>();
-        for (BIBusinessPackage currentPackageManagerAllPackage : currentPackageManagerAllPackages) {
-            if (!analysisPackageManagerAllPackages.contains(currentPackageManagerAllPackage)){
+        for (BIBusinessPackage biBusinessPackage : currentPackages) {
+            if (!analysisPackages.contains(biBusinessPackage)){
                 try {
-                    packageSet.add((BIBusinessPackage) currentPackageManagerAllPackage.clone());
+                    packageSet.add((BIBusinessPackage) biBusinessPackage.clone());
                 } catch (CloneNotSupportedException e) {
                     BILogger.getLogger().error(e.getMessage());
                 }

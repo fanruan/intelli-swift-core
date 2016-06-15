@@ -151,41 +151,6 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
-        //单位
-        this.LYUnit = BI.createWidget({
-            type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
-            cls: "unit-input",
-            watermark: BI.i18nText("BI-Custom_Input")
-        });
-
-        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
-        });
-
-        //显示标题
-        this.isShowTitleLY = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Title"),
-            width: 90
-        });
-
-        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
-            this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
-        });
-
-        this.editTitleLY = BI.createWidget({
-            type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
-            cls: "unit-input"
-        });
-        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
-        });
-
         //图例
         this.legend = BI.createWidget({
             type: "bi.segment",
@@ -282,17 +247,6 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.numberLevellY]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Unit_Normal"),
-                    lgap: this.constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.LYUnit]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.isShowTitleLY, this.editTitleLY]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -340,14 +294,9 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         this.chartTypeGroup.setValue(BI.Utils.getWSChartRadarTypeByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
-        this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
-        this.editTitleLY.setValue(BI.Utils.getWSLeftYAxisTitleByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
-
-        this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
     },
 
     getValue: function(){
@@ -358,9 +307,6 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
             chart_radar_type: this.chartTypeGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
-            left_y_axis_unit: this.LYUnit.getValue(),
-            show_left_y_axis_title: this.isShowTitleLY.isSelected(),
-            left_y_axis_title: this.editTitleLY.getValue(),
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected()
@@ -374,9 +320,6 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         this.chartTypeGroup.setValue(v.chart_radar_type);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.numberLevellY.setValue(v.left_y_axis_number_level);
-        this.LYUnit.setValue(v.left_y_axis_unit);
-        this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
-        this.editTitleLY.setValue(v.left_y_axis_title);
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);

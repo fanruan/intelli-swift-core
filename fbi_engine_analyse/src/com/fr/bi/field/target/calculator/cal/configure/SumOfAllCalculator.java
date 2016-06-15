@@ -1,7 +1,9 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.bi.field.target.key.cal.configuration.summary.BISumOfAllKey;
+import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.bi.stable.report.result.LightNode;
@@ -46,16 +48,30 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
         @Override
         public Object call() throws Exception {
             Object key = getCalKey();
+            String targetName = ((TargetGettingKey) key).getTargetName();
+            BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
             int deep = getCalDeep(rank_node);
             LightNode temp_node = getDeepCalNode(rank_node);
             LightNode cursor_node = temp_node;
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(key);
-                if (value != null) {
-                    sum += value.doubleValue();
+                if (targetKey instanceof AvgKey) {
+                    TargetGettingKey sumGettingKey = new TargetGettingKey(((AvgKey) targetKey).getSumKey(), targetName);
+                    TargetGettingKey countGettingKey = new TargetGettingKey(((AvgKey) targetKey).getCountKey(), targetName);
+                    Number sumValue = cursor_node.getSummaryValue(sumGettingKey);
+                    Number countValue = cursor_node.getSummaryValue(countGettingKey);
+                    if (sumValue != null && countValue != null) {
+                        sum += sumValue.doubleValue() / countValue.doubleValue();
+                    }
+                    cursor_node = cursor_node.getSibling();
+                } else {
+                    Number value = cursor_node.getSummaryValue(key);
+                    if (value != null) {
+                        sum += value.doubleValue();
+                    }
+                    cursor_node = cursor_node.getSibling();
                 }
-                cursor_node = cursor_node.getSibling();
+
             }
             cursor_node = temp_node;
             Object value = new Double(sum);
