@@ -10,9 +10,15 @@ import junit.framework.TestCase;
  * @since 4.0
  */
 public class FTPTest extends TestCase {
+    /**
+     * Detail:
+     * Target:
+     * History:
+     */
     public void testFtp() {
         FtpBusiness ftpBusiness = new FtpBusiness();
-        ftpBusiness.connectServer("env.finedevelop.com", 21, "administrator", "123", "BI4.0");
+        ftpBusiness.connectServer("env.finedevelop.com", 21, "Anonymous", "", "BI4.0");
         ftpBusiness.download("md5sums", "D:/temp/sum");
     }
+
 }

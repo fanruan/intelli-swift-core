@@ -695,12 +695,12 @@ BICst.FILTER_DATE_COMBO = [[{
         cls: "dot-e-font"
     }]
 }], [{
-    text: BI.i18nText("BI-More_Than"),
-    value: BICst.FILTER_DATE.LATER_THAN,
+    text: BI.i18nText("BI-Sooner_Than"),
+    value: BICst.FILTER_DATE.EARLY_THAN,
     cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Less_Than"),
-    value: BICst.FILTER_DATE.EARLY_THAN,
+    text: BI.i18nText("BI-Later_Than"),
+    value: BICst.FILTER_DATE.LATER_THAN,
     cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Equal"),

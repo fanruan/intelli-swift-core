@@ -60,6 +60,11 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return field;
     }
 
+    @Override
+    public ICubeColumnIndexReader createNoneSortNoneGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
+        return  loader.getTableIndex(getTableSourceFromField()).loadGroup(createKey(), relations);
+    }
+
 
     @Override
     public BICore fetchObjectCore() {
@@ -81,8 +86,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
      */
     @Override
     public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
-        ICubeColumnIndexReader getter = loader.getTableIndex(getTableSourceFromField()).loadGroup(createKey(), relations);
-        return dimension.getGroup().createGroupedMap(getter);
+        return dimension.getGroup().createGroupedMap(createNoneSortNoneGroupValueMapGetter(target, loader));
     }
 
     /**

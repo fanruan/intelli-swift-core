@@ -27,6 +27,11 @@ public class CubeTreeMap<K> extends TreeMap implements ICubeColumnIndexReader, R
     }
 
     @Override
+    public GroupValueIndex getNULLIndex() {
+        return null;
+    }
+
+    @Override
     public GroupValueIndex[] getGroupIndex(Object[] keys) {
         java.util.List<GroupValueIndex> list = new java.util.ArrayList();
         for (int i = 0; i < keys.length; i++) {

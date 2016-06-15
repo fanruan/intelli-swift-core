@@ -142,6 +142,9 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
         GroupValueIndex gvi = loader.getTableIndex(targetKey.getTableSource()).getAllShowIndex();
+        for (DimensionCalculator r : row){
+            gvi = GVIUtils.AND(gvi, r.createNoneSortNoneGroupValueMapGetter(targetKey, loader).getNULLIndex().NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
+        }
         if (filter != null) {
             for (int i = 0; i < row.length; i++) {
                 gvi = GVIUtils.AND(gvi, filter.createFilterIndex(row[i], targetKey, loader, userId));
