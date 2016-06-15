@@ -18,6 +18,7 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
+import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -119,7 +120,13 @@ public class BIDetailWidget extends BIAbstractWidget {
 
 
     public void setTargetTable(long userID) {
-        BITableID targetTableID = dimensions[0].createTableKey().getID();
+        BITableID targetTableID = new BITableID();
+        for (BIDetailTarget target : dimensions) {
+            if (!(target instanceof BINumberFormulaDetailTarget)) {
+                targetTableID = target.createTableKey().getID();
+                break;
+            }
+        }
         target = BIModuleUtils.getBusinessTableById(new BITableID(targetTableID));
         for (int i = 0; i < dimensions.length; i++) {
             List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
