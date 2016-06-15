@@ -19,6 +19,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
@@ -114,7 +115,6 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             return new ArrayList<BITableSourceRelation>();
         }
         List<BITableRelation> relationList = relMap.get(tarId);
-//        checkRelationExist(relationList, dimId, tarId);
         return relationList == null ? new ArrayList<BITableSourceRelation>() : BIConfUtils.convert2TableSourceRelation(relationList);
     }
 
@@ -132,10 +132,13 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 }
             }
         } else {
-            BIDimension dim = BITravalUtils.getTargetByName(did, dimensions);
-            BusinessField dimField = getDimDataColumn(dim, tarId);
-            if (!ComparatorUtils.equals(target.getStatisticElement().getTableBelongTo().getTableSource(), dimField.getTableBelongTo().getTableSource())) {
-                throw new RuntimeException("relation empty, but source different");
+            Map<String, List<BITableRelation>> directToDimRelMap = directToDimensionRelationsMap.get(did);
+            if (directToDimRelMap.get(tarId) == null) {
+                BIDimension dim = BITravalUtils.getTargetByName(did, dimensions);
+                BusinessField dimField = getDimDataColumn(dim, tarId);
+                if (!ComparatorUtils.equals(target.getStatisticElement().getTableBelongTo().getTableSource(), dimField.getTableBelongTo().getTableSource())) {
+                    throw new RuntimeException("relation empty, but source different");
+                }
             }
         }
     }
@@ -251,7 +254,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             JSONObject targetSort = (JSONObject) jo.get("sort");
             int sortType = targetSort.getInt("type");
             this.targetSort = new NameObject(targetSort.getString("sort_target"), sortType);
-            if(sortType == BIReportConstant.SORT.NONE) {
+            if (sortType == BIReportConstant.SORT.NONE) {
                 this.targetSort = null;
             }
         }

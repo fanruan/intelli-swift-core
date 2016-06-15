@@ -46,7 +46,8 @@ BI.CalculateTargetPopupDetailModel = BI.inherit(FR.OB, {
     },
 
     _isNumberOrCalTarget: function (dId) {
-        return BI.Utils.getDimensionTypeByID(dId) === (BICst.TARGET_TYPE.NUMBER || BICst.TARGET_TYPE.FORMULA)
+        var targetType = BI.Utils.getDimensionTypeByID(dId);
+        return targetType === BICst.TARGET_TYPE.NUMBER || targetType === BICst.TARGET_TYPE.FORMULA
     },
 
 
