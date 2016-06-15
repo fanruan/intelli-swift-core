@@ -208,7 +208,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             } else {
                 rowItem.values.push({
                     type: "bi.detail_table_cell",
-                    dId: dId,
+                    dId: dimensionIds[i],
                     text: rowValue
                 })
             }
