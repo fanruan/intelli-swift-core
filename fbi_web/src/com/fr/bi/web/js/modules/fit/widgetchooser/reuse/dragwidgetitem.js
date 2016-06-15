@@ -167,8 +167,13 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 if (BI.has(self.oldDimensions[idx], "dimension_map")) {
                     dimension.dimension_map = {};
                     BI.each(self.oldDimensions[idx].dimension_map, function (id, map) {
-                        var result = self._createDimensionsAndTargets(id);
-                        dimension.dimension_map[result.id] = map;
+                        //明细表dimensionmap存的key是tableId，与汇总表区分
+                        if(BI.Utils.isDimensionExist(id)){
+                            var result = self._createDimensionsAndTargets(id);
+                            dimension.dimension_map[result.id] = map;
+                        }else{
+                            dimension.dimension_map[id] = map;
+                        }
                     });
                 }
                 if(BI.has(self.oldDimensions[idx], "filter_value")){

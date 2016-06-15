@@ -294,9 +294,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _formatDataForRangeArea: function(data){
         var items = this._formatDataForAxis(data);
-        return BI.map(items, function(idx, item){
+        var result = BI.map(items, function(idx, item){
             return BI.map(item, function(id, it){
-                if(id === 0){
+                if(idx === 0){
                     return BI.extend({}, it, {
                         fillColorOpacity: 0,
                         stack: "stackedArea",
@@ -307,6 +307,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 }
             });
         });
+        var res = [];
+        BI.each(result, function(idx, arr){
+            res = BI.concat(res, arr);
+        });
+        return BI.isEmptyArray(res) ? res : [res];
     },
 
     _formatDataForBar: function(data){
