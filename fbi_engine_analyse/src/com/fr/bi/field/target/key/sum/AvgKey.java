@@ -20,6 +20,14 @@ public class AvgKey extends SummaryKey {
     }
 
 
+    public BITargetKey getSumKey() {
+        return this.sum;
+    }
+
+    public BITargetKey getCountKey() {
+        return this.count;
+    }
+
     @Override
     public int getSummaryType() {
         return 0;

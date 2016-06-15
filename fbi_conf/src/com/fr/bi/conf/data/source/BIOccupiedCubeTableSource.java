@@ -32,10 +32,14 @@ import java.util.*;
  * @since 4.0
  */
 public class BIOccupiedCubeTableSource implements CubeTableSource {
-    private String ID;
+    private CubeTableSource hostTableSource;
 
-    public BIOccupiedCubeTableSource(String id) {
-        this.ID = id;
+    public BIOccupiedCubeTableSource(CubeTableSource hostTableSource) {
+        this.hostTableSource = hostTableSource;
+    }
+
+    public void setHostTableSource(CubeTableSource hostTableSource) {
+        this.hostTableSource = hostTableSource;
     }
 
     @Override
@@ -45,12 +49,12 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
 
     @Override
     public String getSourceID() {
-        return ID;
+        return hostTableSource.getSourceID();
     }
 
     @Override
     public String getTableName() {
-        return null;
+        return hostTableSource.getTableName();
     }
 
     @Override
@@ -152,7 +156,7 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
 
     @Override
     public BICore fetchObjectCore() {
-        return BIBasicCore.generateValueCore(ID);
+        return BIBasicCore.generateValueCore(this.hostTableSource.getSourceID());
     }
 
     @Override
