@@ -1,9 +1,9 @@
 package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.conf.CalculateDepend;
+import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
@@ -32,9 +32,24 @@ public abstract class CalculateDependManager implements CalculateDepend {
 
     @Override
     public BICubeGenerateRelationPath calRelationPath(BITableSourceRelationPath biTableSourceRelationPath, Set<BITableSourceRelation> tableRelationSet) {
-        BICubeGenerateRelationPath biCubeGenerateRelationPath = null;
-
-        biCubeGenerateRelationPath = new BICubeGenerateRelationPath(biTableSourceRelationPath, null);
+        if (biTableSourceRelationPath.getAllRelations().size()<2){
+            return null;
+        }
+        Set<BITableSourceRelationPath> dependRelationPathSet=new HashSet<BITableSourceRelationPath>();
+        try {
+            if (tableRelationSet.contains(biTableSourceRelationPath.getLastRelation())) {
+                dependRelationPathSet.add(new BITableSourceRelationPath(biTableSourceRelationPath.getLastRelation()));
+            }
+            BITableSourceRelationPath copyPath=new BITableSourceRelationPath();
+            copyPath.copyFrom(biTableSourceRelationPath);
+            copyPath.removeLastRelation();
+            if(copyPath.getAllRelations().size()>0||!tableRelationSet.contains(copyPath.getFirstRelation())) {
+                dependRelationPathSet.add(copyPath);
+            }
+        } catch (BITablePathEmptyException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        BICubeGenerateRelationPath biCubeGenerateRelationPath = new BICubeGenerateRelationPath(biTableSourceRelationPath, dependRelationPathSet);
         return biCubeGenerateRelationPath;
     }
 }

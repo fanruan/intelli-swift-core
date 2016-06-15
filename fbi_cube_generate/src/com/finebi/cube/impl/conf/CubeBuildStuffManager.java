@@ -39,7 +39,6 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
     private Set<CubeTableSource> allSingleSources;
 
     private String rootPath;
-    private String buildTempPath;
     private Set<BITableSourceRelation> tableSourceRelationSet;
     private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private Set<BITableRelation> tableRelationSet;
@@ -359,7 +358,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         cubeGenerateRelationPathSet=new HashSet<BICubeGenerateRelationPath>();
         for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
             BICubeGenerateRelationPath biCubeGenerateRelationPath = cal.calRelationPath(biTableSourceRelationPath, this.tableSourceRelationSet);
-            if (biCubeGenerateRelationPath.getBiTableSourceRelationPath().getAllRelations().size()>1) {
+            if (null != biCubeGenerateRelationPath) {
                 cubeGenerateRelationPathSet.add(biCubeGenerateRelationPath);
             }
         }

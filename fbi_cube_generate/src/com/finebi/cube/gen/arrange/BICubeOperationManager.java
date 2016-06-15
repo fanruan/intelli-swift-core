@@ -343,11 +343,9 @@ public class BICubeOperationManager {
                             getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, new BITableSourceRelationPath(path.getBiTableSourceRelationPath().getLastRelation()).getSourceID()));
-                    BITableSourceRelationPath frontPath = new BITableSourceRelationPath();
-                    frontPath.copyFrom(path.getBiTableSourceRelationPath());
-                    frontPath.removeLastRelation();
-                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, frontPath.getSourceID()));
+                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getBiTableSourceRelationPathSet()) {
+                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
+                    }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
 
                 } catch (Exception e) {
@@ -357,32 +355,6 @@ public class BICubeOperationManager {
             subscribePathFinish();
         }
     }
-//    public void generateTableRelationPath(Set<BITableSourceRelationPath> relationPathSet) {
-//        if (relationPathSet != null && !relationPathSet.isEmpty()) {
-//            Iterator<BITableSourceRelationPath> it = relationPathSet.iterator();
-//            while (it.hasNext()) {
-//                BITableSourceRelationPath path = it.next();
-//                try {
-//                    String sourceID = path.getSourceID();
-//                    BIOperation<Object> operation = new BIOperation<Object>(
-//                            sourceID,
-//                            getTablePathBuilder(cube, path));
-//                    operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
-//                    operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-//                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, new BITableSourceRelationPath(path.getLastRelation()).getSourceID()));
-//                    BITableSourceRelationPath frontPath = new BITableSourceRelationPath();
-//                    frontPath.copyFrom(path);
-//                    frontPath.removeLastRelation();
-//                    operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, frontPath.getSourceID()));
-//                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-//
-//                } catch (Exception e) {
-//                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
-//                }
-//            }
-//            subscribePathFinish();
-//        }
-//    }
 
     long getVersion(CubeTableSource tableSource) {
         if (versionMap != null && versionMap.containsKey(tableSource)) {

@@ -64,7 +64,7 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             biTableRelation4CubeGenerates.add(biTableRelation4CubeGenerateAB);
             biTableRelation4CubeGenerates.add(biTableRelation4CubeGenerateBC);
             operationManager.generateRelationBuilder(biTableRelation4CubeGenerates);
-            BICubeGenerateRelationPath biTableRelationPath4CubeGenerate=new BICubeGenerateRelationPath(BITableSourceRelationPathTestTool.getABCPath(),relations);
+            BICubeGenerateRelationPath biTableRelationPath4CubeGenerate=new BICubeGenerateRelationPath(BITableSourceRelationPathTestTool.getABCPath(),null);
             Set<BICubeGenerateRelationPath> biTableRelationPath4CubeGenerateSet=new HashSet<BICubeGenerateRelationPath>();
             biTableRelationPath4CubeGenerateSet.add(biTableRelationPath4CubeGenerate);
             operationManager.generateTableRelationPath(biTableRelationPath4CubeGenerateSet);
