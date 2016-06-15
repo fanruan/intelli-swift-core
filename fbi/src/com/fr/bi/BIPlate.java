@@ -36,10 +36,7 @@ import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.Inter;
 import com.fr.plugin.ExtraClassManager;
-import com.fr.stable.ActorConstants;
-import com.fr.stable.ActorFactory;
-import com.fr.stable.ArrayUtils;
-import com.fr.stable.EnvChangedListener;
+import com.fr.stable.*;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.stable.plugin.PluginSimplify;
@@ -60,6 +57,7 @@ public class BIPlate extends AbstractFSPlate {
     @Override
     public void initData() {
 //        SystemFactoryRegister.systemRegister();
+        registerDebug();
         initModules();
         super.initData();
         startModules();
@@ -70,6 +68,14 @@ public class BIPlate extends AbstractFSPlate {
         loadMemoryData();
         if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
             markedObject.generateCubes();
+        }
+    }
+
+    private void registerDebug() {
+        try {
+            Class c = Class.forName("com.fr.bi.test.DebugUtils");
+            c.newInstance();
+        } catch (Throwable t) {
         }
     }
 
@@ -87,19 +93,21 @@ public class BIPlate extends AbstractFSPlate {
     }
 
     private void  loadResources () {
-        Locale[] locales = new Locale[]{Locale.CHINA, Locale.US};
-        for(Locale locale : locales) {
+        if(!StableUtils.isDebug()) {
+            Locale[] locales = new Locale[]{Locale.CHINA, Locale.US};
+            for(Locale locale : locales) {
+                try {
+                    com.fr.web.ResourceHelper.createDefaultJs(locale);
+                } catch (Exception e) {
+                }
+            }
             try {
-                com.fr.web.ResourceHelper.createDefaultJs(locale);
+                com.fr.web.ResourceHelper.createDefaultCss();
             } catch (Exception e) {
             }
-        }
-        try {
-            com.fr.web.ResourceHelper.createDefaultCss();
-        } catch (Exception e) {
-        }
-        for(BIModule module : BIModuleManager.getModules()) {
-            module.loadResources(locales);
+            for(BIModule module : BIModuleManager.getModules()) {
+                module.loadResources(locales);
+            }
         }
     }
 
