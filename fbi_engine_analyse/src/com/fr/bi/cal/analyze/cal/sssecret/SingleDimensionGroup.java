@@ -151,10 +151,14 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         if (!useRealData) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
-        if (hasParentRelation() && column.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
-            return getIterByChildValue();
+        if(column.createValueMap(getRealTableKey4Calculate(), getLoader()).sizeOfGroup() < BIBaseConstant.SMALL_GROUP) {
+            return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         } else if (shouldGetIterByAllValue()) {
             return getIterByAllValue();
+        } else if(column.createValueMap(getRealTableKey4Calculate(), getLoader()).sizeOfGroup() < BIBaseConstant.MIDDLE_GROUP) {
+            return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
+        } else if (hasParentRelation() && column.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
+             return getIterByChildValue();
         } else {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
