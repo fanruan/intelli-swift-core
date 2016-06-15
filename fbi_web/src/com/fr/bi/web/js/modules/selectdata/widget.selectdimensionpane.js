@@ -386,8 +386,35 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         var id = BI.UUID();
         dimTarIdMap[old.dId] = id;
         dimension.dId = id;
+        if(BI.has(dimension, "filter_value")){
+            var success = true;
+            var filter = checkFilter(dimension.filter_value, dimTarIdMap[old.dId] || old.dId);
+            success === true && (dimension.filter_value = filter);
+        }
         result.push(dimension);
         return result;
+
+        function checkFilter(oldFilter, olddId, newdId){
+            var filter = {};
+            var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
+            filter.filter_type = oldFilter.filter_type;
+            if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+                filter.filter_value = [];
+                BI.each(filterValue, function (i, value) {
+                    filter.filter_value.push(checkFilter(value));
+                });
+            }else{
+                filter.filter_value = oldFilter.filter_value;
+                if(BI.has(oldFilter, "target_id")){
+                    if(oldFilter.target_id === olddId){
+                        filter.target_id = newdId;
+                    }else{
+                        success = false;
+                    }
+                }
+            }
+            return filter;
+        }
     },
 
     /**
@@ -440,9 +467,6 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         ];
                         if (BI.isNotNull(group) && BI.contains(groupArray, group.type)) {
                             dimension.group = group;
-                        }
-                        if (BI.isNotNull(filter_value)) {
-                            dimension.filter_value = filter_value;
                         }
                         if (BI.isNotNull(filter_value)) {
                             dimension.filter_value = filter_value;

@@ -87,7 +87,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             return [];
         }
         var view = BI.Utils.getWidgetViewByID(o.wId);
-        if(BI.has(view, BICst.REGION.DIMENSION2) && BI.isNotEmptyArray(view[BICst.REGION.DIMENSION2])){
+        if(BI.has(view, BICst.REGION.DIMENSION2) && BI.isNotEmptyArray(view[BICst.REGION.DIMENSION2]) && this.targetIds.length === 1){
             return [data];
         }
         var array = [];
@@ -423,6 +423,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 return this._formatDataForAxis(data);
             case BICst.WIDGET.FORCE_BUBBLE:
+                return this._formatDataForForceBubble(data);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
