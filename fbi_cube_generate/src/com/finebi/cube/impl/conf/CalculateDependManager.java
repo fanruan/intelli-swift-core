@@ -25,9 +25,9 @@ public abstract class CalculateDependManager implements CalculateDepend {
             cubeTableSourceSet.add(biTableSourceRelation.getForeignTable());
         }
         if (analysisTableSources.contains(biTableSourceRelation.getPrimaryTable())) {
-            cubeTableSourceSet.add(biTableSourceRelation.getForeignTable());
+            cubeTableSourceSet.add(biTableSourceRelation.getPrimaryTable());
         }
-        return new BITableSourceRelation4Incremental(biTableSourceRelation,cubeTableSourceSet);
+        return new BITableSourceRelation4Incremental(biTableSourceRelation, cubeTableSourceSet);
     }
 
     @Override
@@ -37,11 +37,11 @@ public abstract class CalculateDependManager implements CalculateDepend {
         pathCopy.copyFrom(biTableSourceRelationPath);
         Set<BITableSourceRelation> biTableSourceRelationSet = new HashSet<BITableSourceRelation>();
         try {
-            while (pathCopy.getAllRelations().size() > 1 && tableRelationSet.contains(pathCopy.getFirstRelation())) {
+            while (pathCopy.getAllRelations().size() > 0 && tableRelationSet.contains(pathCopy.getFirstRelation())) {
                 biTableSourceRelationSet.add(pathCopy.getFirstRelation());
                 pathCopy.removeFirstRelation();
             }
-            while (pathCopy.getAllRelations().size() > 1 && tableRelationSet.contains(pathCopy.getLastRelation())) {
+            while (pathCopy.getAllRelations().size() > 0 && tableRelationSet.contains(pathCopy.getLastRelation())) {
                 biTableSourceRelationSet.add(pathCopy.getLastRelation());
                 pathCopy.removeLastRelation();
             }

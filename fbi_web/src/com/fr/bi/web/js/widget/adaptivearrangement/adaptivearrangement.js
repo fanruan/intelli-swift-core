@@ -36,6 +36,14 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             self._initResizable(item.el);
         });
 
+        this.element.click(function (e) {
+            BI.each(self.getAllRegions(), function (i, region) {
+                if (!region.el.element.__isMouseInBounds__(e)) {
+                    region.el.element.removeClass("selected");
+                }
+            });
+        });
+
         BI.Resizers.add(this.getName(), function (e) {
             //只有window resize的时候才会触发事件
             if (BI.isWindow(e.target) && self.element.is(":visible")) {

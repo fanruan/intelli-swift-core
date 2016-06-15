@@ -11,7 +11,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         DETAIL_WEST_WIDTH: 280,
         DETAIL_DATA_STYLE_HEIGHT: 240,
         DETAIL_GAP_NORMAL: 10,
-        DETAIL_PANE_HORIZONTAL_GAP: 20
+        DETAIL_PANE_HORIZONTAL_GAP: 10
 
     },
 
@@ -26,14 +26,38 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
+        var mask = BI.createWidget();
+        mask.element.__buildZIndexMask__(0);
         BI.createWidget({
-            type: "bi.border",
+            type: "bi.absolute",
             element: vessel,
-            items: {
-                north: {el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT},
-                west: {el: this._buildWest(), width: this.constants.DETAIL_WEST_WIDTH},
-                center: {el: this._buildCenter()}
-            }
+            items: [{
+                el: mask,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }, {
+                el: {
+                    type: "bi.htape",
+                    cls: "widget-attribute-setter-container",
+                    items: [{
+                        el: this._buildWest(),
+                        width: this.constants.DETAIL_WEST_WIDTH
+                    }, {
+                        type: "bi.vtape",
+                        items: [{
+                            el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
+                        }, {
+                            el: this._buildCenter()
+                        }]
+                    }]
+                },
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20
+            }]
         });
     },
 
