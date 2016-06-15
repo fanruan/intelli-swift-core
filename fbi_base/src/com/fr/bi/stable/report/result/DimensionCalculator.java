@@ -20,6 +20,8 @@ public interface DimensionCalculator extends FCloneable {
 
      BusinessField getField();
 
+
+    ICubeColumnIndexReader createNoneSortNoneGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader);
     /**
      * 获取维度到维度/指标的分组索引
      *

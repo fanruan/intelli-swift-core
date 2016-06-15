@@ -36,6 +36,11 @@ public class NoneDimensionCalculator implements DimensionCalculator {
         return field;
     }
 
+    @Override
+    public ICubeColumnIndexReader createNoneSortNoneGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
+        return loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(createKey(), relations);
+    }
+
     /**
      * 获取维度到维度/指标的分组索引
      *
