@@ -68,8 +68,11 @@ public class BITableRelationAnalyser implements BITableRelationAnalysisService {
     @Override
     public IRelationContainer getForeignRelation(BusinessTable table) throws BITableAbsentException {
         synchronized (relationContainerService) {
+            if (table2ForeignRelationsManager.containTable(table)) {
                 return table2ForeignRelationsManager.getTableForeignRelationContainer(table);
-
+            } else {
+                return new BIRelationContainer();
+            }
 
         }
     }

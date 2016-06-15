@@ -238,7 +238,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 //    public void testFieldIndexDateYearMonthDay() {
 //        try {
 //            BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-//            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
+//            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convetTableRealtionToTableSourceRealtion(tableData));
 //            fieldIndexGenerator(tableData, 0);
 //            DBField field = tableData.getFieldsArray(null)[0];
 //            ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(field));

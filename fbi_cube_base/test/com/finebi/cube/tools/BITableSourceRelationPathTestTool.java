@@ -68,7 +68,16 @@ public class BITableSourceRelationPathTestTool {
             throw BINonValueUtils.beyondControl(e);
         }
     }
-
+    public static BITableSourceRelationPath getABPath() {
+        try {
+            BITableSourceRelationPath path = new BITableSourceRelationPath();
+            path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryAB());
+            return path;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
     public static BITableSourceRelationPath getABCPath() {
         try {
             BITableSourceRelationPath path = new BITableSourceRelationPath();

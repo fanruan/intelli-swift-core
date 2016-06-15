@@ -4,12 +4,11 @@ import com.fr.base.FRContext;
 import com.fr.bi.stable.io.io.GroupReader;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.mem.BIMemoryUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StableUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.MappedByteBuffer;
@@ -148,14 +147,14 @@ public class BIFileUtils {
                     }
                     currentSize += size;
                 } catch (Exception e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
+                    BILogger.getLogger().error(e.getMessage(), e);
                 } finally {
                     BIMemoryUtils.un_map(writer);
                     BIMemoryUtils.un_map(reader);
                 }
             }
         } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+            BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             if (in != null) {
                 in.close();
@@ -269,6 +268,45 @@ public class BIFileUtils {
             }
             k++;
             tmp = new File(old_f, fileName + "_" + k);
+        }
+    }
+
+    public static void writeFile(String path, String content) {
+        try {
+            File tmp = new File(path);
+            createFile(tmp);
+            FileWriter fileWriter = new FileWriter(tmp, false);
+            BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
+            bufferWriter.write(content);
+            bufferWriter.close();
+            fileWriter.close();
+        } catch (IOException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    /**
+     * 一行一行读文件
+     *
+     * @param file 文件
+     * @return list集合
+     */
+    public static String readFile(String path) {
+        StringBuffer str = new StringBuffer("");
+        File file = new File(path);
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fr);
+
+            try {
+                return reader.readLine();
+            } finally {
+                reader.close();
+                fr.close();
+            }
+
+        } catch (IOException e) {
+            throw BINonValueUtils.beyondControl(e);
         }
     }
 }

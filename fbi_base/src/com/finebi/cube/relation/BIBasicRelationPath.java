@@ -76,6 +76,11 @@ public class BIBasicRelationPath<T, F, R extends BIBasicRelation<T, F>> extends 
         }
     }
 
+    public void removeFirstRelation() throws BITablePathEmptyException {
+        synchronized (container) {
+            container.remove(getFirstRelation());
+        }
+    }
     public boolean canRelationsBuildPath(R part_head, R part_tail) {
         return ComparatorUtils.equals(part_head.getForeignTable(), part_tail.getPrimaryTable());
     }
