@@ -77,6 +77,8 @@ var _JS = [
     "scene/mvc.scene1.js",
 
     "scene/mvc.broadcast.js",
+    
+    "scene/mvc.draggable.cursor.js",
 
     "scene/mvc.package.data.js",
 
@@ -433,6 +435,7 @@ var _Routes = {
     "/broadcast": "BroadcastView",
     "/package_data": "PackageDataView",
     "/etl_data": "ETLDataView",
+    "/draggable_cursor": "DraggableCursorView",
 
     //控件
     "/label": "LabelView",
@@ -663,6 +666,9 @@ _Models.scene = [{
 }, {
     text: "数据结构——etl",
     value: "etl_data"
+}, {
+    text: "test draggable cursor",
+    value: "draggable_cursor"
 }];
 _Models.widget = [{
     id: 2,

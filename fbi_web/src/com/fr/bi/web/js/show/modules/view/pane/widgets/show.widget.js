@@ -48,7 +48,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
         this.tableChart = BI.createWidget({
             type: "bi.table_chart_manager",
-            wId: self.model.get("id")
+            wId: self.model.get("id"),
+            status: BICst.WIDGET_STATUS.SHOW
         });
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {

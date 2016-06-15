@@ -5,6 +5,10 @@
     border: 1px solid @color-bi-border-normal;
     background: @color-bi-background-highlight;
     z-index: @zIndex-tip;
+    cursor: url('@{dragCursor}'), auto;
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: grabbing;
   }
   & .arrangement-block {
     z-index: @zIndex-tip;

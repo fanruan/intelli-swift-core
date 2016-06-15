@@ -178,7 +178,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             BI.Utils.isDimensionUsable(dId) && (self.targetIds.push(dId));
         });
     },
-
+    
     /**
      * 重置部分数据，用于无后台请求
      */
