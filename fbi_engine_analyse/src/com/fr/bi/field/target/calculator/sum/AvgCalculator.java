@@ -26,6 +26,10 @@ public class AvgCalculator extends FormulaCalculator {
         this.count = new CountCalculator(target, target.getStatisticElement().getFieldName());
     }
 
+    @Override
+    public TargetGettingKey createTargetGettingKey() {
+        return new TargetGettingKey(createTargetKey(), getName());
+    }
 
     /**
      * 创建计算指标
