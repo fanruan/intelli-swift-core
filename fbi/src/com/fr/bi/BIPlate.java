@@ -5,10 +5,12 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
+import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleManager;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.entry.BIReportEntry;
@@ -48,6 +50,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * BI模块启动时做的一些初始化工作，通过反射调用
@@ -72,11 +75,31 @@ public class BIPlate extends AbstractFSPlate {
 
     public void loadMemoryData() {
         try {
+            loadResources();
             BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID());
             BIConnectionManager.getInstance();
             BICubeConfigureCenter.getTableRelationManager().getAllTablePath(UserControl.getInstance().getSuperManagerID());
+            BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable();
+            BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(UserControl.getInstance().getSuperManagerID());
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    private void  loadResources () {
+        Locale[] locales = new Locale[]{Locale.CHINA, Locale.US};
+        for(Locale locale : locales) {
+            try {
+                com.fr.web.ResourceHelper.createDefaultJs(locale);
+            } catch (Exception e) {
+            }
+        }
+        try {
+            com.fr.web.ResourceHelper.createDefaultCss();
+        } catch (Exception e) {
+        }
+        for(BIModule module : BIModuleManager.getModules()) {
+            module.loadResources(locales);
         }
     }
 

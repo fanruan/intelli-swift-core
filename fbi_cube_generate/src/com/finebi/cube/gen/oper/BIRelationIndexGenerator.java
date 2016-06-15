@@ -47,17 +47,17 @@ public class BIRelationIndexGenerator extends BIProcessor {
         try {
             buildRelationIndex();
             long costTime = System.currentTimeMillis() - t;
-            biLogManager.infoRelation(getRelaionColumeKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
+            biLogManager.infoRelation(getRelationColumnKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
             return null;
         } catch (Exception e) {
-            biLogManager.errorRelation(getRelaionColumeKeyInfo(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            biLogManager.errorRelation(getRelationColumnKeyInfo(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
         }
     }
 
-    public RelationColumnKey getRelaionColumeKeyInfo() {
+    public RelationColumnKey getRelationColumnKeyInfo() {
         BITableSourceRelation tableRelation = getTableRelation(this.relation);
         ICubeFieldSource field = tableRelation.getPrimaryField();
         List<BITableSourceRelation> relations = new ArrayList<BITableSourceRelation>();

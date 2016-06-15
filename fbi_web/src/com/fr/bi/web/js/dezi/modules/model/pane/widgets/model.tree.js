@@ -54,6 +54,10 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
     },
     local: function () {
         var self = this;
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         if (this.has("changeSort")) {
             var dimensions = this.get("dimensions");
             BI.each(dimensions, function (id, dimension) {

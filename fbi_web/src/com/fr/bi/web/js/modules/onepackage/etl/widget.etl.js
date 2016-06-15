@@ -355,7 +355,6 @@ BI.ETL = BI.inherit(BI.Widget, {
             });
             return
         }
-        this.model.setFields([]);
         self._populate();
     },
 
@@ -417,7 +416,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 fields: this.model.getFields(),
                 relations: this.model.getRelations(),
                 translations: this.model.getTranslations(),
-                all_fields: this.model.getAllFields()
+                all_fields: this.model.getAllFields(),
+                isFinal: this.model.getAllTables().length === 1
             }
         });
         tableInfo.on(BI.TableFieldWithSearchPane.EVENT_RELATION_CHANGE, function (fieldId) {

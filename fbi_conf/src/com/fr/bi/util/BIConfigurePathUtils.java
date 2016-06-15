@@ -26,6 +26,10 @@ public class BIConfigurePathUtils {
         return cubePath == null ? FRContext.getCurrentEnv().getPath() + BASEPATH : cubePath;
     }
 
+    public static String getProjectLibPath() {
+        return FRContext.getCurrentEnv().getPath() + File.separator + "lib";
+    }
+
     public static String checkCubePath(String cubePath) {
         if (StringUtils.isEmpty(cubePath)) {
             return "";

@@ -148,7 +148,7 @@ public class BIBusinessTable implements BusinessTable {
             /**
              * Connery:错用createJson，传递了一个Loader进去
              */
-            JSONObject filedJson = field.createJSON(loader);
+            JSONObject filedJson = field.createJSON();
             fields.put(field.getFieldID().getIdentityValue(), filedJson);
             stringList.add(filedJson);
         }
