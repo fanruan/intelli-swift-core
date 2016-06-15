@@ -5,7 +5,7 @@
 BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
 
     constants: {
-        FROM_POSITION: 2
+        FROM_POSITION: 1
     },
 
     _defaultConfig: function () {
@@ -19,10 +19,6 @@ BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
             [{
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.CONTROL_COMBO.DELETE
-            }],
-            [{
-                text: BI.i18nText("BI-Rename"),
-                value: BICst.CONTROL_COMBO.RENAME
             }],
             [{
                 text: BI.i18nText("BI-Dimension_From"),
