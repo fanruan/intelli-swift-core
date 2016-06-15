@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
@@ -19,6 +20,8 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.stable.gvi.GVIUtils;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
@@ -232,6 +235,15 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         this.parseSortFilter(jo, userId);
         parseSettingMap(jo);
         parseDimensionMap(dimAndTar, userId);
+    }
+
+    @Override
+    public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
+        GroupValueIndex gvi =  super.createFilterGVI(row, targetKey, loader, userId);
+        for (DimensionCalculator r : row){
+            gvi = GVIUtils.AND(gvi, r.createNoneSortNoneGroupValueMapGetter(targetKey, loader).getNULLIndex().NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
+        }
+        return gvi;
     }
 
     private void parseSettingMap(JSONObject jo) throws Exception {
