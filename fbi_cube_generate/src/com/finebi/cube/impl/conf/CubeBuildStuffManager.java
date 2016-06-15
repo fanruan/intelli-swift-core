@@ -1,6 +1,9 @@
-package com.finebi.cube.conf;
+package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -141,8 +144,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         this.tableSourceRelationSet = convertRelations(this.tableRelationSet);
     }
 
-    @Override
-    public Set<BITableSourceRelationPath> getRelationPaths() {
+    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
         return relationPaths;
     }
 

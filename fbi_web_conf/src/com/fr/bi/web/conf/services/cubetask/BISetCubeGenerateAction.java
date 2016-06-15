@@ -1,9 +1,9 @@
 package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.CubeBuildStuffManager;
-import com.finebi.cube.conf.CubeBuildStuffManagerSingleTable;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.impl.conf.CubeBuildStuffManager;
+import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -32,19 +32,16 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
 //        String tableName= WebUtils.getHTTPRequestParameter(req, "tableName");
 //        String translations= WebUtils.getHTTPRequestParameter(req, "translations");
 //        BusinessTable businessTable = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
-        
-       
-       //todo kary 后期要优化ETL的更新方式
+
+//        todo kary 优化ETL的更新方式,可能要单独实现ETL更新方法
+        CubeBuildStuff cubeBuildStuff;
         if (StringUtils.isEmpty(tableId)){
-            CubeBuildStuff cubeBuildStuffManager= new CubeBuildStuffManager(new BIUser(userId));
-            CubeTaskBuild.CubeBuild(userId,cubeBuildStuffManager);            
+             cubeBuildStuff= new CubeBuildStuffManager(new BIUser(userId));
         }else{
-            CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
-//            BIPackageTableSourceConfigManager biPackageFindTableSourceConfigManager=new BIPackageTableSourceConfigManager();
-//            Set<BIBusinessTable> tableSources4Genrate = biPackageFindTableSourceConfigManager.getTableSources4Genrate(userId);
-//            cubeBuildStuff=new CubeBuildStuffManagerByTableSources(tableSources4Genrate,userId);
-            CubeTaskBuild.CubeBuild(userId, cubeBuildStuff);
+             cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
         }
+        CubeTaskBuild.CubeBuild(userId, cubeBuildStuff);
+//        CubeTaskBuild.CubeBuild(userId);
     }
 
 }

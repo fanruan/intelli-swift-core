@@ -5,10 +5,11 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import java.util.Set;
 
 /**
- * Created by 49597 on 2016/6/8.
+ * Created by kary on 2016/6/8.
+ * 获取需要更新的业务表
  */
 public interface BIPackageTableSourceConfigProvider {
 
-    Set<BIBusinessTable> getTableSources4Genrate(long userId);
+    Set<BIBusinessTable> getTables4Generate(long userId);
 
 }

@@ -2,7 +2,6 @@ package com.finebi.cube.conf.pack.imp;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BIPackageTableSourceConfigProvider;
-import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -15,14 +14,13 @@ import java.util.Set;
 
 /**
  * Created by wuk on 16/6/8.
+ * 新增业务包后更新，获取所有新增的table
  */
 public class BIPackageTableSourceConfigManager implements BIPackageTableSourceConfigProvider {
-private BISystemPackageConfigurationProvider packageManager;
-    @Override
-    public Set<BIBusinessTable> getTableSources4Genrate(long userId) {
-        packageManager = BICubeConfigureCenter.getPackageManager();
-        Set<BIBusinessPackage> packages4CubeGenerate = packageManager.getPackages4CubeGenerate(userId);
-        Set<IBusinessPackageGetterService> iBusinessPackageGetterServiceSet=new HashSet<IBusinessPackageGetterService>();
+
+    public Set<BIBusinessTable> getTables4Generate(long userId) {
+        Set<BIBusinessPackage> packages4CubeGenerate = BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
+        Set<IBusinessPackageGetterService> iBusinessPackageGetterServiceSet = new HashSet<IBusinessPackageGetterService>();
         for (BIBusinessPackage biBusinessPackage : packages4CubeGenerate) {
             try {
                 IBusinessPackageGetterService iBusinessPackageGetterService = BICubeConfigureCenter.getPackageManager().getPackage(userId, biBusinessPackage.getID());
@@ -31,9 +29,9 @@ private BISystemPackageConfigurationProvider packageManager;
                 BILogger.getLogger().error(e.getMessage());
             }
         }
-        Set<BIBusinessTable> sources = getTableSources(iBusinessPackageGetterServiceSet, userId);
-        return sources;
+        return getTableSources(iBusinessPackageGetterServiceSet, userId);
     }
+
 
     public Set<BIBusinessTable> getTableSources(Set<IBusinessPackageGetterService> packs, long userId) {
         Set<BIBusinessTable> sources = new HashSet<BIBusinessTable>();

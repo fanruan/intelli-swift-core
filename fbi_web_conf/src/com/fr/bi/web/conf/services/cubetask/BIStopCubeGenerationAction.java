@@ -2,7 +2,7 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.CubeBuildStuffManager;
+import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
