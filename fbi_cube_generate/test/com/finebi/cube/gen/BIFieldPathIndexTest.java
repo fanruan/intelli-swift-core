@@ -2,15 +2,15 @@ package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
+import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
-import com.finebi.cube.tools.BICubePathTestTool;
-import com.finebi.cube.tools.BIMemoryDataSourceFactory;
-import com.finebi.cube.tools.BITableSourceTestTool;
+import com.finebi.cube.tools.*;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 
 /**
@@ -27,6 +27,7 @@ public class BIFieldPathIndexTest extends BICubeTestBase {
         super.setUp();
         indexBuilder = new BIFieldPathIndexBuilder(cube, new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceA(), "gender", DBConstant.CLASS.STRING, 6), BICubePathTestTool.getABC());
     }
+
 
     public void testFieldPathIndex() {
         try {
@@ -50,6 +51,37 @@ public class BIFieldPathIndexTest extends BICubeTestBase {
             assertTrue(false);
         }
 
+    }
+
+    /**
+     * Detail:如果非主键字段包含空值的情况
+     * History:
+     * Date:2016/6/15
+     */
+    public void testFieldPathContainNull() {
+        try {
+            BIRelationIndexBuilderTest relationIndexBuilderTest = new BIRelationIndexBuilderTest();
+            BICubeRelation relation = BICubeRelationTestTool.getNullTableRelation();
+            CubeTableSource parent = BIMemoryDataSourceFactory.generateTableNullParent();
+            BICubeFieldSource fieldSource = new BICubeFieldSource(BIMemoryDataSourceFactory.generateTableNullParent(),
+                    "Name", DBConstant.CLASS.STRING, 6);
+            BIFieldIndexGeneratorTest.buildFieldIndex((BIMemoryDataSource) parent, (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableNullChild());
+            relationIndexBuilderTest.generateRelationIndex(relation);
+            indexBuilder = new BIFieldPathIndexBuilder(cube,
+                    fieldSource, BICubePathTestTool.getContainNullPath());
+            indexBuilder.mainTask(null);
+
+
+            BIColumnKey columnKey = BIColumnKey.covertColumnKey(fieldSource);
+            ICubeColumnReaderService getterService = cube.getCubeColumn(BITableKeyUtils.convert(parent), columnKey);
+            assertEquals(getterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{2}));
+            ICubeRelationEntityGetterService relationEntityGetterService = getterService.getRelationIndexGetter(BICubePathTestTool.getContainNullPath());
+            assertEquals(relationEntityGetterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{2,3}));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
     }
 
 }
