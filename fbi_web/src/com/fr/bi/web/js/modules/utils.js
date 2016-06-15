@@ -1915,21 +1915,21 @@
         isTableUsableByWidgetID: function (tableId, wId) {
             var self = this;
             var dIds = this.getAllDimensionIDs(wId);
-            var noneCalculateTargetdIds = [];
+            var noneCalculateTargetIds = [];
             BI.each(dIds, function (i, dId) {
                 var dimensionType = self.getDimensionTypeByID(dId);
                 switch (dimensionType) {
                     case BICst.TARGET_TYPE.DATE:
                     case BICst.TARGET_TYPE.STRING:
                     case BICst.TARGET_TYPE.NUMBER:
-                        noneCalculateTargetdIds.push(dId);
+                        noneCalculateTargetIds.push(dId);
                 }
             });
-            if (noneCalculateTargetdIds.length < 1) {
+            if (noneCalculateTargetIds.length < 1) {
                 return true;
             }
             var tIds = [];
-            BI.each(noneCalculateTargetdIds, function (id, dId) {
+            BI.each(noneCalculateTargetIds, function (id, dId) {
                 tIds.push(self.getTableIDByDimensionID(dId));
             });
             return this.isTableInRelativeTables(tIds, tableId);
