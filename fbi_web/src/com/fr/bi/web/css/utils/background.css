@@ -23,3 +23,18 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/loading.gif');
   _background: none;
 }
+.axis-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis_text.png');
+  _background: none;
+}
+.axis-tip-detail-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis.png');
+  _background: none;
+}
+.data-miss-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/data_miss.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/data_miss.png');
+  _background: none;
+}

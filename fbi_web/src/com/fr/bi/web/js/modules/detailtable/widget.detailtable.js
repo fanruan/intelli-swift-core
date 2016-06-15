@@ -52,6 +52,21 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: self.table.getColumnSize()})});
         });
 
+        this.tab = BI.createWidget({
+            type: "bi.tab",
+            element: this.element,
+            cardCreator: function(v) {
+                switch (v) {
+                    case BI.DetailTable.SHOW_TABLE:
+                        return self.table;
+                    case BI.DetailTable.SHOW_TIP:
+                        return BI.createWidget({
+                            type: "bi.layout",
+                            cls: ""
+                        })
+                }
+            }
+        })
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -228,6 +243,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.table.resize();
     }
 
+});
+BI.extend(BI.DetailTable, {
+    SHOW_TABLE: 1,
+    SHOW_TIP: 2
 });
 BI.DetailTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.detail_table", BI.DetailTable);

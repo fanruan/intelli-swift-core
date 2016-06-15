@@ -23,10 +23,13 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         this.model = new BI.ChartDisplayModel({
             wId: o.wId
         });
-        this.tab = BI.createWidget({
-            type: "bi.tab",
-            element: this.element,
-            cardCreator: BI.bind(this._createTabs, this)
+        this.chart = BI.createWidget({
+            type: "bi.combine_chart",
+            element: this.element
+        });
+        this.chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
+            self._doChartItemClick(obj);
+            self.fireEvent(BI.ChartDisplay.EVENT_CHANGE, arguments);
         });
     },
 
@@ -51,34 +54,20 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         });
     },
 
-    _createTabs: function(){
-        var self = this;
-        var chart = BI.createWidget({
-            type: "bi.combine_chart"
-        });
-        chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
-            self._doChartItemClick(obj);
-            self.fireEvent(BI.ChartDisplay.EVENT_CHANGE, arguments);
-        });
-        return chart;
-    },
-
     populate: function () {
         var self = this, o = this.options;
         var type = BI.Utils.getWidgetTypeByID(o.wId);
-        this.tab.setSelect(type);
-        var selectedTab = this.tab.getSelectedTab();
         this.model.getWidgetData(type, function(types, data, options){
-            selectedTab.setTypes(types);
-            selectedTab.setOptions(BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {
+            self.chart.setTypes(types);
+            self.chart.setOptions(BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {
                 tooltipFormatter: self.model.getToolTip(type)
             }));
-            selectedTab.populate(data, options);
+            self.chart.populate(data, options);
         });
     },
 
     resize: function () {
-        this.tab.getSelectedTab().resize();
+        this.chart.resize();
     }
 });
 BI.ChartDisplay.EVENT_CHANGE = "EVENT_CHANGE";

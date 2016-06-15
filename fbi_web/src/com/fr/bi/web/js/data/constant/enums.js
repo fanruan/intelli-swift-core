@@ -469,3 +469,10 @@ BICst.VALUE_SAVE_NO_DECAML = 1;
 BICst.VALUE_SAVE_ONE_DECAML = 2;
 BICst.VALUE_SAVE_TWO_DECAML = 3;
 
+//定义组件的三个状态，查看状态的dashboard、编辑状态的dashboard、详细设置
+BICst.WIDGET_STATUS = {
+    SHOW: 1,
+    EDIT: 2,
+    DETAIL: 3
+};
+
