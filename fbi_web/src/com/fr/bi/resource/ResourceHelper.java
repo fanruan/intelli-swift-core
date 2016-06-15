@@ -16,6 +16,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
+import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,10 +47,14 @@ public class ResourceHelper {
                 return formula;
             }
             synchronized (this) {
-                if (formula == null) {
-                    formula = getFormulaJS(files);
+                String res = formula;
+                if (res == null) {
+                    res = getFormulaJS(files);
+                    if(!StableUtils.isDebug()) {
+                        formula = res;
+                    }
                 }
-                return formula;
+                return res;
             }
         }
     }
