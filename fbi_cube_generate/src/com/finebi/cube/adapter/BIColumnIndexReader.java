@@ -380,4 +380,13 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     public int getClassType() {
         return columnReaderService.getClassType();
     }
+
+    @Override
+    public GroupValueIndex getNULLIndex() {
+        try {
+            return indexDataGetterService.getNULLIndex(0);
+        } catch (BICubeIndexException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
 }

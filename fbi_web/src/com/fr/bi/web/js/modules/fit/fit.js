@@ -83,7 +83,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 id: id
             });
             widget.getDraggable().element.draggable({
-                cursor: BICst.cursorUrl,
+                // cursor: "move",
                 cursorAt: {left: 0, top: 0},
                 start: function (e, ui) {
                     self._startDrag(id, ui.position, e);
@@ -285,8 +285,8 @@ BI.Fit = BI.inherit(BI.Widget, {
                 width: region.width,
                 height: region.height
             }, {
-                left: region.left + region.width / 2,
-                top: region.top + region.height / 2
+                left: region.left + region.width / 2 + 1,
+                top: region.top + region.height / 2 + 1
             }))) {
             if (!(flag = this.arrangement.addRegion(el, {
                     left: region.left + region.width / 2,

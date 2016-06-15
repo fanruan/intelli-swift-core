@@ -125,7 +125,8 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
                             }
                             break;
                         }
-                        resValue = DateUtils.string2Date(value.toString(), true).getTime();
+                        Date date = DateUtils.string2Date(value.toString(), true);
+                        resValue = date == null ? null : date.getTime();
                         break;
                 }
                 if (travel != null) {

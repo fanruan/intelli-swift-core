@@ -52,7 +52,4 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         });
     }
 });
-BI.extend(BI.DetailDetailTableSelectDataPane, {
-    RELATION_TABLE: "__relation_table__"
-});
 $.shortcut("bi.detail_detail_table_select_data", BI.DetailDetailTableSelectDataPane);

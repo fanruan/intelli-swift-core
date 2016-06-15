@@ -269,7 +269,7 @@ BI.JoinModel = BI.inherit(FR.OB, {
                 isValid = false;
             }
         });
-        return isValid;
+        return isValid && (BI.isNotNull(this.joinFields) && this.joinFields.length > 0);
     },
 
     getJoinFieldsName: function () {
