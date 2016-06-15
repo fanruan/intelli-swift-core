@@ -115,7 +115,7 @@ $.extend(BI, {
                                             center: {
                                                 el: {
                                                     type: 'bi.label',
-                                                    text: title,
+                                                    text: title || BI.i18nText("BI-Prompt"),
                                                     textAlign: 'left',
                                                     hgap: 20,
                                                     height: 50
