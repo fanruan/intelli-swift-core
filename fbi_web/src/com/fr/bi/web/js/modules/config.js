@@ -1372,12 +1372,4 @@ BICst.CHART_LEGEND = [{
     value: BICst.CHART_LEGENDS.RIGHT
 }];
 
-BICst.MAP_CHART_LEGEND = [{
-    text: BI.i18nText("BI-Ju_xia"),
-    value: BICst.CHART_LEGENDS.BOTTOM
-}, {
-    text: BI.i18nText("BI-Ju_Right"),
-    value: BICst.CHART_LEGENDS.RIGHT
-}];
-
 
