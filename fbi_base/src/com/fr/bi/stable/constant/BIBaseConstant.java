@@ -66,7 +66,9 @@ public class BIBaseConstant {
      * 不显示全部时每个分组显示的数量
      */
     public static final int TEMPROWS = 8;
-    public static final int LARGE_GROUP_LINE = 20000;
+    public static final int LARGE_GROUP_LINE = 10000;
+    public static final int SMALL_GROUP = 64;
+    public static final int MIDDLE_GROUP = 256;
     //超过2kw 使用多线程
     public static final int MUTITHREADLESUMARYLINE = 20000000;
     public static final String TEMPMODELDESCRIPTION = "tempmodeldescription";
