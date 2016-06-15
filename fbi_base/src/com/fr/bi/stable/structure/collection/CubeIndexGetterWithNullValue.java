@@ -56,6 +56,11 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
     }
 
     @Override
+    public GroupValueIndex getNULLIndex() {
+        return null;
+    }
+
+    @Override
     public Object createValue(Object v) {
         return getter.createValue(v);
     }
