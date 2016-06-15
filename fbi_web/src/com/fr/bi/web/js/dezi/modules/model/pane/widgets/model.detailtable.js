@@ -7,13 +7,19 @@ BIDezi.DetailTableModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             page: 0,
-            settings: BICst.DEFAULT_CHART_SETTING
+            settings: {}
         })
     },
 
     change: function (changed) {
         if (BI.has(changed, "detail")) {
             this.set(this.get("detail"));
+        }
+        if (BI.has(changed, "settings")) {
+            this.refresh();
+        }
+        if (BI.has(changed, "filter_value")) {
+            this.refresh();
         }
     },
 
