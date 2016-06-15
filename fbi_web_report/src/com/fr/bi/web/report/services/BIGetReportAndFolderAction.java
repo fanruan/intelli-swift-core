@@ -28,9 +28,11 @@ public class BIGetReportAndFolderAction extends ActionNoSessionCMD {
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONArray ja = new JSONArray();
+        List<Long> folderIds = new ArrayList<Long>();
         List<BITemplateFolderNode> folderList = HSQLBITemplateFolderDAO.getInstance().findFolderByUserID(userId);
         for(int i = 0; i < folderList.size(); i++){
             ja.put(folderList.get(i).createJSONConfig());
+            folderIds.add(folderList.get(i).getId());
         }
 
         List<BIReportNode> nodeList = BIDAOUtils.findByUserID(userId);
@@ -45,7 +47,9 @@ public class BIGetReportAndFolderAction extends ActionNoSessionCMD {
                     checkReportStatus(node.getId(), node.getUserId(), allEntry)) {
                 node.setStatus(BIReportConstant.REPORT_STATUS.NORMAL);
             }
-            ja.put(node.createJSONConfig());
+            if(node.getParentid().equals("-1") || folderIds.contains(node.getParentid())) {
+                ja.put(node.createJSONConfig());
+            }
         }
         WebUtils.printAsJSON(res, ja);
     }
