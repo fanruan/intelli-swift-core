@@ -35,7 +35,7 @@
                 });
                 if (!isGrouped) {
                     packStructure.push({
-                        id : pack.id,
+                        id: pack.id,
                         text: pack.name,
                         value: pack.id
                     })
@@ -233,7 +233,7 @@
 
         getOriginalFieldNameByID: function (fieldId) {
             var field = Pool.fields[fieldId];
-            if(BI.isNotNull(field)) {
+            if (BI.isNotNull(field)) {
                 return field.field_name;
             }
         },
@@ -375,9 +375,9 @@
 
         //获取指定widget的拷贝,拷贝信息只包含widget的自身信息，如维度指标及其相关属性
         //不包含widge间的信息,如widget间的联动什么的
-        getWidgetCopyByID: function(wid){
+        getWidgetCopyByID: function (wid) {
             var widget = Data.SharingPool.get("widgets", wid);
-            if(BI.isNotNull(widget)){
+            if (BI.isNotNull(widget)) {
                 var obj = {};
                 obj.type = widget.type;
                 obj.name = BI.Func.createDistinctName(Data.SharingPool.get("widgets"), widget.name);
@@ -388,9 +388,9 @@
                     var copy = createDimensionsAndTargets(idx);
                     dimensions[copy.id] = copy.dimension;
                 });
-                BI.each(widget.view, function(region, dimIds){
+                BI.each(widget.view, function (region, dimIds) {
                     view[region] = [];
-                    BI.each(dimIds, function(idx, dId){
+                    BI.each(dimIds, function (idx, dId) {
                         view[region].push(dimTarIdMap[dId]);
                     });
                 });
@@ -407,7 +407,7 @@
                 return obj;
             }
 
-            function checkFilter(oldFilter, dId){
+            function checkFilter(oldFilter, dId) {
                 var filter = {};
                 var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
                 filter.filter_type = oldFilter.filter_type;
@@ -416,10 +416,10 @@
                     BI.each(filterValue, function (i, value) {
                         filter.filter_value.push(checkFilter(value));
                     });
-                }else{
+                } else {
                     filter.filter_value = oldFilter.filter_value;
                     //防止死循环
-                    if(BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId){
+                    if (BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId) {
                         var result = createDimensionsAndTargets(oldFilter.target_id);
                         filter.target_id = result.id;
                     }
@@ -443,12 +443,12 @@
                                 dimension.dimension_map[result.id] = map;
                             });
                         }
-                        if(BI.has(widget.dimensions[idx], "filter_value")){
+                        if (BI.has(widget.dimensions[idx], "filter_value")) {
                             dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx);
                         }
-                        if(BI.has(widget.dimensions[idx], "sort")){
+                        if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
-                            if(BI.has(dimension.sort, "sort_target")){
+                            if (BI.has(dimension.sort, "sort_target")) {
                                 var result = createDimensionsAndTargets(dimension.sort.sort_target);
                                 dimension.sort.sort_target = result.id;
                             }
@@ -1883,7 +1883,7 @@
 
             //考虑表头上指标过滤条件的日期类型
             var target_filter = widget.filter_value;
-            BI.each(target_filter, function(tId, filter){
+            BI.each(target_filter, function (tId, filter) {
                 parseFilter(filter)
             });
 
@@ -1915,11 +1915,21 @@
         isTableUsableByWidgetID: function (tableId, wId) {
             var self = this;
             var dIds = this.getAllDimensionIDs(wId);
-            if (dIds.length < 1) {
+            var noneCalculateTargetdIds = [];
+            BI.each(dIds, function (i, dId) {
+                var dimensionType = self.getDimensionTypeByID(dId);
+                switch (dimensionType) {
+                    case BICst.TARGET_TYPE.DATE:
+                    case BICst.TARGET_TYPE.STRING:
+                    case BICst.TARGET_TYPE.NUMBER:
+                        noneCalculateTargetdIds.push(dId);
+                }
+            });
+            if (noneCalculateTargetdIds.length < 1) {
                 return true;
             }
             var tIds = [];
-            BI.each(dIds, function (id, dId) {
+            BI.each(noneCalculateTargetdIds, function (id, dId) {
                 tIds.push(self.getTableIDByDimensionID(dId));
             });
             return this.isTableInRelativeTables(tIds, tableId);
