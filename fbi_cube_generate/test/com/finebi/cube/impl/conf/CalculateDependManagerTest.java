@@ -1,10 +1,10 @@
 package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.conf.CalculateDepend;
+import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.relation.BITableSourceRelation4Incremental;
+import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.relation.BITableSourceRelationPath4Incremetal;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.BITableSourceRelationTestTool;
@@ -31,23 +31,23 @@ public class CalculateDependManagerTest extends TestCase {
 
     public void testRelation() {
         BITableSourceRelation biTableSourceRelation = BITableSourceRelationTestTool.getMemoryBC();
-        BITableSourceRelation4Incremental biTableSourceRelation4Incrementals = calculateDependManager4Test.calRelations(biTableSourceRelation);
-        checkRelation(biTableSourceRelation4Incrementals);
+        BICubeGenerateRelation biTableSourceRelation4CubeGenerate = calculateDependManager4Test.calRelations(biTableSourceRelation);
+        checkRelation(biTableSourceRelation4CubeGenerate);
     }
 
     public void testRealationPath() {
         BITableSourceRelationPath abcPath = BITableSourceRelationPathTestTool.getABCPath();
         Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
         relations.add(BITableSourceRelationTestTool.getMemoryBC());
-        BITableSourceRelationPath4Incremetal biTableSourceRelationPath4Incremetal = calculateDependManager4Test.calRelationPath(abcPath, relations);
-        checkPath(biTableSourceRelationPath4Incremetal, relations);
+        BICubeGenerateRelationPath biTableRelationPath4CubeGenerate = calculateDependManager4Test.calRelationPath(abcPath, relations);
+        checkPath(biTableRelationPath4CubeGenerate, relations);
     }
 
-    private void checkPath(BITableSourceRelationPath4Incremetal biTableSourceRelationPath4Incremetal, Set<BITableSourceRelation> relations) {
+    private void checkPath(BICubeGenerateRelationPath biTableSourceRelationPath4Incremetal, Set<BITableSourceRelation> relations) {
         assertTrue(biTableSourceRelationPath4Incremetal.getBiTableSourceRelation().size() == relations.size());
     }
 
-    private void checkRelation(BITableSourceRelation4Incremental biTableSourceRelation4Incremental) {
-        assertTrue(biTableSourceRelation4Incremental.getCubeTableSourceSet().contains((BIMemoryDataSourceFactory.generateTableC().getSourceID())));
+    private void checkRelation(BICubeGenerateRelation biTableSourceRelation4Incremental) {
+        assertTrue(biTableSourceRelation4Incremental.getCubeTableSourceSet().contains((BIMemoryDataSourceFactory.generateTableC())));
     }
 }

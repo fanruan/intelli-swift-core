@@ -1,9 +1,9 @@
 package com.finebi.cube.conf;
 
+import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.relation.BITableSourceRelation4Incremental;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.relation.BITableSourceRelationPath4Incremetal;
+import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Set;
@@ -13,9 +13,9 @@ import java.util.Set;
  * 为relation和path计算依赖
  */
 public interface CalculateDepend {
-    BITableSourceRelation4Incremental calRelations(BITableSourceRelation biTableSourceRelationSet);
+    BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation);
 
-    BITableSourceRelationPath4Incremetal calRelationPath(BITableSourceRelationPath biTableSourceRelationPathSet, Set<BITableSourceRelation> tableRelationSet);
+    BICubeGenerateRelationPath calRelationPath(BITableSourceRelationPath biTableSourceRelationPathSet, Set<BITableSourceRelation> tableRelationSet);
 
     void setOriginal(Set<CubeTableSource> cubeTableSources);
 }

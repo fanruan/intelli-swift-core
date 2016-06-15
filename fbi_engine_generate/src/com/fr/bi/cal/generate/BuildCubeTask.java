@@ -111,8 +111,8 @@ public class BuildCubeTask implements CubeTask {
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
         operationManager.setVersionMap(cubeBuildStuff.getVersions());
         operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
-        operationManager.generateRelationBuilder(cubeBuildStuff.getTableSourceRelationSet());
-        operationManager.generateTableRelationPath(relationPathSet);
+        operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
+        operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
             BIConfigureManagerCenter.getLogManager().reLationSet(cubeBuildStuff.getTableSourceRelationSet(),biUser.getUserId());

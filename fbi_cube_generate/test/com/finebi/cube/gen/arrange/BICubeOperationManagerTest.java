@@ -5,6 +5,8 @@ import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
 import com.finebi.cube.gen.subset.BICubeBuildProbeTool;
 import com.finebi.cube.impl.message.BIMessageTestTool;
 import com.finebi.cube.impl.operate.BIOperationID;
+import com.finebi.cube.relation.BICubeGenerateRelation;
+import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
@@ -17,6 +19,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -55,8 +58,16 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
             pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
             manager.registerTableRelationPath(pathSet);
-            operationManager.generateRelationBuilder(relations);
-            operationManager.generateTableRelationPath(pathSet);
+            Set<BICubeGenerateRelation> biTableRelation4CubeGenerates=new LinkedHashSet<BICubeGenerateRelation>();
+            BICubeGenerateRelation biTableRelation4CubeGenerateAB=new BICubeGenerateRelation(BITableSourceRelationTestTool.getMemoryAB(),BIMemoryDataSourceFactory.getDataSourceSetWithAB());
+            BICubeGenerateRelation biTableRelation4CubeGenerateBC=new BICubeGenerateRelation(BITableSourceRelationTestTool.getMemoryBC(),BIMemoryDataSourceFactory.getDataSourceSetWithBC());
+            biTableRelation4CubeGenerates.add(biTableRelation4CubeGenerateAB);
+            biTableRelation4CubeGenerates.add(biTableRelation4CubeGenerateBC);
+            operationManager.generateRelationBuilder(biTableRelation4CubeGenerates);
+            BICubeGenerateRelationPath biTableRelationPath4CubeGenerate=new BICubeGenerateRelationPath(BITableSourceRelationPathTestTool.getABCPath(),relations);
+            Set<BICubeGenerateRelationPath> biTableRelationPath4CubeGenerateSet=new HashSet<BICubeGenerateRelationPath>();
+            biTableRelationPath4CubeGenerateSet.add(biTableRelationPath4CubeGenerate);
+            operationManager.generateTableRelationPath(biTableRelationPath4CubeGenerateSet);
             operationManager.generateDataSource(BIMemoryDataSourceFactory.getDataSourceSetMap());
 
             IRouter router = BIFactoryHelper.getObject(IRouter.class);
