@@ -3,14 +3,12 @@ package com.finebi.cube.impl.conf;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CalculateDepend;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableRelationPath;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
@@ -51,6 +49,8 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
     private BIUser biUser;
     private Set<BITableSourceRelationPath> relationPaths;
     private ICubeConfiguration cubeConfiguration;
+    private Set<BICubeGenerateRelationPath> cubeGenerateRelationPathSet;
+    private Set<BICubeGenerateRelation> cubeGenerateRelationSet;
     /**
      * TableSource之间存在依赖关系，这一点很合理。
      * 这个结构肯定是不好的。
@@ -125,6 +125,14 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
             result.put(table, version);
         }
         return result;
+    }
+
+    public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
+        return this.cubeGenerateRelationPathSet;
+    }
+
+    public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
+        return this.cubeGenerateRelationSet;
     }
 
     private Set<BITableRelation> filterRelation(Set<BITableRelation> tableRelationSet) {
@@ -212,7 +220,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
 
     @Override
     public Set<CubeTableSource> getAllSingleSources() {
-        BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(allSingleSources,biUser.getUserId());
+        BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(allSingleSources, biUser.getUserId());
         return allSingleSources;
     }
 
@@ -284,7 +292,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
      */
     @Override
     public Set<BITableSourceRelation> getTableSourceRelationSet() {
-        BIConfigureManagerCenter.getLogManager().reLationSet(tableSourceRelationSet,biUser.getUserId());
+        BIConfigureManagerCenter.getLogManager().reLationSet(tableSourceRelationSet, biUser.getUserId());
         return tableSourceRelationSet;
     }
 
@@ -330,8 +338,30 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
             setForeignKeyMap(foreignKeyMap);
             setRelationPaths(convertPaths(BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId())));
             rootPath = BIPathUtils.createBasePath();
+            calculateDepend();
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    private void calculateDepend() {
+        CalculateDepend cal = new CalculateDependManager() {
+            @Override
+            public void setOriginal(Set<CubeTableSource> cubeTableSources) {
+                analysisTableSources = getAllSingleSources();
+            }
+        };
+        cal.setOriginal(this.getAllSingleSources());
+        cubeGenerateRelationSet=new HashSet<BICubeGenerateRelation>();
+        for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
+            this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation));
+        }
+        cubeGenerateRelationPathSet=new HashSet<BICubeGenerateRelationPath>();
+        for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
+            BICubeGenerateRelationPath biCubeGenerateRelationPath = cal.calRelationPath(biTableSourceRelationPath, this.tableSourceRelationSet);
+            if (biCubeGenerateRelationPath.getBiTableSourceRelationPath().getAllRelations().size()>1) {
+                cubeGenerateRelationPathSet.add(biCubeGenerateRelationPath);
+            }
         }
     }
 
