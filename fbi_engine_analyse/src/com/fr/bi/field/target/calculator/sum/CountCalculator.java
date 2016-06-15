@@ -22,6 +22,11 @@ public class CountCalculator extends AbstractSummaryCalculator {
     private static final long serialVersionUID = -3263413185870966424L;
     private String countTarget;
 
+    public CountCalculator(BISummaryTarget target){
+        super(target);
+        this.countTarget = null;
+    }
+
     public CountCalculator(BISummaryTarget target, String countTarget) {
         super(target);
         this.countTarget = countTarget;
@@ -114,6 +119,10 @@ public class CountCalculator extends AbstractSummaryCalculator {
      */
     @Override
     public double createSumValue(GroupValueIndex gvi, ICubeTableService ti) {
-        return gvi == null ? 0 : gvi.getRowsCountWithData();
+        if (countTarget != null) {
+            return ti.getDistinctCountValue(gvi, new IndexKey(countTarget));
+        } else {
+            return gvi == null ? 0 : gvi.getRowsCountWithData();
+        }
     }
 }
