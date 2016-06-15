@@ -184,11 +184,12 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 }
                 //指标两个以上勾选的时候，系列全部不勾选，并且注意要disable
                 var usableT = BI.Utils.getAllUsableTargetDimensionIDs(this.get("id"));
-                if(usableT.length > 1) {
+                var type = this.get("type");
+                //然而gis地图无视此规则
+                if(usableT.length > 1 && type !== BICst.WIDGET.GIS_MAP) {
                     BI.each(view[BICst.REGION.DIMENSION2], function(i, d){
                         dims[d].used = false;
                     });
-                    var type = this.get("type");
                     //饼图和仪表盘有多个指标的时候，维度框不勾选且灰化= =
                     if(type === BICst.WIDGET.PIE || type === BICst.WIDGET.DASHBOARD){
                         BI.each(view[BICst.REGION.DIMENSION1], function(i, d){
