@@ -864,6 +864,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/widget.selectdatapane.detail.js",
 
+                //树控件选字段
+                "com/fr/bi/web/js/modules/selectdata4tree/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level1.js",
+                "com/fr/bi/web/js/modules/selectdata4tree/widget.selectdatapane.tree.js",
+
 
                 //过滤界面的选择字段
                 "com/fr/bi/web/js/modules/selectdata4filter/widget.dimensionselectfield.js",

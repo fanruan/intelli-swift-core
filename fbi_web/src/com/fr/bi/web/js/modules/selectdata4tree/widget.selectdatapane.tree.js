@@ -1,23 +1,25 @@
 /**
- * Created by roy on 16/4/1.
+ * Created by GUY on 2016/6/15.
+ * @class BI.TreeSelectDataPane
+ * @extends BI.Widget
  */
-BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
+BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.DetailDetailTableSelectDataPane.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-detail-select-data",
+        return BI.extend(BI.TreeSelectDataPane.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-tree-select-data",
             wId: ""
         })
     },
 
     _init: function () {
-        BI.DetailDetailTableSelectDataPane.superclass._init.apply(this, arguments);
+        BI.TreeSelectDataPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.service = BI.createWidget({
             type: "bi.package_select_data_service",
             element: this.element,
             wId: o.wId,
-            showRelativeTables: true,
-            showExcelView: true,
+            showRelativeTables: false,
+            showExcelView: false,
             showDateGroup: true,
             tablesCreator: function (packageId, isRelation) {
                 if (isRelation === true) {
@@ -25,7 +27,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                     return BI.map(tIds, function (i, id) {
                         return {
                             id: id,
-                            type: "bi.detail_detail_select_data_level1_node"
+                            type: "bi.tree_select_data_level1_node"
                         }
                     })
                 }
@@ -33,7 +35,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 return BI.map(ids, function (i, id) {
                     return {
                         id: id,
-                        type: "bi.detail_detail_select_data_level0_node"
+                        type: "bi.tree_select_data_level0_node"
                     }
                 })
             },
@@ -43,7 +45,8 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 BI.each(ids, function (i, fid) {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
                         result.push({
-                            id: fid
+                            id: fid,
+                            type: isRelation ? "bi.select_string_level1_item" : "bi.select_string_level0_item"
                         })
                     }
                 });
@@ -52,4 +55,4 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
         });
     }
 });
-$.shortcut("bi.detail_detail_table_select_data", BI.DetailDetailTableSelectDataPane);
+$.shortcut("bi.tree_select_data", BI.TreeSelectDataPane);
