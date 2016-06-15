@@ -2,7 +2,6 @@ package com.finebi.cube.impl.conf;
 
 import com.fr.bi.stable.data.source.CubeTableSource;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -12,9 +11,6 @@ public class CalculateDependManager4Test extends CalculateDependManager {
 
     @Override
     public void setOriginal(Set<CubeTableSource> cubeTableSources) {
-        for (CubeTableSource analysisTable : cubeTableSources) {
-            analysisTableSources=new HashSet<CubeTableSource>();
-            analysisTableSources.add(analysisTable);
-        }
+        analysisTableSources=cubeTableSources;
     }
 }
