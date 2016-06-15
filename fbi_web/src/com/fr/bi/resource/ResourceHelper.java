@@ -16,6 +16,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
+import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,10 +47,14 @@ public class ResourceHelper {
                 return formula;
             }
             synchronized (this) {
-                if (formula == null) {
-                    formula = getFormulaJS(files);
+                String res = formula;
+                if (res == null) {
+                    res = getFormulaJS(files);
+                    if(!StableUtils.isDebug()) {
+                        formula = res;
+                    }
                 }
-                return formula;
+                return res;
             }
         }
     }
@@ -863,6 +868,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/widget.selectdatapane.detail.js",
+
+                //树控件选字段
+                "com/fr/bi/web/js/modules/selectdata4tree/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level1.js",
+                "com/fr/bi/web/js/modules/selectdata4tree/widget.selectdatapane.tree.js",
 
 
                 //过滤界面的选择字段

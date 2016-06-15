@@ -16,6 +16,7 @@ public interface ICubeColumnIndexReader<T> {
     T firstKey();
 
     T lastKey();
+
     /**
      * entry的set
      *
@@ -75,5 +76,13 @@ public interface ICubeColumnIndexReader<T> {
     T getOriginalValue(int rowNumber);
 
     int sizeOfGroup();
+
+    /**
+     * 获取对应位置的空值索引
+     *
+     * @param position
+     * @return
+     */
+    GroupValueIndex getNULLIndex();
 
 }

@@ -1959,9 +1959,17 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         return helper;
     },
 
-    _start: function () {
+    _start: function (cur) {
         this.arrangement.setVisible(true);
         this.droppable.setVisible(true);
+        if (cur) {
+            BI.each(this.drops, function (i, drop) {
+                drop.el.setVisible(false);
+            });
+            if (this.drops[cur]) {
+                this.drops[cur].el.setVisible(true);
+            }
+        }
     },
 
     _stop: function () {
@@ -2125,7 +2133,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             return null;
         }
         var self = this, o = this.options;
-        var insert, regions = [];
+        var insert, regions = [], cur;
         var offset = this._getScrollOffset();
         position = {
             left: position.left + offset.left,
@@ -2157,6 +2165,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                                     insert = at.insert;
                                     regions = at.regions;
                                 }
+                                cur = id;
                                 return true;
                             }
                         })) {
@@ -2177,7 +2186,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     regions: regions
                 };
                 this._setArrangeSize(insert);
-                this._start();
+                this._start(cur);
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 var insert = {
@@ -2324,7 +2333,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         var self = this;
-        BI.each(this.regions, function(name, region) {
+        BI.each(this.regions, function (name, region) {
             self.regions[name].el.setVisible(false);
             self.drops[name].el.setVisible(false);
             delete self.regions[name];

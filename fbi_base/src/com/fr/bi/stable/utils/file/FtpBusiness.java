@@ -27,7 +27,7 @@ public class FtpBusiness {
             try {
                 SocketAddress addr = new InetSocketAddress(ip, port);
                 ftpClient.connect(addr);
-//                ftpClient.login(user, password.toCharArray());
+                ftpClient.login(user, password.toCharArray());
                 System.out.println("login success!");
                 if (path.length() != 0) {
                     //把远程系统上的目录切换到参数path所指定的目录
