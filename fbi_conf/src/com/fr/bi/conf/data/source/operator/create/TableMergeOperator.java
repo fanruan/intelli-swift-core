@@ -154,7 +154,7 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
         }
 
         protected String getJoinName(){
-            return columns.length == 2 && mergeType == MERGE_TYPE_RIGNT_JOIN ? columns[1].name : this.name;
+            return columns.length == 2 && mergeType == MERGE_TYPE_RIGNT_JOIN ? columns[1].name : columns[0].name;
         }
 
         @Override
