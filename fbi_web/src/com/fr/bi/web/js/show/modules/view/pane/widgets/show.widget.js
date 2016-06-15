@@ -89,9 +89,11 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             self.widget.attr("items")[3].top = 6;
             self.widget.resize();
         }, function () {
-            self.tools.setVisible(false);
-            self.widget.attr("items")[3].top = 0;
-            self.widget.resize();
+            if (!self.widget.element.parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+                self.widget.attr("items")[3].top = 0;
+                self.widget.resize();
+            }
         });
 
     },
@@ -155,7 +157,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             width: 16,
             height: 16
         });
-        filterIcon.on(BI.IconButton.EVENT_CHANGE, function(){
+        filterIcon.on(BI.IconButton.EVENT_CHANGE, function () {
             if (BI.isNull(self.filterPane)) {
                 self.filterPane = BI.createWidget({
                     type: "bi.widget_filter",
@@ -271,7 +273,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [ filterIcon, expand],
+            items: [filterIcon, expand],
             hgap: 3
         });
         this.tools.setVisible(false);
