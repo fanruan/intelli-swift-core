@@ -8,7 +8,10 @@
     border-radius: 2px;
     font-size: 22px;
     border: 1px solid @color-bi-border-default;
-    cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_hand.cur'), auto;
+    cursor: url('@{cursor}'), auto;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
     &:hover{
       background: @color-bi-background-normal;
       border: 1px solid @color-bi-border-normal;

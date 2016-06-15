@@ -343,14 +343,10 @@ BI.ETLModel = BI.inherit(FR.OB, {
                 tables[i] = BI.extend(table, {
                     id: id,
                     tables: tables[i].tables
-                    //translations: self.getTranslations(),
-                    //relations: self.getRelations()
                 });
             } else {
                 tables[i] = BI.extend(table, {
                     id: id
-                    //translations: self.getTranslations(),
-                    //relations: self.getRelations()
                 });
             }
             ids[id] = tables[i];
@@ -367,14 +363,10 @@ BI.ETLModel = BI.inherit(FR.OB, {
                 tables[i] = BI.extend(table, {
                     id: id,
                     tables: tables[i].tables
-                    //translations: self.getTranslations(),
-                    //relations: self.getRelations()
                 });
             } else {
                 tables[i] = BI.extend(table, {
                     id: id
-                    //translations: self.getTranslations(),
-                    //relations: self.getRelations()
                 });
             }
             ids[id] = tables[i];
