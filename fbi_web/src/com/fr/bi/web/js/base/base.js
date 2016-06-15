@@ -745,7 +745,7 @@ if (!window.BI) {
         },
 
         isPositiveInteger: function (number) {
-            if (/\+?[1-9][0-9]*$/.test(number)) {
+            if (/^\+?[1-9][0-9]*$/.test(number)) {
                 return true;
             }
             return false;
