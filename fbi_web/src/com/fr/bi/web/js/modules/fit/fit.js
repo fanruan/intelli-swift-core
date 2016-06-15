@@ -285,8 +285,8 @@ BI.Fit = BI.inherit(BI.Widget, {
                 width: region.width,
                 height: region.height
             }, {
-                left: region.left + region.width / 2,
-                top: region.top + region.height / 2
+                left: region.left + region.width / 2 + 1,
+                top: region.top + region.height / 2 + 1
             }))) {
             if (!(flag = this.arrangement.addRegion(el, {
                     left: region.left + region.width / 2,
