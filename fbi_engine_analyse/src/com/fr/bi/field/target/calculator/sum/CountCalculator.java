@@ -1,15 +1,16 @@
 package com.fr.bi.field.target.calculator.sum;
 
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.field.target.key.sum.CountKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.NoneTargetCountTarget;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
+import com.fr.stable.StringUtils;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -20,7 +21,11 @@ import java.util.Iterator;
 public class CountCalculator extends AbstractSummaryCalculator {
     public static final CountCalculator NONE_TARGET_COUNT_CAL = new CountCalculator(new NoneTargetCountTarget(), "pony");
     private static final long serialVersionUID = -3263413185870966424L;
-    private String countTarget;
+    private String countTarget = StringUtils.EMPTY;
+
+    public CountCalculator(BISummaryTarget target){
+        super(target);
+    }
 
     public CountCalculator(BISummaryTarget target, String countTarget) {
         super(target);
@@ -49,7 +54,7 @@ public class CountCalculator extends AbstractSummaryCalculator {
      */
     @Override
     public <T extends BICrossNode> Double calculateChildNodesOnce(TargetGettingKey key, Collection<T> c) {
-        if (countTarget != null) {
+        if (StringUtils.isNotEmpty(countTarget)) {
             return null;
         }
         Iterator<T> iter = c.iterator();
@@ -77,11 +82,11 @@ public class CountCalculator extends AbstractSummaryCalculator {
 
     @Override
     public BITargetKey createTargetKey() {
-        return new CountKey(target.createColumnKey(), target.getTargetFilter(), countTarget == null ? null : new IndexKey(countTarget));
+        return new CountKey(target.createColumnKey(), target.getTargetFilter(), StringUtils.isEmpty(countTarget) ? null : new IndexKey(countTarget));
     }
 
     private <T extends BINode> Double calculateNodes(Object key, Collection<T> c) {
-        if (countTarget != null) {
+        if (StringUtils.isNotEmpty(countTarget)) {
             return null;
         }
         Iterator<T> iter = c.iterator();
@@ -114,7 +119,7 @@ public class CountCalculator extends AbstractSummaryCalculator {
      */
     @Override
     public double createSumValue(GroupValueIndex gvi, ICubeTableService ti) {
-        if (countTarget != null) {
+        if (StringUtils.isNotEmpty(countTarget)) {
             return ti.getDistinctCountValue(gvi, new IndexKey(countTarget));
         } else {
             return gvi == null ? 0 : gvi.getRowsCountWithData();
