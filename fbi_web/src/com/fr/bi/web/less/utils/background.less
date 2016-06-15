@@ -1,6 +1,6 @@
 @import "../image";
 @import "../lib/icon";
-@import "../image";
+@import "../lib/background";
 
 .base-line-conn-background {
   .imagePath(@icon-tree-vertical-line-1, 0, 0, repeat-y);
@@ -22,13 +22,69 @@
   .imagePath(@icon-loading);
 }
 
+//表格、图表中的提示图标背景 -- start --
 .axis-tip-background{
-  .imagePath(@icon-tip-axis-text);
+  .imagePath(@background-tip-axis);
 }
-.axis-tip-detail-background{
-  .imagePath(@icon-tip-axis);
+.axis-text-tip-background{
+  .imagePath(@background-tip-axis-text);
+}
+.bubble-tip-background{
+  .imagePath(@background-tip-bubble);
+}
+.bubble-text-tip-background{
+  .imagePath(@background-tip-bubble-text);
+}
+.dashboard-tip-background{
+  .imagePath(@background-tip-dashboard);
+}
+.dashboard-text-tip-background{
+  .imagePath(@background-tip-dashboard-text);
+}
+.donut-tip-background{
+  .imagePath(@background-tip-donut);
+}
+.donut-text-tip-background{
+  .imagePath(@background-tip-donut-text);
+}
+.funnel-tip-background{
+  .imagePath(@background-tip-funnel);
+}
+.funnel-text-tip-background{
+  .imagePath(@background-tip-funnel-text);
+}
+.map-tip-background{
+  .imagePath(@background-tip-map);
+}
+.map-text-tip-background{
+  .imagePath(@background-tip-map-text);
+}
+.map-gis-tip-background{
+  .imagePath(@background-tip-map-gis);
+}
+.map-gis-text-tip-background{
+  .imagePath(@background-tip-map-gis-text);
+}
+.pie-tip-background{
+  .imagePath(@background-tip-pie);
+}
+.pie-text-tip-background{
+  .imagePath(@background-tip-pie-text);
+}
+.radar-tip-background{
+  .imagePath(@background-tip-radar);
+}
+.radar-text-tip-background{
+  .imagePath(@background-tip-radar-text);
+}
+.scatter-tip-background{
+  .imagePath(@background-tip-scatter);
+}
+.scatter-text-tip-background{
+  .imagePath(@background-tip-scatter-text);
 }
 
 .data-miss-background{
-  .imagePath(@icon-data-miss);
+  .imagePath(@background-tip-no-data);
 }
+//表格、图表中的提示图标背景 -- end --

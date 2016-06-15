@@ -24,13 +24,103 @@
   _background: none;
 }
 .axis-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis.png');
+  _background: none;
+}
+.axis-text-tip-background {
   background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis_text.png') no-repeat center center;
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis_text.png');
   _background: none;
 }
-.axis-tip-detail-background {
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis.png') no-repeat center center;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis.png');
+.bubble-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/bubble.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/bubble.png');
+  _background: none;
+}
+.bubble-text-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/bubble_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/bubble_text.png');
+  _background: none;
+}
+.dashboard-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/dashboard.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/dashboard.png');
+  _background: none;
+}
+.dashboard-text-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/dashboard_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/dashboard_text.png');
+  _background: none;
+}
+.donut-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/donut.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/donut.png');
+  _background: none;
+}
+.donut-text-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/donut_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/donut_text.png');
+  _background: none;
+}
+.funnel-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/funnel.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/funnel.png');
+  _background: none;
+}
+.funnel-text-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/funnel_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/funnel_text.png');
+  _background: none;
+}
+.map-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/map.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/map.png');
+  _background: none;
+}
+.map-text-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/map_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/map_text.png');
+  _background: none;
+}
+.map-gis-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/map_gis.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/map_gis.png');
+  _background: none;
+}
+.map-gis-text-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/map_gis_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/map_gis_text.png');
+  _background: none;
+}
+.pie-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/pie.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/pie.png');
+  _background: none;
+}
+.pie-text-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/pie_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/pie_text.png');
+  _background: none;
+}
+.radar-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/radar.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/radar.png');
+  _background: none;
+}
+.radar-text-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/radar_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/radar_text.png');
+  _background: none;
+}
+.scatter-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/scatter.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/scatter.png');
+  _background: none;
+}
+.scatter-text-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/scatter_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/scatter_text.png');
   _background: none;
 }
 .data-miss-background {

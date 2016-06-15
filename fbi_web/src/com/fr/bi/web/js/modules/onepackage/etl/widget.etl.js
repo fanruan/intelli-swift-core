@@ -7,6 +7,7 @@ BI.ETL = BI.inherit(BI.Widget, {
     constants: {
         ETL_OPERATOR_LAYER: "__etl_operator_layer__",
         EXCEL_VIEW_LAYER: "__excel_view_layer__",
+        EXCEL_LAYER: "__excel_layer__",
         ETL_PANE_NORTH_HEIGHT: 40,
         ETL_PANE_SOUTH_HEIGHT: 60,
         ETL_PANE_WEST_WIDTH: 580,
@@ -549,7 +550,29 @@ BI.ETL = BI.inherit(BI.Widget, {
                 this.model.removeOneTable(tId);
                 this._populateAfterETLOperator();
                 break;
+            case BICst.ETL_MANAGE_EXCEL_CHANGE:
+                this._modifyExcel(tId);
+                break;
         }
+    },
+
+    _modifyExcel: function(tId) {
+        var self = this;
+        BI.Layers.remove(this.constants.EXCEL_LAYER);
+        var excelUpload = BI.createWidget({
+            type: "bi.excel_upload",
+            element: BI.Layers.create(this.constants.EXCEL_LAYER),
+            full_file_name: this.model.getTableById(tId).full_file_name
+        });
+        BI.Layers.show(this.constants.EXCEL_LAYER);
+        excelUpload.on(BI.ExcelUpload.EVENT_CANCEL, function () {
+            BI.Layers.remove(self.constants.EXCEL_LAYER);
+        });
+        excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function (data) {
+            self.model.saveTableById(tId, data);
+            self._populateAfterETLOperator();
+            BI.Layers.remove(self.constants.EXCEL_LAYER);
+        });
     },
 
     /**

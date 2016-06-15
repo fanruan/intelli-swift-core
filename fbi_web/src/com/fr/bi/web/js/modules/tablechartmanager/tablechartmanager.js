@@ -110,94 +110,94 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         });
         switch (BI.Utils.getWidgetTypeByID(wId)) {
             case BICst.WIDGET.TABLE:
-                (dim1Size + dim2Size + tar1Size + tar2Size + tar3Size) === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                (dim1Size + dim2Size + tar1Size + tar2Size + tar3Size) === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.CROSS_TABLE:
-                (dim1Size + dim2Size + tar1Size + tar2Size + tar3Size) === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                (dim1Size + dim2Size + tar1Size + tar2Size + tar3Size) === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.COMPLEX_TABLE:
-                (dim1Size + dim2Size + tar1Size + tar2Size + tar3Size) === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                (dim1Size + dim2Size + tar1Size + tar2Size + tar3Size) === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.BUBBLE:
-                !(dim1Size > 0 && tar1Size > 0 && tar2Size > 0 && tar3Size > 0) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && tar1Size > 0 && tar2Size > 0 && tar3Size > 0) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "bubble-text-tip-background" : "bubble-tip-background");
                 break;
             case BICst.WIDGET.SCATTER:
-                !(dim1Size > 0 && tar1Size > 0 && tar2Size > 0) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && tar1Size > 0 && tar2Size > 0) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "scatter-text-tip-background" : "scatter-tip-background");
                 break;
             case BICst.WIDGET.AXIS:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-text-tip-background" : "axis-tip-background");
                 break;
             case BICst.WIDGET.LINE:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.AREA:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.ACCUMULATE_AXIS:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.ACCUMULATE_AREA:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.ACCUMULATE_RADAR:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.COMPARE_AXIS:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.COMPARE_AREA:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.FALL_AXIS:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.RANGE_AREA:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.BAR:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.ACCUMULATE_BAR:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.COMPARE_BAR:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.COMBINE_CHART:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.RADAR:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "radar-text-tip-background" : "radar-tip-background");
                 break;
             case BICst.WIDGET.DONUT:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "donut-text-tip-background" : "donut-tip-background");
                 break;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.FORCE_BUBBLE:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "" : "");
                 break;
             case BICst.WIDGET.FUNNEL:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "funnel-text-tip-background" : "funnel-tip-background");
                 break;
             case BICst.WIDGET.MAP:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "map-text-tip-background" : "map-tip-background");
                 break;
             case BICst.WIDGET.GIS_MAP:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "map-gis-text-tip-background" : "map-gis-tip-background");
                 break;
             case BICst.WIDGET.PIE:
-                tar1Size === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                tar1Size === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "pie-text-tip-background" : "pie-tip-background");
                 break;
             case BICst.WIDGET.DASHBOARD:
-                tar1Size === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-tip-background" : "axis-tip-detail-background");
+                tar1Size === 0 && (cls = status === BICst.WIDGET_STATUS.EDIT ? "dashboard-text-tip-background" : "dashboard-tip-background");
                 break;
         }
         return cls;
@@ -238,7 +238,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     populate: function () {
         var widgetType = BI.Utils.getWidgetTypeByID(this.options.wId);
         var cls = this._isShowChartPane();
-        if(cls !== true) {
+        if (cls !== true) {
             this.tableChartTab.setSelect(BICst.WIDGET.NONE);
             this.tipPane.element.removeClass().addClass(cls);
             return;

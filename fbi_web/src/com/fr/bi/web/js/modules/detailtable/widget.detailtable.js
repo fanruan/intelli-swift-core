@@ -55,6 +55,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.tab = BI.createWidget({
             type: "bi.tab",
             element: this.element,
+            defaultShowIndex: BI.DetailTable.SHOW_TABLE,
             cardCreator: function(v) {
                 switch (v) {
                     case BI.DetailTable.SHOW_TABLE:
@@ -66,23 +67,17 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                         })
                 }
             }
-        })
-        BI.createWidget({
-            type: "bi.absolute",
-            element: this.element,
-            items: [{
-                el: this.table,
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0
-            }]
-        })
+        });
     },
 
     _onPageChange: function (vPage, callback) {
         var self = this;
         var widgetId = this.options.wId;
+        if(BI.Utils.getAllUsableDimensionIDs(widgetId).length === 0) {
+            this.tab.setSelect(BI.DetailTable.SHOW_TIP);
+            return;
+        }
+        this.tab.setSelect(BI.DetailTable.SHOW_TABLE);
         this.loading();
         this.data = [];
         var hyperLinkExpressions = [];

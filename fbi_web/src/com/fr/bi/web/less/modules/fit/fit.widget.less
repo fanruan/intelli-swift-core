@@ -3,6 +3,15 @@
 .bi-fit-widget{
   & .fit-widget-draggable{
     cursor: url('@{cursor}'), auto;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+    &:active{
+      cursor: url('@{dragCursor}'), auto;
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+      cursor: grabbing;
+    }
   }
   & .fit-widget-drag-bar{
     background: @color-bi-background-dark;
