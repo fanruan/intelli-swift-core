@@ -23,9 +23,9 @@ public class BIFSReportUtils {
 
     private final static long NO_USE_ID = -1L;
 
-    public static long createNewBIReport(BIDesignReport BIReport, long userId, String reportName, String description) throws Exception{
+    public static long createNewBIReport(BIDesignReport BIReport, long userId, String reportName, String parentId, String description) throws Exception{
         String path = generateUnExistFile(userId, BIReport.getSuffix());
-        BIReportNode biReportNode = new BIReportNode(userId, reportName, path, description);
+        BIReportNode biReportNode = new BIReportNode(userId, parentId, reportName, path, description);
         return doSaveFileAndObject(BIReport, biReportNode, userId);
     }
     

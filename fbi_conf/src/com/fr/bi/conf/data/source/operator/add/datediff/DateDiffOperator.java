@@ -1,15 +1,14 @@
 package com.fr.bi.conf.data.source.operator.add.datediff;
 
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.time.BIDateUtils;
@@ -83,7 +82,7 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     }
 
     private interface ValueGetter {
-        long getTime(int row);
+        Long getTime(int row);
 
         void check();
     }
@@ -96,7 +95,7 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
             this.t = t;
         }
 
-        public long getTime(int row) {
+        public Long getTime(int row) {
             return t;
         }
 
@@ -113,7 +112,7 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
             this.key = key;
         }
 
-        public long getTime(int row) {
+        public Long getTime(int row) {
             return (Long) ti.getRow(key, row);
         }
 
