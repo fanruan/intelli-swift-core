@@ -8,7 +8,7 @@ BI.Model.prototype.cmd = function(cmd){
 BI.Model.prototype._opt = function (options) {
     options || (options = {});
     options.error = function () {
-        BI.Msg.toast("Ajax Error!", "warning")
+        BI.Msg.toast(BI.i18nText("BI-Ajax_Error"), "warning")
     };
     return options;
 };

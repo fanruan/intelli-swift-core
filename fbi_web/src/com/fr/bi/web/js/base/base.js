@@ -1015,7 +1015,7 @@ if (!window.BI) {
                 type: 'POST',
                 data: data,
                 error: function () {
-                    BI.Msg.toast("Ajax Error!");
+                    BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
                 },
                 complete: function (res, status) {
                     if (BI.isFunction(callback) && status === 'success') {
@@ -1048,7 +1048,7 @@ if (!window.BI) {
                 async: false,
                 data: data,
                 error: function () {
-                    BI.Msg.toast("Ajax Error!");
+                    BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
                 },
                 complete: function (res, status) {
                     if (status === 'success') {

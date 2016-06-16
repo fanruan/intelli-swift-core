@@ -89,7 +89,9 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         if (!isValid) {
             var columnSize = this.table.getCalculateColumnSize();
             if (this.model.isNeed2Freeze()) {
-                var freezeCols = this.model.getFreezeCols;
+                var regionColumnSize = this.table.getCalculateRegionColumnSize();
+                this.model.setStoredRegionColumnSize(regionColumnSize[0]);
+                var freezeCols = this.model.getFreezeCols();
                 var freezeColumnSize = columnSize.slice(0, freezeCols.length);
                 var otherSize = columnSize.slice(freezeCols.length);
                 var fl = freezeColumnSize.length, ol = otherSize.length;
