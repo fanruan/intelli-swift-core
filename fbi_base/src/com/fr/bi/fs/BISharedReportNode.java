@@ -57,6 +57,10 @@ public class BISharedReportNode extends DAOBean {
         return false;
     }
 
+    public BISharedReportNode(){
+
+    }
+
     public BISharedReportNode(long reportId, long createBy, long shareTo) {
         this.reportId = reportId;
         this.createBy = createBy;

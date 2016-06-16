@@ -12,19 +12,19 @@ import java.sql.Types;
  * @author frank
  */
 public class BITableMapper {
-	
-	public static class BI_REPORT_NODE_LOCK {
-		public static final String FIELD_USERID = "userId";
-		public static final String REPORT_ID = "reportId";
-		public static final String SESSIONID = "sessionId";
-		
-		public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(BIReportNodeLock.class, new FieldColumnMapper[] {
-				 new PrimaryKeyFCMapper("id", Types.BIGINT, new ColumnSize(10)),
-				 new CommonFieldColumnMapper(FIELD_USERID, Types.BIGINT, new ColumnSize(10), false),
-				 new CommonFieldColumnMapper(REPORT_ID, Types.BIGINT, new ColumnSize(10), false),
-				 new CommonFieldColumnMapper(SESSIONID, Types.VARCHAR, new ColumnSize(50), false),
-		}, new String[][] {new String[]{FIELD_USERID, REPORT_ID}});
-	}
+
+    public static class BI_REPORT_NODE_LOCK {
+        public static final String FIELD_USERID = "userId";
+        public static final String REPORT_ID = "reportId";
+        public static final String SESSIONID = "sessionId";
+
+        public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(BIReportNodeLock.class, new FieldColumnMapper[]{
+                new PrimaryKeyFCMapper("id", Types.BIGINT, new ColumnSize(10)),
+                new CommonFieldColumnMapper(FIELD_USERID, Types.BIGINT, new ColumnSize(10), false),
+                new CommonFieldColumnMapper(REPORT_ID, Types.BIGINT, new ColumnSize(10), false),
+                new CommonFieldColumnMapper(SESSIONID, Types.VARCHAR, new ColumnSize(50), false),
+        }, new String[][]{new String[]{FIELD_USERID, REPORT_ID}});
+    }
 
     /**
      * 保存的BI设计内容表
@@ -32,7 +32,7 @@ public class BITableMapper {
      * @author Daniel
      */
     public static class BI_REPORT_NODE {
-    	public static final String TABLE_NAME = ObjectTableMapper.PREFIX_NAME + BIReportNode.class.getSimpleName();
+        public static final String TABLE_NAME = ObjectTableMapper.PREFIX_NAME + BIReportNode.class.getSimpleName();
         public static final String FIELD_USERID = "userid";
         public static final String COLUMN_USERID = "userid";
         public static final String FIELD_PARENTID = "parentid";
@@ -86,15 +86,15 @@ public class BITableMapper {
     public static class BI_SHARED_REPORT_NODE {
         public static final String FIELD_REPORT_ID = "reportId";
         public static final String FIELD_CREATE_BY = "createBy";
-        public static final String FIELD_SHARE_TO = "createBy";
+        public static final String FIELD_SHARE_TO = "shareTo";
 
         public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(
                 BISharedReportNode.class,
                 new FieldColumnMapper[]{
                         new PrimaryKeyFCMapper("id", Types.BIGINT, new ColumnSize(10)),
-                        new MToOForeignFCMapper(FIELD_REPORT_ID, Types.BIGINT, FIELD_REPORT_ID, new ColumnSize(10), false, BIReportNode.class, true),
-                        new MToOForeignFCMapper(FIELD_CREATE_BY, Types.BIGINT, FIELD_CREATE_BY, new ColumnSize(10), false, User.class, true),
-                        new MToOForeignFCMapper(FIELD_SHARE_TO, Types.BIGINT, FIELD_SHARE_TO, new ColumnSize(10), false, User.class, true)
+                        new CommonFieldColumnMapper(FIELD_REPORT_ID, Types.BIGINT, new ColumnSize(10), false),
+                        new CommonFieldColumnMapper(FIELD_CREATE_BY, Types.BIGINT, new ColumnSize(10), false),
+                        new CommonFieldColumnMapper(FIELD_SHARE_TO, Types.BIGINT, new ColumnSize(10), false)
                 }
         );
     }
