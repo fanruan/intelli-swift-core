@@ -64,7 +64,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     case BI.DetailTable.SHOW_TIP:
                         return BI.createWidget({
                             type: "bi.layout",
-                            cls: ""
+                            cls: o.status === BICst.WIDGET_STATUS.EDIT ? "table-detail-text-tip-background" : "table-detail-tip-background"
                         })
                 }
             }
