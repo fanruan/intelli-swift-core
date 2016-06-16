@@ -57,7 +57,7 @@ BI.TableFieldWithSearchPane = FR.extend(BI.Widget, {
                     self.fireEvent(BI.TableFieldWithSearchPane.EVENT_TRANSLATION_CHANGE, translations);
                 }
             }
-        });
+        }); 
 
         var table = BI.createWidget({
             type: "bi.table_field_info"

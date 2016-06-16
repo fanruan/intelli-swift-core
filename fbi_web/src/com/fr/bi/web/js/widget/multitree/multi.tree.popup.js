@@ -8,7 +8,7 @@ BI.MultiTreePopup = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.MultiTreePopup.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-multi-tree-popup',
-            maxWidth: 230,
+            maxWidth: 'auto',
             minWidth: 100,
             maxHeight: 250,
             onLoaded: BI.emptyFn
