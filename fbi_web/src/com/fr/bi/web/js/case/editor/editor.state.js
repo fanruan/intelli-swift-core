@@ -184,6 +184,10 @@ BI.StateEditor = BI.inherit(BI.Single, {
         return this.editor.getErrorText();
     },
 
+    isEditing: function () {
+        return this.editor.isEditing();
+    },
+
     getLastValidValue: function () {
         return this.editor.getLastValidValue();
     },

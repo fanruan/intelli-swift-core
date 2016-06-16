@@ -986,11 +986,11 @@ BICst.CHART_VALUE_AXIS_STYLE = [{
 
 //表格（分组表、交叉表和复杂表）类型
 BICst.TABLE_FORM_GROUP = [{
-    cls: "table-open-col-style-font",
-    value: BICst.TABLE_FORM.OPEN_COL
-}, {
     cls: "table-open-row-style-font",
     value: BICst.TABLE_FORM.OPEN_ROW
+}, {
+    cls: "table-open-col-style-font",
+    value: BICst.TABLE_FORM.OPEN_COL
 }];
 
 //表格（分组表、交叉表和复杂表）风格
@@ -1089,7 +1089,7 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
-    table_form: BICst.TABLE_FORM.OPEN_COL,
+    table_form: BICst.TABLE_FORM.OPEN_ROW,
     theme_color: "#65bce7",
     table_style: BICst.TABLE_STYLE.STYLE1,
     show_number: false,

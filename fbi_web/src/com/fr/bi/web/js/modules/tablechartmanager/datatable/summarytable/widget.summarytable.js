@@ -14,54 +14,117 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.model = new BI.SummaryTableModel({
             wId: this.options.wId
         });
-        this.table = BI.createWidget({
-            type: "bi.style_table",
-            element: this.element,
-            el: {
-                type: "bi.page_table",
-                isNeedFreeze: null,
-                el: {
+        this._createTable();
+    },
+
+    _createTable: function () {
+        var self = this, o = this.options;
+        this.empty();
+        var tableStyle = this.model.getTableForm();
+        switch (tableStyle) {
+            case BICst.TABLE_FORM.OPEN_COL:
+                this.tableForm = BICst.TABLE_FORM.OPEN_COL;
+                this.table = BI.createWidget({
+                    type: "bi.style_table",
+                    element: this.element,
                     el: {
+                        type: "bi.page_table",
+                        isNeedFreeze: null,
                         el: {
                             el: {
-                                type: "bi.table_tree"
+                                el: {
+                                    el: {
+                                        type: "bi.layer_tree_table"
+                                    }
+                                }
+                            },
+                            sequence: {
+                                type: "bi.sequence_table_tree_number"
                             }
-                        }
-                    },
-                    sequence: {
-                        type: "bi.sequence_table_tree_number"
+                        },
+                        itemsCreator: function (op, populate) {
+                            var vPage = op.vpage, hPage = op.hpage;
+                            var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                            if (BI.isNotNull(vPage)) {
+                                pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            }
+                            self.model.setPageOperator(pageOperator);
+                            self._onPageChange(function (items, header, crossItems, crossHeader) {
+                                populate.apply(self.table, arguments);
+                                self._afterTablePopulate();
+                            })
+                        },
+                        pager: {
+                            pages: false,
+                            curr: 1,
+                            hasNext: function () {
+                                return self.model.getPage()[1] === 1;
+                            },
+                            hasPrev: function () {
+                                return self.model.getPage()[0] === 1;
+                            },
+                            firstPage: 1
+                        },
+                        hasHNext: function () {
+                            return self.model.getPage()[3] === 1;
+                        },
+                        isNeedMerge: true,
+                        regionColumnSize: this.model.getStoredRegionColumnSize()
                     }
-                },
-                itemsCreator: function (op, populate) {
-                    var vPage = op.vpage, hPage = op.hpage;
-                    var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                    if (BI.isNotNull(vPage)) {
-                        pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                });
+                break;
+            default :
+                this.tableForm = BICst.TABLE_FORM.OPEN_ROW;
+                this.table = BI.createWidget({
+                    type: "bi.style_table",
+                    element: this.element,
+                    el: {
+                        type: "bi.page_table",
+                        isNeedFreeze: null,
+                        el: {
+                            el: {
+                                el: {
+                                    el: {
+                                        type: "bi.table_tree"
+                                    }
+                                }
+                            },
+                            sequence: {
+                                type: "bi.sequence_table_tree_number"
+                            }
+                        },
+                        itemsCreator: function (op, populate) {
+                            var vPage = op.vpage, hPage = op.hpage;
+                            var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                            if (BI.isNotNull(vPage)) {
+                                pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            }
+                            self.model.setPageOperator(pageOperator);
+                            self._onPageChange(function (items, header, crossItems, crossHeader) {
+                                populate.apply(self.table, arguments);
+                                self._afterTablePopulate();
+                            })
+                        },
+                        pager: {
+                            pages: false,
+                            curr: 1,
+                            hasNext: function () {
+                                return self.model.getPage()[1] === 1;
+                            },
+                            hasPrev: function () {
+                                return self.model.getPage()[0] === 1;
+                            },
+                            firstPage: 1
+                        },
+                        hasHNext: function () {
+                            return self.model.getPage()[3] === 1;
+                        },
+                        isNeedMerge: true,
+                        regionColumnSize: this.model.getStoredRegionColumnSize()
                     }
-                    self.model.setPageOperator(pageOperator);
-                    self._onPageChange(function (items, header, crossItems, crossHeader) {
-                        populate.apply(self.table, arguments);
-                        self._afterTablePopulate();
-                    })
-                },
-                pager: {
-                    pages: false,
-                    curr: 1,
-                    hasNext: function () {
-                        return self.model.getPage()[1] === 1;
-                    },
-                    hasPrev: function () {
-                        return self.model.getPage()[0] === 1;
-                    },
-                    firstPage: 1
-                },
-                hasHNext: function () {
-                    return self.model.getPage()[3] === 1;
-                },
-                isNeedMerge: true,
-                regionColumnSize: this.model.getStoredRegionColumnSize()
-            }
-        });
+                });
+                break;
+        }
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             var columnSize = this.getCalculateRegionColumnSize();
             self.model.setStoredRegionColumnSize(columnSize[0]);
@@ -89,7 +152,9 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         if (!isValid) {
             var columnSize = this.table.getCalculateColumnSize();
             if (this.model.isNeed2Freeze()) {
-                var freezeCols = this.model.getFreezeCols;
+                var regionColumnSize = this.table.getCalculateRegionColumnSize();
+                this.model.setStoredRegionColumnSize(regionColumnSize[0]);
+                var freezeCols = this.model.getFreezeCols();
                 var freezeColumnSize = columnSize.slice(0, freezeCols.length);
                 var otherSize = columnSize.slice(freezeCols.length);
                 var fl = freezeColumnSize.length, ol = otherSize.length;
@@ -238,18 +303,18 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _onClickHeaderCellFilter: function (dId) {
         var self = this;
-        
+
         function formatTargetFilter(filter, tId) {
-            if(filter.filter_type === BICst.FILTER_TYPE.AND || 
-            filter.filter_type === BICst.FILTER_TYPE.OR) {
-                BI.each(filter.filter_value, function(i, filter){
+            if (filter.filter_type === BICst.FILTER_TYPE.AND ||
+                filter.filter_type === BICst.FILTER_TYPE.OR) {
+                BI.each(filter.filter_value, function (i, filter) {
                     formatTargetFilter(filter, tId);
                 });
                 return;
             }
             filter.target_id = tId;
         }
-        
+
         BI.Popovers.remove(dId);
         if (BI.Utils.isDimensionByDimensionID(dId)) {
             var popup = BI.createWidget({
@@ -317,8 +382,6 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         var self = this;
         var widgetId = this.options.wId;
         this.loading();
-        this.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
-        this.table.setVPage(1);
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
             self.loaded();
             if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
@@ -343,6 +406,11 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                     self._populateComplexTable();
                     break;
             }
+            if (self.model.getTableForm() !== self.tableForm) {
+                self._createTable();
+            }
+            self.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
+            self.table.setVPage(1);
             self._populateTable();
         }, this.model.getExtraInfo());
     },
