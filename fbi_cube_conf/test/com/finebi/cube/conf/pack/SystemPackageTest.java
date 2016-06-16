@@ -334,4 +334,6 @@ public class SystemPackageTest extends TestCase {
             BILogger.getLogger().error(e.getMessage(), e);
         }
     }
+
+    public void testPackage
 }

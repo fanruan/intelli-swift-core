@@ -1,5 +1,7 @@
 package com.finebi.cube.gen.arrange;
 
+import com.finebi.cube.exception.BIRegisterIsForbiddenException;
+import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.*;
 import com.finebi.cube.gen.oper.*;
 import com.finebi.cube.gen.oper.watcher.BICubeBuildFinishWatcher;
@@ -61,15 +63,27 @@ public class BICubeOperationManager {
         dataSourceBuildFinishWatcher = getDataSourceBuildFinishWatcher();
     }
 
-    public void generateDataSource(Set<List<Set<CubeTableSource>>> tableSourceSet) {
-        registeredTransportTable.clear();
-        registeredFieldIndex.clear();
-        tableSourceWatchers.clear();
+    public void subscribeStartMessage() {
+        try {
+            cubeBuildFinishOperation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
+        } catch (BITopicAbsentException e) {
+            e.printStackTrace();
+        } catch (BIRegisterIsForbiddenException e) {
+            e.printStackTrace();
+        }
+    }
 
-        generateTransportBuilder(tableSourceSet);
-        generateFieldIndexBuilder(tableSourceSet);
-        generateDataSourceFinishBuilder(tableSourceSet);
-        subscribeDataSourceFinish();
+
+    public void generateDataSource(Set<List<Set<CubeTableSource>>> tableSourceSet) {
+        if (null != tableSourceSet && !tableSourceSet.isEmpty()) {
+            registeredTransportTable.clear();
+            registeredFieldIndex.clear();
+            tableSourceWatchers.clear();
+            generateTransportBuilder(tableSourceSet);
+            generateFieldIndexBuilder(tableSourceSet);
+            generateDataSourceFinishBuilder(tableSourceSet);
+            subscribeDataSourceFinish();
+        }
     }
 
     private boolean isGenerated(CubeTableSource tableSource) {
@@ -306,7 +320,7 @@ public class BICubeOperationManager {
                             getRelationBuilder(cube, relation.getDependRelations()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    if(null!=relation.getCubeTableSourceSet()){
+                    if (null != relation.getCubeTableSourceSet()) {
                         for (CubeTableSource cubeTableSource : relation.getCubeTableSourceSet()) {
                             operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
                         }
@@ -333,7 +347,7 @@ public class BICubeOperationManager {
     * */
     public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet) {
         for (BICubeGenerateRelationPath path : relationPathSet) {
-            if(null!=path&&null!=path.getBiTableSourceRelationPath()){
+            if (null != path && null != path.getBiTableSourceRelationPath()) {
                 try {
                     String sourceID = path.getBiTableSourceRelationPath().getSourceID();
                     BIOperation<Object> operation = new BIOperation<Object>(
@@ -350,8 +364,8 @@ public class BICubeOperationManager {
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
             }
+            subscribePathFinish();
         }
-        subscribePathFinish();
     }
 
     long getVersion(CubeTableSource tableSource) {

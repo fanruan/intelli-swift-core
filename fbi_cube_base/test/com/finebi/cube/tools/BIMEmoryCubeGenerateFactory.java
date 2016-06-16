@@ -10,7 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Created by 49597 on 2016/6/16.
+ * Created by kary on 2016/6/16.
  * 生成BICubeGenerateRelation和BICubeGenerateRelationPath以供测试使用
  */
 public class BIMemoryCubeGenerateFactory {

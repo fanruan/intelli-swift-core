@@ -21,18 +21,18 @@ public class CubeTaskGenerate {
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
     public static void CubeBuild(long userId, CubeBuildStuff cubeBuildStuff) {
-        if (null != cubeBuildStuff && BICubeConfigureCenter.getPackageManager().getAllPackages(userId).size() != 0) {
+//        if (null != cubeBuildStuff && BICubeConfigureCenter.getPackageManager().getAllPackages(userId).size() != 0) {
             cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
-        }
+//        }
     }
 
     public static void CubeBuild(long userId) {
         BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
         BIPackageTableSourceConfigManager biPackageFindTableSourceConfigManager = new BIPackageTableSourceConfigManager();
         Set<BIBusinessTable> newTables = biPackageFindTableSourceConfigManager.getTables4Generate(UserControl.getInstance().getSuperManagerID());
-        if(newTables.size()==0){
-            return;
-        }
+//        if(newTables.size()==0){
+//            return;
+//        }
         CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, -999);
         cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
     }
