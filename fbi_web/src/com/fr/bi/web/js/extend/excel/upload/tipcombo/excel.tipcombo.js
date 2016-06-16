@@ -91,7 +91,7 @@ BI.ExcelTipCombo = BI.inherit(BI.Widget, {
             popup: {
                 el: popup,
                 maxHeight: this.constants.TIP_POPUP_HEIGHT,
-                maxWidth: this.constants.TIP_POPUP_WIDTH
+                width: this.constants.TIP_POPUP_WIDTH
             }
         })
     }

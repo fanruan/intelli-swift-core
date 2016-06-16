@@ -53,7 +53,6 @@ BI.EditorIconCheckCombo = BI.inherit(BI.Widget, {
             el: this.trigger,
             popup: {
                 el: this.popup,
-                maxWidth: 230,
                 maxHeight: 300
             }
         });

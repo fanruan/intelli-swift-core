@@ -44,7 +44,6 @@ BI.SmallTextValueCombo = BI.inherit(BI.Widget, {
             el: this.trigger,
             popup: {
                 el: this.popup,
-                maxWidth: "",
                 maxHeight: 300
             }
         });
