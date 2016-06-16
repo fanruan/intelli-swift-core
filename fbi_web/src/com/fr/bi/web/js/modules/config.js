@@ -1143,8 +1143,7 @@ BICst.DEFAULT_CHART_SETTING = {
     show_data_label: false,
     show_data_table: false,
     show_grid_line: true,
-    show_zoom: false,
-    null_continue: true
+    show_zoom: false
 };
 
 BICst.CAL_TARGET_TYPE = [{
