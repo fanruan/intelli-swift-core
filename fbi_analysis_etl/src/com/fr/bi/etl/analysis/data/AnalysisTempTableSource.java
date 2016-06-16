@@ -13,7 +13,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,8 +40,7 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
-    public Set<AnalysisCubeTableSource> getSourceUsedAnalysisETLSource() {
-        return new HashSet<AnalysisCubeTableSource>();
+    public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
     }
 
     @Override
