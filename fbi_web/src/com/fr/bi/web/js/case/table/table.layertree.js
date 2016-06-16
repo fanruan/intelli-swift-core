@@ -77,10 +77,7 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
             node.type || (node.type = "bi.layer_tree_table_cell");
             node.layer = layer;
             var next = [node];
-            BI.assert(node.values, function (v) {
-                return BI.isArray(v);
-            });
-            next = next.concat(node.values);
+            next = next.concat(node.values || []);
             if (next.length > 0) {
                 result.push(next);
             }

@@ -381,6 +381,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         var widgetId = this.options.wId;
+        self.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
         this.loading();
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
             self.loaded();
@@ -409,7 +410,6 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             if (self.model.getTableForm() !== self.tableForm) {
                 self._createTable();
             }
-            self.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
             self.table.setVPage(1);
             self._populateTable();
         }, this.model.getExtraInfo());
