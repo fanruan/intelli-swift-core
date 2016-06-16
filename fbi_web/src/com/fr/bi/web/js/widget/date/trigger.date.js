@@ -4,7 +4,6 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
         vgap: 2,
         triggerWidth: 30,
         watermark: BI.i18nText("BI-Unrestricted"),
-        errorText: BI.i18nText("BI-Date_Trigger_Error_Text"),
         yearLength: 4,
         yearMonthLength: 7
     },
@@ -39,7 +38,12 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
             vgap: c.vgap,
             allowBlank: true,
             watermark: c.watermark,
-            errorText: c.errorText
+            errorText: function () {
+                if (self.editor.isEditing()) {
+                    return BI.i18nText("BI-Date_Trigger_Error_Text");
+                }
+                return BI.i18nText("BI-Year_Trigger_Invalid_Text");
+            }
         });
         this.editor.on(BI.SignEditor.EVENT_FOCUS, function () {
             self.fireEvent(BI.DateTrigger.EVENT_FOCUS);
@@ -301,7 +305,7 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
     },
     getValue: function () {
         var dateStr = this.editor.getValue();
-        if(BI.isNotEmptyString(dateStr)){
+        if (BI.isNotEmptyString(dateStr)) {
             var date = dateStr.split("-");
             return {
                 year: date[0] | 0,
@@ -317,7 +321,7 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
         if (v === true) {
             this.items[2].width = this._const.triggerWidth;
             this.layout.resize();
-        }else{
+        } else {
             this.items[2].width = 0;
             this.layout.resize();
         }
