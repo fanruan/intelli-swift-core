@@ -107,4 +107,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
         }
         return temp_node;
     }
+
+
+
 }
