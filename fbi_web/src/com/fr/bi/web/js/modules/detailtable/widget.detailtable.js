@@ -30,12 +30,13 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     el: {
                         el: {
                             el: {
-                                type: "bi.table_tree"
+                                type: "bi.table_view"
                             }
                         }
                     },
                     sequence: {
-                        type: "bi.sequence_table_tree_number"
+                        type: "bi.sequence_table_list_number",
+                        pageSize: 100
                     }
                 },
                 itemsCreator: function (op, populate) {
@@ -56,7 +57,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             type: "bi.tab",
             element: this.element,
             defaultShowIndex: BI.DetailTable.SHOW_TABLE,
-            cardCreator: function(v) {
+            cardCreator: function (v) {
                 switch (v) {
                     case BI.DetailTable.SHOW_TABLE:
                         return self.table;
@@ -73,7 +74,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _onPageChange: function (vPage, callback) {
         var self = this;
         var widgetId = this.options.wId;
-        if(BI.Utils.getAllUsableDimensionIDs(widgetId).length === 0) {
+        if (BI.Utils.getAllUsableDimensionIDs(widgetId).length === 0) {
             this.tab.setSelect(BI.DetailTable.SHOW_TIP);
             return;
         }
@@ -119,13 +120,11 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     }
                 });
             });
-            var items = [{
-                children: self._createTableItems(json.value)
-            }];
+            var items = self._createTableItems(json.value);
 
             self.pager.setAllPages(Math.ceil(row / size));
             self.pager.setValue(vPage);
-            callback(items, header, [], []);
+            callback(items, [header]);
 
             //显示序号
             if (BI.Utils.getWSShowNumberByID(widgetId)) {
@@ -207,30 +206,22 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     },
 
     _createRowItem: function (rowValues, dId) {
-        var rowItem = {};
         var dimensionIds = BI.Utils.getWidgetViewByID(this.options.wId)[BICst.REGION.DIMENSION1];
-        BI.each(rowValues, function (i, rowValue) {
-            if (i === 0) {
-                rowItem.text = rowValue;
-                rowItem.type = "bi.detail_table_cell";
-                rowItem.dId = dimensionIds[i];
-                rowItem.values = [];
-            } else {
-                rowItem.values.push({
-                    type: "bi.detail_table_cell",
-                    dId: dimensionIds[i],
-                    text: rowValue
-                })
-            }
+
+        return BI.map(rowValues, function (i, rowValue) {
+            return {
+                text: rowValue,
+                type: "bi.detail_table_cell",
+                dId: dimensionIds[i]
+            };
         });
-        return rowItem;
     },
 
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
             self.table.attr("columnSize", self._getColumnSize(header));
-            self.table.populate(items, header, [], []);
+            self.table.populate(items, header);
         });
     },
 

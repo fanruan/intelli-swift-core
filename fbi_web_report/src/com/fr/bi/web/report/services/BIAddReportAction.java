@@ -1,9 +1,7 @@
 package com.fr.bi.web.report.services;
 
-import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIDesignReport;
 import com.fr.bi.fs.BIDesignSetting;
-import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.report.utils.BIFSReportUtils;
 import com.fr.fs.web.service.ServiceUtils;
@@ -48,12 +46,12 @@ public class BIAddReportAction extends ActionNoSessionCMD {
             popConfig = reportJO.toString();
         }
         BIDesignReport report = new BIDesignReport(new BIDesignSetting(popConfig));
-        long reportId = BIFSReportUtils.createNewBIReport(report, userId, reportName, realTime == null ? "" : realTime);
+        long reportId = BIFSReportUtils.createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
 
-        //保存到文件夹
-        BIReportNode reportNode = BIDAOUtils.findByID(reportId, userId);
-        reportNode.setParentid(reportLocation);
-        BIDAOUtils.saveOrUpDate(reportNode, userId);
+//        //保存到文件夹
+//        BIReportNode reportNode = BIDAOUtils.findByID(reportId, userId);
+//        reportNode.setParentid(reportLocation);
+//        BIDAOUtils.saveOrUpDate(reportNode, userId);
 
         JSONObject jo = new JSONObject();
         jo.put(BIBaseConstant.REPORT_ID, reportId);

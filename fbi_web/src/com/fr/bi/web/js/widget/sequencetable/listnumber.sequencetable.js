@@ -21,7 +21,9 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
 
             //交叉表头
             crossHeader: [],
-            crossItems: []
+            crossItems: [],
+
+            pageSize: 20
         });
     },
 
@@ -117,7 +119,8 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
     },
 
     setVPage: function (v) {
-        this.options.startSequence = (v - 1) * 20 + 1;
+        var o = this.options;
+        o.startSequence = (v - 1) * o.pageSize + 1;
     },
 
     populate: function (items, header, startSequence) {
