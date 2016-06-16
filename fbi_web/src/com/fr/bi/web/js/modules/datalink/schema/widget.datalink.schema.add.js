@@ -58,6 +58,9 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
                 var isValid = self.model.checkDataLinkName(v);
                 self._refreshButtonsStatus(isValid);
                 return isValid;
+            },
+            quitChecker: function(){
+                return false;
             }
         });
         this.linkName.on(BI.SignEditor.EVENT_CHANGE, function () {
@@ -235,6 +238,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         });
         if (BI.isNotEmptyString(this.model.getSchema())) {
             schemaCombo.setEnable(true);
+            schemaCombo.setTitle("");
             BI.Utils.getSchemasByLink(self.model.getValue(), function (data) {
                 var items = [];
                 BI.each(data, function (i, s) {
@@ -245,6 +249,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             });
         } else {
             schemaCombo.setEnable(true);
+            schemaCombo.setTitle("");
         }
         var schemaWrapper = this._createItemsWrapper(BI.i18nText("BI-Third_Step"), BI.i18nText("BI-Mode"), schemaCombo);
 

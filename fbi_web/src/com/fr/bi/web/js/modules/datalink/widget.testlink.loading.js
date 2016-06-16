@@ -26,11 +26,29 @@ BI.TestLinkLoadingMask = BI.inherit(BI.Widget, {
         this._testConnection();
 
         BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.absolute",
             element: mask,
             cls: "bi-test-link-loading-mask",
-            items: [this.wrapper]
-        });
+            items: [{
+                el: {
+                    type: "bi.layout",
+                    cls: "mask-pane"
+                },
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            }, {
+                el: {
+                    type: "bi.center_adapt",
+                    items: [this.wrapper]
+                },
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0
+            }]
+        })
     },
 
     _testConnection: function(){
