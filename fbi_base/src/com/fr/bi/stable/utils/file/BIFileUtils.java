@@ -7,6 +7,7 @@ import com.fr.bi.stable.utils.mem.BIMemoryUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StableUtils;
+import com.fr.third.org.apache.poi.hssf.record.formula.functions.Char;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -292,14 +293,16 @@ public class BIFileUtils {
      * @return list集合
      */
     public static String readFile(String path) {
-        StringBuffer str = new StringBuffer("");
         File file = new File(path);
+        StringBuffer sb = new StringBuffer();
         try {
             FileReader fr = new FileReader(file);
             BufferedReader reader = new BufferedReader(fr);
-
+            String line;
             try {
-                return reader.readLine();
+                while ((line = reader.readLine()) != null)
+                    sb.append(line);
+                return sb.toString();
             } finally {
                 reader.close();
                 fr.close();
