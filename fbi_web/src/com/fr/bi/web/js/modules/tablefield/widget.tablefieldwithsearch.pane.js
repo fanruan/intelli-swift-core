@@ -40,7 +40,11 @@ BI.TableFieldWithSearchPane = FR.extend(BI.Widget, {
             popup: {
                 type: "bi.table_field_info_search_result_pane",
                 onUsedFieldsChange: function (usedFields) {
-                    tableInfo.usedFields = usedFields;
+                    BI.each(tableInfo.fields, function(i, fs){
+                        BI.each(fs, function(j, field){
+                            field.is_usable = usedFields.contains(field.id);
+                        });
+                    });
                     table.populate(tableInfo);
                     self.fireEvent(BI.TableFieldWithSearchPane.EVENT_USABLE_CHANGE, usedFields);
                 },
