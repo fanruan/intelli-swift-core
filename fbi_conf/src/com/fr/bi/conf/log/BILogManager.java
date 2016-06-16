@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 //tod kary 现在只能监听cube生成过程中产生的异常，后期可考虑监听所有和cube相关的异常
 //edit kary 修改获取整体relation和cubetablesource的方法，以适应部分更新功能
+//tod kary 需要加入对path的监听
 public class BILogManager implements BILogManagerProvider {
 
 

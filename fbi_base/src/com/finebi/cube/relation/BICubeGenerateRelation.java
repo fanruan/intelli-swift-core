@@ -9,10 +9,10 @@ import java.util.Set;
  */
 public class BICubeGenerateRelation {
     protected Set<CubeTableSource> cubeTableSourceSet;
-    protected BITableSourceRelation biTableSourceRelation;
+    protected BITableSourceRelation dependRelations;
 
     public BICubeGenerateRelation(BITableSourceRelation biTableSourceRelation, Set<CubeTableSource> cubeTableSourceSet) {
-        this.biTableSourceRelation = biTableSourceRelation;
+        this.dependRelations = biTableSourceRelation;
         this.cubeTableSourceSet = cubeTableSourceSet;
     }
 
@@ -20,7 +20,7 @@ public class BICubeGenerateRelation {
         return cubeTableSourceSet;
     }
 
-    public BITableSourceRelation getBiTableSourceRelation() {
-        return biTableSourceRelation;
+    public BITableSourceRelation getDependRelations() {
+        return dependRelations;
     }
 }

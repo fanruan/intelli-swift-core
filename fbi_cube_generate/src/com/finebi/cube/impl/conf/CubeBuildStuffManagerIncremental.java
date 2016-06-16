@@ -5,6 +5,7 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CalculateDepend;
 import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
@@ -21,6 +22,7 @@ import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager
 
 /**
  * Created by kary on 2016/6/8.
+ * 增量更新，尽量减少依赖，最大化提升效率
  */
 public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
@@ -42,11 +44,23 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
         this.newBiBusinessTableSet = newTables;
         init();
         try {
+            setSources();
             setResourcesAndDepends();
             setRealationAndPath();
             calculateDepends();
         } catch (BITableAbsentException e) {
             BILogger.getLogger().error(e.getMessage());
+        }
+    }
+
+    private void setSources() {
+        this.sources = new HashSet<CubeTableSource>();
+        for (IBusinessPackageGetterService pack : BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId())) {
+            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
+            while (tIt.hasNext()) {
+                BIBusinessTable table = tIt.next();
+                sources.add(table.getTableSource());
+            }
         }
     }
 
@@ -60,17 +74,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
 
     private void calculateDepends() {
-        CalculateDepend cal = new CalculateDependManager() {
-            @Override
-            public void setOriginal(Set<CubeTableSource> cubeTableSources) {
-                if (null == analysisTableSources) {
-                    analysisTableSources = new HashSet<CubeTableSource>();
-                }
-                for (CubeTableSource analysisTableSource : cubeTableSources) {
-                    analysisTableSources.add(analysisTableSource);
-                }
-            }
-        };
+        CalculateDepend cal = new CalculateDependManager();
         cal.setOriginal(this.sources);
         cubeGenerateRelationSet=new HashSet<BICubeGenerateRelation>();
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
@@ -199,7 +203,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     @Override
     public Set<CubeTableSource> getSources() {
-        return null;
+        return this.sources;
     }
 
     @Override
