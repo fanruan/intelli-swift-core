@@ -55,22 +55,17 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
             LightNode cursor_node = temp_node;
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
+                Number value;
                 if (targetKey instanceof AvgKey) {
-                    TargetGettingKey sumGettingKey = new TargetGettingKey(((AvgKey) targetKey).getSumKey(), targetName);
-                    TargetGettingKey countGettingKey = new TargetGettingKey(((AvgKey) targetKey).getCountKey(), targetName);
-                    Number sumValue = cursor_node.getSummaryValue(sumGettingKey);
-                    Number countValue = cursor_node.getSummaryValue(countGettingKey);
-                    if (sumValue != null && countValue != null) {
-                        sum += sumValue.doubleValue() / countValue.doubleValue();
-                    }
-                    cursor_node = cursor_node.getSibling();
+                    value = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
                 } else {
-                    Number value = cursor_node.getSummaryValue(key);
-                    if (value != null) {
-                        sum += value.doubleValue();
-                    }
-                    cursor_node = cursor_node.getSibling();
+                    value = cursor_node.getSummaryValue(key);
                 }
+                if (value != null) {
+                    sum += value.doubleValue();
+                }
+                cursor_node = cursor_node.getSibling();
+
 
             }
             cursor_node = temp_node;
@@ -94,6 +89,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
         }
 
     }
+
 
     private class RankDealWithCrossNode implements Callable {
         private BICrossNode rank_node;
