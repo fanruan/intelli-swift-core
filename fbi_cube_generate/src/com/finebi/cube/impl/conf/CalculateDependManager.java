@@ -1,6 +1,6 @@
 package com.finebi.cube.impl.conf;
 
-import com.finebi.cube.conf.CalculateDepend;
+import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Created by kary on 2016/6/13.
  */
-public  class CalculateDependManager implements CalculateDepend {
+public  class CalculateDependManager implements CalculateDependTool {
     public Set<CubeTableSource> analysisTableSources;
 
     @Override

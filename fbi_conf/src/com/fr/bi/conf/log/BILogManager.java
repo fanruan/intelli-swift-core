@@ -1,6 +1,7 @@
 package com.fr.bi.conf.log;
 
 
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -211,7 +212,7 @@ public class BILogManager implements BILogManagerProvider {
      * 获取所有需要更新的relation信息
      */
     @Override
-    public void reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet, long userId) {
+    public void reLationPathSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet, long userId) {
         getInstance(userId).reLationSet(biTableSourceRelationHashSet);
     }
     /**

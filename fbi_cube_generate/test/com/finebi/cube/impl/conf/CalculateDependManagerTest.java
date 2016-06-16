@@ -1,6 +1,6 @@
 package com.finebi.cube.impl.conf;
 
-import com.finebi.cube.conf.CalculateDepend;
+import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.relation.*;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
@@ -16,7 +16,7 @@ import java.util.Set;
  * Created by kary on 2016/6/13.
  */
 public class CalculateDependManagerTest extends TestCase {
-    private CalculateDepend calculateDependManager4Test;
+    private CalculateDependTool calculateDependManager4Test;
 
     @Override
     public void setUp() throws Exception {

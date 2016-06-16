@@ -44,9 +44,17 @@ public class BITableSourceRelationTestTool {
         return new BITableSourceRelation(BIRowField.rowNumberField, BIRowField.rowNumberField, BIMemoryDataSourceFactory.generateTableC(), BIMemoryDataSourceFactory.generateTableD());
     }
 
+    /*log不支持BIRowField，所以用BICubeFieldSource替代*/
     public static BITableSourceRelation getABWithBICubeFieldSource() {
         BICubeFieldSource primaryIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceA(), "id", 0, 10);
         BICubeFieldSource foreignIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceB(), "id", 0, 10);
+        return new BITableSourceRelation(primaryIdField, foreignIdField, BITableSourceTestTool.getDBTableSourceA(), BITableSourceTestTool.getDBTableSourceB());
+    }
+
+    /*log不支持BIRowField，所以用BICubeFieldSource替代*/
+    public static BITableSourceRelation getBCWithBICubeFieldSource() {
+        BICubeFieldSource primaryIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceB(), "id", 0, 10);
+        BICubeFieldSource foreignIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceC(), "id", 0, 10);
         return new BITableSourceRelation(primaryIdField, foreignIdField, BITableSourceTestTool.getDBTableSourceA(), BITableSourceTestTool.getDBTableSourceB());
     }
 

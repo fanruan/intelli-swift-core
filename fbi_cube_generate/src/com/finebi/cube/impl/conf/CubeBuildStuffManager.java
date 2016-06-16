@@ -3,7 +3,7 @@ package com.finebi.cube.impl.conf;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CalculateDepend;
+import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -292,7 +292,6 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
      */
     @Override
     public Set<BITableSourceRelation> getTableSourceRelationSet() {
-        BIConfigureManagerCenter.getLogManager().reLationSet(tableSourceRelationSet, biUser.getUserId());
         return tableSourceRelationSet;
     }
 
@@ -345,7 +344,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
     }
 
     private void calculateDepend() {
-        CalculateDepend cal = new CalculateDependManager();
+        CalculateDependTool cal = new CalculateDependManager();
         cal.setOriginal(this.getAllSingleSources());
         cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {

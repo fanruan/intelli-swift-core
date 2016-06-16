@@ -3,7 +3,7 @@ package com.finebi.cube.impl.conf;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CalculateDepend;
+import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -47,7 +47,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
             setSources();
             setResourcesAndDepends();
             setRealationAndPath();
-            calculateDepends();
+            calculateRelationDepends();
         } catch (BITableAbsentException e) {
             BILogger.getLogger().error(e.getMessage());
         }
@@ -73,16 +73,19 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
     }
 
 
-    private void calculateDepends() {
-        CalculateDepend cal = new CalculateDependManager();
+    private void calculateRelationDepends() {
+        CalculateDependTool cal = new CalculateDependManager();
         cal.setOriginal(this.sources);
-        cubeGenerateRelationSet=new HashSet<BICubeGenerateRelation>();
+        cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
             this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation));
         }
-        cubeGenerateRelationPathSet=new HashSet<BICubeGenerateRelationPath>();
+        cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
         for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
-            cubeGenerateRelationPathSet.add(cal.calRelationPath(biTableSourceRelationPath,this.biTableSourceRelationSet));
+            BICubeGenerateRelationPath path = cal.calRelationPath(biTableSourceRelationPath, this.biTableSourceRelationSet);
+            if (null != path) {
+                cubeGenerateRelationPathSet.add(path);
+            }
         }
     }
 

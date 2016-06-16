@@ -2,6 +2,7 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
+import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.BITableSourceRelationTestTool;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
@@ -53,15 +54,16 @@ public class BILogManagerTest extends TestCase {
                 biLogManager.infoRelation(getRelaionColumeKeyInfo(relation), 1000, -999);
             }
             biLogManager.cubeTableSourceSet(dataSourceSet, -999);
-            biLogManager.reLationSet(relations, -999);
+
+            biLogManager.reLationPathSet(BITableSourceRelationPathTestTool.getRelationPathSetABC(), -999);
             biLogManager.logEnd(-999);
             biLogManager.logVersion(-999);
             JSONObject json = biLogManager.createJSON(-999);
             JSONArray tablesJa= (JSONArray) json.get("tables");
             JSONArray errTablesJa= (JSONArray) json.get("errors");
             assertTrue(tablesJa.length()+errTablesJa.length()==dataSourceSet.size());
-            JSONArray allTableInfoJa= (JSONArray) json.get("allTableInfo");
-            assertTrue(allTableInfoJa.length()==dataSourceSet.size());
+            JSONObject o = (JSONObject) json.get("allTableInfo");
+            assertTrue(o.length()==dataSourceSet.size());
             JSONArray allRelationInfoJa= (JSONArray) json.get("allRelationInfo");
             assertTrue(allRelationInfoJa.length()==relations.size());
         } catch (Exception e) {

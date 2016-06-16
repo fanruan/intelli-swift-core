@@ -12,7 +12,7 @@ import java.util.Set;
  * Created by kary on 2016/6/13.
  * 为relation和path计算依赖
  */
-public interface CalculateDepend {
+public interface CalculateDependTool {
     BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation);
 
     BICubeGenerateRelationPath calRelationPath(BITableSourceRelationPath biTableSourceRelationPathSet, Set<BITableSourceRelation> tableRelationSet);
