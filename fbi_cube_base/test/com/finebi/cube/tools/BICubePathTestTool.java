@@ -23,4 +23,14 @@ public class BICubePathTestTool {
         }
     }
 
+    public static BICubeTablePath getContainNullPath() {
+        try {
+            BICubeTablePath path = new BICubeTablePath();
+            path.addRelationAtHead(BICubeRelationTestTool.getNullTableRelation());
+            return path;
+        } catch (BITablePathConfusionException e) {
+            e.printStackTrace();
+            throw BINonValueUtils.beyondControl();
+        }
+    }
 }

@@ -78,9 +78,8 @@ public interface ICubeColumnIndexReader<T> {
     int sizeOfGroup();
 
     /**
-     * 获取对应位置的空值索引
+     * 获取当前Column的空值索引
      *
-     * @param position
      * @return
      */
     GroupValueIndex getNULLIndex();

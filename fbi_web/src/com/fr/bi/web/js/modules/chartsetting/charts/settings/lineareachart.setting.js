@@ -369,18 +369,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
-        //空值连续nullContinue
-        this.nullContinue = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Null_Continue"),
-            invisible: BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.COMBINE_CHART,
-            width: 115
-        });
-
-        this.nullContinue.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
-        });
-
         var showElement = BI.createWidget({
             type: "bi.horizontal",
             cls: "single-line-settings",
@@ -413,9 +401,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.showZoom]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.nullContinue]
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -649,7 +634,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
-        this.nullContinue.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -681,8 +665,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
             show_data_label: this.showDataLabel.isSelected(),
             show_data_table: this.showDataTable.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
-            show_zoom: this.showZoom.isSelected(),
-            null_continue: this.nullContinue.isSelected()
+            show_zoom: this.showZoom.isSelected()
         }
     },
 
@@ -711,7 +694,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
         this.showDataTable.setSelected(v.show_data_table);
         this.gridLine.setSelected(v.show_grid_line);
         this.showZoom.setSelected(v.show_zoom);
-        this.nullContinue.setSelected(v.null_continue);
     }
 });
 BI.LineAreaChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

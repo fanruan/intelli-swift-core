@@ -38,6 +38,18 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
         tableEntity = (BICubeTableEntity) cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
     }
 
+    public static void buildFieldIndex(BIMemoryDataSource... tables) {
+        BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
+
+        BIFieldIndexGeneratorTest fieldIndexGenerator = new BIFieldIndexGeneratorTest();
+        for (BIMemoryDataSource source : tables) {
+            transportTest.transport(source);
+            for (int i = 0; i < source.contents.size(); i++) {
+                fieldIndexGenerator.fieldIndexGenerator(source, i);
+            }
+        }
+    }
+
     public void fieldIndexGenerator(CubeTableSource tableSource, int columnIndex) {
         try {
             setUp();

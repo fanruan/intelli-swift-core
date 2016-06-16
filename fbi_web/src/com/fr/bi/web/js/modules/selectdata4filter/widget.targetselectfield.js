@@ -22,7 +22,8 @@ BI.TargetFilterSelectField = BI.inherit(BI.Widget, {
             tablesCreator: function () {
                 var tablesStructure = [];
                 var currentTableId = BI.Utils.getTableIdByFieldID(o.field_id);
-                var primaryRelationTableIds = BI.Utils.getPrimaryRelationTablesByTableID(currentTableId);
+                var primaryRelationTableIds = BI.Utils.getPrimaryRelationTablesByTableID(currentTableId) || [];
+                primaryRelationTableIds = BI.without(primaryRelationTableIds, currentTableId);
                 tablesStructure.push({
                     id: currentTableId,
                     type: "bi.select_data_level0_node",
