@@ -203,7 +203,8 @@ public class UserETLUpdateTask implements CubeTask {
 	private long getTableVersion(){
 
 		TreeMap<String, CubeTableSource> tm = new TreeMap<String, CubeTableSource>();
-        for (CubeTableSource s : source.getSourceUsedBaseSource()){
+		Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+        for (CubeTableSource s : source.getSourceUsedBaseSource(set)){
             tm.put(s.fetchObjectCore().getIDValue(), s);
         }
 		LongList versionList = new LongList();
