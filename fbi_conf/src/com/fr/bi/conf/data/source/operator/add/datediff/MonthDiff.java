@@ -3,9 +3,9 @@
  */
 package com.fr.bi.conf.data.source.operator.add.datediff;
 
-import java.util.Calendar;
-
 import com.fr.bi.stable.constant.DateConstant;
+
+import java.util.Calendar;
 
 /**
  * @author Daniel
@@ -23,8 +23,8 @@ public class MonthDiff implements DateDiffCalculator {
 		c1.setTimeInMillis(d1.longValue());
 		Calendar c2 = Calendar.getInstance();
 		c2.setTimeInMillis(d2.longValue());
-		int year = c2.get(Calendar.YEAR) - c1.get(Calendar.YEAR);
-		int month = c2.get(Calendar.MONTH) - c1.get(Calendar.MONTH);
+		int year = c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR);
+		int month = c1.get(Calendar.MONTH) - c2.get(Calendar.MONTH);
 		return year * DateConstant.DATEDELTRA.MONTH_OF_YEAR + month;
 	}
 
