@@ -18,7 +18,6 @@ public class BICubeGenerateRelationPath {
     }
 
     public BICubeGenerateRelationPath(BITableSourceRelationPath biTableSourceRelationPath, Set<BITableSourceRelationPath> dependRelationPath) {
-
         this.biTableSourceRelationPath = biTableSourceRelationPath;
         this.biTableSourceRelationPathSet = dependRelationPath;
     }

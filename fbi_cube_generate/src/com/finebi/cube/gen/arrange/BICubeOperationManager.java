@@ -300,10 +300,10 @@ public class BICubeOperationManager {
             while (it.hasNext()) {
                 BICubeGenerateRelation relation = it.next();
                 try {
-                    String sourceID = new BITableSourceRelationPath(relation.getBiTableSourceRelation()).getSourceID();
+                    String sourceID = new BITableSourceRelationPath(relation.getDependRelations()).getSourceID();
                     BIOperation<Object> operation = new BIOperation<Object>(
                             sourceID,
-                            getRelationBuilder(cube, relation.getBiTableSourceRelation()));
+                            getRelationBuilder(cube, relation.getDependRelations()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                     if(null!=relation.getCubeTableSourceSet()){
@@ -332,10 +332,8 @@ public class BICubeOperationManager {
     * 同时支持完整依赖和部分依赖
     * */
     public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet) {
-        if (relationPathSet != null && !relationPathSet.isEmpty()) {
-            Iterator<BICubeGenerateRelationPath> it = relationPathSet.iterator();
-            while (it.hasNext()) {
-                BICubeGenerateRelationPath path = it.next();
+        for (BICubeGenerateRelationPath path : relationPathSet) {
+            if(null!=path&&null!=path.getBiTableSourceRelationPath()){
                 try {
                     String sourceID = path.getBiTableSourceRelationPath().getSourceID();
                     BIOperation<Object> operation = new BIOperation<Object>(
@@ -352,8 +350,8 @@ public class BICubeOperationManager {
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
             }
-            subscribePathFinish();
         }
+        subscribePathFinish();
     }
 
     long getVersion(CubeTableSource tableSource) {

@@ -27,6 +27,7 @@ import java.util.*;
  *
  * @author Connery
  * @since 4.0
+ * kary 这个是真正意义上完整的全局更新，无论是否有数据，更新所有能更新的
  */
 public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
 
@@ -344,18 +345,13 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
     }
 
     private void calculateDepend() {
-        CalculateDepend cal = new CalculateDependManager() {
-            @Override
-            public void setOriginal(Set<CubeTableSource> cubeTableSources) {
-                analysisTableSources = getAllSingleSources();
-            }
-        };
+        CalculateDepend cal = new CalculateDependManager();
         cal.setOriginal(this.getAllSingleSources());
-        cubeGenerateRelationSet=new HashSet<BICubeGenerateRelation>();
+        cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
             this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation));
         }
-        cubeGenerateRelationPathSet=new HashSet<BICubeGenerateRelationPath>();
+        cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
         for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
             BICubeGenerateRelationPath biCubeGenerateRelationPath = cal.calRelationPath(biTableSourceRelationPath, this.tableSourceRelationSet);
             if (null != biCubeGenerateRelationPath) {

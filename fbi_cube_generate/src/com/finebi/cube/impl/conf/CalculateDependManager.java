@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Created by kary on 2016/6/13.
  */
-public abstract class CalculateDependManager implements CalculateDepend {
+public  class CalculateDependManager implements CalculateDepend {
     public Set<CubeTableSource> analysisTableSources;
 
     @Override
@@ -51,5 +51,9 @@ public abstract class CalculateDependManager implements CalculateDepend {
         }
         BICubeGenerateRelationPath biCubeGenerateRelationPath = new BICubeGenerateRelationPath(biTableSourceRelationPath, dependRelationPathSet);
         return biCubeGenerateRelationPath;
+    }
+    @Override
+    public void setOriginal(Set<CubeTableSource> cubeTableSources) {
+        analysisTableSources = cubeTableSources;
     }
 }

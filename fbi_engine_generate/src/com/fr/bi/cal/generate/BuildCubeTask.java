@@ -99,28 +99,27 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void run() {
-
-        BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-        BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
-        operationManager.initialWatcher();
-
-        manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
-        manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
-        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getBiTableSourceRelationPathSet());
-        manager.registerTableRelationPath(relationPathSet);
-        finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
-        operationManager.setVersionMap(cubeBuildStuff.getVersions());
-        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
-        operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
-        operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
-        IRouter router = BIFactoryHelper.getObject(IRouter.class);
-        try {
-            BIConfigureManagerCenter.getLogManager().reLationSet(cubeBuildStuff.getTableSourceRelationSet(),biUser.getUserId());
-            BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getAllSingleSources(),biUser.getUserId());
-            router.deliverMessage(generateMessageDataSourceStart());
-        } catch (BIDeliverFailureException e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
+            BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
+            BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
+            operationManager.initialWatcher();
+            manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
+            manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
+            Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getBiTableSourceRelationPathSet());
+            manager.registerTableRelationPath(relationPathSet);
+            finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
+            operationManager.setVersionMap(cubeBuildStuff.getVersions());
+            operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
+            operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
+            operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
+            IRouter router = BIFactoryHelper.getObject(IRouter.class);
+            try {
+                BIConfigureManagerCenter.getLogManager().reLationSet(cubeBuildStuff.getTableSourceRelationSet(), biUser.getUserId());
+                BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getAllSingleSources(), biUser.getUserId());
+            /*业务包为空时不发送start消息*/
+                router.deliverMessage(generateMessageDataSourceStart());
+            } catch (BIDeliverFailureException e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
     }
 
     private Set<BITableSourceRelationPath> filterPath(Set<BITableSourceRelationPath> paths) {
