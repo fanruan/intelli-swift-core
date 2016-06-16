@@ -150,6 +150,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                 height: 30,
                 width: 36,
                 minWidth: 50,
+                maxWidth: 50,
                 el: {
                     el: el
                 },

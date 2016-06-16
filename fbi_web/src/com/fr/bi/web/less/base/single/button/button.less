@@ -68,6 +68,12 @@
 }
 
 .bi-basic-button {
+  &.button-common, &.button-success, &.button-warning {
+    & .bi-button-mask {
+      .opacity(0.2);
+      background-color: @color-bi-background-default;
+    }
+  }
   & .bi-button-mask {
     .opacity(0.2);
     background-color: @color-bi-button-mask;
