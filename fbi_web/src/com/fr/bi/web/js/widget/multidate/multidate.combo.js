@@ -137,7 +137,7 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                 popup: {
                     el: this.popup,
                     maxHeight: this.constants.popupHeight,
-                    maxWidth: this.constants.popupWidth,
+                    width: this.constants.popupWidth,
                     stopPropagation: false
                 }
             });

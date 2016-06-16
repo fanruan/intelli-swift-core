@@ -132,9 +132,8 @@ ExcelTableView = BI.inherit(BI.View, {
             logic: {
                 dynamic: false
             },
+            isNeedAdjustWidth: false,
             stopPropagation: true,
-            maxWidth: BI.MAX,
-            maxHeight: BI.MAX,
             el: table1
         });
         popup.element.css({"top": "50px", left: "50px", bottom: "50px", right: "50px"});

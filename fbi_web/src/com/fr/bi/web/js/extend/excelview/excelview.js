@@ -38,6 +38,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
         this.combo = BI.createWidget({
             type: "bi.combo",
             isDefaultInit: false,
+            isNeedAdjustWidth: false,
             element: this.element,
             el: {
                 type: "bi.horizontal_adapt",
@@ -50,8 +51,6 @@ BI.ExcelView = BI.inherit(BI.Single, {
                 logic: {
                     dynamic: false
                 },
-                maxWidth: BI.MAX,
-                maxHeight: BI.MAX,
                 el: {
                     type: "bi.vtape",
                     items: [{

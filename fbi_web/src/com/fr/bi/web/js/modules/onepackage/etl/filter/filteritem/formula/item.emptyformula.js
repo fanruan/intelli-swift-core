@@ -100,7 +100,7 @@ BI.ConfFormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 },
                 stopPropagation: false,
                 maxHeight: this._constant.MAX_HEIGHT,
-                maxWidth: this._constant.MAX_WIDTH
+                width: this._constant.MAX_WIDTH
             }
         });
 
