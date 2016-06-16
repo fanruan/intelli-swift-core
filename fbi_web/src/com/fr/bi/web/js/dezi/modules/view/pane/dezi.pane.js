@@ -70,7 +70,41 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             this._refreshWidgets();
             BI.nextTick(function () {
                 var widgets = self.cat("widgets");
-                self.skipTo(w.id + "/" + widgets[w.id].type, w.id, {
+                var type = widgets[w.id].type;
+                switch (type) {
+                    case BICst.WIDGET.TABLE:
+                    case BICst.WIDGET.CROSS_TABLE:
+                    case BICst.WIDGET.COMPLEX_TABLE:
+                    case BICst.WIDGET.AXIS:
+                    case BICst.WIDGET.ACCUMULATE_AXIS:
+                    case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                    case BICst.WIDGET.COMPARE_AXIS:
+                    case BICst.WIDGET.FALL_AXIS:
+                    case BICst.WIDGET.BAR:
+                    case BICst.WIDGET.ACCUMULATE_BAR:
+                    case BICst.WIDGET.COMPARE_BAR:
+                    case BICst.WIDGET.LINE:
+                    case BICst.WIDGET.AREA:
+                    case BICst.WIDGET.ACCUMULATE_AREA:
+                    case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                    case BICst.WIDGET.COMPARE_AREA:
+                    case BICst.WIDGET.RANGE_AREA:
+                    case BICst.WIDGET.COMBINE_CHART:
+                    case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                    case BICst.WIDGET.PIE:
+                    case BICst.WIDGET.DONUT:
+                    case BICst.WIDGET.MAP:
+                    case BICst.WIDGET.GIS_MAP:
+                    case BICst.WIDGET.DASHBOARD:
+                    case BICst.WIDGET.BUBBLE:
+                    case BICst.WIDGET.FORCE_BUBBLE:
+                    case BICst.WIDGET.SCATTER:
+                    case BICst.WIDGET.RADAR:
+                    case BICst.WIDGET.ACCUMULATE_RADAR:
+                    case BICst.WIDGET.FUNNEL:
+                        type = BICst.WIDGET.TABLE;
+                }
+                self.skipTo(w.id + "/" + type, w.id, {
                     expand: true
                 });
             });
@@ -93,6 +127,39 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         var self = this;
         BI.each(this.cat("widgets"), function (id, widget) {
             var type = widget.type;
+            switch (type) {
+                case BICst.WIDGET.TABLE:
+                case BICst.WIDGET.CROSS_TABLE:
+                case BICst.WIDGET.COMPLEX_TABLE:
+                case BICst.WIDGET.AXIS:
+                case BICst.WIDGET.ACCUMULATE_AXIS:
+                case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                case BICst.WIDGET.COMPARE_AXIS:
+                case BICst.WIDGET.FALL_AXIS:
+                case BICst.WIDGET.BAR:
+                case BICst.WIDGET.ACCUMULATE_BAR:
+                case BICst.WIDGET.COMPARE_BAR:
+                case BICst.WIDGET.LINE:
+                case BICst.WIDGET.AREA:
+                case BICst.WIDGET.ACCUMULATE_AREA:
+                case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                case BICst.WIDGET.COMPARE_AREA:
+                case BICst.WIDGET.RANGE_AREA:
+                case BICst.WIDGET.COMBINE_CHART:
+                case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                case BICst.WIDGET.PIE:
+                case BICst.WIDGET.DONUT:
+                case BICst.WIDGET.MAP:
+                case BICst.WIDGET.GIS_MAP:
+                case BICst.WIDGET.DASHBOARD:
+                case BICst.WIDGET.BUBBLE:
+                case BICst.WIDGET.FORCE_BUBBLE:
+                case BICst.WIDGET.SCATTER:
+                case BICst.WIDGET.RADAR:
+                case BICst.WIDGET.ACCUMULATE_RADAR:
+                case BICst.WIDGET.FUNNEL:
+                    type = BICst.WIDGET.TABLE;
+            }
             self.skipTo(id + "/" + type, id, "widgets." + id, {}, {
                 force: refresh
             });
