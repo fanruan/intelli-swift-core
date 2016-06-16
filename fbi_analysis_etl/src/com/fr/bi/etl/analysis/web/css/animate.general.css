@@ -193,6 +193,12 @@
     transform: rotate(0deg) scale(1.2);
   }
 }
+.bi-progress-bar-processor {
+  transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+}
 .bi-z-index-mask {
   -webkit-animation: background-change 0.5s ease;
   -moz-animation: background-change 0.5s ease;
@@ -200,16 +206,16 @@
   animation: background-change 0.5s ease;
 }
 @keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-webkit-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-moz-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-o-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 .bi-message-mask {
   -webkit-animation: background-change 0.5s ease;
@@ -218,14 +224,14 @@
   animation: background-change 0.5s ease;
 }
 @keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-webkit-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-moz-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-o-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
