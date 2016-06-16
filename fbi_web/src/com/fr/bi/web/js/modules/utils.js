@@ -805,12 +805,6 @@
                 BICst.DEFAULT_CHART_SETTING.show_zoom;
         },
 
-        getWSNullContinueByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
-                BICst.DEFAULT_CHART_SETTING.null_continue;
-        },
-
         getWSTextDirectionByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.text_direction) ? ws.text_direction :
@@ -1844,7 +1838,7 @@
             });
 
             //联动传递指标过滤条件  找到联动链上的所有的组件，获取所有的指标的过滤条件  感觉有点浮夸的功能
-            if (BI.isNotNull(widget.settings) && widget.settings.transfer_filter === true) {
+            if (BI.isNotNull(widget.settings) && this.getWSTransferFilterByID(wid) === true) {
                 var allLinksWIds = [];
 
                 function getLinkedIds(wid, links) {
