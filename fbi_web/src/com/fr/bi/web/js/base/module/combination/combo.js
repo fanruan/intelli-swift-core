@@ -212,9 +212,13 @@ BI.Combo = BI.inherit(BI.Widget, {
         if (o.isNeedAdjustWidth === true) {
             this.resetListWidth("");
             var width = this.popupView.element.outerWidth();
-            if (width < (this.element.outerWidth() || o.width)) {
-                this.resetListWidth(this.element.outerWidth() || o.width);
+            var maxW = this.element.outerWidth() || o.width;
+            if (width > maxW + 80) {
+                maxW = maxW + 80;
+            } else if (width > maxW) {
+                maxW = width;
             }
+            this.resetListWidth(maxW < 100 ? 100 : maxW);
         }
     },
 

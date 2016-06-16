@@ -29,8 +29,7 @@ BI.IconMarkCombo = BI.inherit(BI.Widget, {
             element: this.element,
             el: trigger,
             popup: {
-                el: popup,
-                maxWidth: 300
+                el: popup
             }
         });
         popup.on(BI.IconMarkPopup.EVENT_CHANGE, function(){

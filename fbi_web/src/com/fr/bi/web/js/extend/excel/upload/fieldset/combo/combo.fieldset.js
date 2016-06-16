@@ -30,8 +30,7 @@ BI.ExcelFieldSetCombo = BI.inherit(BI.Widget, {
             element: this.element,
             el: trigger,
             popup: {
-                el: popup,
-                maxWidth: 250
+                el: popup
             }
         });
         popup.on(BI.FieldSetPopup.EVENT_CHANGE, function(){

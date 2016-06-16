@@ -91,7 +91,7 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     private void recordTableInfo() {
-        ICubeFieldSource[] columns = getFieldsArray();
+        Set<ICubeFieldSource> columns = getFieldsArray();
         List<ICubeFieldSource> columnList = new ArrayList<ICubeFieldSource>();
         for (ICubeFieldSource col : columns) {
             columnList.add(convert(col));
@@ -149,8 +149,8 @@ public class BISourceDataTransport extends BIProcessor {
         return new BICubeFieldSource(tableSource, column.getFieldName(), column.getClassType(), column.getFieldSize());
     }
 
-    private ICubeFieldSource[] getFieldsArray() {
-        return tableSource.getFieldsArray(allSources);
+    private Set<ICubeFieldSource> getFieldsArray() {
+        return tableSource.getSelfFields(allSources);
     }
 
 }

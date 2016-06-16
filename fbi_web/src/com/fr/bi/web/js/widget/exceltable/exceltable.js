@@ -59,12 +59,12 @@ BI.ExcelTable = BI.inherit(BI.Widget, {
             headerRowSize: 16,
             rowSize: o.rowSize,
 
-            regionColumnSize: o.regionColumnSize || [30, ""]
+            regionColumnSize: o.regionColumnSize || [81, ""]
         });
 
         this.populate(o.items);
         BI.nextTick(function () {
-            self.setRegionColumnSize(o.regionColumnSize || [30, ""]);
+            self.setRegionColumnSize(o.regionColumnSize || [81, ""]);
         });
     },
 

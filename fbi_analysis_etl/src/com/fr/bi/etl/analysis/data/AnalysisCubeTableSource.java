@@ -13,5 +13,5 @@ public interface AnalysisCubeTableSource extends CubeTableSource {
 
     List<AnalysisETLSourceField> getFieldsList();
 
-    Set<AnalysisCubeTableSource> getSourceUsedAnalysisETLSource();
+    void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set);
 }
