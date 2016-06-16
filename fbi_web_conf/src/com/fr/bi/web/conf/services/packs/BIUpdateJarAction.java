@@ -24,7 +24,13 @@ public class BIUpdateJarAction extends
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
         String base = BIConfigurePathUtils.getProjectLibPath();
-        String target = BIFileUtils.readFile(base + File.separator + "online_update");
+        String confPath = base + File.separator + "online_update";
+        String target;
+        if (new File(confPath).exists()) {
+            target = BIFileUtils.readFile(confPath);
+        } else {
+            target = getDefault();
+        }
         JSONObject jsonObject = new JSONObject(target);
         JSONArray array = jsonObject.getJSONArray("jars");
         String url = jsonObject.getString("url");
@@ -33,6 +39,21 @@ public class BIUpdateJarAction extends
             downloadJar(name, url + name, base);
 
         }
+    }
+
+    private String getDefault() {
+        return "{\n" +
+                "    \"url\": \"http://o8snq3y3i.bkt.clouddn.com/\",\n" +
+                "    \"jars\": [\n" +
+                "        \"fr-bi-server-4.0.jar\",\n" +
+                "        \"fr-chart-8.0.jar\",\n" +
+                "        \"fr-core-8.0.jar\",\n" +
+                "        \"fr-performance-8.0.jar\",\n" +
+                "        \"fr-platform-8.0.jar\",\n" +
+                "        \"fr-report-8.0.jar\",\n" +
+                "        \"fr-third-8.0.jar\"\n" +
+                "    ]\n" +
+                "}";
     }
 
     private void downloadJar(String name, String url, String base) {
