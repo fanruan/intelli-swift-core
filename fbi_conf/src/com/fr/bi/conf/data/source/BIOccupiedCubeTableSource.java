@@ -5,7 +5,6 @@ import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -58,8 +57,8 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     }
 
     @Override
-    public BICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
-        return new BICubeFieldSource[0];
+    public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
+        return new ICubeFieldSource[0];
     }
 
 
@@ -181,17 +180,17 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
 
     @Override
     public Set<ICubeFieldSource> getParentFields(Set<CubeTableSource> sources) {
-        return hostTableSource.getParentFields(sources);
+        return hostTableSource.getFacetFields(sources);
     }
 
     @Override
     public Set<ICubeFieldSource> getFacetFields(Set<CubeTableSource> sources) {
-        return null;
+        return hostTableSource.getFacetFields(sources);
     }
 
     @Override
     public Set<ICubeFieldSource> getSelfFields(Set<CubeTableSource> sources) {
-        return hostTableSource.getSelfFields(sources);
+        return new HashSet<ICubeFieldSource>();
     }
 
 }
