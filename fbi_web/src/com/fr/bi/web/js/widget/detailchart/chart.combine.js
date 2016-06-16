@@ -538,9 +538,8 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.chart_legend = options.chart_legend || BICst.CHART_LEGENDS.BOTTOM;
         this.show_data_label = options.show_data_label || false;
         this.show_data_table = options.show_data_table || false;
-        this.show_grid_line = options.show_grid_line;
+        this.show_grid_line = BI.isNull(options.show_grid_line) ? true : options.show_grid_line;
         this.show_zoom = options.show_zoom || false;
-        this.null_continue = options.null_continue;
         this.text_direction = options.text_direction;
         this.tooltipFormatter = options.tooltipFormatter;
     },

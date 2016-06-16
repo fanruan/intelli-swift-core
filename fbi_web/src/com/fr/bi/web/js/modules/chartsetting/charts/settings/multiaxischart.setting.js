@@ -689,7 +689,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
         if(titleRY2 === ""){
             BI.any(view[BICst.REGION.TARGET3], function(idx, dId){
                 if(BI.Utils.isDimensionUsable(dId)){
-                    titleRY = BI.Utils.getDimensionNameByID(dId);
+                    titleRY2 = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
                 return false;

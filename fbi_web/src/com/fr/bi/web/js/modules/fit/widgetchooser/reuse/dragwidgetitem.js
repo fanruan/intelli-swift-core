@@ -101,13 +101,13 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
             cursor: BICst.cursorUrl,
             cursorAt: {left: 0, top: 0},
             drag: function (e, ui) {
-                o.drag.apply(self, [widget.bounds, ui.position, widget]);
+                o.drag.apply(self, [widget.bounds, ui.position, result]);
             },
             stop: function (e, ui) {
                 var dimensionsAndView = self._createDimensionsAndView(widget);
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
-                o.stop.apply(self, [widget.bounds, ui.position, widget]);
+                o.stop.apply(self, [widget.bounds, ui.position, result]);
             },
             helper: o.helper
         });
