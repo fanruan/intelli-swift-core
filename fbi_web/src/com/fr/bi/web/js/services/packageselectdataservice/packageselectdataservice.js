@@ -264,19 +264,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     _getFieldsStructureByTableIdAndKeyword: function (tableId, keyword) {
         var fieldStructure = [];
         var self = this, o = this.options;
-
         var fields = o.fieldsCreator(tableId);
-        var search = [];
-        BI.each(fields, function (i, field) {
-            var fid = field.id;
-            var fieldName = BI.Utils.getFieldNameByID(fid);
-            search.push({
-                id: fid,
-                text: fieldName
-            })
-        });
-        var result = BI.Func.getSearchResult(search, keyword);
-        fields = result.matched.concat(result.finded);
+        var map = {};
         BI.each(fields, function (i, field) {
             var fid = field.id;
             var fieldName = BI.Utils.getFieldNameByID(fid);
@@ -284,7 +273,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
                 var _type = "bi.detail_select_data_level1_item";
-                fieldStructure.push({
+                fieldStructure.push(map[fid] = {
                     id: fid,
                     pId: tableId,
                     wId: o.wId,
@@ -298,7 +287,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 });
                 fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field));
             } else {
-                fieldStructure.push(BI.extend({
+                fieldStructure.push(map[fid] = BI.extend({
                     id: fid,
                     pId: tableId,
                     wId: o.wId,
@@ -310,6 +299,15 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     drag: self._createDrag(fieldName)
                 }, field))
             }
+        });
+        var result = BI.Func.getSearchResult(fieldStructure, keyword);
+        fields = result.matched.concat(result.finded);
+        fieldStructure = [];
+        BI.each(fields, function (i, f) {
+            if (map[f.pId]) {
+                fieldStructure.push(map[f.pId]);
+            }
+            fieldStructure.push(f);
         });
         return fieldStructure;
     },
