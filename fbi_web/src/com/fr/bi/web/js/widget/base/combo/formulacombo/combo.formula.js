@@ -41,6 +41,7 @@ BI.FormulaCombo = BI.inherit(BI.Widget, {
             type: "bi.combo",
             element: this.element,
             isNeedAdjustHeight: true,
+            isNeedAdjustWidth: false,
             adjustLength: this._constant.CONDITION_TYPE_COMBO_ADJUST,
             el: this.input,
             popup: {

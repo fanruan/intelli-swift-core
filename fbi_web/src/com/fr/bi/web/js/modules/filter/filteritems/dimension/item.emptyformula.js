@@ -75,6 +75,7 @@ BI.DimensionFormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
         var editFormula = BI.createWidget({
             type: "bi.combo",
             isNeedAdjustHeight: true,
+            isNeedAdjustWidth: false,
             adjustLength: this._constant.CONDITION_TYPE_COMBO_ADJUST,
             el: {
                 type: "bi.button",
