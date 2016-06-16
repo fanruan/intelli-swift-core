@@ -2,6 +2,7 @@ package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
 import com.fr.bi.field.target.key.cal.configuration.BIPeriodCalTargetKey;
+import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -134,7 +135,16 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 Object value = getValueFromLast(way);
                 if (value != null) {
                     if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                        cursor_node.setSummaryValue(createTargetGettingKey(), (cursor_node.getSummaryValue(getCalKey()).doubleValue() - (Double) value) / (Double) value);
+                        Object key = getCalKey();
+                        String targetName = ((TargetGettingKey) key).getTargetName();
+                        BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
+                        double currentValue;
+                        if (targetKey instanceof AvgKey) {
+                            currentValue = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
+                        } else {
+                            currentValue = cursor_node.getSummaryValue(key).doubleValue();
+                        }
+                        cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
                     } else {
                         cursor_node.setSummaryValue(createTargetGettingKey(), value);
                     }
@@ -161,7 +171,15 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 return null;
             } else {
                 Object key = getCalKey();
-                return n.getSummaryValue(key);
+                String targetName = ((TargetGettingKey) key).getTargetName();
+                BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
+                Number value;
+                if (targetKey instanceof AvgKey) {
+                    value = getAvgValue(targetName, (AvgKey) targetKey, n);
+                } else {
+                    value = n.getSummaryValue(key);
+                }
+                return value;
             }
         }
 
