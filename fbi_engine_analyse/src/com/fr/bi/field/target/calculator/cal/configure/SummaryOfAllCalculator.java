@@ -1,7 +1,6 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
-import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
@@ -110,15 +109,5 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
     }
 
 
-    protected double getAvgValue(String targetName, AvgKey targetKey, LightNode cursor_node) {
-        TargetGettingKey sumGettingKey = new TargetGettingKey(targetKey.getSumKey(), targetName);
-        TargetGettingKey countGettingKey = new TargetGettingKey(targetKey.getCountKey(), targetName);
-        Number sumValue = cursor_node.getSummaryValue(sumGettingKey);
-        Number countValue = cursor_node.getSummaryValue(countGettingKey);
-        double avgValue = 0;
-        if (sumValue != null && countValue != null) {
-            avgValue = sumValue.doubleValue() / countValue.doubleValue();
-        }
-        return avgValue;
-    }
+
 }
