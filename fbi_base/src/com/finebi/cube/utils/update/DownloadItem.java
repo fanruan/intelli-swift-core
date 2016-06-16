@@ -9,9 +9,9 @@ import com.fr.general.ComparatorUtils;
  */
 public class DownloadItem {
 
-    //ÏÔÊ¾Îª°Ù·Ö±È
+    //æ˜¾ç¤ºä¸ºç™¾åˆ†æ¯”
     private static final int PERCENTAGE_RATIO = 100;
-    //ÏÔÊ¾kB
+    //æ˜¾ç¤ºkB
     private static final int BYTETOKB_RATIO = 1000;
 
     private String name;
@@ -58,9 +58,9 @@ public class DownloadItem {
     }
 
     /**
-     * ×ª»¯Îª×Ö·û´®
+     * è½¬åŒ–ä¸ºå­—ç¬¦ä¸²
      *
-     * @return ×Ö·û´®
+     * @return å­—ç¬¦ä¸²
      */
     @Override
     public String toString() {
@@ -75,9 +75,9 @@ public class DownloadItem {
     }
 
     /**
-     * ·µ»ØÒ»¸öhashÂë
+     * è¿”å›ä¸€ä¸ªhashç 
      *
-     * @return hashÂë
+     * @return hashç 
      */
     @Override
     public int hashCode() {

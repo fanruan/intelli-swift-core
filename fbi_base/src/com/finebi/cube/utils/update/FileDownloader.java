@@ -13,7 +13,7 @@ import java.net.URLConnection;
  * @author richie
  * @date 2015-04-01
  * @since 8.0
- * ÎÄ¼şÏÂÔØÆ÷
+ * æ–‡ä»¶ä¸‹è½½å™¨
  */
 public class FileDownloader {
     private String saveDir;
