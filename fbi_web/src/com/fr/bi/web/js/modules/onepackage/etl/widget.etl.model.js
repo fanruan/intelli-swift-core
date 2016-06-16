@@ -274,17 +274,12 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     setFieldsUsable: function (usedFields) {
         var self = this;
-        BI.each(this.fields, function (i, fieldsArray) {
-            BI.each(fieldsArray, function (index, fieldObj) {
-                if (BI.contains(usedFields, fieldObj.id)) {
-                    fieldObj.is_usable = true;
-                } else {
-                    fieldObj.is_usable = false;
-                }
-                self.allFields[fieldObj.id] = fieldObj;
+        BI.each(this.fields, function (i, fs) {
+            BI.each(fs, function (j, field) {
+                field.is_usable = usedFields.contains(field.id);
+                self.allFields[field.id] = field;
             })
         });
-
     },
 
     saveTableById: function (tId, data) {
