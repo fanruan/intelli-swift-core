@@ -89,11 +89,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             self.widget.attr("items")[3].top = 6;
             self.widget.resize();
         }, function () {
-            self.tools.setVisible(false);
-            self.widget.attr("items")[3].top = 0;
-            self.widget.resize();
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+                self.widget.attr("items")[3].top = 0;
+                self.widget.resize();
+            }
         });
-
     },
 
     _buildWidgetTitle: function () {
