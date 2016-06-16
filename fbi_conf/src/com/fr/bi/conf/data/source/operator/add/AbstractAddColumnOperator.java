@@ -94,6 +94,11 @@ public abstract class AbstractAddColumnOperator extends AbstractETLOperator {
         return write(travel, loader.getTableIndex(getSingleParentMD5(parents)), 0);
     }
 
+    @Override
+    public int writeIndexWithParents(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol) {
+        return writePartIndex(travel, parents, loader, startCol, 0, Integer.MAX_VALUE);
+    }
+
     protected abstract int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol);
 
     @Override

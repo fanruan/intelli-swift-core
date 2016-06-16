@@ -12,6 +12,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -25,7 +26,8 @@ public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLA
         double percent;
         try {
             BusinessTable table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
-            Set<AnalysisCubeTableSource> sources = ((AnalysisCubeTableSource)table.getTableSource()).getSourceUsedAnalysisETLSource();
+            Set<AnalysisCubeTableSource> sources = new HashSet<AnalysisCubeTableSource>();
+            ((AnalysisCubeTableSource)table.getTableSource()).getSourceUsedAnalysisETLSource(sources);
             int generated = 0;
             for (AnalysisCubeTableSource s : sources){
                 if (BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkVersion(s, new BIUser(userId))){

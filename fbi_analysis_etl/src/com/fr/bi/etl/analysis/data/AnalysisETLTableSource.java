@@ -34,13 +34,11 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     }
 
     @Override
-    public Set<AnalysisCubeTableSource> getSourceUsedAnalysisETLSource() {
-        Set<AnalysisCubeTableSource> set = new HashSet<AnalysisCubeTableSource>();
+    public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
         for (AnalysisCubeTableSource source : getParents()){
             set.add(source);
-            set.addAll(source.getSourceUsedAnalysisETLSource());
+            source.getSourceUsedAnalysisETLSource(set);
         }
-        return set;
     }
 
     @Override
