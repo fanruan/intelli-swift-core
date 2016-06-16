@@ -14,7 +14,7 @@ BI.IconCombo = BI.inherit(BI.Widget, {
             el: {},
             popup: {},
             minWidth: 100,
-            maxWidth: 230,
+            maxWidth: 'auto',
             maxHeight: 300,
             direction: "bottom",
             adjustLength: 3,//调整的距离

@@ -142,7 +142,7 @@ BI.MultiDateParamCombo = BI.inherit(BI.Single, {
             popup: {
                 el: this.popup,
                 maxHeight: this.constants.popupHeight,
-                maxWidth: this.constants.popupWidth,
+                width: this.constants.popupWidth,
                 stopPropagation: false
             }
         });

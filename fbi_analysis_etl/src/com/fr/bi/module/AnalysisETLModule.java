@@ -42,11 +42,13 @@ public class AnalysisETLModule extends AbstractModule {
         StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DEZI_CSS, ETLResourcesHelper.getDefaultCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ETLResourcesHelper.getAnimateCss());
     }
 
     public void loadResources (Locale[] locales) {
         ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
         ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
     }
 
     /**

@@ -117,6 +117,7 @@ BI.FormulaInsert = BI.inherit(BI.Widget, {
 
         this.functionCombo = BI.createWidget({
             type: "bi.combo",
+            isNeedAdjustWidth: false,
             el: this.functionbutton,
             direction: "right,top",
             adjustYOffset: -16,
@@ -126,7 +127,7 @@ BI.FormulaInsert = BI.inherit(BI.Widget, {
             },
             popup: {
                 el: self.functionpane,
-                maxWidth: 400
+                width: 322
             },
             width: 65
         });

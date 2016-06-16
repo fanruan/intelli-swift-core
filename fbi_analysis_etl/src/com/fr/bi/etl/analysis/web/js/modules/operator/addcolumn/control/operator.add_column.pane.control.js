@@ -47,12 +47,12 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     },
 
     createNewAddColumn : function (widget, model) {
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
         widget.title.populate({},{
             columnNames: this._getAllColumnNames(model)
         });
         this._editing = true;
         widget.card.showCardByName(widget._constant.SINGLE_COLUMN_CARD);
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
     },
 
     deleteColumnByName : function (name, widget, model) {
