@@ -7,7 +7,6 @@ import com.fr.bi.stable.utils.mem.BIMemoryUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StableUtils;
-import com.fr.third.org.apache.poi.hssf.record.formula.functions.Char;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -289,7 +288,6 @@ public class BIFileUtils {
     /**
      * 一行一行读文件
      *
-     * @param file 文件
      * @return list集合
      */
     public static String readFile(String path) {
