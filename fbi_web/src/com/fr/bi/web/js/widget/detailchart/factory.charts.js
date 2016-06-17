@@ -287,7 +287,9 @@ BI.ChartCombineFormatItemFactory = {
                 config.plotOptions.innerRadius = "50.0%";
                 return BI.extend({"chartType": "pie"}, config);
             case BICst.WIDGET.RADAR:
+                return BI.extend({"chartType": "radar"}, config);
             case BICst.WIDGET.ACCUMULATE_RADAR:
+                config.plotOptions.columnType = true;
                 return BI.extend({"chartType": "radar"}, config);
             case BICst.WIDGET.PIE:
                 return BI.extend({"chartType": "pie"}, config);

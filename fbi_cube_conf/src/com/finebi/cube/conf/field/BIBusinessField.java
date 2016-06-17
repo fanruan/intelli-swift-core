@@ -1,14 +1,10 @@
 package com.finebi.cube.conf.field;
 
 
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -203,5 +199,17 @@ public class BIBusinessField implements BusinessField {
     @Override
     public int hashCode() {
         return fieldID != null ? fieldID.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "BIBusinessField{" +
+                "fieldName='" + fieldName + '\'' +
+                ", fieldID=" + fieldID +
+                ", fieldType=" + fieldType +
+                ", fieldSize=" + fieldSize +
+                ", classType=" + classType +
+                ", tableBelongTo=" + tableBelongTo +
+                '}';
     }
 }
