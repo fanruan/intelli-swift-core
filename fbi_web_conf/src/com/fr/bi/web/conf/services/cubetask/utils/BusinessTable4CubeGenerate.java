@@ -1,4 +1,4 @@
-package com.fr.bi.web.conf.services.cubetask;
+package com.fr.bi.web.conf.services.cubetask.utils;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
@@ -25,8 +25,8 @@ public class BusinessTable4CubeGenerate {
 
     public static void CubeBuild(long userId) {
         BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
-//        Set<BIBusinessTable> newTables = BIPackageTableSourceConfigManager.getTables4Generate(UserControl.getInstance().getSuperManagerID());
-        Set<BIBusinessTable> newTables = BIPackageTableSourceConfigManager.getAllTables(userId);
+//        Set<BIBusinessTable> newTables = BIPackageTableSourceConfigManager.getPackages4Generate(UserControl.getInstance().getSuperManagerID());
+        Set<BIBusinessTable> newTables = BIPackageTableSourceConfigManager.getTables4CubeGenerate(userId);
         CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
         cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
     }
