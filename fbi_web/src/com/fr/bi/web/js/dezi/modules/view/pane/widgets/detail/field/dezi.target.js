@@ -152,10 +152,14 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             switch (v) {
                 case BICst.TARGET_COMBO.DEPEND_TYPE:
                     self.model.set("_src", {
-                        field_id: s
-                    });
+                            field_id: s,
+                            table_id: BI.Utils.getTableIdByFieldID(s)
+                        }
+                    )
+                    ;
                     break;
-                case BICst.TARGET_COMBO.CHART_TYPE:
+                case
+                BICst.TARGET_COMBO.CHART_TYPE:
                     self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:

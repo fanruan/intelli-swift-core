@@ -186,6 +186,9 @@
                     case BICst.COLUMN.DATE:
                         tDate.push(id);
                         break;
+                    case BICst.COLUMN.COUNTER:
+                        tDate.push(id);
+                        break;
                 }
             });
             BI.each(filterFiledIds, function (i, id) {

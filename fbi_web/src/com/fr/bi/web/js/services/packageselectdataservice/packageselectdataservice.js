@@ -464,7 +464,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             name: name,
                             _src: {
                                 id: fId.field_id + fId.group.type,
-                                field_id: fId.field_id
+                                field_id: fId.field_id,
+                                table_id: BI.Utils.getTableIdByFieldID(fId.field_id)
                             },
                             type: BI.Utils.getDimensionTypeByFieldID(fId.field_id),
                             group: {type: fId.group.type}
@@ -474,7 +475,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         name: BI.Utils.getFieldNameByID(fId),
                         _src: {
                             id: fId,
-                            field_id: fId
+                            field_id: fId,
+                            table_id: BI.Utils.getTableIdByFieldID(fId)
                         },
                         type: BI.Utils.getDimensionTypeByFieldID(fId)
                     };
