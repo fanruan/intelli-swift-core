@@ -121,6 +121,20 @@ public class BIMemoryDataSourceFactory {
         return result;
     }
 
+    public static Set<CubeTableSource> getDataSourceSetWithAB() {
+        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
+        result.add(generateTableA());
+        result.add(generateTableB());
+        return result;
+    }
+
+    public static Set<CubeTableSource> getDataSourceSetWithBC() {
+        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
+        result.add(generateTableB());
+        result.add(generateTableC());
+        return result;
+    }
+
     public static Set<List<Set<CubeTableSource>>> getDataSourceSetMap() {
         Set<List<Set<CubeTableSource>>> result = new HashSet<List<Set<CubeTableSource>>>();
         result.add(generate(generateTableA()));
@@ -131,7 +145,6 @@ public class BIMemoryDataSourceFactory {
 
     public static Set<List<Set<CubeTableSource>>> getDataSourceSetMapWithB() {
         Set<List<Set<CubeTableSource>>> result = new HashSet<List<Set<CubeTableSource>>>();
-//        result.add(generate(generateTableA()));
         result.add(generate(generateTableB()));
         return result;
     }
