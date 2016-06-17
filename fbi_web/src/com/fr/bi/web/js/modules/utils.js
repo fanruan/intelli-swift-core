@@ -1075,6 +1075,13 @@
 
         },
 
+        getDimensionCordonByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "cordon");
+            }
+
+        },
+
         //获取维度或指标所对应的字段id
         getFieldIDByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
@@ -1838,24 +1845,25 @@
             });
 
             //联动传递指标过滤条件  找到联动链上的所有的组件，获取所有的指标的过滤条件  感觉有点浮夸的功能
-            if (BI.isNotNull(widget.settings) && this.getWSTransferFilterByID(wid) === true) {
-                var allLinksWIds = [];
 
-                function getLinkedIds(wid, links) {
-                    var allWIds = BI.Utils.getAllWidgetIDs();
-                    BI.each(allWIds, function (i, aWid) {
-                        var linkages = BI.Utils.getWidgetLinkageByID(aWid);
-                        BI.each(linkages, function (i, link) {
-                            if (link.to === wid) {
-                                links.push(BI.Utils.getWidgetIDByDimensionID(link.from));
-                                getLinkedIds(BI.Utils.getWidgetIDByDimensionID(link.from), links);
-                            }
-                        });
+            var allLinksWIds = [];
+
+            function getLinkedIds(wid, links) {
+                var allWIds = BI.Utils.getAllWidgetIDs();
+                BI.each(allWIds, function (i, aWid) {
+                    var linkages = BI.Utils.getWidgetLinkageByID(aWid);
+                    BI.each(linkages, function (i, link) {
+                        if (link.to === wid) {
+                            links.push(BI.Utils.getWidgetIDByDimensionID(link.from));
+                            getLinkedIds(BI.Utils.getWidgetIDByDimensionID(link.from), links);
+                        }
                     });
-                }
+                });
+            }
 
-                getLinkedIds(wid, allLinksWIds);
-                BI.each(allLinksWIds, function (i, lId) {
+            getLinkedIds(wid, allLinksWIds);
+            BI.each(allLinksWIds, function (i, lId) {
+                if (self.getWSTransferFilterByID(lId) === true) {
                     var tarIds = BI.Utils.getAllTargetDimensionIDs(lId);
                     BI.each(tarIds, function (i, tarId) {
                         var tarFilter = BI.Utils.getDimensionFilterValueByID(tarId);
@@ -1864,8 +1872,9 @@
                             filterValues.push(tarFilter);
                         }
                     })
-                });
-            }
+                }
+            });
+
 
             //日期类型的过滤条件
             var dimensions = widget.dimensions;
