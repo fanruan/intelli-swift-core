@@ -191,6 +191,48 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-disable.png');
   _background: none;
 }
+.check-box-icon.native .x-icon,
+.check-box-icon.disabled.active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-disable2.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/check-box-disable2.png');
+  _background: none;
+}
+.radio-icon .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-normal.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-normal.png');
+  _background: none;
+}
+.radio-icon:hover .x-icon,
+.radio-icon:focus .x-icon,
+.radio-icon.hover .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-normal.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-normal.png');
+  _background: none;
+}
+.radio-icon:active .x-icon,
+.radio-icon.active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-active.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-active.png');
+  _background: none;
+}
+.radio-icon.native .x-icon,
+.radio-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-disable.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-disable.png');
+  _background: none;
+}
+.radio-icon.native .x-icon,
+.radio-icon.disabled.active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-disable2.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/radio-disable2.png');
+  _background: none;
+}
 .check-half-select-icon .x-icon,
 .check-half-select-icon:hover .x-icon,
 .check-half-select-icon:active .x-icon {

@@ -159,6 +159,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         }
         this.relationTree.populate(this._createBranchItems(relationChildren));
         this._drawSVGLine();
+        this.model.setRelations(this.getValue());
     },
 
     getValue: function(){

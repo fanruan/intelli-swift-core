@@ -129,9 +129,11 @@ BI.FolderCardViewItem = BI.inherit(BI.Single, {
 
     _refreshActive: function(){
         if(this.checkbox.isSelected()){
-            this.element.addClass("active")
+            this.element.addClass("active");
+            this.checkbox.setVisible(true);
         } else {
             this.element.removeClass("active");
+            this.checkbox.setVisible(false);
         }
     },
 
