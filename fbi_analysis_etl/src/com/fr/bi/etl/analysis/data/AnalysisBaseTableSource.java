@@ -160,7 +160,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         if(set.contains(this)){
             return;
         }
-        set.add(this);
         for (BITargetAndDimension dim : widget.getViewDimensions()){
             if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
                 CubeTableSource source = dim.createTableKey().getTableSource();
@@ -177,6 +176,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
                 }
             }
         }
+        set.add(this);
     }
 
     @Override

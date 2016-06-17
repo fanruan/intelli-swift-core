@@ -103,11 +103,8 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
             return;
         }
         for (AnalysisCubeTableSource source : getParents()){
-            if(set.contains(source)){
-                continue;
-            }
-            set.add(source);
             source.getSourceUsedAnalysisETLSource(set);
+            set.add(source);
         }
     }
 
