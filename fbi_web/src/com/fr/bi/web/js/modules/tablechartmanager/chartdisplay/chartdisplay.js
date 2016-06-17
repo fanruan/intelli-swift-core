@@ -60,7 +60,8 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         this.model.getWidgetData(type, function(types, data, options){
             self.chart.setTypes(types);
             self.chart.setOptions(BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {
-                tooltipFormatter: self.model.getToolTip(type)
+                tooltipFormatter: self.model.getToolTip(type),
+                cordon: self.model.getCordon()
             }));
             self.chart.populate(data, options);
         });
