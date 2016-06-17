@@ -157,6 +157,13 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
 
     refreshColumnName : function () {
         var allFields = this.get(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS).getAllFields();
+        var oldColumns = this.get("columns");
+        var oldColumnNames = [];
+        if (BI.isNotNull(oldColumns)){
+            BI.each(oldColumns, function (i, item) {
+                oldColumnNames.push(item['field_name']);
+            })
+        }
         var columns = [];
         var tables = this.get(ETLCst.PARENTS);
         var table1Fields = BI.Utils.getFieldArrayFromTable(tables[0]);
@@ -189,7 +196,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
                 })];
             }
 
-            newFields.field_name = BI.Utils.createDistinctName(getNameArray(columns), newFields.field_name)
+            newFields.field_name = BI.Utils.createDistinctName(getNameArray(columns), oldColumnNames[idx] || newFields.field_name)
             columns.push(newFields)
         })
         this.set("columns", columns);

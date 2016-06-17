@@ -54,7 +54,7 @@ public class SingleUserETLTableCubeManager implements Release {
 	public SingleUserETLTableCubeManager (UserCubeTableSource source){
 		this.source = source;
 		String path = getSavedPath();
-		if(path != null){
+		if(path != null && new File(path).exists()){
 			tq.add(new ETLTableObject(source, path));
 		}
 		addTask();

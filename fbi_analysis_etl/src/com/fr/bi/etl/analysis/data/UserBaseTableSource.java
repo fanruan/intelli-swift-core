@@ -60,7 +60,7 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
                 }
             }
             total +=values.size();
-            index ++;
+            index++;
         }
         return total;
     }
