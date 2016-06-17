@@ -82,10 +82,10 @@ BI.TextArea = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 el: this.combo,
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
             }, {
                 el: this.label,
                 left: 0,
