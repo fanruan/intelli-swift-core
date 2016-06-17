@@ -184,6 +184,7 @@ BI.Input = BI.inherit(BI.Single, {
         if (!this._isEditing === true) {
             this.element.focus();
             this._focus();
+            this.selectAll();
         }
     },
 

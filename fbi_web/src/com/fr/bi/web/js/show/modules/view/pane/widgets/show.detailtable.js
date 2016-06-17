@@ -47,7 +47,8 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
         this._createTools();
         this.table = BI.createWidget({
             type: "bi.detail_table",
-            wId: this.model.get("id")
+            wId: this.model.get("id"),
+            status: BICst.WIDGET_STATUS.SHOW
         });
         this.tablePopulate = BI.debounce(BI.bind(this.table.populate, this.table), 0);
         this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {

@@ -157,7 +157,9 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     @Override
     public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
-        set.add(this);
+        if(set.contains(this)){
+            return;
+        }
         for (BITargetAndDimension dim : widget.getViewDimensions()){
             if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
                 CubeTableSource source = dim.createTableKey().getTableSource();
@@ -174,6 +176,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
                 }
             }
         }
+        set.add(this);
     }
 
     @Override

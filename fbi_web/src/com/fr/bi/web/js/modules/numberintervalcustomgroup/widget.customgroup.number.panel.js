@@ -6,7 +6,6 @@
 BI.NumberIntervalCustomGroupPanel = BI.inherit(BI.Widget,{
 
     constants:{
-        tabHeight:328,
         bgap:10,
         addButtonHeight:30,
         iconTextButtonWidth:73
