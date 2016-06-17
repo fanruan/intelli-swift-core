@@ -85,7 +85,9 @@ public class BIReportEntry extends BaseEntry {
                     new CommonFieldColumnMapper("sortindex", BaseEntry.SORTINDEXTYPE,
                             BaseEntry.SORTINDEX, new ColumnSize(10), true),
                     new CommonFieldColumnMapper("mobileCoverId", COVERIDTYPE,
-                            COVERID, new ColumnSize(50), true)
+                            COVERID, new ColumnSize(50), true),
+                    new CommonFieldColumnMapper("createBy", Types.BIGINT,
+                            "createBy", new ColumnSize(COLUMNSIZE_ID), false)
             }, AbstractTableObject.CHECK_TABLE_EXSIT_ON_TABLENAME);
 
 
