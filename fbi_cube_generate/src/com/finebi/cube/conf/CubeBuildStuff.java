@@ -1,9 +1,7 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.relation.*;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.List;
@@ -33,4 +31,7 @@ public interface CubeBuildStuff {
 
     Map<CubeTableSource, Long> getVersions();
 
+    Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet();
+
+    Set<BICubeGenerateRelation> getCubeGenerateRelationSet();
 }

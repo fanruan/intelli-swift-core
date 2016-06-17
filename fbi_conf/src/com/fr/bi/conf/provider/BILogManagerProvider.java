@@ -1,6 +1,7 @@
 package com.fr.bi.conf.provider;
 
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -147,7 +148,7 @@ public interface BILogManagerProvider {
     /**
      * 获取所有需要更新的relation信息
      */
-    void reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet, long userId);
+    void reLationPathSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet, long userId);
 
     /**
      * 获取所有需要更新的tableSource信息
