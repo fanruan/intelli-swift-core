@@ -342,7 +342,7 @@ BI.Table = BI.inherit(BI.Widget, {
                         resizeResizer(ui.size, ui.position);
                         self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
                         e.stopPropagation();
-                        return false;
+                        //return false;
                     },
                     stop: function (e, ui) {
                         stopResizer();
@@ -372,7 +372,7 @@ BI.Table = BI.inherit(BI.Widget, {
                         resizeResizer(ui.size, ui.position);
                         self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
                         e.stopPropagation();
-                        return false;
+                        //return false;
                     },
                     stop: function (e, ui) {
                         stopResizer();
@@ -480,7 +480,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
                 if (change === true) {
                     e.stopPropagation();
-                    return false;
+                    //return false;
                 }
             });
         }
@@ -881,7 +881,7 @@ BI.Table = BI.inherit(BI.Widget, {
                             //self.setColumnSize(o.columnSize);
                             self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE);
                             e.stopPropagation();
-                            return false;
+                            //return false;
                         },
                         stop: function (e, ui) {
                             resizer.destroy();
@@ -1016,7 +1016,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
                 if (stopPropagation === true) {
                     event.stopPropagation();
-                    return false;
+                    //return false;
                 }
             }
         });

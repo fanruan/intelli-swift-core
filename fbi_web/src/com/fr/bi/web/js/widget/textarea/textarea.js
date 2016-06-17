@@ -45,11 +45,13 @@ BI.TextArea = BI.inherit(BI.Widget, {
             type: "bi.combo",
             toggle: false,
             direction: "top",
+            isNeedAdjustWidth: false,
+            isNeedAdjustHeight: false,
             adjustLength: 1,
             el: this.textarea,
             popup: {
                 el: this.toolbar,
-                minWidth: 253,
+                width: 253,
                 height: 30,
                 stopPropagation: false
             }
