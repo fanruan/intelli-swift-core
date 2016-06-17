@@ -61,7 +61,7 @@ BI.AnalysisETLOperatorAddColumnDateDiffPane = BI.inherit(BI.MVCWidget, {
                 },{el : {
                     type : 'bi.label',
                     cls : 'label-name',
-                    text : "-",
+                    text : BI.i18nText("BI-Minus"),
                     height : self._constants.HEIGHT,
                     textAlign : 'center'
                     },

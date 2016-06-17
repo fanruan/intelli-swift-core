@@ -21,7 +21,7 @@ public class YearDiff implements DateDiffCalculator {
 		c1.setTimeInMillis(d1.longValue());
 		Calendar c2 = Calendar.getInstance();
 		c2.setTimeInMillis(d2.longValue());
-		return c2.get(Calendar.YEAR) - c1.get(Calendar.YEAR);
+		return c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR);
 	}
 
 }

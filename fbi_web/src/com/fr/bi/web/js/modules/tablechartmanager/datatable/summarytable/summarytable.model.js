@@ -64,7 +64,14 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     },
 
     getColumnSize: function () {
-        return this.columnSize;
+        var columnSize = [];
+        BI.each(this.columnSize, function (i, size) {
+            if (size < 80) {
+                size = 80;
+            }
+            columnSize.push(size);
+        });
+        return columnSize;
     },
 
     getHeader: function () {
@@ -99,15 +106,15 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         return this.showNumber;
     },
 
-    getThemeColor: function(){
+    getThemeColor: function () {
         return this.themeColor;
     },
 
-    getTableForm: function(){
+    getTableForm: function () {
         return this.tableForm;
     },
 
-    getTableStyle: function(){
+    getTableStyle: function () {
         return this.tableStyle;
     },
 
@@ -178,7 +185,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             BI.Utils.isDimensionUsable(dId) && (self.targetIds.push(dId));
         });
     },
-    
+
     /**
      * 重置部分数据，用于无后台请求
      */
@@ -712,7 +719,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         cls: "summary-cell last"
                     });
                 });
-                BI.each(sums, function(i, sum){
+                BI.each(sums, function (i, sum) {
                     sums[i].cls = "summary-cell last"
                 });
                 sums = sums.concat(outerValues);
@@ -850,7 +857,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     crossHeaderItems.push(item);
                 });
                 //无指标是否也应当直接push进去 bug 95334
-                if(self.targetIds.length === 0) {
+                if (self.targetIds.length === 0) {
                     crossHeaderItems.push(item);
                 }
             } else {

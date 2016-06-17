@@ -220,7 +220,8 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         var table = BI.createWidget({
             type: "bi.detail_table",
             cls: "widget-center-wrapper",
-            wId: this.model.get("id")
+            wId: this.model.get("id"),
+            status: BICst.WIDGET_STATUS.DETAIL
         });
         table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);

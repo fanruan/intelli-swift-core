@@ -156,14 +156,13 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
-    public Set<AnalysisCubeTableSource> getSourceUsedAnalysisETLSource() {
-        HashSet<AnalysisCubeTableSource> set = new HashSet<AnalysisCubeTableSource>();
+    public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
         set.add(this);
         for (BITargetAndDimension dim : widget.getViewDimensions()){
             if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
                 CubeTableSource source = dim.createTableKey().getTableSource();
                 if (source.getType() ==  Constants.TABLE_TYPE.BASE || source.getType() ==  Constants.TABLE_TYPE.ETL){
-                    set.addAll(((AnalysisCubeTableSource)source).getSourceUsedAnalysisETLSource());
+                    ((AnalysisCubeTableSource)source).getSourceUsedAnalysisETLSource(set);
                 }
             }
         }
@@ -171,11 +170,10 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
                 CubeTableSource source = target.createTableKey().getTableSource();
                 if (source.getType() ==  Constants.TABLE_TYPE.BASE || source.getType() ==  Constants.TABLE_TYPE.ETL){
-                    set.addAll(((AnalysisCubeTableSource)source).getSourceUsedAnalysisETLSource());
+                    ((AnalysisCubeTableSource)source).getSourceUsedAnalysisETLSource(set);
                 }
             }
         }
-        return set;
     }
 
     @Override
@@ -202,16 +200,15 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
      * @return
      */
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource() {
-        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
         for (BITargetAndDimension dim : widget.getViewDimensions()){
             if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
-                set.addAll(dim.createTableKey().getTableSource().getSourceUsedBaseSource());
+                dim.createTableKey().getTableSource().getSourceUsedBaseSource(set);
             }
         }
         for (BITargetAndDimension target : widget.getViewTargets()){
             if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
-                set.addAll(target.createTableKey().getTableSource().getSourceUsedBaseSource());
+                target.createTableKey().getTableSource().getSourceUsedBaseSource(set);
             }
         }
         return set;

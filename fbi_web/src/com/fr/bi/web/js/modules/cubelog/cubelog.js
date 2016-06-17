@@ -182,22 +182,24 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         BI.each(tables, function (i, table) {
             var columns = table.column;
             var id = BI.UUID();
-            items.push({
-                id: id,
-                pId: BI.CubeLog.INDEX_NODE,
-                text: table.tableName + BI.i18nText("BI-Generated_Time"),
-                second: table.time,
-                level: 1
-            });
+            var tableIndexTime = 0;
             BI.each(columns, function (j, column) {
                 items.push({
                     id: BI.UUID(),
                     pId: id,
                     text: BI.i18nText("BI-Sen_Generated_Field_Index_1", column.name) + self._formatSecond(column.time),
                     level: 2
-                })
+                });
+                tableIndexTime = tableIndexTime > column.time ? tableIndexTime : column.time;
             });
-            createIndexTime = createIndexTime > table.time ? createIndexTime : table.time;
+            items.push({
+                id: id,
+                pId: BI.CubeLog.INDEX_NODE,
+                text: table.tableName + BI.i18nText("BI-Generated_Time"),
+                second: tableIndexTime,
+                level: 1
+            });
+            createIndexTime = createIndexTime > tableIndexTime ? createIndexTime : tableIndexTime;
         });
 
         //关联

@@ -2,6 +2,7 @@ package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
 import com.fr.bi.field.target.key.cal.configuration.BISumOfAboveCalTargetKey;
+import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
@@ -91,6 +92,8 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
         @Override
         public Object call() throws Exception {
             Object key = getCalKey();
+            String targetName = ((TargetGettingKey) key).getTargetName();
+            BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
             int deep = 0;
             LightNode temp_node = rank_node;
             while (temp_node.getFirstChild() != null) {
@@ -100,7 +103,12 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
             LightNode cursor_node = temp_node;
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(key);
+                Number value;
+                if (targetKey instanceof AvgKey) {
+                    value = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
+                } else {
+                    value = cursor_node.getSummaryValue(key);
+                }
                 sum += value == null ? 0 : value.doubleValue();
                 cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
                 cursor_node = cursor_node.getSibling();

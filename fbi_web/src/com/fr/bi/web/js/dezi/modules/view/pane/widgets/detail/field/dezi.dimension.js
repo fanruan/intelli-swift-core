@@ -117,9 +117,9 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
         }
-        if((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
+        if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
             && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION1
-            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1){
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
         }
     },
@@ -147,9 +147,11 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_STRING_COMBO.ASCEND:
+                    BIDezi.FloatBoxes.remove("customSort", self);
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
                     break;
                 case BICst.DIMENSION_STRING_COMBO.DESCEND:
+                    BIDezi.FloatBoxes.remove("customSort", self);
                     self.model.set("changeSort", {type: BICst.SORT.DESC, sort_target: s});
                     break;
                 case BICst.DIMENSION_STRING_COMBO.SORT_BY_CUSTOM:

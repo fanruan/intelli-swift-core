@@ -29,7 +29,6 @@ BI.CustomGroupCombo = BI.inherit(BI.Single, {
             el: self.triggerButton,
             popup: {
                 width: 580,
-                maxWidth: 580,
                 maxHeight: 350,
                 el: o.popup
             }

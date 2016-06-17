@@ -9,7 +9,7 @@
   border-bottom: 1px solid #d4dadd;
   border-left: 1px solid #d4dadd;
   border-right: 1px solid #d4dadd;
-  -webkit-box-shadow: 0 2px 2px 2px #d4dadd;
-  -moz-box-shadow: 0 2px 2px 2px #d4dadd;
-  box-shadow: 0 2px 2px 2px #d4dadd;
+  -webkit-box-shadow: 0 1px 1px 1px #d4dadd;
+  -moz-box-shadow: 0 1px 1px 1px #d4dadd;
+  box-shadow: 0 1px 1px 1px #d4dadd;
 }

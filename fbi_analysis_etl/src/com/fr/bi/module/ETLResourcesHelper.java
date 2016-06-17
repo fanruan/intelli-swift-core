@@ -196,6 +196,12 @@ public class ETLResourcesHelper {
 		};
 	}
 
+	public static String[] getAnimateCss() {
+		return new String[] {
+				"com/fr/bi/etl/analysis/web/css/animate.general.css"
+		};
+	}
+
 
 	public static String[] getDefaultCss() {
 		return new String[] {

@@ -77,10 +77,7 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
             node.type || (node.type = "bi.layer_tree_table_cell");
             node.layer = layer;
             var next = [node];
-            BI.assert(node.values, function (v) {
-                return BI.isArray(v);
-            });
-            next = next.concat(node.values);
+            next = next.concat(node.values || []);
             if (next.length > 0) {
                 result.push(next);
             }
@@ -96,7 +93,7 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
                 track(c, 0);
             });
             if (BI.isArray(node.values)) {
-                var next = [{text: BI.i18nText("BI-Summary_Values")}].concat(node.values);
+                var next = [{cls: "summary-cell last", text: BI.i18nText("BI-Summary_Values")}].concat(node.values);
                 result.push(next)
             }
         });
@@ -104,6 +101,7 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
     },
 
     _formatCols: function (cols, deep) {
+        deep = deep || this._getHDeep();
         cols = this._formatColumns(cols);
         return BI.map(cols, function (i, c) {
             return c - (deep - 1);
@@ -188,7 +186,7 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
         var deep = this._getHDeep();
         var pre = [];
         if (deep > 0) {
-            pre = BI.makeArray(deep - 1, "");
+            pre = BI.makeArray(deep - 1, 0);
         }
         return pre.concat(columnSize);
     },

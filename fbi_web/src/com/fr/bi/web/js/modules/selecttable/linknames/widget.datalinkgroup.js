@@ -15,14 +15,14 @@ BI.DataLinkGroup = BI.inherit(BI.Widget, {
         GROUPS_GAP: 10
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.DataLinkGroup.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-data-link-group",
             width: 280
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.DataLinkGroup.superclass._init.apply(this, arguments);
         var self = this, items = this.options.items;
         var dataLinks = items.dataLinks, packages = items.packages, etl = items.etl;
@@ -38,7 +38,7 @@ BI.DataLinkGroup = BI.inherit(BI.Widget, {
                 lgap: this.constants.LEFT_GAP
             })
         });
-        this.group.on(BI.Controller.EVENT_CHANGE, function(){
+        this.group.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
@@ -70,17 +70,19 @@ BI.DataLinkGroup = BI.inherit(BI.Widget, {
             }]
         }));
         container.addItems(this.group.getAllButtons().slice(dataLinks.length, dataLinks.length + packages.length));
-        container.addItem(BI.createWidget({
-            type: "bi.left",
-            cls: "nav-title",
-            items: [{
-                type: "bi.label",
-                text: "ETL",
-                height: this.constants.NAV_TITLE_HEIGHT,
-                hgap: this.constants.GROUPS_GAP
-            }]
-        }));
-        container.addItems(this.group.getAllButtons().slice(dataLinks.length + packages.length, dataLinks.length + packages.length + etl.length));
+        if (etl.length > 0) {
+            container.addItem(BI.createWidget({
+                type: "bi.left",
+                cls: "nav-title",
+                items: [{
+                    type: "bi.label",
+                    text: "ETL",
+                    height: this.constants.NAV_TITLE_HEIGHT,
+                    hgap: this.constants.GROUPS_GAP
+                }]
+            }));
+            container.addItems(this.group.getAllButtons().slice(dataLinks.length + packages.length, dataLinks.length + packages.length + etl.length));
+        }
 
         BI.createWidget({
             type: "bi.absolute",
@@ -95,11 +97,11 @@ BI.DataLinkGroup = BI.inherit(BI.Widget, {
         })
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.group.getValue();
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.group.setValue(v);
     }
 });
