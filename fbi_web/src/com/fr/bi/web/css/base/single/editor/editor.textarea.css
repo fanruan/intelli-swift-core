@@ -3,7 +3,7 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-textarea-editor {
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 .bi-textarea-editor .textarea-editor-content {
   font-size: 14px;

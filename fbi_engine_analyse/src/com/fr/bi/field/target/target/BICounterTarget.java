@@ -1,19 +1,14 @@
 package com.fr.bi.field.target.target;
 
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BIBusinessField;
-import com.finebi.cube.conf.table.BusinessTableHelper;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.stable.data.BIFieldID;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
 public class BICounterTarget extends BISummaryTarget {
 

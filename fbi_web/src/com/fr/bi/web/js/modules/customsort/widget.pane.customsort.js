@@ -54,7 +54,14 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
                     var holder = BI.createWidget({
                         type: "bi.label",
                         cls: "bi-sortable-holder",
-                        height: 20
+                        height: $currentItem.outerHeight()
+                    });
+                    holder.element.css({
+                        "margin-left": $currentItem.css("margin-left"),
+                        "margin-right": $currentItem.css("margin-right"),
+                        "margin-top": $currentItem.css("margin-top"),
+                        "margin-bottom": $currentItem.css("margin-bottom"),
+                        "margin": $currentItem.css("margin")
                     });
                     return holder.element;
                 },

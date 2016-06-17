@@ -38,6 +38,8 @@ import java.util.*;
 public class BICubeTableAdapter implements ICubeTableService {
     private ICube cube;
     private ICubeTableEntityGetterService primaryTable;
+    private Map<BIKey, ICubeFieldSource> columnSet = null;
+    private Map<BIKey, ICubeColumnReaderService> columnReaderServiceMap = new HashMap<BIKey, ICubeColumnReaderService>();
 
     public BICubeTableAdapter(ICube cube, CubeTableSource tableSource) {
         this.cube = cube;
@@ -122,16 +124,21 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public Map<BIKey, ICubeFieldSource> getColumns() {
-        Map<BIKey, ICubeFieldSource> result = new HashMap<BIKey, ICubeFieldSource>();
-
-        List<ICubeFieldSource> list = primaryTable.getFieldInfo();
-        Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
-        while (tableFieldIt.hasNext()) {
-            ICubeFieldSource field = tableFieldIt.next();
-            result.put(getColumnIndex(field.getFieldName()), field);
+        if (!isColumnInitial()) {
+            columnSet = new HashMap<BIKey, ICubeFieldSource>();
+            List<ICubeFieldSource> list = primaryTable.getFieldInfo();
+            Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
+            while (tableFieldIt.hasNext()) {
+                ICubeFieldSource field = tableFieldIt.next();
+                columnSet.put(getColumnIndex(field.getFieldName()), field);
+            }
         }
 
-        return result;
+        return columnSet;
+    }
+
+    private boolean isColumnInitial() {
+        return columnSet != null;
     }
 
     @Override
@@ -151,7 +158,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public long getTableVersion(BIKey key) {
-        return  primaryTable.getCubeVersion();
+        return primaryTable.getCubeVersion();
     }
 
     @Override
@@ -246,7 +253,8 @@ public class BICubeTableAdapter implements ICubeTableService {
         return new BIColumnIndexReader(columnReaderService, relationList);
     }
 
-    private ICubeColumnReaderService getColumnReader(BIKey biKey) {
+
+    private ICubeColumnReaderService buildColumnReader(BIKey biKey) {
         ICubeColumnReaderService columnReaderService;
         try {
             BIColumnKey columnKey;
@@ -262,6 +270,16 @@ public class BICubeTableAdapter implements ICubeTableService {
             throw BINonValueUtils.beyondControl(e);
         }
         return columnReaderService;
+    }
+
+    private ICubeColumnReaderService getColumnReader(BIKey biKey) {
+        if (columnReaderServiceMap.containsKey(biKey)) {
+            return columnReaderServiceMap.get(biKey);
+        } else {
+            ICubeColumnReaderService columnReaderService = buildColumnReader(biKey);
+            columnReaderServiceMap.put(biKey, columnReaderService);
+            return columnReaderService;
+        }
     }
 
     private ICubeTableEntityGetterService getTableReader(BIKey biKey) {

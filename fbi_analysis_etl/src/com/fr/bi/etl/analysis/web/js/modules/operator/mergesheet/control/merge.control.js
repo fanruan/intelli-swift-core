@@ -86,7 +86,7 @@ BI.AnalysisETLMergeSheetController = BI.inherit(BI.MVCController, {
     
     populate : function (widget, model) {
         widget.nameInput.setValue(model.get("name"))
-        model.refreshColumnName()
+        model.refreshColumnName();
         widget.preview.populate(model.createPreviewData(),{})
         widget.saveButton.setWarningTitle(BI.i18nText('BI-ETL_Join_Merge_Field_Not_Set'));
         widget.saveButton.setEnable(widget.mergeFields.controller.isValid())

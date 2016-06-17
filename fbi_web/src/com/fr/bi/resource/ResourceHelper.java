@@ -609,6 +609,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",
 
+                //警戒线
+                "com/fr/bi/web/css/modules/cordon/pane/item.cordon.css",
+                "com/fr/bi/web/css/modules/cordon/pane/pane.cordon.css",
+
                 //带参数的日期控件
                 "com/fr/bi/web/css/modules/multidatecombowithparam/multidate.parampopup.css",
                 "com/fr/bi/web/css/modules/multidatecombowithparam/multidate.parampane.css",
@@ -1255,6 +1259,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.model.js",
 
+                //警戒线
+                "com/fr/bi/web/js/modules/cordon/pane/item.cordon.js",
+                "com/fr/bi/web/js/modules/cordon/pane/pane.cordon.js",
+                "com/fr/bi/web/js/modules/cordon/popup.cordon.js",
 
                 "com/fr/bi/web/js/fragments/multirelation/expander.multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/multirelation.js",

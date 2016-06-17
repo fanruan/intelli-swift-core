@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -40,6 +41,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     protected BISummaryTarget[] targets;
     @BICoreField
     protected BIDimension[] dimensions;
+
     protected NameObject targetSort;
     @BICoreField
     protected Map<String, DimensionFilter> targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
