@@ -89,9 +89,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             self.fireEvent(BI.CombineChart.EVENT_CHANGE, BI.extend(this.pointOption, {seriesName: this.seriesName}));
         };
         switch (typess[0]){
-            case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.DASHBOARD:
-            case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
@@ -101,34 +99,24 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
-            case BICst.WIDGET.FALL_AXIS:
-            case BICst.WIDGET.RANGE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FUNNEL:
-                config.xAxis = [];
-                var newxAxis  = this._axisConfig();
-                newxAxis.position = "bottom";
-                newxAxis.gridLineWidth = 0;
-                newxAxis.type = "category";
-                (typess[0] === BICst.WIDGET.BUBBLE || typess[0] === BICst.WIDGET.SCATTER) && (newxAxis.type = "value");
-                config.xAxis.push(newxAxis);
-                config.yAxis = [];
-                BI.each(o.types, function(idx, type){
-                    if(BI.isEmptyArray(type)){
-                        return;
-                    }
-                    var newYAxis = self._axisConfig();
-                    newYAxis.position = idx > 0 ? "right" : "left";
-                    newYAxis.gridLineWidth = idx > 0 ? 0 : 1;
-                    if(BI.isNotEmptyArray(items)){
-                        newYAxis.reversed = items[idx][0].reversed || false;
-                        if(items[idx][0].name === ""){
-                            config.legend.enabled = false;
-                        }
-                    }
-                    config.yAxis.push(newYAxis);
-                });
+                createAxisForCommon();
+                break;
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+                createAxisForCommon();
+                config.xAxis[0].type = "value";
+                config.xAxis[0].formatter = formatTickInXYaxis(self.x_axis_style, self.constants.X_AXIS);
+                break;
+            case BICst.WIDGET.FALL_AXIS:
+                createAxisForCommon();
+                self.chart_legend = BICst.CHART_LEGENDS.NOT_SHOW;
+                break;
+            case BICst.WIDGET.RANGE_AREA:
+                createAxisForCommon();
+                self.chart_line_type = BICst.CHART_STYLE.NORMAL;
                 break;
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
@@ -162,6 +150,31 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         }
         addOptionsToConfig();
         return [result, config];
+
+        function createAxisForCommon() {
+            config.xAxis = [];
+            var newxAxis  = self._axisConfig();
+            newxAxis.position = "bottom";
+            newxAxis.gridLineWidth = 0;
+            newxAxis.type = "category";
+            config.xAxis.push(newxAxis);
+            config.yAxis = [];
+            BI.each(o.types, function(idx, type){
+                if(BI.isEmptyArray(type)){
+                    return;
+                }
+                var newYAxis = self._axisConfig();
+                newYAxis.position = idx > 0 ? "right" : "left";
+                newYAxis.gridLineWidth = idx > 0 ? 0 : 1;
+                if(BI.isNotEmptyArray(items)){
+                    newYAxis.reversed = items[idx][0].reversed || false;
+                    if(items[idx][0].name === ""){
+                        config.legend.enabled = false;
+                    }
+                }
+                config.yAxis.push(newYAxis);
+            });
+        }
 
         function addOptionsToConfig(){
             if(BI.isNotEmptyArray(self.chart_color)){

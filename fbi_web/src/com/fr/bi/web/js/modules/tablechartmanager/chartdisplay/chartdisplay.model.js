@@ -81,7 +81,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
-        this._getShowTarget();
         var data = this._formatDataForCommon(da);
         if (BI.isEmptyArray(data)) {
             return [];
@@ -323,25 +322,71 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _formatDataForRangeArea: function(data){
-        var items = this._formatDataForAxis(data);
-        var result = BI.map(items, function(idx, item){
-            return BI.map(item, function(id, it){
-                if(idx === 0){
-                    return BI.extend({}, it, {
-                        fillColorOpacity: 0,
-                        stack: "stackedArea",
-                        fillColor: "rgb(99,178,238)"
-                    });
-                }else{
-                    return BI.extend({}, it, {stack: "stackedArea"});
-                }
-            });
+        var items = this._formatDataForCommon(data);
+        if(BI.isEmptyArray(items)){
+            return [];
+        }
+        if(items.length === 1){
+            return [items];
+        }
+        var seriesPositive = [], seriesNegative =[];
+        BI.each(items[0].data, function(idx, item){
+            var res = items[1].data[idx].y - item.y;
+            if(res >= 0){
+                seriesPositive.push({
+                    x: items[1].data[idx].x,
+                    y: res,
+                    targetIds: items[1].data[idx].targetIds
+                });
+                seriesNegative.push({
+                    x: items[0].data[idx].x,
+                    y: 0,
+                    targetIds: items[0].data[idx].targetIds
+                })
+            }else{
+                seriesPositive.push({
+                    x: items[1].data[idx].x,
+                    y: 0,
+                    targetIds: items[1].data[idx].targetIds
+                });
+                seriesNegative.push({
+                    x: items[0].data[idx].x,
+                    y: -res,
+                    targetIds: items[0].data[idx].targetIds
+                })
+            }
         });
-        var res = [];
-        BI.each(result, function(idx, arr){
-            res = BI.concat(res, arr);
+        items.push({
+            data: seriesPositive,
+            name: items[1].name,
+            stack: "positiveStackedArea"
         });
-        return BI.isEmptyArray(res) ? res : [res];
+        items.push({
+            data: seriesNegative,
+            name: items[0].name,
+            stack: "negativeStackedArea"
+        });
+        BI.each(items, function(idx, item){
+            if(idx === 0){
+                BI.extend(item, {
+                    name: "456",
+                    fillColorOpacity: 0,
+                    stack: "negativeStackedArea",
+                    fillColor: "rgb(99,178,238)",
+                    lineWidth: 0
+                });
+            }
+            if(idx === 1){
+                BI.extend(item, {
+                    name: "123",
+                    fillColorOpacity: 0,
+                    stack: "positiveStackedArea",
+                    fillColor: "rgb(99,178,238)",
+                    lineWidth: 0
+                });
+            }
+        });
+        return [items];
     },
 
     _formatDataForBar: function(data){
