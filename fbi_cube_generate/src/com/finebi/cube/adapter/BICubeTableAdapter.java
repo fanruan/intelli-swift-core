@@ -38,6 +38,7 @@ import java.util.*;
 public class BICubeTableAdapter implements ICubeTableService {
     private ICube cube;
     private ICubeTableEntityGetterService primaryTable;
+    private Map<BIKey, ICubeFieldSource> columnSet = null;
 
     public BICubeTableAdapter(ICube cube, CubeTableSource tableSource) {
         this.cube = cube;
@@ -122,16 +123,21 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public Map<BIKey, ICubeFieldSource> getColumns() {
-        Map<BIKey, ICubeFieldSource> result = new HashMap<BIKey, ICubeFieldSource>();
-
-        List<ICubeFieldSource> list = primaryTable.getFieldInfo();
-        Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
-        while (tableFieldIt.hasNext()) {
-            ICubeFieldSource field = tableFieldIt.next();
-            result.put(getColumnIndex(field.getFieldName()), field);
+        if (!isColumnInitial()) {
+            columnSet = new HashMap<BIKey, ICubeFieldSource>();
+            List<ICubeFieldSource> list = primaryTable.getFieldInfo();
+            Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
+            while (tableFieldIt.hasNext()) {
+                ICubeFieldSource field = tableFieldIt.next();
+                columnSet.put(getColumnIndex(field.getFieldName()), field);
+            }
         }
 
-        return result;
+        return columnSet;
+    }
+
+    private boolean isColumnInitial() {
+        return columnSet != null;
     }
 
     @Override
@@ -151,7 +157,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public long getTableVersion(BIKey key) {
-        return  primaryTable.getCubeVersion();
+        return primaryTable.getCubeVersion();
     }
 
     @Override
