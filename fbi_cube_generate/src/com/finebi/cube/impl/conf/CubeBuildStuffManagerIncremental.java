@@ -3,13 +3,11 @@ package com.finebi.cube.impl.conf;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CalculateDepend;
+import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableRelationPath;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -24,6 +22,7 @@ import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager
 
 /**
  * Created by kary on 2016/6/8.
+ * 表的增量更新，尽量减少依赖，最大化提升效率
  */
 public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
@@ -36,6 +35,8 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
     private Set<BITableRelation> tableRelationSet;
     private Set<BITableSourceRelation> biTableSourceRelationSet;
     private Set<BITableSourceRelationPath> biTableSourceRelationPathSet;
+    private Set<BICubeGenerateRelationPath> cubeGenerateRelationPathSet;
+    private Set<BICubeGenerateRelation> cubeGenerateRelationSet;
 
     public CubeBuildStuffManagerIncremental(Set<BIBusinessTable> newTables, long userId) {
         this.biUser = new BIUser(userId);
@@ -43,11 +44,23 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
         this.newBiBusinessTableSet = newTables;
         init();
         try {
+            setSources();
             setResourcesAndDepends();
             setRealationAndPath();
-            calculateDepends();
+            calculateRelationDepends();
         } catch (BITableAbsentException e) {
             BILogger.getLogger().error(e.getMessage());
+        }
+    }
+
+    private void setSources() {
+        this.sources = new HashSet<CubeTableSource>();
+        for (IBusinessPackageGetterService pack : BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId())) {
+            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
+            while (tIt.hasNext()) {
+                BIBusinessTable table = tIt.next();
+                sources.add(table.getTableSource());
+            }
         }
     }
 
@@ -60,44 +73,20 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
     }
 
 
-    private void calculateDepends() {
-        CalculateDepend cal = new CalculateDependManager() {
-            @Override
-            public void setOriginal(Set<CubeTableSource> cubeTableSources) {
-                if (null == analysisTableSources) {
-                    analysisTableSources = new HashSet<CubeTableSource>();
-                }
-                for (CubeTableSource analysisTableSource : cubeTableSources) {
-                    analysisTableSources.add(analysisTableSource);
-                }
-            }
-        };
+    private void calculateRelationDepends() {
+        CalculateDependTool cal = new CalculateDependManager();
         cal.setOriginal(this.sources);
-        Set<BITableSourceRelation> biTableSourceRelationSetTemp = new HashSet<BITableSourceRelation>();
-        for (
-                BITableSourceRelation biTableSourceRelation
-                : this.biTableSourceRelationSet)
-
-        {
-            biTableSourceRelationSetTemp.add(cal.calRelations((biTableSourceRelation)));
+        cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
+        for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
+            this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation));
         }
-
-        this.biTableSourceRelationSet = biTableSourceRelationSetTemp;
-        Set<BITableSourceRelationPath> biTableSourceRelationPathSetTemp = new HashSet<BITableSourceRelationPath>();
-        for (
-                BITableSourceRelationPath biTableSourceRelationPath
-                : this.
-
-                getBiTableSourceRelationPathSet()
-
-                )
-
-        {
-            biTableSourceRelationPathSetTemp.add(cal.calRelationPath(biTableSourceRelationPath, this.biTableSourceRelationSet));
+        cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
+        for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
+            BICubeGenerateRelationPath path = cal.calRelationPath(biTableSourceRelationPath, this.biTableSourceRelationSet);
+            if (null != path) {
+                cubeGenerateRelationPathSet.add(path);
+            }
         }
-
-        this.biTableSourceRelationPathSet = biTableSourceRelationPathSetTemp;
-        this.biTableSourceRelationSet = biTableSourceRelationSetTemp;
     }
 
     protected void setResourcesAndDepends() throws BITableAbsentException {
@@ -217,7 +206,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     @Override
     public Set<CubeTableSource> getSources() {
-        return null;
+        return this.sources;
     }
 
     @Override
@@ -244,5 +233,13 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
             result.put(table, version);
         }
         return result;
+    }
+
+    public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
+        return this.cubeGenerateRelationPathSet;
+    }
+
+    public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
+        return this.cubeGenerateRelationSet;
     }
 }

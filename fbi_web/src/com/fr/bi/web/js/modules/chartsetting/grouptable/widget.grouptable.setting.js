@@ -132,12 +132,9 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             height: this.constant.EDITOR_HEIGHT,
             cls: "max-row-input",
             errorText: BI.i18nText("BI-Please_Enter_Number_1_To_100"),
+            allowBlank: false,
             validationChecker: function (v) {
-                if (BI.isInteger(v)) {
-                    var value = BI.parseInt(v);
-                    return value > 0 && value <= 100;
-                }
-                return false;
+                return BI.isInteger(v) && v > 0 && v <= 100;
             }
         });
         this.maxRow.on(BI.SignEditor.EVENT_CHANGE, function () {

@@ -7,4 +7,5 @@ package com.finebi.cube.utils;
  * @since 4.0
  */
 public class Occupied {
+
 }

@@ -1,15 +1,19 @@
 package com.fr.bi.field.target.target;
 
+import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 public class BICounterTarget extends BISummaryTarget {
 
@@ -32,10 +36,19 @@ public class BICounterTarget extends BISummaryTarget {
              * Connery：
              */
             BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(distinct_field_id));
+            if (field == null) {
+                String tableId = obj.getString("table_id");
+                BusinessField column = new BIBusinessField(new BIFieldID(distinct_field_id));
+                BusinessTable tableBelongTo = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
+                column.setTableBelongTo(tableBelongTo);
+                this.column = column;
+                this.distinct_field_name = StringUtils.EMPTY;
+                return;
+            }
             IPersistentTable table = field.getTableBelongTo().getTableSource().getPersistentTable();
             PersistentField c = table.getField(field.getFieldName());
             if (c == null) {
-                this.distinct_field_name = null;
+                this.distinct_field_name = StringUtils.EMPTY;
                 return;
             }
             this.distinct_field_name = field.getFieldName();

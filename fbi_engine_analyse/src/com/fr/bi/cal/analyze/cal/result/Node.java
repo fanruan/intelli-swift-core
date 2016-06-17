@@ -7,11 +7,9 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.*;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
-import com.fr.bi.stable.structure.tree.NTree;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
@@ -67,11 +65,7 @@ public class Node extends BIField implements BINode {
     private transient Map<TargetGettingKey, Double> childAVG;
     private transient Map<TargetGettingKey, Double> allChildAVG;
     //TODO 低效的算法， 放在result无所谓
-    private transient Map<Integer, Double> topNLineMap;
-    private transient Map<Integer, Double> bottomNLineMap;
-    //TODO 低效的算法， 放在result无所谓
-    private transient Map<Integer, Comparable> dataTopNLineMap;
-    private transient Map<Integer, Comparable> dataBottomNLineMap;
+    private transient Map<TopNKey, Double> topNLineMap;
 
     public Node(DimensionCalculator key, Object data) {
 
@@ -1006,11 +1000,12 @@ public class Node extends BIField implements BINode {
         if (N < 1) {
             return Double.POSITIVE_INFINITY;
         }
-        Double nLine = getTopNLineMap().get(N);
+        TopNKey topNKey = new TopNKey(N, key);
+        Double nLine = getTopNLineMap().get(topNKey);
         if (nLine == null) {
             nLine = NodeUtils.getTopN(this, key, N);
 
-            getTopNLineMap().put(N, nLine);
+            getTopNLineMap().put(topNKey, nLine);
         }
         return nLine;
     }
@@ -1027,18 +1022,7 @@ public class Node extends BIField implements BINode {
         if (N < 1 || count == 0) {
             return null;
         }
-        Comparable nLine = getDataTopNLineMap().get(N);
-        if (nLine == null) {
-            Comparator c = this.getChild(0).getComparator();
-            NTree<Comparable> tree = new NTree<Comparable>(c, N);
-            for (int i = 0; i < count; i++) {
-                Node child = this.getChild(i);
-                tree.add((Comparable) child.getData());
-            }
-            nLine = tree.getLineValue();
-            getDataTopNLineMap().put(N, nLine);
-        }
-        return nLine;
+        return (Comparable) getChild(Math.min(N, count) - 1);
     }
 
     /**
@@ -1049,22 +1033,7 @@ public class Node extends BIField implements BINode {
      */
     @Override
     public Comparable getChildBottomNValueLine(int N) {
-        int count = this.getChildLength();
-        if (N < 1 || count == 0) {
-            return null;
-        }
-        Comparable nLine = getDataBottomNLineMap().get(N);
-        if (nLine == null) {
-            Comparator c = this.getChild(0).getComparator();
-            NTree<Comparable> tree = new NTree<Comparable>(ComparatorFacotry.createReverseComparator(c), N);
-            for (int i = 0; i < count; i++) {
-                Node child = this.getChild(i);
-                tree.add((Comparable) child.getData());
-            }
-            nLine = tree.getLineValue();
-            getDataBottomNLineMap().put(N, nLine);
-        }
-        return nLine;
+        return getChildTOPNValueLine(this.getChildLength() + 1 - N);
     }
 
     /**
@@ -1368,31 +1337,43 @@ public class Node extends BIField implements BINode {
         return allChildAVG;
     }
 
-    private Map<Integer, Double> getTopNLineMap() {
+    private Map<TopNKey, Double> getTopNLineMap() {
         if (topNLineMap == null) {
-            topNLineMap = new ConcurrentHashMap<Integer, Double>(1);
+            topNLineMap = new ConcurrentHashMap<TopNKey, Double>(1);
         }
         return topNLineMap;
     }
 
-    private Map<Integer, Double> getBottomNLineMap() {
-        if (bottomNLineMap == null) {
-            bottomNLineMap = new ConcurrentHashMap<Integer, Double>(1);
-        }
-        return bottomNLineMap;
-    }
+    private class TopNKey{
+        private int N;
+        private TargetGettingKey key;
 
-    private Map<Integer, Comparable> getDataTopNLineMap() {
-        if (dataTopNLineMap == null) {
-            dataTopNLineMap = new ConcurrentHashMap<Integer, Comparable>(1);
+        public TopNKey(int n, TargetGettingKey key) {
+            N = n;
+            this.key = key;
         }
-        return dataTopNLineMap;
-    }
 
-    private Map<Integer, Comparable> getDataBottomNLineMap() {
-        if (dataBottomNLineMap == null) {
-            dataBottomNLineMap = new ConcurrentHashMap<Integer, Comparable>(1);
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()){
+                return false;
+            }
+
+            TopNKey topNKey = (TopNKey) o;
+
+            if (N != topNKey.N) {
+                return false;
+            }
+            return key != null ? ComparatorUtils.equals(key, topNKey.key) : topNKey.key == null;
+
         }
-        return dataBottomNLineMap;
+
+        @Override
+        public int hashCode() {
+            int result = N;
+            result = 31 * result + (key != null ? key.hashCode() : 0);
+            return result;
+        }
     }
 }

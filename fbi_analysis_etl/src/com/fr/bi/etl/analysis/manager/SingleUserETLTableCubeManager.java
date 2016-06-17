@@ -54,7 +54,7 @@ public class SingleUserETLTableCubeManager implements Release {
 	public SingleUserETLTableCubeManager (UserCubeTableSource source){
 		this.source = source;
 		String path = getSavedPath();
-		if(path != null){
+		if(path != null && new File(BIPathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), path)).exists()){
 			tq.add(new ETLTableObject(source, path));
 		}
 		addTask();

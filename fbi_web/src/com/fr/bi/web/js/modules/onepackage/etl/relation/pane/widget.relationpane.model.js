@@ -19,6 +19,10 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
         return BI.deepClone(this.relations);
     },
 
+    setRelations: function(relations) {
+        this.relations = relations;
+    },
+
     getTranslations: function(){
         return this.translations;
     },
@@ -149,6 +153,7 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
                     mapArray.splice(i, 1);
                 }
             });
+            mapArray.length === 0 && (delete primKeyMap[id]);
         });
         BI.each(foreignKeyMap, function(id, mapArray) {
             BI.each(mapArray, function(i, map){
@@ -156,6 +161,7 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
                     mapArray.splice(i, 1);
                 }
             });
+            mapArray.length === 0 && (delete foreignKeyMap[id]);
         });
 
         //添加现在的关联
