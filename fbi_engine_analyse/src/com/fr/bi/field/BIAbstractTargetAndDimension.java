@@ -42,7 +42,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
 
     @Override
     public BusinessTable createTableKey() {
-        return column.getTableBelongTo();
+        return column == null ? null : column.getTableBelongTo();
     }
 
     @Override
