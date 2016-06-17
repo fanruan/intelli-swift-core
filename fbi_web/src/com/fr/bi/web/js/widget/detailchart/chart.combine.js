@@ -166,12 +166,14 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             if(BI.isNotEmptyArray(self.chart_color)){
                 config.colors = self.chart_color;
             }
+
             formatChartStyle();
             formatChartLineStyle();
             formatChartPieStyle();
             formatChartRadarStyle();
             formatChartDashboardStyle();
             formatElementAttrs();
+            formatCordon();
             self.tooltipFormatter !== "" && (config.plotOptions.tooltip.formatter = self.tooltipFormatter);
             if(BI.has(config, "yAxis") && config.yAxis.length > 0){
                 config.yAxis[0].reversed = self.left_y_axis_reversed ? !config.yAxis[0].reversed : config.yAxis[0].reversed;
@@ -495,6 +497,35 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             self.show_zoom === true && delete config.dataSheet;
             config.plotOptions.connectNulls = self.null_continue;
         }
+
+        function formatCordon(){
+            BI.each(self.cordon, function(idx, cor){
+                if(idx === 0 && BI.has(config, "xAxis") && config.xAxis.length > 0){
+                    config.xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        return BI.extend({
+                            width: 1,
+                            label: {
+                                "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                                "text": t.text,
+                                "align": "top"
+                            }
+                        }, t);
+                    });
+                }
+                if(idx > 0 && BI.has(config, "yAxis") && config.yAxis.length >= idx){
+                    config.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        return BI.extend({
+                            width: 1,
+                            label: {
+                                "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                                "text": t.text,
+                                "align": "left"
+                            }
+                        }, t);
+                    });
+                }
+            })
+        }
     },
 
     setTypes: function(types){
@@ -542,6 +573,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.show_zoom = options.show_zoom || false;
         this.text_direction = options.text_direction;
         this.tooltipFormatter = options.tooltipFormatter;
+        this.cordon = options.cordon || [];
     },
 
     populate: function (items, options, types) {

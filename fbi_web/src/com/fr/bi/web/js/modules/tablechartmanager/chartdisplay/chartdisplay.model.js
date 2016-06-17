@@ -384,6 +384,31 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
     },
 
+    getCordon: function () {
+        var o = this.options;
+        var cordon = {};
+        var result = [];
+        BI.each(BI.Utils.getAllDimensionIDs(o.wId), function(idx, dId){
+            var items = BI.map(BI.Utils.getDimensionCordonByID(dId), function(id, cor){
+                return {
+                    text: cor.cordon_name,
+                    value: cor.cordon_value,
+                    color: cor.cordon_color
+                }
+            });
+            var regionType = BI.Utils.getRegionTypeByDimensionID(dId);
+            if(BI.isNotEmptyArray(items)){
+                BI.has(cordon, regionType) === false && (cordon[regionType] = []);
+                cordon[regionType] = BI.concat(cordon[regionType], items);
+            }
+        });
+        result.push(BI.isNull(cordon[BICst.REGION.DIMENSION1]) ? [] : cordon[BICst.REGION.DIMENSION1]);
+        result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
+        result.push(BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2]);
+        result.push(BI.isNull(cordon[BICst.REGION.TARGET3]) ? [] : cordon[BICst.REGION.TARGET3]);
+        return result;
+    },
+
     parseChartData: function (data) {
         var self = this, o = this.options;
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {

@@ -6,7 +6,8 @@
 BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     constants: {
-        CHART_TYPE_POSITION: 1
+        CHART_TYPE_POSITION: 1,
+        CordonPos: 1
     },
 
     defaultItems: function(){
@@ -132,6 +133,29 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             return did === o.dId;
         });
         switch (wType) {
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
