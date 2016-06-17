@@ -288,18 +288,19 @@ public class BIFileUtils {
     /**
      * 一行一行读文件
      *
-     * @param file 文件
      * @return list集合
      */
     public static String readFile(String path) {
-        StringBuffer str = new StringBuffer("");
         File file = new File(path);
+        StringBuffer sb = new StringBuffer();
         try {
             FileReader fr = new FileReader(file);
             BufferedReader reader = new BufferedReader(fr);
-
+            String line;
             try {
-                return reader.readLine();
+                while ((line = reader.readLine()) != null)
+                    sb.append(line);
+                return sb.toString();
             } finally {
                 reader.close();
                 fr.close();
