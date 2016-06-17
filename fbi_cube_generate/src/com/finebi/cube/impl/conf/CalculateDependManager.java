@@ -1,10 +1,10 @@
 package com.finebi.cube.impl.conf;
 
-import com.finebi.cube.conf.CalculateDepend;
+import com.finebi.cube.conf.CalculateDependTool;
+import com.finebi.cube.relation.BICubeGenerateRelation;
+import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.relation.BITableSourceRelation4Incremental;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.relation.BITableSourceRelationPath4Incremetal;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -15,11 +15,11 @@ import java.util.Set;
 /**
  * Created by kary on 2016/6/13.
  */
-public abstract class CalculateDependManager implements CalculateDepend {
+public  class CalculateDependManager implements CalculateDependTool {
     public Set<CubeTableSource> analysisTableSources;
 
     @Override
-    public BITableSourceRelation4Incremental calRelations(BITableSourceRelation biTableSourceRelation) {
+    public BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation) {
         Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
         if (analysisTableSources.contains(biTableSourceRelation.getForeignTable())) {
             cubeTableSourceSet.add(biTableSourceRelation.getForeignTable());
@@ -27,29 +27,33 @@ public abstract class CalculateDependManager implements CalculateDepend {
         if (analysisTableSources.contains(biTableSourceRelation.getPrimaryTable())) {
             cubeTableSourceSet.add(biTableSourceRelation.getPrimaryTable());
         }
-        return new BITableSourceRelation4Incremental(biTableSourceRelation, cubeTableSourceSet);
+        return new BICubeGenerateRelation(biTableSourceRelation, cubeTableSourceSet);
     }
 
     @Override
-    public BITableSourceRelationPath4Incremetal calRelationPath(BITableSourceRelationPath biTableSourceRelationPath, Set<BITableSourceRelation> tableRelationSet) {
-        BITableSourceRelationPath4Incremetal biTableSourceRelationPath4Incremetal = null;
-        BITableSourceRelationPath pathCopy = new BITableSourceRelationPath();
-        pathCopy.copyFrom(biTableSourceRelationPath);
-        Set<BITableSourceRelation> biTableSourceRelationSet = new HashSet<BITableSourceRelation>();
+    public BICubeGenerateRelationPath calRelationPath(BITableSourceRelationPath biTableSourceRelationPath, Set<BITableSourceRelation> tableRelationSet) {
+        if (biTableSourceRelationPath.getAllRelations().size()<2){
+            return null;
+        }
+        Set<BITableSourceRelationPath> dependRelationPathSet=new HashSet<BITableSourceRelationPath>();
         try {
-            while (pathCopy.getAllRelations().size() > 0 && tableRelationSet.contains(pathCopy.getFirstRelation())) {
-                biTableSourceRelationSet.add(pathCopy.getFirstRelation());
-                pathCopy.removeFirstRelation();
+            if (tableRelationSet.contains(biTableSourceRelationPath.getLastRelation())) {
+                dependRelationPathSet.add(new BITableSourceRelationPath(biTableSourceRelationPath.getLastRelation()));
             }
-            while (pathCopy.getAllRelations().size() > 0 && tableRelationSet.contains(pathCopy.getLastRelation())) {
-                biTableSourceRelationSet.add(pathCopy.getLastRelation());
-                pathCopy.removeLastRelation();
+            BITableSourceRelationPath copyPath=new BITableSourceRelationPath();
+            copyPath.copyFrom(biTableSourceRelationPath);
+            copyPath.removeLastRelation();
+            if(copyPath.getAllRelations().size()>0||!tableRelationSet.contains(copyPath.getFirstRelation())) {
+                dependRelationPathSet.add(copyPath);
             }
-            biTableSourceRelationPath4Incremetal = new BITableSourceRelationPath4Incremetal(biTableSourceRelationPath, biTableSourceRelationSet);
         } catch (BITablePathEmptyException e) {
-            biTableSourceRelationPath4Incremetal = new BITableSourceRelationPath4Incremetal(biTableSourceRelationPath, null);
             BILogger.getLogger().error(e.getMessage());
         }
-        return biTableSourceRelationPath4Incremetal;
+        BICubeGenerateRelationPath biCubeGenerateRelationPath = new BICubeGenerateRelationPath(biTableSourceRelationPath, dependRelationPathSet);
+        return biCubeGenerateRelationPath;
+    }
+    @Override
+    public void setOriginal(Set<CubeTableSource> cubeTableSources) {
+        analysisTableSources = cubeTableSources;
     }
 }

@@ -28,20 +28,16 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
 
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
-//        String connectionName = WebUtils.getHTTPRequestParameter(req, "connectionName");
-//        String tableName= WebUtils.getHTTPRequestParameter(req, "tableName");
-//        String translations= WebUtils.getHTTPRequestParameter(req, "translations");
-//        BusinessTable businessTable = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
-
 //        todo kary 优化ETL的更新方式,可能要单独实现ETL更新方法
         CubeBuildStuff cubeBuildStuff;
         if (StringUtils.isEmpty(tableId)){
              cubeBuildStuff= new CubeBuildStuffManager(new BIUser(userId));
+//            BusinessTable4CubeGenerate.CubeBuild(userId, cubeBuildStuff);
+            BusinessTable4CubeGenerate.CubeBuild(userId);
         }else{
              cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
+            BusinessTable4CubeGenerate.CubeBuild(userId, cubeBuildStuff);
         }
-        CubeTaskBuild.CubeBuild(userId, cubeBuildStuff);
-//        CubeTaskBuild.CubeBuild(userId);
     }
 
 }
