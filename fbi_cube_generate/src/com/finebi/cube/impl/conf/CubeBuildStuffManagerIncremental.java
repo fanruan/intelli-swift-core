@@ -22,7 +22,7 @@ import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager
 
 /**
  * Created by kary on 2016/6/8.
- * 增量更新，尽量减少依赖，最大化提升效率
+ * 表的增量更新，尽量减少依赖，最大化提升效率
  */
 public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
