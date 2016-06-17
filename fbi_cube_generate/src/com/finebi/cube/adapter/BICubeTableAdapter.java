@@ -39,6 +39,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     private ICube cube;
     private ICubeTableEntityGetterService primaryTable;
     private Map<BIKey, ICubeFieldSource> columnSet = null;
+    private Map<BIKey, ICubeColumnReaderService> columnReaderServiceMap = new HashMap<BIKey, ICubeColumnReaderService>();
 
     public BICubeTableAdapter(ICube cube, CubeTableSource tableSource) {
         this.cube = cube;
@@ -252,7 +253,8 @@ public class BICubeTableAdapter implements ICubeTableService {
         return new BIColumnIndexReader(columnReaderService, relationList);
     }
 
-    private ICubeColumnReaderService getColumnReader(BIKey biKey) {
+
+    private ICubeColumnReaderService buildColumnReader(BIKey biKey) {
         ICubeColumnReaderService columnReaderService;
         try {
             BIColumnKey columnKey;
@@ -268,6 +270,16 @@ public class BICubeTableAdapter implements ICubeTableService {
             throw BINonValueUtils.beyondControl(e);
         }
         return columnReaderService;
+    }
+
+    private ICubeColumnReaderService getColumnReader(BIKey biKey) {
+        if (columnReaderServiceMap.containsKey(biKey)) {
+            return columnReaderServiceMap.get(biKey);
+        } else {
+            ICubeColumnReaderService columnReaderService = buildColumnReader(biKey);
+            columnReaderServiceMap.put(biKey, columnReaderService);
+            return columnReaderService;
+        }
     }
 
     private ICubeTableEntityGetterService getTableReader(BIKey biKey) {
