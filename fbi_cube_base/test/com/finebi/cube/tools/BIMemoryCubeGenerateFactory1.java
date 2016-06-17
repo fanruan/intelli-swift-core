@@ -13,7 +13,7 @@ import java.util.Set;
  * Created by kary on 2016/6/16.
  * 生成BICubeGenerateRelation和BICubeGenerateRelationPath以供测试使用
  */
-public class BIMemoryCubeGenerateFactory {
+public class BIMemoryCubeGenerateFactory1 {
     public static Set<BICubeGenerateRelation> getCubeGenerateRelationABC() {
         Set<BICubeGenerateRelation> biTableRelation4CubeGenerates = new LinkedHashSet<BICubeGenerateRelation>();
         BICubeGenerateRelation biTableRelation4CubeGenerateAB = new BICubeGenerateRelation(BITableSourceRelationTestTool.getMemoryAB(), BIMemoryDataSourceFactory.getDataSourceSetWithAB());
