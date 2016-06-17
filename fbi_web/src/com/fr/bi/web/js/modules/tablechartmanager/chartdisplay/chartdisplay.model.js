@@ -120,13 +120,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
         return [BI.map(data.c, function (idx, item) {
             var obj = {};
+            var name = item.n;
+            var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+            if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
+                var date = new Date(BI.parseInt(name));
+                name = date.print("%Y-%X-%d");
+            }
             obj.data = [{
                 x: item.s[1],
                 y: item.s[0],
                 size: item.s[2],
                 targetIds: [targetIds[0], targetIds[1], targetIds[2]]
             }];
-            obj.name = item.n;
+            obj.name = name;
             return obj;
         })];
     },
@@ -143,7 +149,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
         return [BI.map(data.c, function (idx, item) {
             var obj = {};
-            obj.name = item.n;
+            var name = item.n;
+            var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+            if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
+                var date = new Date(BI.parseInt(name));
+                name = date.print("%Y-%X-%d");
+            }
+            obj.name = name;
             obj.data = [{
                 x: item.s[1],
                 y: item.s[0],
@@ -156,29 +168,47 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForCommon: function (data) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
+        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+        var seriesGroup = BI.Utils.getDimensionGroupByID(self.seriesDid);
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
             return BI.map(top.c, function (id, tObj) {
                 var data = BI.map(left.c, function (idx, obj) {
+                    var x = obj.n;
+                    if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
+                        var date = new Date(BI.parseInt(x));
+                        x = date.print("%Y-%X-%d");
+                    }
                     return {
-                        "x": obj.n,
+                        "x": x,
                         "y": obj.s.c[id].s[0],
                         targetIds: [targetIds[0]]
                     };
                 });
+                var name = tObj.n;
+                if (BI.isNotNull(seriesGroup) && seriesGroup.type === BICst.GROUP.YMD) {
+                    var date = new Date(BI.parseInt(name));
+                    name = date.print("%Y-%X-%d");
+                }
                 var obj = {};
                 obj.data = data;
-                obj.name = tObj.n;
+                obj.name = name;
                 return obj;
             });
         }
         if (BI.has(data, "c")) {
             var obj = (data.c)[0];
+            var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
             var columnSizeArray = BI.makeArray(BI.isNull(obj) ? 0 : BI.size(obj.s), 0);
             return BI.map(columnSizeArray, function (idx, value) {
                 var adjustData = BI.map(data.c, function (id, item) {
+                    var x = item.n;
+                    if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
+                        var date = new Date(BI.parseInt(x));
+                        x = date.print("%Y-%X-%d");
+                    }
                     return {
-                        x: item.n,
+                        x: x,
                         y: item.s[idx],
                         targetIds: [targetIds[idx]]
                     };

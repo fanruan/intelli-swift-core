@@ -17,10 +17,7 @@ import com.fr.bi.web.base.operation.BIOperationRecord;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
-import com.fr.general.ComparatorUtils;
-import com.fr.general.DeclareRecordType;
-import com.fr.general.FRLogManager;
-import com.fr.general.Inter;
+import com.fr.general.*;
 import com.fr.general.web.ParameterConsts;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -248,7 +245,7 @@ public class BIWebUtils {
                 FRLogManager.setSession(sessionIDInfo);
 
                 FRContext.getLogger().getRecordManager().recordAccessNoExecuteInfo(reportName,
-                        DeclareRecordType.WEB_WRITE_TYPE_VIEW, null);
+                        DeclareRecordType.WEB_WRITE_TYPE_VIEW, new ExecuteInfo("",""));
             } catch (Throwable e) {
                 FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
                 FRContext.getLogger().log(Level.WARNING, "RecordManager error. Record is close.");
