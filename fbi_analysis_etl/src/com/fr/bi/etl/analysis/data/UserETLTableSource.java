@@ -99,9 +99,12 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
 
     @Override
     public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
+        if(set.contains(this)){
+            return;
+        }
         for (AnalysisCubeTableSource source : getParents()){
-            set.add(source);
             source.getSourceUsedAnalysisETLSource(set);
+            set.add(source);
         }
     }
 

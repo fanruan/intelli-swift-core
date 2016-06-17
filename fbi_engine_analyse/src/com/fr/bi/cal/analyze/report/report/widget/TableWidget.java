@@ -9,6 +9,7 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableSetting;
@@ -46,9 +47,16 @@ public class TableWidget extends BISummaryWidget {
         this.pageSpinner[index] = value;
     }
 
+    @BIIgnoreField
+    private transient BIDimension[] usedDimension;
+    @BIIgnoreField
+    private transient  BISummaryTarget[] usedTargets;
 
     @Override
     public BIDimension[] getViewDimensions() {
+        if(usedDimension != null) {
+            return usedDimension;
+        }
         BIDimension[] dimensions = getDimensions();
         if (data != null) {
             String[] array = data.getRow();
@@ -59,13 +67,17 @@ public class TableWidget extends BISummaryWidget {
                     usedDimensions.add(dimension);
                 }
             }
-            return usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
+            dimensions =  usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
         }
+        usedDimension = dimensions;
         return dimensions;
     }
 
     @Override
     public BISummaryTarget[] getViewTargets() {
+        if(usedTargets != null) {
+            return usedTargets;
+        }
         BISummaryTarget[] targets = getTargets();
         if (data != null) {
             String[] array = data.getSummary();
@@ -76,8 +88,9 @@ public class TableWidget extends BISummaryWidget {
                     usedTargets.add(target);
                 }
             }
-            return usedTargets.toArray(new BISummaryTarget[usedTargets.size()]);
+            targets =  usedTargets.toArray(new BISummaryTarget[usedTargets.size()]);
         }
+        usedTargets = targets;
         return targets;
     }
 
@@ -95,11 +108,6 @@ public class TableWidget extends BISummaryWidget {
             return usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
         }
         return dimensions;
-    }
-
-
-    public BITableSetting getReportSetting() {
-        return data;
     }
 
 
