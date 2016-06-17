@@ -20,14 +20,13 @@ public class BusinessTable4CubeGenerate {
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
     public static void CubeBuild(long userId, CubeBuildStuff cubeBuildStuff) {
-            cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
+        cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
     }
 
     public static void CubeBuild(long userId) {
         BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
 //        Set<BIBusinessTable> newTables = BIPackageTableSourceConfigManager.getTables4Generate(UserControl.getInstance().getSuperManagerID());
-
-        Set<BIBusinessTable> newTables=BIPackageTableSourceConfigManager.getAllTables(userId);
+        Set<BIBusinessTable> newTables = BIPackageTableSourceConfigManager.getAllTables(userId);
         CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
         cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
     }

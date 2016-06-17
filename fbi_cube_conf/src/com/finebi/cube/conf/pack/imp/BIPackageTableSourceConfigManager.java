@@ -17,14 +17,15 @@ import java.util.Set;
  * 新增业务包后更新，获取所有新增的table
  */
 //public class BIPackageTableSourceConfigManager implements BIPackageTableSourceConfigProvider {
-    public class BIPackageTableSourceConfigManager  {
-public static Set<BIBusinessTable> getAllTables(long userId){
-    Set<BIBusinessTable> sources = new HashSet<BIBusinessTable>();
-    for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
-        sources.add((BIBusinessTable) businessTable);
+public class BIPackageTableSourceConfigManager {
+    public static Set<BIBusinessTable> getAllTables(long userId) {
+        Set<BIBusinessTable> sources = new HashSet<BIBusinessTable>();
+        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
+            sources.add((BIBusinessTable) businessTable);
+        }
+        return sources;
     }
-    return sources;
-}
+
     public static Set<BIBusinessTable> getTables4Generate(long userId) {
         Set<BIBusinessPackage> packages4CubeGenerate = BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
         Set<IBusinessPackageGetterService> iBusinessPackageGetterServiceSet = new HashSet<IBusinessPackageGetterService>();
