@@ -1,20 +1,16 @@
 package com.finebi.cube.conf.pack;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.data.BIBusinessPackageTestTool;
 import com.finebi.cube.conf.pack.data.BIGroupTagName;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
-import com.finebi.cube.conf.pack.imp.BIPackageTableSourceConfigManager;
 import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.fs.control.UserControl;
 import junit.framework.TestCase;
 
 import java.util.Set;
@@ -338,35 +334,9 @@ public class SystemPackageTest extends TestCase {
             BILogger.getLogger().error(e.getMessage(), e);
         }
     }
-
+/*
+* todo kary 获取currentPackage
+* */
     public void testCurrentPackage(){
-        try {
-            BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(-999);
-            BIPackageTableSourceConfigManager biPackageFindTableSourceConfigManager = new BIPackageTableSourceConfigManager();
-            Set<BIBusinessTable> newTables = biPackageFindTableSourceConfigManager.getTables4Generate(UserControl.getInstance().getSuperManagerID());
-            manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a"));
-            assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a")));
-            assertFalse(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab")));
-            assertFalse(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc")));
-
-            manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab"));
-            assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a")));
-            assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab")));
-            assertFalse(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc")));
-
-            manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc"));
-            assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a")));
-            assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("ab")));
-            assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc")));
-            boolean isDuplicate = false;
-            try {
-                manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abc"));
-            } catch (BIPackageDuplicateException ignore) {
-                isDuplicate = true;
-            }
-            assertTrue(isDuplicate);
-        } catch (BIPackageDuplicateException e) {
-            e.printStackTrace();
-        }
     }
 }

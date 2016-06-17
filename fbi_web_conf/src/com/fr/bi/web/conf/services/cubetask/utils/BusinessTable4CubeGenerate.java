@@ -4,7 +4,6 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.conf.pack.imp.BIPackageTableSourceConfigManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerIncremental;
 import com.fr.bi.base.BIUser;
@@ -25,8 +24,7 @@ public class BusinessTable4CubeGenerate {
 
     public static void CubeBuild(long userId) {
         BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
-//        Set<BIBusinessTable> newTables = BIPackageTableSourceConfigManager.getPackages4Generate(UserControl.getInstance().getSuperManagerID());
-        Set<BIBusinessTable> newTables = BIPackageTableSourceConfigManager.getTables4CubeGenerate(userId);
+        Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
         CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
         cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
     }

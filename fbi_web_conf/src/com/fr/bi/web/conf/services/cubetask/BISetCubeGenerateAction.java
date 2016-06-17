@@ -7,6 +7,7 @@ import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.bi.web.conf.services.cubetask.utils.BusinessTable4CubeGenerate;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
