@@ -24,6 +24,7 @@ BI.AddDataLinkCombo = BI.inherit(BI.Widget, {
         });
         this.combo = BI.createWidget({
             type: "bi.combo",
+            trigger: "hover",
             element: this.element,
             el: {
                 type: "bi.button",

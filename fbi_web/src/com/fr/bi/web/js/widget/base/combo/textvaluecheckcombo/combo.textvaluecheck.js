@@ -30,13 +30,13 @@ BI.TextValueCheckCombo = BI.inherit(BI.Widget, {
         });
         this.popup.on(BI.TextValueCheckComboPopup.EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
-            self.TextIconCheckCombo.hideView();
+            self.textIconCheckCombo.hideView();
             self.fireEvent(BI.TextValueCheckCombo.EVENT_CHANGE);
         });
         this.popup.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        this.TextIconCheckCombo = BI.createWidget({
+        this.textIconCheckCombo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
             adjustLength: 2,
@@ -48,22 +48,26 @@ BI.TextValueCheckCombo = BI.inherit(BI.Widget, {
         });
     },
 
+    setTitle: function(title){
+        this.trigger.setTitle(title);
+    },
+
     setValue: function (v) {
-        this.TextIconCheckCombo.setValue(v);
+        this.textIconCheckCombo.setValue(v);
     },
 
     setEnable: function (v) {
         BI.TextValueCheckCombo.superclass.setEnable.apply(this, arguments);
-        this.TextIconCheckCombo.setEnable(v);
+        this.textIconCheckCombo.setEnable(v);
     },
 
     getValue: function () {
-        return this.TextIconCheckCombo.getValue();
+        return this.textIconCheckCombo.getValue();
     },
 
     populate: function (items) {
         this.options.items = items;
-        this.TextIconCheckCombo.populate(items);
+        this.textIconCheckCombo.populate(items);
     }
 });
 BI.TextValueCheckCombo.EVENT_CHANGE = "EVENT_CHANGE";

@@ -121,7 +121,11 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                     self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:
-                    self._buildStyleSettingPane();
+                    if(s === BICst.TARGET_COMBO.CORDON){
+                        self._buildCordonPane();
+                    }else{
+                        self._buildStyleSettingPane();
+                    }
                     break;
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
@@ -155,7 +159,11 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                     self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:
-                    self._buildStyleSettingPane();
+                    if(s === BICst.TARGET_COMBO.CORDON){
+                        self._buildCordonPane();
+                    }else{
+                        self._buildStyleSettingPane();
+                    }
                     break;
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
@@ -261,6 +269,20 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         });
         popup.on(BI.TargetFilterPopup.EVENT_CHANGE, function (v) {
             self.model.set("filter_value", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
+    },
+
+    _buildCordonPane: function(){
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.cordon_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.CordonPopup.EVENT_CHANGE, function (v) {
+            self.model.set("cordon", v);
         });
         BI.Popovers.create(id, popup).open(id);
         popup.populate();
