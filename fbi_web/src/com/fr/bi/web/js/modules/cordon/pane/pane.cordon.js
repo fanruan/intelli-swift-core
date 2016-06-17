@@ -92,7 +92,7 @@ BI.CordonPane = BI.inherit(BI.Widget, {
         var type = BI.Utils.getWidgetTypeByID(wId);
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var numberLevel = BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
-        var magnify = 1;
+        this.magnify = 1;
         switch (type) {
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
@@ -137,16 +137,16 @@ BI.CordonPane = BI.inherit(BI.Widget, {
         switch (numberLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                magnify = 1;
+                this.magnify = 1;
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                magnify = 10000;
+                this.magnify = 10000;
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                magnify = 1000000;
+                this.magnify = 1000000;
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                magnify = 100000000;
+                this.magnify = 100000000;
                 break;
         }
         var items = [];
@@ -154,7 +154,7 @@ BI.CordonPane = BI.inherit(BI.Widget, {
             items.push({
                 type: "bi.cordon_item",
                 cordon_name: cor.cordon_name,
-                cordon_value: BI.parseFloat(cor.cordon_value).div(magnify),
+                cordon_value: BI.parseFloat(cor.cordon_value).div(self.magnify),
                 cordon_number_level: numberLevel,
                 cordon_color: cor.cordon_color,
                 height: self.constants.itemHeight
@@ -165,9 +165,12 @@ BI.CordonPane = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        var group_nodes = [];
+        var self = this, group_nodes = [];
         BI.each(this.buttons, function (idx, item) {
-            group_nodes.push(item.getValue());
+            var value = item.getValue();
+            group_nodes.push(BI.extend(value, {
+                cordon_value: BI.parseFloat(value.cordon_value).mul(self.magnify)
+            }));
         });
         return group_nodes;
     }

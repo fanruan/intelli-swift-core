@@ -127,6 +127,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var o = this.options;
         var item = this.defaultItems();
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var view = BI.Utils.getWidgetViewByID(wId);
         var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
@@ -158,7 +159,37 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                break;
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.BUBBLE:
+                var text = BI.i18nText("BI-Horizontal");
+                switch (regionType) {
+                    case BICst.REGION.TARGET1:
+                        text = BI.i18nText("BI-Horizontal");
+                        break;
+                    case BICst.REGION.TARGET2:
+                        text = BI.i18nText("BI-Vertical");
+                        break;
+                    case BICst.REGION.TARGET3:
+                        return;
+                }
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + text + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
                 break;
             default:
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = true;

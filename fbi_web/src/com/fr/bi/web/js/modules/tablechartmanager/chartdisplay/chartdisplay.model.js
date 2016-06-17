@@ -402,6 +402,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 cordon[regionType] = BI.concat(cordon[regionType], items);
             }
         });
+        var type = BI.Utils.getWidgetTypeByID(o.wId);
+        if(type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.BUBBLE){
+            result.push(BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2]);
+            result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
+        }
         result.push(BI.isNull(cordon[BICst.REGION.DIMENSION1]) ? [] : cordon[BICst.REGION.DIMENSION1]);
         result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
         result.push(BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2]);

@@ -111,6 +111,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 newxAxis.position = "bottom";
                 newxAxis.gridLineWidth = 0;
                 newxAxis.type = "category";
+                (typess[0] === BICst.WIDGET.BUBBLE || typess[0] === BICst.WIDGET.SCATTER) && (newxAxis.type = "value");
                 config.xAxis.push(newxAxis);
                 config.yAxis = [];
                 BI.each(o.types, function(idx, type){
@@ -280,26 +281,11 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            return "function(){if(this>0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
         }
 
         function formatNumberLevelInXaxis(type){
-            var magnify = 1;
-            switch (type) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    magnify = 1;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    magnify = 10000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    magnify = 1000000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    magnify = 100000000;
-                    break;
-            }
+            var magnify = calcMagnify(type);
             if(magnify > 1){
                 BI.each(result, function(idx, item){
                     BI.each(item.data, function(id, da){
@@ -310,22 +296,8 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         }
 
         function formatNumberLevelInYaxis(type, position){
-            var magnify = 1;
-            switch (type) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    magnify = 1;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    magnify = 10000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    magnify = 1000000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    magnify = 100000000;
-                    break;
-            }
+
+            var magnify = calcMagnify(type);
             if(magnify > 1){
                 BI.each(result, function(idx, item){
                     BI.each(item.data, function(id, da){
@@ -495,36 +467,70 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             }
             config.zoom.zoomTool.visible = self.show_zoom;
             self.show_zoom === true && delete config.dataSheet;
-            config.plotOptions.connectNulls = self.null_continue;
         }
 
         function formatCordon(){
             BI.each(self.cordon, function(idx, cor){
                 if(idx === 0 && BI.has(config, "xAxis") && config.xAxis.length > 0){
+                    var magnify = calcMagnify(self.x_axis_number_level);
                     config.xAxis[0].plotLines = BI.map(cor, function(i, t){
-                        return BI.extend({
+                        return BI.extend(t, {
+                            value: t.value.div(magnify),
                             width: 1,
                             label: {
                                 "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
                                 "text": t.text,
                                 "align": "top"
                             }
-                        }, t);
+                        });
                     });
                 }
                 if(idx > 0 && BI.has(config, "yAxis") && config.yAxis.length >= idx){
+                    var magnify = 1;
+                    switch (idx - 1) {
+                        case self.constants.LEFT_AXIS:
+                            magnify = calcMagnify(self.left_y_axis_number_level);
+                            break;
+                        case self.constants.RIGHT_AXIS:
+                            magnify = calcMagnify(self.right_y_axis_number_level);
+                            break;
+                        case self.constants.RIGHT_AXIS_SECOND:
+                            magnify = calcMagnify(self.right_y_axis_second_number_level);
+                            break;
+                    }
                     config.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
-                        return BI.extend({
+                        return BI.extend(t, {
+                            value: t.value.div(magnify),
                             width: 1,
                             label: {
                                 "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
                                 "text": t.text,
                                 "align": "left"
                             }
-                        }, t);
+                        });
                     });
                 }
             })
+        }
+
+        function calcMagnify(type){
+            var magnify = 1;
+            switch (type) {
+                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                    magnify = 1;
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                    magnify = 10000;
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                    magnify = 1000000;
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                    magnify = 100000000;
+                    break;
+            }
+            return magnify;
         }
     },
 
