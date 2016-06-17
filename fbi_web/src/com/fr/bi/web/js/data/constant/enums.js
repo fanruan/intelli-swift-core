@@ -171,7 +171,8 @@ BICst.DIMENSION_NUMBER_COMBO = {
     DT_RELATION: 207,
     COPY: 208,
     DELETE: 209,
-    INFO: 210
+    INFO: 210,
+    CORDON: 211
 };
 
 BICst.DIMENSION_DATE_COMBO = {
@@ -200,7 +201,8 @@ BICst.TARGET_COMBO = {
     COPY: 406,
     DELETE: 407,
     INFO: 408,
-    DEPEND_TYPE: 409
+    DEPEND_TYPE: 409,
+    CORDON: 410
 };
 
 //明细表维度下拉选项
@@ -476,4 +478,3 @@ BICst.WIDGET_STATUS = {
     EDIT: 2,
     DETAIL: 3
 };
-

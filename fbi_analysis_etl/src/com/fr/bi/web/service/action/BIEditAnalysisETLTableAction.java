@@ -13,6 +13,8 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/5/13.
@@ -41,7 +43,9 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
 
         for (BusinessTable businessTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()){
             AnalysisCubeTableSource ss = (AnalysisCubeTableSource) businessTable.getTableSource();
-            if (!ComparatorUtils.equals(ss, busiTable.getTableSource()) && ss.getSourceUsedAnalysisETLSource().contains(busiTable.getTableSource())){
+            Set<AnalysisCubeTableSource> sources = new HashSet<AnalysisCubeTableSource>();
+            ss.getSourceUsedAnalysisETLSource(sources);
+            if (!ComparatorUtils.equals(ss, busiTable.getTableSource()) && sources.contains(busiTable.getTableSource())){
                 jo.put("used", true);
             }
         }

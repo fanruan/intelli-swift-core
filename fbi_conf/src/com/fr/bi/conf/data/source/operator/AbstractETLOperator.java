@@ -68,7 +68,7 @@ public abstract class AbstractETLOperator implements IETLOperator {
 
     @Override
     public int writeIndexWithParents(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol) {
-        return writePartIndex(travel, parents, loader, startCol, 0, Integer.MAX_VALUE);
+        return writeSimpleIndex(travel, parents, loader);
     }
 
     @Override

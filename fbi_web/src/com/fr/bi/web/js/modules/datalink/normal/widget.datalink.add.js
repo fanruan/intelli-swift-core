@@ -51,6 +51,9 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
                 var isValid = self.model.checkDataLinkName(v);
                 self._refreshButtonsStatus(isValid);
                 return isValid;
+            },
+            quitChecker: function(){
+                return false;
             }
         });
         this.linkName.on(BI.SignEditor.EVENT_CHANGE, function(){

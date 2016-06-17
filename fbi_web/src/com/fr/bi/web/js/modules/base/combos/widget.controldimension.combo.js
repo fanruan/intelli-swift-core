@@ -18,11 +18,13 @@ BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
         return [
             [{
                 text: BI.i18nText("BI-Remove"),
-                value: BICst.CONTROL_COMBO.DELETE
+                value: BICst.CONTROL_COMBO.DELETE,
+                cls: "delete-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Dimension_From"),
                 value: BICst.CONTROL_COMBO.INFO,
+                cls: "dimension-from-font",
                 disabled: true
             }]
         ]
