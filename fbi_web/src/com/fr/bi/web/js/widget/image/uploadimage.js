@@ -103,12 +103,6 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             type: "bi.absolute",
             element: this.element,
             items: [{
-                el: this.label,
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10
-            }, {
                 el: {
                     type: "bi.absolute",
                     scrollable: false,
@@ -120,6 +114,12 @@ BI.UploadImage = BI.inherit(BI.Widget, {
                 right: 0,
                 top: 0,
                 bottom: 0
+            }, {
+                el: this.label,
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
             }, {
                 el: this.del,
                 right: 4,
