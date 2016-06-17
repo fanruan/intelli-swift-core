@@ -6,7 +6,8 @@
 BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     constants: {
-        CHART_TYPE_POSITION: 1
+        CHART_TYPE_POSITION: 1,
+        CordonPos: 2
     },
 
     defaultItem: function(){
@@ -124,6 +125,69 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
         var items = this.defaultItem();
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
+        var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
+        switch (wType) {
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                items[this.constants.CordonPos][0].cls = "";
+                items[this.constants.CordonPos][0] = {
+                    el: items[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                break;
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                items[this.constants.CordonPos][0].cls = "";
+                items[this.constants.CordonPos][0] = {
+                    el: items[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                items[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                break;
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.BUBBLE:
+                var text = BI.i18nText("BI-Horizontal");
+                switch (regionType) {
+                    case BICst.REGION.TARGET1:
+                        text = BI.i18nText("BI-Horizontal");
+                        break;
+                    case BICst.REGION.TARGET2:
+                        text = BI.i18nText("BI-Vertical");
+                        break;
+                    case BICst.REGION.TARGET3:
+                        return;
+                }
+                items[this.constants.CordonPos][0].cls = "";
+                items[this.constants.CordonPos][0] = {
+                    el: items[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + text + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                break;
+            default:
+                items[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+                break;
+        }
 
         switch (wType) {
             case BICst.WIDGET.COMBINE_CHART:
