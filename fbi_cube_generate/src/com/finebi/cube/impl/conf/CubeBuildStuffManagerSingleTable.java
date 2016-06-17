@@ -7,9 +7,7 @@ import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -126,6 +124,16 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
     @Override
     public Map<CubeTableSource, Long> getVersions() {
         return null;
+    }
+
+    @Override
+    public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
+        return new HashSet<BICubeGenerateRelationPath>();
+    }
+
+    @Override
+    public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
+        return new HashSet<BICubeGenerateRelation>();
     }
 
     public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {

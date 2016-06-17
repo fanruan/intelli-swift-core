@@ -7,7 +7,9 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class created on 2016/3/28.
@@ -68,16 +70,7 @@ public class BITableSourceRelationPathTestTool {
             throw BINonValueUtils.beyondControl(e);
         }
     }
-    public static BITableSourceRelationPath getABPath() {
-        try {
-            BITableSourceRelationPath path = new BITableSourceRelationPath();
-            path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryAB());
-            return path;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw BINonValueUtils.beyondControl(e);
-        }
-    }
+
     public static BITableSourceRelationPath getABCPath() {
         try {
             BITableSourceRelationPath path = new BITableSourceRelationPath();
@@ -89,17 +82,9 @@ public class BITableSourceRelationPathTestTool {
             throw BINonValueUtils.beyondControl(e);
         }
     }
-
-    public static BITableSourceRelationPath getABCDPath() {
-        try {
-            BITableSourceRelationPath path = new BITableSourceRelationPath();
-            path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryAB());
-            path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryBC());
-            path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryCD());
-            return path;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw BINonValueUtils.beyondControl(e);
-        }
+    public static Set<BITableSourceRelationPath> getRelationPathSetABC(){
+        Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
+        pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
+        return pathSet;
     }
 }
