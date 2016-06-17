@@ -72,6 +72,7 @@ public class BISourceDataTransport extends BIProcessor {
             }
             long tableCostTime=System.currentTimeMillis()-t;
             if (null!=tableSource.getPersistentTable()) {
+                System.out.println("table usage:"+ tableCostTime);
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             }
         } catch (Exception e) {
@@ -90,9 +91,6 @@ public class BISourceDataTransport extends BIProcessor {
     }
 
     private void recordTableInfo() {
-        if (tableSource.getSourceID().equals("bd1034cb")) {
-            System.out.println("fine");
-        }
         Set<ICubeFieldSource> columns = getFieldsArray();
         List<ICubeFieldSource> columnList = new ArrayList<ICubeFieldSource>();
         for (ICubeFieldSource col : columns) {

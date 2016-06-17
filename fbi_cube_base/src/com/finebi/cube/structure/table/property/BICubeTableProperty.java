@@ -260,22 +260,24 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     private void initialField() {
-        if (getFieldInfoReader().canRead() && !isFieldInit()) {
-            tableFields = new ArrayList<ICubeFieldSource>();
-            try {
-                int columnSize = Integer.parseInt(getFieldInfoReader().getSpecificValue(0));
-                for (int pos = 1; pos <= columnSize; pos++) {
-                    JSONObject jo = new JSONObject(getFieldInfoReader().getSpecificValue(pos));
-                    BICubeFieldSource field = new BICubeFieldSource(null, null, 0, 0);
-                    field.parseJSON(jo);
-                    tableFields.add(field);
+        if (!isFieldInit()) {
+            if (getFieldInfoReader().canRead()) {
+                tableFields = new ArrayList<ICubeFieldSource>();
+                try {
+                    int columnSize = Integer.parseInt(getFieldInfoReader().getSpecificValue(0));
+                    for (int pos = 1; pos <= columnSize; pos++) {
+                        JSONObject jo = new JSONObject(getFieldInfoReader().getSpecificValue(pos));
+                        BICubeFieldSource field = new BICubeFieldSource(null, null, 0, 0);
+                        field.parseJSON(jo);
+                        tableFields.add(field);
+                    }
+                } catch (BIResourceInvalidException e) {
+                    BILogger.getLogger().error(e.getMessage(), e);
+                    BINonValueUtils.beyondControl(e.getMessage(), e);
+                } catch (Exception e) {
+                    BILogger.getLogger().error(e.getMessage(), e);
+                    BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
-            } catch (BIResourceInvalidException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-                BINonValueUtils.beyondControl(e.getMessage(), e);
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-                BINonValueUtils.beyondControl(e.getMessage(), e);
             }
         }
     }

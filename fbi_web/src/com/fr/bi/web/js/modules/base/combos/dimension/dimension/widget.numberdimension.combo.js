@@ -113,7 +113,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),
                 value: BICst.DIMENSION_NUMBER_COMBO.FILTER,
-                cls: ""
+                cls: "filter-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Math_Relationships"),
@@ -123,17 +123,17 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             [{
                 text: BI.i18nText("BI-Copy"),
                 value: BICst.DIMENSION_NUMBER_COMBO.COPY,
-                cls: ""
+                cls: "copy-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.DIMENSION_NUMBER_COMBO.DELETE,
-                cls: ""
+                cls: "delete-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Dimension_From"),
                 value: BICst.DIMENSION_NUMBER_COMBO.INFO,
-                cls: "",
+                cls: "dimension-from-font",
                 disabled: true
             }]
         ]
