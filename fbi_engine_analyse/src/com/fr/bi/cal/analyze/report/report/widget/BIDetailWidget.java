@@ -13,6 +13,7 @@ import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -37,6 +38,8 @@ public class BIDetailWidget extends BIAbstractWidget {
     private BIDetailSetting data;
     @BICoreField
     private BIDetailTarget[] dimensions = new BIDetailTarget[0];
+    @BIIgnoreField
+    private transient BIDetailTarget[] usedDimensions;
     @BICoreField
     private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
     @BICoreField
@@ -62,6 +65,10 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     @Override
     public BIDetailTarget[] getViewDimensions() {
+        if(usedDimensions != null) {
+            return usedDimensions;
+        }
+        BIDetailTarget[] dims = getDimensions();
         if (data != null) {
             String[] array = data.getView();
             List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
@@ -72,9 +79,10 @@ public class BIDetailWidget extends BIAbstractWidget {
                 }
 
             }
-            return usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
+            dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
         }
-        return dimensions;
+        usedDimensions = dims;
+        return dims;
     }
 
     @Override

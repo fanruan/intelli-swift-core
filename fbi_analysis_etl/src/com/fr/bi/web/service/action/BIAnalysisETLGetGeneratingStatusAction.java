@@ -34,7 +34,7 @@ public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLA
                     generated ++;
                 }
             }
-            percent = generated == sources.size()? 1 : 0.1 + 0.9 * generated / sources.size();
+            percent = generated == sources.size()? 1 : (0.1 + 0.9 * generated / sources.size());
         } catch (BITableAbsentException e){
             percent = 0.1;
         }
