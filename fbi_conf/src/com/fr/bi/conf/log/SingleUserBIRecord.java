@@ -1,7 +1,7 @@
 package com.fr.bi.conf.log;
 
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -9,7 +9,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +27,7 @@ public class SingleUserBIRecord implements BIRecord {
     private Date confVersion;
     private long userId;
     private Set<CubeTableSource> cubeTableSourceSet;
-    private Set<BITableSourceRelation> biTableSourceRelationSet;
+    private Set<BITableSourceRelationPath> biTableSourceRelationPathSet;
 
     SingleUserBIRecord(long userId) {
         this.userId = userId;
@@ -48,7 +47,7 @@ public class SingleUserBIRecord implements BIRecord {
         index_start = null;
         loop_error.clear();
         cubeTableSourceSet=new HashSet<CubeTableSource>();
-        biTableSourceRelationSet=new HashSet<BITableSourceRelation>();
+        biTableSourceRelationPathSet =new HashSet<BITableSourceRelationPath>();
     }
 
     /**
@@ -259,11 +258,11 @@ public class SingleUserBIRecord implements BIRecord {
     /**
      * 获取所有需要更新的relation信息
      *
-     * @param biTableSourceRelationHashSet
+     * @param biTableSourceRelationSet
      */
     @Override
-    public void reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet) {
-        this.biTableSourceRelationSet=biTableSourceRelationHashSet;
+    public void reLationSet(Set<BITableSourceRelationPath> biTableSourceRelationSet) {
+        this.biTableSourceRelationPathSet =biTableSourceRelationSet;
     }
 
     /**
@@ -394,7 +393,7 @@ public class SingleUserBIRecord implements BIRecord {
                 tableInfo.put(cubeTableSource.getTableName(), cubeTableSource.getSelfFields(tableSourceSet).size());
             }
         }
-        res.put("allRelationInfo",this.biTableSourceRelationSet);
+        res.put("allRelationInfo",this.biTableSourceRelationPathSet);
         res.put("allTableInfo",tableInfo);
         dealWithLoopValue(loop);
         List<BITableLog> output = new ArrayList<BITableLog>();

@@ -1,5 +1,6 @@
 package com.fr.bi.conf.log;
 
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -131,8 +132,9 @@ public interface BIRecord extends JSONCreator {
 
     /**
      * 获取所有需要更新的relation信息
+     * @param biTableSourceRelationHashSet
      */
-    void reLationSet(Set<BITableSourceRelation> biTableSourceRelationHashSet);
+    void reLationSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet);
 
     /**
      * 获取所有需要更新的tableSource信息
