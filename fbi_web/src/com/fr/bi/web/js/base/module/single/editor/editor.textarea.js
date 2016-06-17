@@ -29,10 +29,10 @@ BI.TextAreaEditor = BI.inherit(BI.Single, {
                     type: "bi.adaptive",
                     items: [this.content]
                 },
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10
+                left: 0,
+                right: 3,
+                top: 0,
+                bottom: 3
             }]
         });
 
