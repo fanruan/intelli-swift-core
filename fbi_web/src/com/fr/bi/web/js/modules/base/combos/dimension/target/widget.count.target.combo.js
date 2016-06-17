@@ -185,7 +185,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 };
                 break;
             default:
-                items[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+                items[this.constants.CHART_TYPE_POSITION][0].disabled = true;
                 break;
         }
 
