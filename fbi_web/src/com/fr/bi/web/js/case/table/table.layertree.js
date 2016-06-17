@@ -281,10 +281,10 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
                 value = this._formatColumns(value);
                 break;
             case "freezeCols":
-                value = this._formatCols(value);
+                value = [0];
                 break;
             case "mergeCols":
-                value = [];
+                value = [0];
                 break;
         }
         this.table.attr.apply(this.table, [key, value]);

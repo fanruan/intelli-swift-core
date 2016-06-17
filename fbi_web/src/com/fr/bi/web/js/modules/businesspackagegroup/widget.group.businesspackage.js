@@ -127,6 +127,7 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
             self.copy2group.populate(groupItems);
             self.copy2group.setValue(groupName);
             self._scrollToBottom();
+            this.scrollToBottom();
         });
 
         this.copy2group.on(BI.Copy2GroupCombo.EVENT_BEFORE_POPUPVIEW, function () {
