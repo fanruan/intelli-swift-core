@@ -309,6 +309,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
                 self.copy2group.populate(groupItems);
                 self.copy2group.setValue(groupName);
                 self._scrollToBottom();
+                this.scrollToBottom();
             } else if (otherDuplicate === true) {
                 BI.Msg.alert(BI.i18nText("BI-Failure_Toast"), "\"" + duplicatedName + "\"" + BI.i18nText("BI-Failute_Fieldname_Othername_Duplicate"));
             }
