@@ -32,7 +32,7 @@ public class BICubeGenerateTool {
     public static Set<BIBusinessTable> getTables4CubeGenerate(long userId) {
         Set<BIBusinessTable> sources = new HashSet<BIBusinessTable>();
         for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
-            if(tableExisted(businessTable.getTableSource(),userId)) {
+            if(!tableExisted(businessTable.getTableSource(),userId)) {
                 sources.add((BIBusinessTable) businessTable);
             }
         }

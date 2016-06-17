@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * Created by wuk on 16/5/30.
  */
-public class BusinessTable4CubeGenerate {
+public class CubeTaskGenerate {
 
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
