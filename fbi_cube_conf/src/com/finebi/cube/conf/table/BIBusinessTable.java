@@ -178,7 +178,7 @@ public class BIBusinessTable implements BusinessTable {
         jo.put("field_type", DBConstant.COLUMN.COUNTER);
         jo.put("field_name", BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
         jo.put("table_id", getID().getIdentity());
-        jo.put("is_usable", false);
+        jo.put("is_usable", true);
         //记录数的id先暂时用拼接
         jo.put("id", jo.optString("table_id") + BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
         return jo;

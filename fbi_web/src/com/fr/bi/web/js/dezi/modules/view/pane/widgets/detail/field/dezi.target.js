@@ -148,22 +148,35 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             switch (v) {
                 case BICst.TARGET_COMBO.DEPEND_TYPE:
                     self.model.set("_src", {
-                        field_id: s
-                    });
+                            field_id: s,
+                            table_id: BI.Utils.getTableIdByFieldID(s)
+                        }
+                    )
+                    ;
                     break;
-                case BICst.TARGET_COMBO.CHART_TYPE:
+                case
+                BICst.TARGET_COMBO.CHART_TYPE
+                :
                     self.model.set("style_of_chart", {type: s});
                     break;
-                case BICst.TARGET_COMBO.STYLE_SETTING:
+                case
+                BICst.TARGET_COMBO.STYLE_SETTING
+                :
                     self._buildStyleSettingPane();
                     break;
-                case BICst.TARGET_COMBO.FILTER:
+                case
+                BICst.TARGET_COMBO.FILTER
+                :
                     self._buildFilterPane();
                     break;
-                case BICst.TARGET_COMBO.COPY:
+                case
+                BICst.TARGET_COMBO.COPY
+                :
                     self._copyTarget();
                     break;
-                case BICst.TARGET_COMBO.DELETE:
+                case
+                BICst.TARGET_COMBO.DELETE
+                :
                     self._deleteTarget();
                     break;
             }
