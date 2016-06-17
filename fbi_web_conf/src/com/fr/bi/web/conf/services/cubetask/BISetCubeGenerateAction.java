@@ -32,11 +32,11 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         CubeBuildStuff cubeBuildStuff;
         if (StringUtils.isEmpty(tableId)){
              cubeBuildStuff= new CubeBuildStuffManager(new BIUser(userId));
-            CubeTaskGenerate.CubeBuild(userId, cubeBuildStuff);
-//            CubeTaskGenerate.CubeBuild(userId);
+//            BusinessTable4CubeGenerate.CubeBuild(userId, cubeBuildStuff);
+            BusinessTable4CubeGenerate.CubeBuild(userId);
         }else{
              cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
-            CubeTaskGenerate.CubeBuild(userId, cubeBuildStuff);
+            BusinessTable4CubeGenerate.CubeBuild(userId, cubeBuildStuff);
         }
     }
 
