@@ -45,6 +45,9 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
                 return BI.i18nText("BI-Year_Trigger_Invalid_Text");
             }
         });
+        this.editor.on(BI.SignEditor.EVENT_KEY_DOWN, function(){
+            self.fireEvent(BI.DateTrigger.EVENT_KEY_DOWN)
+        });
         this.editor.on(BI.SignEditor.EVENT_FOCUS, function () {
             self.fireEvent(BI.DateTrigger.EVENT_FOCUS);
         });
@@ -135,6 +138,7 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
             }
         }
     },
+
     setValue: function (v) {
         var type, value, self = this;
         var date = new Date();
@@ -334,4 +338,5 @@ BI.DateTrigger.EVENT_CHANGE = "EVENT_CHANGE";
 BI.DateTrigger.EVENT_VALID = "EVENT_VALID";
 BI.DateTrigger.EVENT_ERROR = "EVENT_ERROR";
 BI.DateTrigger.EVENT_TRIGGER_CLICK = "EVENT_TRIGGER_CLICK";
+BI.DateTrigger.EVENT_KEY_DOWN = "EVENT_KEY_DOWN";
 $.shortcut("bi.date_trigger", BI.DateTrigger);
