@@ -26,6 +26,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
 
         this.renameButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self.packageNameEditor.focus();
+            self.packageNameEditor.element.addClass("editor-border");
         });
 
         this.deleteButton = BI.createWidget({
@@ -60,6 +61,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
 
         this.packageNameEditor = BI.createWidget({
             type: "bi.shelter_editor",
+            height:25,
             value: o.text,
             textAlign: "center",
             validationChecker: function (value) {
@@ -74,6 +76,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
         });
 
         this.packageNameEditor.on(BI.ShelterEditor.EVENT_CONFIRM, function () {
+            self.packageNameEditor.element.removeClass("editor-border");
             var value = self.packageNameEditor.getValue();
             var id = self.attr("value");
             self.fireEvent(BI.BusinessPackageButton.EVENT_EDITOR_CONFIRM, value, id);
