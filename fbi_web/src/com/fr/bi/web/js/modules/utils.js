@@ -2078,9 +2078,6 @@
             }
         }
         if (filterType === BICst.FILTER_DATE.EARLY_THAN) {
-            if (!BI.Utils.isWidgetExistByID(filterValue.wId)) {
-                return;
-            }
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
@@ -2088,9 +2085,6 @@
             }
         }
         if (filterType === BICst.FILTER_DATE.LATER_THAN) {
-            if (!BI.Utils.isWidgetExistByID(filterValue.wId)) {
-                return;
-            }
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
@@ -2099,10 +2093,11 @@
         }
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
             if(BI.isNull(filterValue)){
-                return;
+                filterValue = {};
+            }else{
+                filterValue.values = parseComplexDate(filterValue);
+                filterValue.type = BICst.GROUP.YMD;
             }
-            filterValue.values = parseComplexDate(filterValue);
-            filterValue.type = BICst.GROUP.YMD;
         }
         return filter;
         //日期偏移值
@@ -2156,6 +2151,9 @@
 
         //获取日期控件的值
         function getDateControlValue(wid) {
+            if (!BI.Utils.isWidgetExistByID(wid)) {
+                return null;
+            }
             var widgetType = BI.Utils.getWidgetTypeByID(wid);
             var wValue = BI.Utils.getWidgetValueByID(wid);
             var date = null;
