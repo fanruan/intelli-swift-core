@@ -42,13 +42,15 @@ BarChartsView = BI.inherit(BI.View, {
                     {"y": 19485000, "x": 29, "z": 19485000},
                     {"y": 24779420, "x": 285, "z": 24779420},
                     {"y": 11665800, "x": 35, "z": 11665800}],
-                name: "长期协议"
+                name: "长期协议",
+                stack: "123"
             }, {
                 data: [
-                    {"y": 19485000, "x": 45, "z": 19485000},
-                    {"y": 24779420, "x": 260, "z": 24779420},
-                    {"y": 11665800, "x": 20, "z": 11665800}],
-                name: "购买合同"
+                    {"y": 19485000, "x": -45, "z": 19485000},
+                    {"y": 24779420, "x": -260, "z": 24779420},
+                    {"y": 11665800, "x": -20, "z": 11665800}],
+                name: "购买合同",
+                stack: "123"
             }]];
         var items2 = [[
             {
@@ -105,14 +107,14 @@ BarChartsView = BI.inherit(BI.View, {
         c1.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
         c1.populate(items1);
         //堆积条形
-        c2.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
-        c2.populate(stackedItems);
-        c3.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
-        c3.populate(items);
+        //c2.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
+        //c2.populate(stackedItems);
+        //c3.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
+        //c3.populate(items);
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [c1, c2, c3]
+            items: [c1]
         });
     }
 });

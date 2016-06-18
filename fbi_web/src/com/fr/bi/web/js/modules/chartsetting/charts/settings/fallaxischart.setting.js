@@ -213,6 +213,9 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataTable.on(BI.Controller.EVENT_CHANGE, function(){
+            if(this.isSelected()){
+                self.showZoom.setSelected(false);
+            }
             self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
@@ -235,6 +238,9 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showZoom.on(BI.Controller.EVENT_CHANGE, function(){
+            if(this.isSelected()){
+                self.showDataTable.setSelected(false);
+            }
             self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
@@ -251,11 +257,6 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Legend_Normal"),
-                    lgap: this.constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
                     type: "bi.center_adapt",
                     items: [this.showDataLabel]
                 }, {
@@ -450,7 +451,8 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
             show_data_label: this.showDataLabel.isSelected(),
             show_data_table: this.showDataTable.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
-            show_zoom: this.showZoom.isSelected()
+            show_zoom: this.showZoom.isSelected(),
+            chart_legend: BICst.CHART_LEGENDS.NOT_SHOW
         }
     },
 
