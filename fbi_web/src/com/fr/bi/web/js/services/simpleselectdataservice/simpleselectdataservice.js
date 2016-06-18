@@ -87,8 +87,8 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                     searchResult.push(BI.extend({
                         id: finded.pId,
                         wId: o.wId,
-                        text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
-                        title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
+                        text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
+                        title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                         value: finded.pId,
                         type: "bi.simple_select_data_level0_node"
                     }, field2TableMap[finded.id || finded.value], {
@@ -122,8 +122,8 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
             tablesStructure.push(BI.extend({
                 id: table.id,
                 type: "bi.simple_select_data_level0_node",
-                text: BI.Utils.getTableNameByID(table.id),
-                title: BI.Utils.getTableNameByID(table.id),
+                text: BI.Utils.getTableNameByID(table.id) || "",
+                title: BI.Utils.getTableNameByID(table.id) || "",
                 value: table.id,
                 isParent: true,
                 open: false
@@ -149,8 +149,8 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         fields = result.matched.concat(result.finded);
         BI.each(fields, function (i, field) {
             var fid = field.id;
-            var fieldName = BI.Utils.getFieldNameByID(fid);
-            var title = BI.Utils.getTableNameByID(tableId) + "." + fieldName;
+            var fieldName = BI.Utils.getFieldNameByID(fid) || "";
+            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             fieldStructure.push(BI.extend({
                 id: fid,
                 pId: tableId,
@@ -170,8 +170,8 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         var fields = o.fieldsCreator(tableId);
         BI.each(fields, function (i, field) {
             var fid = field.id;
-            var fieldName = BI.Utils.getFieldNameByID(fid);
-            var title = BI.Utils.getTableNameByID(tableId) + "." + fieldName;
+            var fieldName = BI.Utils.getFieldNameByID(fid) || "";
+            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             fieldStructure.push(BI.extend({
                 id: fid,
                 pId: tableId,
