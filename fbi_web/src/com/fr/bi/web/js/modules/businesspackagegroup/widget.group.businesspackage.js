@@ -160,6 +160,10 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
             self._checkChosenNum();
         });
 
+        this.groupPane.on(BI.BusinessUngroupAndGroupPane.EVENT_CLICK_DELETE,function(){
+            self._checkChosenNum();
+        })
+
 
     },
 
@@ -212,12 +216,13 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
         self.chosenLabel.doRedMark(self.chosenLabel.getValue());
         if (chosenNum > 0) {
             self.move2group.setEnable(true);
+            self.move2group.setTitle("");
             var ungroupedMap = self.groupPane.getUnGroupedSelectedFieldMap();
             if (BI.size(ungroupedMap) > 0) {
                 self.copy2group.setEnable(false);
-                self.copy2group.setTitle(BI.i18nText("BI-Ungrouped_Can_Move"));
+                self.copy2group.setTitle(BI.i18nText("BI-Ungrouped_Package_Can_Move"));
                 self.removeFieldButton.setEnable(false);
-                self.removeFieldButton.setTitle(BI.i18nText("BI-Ungrouped_Can_Move"));
+                self.removeFieldButton.setTitle(BI.i18nText("BI-Ungrouped_Package_Can_Not_Move_Out"));
             } else {
                 self.copy2group.setEnable(true);
                 self.copy2group.setTitle("");
@@ -226,10 +231,11 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
             }
         } else {
             self.move2group.setEnable(false);
+            self.move2group.setTitle(BI.i18nText("BI-Please_Select_Package"));
             self.copy2group.setEnable(false);
-            self.copy2group.setTitle("");
+            self.copy2group.setTitle(BI.i18nText("BI-Please_Select_Package"));
             self.removeFieldButton.setEnable(false);
-            self.copy2group.setTitle("");
+            self.removeFieldButton.setTitle(BI.i18nText("BI-Please_Select_Package"));
         }
 
 
