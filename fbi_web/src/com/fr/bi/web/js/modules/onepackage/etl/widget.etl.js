@@ -562,7 +562,8 @@ BI.ETL = BI.inherit(BI.Widget, {
         var excelUpload = BI.createWidget({
             type: "bi.excel_upload",
             element: BI.Layers.create(this.constants.EXCEL_LAYER),
-            full_file_name: this.model.getTableById(tId).full_file_name
+            full_file_name: this.model.getTableById(tId).full_file_name,
+            is_modify: true
         });
         BI.Layers.show(this.constants.EXCEL_LAYER);
         excelUpload.on(BI.ExcelUpload.EVENT_CANCEL, function () {
