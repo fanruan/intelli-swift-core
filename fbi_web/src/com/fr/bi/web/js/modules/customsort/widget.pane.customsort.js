@@ -112,7 +112,6 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
         var result = {};
         result.type = BICst.SORT.CUSTOM;
         result.details = this.loader.element.sortable("toArray", {attribute: "itemvalue"});
-        result.sort_target = o.dId;
         return result;
     }
 });

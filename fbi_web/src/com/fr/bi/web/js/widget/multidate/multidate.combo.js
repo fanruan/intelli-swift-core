@@ -61,16 +61,20 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                 min: this.constants.DATE_MIN_VALUE,
                 max: this.constants.DATE_MAX_VALUE
             });
+            this.trigger.on(BI.DateTrigger.EVENT_KEY_DOWN, function(){
+                if(self.combo.isViewVisible()){
+                    self.combo.hideView();
+                }
+            });
             this.trigger.on(BI.DateTrigger.EVENT_TRIGGER_CLICK, function(){
                 self.combo.toggle();
             });
             this.trigger.on(BI.DateTrigger.EVENT_FOCUS, function () {
                 self.storeTriggerValue = self.trigger.getKey();
+                if(!self.combo.isViewVisible()){
+                    self.combo.showView();
+                }
                 self.fireEvent(BI.MultiDateCombo.EVENT_FOCUS);
-            });
-            this.trigger.on(BI.DateTrigger.EVENT_CHANGE, function () {
-                self.combo.isViewVisible() && self.combo.hideView();
-                self.fireEvent(BI.MultiDateCombo.EVENT_CHANGE);
             });
             this.trigger.on(BI.DateTrigger.EVENT_ERROR, function () {
                 self.fireEvent(BI.MultiDateCombo.EVENT_ERROR);
@@ -78,10 +82,7 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
             this.trigger.on(BI.DateTrigger.EVENT_VALID, function () {
                 self.fireEvent(BI.MultiDateCombo.EVENT_VALID);
             });
-            this.trigger.on(BI.DateTrigger.EVENT_START, function () {
-                self.combo.hideView();
-            });
-            this.trigger.on(BI.DateTrigger.EVENT_CHANGE, function () {
+            this.trigger.on(BI.DateTrigger.EVENT_CONFIRM, function () {
                 var dateStore = self.storeTriggerValue;
                 var dateObj = self.trigger.getKey();
                 if (BI.isNotEmptyString(dateObj) && !BI.isEqual(dateObj, dateStore)) {
