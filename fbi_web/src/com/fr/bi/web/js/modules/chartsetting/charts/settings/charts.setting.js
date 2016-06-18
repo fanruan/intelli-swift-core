@@ -413,6 +413,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         var lYAxis = BI.createWidget({
             type: "bi.horizontal_adapt",
             cls: "single-line-settings",
+            columnSize: [80],
             verticalAlign: "top",
             lgap: this.constant.SIMPLE_H_GAP,
             items: [{
