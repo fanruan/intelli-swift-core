@@ -46,7 +46,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
         try {
             setSources();
             setResourcesAndDepends();
-            setRealationAndPath();
+            setRelationAndPath();
             calculateRelationDepends();
         } catch (BITableAbsentException e) {
             BILogger.getLogger().error(e.getMessage());
@@ -75,7 +75,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     private void calculateRelationDepends() {
         CalculateDependTool cal = new CalculateDependManager();
-        cal.setOriginal(this.sources);
+        cal.setOriginal(this.getAllSingleSources());
         cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
             this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation));
@@ -104,7 +104,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
         this.allSingleSources = set2Set(depends);
     }
 
-    private void setRealationAndPath() {
+    private void setRelationAndPath() {
         try {
             Set<BITableRelationPath> allTablePath = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
             for (BITableRelationPath biTableRelationPath : allTablePath) {
@@ -116,7 +116,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
                 }
             }
             for (BITableRelation biTableRelation : this.tableRelationSet) {
-                BITableSourceRelation biTableSourceRelation = convetTableRealtionToTableSourceRealtion(biTableRelation);
+                BITableSourceRelation biTableSourceRelation = convertTableRelationToTableSourceRelation(biTableRelation);
                 biTableSourceRelationSet.add(biTableSourceRelation);
             }
 
@@ -151,20 +151,18 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
         return depends;
     }
 
-    private BITableSourceRelation convetTableRealtionToTableSourceRealtion(BITableRelation biTableRelation) {
-        CubeTableSource primaryTable = null;
-        CubeTableSource foreignTable = null;
+    private BITableSourceRelation convertTableRelationToTableSourceRelation(BITableRelation biTableRelation) {
+        CubeTableSource primaryTable = biTableRelation.getPrimaryTable().getTableSource();
+        CubeTableSource foreignTable = biTableRelation.getForeignTable().getTableSource();
         ICubeFieldSource primaryField = null;
         ICubeFieldSource foreignField = null;
-        primaryTable = biTableRelation.getPrimaryTable().getTableSource();
-        foreignTable = biTableRelation.getForeignTable().getTableSource();
-        for (ICubeFieldSource iCubeFieldSource : primaryTable.getSelfFields(allSingleSources)) {
+        for (ICubeFieldSource iCubeFieldSource : primaryTable.getSelfFields(sources)) {
             if (iCubeFieldSource.getFieldName().equals(biTableRelation.getPrimaryField().getFieldName())) {
                 primaryField = iCubeFieldSource;
                 break;
             }
         }
-        for (ICubeFieldSource iCubeFieldSource : foreignTable.getSelfFields(allSingleSources)) {
+        for (ICubeFieldSource iCubeFieldSource : foreignTable.getSelfFields(sources)) {
             if (iCubeFieldSource.getFieldName().equals(biTableRelation.getForeignField().getFieldName())) {
                 foreignField = iCubeFieldSource;
                 break;
@@ -183,7 +181,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
     private BITableSourceRelationPath convertBITableRelationPathToBITableSourceRelationPath(BITableRelationPath path) throws BITablePathConfusionException {
         BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
         for (BITableRelation biTableRelation : path.getAllRelations()) {
-            BITableSourceRelation biTableSourceRelation = convetTableRealtionToTableSourceRealtion(biTableRelation);
+            BITableSourceRelation biTableSourceRelation = convertTableRelationToTableSourceRelation(biTableRelation);
             tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
         }
         return tableSourceRelationPath;
