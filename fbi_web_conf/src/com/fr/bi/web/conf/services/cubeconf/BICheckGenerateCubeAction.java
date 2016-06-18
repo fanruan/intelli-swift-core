@@ -7,6 +7,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.bi.web.conf.services.cubetask.utils.BICubeGenerateTool;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by sheldon on 14-9-13.
- * 检测是否已经生成cube
+ * 检测是否已经生成cubBIPackageTableSourceConfigManagere
  */
 public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
     @Override
@@ -25,9 +26,14 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
         JSONObject jo = new JSONObject();
-        ICubeDataLoader dataLoader = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId));
-        ICubeTableService tableService = dataLoader.getTableIndex(source);
-        jo.put("isGenerated", tableService.isDataAvailable());
+        boolean tableExisted = BICubeGenerateTool.tableExisted(source, userId);
+        if (tableExisted) {
+            ICubeDataLoader dataLoader = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId));
+            ICubeTableService tableService = dataLoader.getTableIndex(source);
+            jo.put("isGenerated", tableService.isDataAvailable());
+        } else {
+            jo.put("isGenerated", false);
+        }
         WebUtils.printAsJSON(res, jo);
     }
 
