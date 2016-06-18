@@ -3294,6 +3294,15 @@
   content: "\e605";
   color: #e85050;
 }
+.delete-h-font-package .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
+.delete-h-font-package.native .b-font:before,
+.delete-h-font-package.disabled .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
 .rename-font-package .b-font:before {
   content: "\e687";
   color: #009de3;
