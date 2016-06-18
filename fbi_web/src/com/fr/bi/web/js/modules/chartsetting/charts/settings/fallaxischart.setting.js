@@ -213,6 +213,9 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataTable.on(BI.Controller.EVENT_CHANGE, function(){
+            if(this.isSelected()){
+                self.showZoom.setSelected(false);
+            }
             self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
@@ -235,6 +238,9 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showZoom.on(BI.Controller.EVENT_CHANGE, function(){
+            if(this.isSelected()){
+                self.showDataTable.setSelected(false);
+            }
             self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 

@@ -61,27 +61,28 @@ BI.MultiDateParamCombo = BI.inherit(BI.Single, {
             min: this.constants.DATE_MIN_VALUE,
             max: this.constants.DATE_MAX_VALUE
         });
-        this.trigger.on(BI.DateTrigger.EVENT_TRIGGER_CLICK, function () {
+        this.trigger.on(BI.MultiDateParamTrigger.EVENT_TRIGGER_CLICK, function () {
             self.combo.toggle();
         });
-        this.trigger.on(BI.DateTrigger.EVENT_FOCUS, function () {
+        this.trigger.on(BI.MultiDateParamTrigger.EVENT_KEY_DOWN, function(){
+            if(self.combo.isViewVisible()){
+                self.combo.hideView();
+            }
+        });
+        this.trigger.on(BI.MultiDateParamTrigger.EVENT_FOCUS, function () {
             self.storeTriggerValue = self.trigger.getKey();
+            if(!self.combo.isViewVisible()){
+                self.combo.showView();
+            }
             self.fireEvent(BI.MultiDateParamCombo.EVENT_FOCUS);
         });
-        this.trigger.on(BI.DateTrigger.EVENT_CHANGE, function () {
-            self.combo.isViewVisible() && self.combo.hideView();
-            self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);
-        });
-        this.trigger.on(BI.DateTrigger.EVENT_ERROR, function () {
+        this.trigger.on(BI.MultiDateParamTrigger.EVENT_ERROR, function () {
             self.fireEvent(BI.MultiDateParamCombo.EVENT_ERROR);
         });
-        this.trigger.on(BI.DateTrigger.EVENT_VALID, function () {
+        this.trigger.on(BI.MultiDateParamTrigger.EVENT_VALID, function () {
             self.fireEvent(BI.MultiDateParamCombo.EVENT_VALID);
         });
-        this.trigger.on(BI.DateTrigger.EVENT_START, function () {
-            self.combo.hideView();
-        });
-        this.trigger.on(BI.DateTrigger.EVENT_CONFIRM, function () {
+        this.trigger.on(BI.MultiDateParamTrigger.EVENT_CONFIRM, function () {
             var dateStore = self.storeTriggerValue;
             var dateObj = self.trigger.getKey();
             if (BI.isNotEmptyString(dateObj) && !BI.isEqual(dateObj, dateStore)) {
@@ -101,12 +102,12 @@ BI.MultiDateParamCombo = BI.inherit(BI.Single, {
             min: this.constants.DATE_MIN_VALUE,
             max: this.constants.DATE_MAX_VALUE
         });
-        this.popup.on(BI.MultiDatePopup.BUTTON_CLEAR_EVENT_CHANGE, function () {
+        this.popup.on(BI.MultiDateParamPopup.BUTTON_CLEAR_EVENT_CHANGE, function () {
             self.setValue();
             self.combo.hideView();
             self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);
         });
-        this.popup.on(BI.MultiDatePopup.BUTTON_lABEL_EVENT_CHANGE, function () {
+        this.popup.on(BI.MultiDateParamPopup.BUTTON_lABEL_EVENT_CHANGE, function () {
             var date = new Date();
             self.setValue({
                 year: date.getFullYear(),
@@ -116,12 +117,12 @@ BI.MultiDateParamCombo = BI.inherit(BI.Single, {
             self.combo.hideView();
             self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);
         });
-        this.popup.on(BI.MultiDatePopup.BUTTON_OK_EVENT_CHANGE, function () {
+        this.popup.on(BI.MultiDateParamPopup.BUTTON_OK_EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.combo.hideView();
             self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);
         });
-        this.popup.on(BI.MultiDatePopup.CALENDAR_EVENT_CHANGE, function () {
+        this.popup.on(BI.MultiDateParamPopup.CALENDAR_EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.combo.hideView();
             self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);

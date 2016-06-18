@@ -220,16 +220,17 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 config.yAxis[2].title.rotation = self.constants.ROTATION;
             }
             if(BI.has(config, "xAxis") && config.xAxis.length > 0){
-                if(config.chartType === "bar"){
+                if(config.chartType === "bar" || config.chartType === "bubble" || config.chartType === "scatter"){
                     config.yAxis[0].labelRotation = self.text_direction;
                     config.xAxis[0].formatter = formatTickInXYaxis(self.x_axis_style, self.constants.X_AXIS);
                     formatNumberLevelInXaxis(self.x_axis_number_level);
-                    config.xAxis[0].title.text = self.x_axis_title + getXYAxisUnit(self.x_axis_number_level, self.constants.X_AXIS);
+                    config.xAxis[0].title.text = getXYAxisUnit(self.x_axis_number_level, self.constants.X_AXIS);
+                    config.xAxis[0].title.text = self.show_x_axis_title === true ? self.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
                 }else{
                     config.xAxis[0].title.text = self.x_axis_title;
                     config.xAxis[0].labelRotation = self.text_direction;
+                    config.xAxis[0].title.text = self.show_x_axis_title === true ? config.xAxis[0].title.text : "";
                 }
-                config.xAxis[0].title.text = self.show_x_axis_title === true ? config.xAxis[0].title.text : "";
                 config.xAxis[0].title.align = "center";
                 config.xAxis[0].gridLineWidth = self.show_grid_line === true ? 1 : 0;
             }
@@ -309,7 +310,6 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         }
 
         function formatNumberLevelInYaxis(type, position){
-
             var magnify = calcMagnify(type);
             if(magnify > 1){
                 BI.each(result, function(idx, item){
@@ -325,6 +325,9 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                         }
                     })
                 })
+            }
+            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }
         }
 

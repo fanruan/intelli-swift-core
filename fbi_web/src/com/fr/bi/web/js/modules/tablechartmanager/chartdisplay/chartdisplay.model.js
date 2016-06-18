@@ -417,14 +417,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForCompareBar: function(data){
         var items = this._formatDataForBar(data);
         var result = [];
-        BI.each(items, function(idx, item){
-           BI.each(item, function(id, it){
-               BI.each(it.data, function(i, t){
-                   if(idx === 0){
-                       t.x = -t.x;
-                   }
-               });
-           })
+        var i = BI.UUID();
+        BI.each(items, function (idx, item) {
+            BI.each(item, function (id, it) {
+                BI.each(it.data, function (i, t) {
+                    if (idx === 0) {
+                        t.x = -t.x;
+                    }
+                });
+                it.stack = i;
+            })
         });
         BI.each(items, function(idx, item){
             result = BI.concat(result, item);
