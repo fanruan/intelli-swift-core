@@ -64,6 +64,14 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
 
         //没有表的
         if(BI.isEmptyArray(items)) {
+            this.wrapper.addItem({
+                el: {
+                    type: "bi.label",
+                    height: 50,
+                    text: BI.i18nText("BI-No_Usable_Table"),
+                    cls: "no-usable-table-comment"
+                }
+            });
             return;
         }
 
