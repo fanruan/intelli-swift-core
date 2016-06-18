@@ -7,3 +7,18 @@
 .bi-business-package.active {
   background-color: #eefbff;
 }
+.bi-business-package.hover {
+  background-color: #f4f4f4;
+}
+.bi-business-package .delete-font-style {
+  font-size: 16px;
+  border: 1px solid #eaeaea;
+  background-color: #ffffff;
+  border-radius: 2px;
+}
+.bi-business-package .rename-font-style {
+  font-size: 16px;
+  border: 1px solid #eaeaea;
+  background-color: #ffffff;
+  border-radius: 2px;
+}

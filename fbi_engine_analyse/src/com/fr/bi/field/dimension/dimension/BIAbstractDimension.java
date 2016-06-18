@@ -86,8 +86,6 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         super.parseJSON(jo, userId);
         if (jo.has("sort")) {
             JSONObject sortJo = jo.optJSONObject("sort");
-            //汇总表中过滤全是string类型
-//            sortJo.put("dimension_type", BIReportConstant.TARGET_TYPE.STRING);
             sortJo.put("dimension_type", jo.optInt("type"));
             this.sort = BISortFactory.parseSort(sortJo);
             JSONObject s = jo.getJSONObject("sort");

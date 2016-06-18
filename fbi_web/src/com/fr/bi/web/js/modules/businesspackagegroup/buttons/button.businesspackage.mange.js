@@ -16,7 +16,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
         BI.BusinessPackageButton.superclass._init.apply(this, arguments);
         this.renameButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "rename-font",
+            cls: "rename-font-package rename-font-style",
             title: BI.i18nText("BI-Table_Rename"),
             iconWidth: 20,
             iconHeight: 20,
@@ -30,7 +30,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
 
         this.deleteButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "delete-font",
+            cls: "delete-font-package delete-font-style",
             title: BI.i18nText("BI-Delete_Package"),
             iconWidth: 20,
             iconHeight: 20,
@@ -120,11 +120,11 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
             }, {
                 el: this.deleteButton,
                 right: 0,
-                top: 30
+                top: 0
             }, {
                 el: this.renameButton,
                 right: 0,
-                top: 60
+                top: 30
             }, {
                 el: this.tableNumLabel,
                 right: 40,
