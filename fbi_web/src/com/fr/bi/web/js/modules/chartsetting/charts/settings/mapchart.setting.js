@@ -8,6 +8,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
         SINGLE_LINE_HEIGHT: 60,
         SIMPLE_H_GAP: 10,
         SIMPLE_L_GAP: 2,
+        SIMPLE_H_LGAP: 5,
         CHECKBOX_WIDTH: 16,
         EDITOR_WIDTH: 80,
         EDITOR_HEIGHT: 26,
@@ -54,12 +55,14 @@ BI.MapSetting = BI.inherit(BI.Widget, {
         });
 
         var showElement = BI.createWidget({
-            type: "bi.horizontal",
+            type: "bi.horizontal_adapt",
+            columnSize: [100],
             cls: "single-line-settings",
-            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
+                lgap: this.constant.SIMPLE_H_LGAP,
+                textAlign: "left",
                 textHeight: 60,
                 cls: "line-title"
             }, {
