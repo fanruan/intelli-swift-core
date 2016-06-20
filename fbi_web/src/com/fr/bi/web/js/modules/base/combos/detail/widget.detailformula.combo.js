@@ -32,10 +32,12 @@ BI.DetailFormulaDimensionCombo = BI.inherit(BI.Widget, {
                     value: BICst.DETAIL_FORMULA_COMBO.HYPERLINK
                 }], [{
                     text: BI.i18nText("BI-Display"),
-                    value: BICst.DETAIL_FORMULA_COMBO.DISPLAY
+                    value: BICst.DETAIL_FORMULA_COMBO.DISPLAY,
+                    cls: "dot-ha-font"
                 }, {
                     text: BI.i18nText("BI-Hidden"),
-                    value: BICst.DETAIL_FORMULA_COMBO.HIDDEN
+                    value: BICst.DETAIL_FORMULA_COMBO.HIDDEN,
+                    cls: "dot-ha-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Rename"),
@@ -49,13 +51,29 @@ BI.DetailFormulaDimensionCombo = BI.inherit(BI.Widget, {
         });
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.DetailFormulaDimensionCombo.EVENT_CHANGE, v);
-        })
+        });
+
+        this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
+            this.setValue(self._createValue());
+        });
+    },
+
+    _createValue: function () {
+        var o = this.options;
+        var used = BI.Utils.isDimensionUsable(o.dId);
+        var selectedValue = used ? BICst.DETAIL_FORMULA_COMBO.DISPLAY : BICst.DETAIL_FORMULA_COMBO.HIDDEN;
+        return [{value: selectedValue}];
+    },
+
+    setValue: function (v) {
+        this.combo.setValue(v);
     },
 
     getValue: function () {
         return this.combo.getValue();
     }
 
-});
+})
+;
 BI.DetailFormulaDimensionCombo.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.detail_formula_dimension_combo", BI.DetailFormulaDimensionCombo);

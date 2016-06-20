@@ -220,17 +220,28 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
     _createFormulaCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.detail_formula_dimension_combo"
+            type: "bi.detail_formula_dimension_combo",
+            dId: this.model.get("id")
         });
         this.combo.on(BI.DetailFormulaDimensionCombo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.DETAIL_FORMULA_COMBO.FORM_SETTING:
+                    self._buildStyleSettingPane();
                     break;
                 case BICst.DETAIL_FORMULA_COMBO.UPDATE_FORMULA:
                     self._updateFormula();
                     break;
                 case BICst.DETAIL_FORMULA_COMBO.HYPERLINK:
                     self._buildHyperlinkPane();
+                    break;
+                case BICst.DETAIL_FORMULA_COMBO.DISPLAY:
+                    self.model.set("used", true);
+                    break;
+                case BICst.DETAIL_FORMULA_COMBO.HIDDEN:
+                    self.model.set("used", false);
+                    break;
+                case BICst.DETAIL_FORMULA_COMBO.RENAME:
+                    self.editor.focus();
                     break;
                 case BICst.DETAIL_FORMULA_COMBO.DELETE:
                     self._deleteDimension();
@@ -276,7 +287,7 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
         BI.Popovers.create(id, popup).open(id);
     },
 
-    _buildHyperlinkPane: function(){
+    _buildHyperlinkPane: function () {
         var self = this, id = this.model.get("id");
         BI.Popovers.remove(id);
         var popup = BI.createWidget({
