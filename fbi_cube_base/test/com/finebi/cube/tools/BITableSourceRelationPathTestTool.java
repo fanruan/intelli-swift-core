@@ -66,7 +66,6 @@ public class BITableSourceRelationPathTestTool {
             path.add(b2c);
             return path;
         } catch (Exception e) {
-            e.printStackTrace();
             throw BINonValueUtils.beyondControl(e);
         }
     }
@@ -78,7 +77,6 @@ public class BITableSourceRelationPathTestTool {
             path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryBC());
             return path;
         } catch (Exception e) {
-            e.printStackTrace();
             throw BINonValueUtils.beyondControl(e);
         }
     }
