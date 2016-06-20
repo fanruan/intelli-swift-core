@@ -5,7 +5,6 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
-import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
@@ -22,6 +21,11 @@ import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.data.core.db.DBUtils;
+import com.fr.data.core.db.dialect.Dialect;
+import com.fr.data.core.db.dialect.DialectFactory;
+import com.fr.data.core.db.tableObject.Column;
+import com.fr.data.core.db.tableObject.ColumnSize;
 import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.MToMRelationFCMapper;
 import com.fr.data.dao.ObjectTableMapper;
@@ -32,6 +36,7 @@ import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
 import com.fr.fs.dao.EntryDAO;
+import com.fr.fs.dao.FSDAOManager;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.Inter;
@@ -40,10 +45,14 @@ import com.fr.stable.*;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.stable.plugin.PluginSimplify;
+import com.fr.web.core.db.PlatformDB;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Modifier;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -69,6 +78,7 @@ public class BIPlate extends AbstractFSPlate {
         if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
             markedObject.generateCubes();
         }
+        addBITableColumn4NewConnection();
     }
 
     private void registerDebug() {
@@ -116,6 +126,33 @@ public class BIPlate extends AbstractFSPlate {
         EntryPoolFactory.registerEntry("bireport", BIReportEntry.class);
         EntryPoolFactory.registerEntryTableNames(new String[]{BIReportEntry.TABLE_NAME});
         EntryPoolFactory.registerMobileEntryTableNames(new String[]{BIReportEntry.TABLE_NAME});
+    }
+
+    private void addBITableColumn4NewConnection(){
+        Connection cn = null;
+        String tableName = BIReportEntry.TABLE_NAME;
+        try {
+            cn = PlatformDB.getDB().createConnection();
+            try{
+                cn.setAutoCommit(false);
+            }catch(Exception e){
+
+            }
+            Dialect dialect = DialectFactory.generateDialect(cn,PlatformDB.getDB().getDriver());
+            FSDAOManager.addTableColumn(cn, dialect,
+                    new Column("createBy", Types.VARCHAR, new ColumnSize(10)), tableName);
+            cn.commit();
+        } catch (Exception e) {
+            if(cn != null) {
+                try {
+                    cn.rollback();
+                } catch (SQLException e1) {
+                    BILogger.getLogger().error(e1.getMessage(), e1);
+                }
+            }
+        } finally {
+            DBUtils.closeConnection(cn);
+        }
     }
 
     private void initOOMKillerForLinux() {
