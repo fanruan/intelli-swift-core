@@ -7,16 +7,15 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
-import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -180,14 +179,9 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
             }
         }
         if (hasNull) {
-            GroupValueIndex nullres;
-            if (!relations.isEmpty()) {
-                nullres = TableIndexUtils.createLinkNullGVI(cti, eti, relations);
-            } else {
-                nullres = cti.getNullGroupValueIndex(ckey);
-                if (nullres == null) {
-                    nullres = GVIFactory.createAllEmptyIndexGVI();
-                }
+            GroupValueIndex nullres= sgm.getNULLIndex();
+            if (nullres == null) {
+                nullres = GVIFactory.createAllEmptyIndexGVI();
             }
             if (sgvi != null) {
                 sgvi.or(nullres);
