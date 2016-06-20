@@ -135,7 +135,7 @@ BI.ETLFilterViewItemFactory = {
             var date = new Date(d)
             return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
         }
-        return '-';
+        return BI.i18nText('BI-Unrestricted');
     },
 
     _createItemByCls : function (cls){
