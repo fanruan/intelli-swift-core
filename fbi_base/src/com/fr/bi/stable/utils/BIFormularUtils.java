@@ -119,6 +119,8 @@ public class BIFormularUtils {
             Object value = values.get(entry.getValue());
             if (value != null) {
                 c.set(columnName, value);
+            } else {
+                c.set(columnName, 0);
             }
         }
         try {
