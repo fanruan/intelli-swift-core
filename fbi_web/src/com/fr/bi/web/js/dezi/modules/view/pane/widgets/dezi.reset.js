@@ -30,7 +30,11 @@ BIDezi.ResetView = BI.inherit(BI.View, {
             height: 20
         });
         deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.model.destroy();
+            BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
+                if (v === true) {
+                    self.model.destroy();
+                }
+            });
         });
         deleteButton.setVisible(false);
         BI.createWidget({

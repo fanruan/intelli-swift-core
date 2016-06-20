@@ -95,6 +95,12 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             this.set({"dimensions": dimensions, "view": views});
             //this.set("view", views);
         }
+        if (key1 === "dimensions") {
+            BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + copy._src.id);
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+            //全局维度增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
+        }
     },
 
     change: function (changed, prev) {

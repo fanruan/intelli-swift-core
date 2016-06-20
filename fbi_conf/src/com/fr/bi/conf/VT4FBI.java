@@ -159,7 +159,7 @@ public final class VT4FBI {
             jo.put("supportDatabaseUnion", supportDatabaseUnion());
             jo.put("supportIncrementUpdate", supportIncrementUpdate());
             jo.put("supportOLAPTable", supportOLAPTable());
-            jo.put("supportCalcuateTarget", supportCalcuateTarget());
+            jo.put("supportCalculateTarget", supportCalculateTarget());
             jo.put("supportReportShare", supportReportShare());
             jo.put("supportSimpleControl", supportSimpleControl());
             jo.put("supportGeneralControl", supportGeneralControl());
@@ -223,7 +223,7 @@ public final class VT4FBI {
      *
      * @return 支持计算指标
      */
-    public static final boolean supportCalcuateTarget() {
+    public static final boolean supportCalculateTarget() {
         return BI_CALCULATETARGET.support();
     }
 
