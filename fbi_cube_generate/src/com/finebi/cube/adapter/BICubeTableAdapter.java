@@ -28,7 +28,6 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class created on 2016/4/15.
@@ -40,7 +39,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     private ICube cube;
     private ICubeTableEntityGetterService primaryTable;
     private Map<BIKey, ICubeFieldSource> columnSet = null;
-    private Map<BIKey, ICubeColumnReaderService> columnReaderServiceMap = new ConcurrentHashMap<BIKey, ICubeColumnReaderService>();
+    private Map<BIKey, ICubeColumnReaderService> columnReaderServiceMap = new HashMap<BIKey, ICubeColumnReaderService>();
 
     public BICubeTableAdapter(ICube cube, CubeTableSource tableSource) {
         this.cube = cube;
@@ -126,7 +125,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     @Override
     public Map<BIKey, ICubeFieldSource> getColumns() {
         if (!isColumnInitial()) {
-            columnSet = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
+            columnSet = new HashMap<BIKey, ICubeFieldSource>();
             List<ICubeFieldSource> list = primaryTable.getFieldInfo();
             Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
             while (tableFieldIt.hasNext()) {

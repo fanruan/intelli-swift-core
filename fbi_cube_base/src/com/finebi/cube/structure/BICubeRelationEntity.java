@@ -75,10 +75,5 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     public void addVersion(long version) {
         this.version.addVersion(version);
     }
-
-    @Override
-    public ICubeResourceLocation getResourceLocation() {
-        return indexDataService.getResourceLocation();
-    }
 }
 

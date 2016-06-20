@@ -29,5 +29,4 @@ public class BICubeTablePath extends BIBasicRelationPath<ITableKey, BIColumnKey,
         }
         return BIMD5Utils.getMD5String(new String[]{sb.toString()});
     }
-
 }

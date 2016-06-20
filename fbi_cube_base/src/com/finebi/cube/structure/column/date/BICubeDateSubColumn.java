@@ -9,7 +9,6 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.structure.ICubeRelationManagerService;
-import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BICubeColumnEntity;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -17,9 +16,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import java.util.Comparator;
 
 /**
- * 日期子类。
- * 详细数据是保存在HostColumn中的，
- * 这里selfColumn主要存储自身的索引。
  * This class created on 2016/4/7.
  *
  * @author Connery
@@ -27,7 +23,7 @@ import java.util.Comparator;
  */
 public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService<T> {
     protected BICubeDateColumn hostDataColumn;
-    protected BICubeColumnEntity<T> selfColumnEntity;
+    protected BICubeColumnEntity<T> columnEntity;
     protected ICubeResourceDiscovery discovery;
 
     public BICubeDateSubColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
@@ -45,87 +41,87 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
 
     @Override
     public void setRelationManagerService(ICubeRelationManagerService relationManagerService) {
-        selfColumnEntity.setRelationManagerService(relationManagerService);
+        columnEntity.setRelationManagerService(relationManagerService);
     }
 
     @Override
     public Comparator<T> getGroupComparator() {
-        return selfColumnEntity.getGroupComparator();
+        return columnEntity.getGroupComparator();
     }
 
 
     @Override
     public void addGroupValue(int position, T groupValue) {
-        selfColumnEntity.addGroupValue(position, groupValue);
+        columnEntity.addGroupValue(position, groupValue);
     }
 
     @Override
     public void addGroupIndex(int position, GroupValueIndex index) {
-        selfColumnEntity.addGroupIndex(position, index);
+        columnEntity.addGroupIndex(position, index);
     }
 
     @Override
     public void recordSizeOfGroup(int size) {
-        selfColumnEntity.recordSizeOfGroup(size);
+        columnEntity.recordSizeOfGroup(size);
     }
 
     public long getCubeVersion() {
-        return selfColumnEntity.getCubeVersion();
+        return columnEntity.getCubeVersion();
     }
 
     @Override
     public void addVersion(long version) {
-        selfColumnEntity.addVersion(version);
+        columnEntity.addVersion(version);
     }
 
     @Override
     public void addNULLIndex(int position, GroupValueIndex groupValueIndex) {
-        selfColumnEntity.addNULLIndex(position, groupValueIndex);
+        columnEntity.addNULLIndex(position, groupValueIndex);
     }
 
     @Override
     public void copyDetailValue(ICubeColumnEntityService columnEntityService, long rowCount) {
-        selfColumnEntity.copyDetailValue(columnEntityService, rowCount);
+        columnEntity.copyDetailValue(columnEntityService, rowCount);
     }
 
     @Override
     public int getPositionOfGroup(T groupValues) throws BIResourceInvalidException {
-        return selfColumnEntity.getPositionOfGroup(groupValues);
+        return columnEntity.getPositionOfGroup(groupValues);
     }
 
     @Override
     public int sizeOfGroup() {
-        return selfColumnEntity.sizeOfGroup();
+        return columnEntity.sizeOfGroup();
     }
 
     @Override
     public GroupValueIndex getIndexByRow(int rowNumber) throws BIResourceInvalidException, BICubeIndexException {
-        return selfColumnEntity.getIndexByRow(rowNumber);
+        return columnEntity.getIndexByRow(rowNumber);
     }
 
     @Override
     public T getGroupValue(int position) {
-        return selfColumnEntity.getGroupValue(position);
+        return columnEntity.getGroupValue(position);
     }
 
     @Override
     public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException {
-        return hostDataColumn.getRelationIndexGetter(path);
+        return columnEntity.getRelationIndexGetter(path);
     }
 
     @Override
     public GroupValueIndex getBitmapIndex(int position) throws BICubeIndexException {
-        return selfColumnEntity.getBitmapIndex(position);
+        return columnEntity.getBitmapIndex(position);
     }
 
     @Override
     public GroupValueIndex getNULLIndex(int position) throws BICubeIndexException {
-        return selfColumnEntity.getNULLIndex(position);
+        return columnEntity.getNULLIndex(position);
     }
 
     @Override
     public void clear() {
-        selfColumnEntity.clear();
+        columnEntity.clear();
     }
 
     @Override
@@ -137,31 +133,21 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
 
     @Override
     public GroupValueIndex getIndexByGroupValue(T groupValues) throws BIResourceInvalidException, BICubeIndexException {
-        return selfColumnEntity.getIndexByGroupValue(groupValues);
-    }
-
-    @Override
-    public void setOwner(ITableKey owner) {
-        selfColumnEntity.setOwner(owner);
+        return columnEntity.getIndexByGroupValue(groupValues);
     }
 
     @Override
     public boolean existRelationPath(BICubeTablePath path) {
-        return selfColumnEntity.existRelationPath(path);
+        return columnEntity.existRelationPath(path);
     }
 
     @Override
     public boolean isEmpty() {
-        return selfColumnEntity.isEmpty();
+        return columnEntity.isEmpty();
     }
 
     @Override
     public int getClassType() {
-        return selfColumnEntity.getClassType();
-    }
-
-    @Override
-    public ICubeResourceLocation getResourceLocation() {
-        return selfColumnEntity.getResourceLocation();
+        return columnEntity.getClassType();
     }
 }

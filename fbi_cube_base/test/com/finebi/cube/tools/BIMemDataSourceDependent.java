@@ -36,9 +36,4 @@ public class BIMemDataSourceDependent extends BIMemDataSourceTestToolCube {
         fields.addAll(getParentFields(sources));
         return fields;
     }
-
-    @Override
-    public String getSourceID() {
-        return "BIMemDataSourceDependent";
-    }
 }

@@ -39,12 +39,4 @@ public class BITableKey implements ITableKey {
     public int hashCode() {
         return sourceID != null ? sourceID.hashCode() : 0;
     }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("BITableKey{");
-        sb.append("sourceID='").append(sourceID).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
 }

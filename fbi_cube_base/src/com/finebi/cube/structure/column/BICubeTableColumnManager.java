@@ -28,7 +28,6 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
     private ICubeResourceRetrievalService resourceRetrievalService;
     private ICubeResourceDiscovery discovery;
     private ITableKey tableKey;
-    private ITableKey owner;
 
     public BICubeTableColumnManager(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, List<ICubeFieldSource> fieldList, ICubeResourceDiscovery discovery) {
         columnKey2ColumnMap = new HashMap<BIColumnKey, ICubeColumnEntityService>();
@@ -36,14 +35,6 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         this.tableKey = tableKey;
         this.discovery = discovery;
         initialColumn(fieldList, tableKey);
-    }
-
-    @Override
-    public void setOwner(ITableKey owner) {
-        this.owner = owner;
-        for (ICubeColumnEntityService columnEntityService : columnKey2ColumnMap.values()) {
-            columnEntityService.setOwner(owner);
-        }
     }
 
     @Override

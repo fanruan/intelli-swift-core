@@ -230,9 +230,4 @@ public class BICubeTableEntity implements ICubeTableEntityService {
         tableProperty.addVersion(version);
     }
 
-    @Override
-    public void setTableOwner(ITableKey owner) {
-        relationManager.setOwner(owner);
-        columnManager.setOwner(owner);
-    }
 }

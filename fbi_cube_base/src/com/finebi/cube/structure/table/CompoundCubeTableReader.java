@@ -39,7 +39,6 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         hostTable = new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
         if (hostTable.getParentsTable() != null && !hostTable.getParentsTable().isEmpty()) {
             parentTable = new CompoundCubeTableReaderNode(hostTable.getParentsTable(), resourceRetrievalService, discovery);
-            parentTable.setTableOwner(tableKey);
         }
         initialFields();
     }
@@ -243,13 +242,5 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     @Override
     public void addVersion(long version) {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setTableOwner(ITableKey owner) {
-        hostTable.setTableOwner(owner);
-        if (parentTable != null) {
-            parentTable.setTableOwner(owner);
-        }
     }
 }

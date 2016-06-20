@@ -230,11 +230,4 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     public void addVersion(long version) {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public void setTableOwner(ITableKey owner) {
-        for (ICubeTableEntityService tableEntityService : currentLevelTables) {
-            tableEntityService.setTableOwner(owner);
-        }
-    }
 }

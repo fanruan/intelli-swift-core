@@ -200,14 +200,4 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     public int getClassType() {
         return detailDataService.getClassType();
     }
-
-    @Override
-    public ICubeResourceLocation getResourceLocation() {
-        return currentLocation.copy();
-    }
-
-    @Override
-    public void setOwner(ITableKey owner) {
-        relationManagerService.setOwner(owner);
-    }
 }

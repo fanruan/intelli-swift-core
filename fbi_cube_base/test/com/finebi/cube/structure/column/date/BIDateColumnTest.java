@@ -4,19 +4,14 @@ import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.BICubeTableColumnManager;
 import com.finebi.cube.structure.column.ICubeTableColumnManagerService;
-import com.finebi.cube.tools.BIMemoryDataSourceFactory;
-import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
-import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,30 +111,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             BICubeYearMonthDayColumn yearMonthDayColumn = (BICubeYearMonthDayColumn) managerService.getColumn(ymd);
             assertEquals(Long.valueOf(1459958400000l), yearMonthDayColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
-            assertTrue(false);
-        }
-    }
-
-    /**
-     * Detail:测试从子列获取Relation的时候，取出的Relation是来自主列
-     * 而非来自子列
-     * Author:Connery
-     * Date:2016/6/20
-     */
-    public void testSubColumnRelation() {
-        try {
-
-            ITableKey tableKey = new BITableKey(BIMemoryDataSourceFactory.generateTableA());
-            managerService = new BICubeTableColumnManager(tableKey, retrievalService, fields, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-            BIColumnKey ymd = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY);
-            BICubeYearMonthDayColumn yearMonthDayColumn = (BICubeYearMonthDayColumn) managerService.getColumn(ymd);
-            ICubeRelationEntityGetterService service = yearMonthDayColumn.getRelationIndexGetter(BICubePathUtils.convert(BITableSourceRelationPathTestTool.getABCDPath()));
-            String relationLocation = service.getResourceLocation().getAbsolutePath();
-            String[] values = new String[]{tableKey.getSourceID(), ymd.getKey(), BICubePathUtils.convert(BITableSourceRelationPathTestTool.getABCDPath()).getSourceID()};
-            String name = BIMD5Utils.getMD5String(values);
-            assertFalse(relationLocation.contains(name));
-        } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }

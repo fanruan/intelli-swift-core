@@ -56,6 +56,4 @@ public interface ICubeTableEntityService extends ICubeTableEntityGetterService {
     void recordFieldNamesFromParent(Set<String> fieldNames);
 
     Set<String> getFieldNamesFromParent();
-
-    void setTableOwner(ITableKey owner);
 }

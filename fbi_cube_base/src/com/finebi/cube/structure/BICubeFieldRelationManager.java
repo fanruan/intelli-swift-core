@@ -37,7 +37,7 @@ public class BICubeFieldRelationManager extends BICubeTableRelationEntityManager
             throw new BICubeRelationAbsentException(e.getMessage(), e);
         }
         try {
-            location = resourceRetrievalService.retrieveResource(hostTableKey, currentFieldKey, relationPath);
+            location = resourceRetrievalService.retrieveResource(tableKey, currentFieldKey, relationPath);
         } catch (BICubeResourceAbsentException e) {
             throw new BICubeRelationAbsentException(e.getMessage(), e);
         } catch (URISyntaxException e) {

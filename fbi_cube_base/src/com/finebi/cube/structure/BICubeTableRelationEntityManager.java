@@ -25,25 +25,13 @@ import java.util.Map;
 public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResourceLocation, ICubeRelationEntityService> implements ICubeRelationManagerService {
 
     protected ICubeResourceRetrievalService resourceRetrievalService;
-    protected ITableKey hostTableKey;
-    /**
-     * 当前所有的Relation归属是hostTable，但是这不代表该relation只能由HostTable使用
-     * 例如A作为ETL_A表的子表，那么ETL_A应该拥有A表拥有的关系。
-     * 倘若有ETL_A-C的Relation，但是在A表中的字段A.a的索引的话，会到A表中来根据ETL_A-C来计算
-     * A.a-C的索引。
-     */
-    protected ITableKey owner;
+    protected ITableKey tableKey;
     protected ICubeResourceDiscovery discovery;
 
-    public BICubeTableRelationEntityManager(ICubeResourceRetrievalService resourceRetrievalService, ITableKey hostTableKey, ICubeResourceDiscovery discovery) {
+    public BICubeTableRelationEntityManager(ICubeResourceRetrievalService resourceRetrievalService, ITableKey tableKey, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;
-        this.hostTableKey = hostTableKey;
+        this.tableKey = tableKey;
         this.discovery = discovery;
-        this.owner = hostTableKey;
-    }
-
-    public void setOwner(ITableKey owner) {
-        this.owner = owner;
     }
 
     @Override
@@ -65,9 +53,9 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
 
     protected void checkPath(BICubeTablePath path) throws BITablePathEmptyException, IllegalRelationPathException {
         ITableKey pathFirstTable = path.getFirstRelation().getPrimaryTable();
-        if (!ComparatorUtils.equals(pathFirstTable, owner)) {
+        if (!ComparatorUtils.equals(pathFirstTable, tableKey)) {
             throw new IllegalRelationPathException("the Path start table is:" + pathFirstTable.toString()
-                    + "which should be" + owner.toString());
+                    + "which should be" + tableKey.toString());
         }
     }
 
@@ -79,7 +67,7 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
             throw new BICubeRelationAbsentException(e.getMessage(), e);
         }
         try {
-            location = resourceRetrievalService.retrieveResource(hostTableKey, relationPath);
+            location = resourceRetrievalService.retrieveResource(tableKey, relationPath);
         } catch (BICubeResourceAbsentException e) {
             throw new BICubeRelationAbsentException(e.getMessage(), e);
         } catch (BITablePathEmptyException e) {
