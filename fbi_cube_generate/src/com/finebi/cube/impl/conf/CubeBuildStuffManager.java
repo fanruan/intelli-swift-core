@@ -396,4 +396,8 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
         }
         return result;
     }
+
+    public boolean conditionStatusCheck(){
+        return true;
+    }
 }

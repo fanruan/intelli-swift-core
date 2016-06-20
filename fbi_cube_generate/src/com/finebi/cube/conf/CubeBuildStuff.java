@@ -26,7 +26,6 @@ public interface CubeBuildStuff {
 
     ICubeConfiguration getCubeConfiguration();
 
-
     Set<BITableRelation> getTableRelationSet();
 
     Map<CubeTableSource, Long> getVersions();
