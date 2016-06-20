@@ -1,10 +1,7 @@
 package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CalculateDependTool;
-import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -19,6 +16,7 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.*;
 
@@ -395,5 +393,13 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
             }
         }
         return result;
+    }
+
+    @Override
+    public boolean preConditionsCheck(){
+        CubePreConditionsCheck check=new CubePreConditionsCheckManager();
+        boolean spaceCheck = check.HDSpaceCheck(new File(rootPath));
+        boolean connectionCheck = check.ConnectionCheck();
+        return spaceCheck&&connectionCheck;
     }
 }

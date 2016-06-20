@@ -116,4 +116,9 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
     public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
         return new HashSet<BICubeGenerateRelation>();
     }
+
+    @Override
+    public boolean preConditionsCheck() {
+        return true;
+    }
 }
