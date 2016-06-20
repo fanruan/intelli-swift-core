@@ -69,6 +69,7 @@ public class BITableSourceRelationPathTestTool {
             throw BINonValueUtils.beyondControl(e);
         }
     }
+
     public static BITableSourceRelationPath getABPath() {
         try {
             BITableSourceRelationPath path = new BITableSourceRelationPath();
