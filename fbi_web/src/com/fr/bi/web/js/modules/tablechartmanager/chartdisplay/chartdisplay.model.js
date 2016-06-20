@@ -197,12 +197,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
         if (BI.has(data, "c")) {
             var obj = (data.c)[0];
-            var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
             var columnSizeArray = BI.makeArray(BI.isNull(obj) ? 0 : BI.size(obj.s), 0);
             return BI.map(columnSizeArray, function (idx, value) {
                 var adjustData = BI.map(data.c, function (id, item) {
                     var x = item.n;
-                    if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
+                    if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
                         var date = new Date(BI.parseInt(x));
                         x = date.print("%Y-%X-%d");
                     }
@@ -247,6 +246,44 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return [];
     },
 
+    _formatDataForDashBoard: function (data) {
+        var self = this, o = this.options;
+        var targetIds = this._getShowTarget();
+        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+        if (BI.has(data, "c")) {
+            var adjustData = BI.map(data.c, function (id, item) {
+                var seriesName = item.n;
+                if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
+                    var date = new Date(BI.parseInt(seriesName));
+                    seriesName = date.print("%Y-%X-%d");
+                }
+                var data = [{
+                    x: BI.Utils.getDimensionNameByID(targetIds[0]),
+                    y: item.s[0],
+                    targetIds: [targetIds[0]]
+                }];
+                var obj = {};
+                obj.data = data;
+                obj.name = seriesName;
+                return obj;
+            });
+            return BI.isEmptyArray(adjustData) ? [] : [adjustData];
+        }
+        if (BI.has(data, "s")) {
+            var obj = {};
+            obj.name = "";
+            obj.data = BI.map(data.s, function (idx, value) {
+                return {
+                    x: BI.Utils.getDimensionNameByID(targetIds[idx]),
+                    y: value,
+                    targetIds: [targetIds[idx]]
+                };
+            });
+            return BI.isEmptyArray(obj.data) ? [] : [[obj]];
+        }
+        return [];
+    },
+
     _formatDataForAccumulateAxis: function(data){
         var items = this._formatDataForAxis(data);
         return BI.map(items, function(idx, item){
@@ -272,9 +309,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return BI.map(items, function(idx, item){
             return BI.map(item, function(id, it){
                 if(idx > 0){
-                    return BI.extend({}, it, {reversed: true});
+                    return BI.extend({}, it, {reversed: true, xAxis: 0});
                 }else{
-                    return BI.extend({}, it, {reversed: false});
+                    return BI.extend({}, it, {reversed: false, xAxis: 1});
                 }
             });
         });
@@ -505,9 +542,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.PIE:
-            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 return this._formatDataForAxis(data);
+            case BICst.WIDGET.DASHBOARD:
+                return this._formatDataForDashBoard(data);
             case BICst.WIDGET.FORCE_BUBBLE:
                 return this._formatDataForForceBubble(data);
             case BICst.WIDGET.FUNNEL:

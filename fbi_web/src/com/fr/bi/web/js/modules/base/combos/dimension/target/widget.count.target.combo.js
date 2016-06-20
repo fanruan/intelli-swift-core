@@ -149,6 +149,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -160,7 +161,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                items[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:
@@ -183,19 +184,20 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
                 break;
             default:
-                items[this.constants.CHART_TYPE_POSITION][0].disabled = true;
+                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
                 break;
         }
 
         switch (wType) {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                items[this.constants.CHART_TYPE_POSITION][0].disabled = false;
+                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
             default:
-                items[this.constants.CHART_TYPE_POSITION][0].disabled = true;
+                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
                 break;
         }
 
