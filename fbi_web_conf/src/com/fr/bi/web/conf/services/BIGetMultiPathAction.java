@@ -3,16 +3,17 @@
  */
 package com.fr.bi.web.conf.services;
 
-import com.fr.bi.conf.base.relation.relation.IRelationContainer;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.relation.relation.IRelationContainer;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.exception.BITableUnreachableException;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.fr.bi.stable.relation.BITableRelation;
-import com.fr.bi.stable.relation.BITableRelationPath;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -49,8 +50,8 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject multiPathJo = getMultiPath(userId);
         JSONObject jo = new JSONObject();
-        JSONObject translations = BIConfigureManagerCenter.getAliasManager().getTransManager(userId).createJSON();
-        jo.put("cubeEnd", BIConfigureManagerCenter.getLogManager().getCubeEnd(userId));
+        JSONObject translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
+        jo.put("cubeEnd", BIConfigureManagerCenter.getLogManager().getConfigVersion(userId));
         jo.put("translations", translations);
         jo.put("relations", multiPathJo.optJSONArray("relations"));
         jo.put("disabledRelations", multiPathJo.optJSONArray("disabledRelations"));
@@ -60,33 +61,33 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
     }
 
 
-    private Set<Table> getRelatedTables(long userId) {
-        Set<Table> relatedTables = new HashSet<Table>();
-        Iterator<Map.Entry<Table, IRelationContainer>> primaryIt = BIConfigureManagerCenter.getTableRelationManager().getAllTable2PrimaryRelation(userId).entrySet().iterator();
+    private Set<BIBusinessTable> getRelatedTables(long userId) {
+        Set<BIBusinessTable> relatedTables = new HashSet<BIBusinessTable>();
+        Iterator<Map.Entry<BusinessTable, IRelationContainer>> primaryIt = BICubeConfigureCenter.getTableRelationManager().getAllTable2PrimaryRelation(userId).entrySet().iterator();
         while (primaryIt.hasNext()) {
             Map.Entry entry = primaryIt.next();
-            relatedTables.add((Table) entry.getKey());
+            relatedTables.add((BIBusinessTable) entry.getKey());
         }
 
-        Iterator<Map.Entry<Table, IRelationContainer>> foreignIt = BIConfigureManagerCenter.getTableRelationManager().getAllTable2ForeignRelation(userId).entrySet().iterator();
+        Iterator<Map.Entry<BusinessTable, IRelationContainer>> foreignIt = BICubeConfigureCenter.getTableRelationManager().getAllTable2ForeignRelation(userId).entrySet().iterator();
         while (foreignIt.hasNext()) {
             Map.Entry entry = foreignIt.next();
-            relatedTables.add((Table) entry.getKey());
+            relatedTables.add((BIBusinessTable) entry.getKey());
         }
         return relatedTables;
     }
 
-    private Set<BITableRelationPath> getAllPath(long userId, Table foreignTable, Table primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
-        return BIConfigureManagerCenter.getTableRelationManager().getAllPath(userId, foreignTable, primaryTable);
+    private Set<BITableRelationPath> getAllPath(long userId, BusinessTable foreignTable, BusinessTable primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        return BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, foreignTable, primaryTable);
     }
 
-    private Set<BITableRelationPath> getAllAvailablePath(long userId, Table foreignTable, Table primaryTable) throws BITableUnreachableException,
+    private Set<BITableRelationPath> getAllAvailablePath(long userId, BusinessTable foreignTable, BusinessTable primaryTable) throws BITableUnreachableException,
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
-        return BIConfigureManagerCenter.getTableRelationManager().getAllAvailablePath(userId, foreignTable, primaryTable);
+        return BICubeConfigureCenter.getTableRelationManager().getAllAvailablePath(userId, foreignTable, primaryTable);
     }
 
 
-    private Set<BITableRelationPath> getDisabledPath(long userId, Table foreignTable, Table primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+    private Set<BITableRelationPath> getDisabledPath(long userId, BusinessTable foreignTable, BusinessTable primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         Set<BITableRelationPath> allPath = getAllPath(userId, foreignTable, primaryTable);
         Set<BITableRelationPath> allAvailablePath = getAllAvailablePath(userId, foreignTable, primaryTable);
         allPath.removeAll(allAvailablePath);
@@ -99,13 +100,13 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         Set<BITableRelationPath> availableMultiSet = new HashSet<BITableRelationPath>();
         Set<BITableRelationPath> disabledMultiSet = new HashSet<BITableRelationPath>();
         Set<BITableRelationPath> noneMultiSet = new HashSet<BITableRelationPath>();
-        Set<Table> relatedTables = getRelatedTables(userId);
+        Set<BIBusinessTable> relatedTables = getRelatedTables(userId);
         Iterator it = relatedTables.iterator();
         while (it.hasNext()) {
-            Table foreignTable = (Table) it.next();
+            BusinessTable foreignTable = (BusinessTable) it.next();
             Iterator primaryTableIt = relatedTables.iterator();
             while (primaryTableIt.hasNext()) {
-                Table primaryTable = (Table) primaryTableIt.next();
+                BusinessTable primaryTable = (BusinessTable) primaryTableIt.next();
                 Set<BITableRelationPath> allPath = getAllPath(userId, foreignTable, primaryTable);
                 Set<BITableRelationPath> multiPathItem = new HashSet<BITableRelationPath>();
                 if (allPath.size() > 1) {
@@ -145,7 +146,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
             BITableRelationPath path = (BITableRelationPath) it.next();
             List relationList = path.getAllRelations();
             for (int i = 0; i < relationList.size(); i++) {
-                BISimpleRelation relation = ((BITableRelation) relationList.get(i)).getSimpleRelation();
+                BITableRelation relation = ((BITableRelation) relationList.get(i));
                 multiRelationJa.put(relation.createJSON());
             }
             multiPathJa.put(multiRelationJa);

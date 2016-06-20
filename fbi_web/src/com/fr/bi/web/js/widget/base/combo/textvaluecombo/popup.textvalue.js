@@ -1,7 +1,7 @@
-BI.TextValueComboPopup = BI.inherit(BI.Widget, {
+BI.TextValueComboPopup = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.TextValueComboPopup.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi.text-icon-popup",
+            baseCls: "bi-text-icon-popup",
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
         });
     },
@@ -11,7 +11,6 @@ BI.TextValueComboPopup = BI.inherit(BI.Widget, {
         var o = this.options, self = this;
         this.popup = BI.createWidget({
             type: "bi.button_group",
-            element: this.element,
             items: BI.createItems(o.items, {
                 type: "bi.single_select_item",
                 height: 30
@@ -27,10 +26,17 @@ BI.TextValueComboPopup = BI.inherit(BI.Widget, {
             if (type === BI.Events.CLICK) {
                 self.fireEvent(BI.TextValueComboPopup.EVENT_CHANGE, val, obj);
             }
-        })
+        });
+
+        BI.createWidget({
+            type: "bi.vertical",
+            element: this.element,
+            items: [this.popup]
+        });
     },
 
-    populate: function(items){
+    populate: function (items) {
+        BI.TextValueComboPopup.superclass.populate.apply(this, arguments);
         items = BI.createItems(items, {
             type: "bi.single_select_item",
             height: 30

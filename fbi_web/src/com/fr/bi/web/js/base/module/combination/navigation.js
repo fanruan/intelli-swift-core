@@ -91,7 +91,7 @@ BI.Navigation = BI.inherit(BI.Widget, {
             this.afterCardCreated(v);
         }
         this.layout.showCardByName(v);
-        BI.defer(BI.bind(this.afterCardShow, this, v));
+        BI.nextTick(BI.bind(this.afterCardShow, this, v));
     },
 
     getSelect: function(){

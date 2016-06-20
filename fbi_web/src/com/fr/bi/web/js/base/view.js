@@ -14,14 +14,14 @@ BI.View = BI.inherit(BI.V, {
             }
         }).listenTo(this.model, "change", function (changed) {
             this.delegateEvents();
-        }).listenTo(this.model, "changed", function (changed, prev) {
+        }).listenTo(this.model, "changed", function (changed, prev, context, options) {
             if (BI.has(changed, "current") && BI.size(changed) > 1) {
                 throw new Error("refresh操作不能调用set操作");
             }
             var notLocal = !BI.has(changed, "current") && !this.local() && this.notifyParent().notify();
             this.model.actionEnd() && this.actionEnd();
             this.model._changing_ = true;
-            notLocal && !BI.isEmpty(changed) && this.change(changed, prev);
+            notLocal && !BI.isEmpty(changed) && this.change(changed, prev, context, options);
             this.model._changing_ = false;
             this.model.actionEnd() && this.actionEnd();
         }).listenTo(this.model, "splice", function (arg) {
@@ -56,11 +56,10 @@ BI.View = BI.inherit(BI.V, {
     actionEnd: function () {
         var self = this;
         var _F = this._F.slice(0);
+        this._F = [];
         BI.each(_F, function (i, f) {
-            self._F.remove(f);
             f.f.apply(self, f.arg);
         });
-        this._F = [];
         return this;
     },
 
@@ -262,7 +261,7 @@ BI.View = BI.inherit(BI.V, {
             BI.isKey(cardName) && self._cards[cardName].populate(data, options.force);
         });
         !BI.isKey(cardName) && BI.Layers.hide(layout + this.cid);
-        return this;
+        return this._cards[cardName];
     },
 
     listenEnd: function (key1, key2, key3) {
@@ -276,6 +275,7 @@ BI.View = BI.inherit(BI.V, {
      */
     notifyParentEnd: function (force) {
         this.parent && this.parent.trigger("end:" + this.cid);
+        this.trigger("end");
         !force && this.notify();
         return this;
     },
@@ -393,9 +393,7 @@ BI.View = BI.inherit(BI.V, {
                         height: 30,
                         cls: "loading-background"
                     }],
-                    element: BI.Maskers.create(name, self, {
-                        container: self
-                    })
+                    element: BI.Maskers.make(name, self)
                 });
                 loading.setVisible(true);
             },
@@ -419,9 +417,7 @@ BI.View = BI.inherit(BI.V, {
                         height: 30,
                         cls: "loading-background"
                     }],
-                    element: BI.Maskers.create(name, self, {
-                        container: self
-                    })
+                    element: BI.Maskers.make(name, self)
                 });
                 loading.setVisible(true);
             },
@@ -445,9 +441,7 @@ BI.View = BI.inherit(BI.V, {
                         height: 30,
                         cls: "loading-background"
                     }],
-                    element: BI.Maskers.create(name, self, {
-                        container: self
-                    })
+                    element: BI.Maskers.make(name, self)
                 });
                 loading.setVisible(true);
             },
@@ -477,6 +471,10 @@ BI.View = BI.inherit(BI.V, {
         }
         if (force === true) {
             this.model.set(modelData).set({current: this.model.get("default")});
+            return;
+        }
+        if (force === false) {
+            this.model.set(modelData);
             return;
         }
         var filter = BI.clone(modelData || {});

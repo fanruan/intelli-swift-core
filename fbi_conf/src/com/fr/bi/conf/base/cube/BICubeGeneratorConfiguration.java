@@ -1,12 +1,12 @@
 package com.fr.bi.conf.base.cube;
 
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.conf.provider.ICubeGeneratorConfigure;
-import com.fr.bi.stable.data.source.ITableSource;
-import com.fr.bi.stable.relation.BITableRelationPath;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,16 +20,17 @@ import java.util.Set;
  */
 public class BICubeGeneratorConfiguration implements ICubeGeneratorConfigure {
     @Override
-    public Set<ITableSource> getAllTableData(long userId) {
-        Set<ITableSource> allTable = new HashSet<ITableSource>();
+    public Set<CubeTableSource> getAllTableData(long userId) {
+        Set<CubeTableSource> allTable = new HashSet<CubeTableSource>();
 
-        Iterator<BIBusinessPackage> allPackages = BIConfigureManagerCenter.getPackageManager().getAllPackages(userId).iterator();
+        Iterator<IBusinessPackageGetterService> allPackages = BICubeConfigureCenter.getPackageManager().getAllPackages(userId).iterator();
         while (allPackages.hasNext()) {
-            BIBusinessPackage businessPackage = allPackages.next();
+            IBusinessPackageGetterService businessPackage = allPackages.next();
             Iterator<BIBusinessTable> itTable = businessPackage.getBusinessTables().iterator();
             while (itTable.hasNext()) {
                 BIBusinessTable biBusinessTable = itTable.next();
-                ITableSource tableSource = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(biBusinessTable.getID(), new BIUser(userId));
+                CubeTableSource tableSource = null;
+                tableSource = BusinessTableHelper.getTableDataSource(biBusinessTable);
                 allTable.add(tableSource);
             }
         }

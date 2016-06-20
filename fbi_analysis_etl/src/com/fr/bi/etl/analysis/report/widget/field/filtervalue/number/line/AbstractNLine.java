@@ -16,11 +16,6 @@ import com.fr.bi.stable.structure.tree.NTree;
 public abstract class AbstractNLine implements CalLineGetter {
 	
 	protected int N;
-	/**
-	 * @param gvi
-	 * @param ti
-	 * @param key
-	 */
 	AbstractNLine(int N) {
 		this.N = N;
 	}
@@ -37,9 +32,10 @@ public abstract class AbstractNLine implements CalLineGetter {
 		gvi.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int data) {
-				Double v = ((Number) ti.getRow(key, data)).doubleValue();
-				if(v != null){
-					tree.add(v);
+                Object ob = ti.getRow(key, data);
+				if(ob != null){
+                    Double v = ((Number)ob).doubleValue();
+                    tree.add(v);
 				}
 			}
 		});

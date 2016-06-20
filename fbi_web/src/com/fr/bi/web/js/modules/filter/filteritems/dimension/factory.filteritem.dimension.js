@@ -12,8 +12,8 @@ BI.DimensionFilterItemFactory = {
                 type = "bi.dimension_number_field_filter_item";
                 break;
             case BICst.COLUMN.DATE:
-                filterType = BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
-                type = "bi.dimension_string_field_filter_item";
+                filterType = BICst.DIMENSION_FILTER_DATE.BELONG_VALUE;
+                type = "bi.dimension_date_field_filter_item";
                 break;
             default :
                 type = "bi.dimension_no_type_field_filter_item";
@@ -39,6 +39,18 @@ BI.DimensionFilterItemFactory = {
             case BICst.DIMENSION_FILTER_STRING.TOP_N:
             case BICst.DIMENSION_FILTER_STRING.BOTTOM_N:
                 type = "bi.dimension_string_field_filter_item";
+                break;
+            case BICst.DIMENSION_FILTER_DATE.BELONG_VALUE:
+            case BICst.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE:
+            case BICst.DIMENSION_FILTER_DATE.CONTAIN:
+            case BICst.DIMENSION_FILTER_DATE.NOT_CONTAIN:
+            case BICst.DIMENSION_FILTER_DATE.IS_NULL:
+            case BICst.DIMENSION_FILTER_DATE.NOT_NULL:
+            case BICst.DIMENSION_FILTER_DATE.BEGIN_WITH:
+            case BICst.DIMENSION_FILTER_DATE.END_WITH:
+            case BICst.DIMENSION_FILTER_DATE.TOP_N:
+            case BICst.DIMENSION_FILTER_DATE.BOTTOM_N:
+                type = "bi.dimension_date_field_filter_item";
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE:

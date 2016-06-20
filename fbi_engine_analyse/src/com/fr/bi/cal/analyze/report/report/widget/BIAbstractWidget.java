@@ -1,5 +1,10 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
@@ -7,8 +12,6 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -32,6 +35,7 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     private String blockName;
     private Rectangle rect = new Rectangle();
+    @BICoreField
     private TargetFilter filter;
     private long initTime;
     private long userId;
@@ -56,7 +60,7 @@ public abstract class BIAbstractWidget implements BIWidget {
         this.blockName = name;
     }
 
-    public TargetFilter getFilter(){
+    public TargetFilter getFilter() {
         return filter;
     }
 
@@ -106,20 +110,20 @@ public abstract class BIAbstractWidget implements BIWidget {
         int x = 0, y = 0, width = 0, height = 0;
         if (jo.has("bounds")) {
             JSONObject bounds = jo.getJSONObject("bounds");
-            x = bounds.getInt("left");
-            y = bounds.getInt("top");
-            width = bounds.getInt("width");
-            height = bounds.getInt("height");
+            x = bounds.optInt("left", 0);
+            y = bounds.optInt("top", 0);
+            width = bounds.optInt("width", 0);
+            height = bounds.optInt("height", 0);
         }
         rect.setBounds(x, y, width, height);
         if (jo.has("name")) {
             this.blockName = jo.getString("name");
         }
-        if (jo.has("filter")){
+        if (jo.has("filter")) {
             JSONObject filterJo = jo.getJSONObject("filter");
             filter = TargetFilterFactory.parseFilter(filterJo, userId);
         }
-        if(jo.has("init_time")) {
+        if (jo.has("init_time")) {
             initTime = jo.getLong("init_time");
 
         }
@@ -136,14 +140,19 @@ public abstract class BIAbstractWidget implements BIWidget {
         return null;
     }
 
-    public GroupValueIndex createFilterGVI(DimensionCalculator[] row, Table targetKey, ICubeDataLoader loader, long userId){
-        GroupValueIndex gvi = loader.getTableIndex(targetKey).getAllShowIndex();
-        if(filter != null){
+    public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
+        GroupValueIndex gvi = loader.getTableIndex(targetKey.getTableSource()).getAllShowIndex();
+        if (filter != null) {
             for (int i = 0; i < row.length; i++) {
                 gvi = GVIUtils.AND(gvi, filter.createFilterIndex(row[i], targetKey, loader, userId));
             }
         }
         return gvi;
 
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 }

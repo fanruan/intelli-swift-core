@@ -4,12 +4,30 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-single {
-  transition: all 0.2s ease;
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
+  transition: background 0.2s ease;
+  -webkit-transition: background 0.2s ease;
+  -moz-transition: background 0.2s ease;
+  -o-transition: background 0.2s ease;
 }
 .bi-helper {
+  transition: background 0.1s ease;
+  -webkit-transition: background 0.1s ease;
+  -moz-transition: background 0.1s ease;
+  -o-transition: background 0.1s ease;
+}
+.base-disabled {
+  transition: background 0.1s ease;
+  -webkit-transition: background 0.1s ease;
+  -moz-transition: background 0.1s ease;
+  -o-transition: background 0.1s ease;
+}
+.list-group-item-text {
+  transition: background 0.1s ease;
+  -webkit-transition: background 0.1s ease;
+  -moz-transition: background 0.1s ease;
+  -o-transition: background 0.1s ease;
+}
+.list-item-text {
   transition: background 0.1s ease;
   -webkit-transition: background 0.1s ease;
   -moz-transition: background 0.1s ease;
@@ -175,6 +193,12 @@
     transform: rotate(0deg) scale(1.2);
   }
 }
+.bi-progress-bar-processor {
+  transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+}
 .bi-z-index-mask {
   -webkit-animation: background-change 0.5s ease;
   -moz-animation: background-change 0.5s ease;
@@ -182,16 +206,16 @@
   animation: background-change 0.5s ease;
 }
 @keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-webkit-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-moz-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-o-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 .bi-message-mask {
   -webkit-animation: background-change 0.5s ease;
@@ -200,14 +224,14 @@
   animation: background-change 0.5s ease;
 }
 @keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-webkit-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-moz-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }
 @-o-keyframes background-change {
-  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/
+  from  {background-color:#ffffff} to {background-color:#1a1a1a}  /**to{1: 1;}**/;
 }

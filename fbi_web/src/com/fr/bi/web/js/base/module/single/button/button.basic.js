@@ -30,11 +30,11 @@ BI.BasicButton = BI.inherit(BI.Single, {
         BI.BasicButton.superclass._init.apply(this, arguments);
         var opts = this.options;
         if (opts.selected === true) {
-            BI.defer(BI.bind(function () {
+            BI.nextTick(BI.bind(function () {
                 this.setSelected(opts.selected);
             }, this));
         }
-        BI.defer(BI.bind(this.bindEvent, this));
+        BI.nextTick(BI.bind(this.bindEvent, this));
 
         if (opts.shadow) {
             this._createShadow();
@@ -220,7 +220,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
         this._hover = true;
         this.handle().element.addClass("hover");
         if (this.options.shadow) {
-            this.$mask.visible();
+            this.$mask.setVisible(true);
         }
     },
 
@@ -228,7 +228,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
         this._hover = false;
         this.handle().element.removeClass("hover");
         if (this.options.shadow) {
-            this.$mask && this.$mask.invisible();
+            this.$mask && this.$mask.setVisible(false);
         }
     },
 
@@ -241,7 +241,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
             this.handle().element.removeClass("active");
         }
         if (o.shadow && !o.isShadowShowingOnSelected) {
-            this.$mask && this.$mask.invisible();
+            this.$mask && this.$mask.setVisible(false);
         }
     },
 
@@ -271,6 +271,15 @@ BI.BasicButton = BI.inherit(BI.Single, {
 
     getText: function () {
         return this.options.text;
+    },
+
+    setEnable: function (b) {
+        BI.BasicButton.superclass.setEnable.apply(this, arguments);
+        if (!b) {
+            if (this.options.shadow) {
+                this.$mask && this.$mask.setVisible(false);
+            }
+        }
     },
 
     empty: function () {

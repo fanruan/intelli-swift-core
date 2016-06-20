@@ -1,15 +1,12 @@
 package com.fr.bi.conf.data.source.operator.create;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BIBasicField;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.source.ITableSource;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.db.*;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONArray;
@@ -37,7 +34,8 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
 
     public TableUnionOperator() {
     }
-    public TableUnionOperator( List<List<String>> lists) {
+
+    public TableUnionOperator(List<List<String>> lists) {
         this.lists = lists;
     }
 
@@ -89,9 +87,9 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
 //    }
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
-        DBTable[] pts = new DBTable[tables.length];
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
+        IPersistentTable[] pts = new IPersistentTable[tables.length];
         for (int i = 0; i < pts.length; i++) {
             pts[i] = tables[i];
         }
@@ -102,22 +100,22 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
             int columnSize = 0;
             for (int j = 1; j < list.size(); j++) {
                 if (!StringUtils.isEmpty(list.get(j))) {
-                    BIColumn column = pts[j - 1].getBIColumn(list.get(j));
+                    PersistentField column = pts[j - 1].getField(list.get(j));
                     bitype = column.getBIType();
                     columnSize = Math.max(columnSize, column.getColumnSize());
                 }
             }
-            DBTable.addColumn(new BIColumn(list.get(0), BIDBUtils.biTypeToSql(bitype), columnSize));
+            persistentTable.addColumn(new PersistentField(list.get(0), BIDBUtils.biTypeToSql(bitype), columnSize));
         }
 
-        return DBTable;
+        return persistentTable;
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         List<ICubeTableService> tis = new ArrayList<ICubeTableService>();
-        for (ITableSource s : parents) {
-            tis.add(loader.getTableIndex(s.fetchObjectCore()));
+        for (CubeTableSource s : parents) {
+            tis.add(loader.getTableIndex(s));
         }
         return write(travel, tis);
     }
@@ -126,7 +124,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
         int index = 0;
         for (int i = 0; i < tis.size(); i++) {
             ICubeTableService ti = tis.get(i);
-            BIBasicField[] cIndex = new BIBasicField[lists.size()];
+            ICubeFieldSource[] cIndex = new ICubeFieldSource[lists.size()];
             for (int j = 0; j < cIndex.length; j++) {
                 cIndex[j] = ti.getColumns().get(new IndexKey(lists.get(j).get(i + 1)));
             }
@@ -147,12 +145,12 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         int st = (int) Math.ceil(start / parents.size());
-        int ed = (int) Math.ceil(end / parents.size());
+        int ed = Math.max(1,(int) Math.ceil(end / parents.size()));
         List<ICubeTableService> tis = new ArrayList<ICubeTableService>();
-        for (ITableSource s : parents) {
-            tis.add(loader.getTableIndex( s.fetchObjectCore(), st, ed));
+        for (CubeTableSource s : parents) {
+            tis.add(loader.getTableIndex(s, st, ed));
         }
         return write(travel, tis);
     }

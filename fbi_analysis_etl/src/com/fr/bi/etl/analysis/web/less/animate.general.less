@@ -1,8 +1,12 @@
 @import "animate";
 @import "bibase";
 
-.transition(bi-single, all, 0.2s);
+.transition(bi-single, background, 0.2s);
 .transition(bi-helper, background, 0.1s);
+.transition(base-disabled, background, 0.1s);
+.transition(list-group-item-text, background, 0.1s);
+.transition(list-item-text, background, 0.1s);
 .bi-animate-shake3-hover(bi-shake-icon);
+.transition(bi-progress-bar-processor, all);
 .bi-animate(bi-z-index-mask, background-change,'{background-color:@{color-bi-background-default}}','{background-color:@{background-color-black}}');
 .bi-animate(bi-message-mask, background-change,'{background-color:@{color-bi-background-default}}','{background-color:@{background-color-black}}');

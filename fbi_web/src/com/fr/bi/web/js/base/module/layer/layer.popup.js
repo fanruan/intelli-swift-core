@@ -7,7 +7,7 @@ BI.PopupView = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.PopupView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-list-view",
-            maxWidth: 230,
+            maxWidth: 'auto',
             minWidth: 100,
             maxHeight: 200,
             minHeight: 25,
@@ -18,6 +18,7 @@ BI.PopupView = BI.inherit(BI.Widget, {
             vgap: 0,
             hgap: 0,
             direction: BI.Direction.Top, //工具栏的方向
+            stopEvent: false,//是否停止mousedown、mouseup事件
             stopPropagation: false, //是否停止mousedown、mouseup向上冒泡
             logic: {
                 dynamic: true
@@ -42,19 +43,20 @@ BI.PopupView = BI.inherit(BI.Widget, {
     _init: function () {
         BI.PopupView.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.times = 1;
 
         var fn = function (e) {
             e.stopPropagation();
+        }, stop = function (e) {
+            e.stopEvent();
             return false;
         };
         this.element.css({
             "z-index": BI.zIndex_popup,
             "min-width": o.minWidth + "px",
             "max-width": o.maxWidth + "px"
-        }).bind({"click": fn});
+        }).bind({"click": fn, "mousewheel": fn});
         o.stopPropagation && this.element.bind({"mousedown": fn, "mouseup": fn, "mouseover": fn});
-
+        o.stopEvent && this.element.bind({"mousedown": stop, "mouseup": stop, "mouseover": stop});
         this.tool = this._createTool();
         this.tab = this._createTab();
         this.view = this._createView();

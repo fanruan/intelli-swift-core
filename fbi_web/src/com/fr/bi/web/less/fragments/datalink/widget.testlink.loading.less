@@ -1,10 +1,12 @@
 @import "../../bibase";
 .bi-test-link-loading-mask{
-  background: @color-bi-background-default;
-  .opacity(0.8);
+  & .mask-pane{
+    background: @color-bi-background-default;
+    .opacity(0.8);
+  }
   & .link-name{
     font-size: @font-size-16;
-    color: @color-bi-background-black
+    color: @color-bi-background-black;
   }
   & .loading-comment{
     font-size: @font-size-16;

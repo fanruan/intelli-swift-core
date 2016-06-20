@@ -8,6 +8,23 @@
     border-radius: 2px;
     font-size: 22px;
     border: 1px solid @color-bi-border-default;
+    cursor: url('@{cursor}'), auto;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+    &:hover{
+      background: @color-bi-background-normal;
+      border: 1px solid @color-bi-border-normal;
+    }
+    &:active{
+      background: @color-bi-background-normal;
+      border: 1px solid @color-bi-border-normal;
+    }
+  }
+  & .widget-more, & .widget-reuse{
+    border-radius: 2px;
+    font-size: 22px;
+    border: 1px solid @color-bi-border-default;
     &:hover{
       background: @color-bi-background-normal;
       border: 1px solid @color-bi-border-normal;

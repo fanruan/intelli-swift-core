@@ -27,11 +27,19 @@ public class StringBOTTOMNFilterValue extends StringNFilterValue implements NFil
     @Override
     public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         LightNode parentNode = node.getParent();
-        int comparedRow = parentNode.getChildLength() + 1 - N;
-        if (comparedRow <= 0) {
+        int count = parentNode.getChildLength();
+        if (N < 1){
+            return false;
+        }
+        if (N >= count){
             return true;
         }
-        Comparable nline = parentNode.getChildTOPNValueLine(comparedRow);
+        Comparable nline;
+        if (N < count * 2){
+            nline = parentNode.getChildBottomNValueLine(N);
+        } else {
+            nline = parentNode.getChildTOPNValueLine(count + 1 - N);
+        }
         return nline != null && node.getComparator().compare(nline, node.getData()) <= 0;
     }
 }

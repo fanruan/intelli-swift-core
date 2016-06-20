@@ -55,14 +55,14 @@ BI.MultiSelectCheckSelectedButton = BI.inherit(BI.Single, {
                 type: BI.MultiSelectCombo.REQ_GET_DATA_LENGTH
             }, function (res) {
                 var length = res.count - ob.value.length;
-                BI.defer(function(){
+                BI.nextTick(function(){
                     self.numberCounter.setText(length);
                     self.setVisible(length > 0);
                 });
             });
             return;
         }
-        BI.defer(function(){
+        BI.nextTick(function(){
             self.numberCounter.setText(ob.value.length);
             self.setVisible(ob.value.length > 0);
         })

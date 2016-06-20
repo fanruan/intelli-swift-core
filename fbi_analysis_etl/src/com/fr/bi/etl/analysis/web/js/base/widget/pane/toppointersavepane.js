@@ -54,8 +54,24 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
             text:BI.i18nText("BI-Save"),
             handler : function(e){
                 if(!o.saveHandler(self.controller.isEditing())) {
-                    self.controller.changeEditingState()
-                    self.controller.fireSaveOrEditEvent();
+                    var change  = function () {
+                        self.controller.changeEditingState()
+                        self.controller.fireSaveOrEditEvent();
+                    }
+                    if(self.controller.isEditing()){
+                         var res = o.checkBeforeSave();
+                        if(res[0] === false) {
+                            BI.Msg.confirm(res[2], res[1], function (v) {
+                                if(v === true) {
+                                    change();
+                                }
+                            })
+                        } else {
+                            change();
+                        }
+                    } else {
+                        change();
+                    }
                 }
             }
         });
@@ -65,7 +81,7 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
         this.contentItemWidget.element.addClass("bi-analysis-etl-top-pointer-save-pane-item");
 
         self.contentItemWidget.on(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function (status, title) {
-            self.controller.refreshSaveButtonStatus(status, title);
+            self.controller.refreshSaveButtonStatus(status, BI.isNull(title) ? BI.i18nText('BI-Correct_The_Errors_Red') : title);
         });
         self.contentItemWidget.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function () {
             self.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, arguments);
@@ -91,8 +107,8 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
             self.fireEvent(BI.AnalysisETLOperatorCenter.DATA_CHANGE, arguments);
         })
 
-        this.contentItemWidget.on(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, function () {
-            self.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, arguments);
+        this.contentItemWidget.on(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, function (v) {
+            self.controller.doValidCheck(v)
         })
 
         this.pointerPane = BI.createWidget({
@@ -109,18 +125,24 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
                     el:this.contentItemWidget
                 }, {
                     el : {
-                        type:"bi.center_adapt",
+                        type:"bi.right",
+                        height:50,
                         items:[{
-                            type:"bi.right",
-                            items:[{
-                                type:"bi.layout",
-                                width:10,
-                                height:1
-                            }, this.save,{
-                                type:"bi.layout",
-                                width:10,
-                                height:1
-                            }, this.cancel]
+                            type:"bi.layout",
+                            width:10,
+                            height:1
+                        }, {
+                            type:"bi.center_adapt",
+                            height:50,
+                            items:[this.save]
+                        },{
+                            type:"bi.layout",
+                            width:10,
+                            height:1
+                        }, {
+                            type:"bi.center_adapt",
+                            height:50,
+                            items:[this.cancel]
                         }]
                     },
                     height:50

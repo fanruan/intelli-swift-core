@@ -66,6 +66,7 @@ BICst.ETL_MANAGE_TABLE_GROUP = 7;
 BICst.ETL_MANAGE_TABLE_CIRCLE = 8;
 BICst.ETL_MANAGE_TABLE_NEW_GROUP = 9;
 BICst.ETL_MANAGE_TABLE_DELETE = 10;
+BICst.ETL_MANAGE_EXCEL_CHANGE = 11;
 
 
 BICst.Widget = {
@@ -77,7 +78,7 @@ BICst.Widget = {
     AXIS: 6,
     MAP: 7,
     DETAIL: 8,
-    DOUGHNUT: 9,
+    DONUT: 9,
     BUBBLE: 10,
     SCATTER: 11,
     RADAR: 12,
@@ -143,6 +144,8 @@ BICst.DASHBOARD_WIDGET_NAME_POS_LEFT = 20;      //标题位置居左
 BICst.DASHBOARD_WIDGET_NAME_POS_CENTER = 21;     //标题位置居右
 BICst.DASHBOARD_WIDGET_FILTER = 22;         //查看过滤条件
 
+BICst.DASHBOARD_WIDGET_SWITCH_CHART = 23;   //查看状态下的切换图表
+
 //维度下拉选项
 BICst.DIMENSION_STRING_COMBO = {
     ASCEND: 100,
@@ -168,7 +171,8 @@ BICst.DIMENSION_NUMBER_COMBO = {
     DT_RELATION: 207,
     COPY: 208,
     DELETE: 209,
-    INFO: 210
+    INFO: 210,
+    CORDON: 211
 };
 
 BICst.DIMENSION_DATE_COMBO = {
@@ -192,10 +196,13 @@ BICst.TARGET_COMBO = {
     CHART_TYPE: 401,
     STYLE_SETTING: 402,
     FILTER: 403,
-    COPY: 404,
-    DELETE: 405,
-    INFO: 406,
-    DEPEND_TYPE: 407
+    DISPLAY: 404,
+    HIDDEN: 405,
+    COPY: 406,
+    DELETE: 407,
+    INFO: 408,
+    DEPEND_TYPE: 409,
+    CORDON: 410
 };
 
 //明细表维度下拉选项
@@ -252,7 +259,8 @@ BICst.CALCULATE_TARGET_COMBO = {
 
 BICst.CONTROL_COMBO = {
     DELETE: 505,
-    INFO: 506
+    INFO: 506,
+    RENAME: 507
 };
 
 //分组统计下拉选项
@@ -263,7 +271,11 @@ BICst.STATISTICS_GROUP_DATE_COMBO = {
     MONTH: 903,
     WEEK: 904,
     DELETE: 905,
-    No_Repeat_Count: 899
+    No_Repeat_Count: 899,
+    DISPLAY: 898,
+    HIDDEN: 897,
+    RENAME: 896,
+    RECORD_COUNT: 895
 };
 
 BICst.STATISTICS_GROUP_NUMBER_COMBO = {
@@ -274,7 +286,11 @@ BICst.STATISTICS_GROUP_NUMBER_COMBO = {
     No_Repeat_Count: 910,
     DELETE: 911,
     GROUP_SETTING: 912,
-    GROUP_BY_VALUE: 913
+    GROUP_BY_VALUE: 913,
+    DISPLAY: 904,
+    HIDDEN: 905,
+    RENAME: 903,
+    RECORD_COUNT: 902
 };
 
 BICst.STATISTICS_GROUP_STRING_COMBO = {
@@ -282,7 +298,11 @@ BICst.STATISTICS_GROUP_STRING_COMBO = {
     GROUP_BY_CUSTOM: 914,
     No_Repeat_Count: 915,
     DELETE: 916,
-    APPEND: 917
+    APPEND: 917,
+    DISPLAY: 912,
+    HIDDEN: 911,
+    RENAME: 910,
+    RECORD_COUNT: 909
 };
 
 BICst.CHART_VIEW_STYLE_BAR = 1;
@@ -355,10 +375,65 @@ BICst.TABLE_FORM = {
 };
 
 BICst.TABLE_STYLE = {
-    NORMAL: 1,      //普通风格
-    BLUE: 2,        //蓝色表头的
-    INTERVAL: 3     //内容间隔色
+    STYLE1: 1,      //普通风格
+    STYLE2: 2,        //蓝色表头的
+    STYLE3: 3     //内容间隔色
 };
+
+BICst.CHART_STYLE = {
+    //类型
+    NORMAL: 1,      //普通形态
+    RIGHT_ANGLE: 2,        //直角线形
+    CURVE: 3,     //曲线
+    EQUAL_ARC_ROSE: 4, //等弧玫瑰图
+    NOT_EQUAL_ARC_ROSE: 5, //不等弧玫瑰图
+    CIRCLE: 6,          //圆形雷达
+    POLYGON: 7,          //多边形雷达
+    HALF_DASHBOARD: 9,//180'的仪表盘
+    PERCENT_DASHBOARD: 10,//百分比的仪表盘
+    PERCENT_SCALE_SLOT: 11,//带刻度槽的仪表盘
+    VERTICAL_TUBE: 12,      //竖起来的试管型仪表盘
+    HORIZONTAL_TUBE: 13,//横过来的试管型仪表盘
+
+    //风格
+    STYLE_NORMAL: 21,       //普通风格
+    STYLE_GRADUAL: 22,      //渐变
+    STYLE_TRANSPARENT: 23,   //透明
+    STYLE_GRADUAL_HIGHLIGHT: 24, //渐变高亮
+    STYLE_3D: 25            //3d
+};
+
+BICst.PIE_ANGLES = {
+    THREE_FOURTHS: 270,
+    HALF: 180,
+    TOTAL: 360
+};
+
+BICst.CHART_LEGENDS = {
+    NOT_SHOW: 1,
+    TOP: 2,
+    RIGHT: 3,
+    BOTTOM: 4,
+    LEFT: 5
+};
+
+BICst.MAP_TYPE = {};
+BICst.MAP_TYPE.WORLD = 10000;
+BICst.MAP_TYPE.CHINA = 11000;
+BICst.MAP_TYPE.JIANGSU = 11010;
+BICst.MAP_TYPE.SHANDONG = 11020;
+
+BICst.MAP_PATH = {};
+BICst.MAP_PATH[BICst.MAP_TYPE.WORLD] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.CHINA] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.JIANGSU] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/jiangsu.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.SHANDONG] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/shandong.json";
+
+BICst.MAP_NAME = {};
+BICst.MAP_NAME["世界"] = BICst.MAP_TYPE.WORLD;
+BICst.MAP_NAME["中国"] = BICst.MAP_TYPE.CHINA;
+BICst.MAP_NAME["江苏省"] = BICst.MAP_TYPE.JIANGSU;
+BICst.MAP_NAME["山东省"] = BICst.MAP_TYPE.SHANDONG;
 
 BICst.TABLE_MAX_ROW = 20;
 BICst.TABLE_MAX_COL = 7;
@@ -391,3 +466,15 @@ BICst.DRILL = {
     DOWN: 2
 };
 
+//图样式常量
+BICst.VALUE_SAVE_BY_NORMAL = 0;
+BICst.VALUE_SAVE_NO_DECAML = 1;
+BICst.VALUE_SAVE_ONE_DECAML = 2;
+BICst.VALUE_SAVE_TWO_DECAML = 3;
+
+//定义组件的三个状态，查看状态的dashboard、编辑状态的dashboard、详细设置
+BICst.WIDGET_STATUS = {
+    SHOW: 1,
+    EDIT: 2,
+    DETAIL: 3
+};

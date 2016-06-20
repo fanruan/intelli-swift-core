@@ -3,9 +3,11 @@
  */
 package com.fr.bi.web.conf.services.cubeconf;
 
-import com.fr.bi.stable.relation.BITableRelationPath;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.relation.BITableRelation;
+
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -42,22 +44,22 @@ public class BIUpdateAccessMultiPathAction extends AbstractBIConfigureAction {
         JSONArray relationsJSON = new JSONArray(relationsString);
         BITableRelation[] relations = new BITableRelation[relationsJSON.length()];
         for (int i = 0; i < relations.length; i++) {
-            BITableRelation rel = new BITableRelation();
-            rel.parseJSON(relationsJSON.optJSONObject(i));
-            relations[i] = rel;
+//            BITableRelation rel = new BITableRelation();
+//            rel.parseJSON(relationsJSON.optJSONObject(i));
+            relations[i] = BITableRelationHelper.getRelation(relationsJSON.optJSONObject(i));
         }
         BITableRelationPath path = new BITableRelationPath(relations);
         switch (type) {
             case 0://取消选中，既删除该路径
 
-                BIConfigureManagerCenter.getTableRelationManager().addDisableRelations(userId, path);
+                BICubeConfigureCenter.getTableRelationManager().addDisableRelations(userId, path);
                 break;
             case 1://选中，使用该路径
-                BIConfigureManagerCenter.getTableRelationManager().removeDisableRelations(userId, path);
+                BICubeConfigureCenter.getTableRelationManager().removeDisableRelations(userId, path);
                 break;
         }
         try {
-            BIConfigureManagerCenter.getTableRelationManager().persistData(userId);
+            BICubeConfigureCenter.getTableRelationManager().persistData(userId);
         } catch (Exception e) {
 
         }

@@ -31,7 +31,7 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
         return valid;
     },
 
-    populate: function(mergeResult) {
+    populate: function(mergeResult, joinNames) {
         var self = this;
         this.mergeResult = mergeResult;
         var items = [];
@@ -40,7 +40,7 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
             var nameEditor = BI.createWidget({
                 type: "bi.sign_initial_editor",
                 allowBlank: false,
-                value: name.column_name,
+                text: name.column_name,
                 title: title,
                 width: 100,
                 validationChecker: function(v){
@@ -48,11 +48,11 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
                 },
                 errorText: BI.i18nText("BI-Can_Not_Have_Rename_Fields")
             });
-            nameEditor.setValue({state: name.name});
+            nameEditor.setValue({value: name.name});
             nameEditor.on(BI.SignInitialEditor.EVENT_CHANGE, function(){
                 var nameValue = nameEditor.getValue();
-                self.mergeResult[i].name = nameValue.state;
-                nameEditor.setTitle(nameValue.state === name.column_name ? nameValue.state : (nameValue.state + "(" + name.column_name + ")"));
+                self.mergeResult[i].name = nameValue.value;
+                nameEditor.setTitle(nameValue.value === name.column_name ? nameValue.value : (nameValue.value + "(" + name.column_name + ")"));
                 self.fireEvent(BI.JoinResultHeader.EVENT_CHANGE, self.mergeResult);
             });
             var editorIcon = BI.createWidget({
@@ -64,13 +64,31 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
                     nameEditor.focus();
                 }
             });
+            var cls = "";
+            if(name.isLeft === true) {
+                cls = "table-color0";
+                BI.some(joinNames, function(j, jNames){
+                    if(jNames[0] === name.column_name) {
+                        cls = "table-color2";
+                        return true;
+                    }
+                });
+            } else {
+                cls = "table-color1";
+                BI.some(joinNames, function(j, jNames){
+                    if(jNames[1] === name.column_name) {
+                        cls = "table-color2";
+                        return true;
+                    }
+                });
+            }
             items.push({
                 type: "bi.left_right_vertical_adapt",
                 items: {
                     left: [nameEditor],
                     right: [editorIcon]
                 },
-                cls: name.isLeft === true ? "table-color0" : "table-color1",
+                cls: cls,
                 height: "100%"
             });
         });

@@ -16,6 +16,7 @@ BI.MultiSelectCheckPane = BI.inherit(BI.Widget, {
             baseCls: "bi-multi-select-check-pane",
             items: [],
             itemsCreator: BI.emptyFn,
+            valueFormatter: BI.emptyFn,
             onClickContinueSelect: BI.emptyFn
         });
     },
@@ -36,10 +37,11 @@ BI.MultiSelectCheckPane = BI.inherit(BI.Widget, {
                 if (self.storeValue.type === BI.Selection.Multi) {
                     callback({
                         items: BI.map(self.storeValue.value, function (i, v) {
+                            var txt = opts.valueFormatter(v) || v;
                             return {
-                                text: v,
+                                text: txt,
                                 value: v,
-                                title: v
+                                title: txt
                             }
                         })
                     });

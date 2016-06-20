@@ -1,5 +1,9 @@
 package com.fr.bi.field.filtervalue.string.rangefilter;
 
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.BICoreService;
 import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
@@ -8,11 +12,11 @@ import java.util.Set;
 /**
  * Created by 小灰灰 on 2016/1/6.
  */
-public class StringValueSet{
+public class StringValueSet implements BICoreService{
     public static final int CONTAINS = 1;
-
+    @BICoreField
     private Set<String> values = new HashSet<String>();
-
+    @BICoreField
     private int type;
 
     public StringValueSet() {
@@ -36,7 +40,7 @@ public class StringValueSet{
     }
 
     public boolean contains(String s){
-        return isContains() ? values.contains(s) : !values.contains(s);
+        return isContains() ? (values.isEmpty() || values.contains(s))  : !values.contains(s);
     }
 
     @Override
@@ -62,5 +66,10 @@ public class StringValueSet{
         int result = values.hashCode();
         result = 31 * result + type;
         return result;
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 }

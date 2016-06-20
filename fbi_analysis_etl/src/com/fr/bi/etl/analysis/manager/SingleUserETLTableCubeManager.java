@@ -3,20 +3,21 @@
  */
 package com.fr.bi.etl.analysis.manager;
 
-import java.io.File;
-
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.etl.analysis.data.UserTableSource;
+import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.tableobj.ETLTableObject;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
-import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.StringUtils;
+
+import java.io.File;
 
 /**
  * @author Daniel
@@ -28,14 +29,14 @@ public class SingleUserETLTableCubeManager implements Release {
 	
 	private ThreadUnitedQueue<ETLTableObject> tq = new ThreadUnitedQueue<ETLTableObject>();
 
-    private UserTableSource source;
+    private UserCubeTableSource source;
 
-    public UserTableSource getSource() {
+    public UserCubeTableSource getSource() {
         return source;
     }
 
 	private String getSavedPath(){
-		UserETLCubeManager manager = StableFactory.getMarkedObject(UserETLCubeManager.class.getName(), UserETLCubeManager.class);
+        UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
     	if(manager != null){
     		return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue());
     	}
@@ -50,11 +51,11 @@ public class SingleUserETLTableCubeManager implements Release {
 		tq.releaseObject();
 	}
 	
-	public SingleUserETLTableCubeManager (UserTableSource source){
+	public SingleUserETLTableCubeManager (UserCubeTableSource source){
 		this.source = source;
 		String path = getSavedPath();
-		if(path != null){
-			tq.add(new ETLTableObject(source.fetchObjectCore().getID().getIdentityValue(), path));
+		if(path != null && new File(BIPathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), path)).exists()){
+			tq.add(new ETLTableObject(source, path));
 		}
 		addTask();
 	}
@@ -75,22 +76,29 @@ public class SingleUserETLTableCubeManager implements Release {
 						@Override
 						public void actionPerformed(UserETLUpdateTask data) {
 							try {
-								if(data.check()){
+								long version = 0;
+								if (!tq.isEmpty()){
+									version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));
+									tq.releaseObject();
+								}
+								if(data.check(version)){
 									return;
 								}
 								data.start();
 								data.run();
 								data.end();
-								tq.add(new ETLTableObject(source.fetchObjectCore().getID().getIdentityValue(), data.getPath()));
+								tq.add(new ETLTableObject(source, data.getPath()));
 							} catch (Exception e){
-								BILogger.getLogger().error(e.getMessage());
+								BILogger.getLogger().error(e.getMessage(), e);
 							} finally {
 							}
 						}
 					});
+                    updateTask.start();
 				}
 			}
 		}
+
 		updateTask.add(new UserETLUpdateTask(source));
 	}
 	
@@ -99,7 +107,16 @@ public class SingleUserETLTableCubeManager implements Release {
         return BIFileUtils.checkDir(new File(BIPathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue())));
     }
 	
-	
+	protected boolean checkVersion(){
+        if (tq.isEmpty()){
+            return false;
+        } else {
+            long version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));
+            tq.releaseObject();
+            return new UserETLUpdateTask(source).check(version);
+        }
+    }
+
 	/**
 	 * 
 	 */

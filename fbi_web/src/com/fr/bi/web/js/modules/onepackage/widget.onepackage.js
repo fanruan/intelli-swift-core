@@ -22,13 +22,13 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         SOUTH_HEIGHT: 60
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.OnePackage.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-business-package-pane"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.OnePackage.superclass._init.apply(this, arguments);
         var o = this.options;
         this.model = new BI.OnePackageModel({
@@ -105,15 +105,15 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             },
             popup: {
                 type: "bi.package_searcher_result_pane",
-                onStartSearch: function(){
+                onStartSearch: function () {
                     self.addNewTableCombo.setEnable(false);
                 },
-                onStopSearch: function(){
+                onStopSearch: function () {
                     self.addNewTableCombo.setEnable(true);
                 }
             }
         });
-        this.searcher.on(BI.Searcher.EVENT_CHANGE, function(v){
+        this.searcher.on(BI.Searcher.EVENT_CHANGE, function (v) {
             self._onClickOneTable(v);
         });
 
@@ -138,7 +138,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                         cls: "add-new-table-item",
                         textHgap: this._constant.BUTTON_GAP,
                         height: this._constant.BUTTON_HEIGHT,
-                        handler: function(){
+                        handler: function () {
                             self.addNewTableCombo.hideView();
                         }
                     }),
@@ -149,8 +149,8 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             },
             width: this._constant.COMBO_WIDTH
         });
-        this.addNewTableCombo.on(BI.Combo.EVENT_CHANGE, function(v){
-            switch (v){
+        this.addNewTableCombo.on(BI.Combo.EVENT_CHANGE, function (v) {
+            switch (v) {
                 case BICst.ADD_NEW_TABLE.DATABASE_OR_PACKAGE:
                     self._onClickSelectTable();
                     break;
@@ -165,7 +165,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                     break;
             }
         });
-        this.addNewTableCombo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function(){
+        this.addNewTableCombo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
             self.addNewTableCombo.setValue([]);
         });
 
@@ -210,7 +210,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         this.tableList = BI.createWidget({
             type: "bi.package_tables_list_pane"
         });
-        this.tableList.on(BI.PackageTablesListPane.EVENT_CLICK_TABLE, function(id){
+        this.tableList.on(BI.PackageTablesListPane.EVENT_CLICK_TABLE, function (id) {
             self._onClickOneTable(id);
         });
 
@@ -218,7 +218,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         this.relationView = BI.createWidget({
             type: "bi.package_table_relations_pane"
         });
-        this.relationView.on(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, function(id){
+        this.relationView.on(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, function (id) {
             self._onClickOneTable(id);
         });
 
@@ -253,7 +253,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Cancel"),
             level: "ignore",
             height: this._constant.BUTTON_HEIGHT,
-            handler: function(){
+            handler: function () {
                 self.fireEvent(BI.OnePackage.EVENT_CANCEL);
             }
         });
@@ -274,7 +274,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 Data.SharingPool.put("relations", data.relations);
                 Data.SharingPool.put("fields", self.model.getAllFields());
                 Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
-                BI.Utils.updateTablesOfOnePackage(data, function(){
+                BI.Utils.updateTablesOfOnePackage(data, function () {
                     self.fireEvent(BI.OnePackage.EVENT_SAVE);
                     mask.destroy();
                 });
@@ -307,20 +307,20 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     _refreshTablesInPackage: function () {
         this.showCardLayout.showCardByName(this.showCardLayout.getDefaultShowName());
         this.tableList.populate(this._createItemsForTableList());
-        this.relationView.populate({
-            tableIds: this.model.getTables(),
-            translations: this.model.getTranslations(),
-            relations: this.model.getRelations(),
-            all_fields: this.model.getAllFields(),
-            tableData: this.model.getTablesData()
-        });
+        //this.relationView.populate({
+        //    tableIds: this.model.getTables(),
+        //    translations: this.model.getTranslations(),
+        //    relations: this.model.getRelations(),
+        //    all_fields: this.model.getAllFields(),
+        //    tableData: this.model.getTablesData()
+        //});
         this._refreshEmptyTip();
         //避免出现停留在前面的搜索面板
         this.searcher.stopSearch();
     },
 
     _refreshEmptyTip: function () {
-        if(BI.isEmptyArray(this.model.getTables())){
+        if (BI.isEmptyArray(this.model.getTables())) {
             this._onClickSelectTable();
             this.emptyTip.setVisible(true);
             return;
@@ -339,11 +339,11 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         BI.Layers.show(BICst.SELECT_TABLES_LAYER);
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {
             BI.Layers.remove(BICst.SELECT_TABLES_LAYER);
-            self.model.addTablesToPackage(tables, function(){
+            self.model.addTablesToPackage(tables, function () {
                 self._refreshTablesInPackage();
             });
         });
-        selectTablePane.on(BI.SelectTablePane.EVENT_CANCEL, function(){
+        selectTablePane.on(BI.SelectTablePane.EVENT_CANCEL, function () {
             BI.Layers.remove(BICst.SELECT_TABLES_LAYER);
         });
     },
@@ -363,12 +363,12 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             update_settings: this.model.getUpdateSettings()
         });
         BI.Layers.show(this._constant.ETL_LAYER);
-        etl.on(BI.ETL.EVENT_SAVE, function(data) {
+        etl.on(BI.ETL.EVENT_SAVE, function (data) {
             self.model.changeTableInfo(tableId, data);
             self._refreshTablesInPackage();
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
-        etl.on(BI.ETL.EVENT_CANCEL, function(){
+        etl.on(BI.ETL.EVENT_CANCEL, function () {
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
     },
@@ -381,16 +381,18 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             element: BI.Layers.create(this._constant.SQL_LAYER)
         });
         BI.Layers.show(this._constant.SQL_LAYER);
-        editSQL.on(BI.EditSQL.EVENT_CANCEL, function(){
+        editSQL.on(BI.EditSQL.EVENT_CANCEL, function () {
             BI.Layers.remove(self._constant.SQL_LAYER);
         });
-        editSQL.on(BI.EditSQL.EVENT_SAVE, function(data){
+        editSQL.on(BI.EditSQL.EVENT_SAVE, function (data) {
             BI.Layers.remove(self._constant.SQL_LAYER);
             var tableId = BI.UUID();
-            var usedFields = [];
-            BI.each(data.fields, function(i, fs){
-                BI.each(fs, function(j, field){
-                    usedFields.push(field.field_name);
+            var allFields = self.model.getAllFields();
+            BI.each(data.fields, function (i, fs) {
+                BI.each(fs, function (j, field) {
+                    field.table_id = tableId;
+                    field.id = BI.UUID();
+                    allFields[field.id] = field;
                 });
             });
             var translations = self.model.getTranslations();
@@ -403,20 +405,19 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self._constant.ETL_LAYER),
                 id: tableId,
                 table_data: data,
-                used_fields: usedFields,
                 relations: self.model.getRelations(),
                 translations: translations,
-                all_fields: self.model.getAllFields(),
+                all_fields: allFields,
                 excel_view: self.model.getExcelViews()[tableId],
                 update_settings: self.model.getUpdateSettings()
             });
             BI.Layers.show(self._constant.ETL_LAYER);
-            etl.on(BI.ETL.EVENT_SAVE, function(data) {
+            etl.on(BI.ETL.EVENT_SAVE, function (data) {
                 self.model.changeTableInfo(tableId, data);
                 self._refreshTablesInPackage();
                 BI.Layers.remove(self._constant.ETL_LAYER);
             });
-            etl.on(BI.ETL.EVENT_CANCEL, function(){
+            etl.on(BI.ETL.EVENT_CANCEL, function () {
                 BI.Layers.remove(self._constant.ETL_LAYER);
             });
         });
@@ -430,19 +431,17 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             element: BI.Layers.create(this._constant.EXCEL_LAYER)
         });
         BI.Layers.show(this._constant.EXCEL_LAYER);
-        excelUpload.on(BI.ExcelUpload.EVENT_CANCEL, function(){
+        excelUpload.on(BI.ExcelUpload.EVENT_CANCEL, function () {
             BI.Layers.remove(self._constant.EXCEL_LAYER);
         });
-        excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function(data){
+        excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function (data) {
             BI.Layers.remove(self._constant.EXCEL_LAYER);
             var tableId = BI.UUID();
-            var usedFields = [];
             var allFields = self.model.getAllFields();
-            BI.each(data.fields, function(i, fs){
-                BI.each(fs, function(j, field){
+            BI.each(data.fields, function (i, fs) {
+                BI.each(fs, function (j, field) {
                     field.table_id = tableId;
-                    field.id = tableId + field.field_name;
-                    usedFields.push(field.field_name);
+                    field.id = BI.UUID();
                     allFields[field.id] = field;
                 });
             });
@@ -456,7 +455,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self._constant.ETL_LAYER),
                 id: tableId,
                 table_data: data,
-                used_fields: usedFields,
                 relations: self.model.getRelations(),
                 translations: translations,
                 all_fields: allFields,
@@ -464,18 +462,19 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 update_settings: self.model.getUpdateSettings()
             });
             BI.Layers.show(self._constant.ETL_LAYER);
-            etl.on(BI.ETL.EVENT_SAVE, function(data) {
+            etl.on(BI.ETL.EVENT_SAVE, function (data) {
                 self.model.changeTableInfo(tableId, data);
                 self._refreshTablesInPackage();
                 BI.Layers.remove(self._constant.ETL_LAYER);
             });
-            etl.on(BI.ETL.EVENT_CANCEL, function(){
+
+            etl.on(BI.ETL.EVENT_CANCEL, function () {
                 BI.Layers.remove(self._constant.ETL_LAYER);
             });
         });
     },
 
-    _onClickOneTable: function(id){
+    _onClickOneTable: function (id) {
         var self = this;
         BI.Layers.remove(this._constant.ETL_LAYER);
         var etl = BI.createWidget({
@@ -483,7 +482,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: id,
             table_data: this.model.getTablesData()[id],
-            used_fields: this.model.getUsedFields()[id],
             relations: this.model.getRelations(),
             translations: this.model.getTranslations(),
             all_fields: this.model.getAllFields(),
@@ -491,32 +489,45 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             update_settings: this.model.getUpdateSettings()
         });
         BI.Layers.show(this._constant.ETL_LAYER);
-        etl.on(BI.ETL.EVENT_SAVE, function(data) {
+        etl.on(BI.ETL.EVENT_CUBE_SAVE, function (obj) {
+            var data = self.model.getValue();
+            Data.SharingPool.put("translations", data.translations);
+            Data.SharingPool.put("relations", data.relations);
+            Data.SharingPool.put("fields", self.model.getAllFields());
+            Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
+            BI.Utils.updateTablesOfOnePackage(data, function () {
+                // self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
+                BI.Utils.generateCubeByTable(obj, function () {
+                });
+            });
+        });
+        etl.on(BI.ETL.EVENT_SAVE, function (data) {
             self.model.changeTableInfo(id, data);
             self._refreshTablesInPackage();
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
-        etl.on(BI.ETL.EVENT_REMOVE, function(){
+        etl.on(BI.ETL.EVENT_REMOVE, function () {
             self.model.removeTable(id);
             self._refreshTablesInPackage();
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
-        etl.on(BI.ETL.EVENT_CANCEL, function(){
+        etl.on(BI.ETL.EVENT_CANCEL, function () {
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
     },
 
-    populate: function(){
+    populate: function () {
         var self = this;
-        this.model.initData(function(){
+        this.model.initData(function () {
             self._refreshTablesInPackage();
         });
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.model.getValue();
     }
 });
 BI.OnePackage.EVENT_CANCEL = "EVENT_CANCEL";
 BI.OnePackage.EVENT_SAVE = "EVENT_SAVE";
+BI.OnePackage.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 $.shortcut("bi.one_package", BI.OnePackage);

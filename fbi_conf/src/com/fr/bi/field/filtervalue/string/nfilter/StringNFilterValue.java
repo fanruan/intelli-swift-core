@@ -3,9 +3,11 @@
  */
 package com.fr.bi.field.filtervalue.string.nfilter;
 
-import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
+import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONObject;
@@ -13,7 +15,7 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 
-public abstract class StringNFilterValue implements StringFilterValue {
+public abstract class StringNFilterValue extends AbstractFilterValue<String> implements StringFilterValue {
     /**
 	 * 
 	 */
@@ -24,6 +26,7 @@ public abstract class StringNFilterValue implements StringFilterValue {
     /**
      * default 10
      */
+    @BICoreField
     protected int N = 10;
 
     /**
@@ -35,7 +38,7 @@ public abstract class StringNFilterValue implements StringFilterValue {
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         return null;
     }
 
@@ -53,7 +56,10 @@ public abstract class StringNFilterValue implements StringFilterValue {
         return result;
     }
 
-
+    @Override
+    public boolean isAllCalculatorFilter() {
+        return true;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -101,10 +107,6 @@ public abstract class StringNFilterValue implements StringFilterValue {
         return jo;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     /**
      * @param reader XML读取对象

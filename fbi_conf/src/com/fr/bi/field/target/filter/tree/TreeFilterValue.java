@@ -3,14 +3,17 @@
  */
 package com.fr.bi.field.target.filter.tree;
 
-import com.fr.bi.base.BIUser;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.BICoreService;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
@@ -23,11 +26,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class TreeFilterValue implements JSONParser {
+public class TreeFilterValue implements JSONParser, BICoreService {
     private static String XML_TAG = "TreeFilterValue";
-
+    @BICoreField
     private String value;
-
+    @BICoreField
     private TreeFilterValue[] childs;
 
     /**
@@ -120,9 +123,10 @@ public class TreeFilterValue implements JSONParser {
      * @return 索引
      */
     public GroupValueIndex createFilterIndex(DimensionCalculator calculator,
-                                             BIField[] controlCKS, int controlLayerIndex, Table tableKey, BITableRelation[][] relations, ICubeDataLoader loader, long userId) {
-        BIField ck = controlCKS[controlLayerIndex];
-        GroupValueIndex gvi = createFilterValue().createFilterIndex(new NoneDimensionCalculator(new BIField(ck), BIConfUtils.convert2TableSourceRelation(Arrays.asList(relations[controlLayerIndex]), new BIUser(userId))), tableKey, loader, userId);
+                                             BusinessField[] controlCKS, int controlLayerIndex,
+                                             BusinessTable tableKey, BITableRelation[][] relations, ICubeDataLoader loader, long userId) {
+        BusinessField ck = controlCKS[controlLayerIndex];
+        GroupValueIndex gvi = createFilterValue().createFilterIndex(new NoneDimensionCalculator(ck, BIConfUtils.convert2TableSourceRelation(Arrays.asList(relations[controlLayerIndex]))), tableKey, loader, userId);
         if (childs != null) {
             GroupValueIndex resgvi = null;
             for (int i = 0; i < childs.length; i++) {
@@ -142,5 +146,10 @@ public class TreeFilterValue implements JSONParser {
             }
         }
         return gvi;
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 }

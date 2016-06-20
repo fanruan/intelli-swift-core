@@ -4,11 +4,64 @@
 BI.ETLReq = {
     reqSaveTable: function(data, callback){
         data.sessionID = Data.SharingPool.get("sessionID");
-        BI.requestAsync("fr_bi_analysis_etl", "save_table", data, function(){
+        BI.requestAsync("fr_bi_analysis_etl", "save_table", data, function(res){
+            BI.Utils.afterSaveTable(res);
             callback();
         })
     },
 
+    reqRenameTable: function(data, callback){
+        var d = BI.deepClone(data);
+        data.sessionID = Data.SharingPool.get("sessionID");
+        BI.requestAsync("fr_bi_analysis_etl", "rename_table", data, function(){
+            BI.Utils.afterReNameTable(d.id, d.name, d.describe);
+            callback();
+        })
+    },
+
+    reqDeleteTable: function(data, callback){
+        data.sessionID = Data.SharingPool.get("sessionID");
+        BI.requestAsync("fr_bi_analysis_etl", "delete_table", data, function(){
+            BI.Utils.afterDeleteTable(data.id);
+            callback();
+        })
+    },
+
+    reqEditTable: function(data, callback){
+        data.sessionID = Data.SharingPool.get("sessionID");
+        var mask = BI.createWidget({
+            type: "bi.etl_loading_mask",
+            masker: 'body',
+            text: BI.i18nText("BI-Loading")
+        });
+        BI.requestAsync("fr_bi_analysis_etl", "edit_table", data, function(res){
+            if(mask != null) {
+                mask.destroy()
+            }
+            if(res['used']){
+                BI.Msg.confirm(BI.i18nText("BI-Warning"), BI.i18nText("BI-ETL_Table_Edit_Warning"), function (v) {
+                    if(v === true) {
+                        callback(res);
+                    }
+                })
+            } else {
+                callback(res);
+            }
+        })
+    },
+
+    reqPreviewTable: function(data, callback){
+        data.sessionID = Data.SharingPool.get("sessionID");
+        if(data[ETLCst.ITEMS][0][ETLCst.FIELDS].length === 0){
+            callback({
+                value:[]
+            });
+            return;
+        }
+        BI.requestAsync("fr_bi_analysis_etl", "preview_table", data, function (res) {
+            callback(res);
+        })
+    },
 
     reqFieldValues: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
@@ -16,4 +69,19 @@ BI.ETLReq = {
             callback(res);
         });
     },
+
+    reqFieldMinMaxValues: function (data, callback) {
+        data.sessionID = Data.SharingPool.get("sessionID");
+        BI.requestAsync("fr_bi_analysis_etl", "get_field_min_max_value", data, function (res) {
+            callback(res);
+        });
+    },
+
+
+    reqTableStatus: function (data, callback) {
+        data.sessionID = Data.SharingPool.get("sessionID");
+        BI.requestAsync("fr_bi_analysis_etl", "get_cube_status", data, function (res) {
+            callback(res);
+        });
+    }
 }

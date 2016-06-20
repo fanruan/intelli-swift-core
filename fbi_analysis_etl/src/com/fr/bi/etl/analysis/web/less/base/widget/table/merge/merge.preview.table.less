@@ -1,26 +1,44 @@
 @import "../../../../bibase";
 @import "../../../../animate";
 
-.bi-analysis-etl-merge-preview-table {
-  font-size:@font-size-12;
-  & .bi-adaptive-layout > table {
-    border-left:1px solid @border-color-line;
+.bi-analysis-etl-merge-preview {
+
+  & .bi-analysis-etl-merge-preview-table {
+    font-size:@font-size-12;
+    & .bi-adaptive-layout > table {
+      border-left:1px solid @border-color-line;
+    }
+
+    & .left {
+      background: @table-color-yellow;
+    }
+
+    & .merge {
+      background: @background-color-light-blue;
+    }
+
+
+    & .merge-info {
+      color:@font-color-light-gray;
+    }
+
+    & .right {
+      background: @background-color-light-green;
+    }
+
   }
 
-  & .left {
-    background: @table-color-yellow;
+  .bi-analysis-etl-merge-p-t-h-cell {
+    & .bi-editor {
+      background: @background-color-default;
+    }
+
   }
 
-  & .merge {
-    background: @background-color-light-blue;
+  & .warning {
+    font-size :@font-size-16;
+    zoom:2;
+    color : @font-color-warning;
   }
-
-  & .merge-info {
-    color:@font-color-light-gray;
-  }
-
-  & .right {
-    background: @background-color-light-green;
-  }
-
 }
+

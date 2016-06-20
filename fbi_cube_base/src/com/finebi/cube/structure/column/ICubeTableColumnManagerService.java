@@ -1,6 +1,7 @@
 package com.finebi.cube.structure.column;
 
 import com.finebi.cube.exception.BICubeColumnAbsentException;
+import com.finebi.cube.structure.ITableKey;
 import com.fr.bi.common.inter.Release;
 
 import java.util.Set;
@@ -23,5 +24,7 @@ public interface ICubeTableColumnManagerService extends Release {
     ICubeColumnEntityService getColumn(BIColumnKey columnKey) throws BICubeColumnAbsentException;
 
     Set<BIColumnKey> getCubeColumnInfo();
+
+    void setOwner(ITableKey owner);
 
 }

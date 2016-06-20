@@ -4,7 +4,7 @@
 BIShow.ContentWidgetView = BI.inherit(BI.View, {
     _defaultConfig: function () {
         return BI.extend(BIShow.ContentWidgetView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-text"
+            baseCls: "bi-dashboard-widget"
         })
     },
 
@@ -19,19 +19,24 @@ BIShow.ContentWidgetView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var self = this;
         this.textarea = BI.createWidget({
-            type: "bi.text_area_editor",
-            wId: this.model.get("id"),
-            element: vessel,
-            height: '100%'
+            type: "bi.text_area",
+            wId: this.model.get("id")
         });
 
-
-        this.textarea.on(BI.TextAreaEditor.EVENT_DESTROY, function () {
-            self.model.destroy()
-        });
-
-        this.textarea.on(BI.TextAreaEditor.EVENT_VALUE_CHANGE, function () {
+        this.textarea.on(BI.TextArea.EVENT_VALUE_CHANGE, function () {
             self.model.set(self.textarea.getValue())
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: vessel,
+            items: [{
+                el: this.textarea,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }]
         });
     },
 
@@ -41,4 +46,5 @@ BIShow.ContentWidgetView = BI.inherit(BI.View, {
             content: this.model.get("content")
         });
     }
-});
+})
+;

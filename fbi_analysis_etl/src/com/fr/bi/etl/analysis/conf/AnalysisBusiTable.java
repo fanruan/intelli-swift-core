@@ -1,26 +1,57 @@
 package com.fr.bi.etl.analysis.conf;
 
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
+import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.etl.analysis.Constants;
-import com.fr.bi.etl.analysis.manager.BIAnalysisDataSourceManagerProvider;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.stable.bridge.StableFactory;
+import com.fr.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
  */
 public class AnalysisBusiTable extends BIBusinessTable {
 
+    private String describe;
+    private String name;
+    private long userId;
+
     public AnalysisBusiTable(String id, long userId) {
-        super(id, userId);
+        super(id, "");
+        this.userId = userId;
     }
 
-    @Override
-    public ITableSource getSource() {
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setSource(CubeTableSource source) {
+        this.source = source;
+        initFields();
+    }
+
+
+    private void initFields() {
+        String tableId = getID().getIdentity();
+        List<BusinessField> fields = new ArrayList<BusinessField>();
+        for (PersistentField f : source.getPersistentTable().getFieldList()){
+            fields.add(new BIBusinessField(this, new BIFieldID(tableId + f.getFieldName()), f.getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(f.getSqlType(), f.getColumnSize(), f.getScale()), f.getColumnSize()));
+        }
+        setFields(fields);
+    }
+
+    public CubeTableSource getSource() {
         if (source == null) {
             try {
-                source = StableFactory.getMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, BIAnalysisDataSourceManagerProvider.class).getTableSourceByID(getID(), getUser());
+                source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(this);
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
@@ -31,7 +62,26 @@ public class AnalysisBusiTable extends BIBusinessTable {
         return source;
     }
 
-    protected int getTableType(){
+    public String getDescribe() {
+        return describe;
+    }
+
+    public JSONObject createJSON() throws Exception {
+        JSONObject jo = super.createJSON();
+        jo.put("describe", describe);
+        return jo;
+    }
+
+    @Override
+    public void setFields(List<BusinessField> fields) {
+        super.setFields(fields);
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
+
+    protected int getTableType() {
         return Constants.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE;
     }
 

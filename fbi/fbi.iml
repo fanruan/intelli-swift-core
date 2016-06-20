@@ -52,5 +52,6 @@
     <orderEntry type="module" module-name="fbi_web_base" />
     <orderEntry type="module" module-name="fbi_web_report" />
     <orderEntry type="module" module-name="fbi_cluster" />
+    <orderEntry type="module" module-name="fbi_analysis_etl" />
   </component>
 </module>

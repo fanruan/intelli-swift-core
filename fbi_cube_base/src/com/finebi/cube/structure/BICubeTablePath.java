@@ -1,8 +1,8 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.relation.BIBasicRelationPath;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.relation.BIRelationPath;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 
 import java.util.Iterator;
@@ -13,7 +13,7 @@ import java.util.Iterator;
  * @author Connery
  * @since 4.0
  */
-public class BICubeTablePath extends BIRelationPath<ITableKey, BIColumnKey, BICubeRelation> {
+public class BICubeTablePath extends BIBasicRelationPath<ITableKey, BIColumnKey, BICubeRelation> {
 
 
     public BIColumnKey getPrimaryField() throws BITablePathEmptyException {
@@ -29,4 +29,5 @@ public class BICubeTablePath extends BIRelationPath<ITableKey, BIColumnKey, BICu
         }
         return BIMD5Utils.getMD5String(new String[]{sb.toString()});
     }
+
 }

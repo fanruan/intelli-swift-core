@@ -1,17 +1,17 @@
 package com.fr.bi.fs;
 
 import com.fr.base.FRContext;
-import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.XMLFileManager;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.cache.tabledata.TableDataSyncDB;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.EnvChangedListener;
-import com.fr.stable.Primitive;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -21,10 +21,10 @@ import java.util.*;
  * Created by 小灰灰 on 2015/8/5.
  */
 public class BITableDataDAOManager extends XMLFileManager {
-
+    private static final String XML_TAG = "BITableDataDAOManager";
     private static BITableDataDAOManager manager;
     private final Map<Long, BIReportNode> tdBIReport_idMap = new Hashtable<Long, BIReportNode>();
-    private final Map<Long, BIReportNode> tdBISharedReport_idMap = new Hashtable<Long, BIReportNode>();
+    private final Map<Long, BISharedReportNode> tdBISharedReport_idMap = new Hashtable<Long, BISharedReportNode>();
     private EmbeddedTableData biReportTableData;
     private EmbeddedTableData biSharedReportTableData;
 
@@ -33,7 +33,7 @@ public class BITableDataDAOManager extends XMLFileManager {
     }
 
     public static BITableDataDAOManager getInstance() {
-        manager =  BIConstructorUtils.constructObject(BITableDataDAOManager.class, manager);
+        manager = BIConstructorUtils.constructObject(BITableDataDAOManager.class, manager);
         return manager;
     }
 
@@ -65,14 +65,14 @@ public class BITableDataDAOManager extends XMLFileManager {
         }
     }
 
-    private Set<Map.Entry<Long, BIReportNode>> getTdBISharedReport_idEntrySet() {
+    private Set<Map.Entry<Long, BISharedReportNode>> getTdBISharedReport_idEntrySet() {
         synchronized (TableDataBIReportDAO.class) {
             return tdBISharedReport_idMap.entrySet();
         }
     }
 
     public void writeTableDataBIReportMap(Set<Map.Entry<Long, BIReportNode>> set) {
-        synchronized (BITableDataDAOManager.class){
+        synchronized (BITableDataDAOManager.class) {
             this.biReportTableData = BIDAOUtils.initTableDataEmbeddedTableData();
             for (Map.Entry<Long, BIReportNode> entry : set) {
                 BIReportNode tdNode = entry.getValue();
@@ -86,7 +86,8 @@ public class BITableDataDAOManager extends XMLFileManager {
                 rowList.add(String.valueOf(tdNode.getLastModifyTime().getTime()));
                 rowList.add(String.valueOf(-1));
                 rowList.add(tdNode.getDescription());
-                rowList.add(String.valueOf(tdNode.getState()));
+                rowList.add(String.valueOf(tdNode.getStatus()));
+                rowList.add(String.valueOf(tdNode.getUserId()));
                 this.biReportTableData.addRow(rowList);
             }
         }
@@ -98,7 +99,7 @@ public class BITableDataDAOManager extends XMLFileManager {
         if (tdUser != null) {
             for (Map.Entry<Long, BIReportNode> entry : getTdBIReport_idEntrySet()) {
                 BIReportNode tdNode = entry.getValue();
-                if (ComparatorUtils.equals( tdUser.getUsername(), tdNode.getUsername())) {
+                if (ComparatorUtils.equals(tdUser.getUsername(), tdNode.getUsername())) {
                     resList.add(tdNode);
                 }
             }
@@ -175,15 +176,15 @@ public class BITableDataDAOManager extends XMLFileManager {
      * @param reportId 模板id
      * @param userIds  用户id
      */
-    public void resetSharedByReportIdAndUsers(long reportId, long[] userIds) throws Exception {
+    public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds) throws Exception {
         synchronized (BITableDataDAOManager.class) {
             long[] userIdsNeedToAddIntoMapLeft = userIds;
             Iterator iter = getTdBISharedReport_idEntrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry entry = (Map.Entry) iter.next();
-                BIReportNode node = (BIReportNode) entry.getValue();
-                if (node.getTemplateid() == reportId) {
-                    long userId = node.getUserId();
+                BISharedReportNode node = (BISharedReportNode) entry.getValue();
+                if (node.getReportId() == reportId && node.getCreateBy() == createBy) {
+                    long userId = node.getShareTo();
                     int existIndex = ArrayUtils.indexOf(userIdsNeedToAddIntoMapLeft, userId);
                     if (existIndex >= 0) {
                         userIdsNeedToAddIntoMapLeft = ArrayUtils.remove(userIdsNeedToAddIntoMapLeft, existIndex);
@@ -193,9 +194,10 @@ public class BITableDataDAOManager extends XMLFileManager {
                 }
             }
             for (long userId : userIdsNeedToAddIntoMapLeft) {
-                BIReportNode newNode = new BIReportNode(BIDAOUtils.generateID(tdBISharedReport_idMap));
-                newNode.setTemplateid(reportId);
-                newNode.setUserId(userId);
+                BISharedReportNode newNode = new BISharedReportNode(BIDAOUtils.generateID(tdBISharedReport_idMap));
+                newNode.setReportId(reportId);
+                newNode.setCreateBy(createBy);
+                newNode.setShareTo(userId);
                 tdBISharedReport_idMap.put(newNode.getId(), newNode);
             }
             writeTableDataBISharedReportMap(getTdBISharedReport_idEntrySet());
@@ -208,46 +210,64 @@ public class BITableDataDAOManager extends XMLFileManager {
      *
      * @param set BI共享集合
      */
-    public void writeTableDataBISharedReportMap(Set<Map.Entry<Long, BIReportNode>> set) {
-        synchronized (BITableDataDAOManager.class){
+    public void writeTableDataBISharedReportMap(Set<Map.Entry<Long, BISharedReportNode>> set) {
+        synchronized (BITableDataDAOManager.class) {
             this.biSharedReportTableData = BIDAOUtils.initTableDataSharedEmbeddedTableData();
-            for (Map.Entry<Long, BIReportNode> entry : set) {
-                BIReportNode tdNode = entry.getValue();
+            for (Map.Entry<Long, BISharedReportNode> entry : set) {
+                BISharedReportNode tdNode = entry.getValue();
                 List<String> rowList = new ArrayList<String>();
                 rowList.add(String.valueOf(tdNode.getId()));
-                rowList.add(String.valueOf(tdNode.getTemplateid()));
-                rowList.add(String.valueOf(tdNode.getUserId()));
+                rowList.add(String.valueOf(tdNode.getReportId()));
+                rowList.add(String.valueOf(tdNode.getCreateBy()));
+                rowList.add(String.valueOf(tdNode.getShareTo()));
                 this.biSharedReportTableData.addRow(rowList);
             }
         }
     }
 
-    public User[] findUsersAccessibleOfTemplateId(long templateId) {
+    public List<User> findUsersAccessibleOfTemplateId(long reportId, long createBy) {
         synchronized (this) {
-            List<User> userList = new ArrayList<User>();
-            for (Map.Entry<Long, BIReportNode> entry : getTdBISharedReport_idEntrySet()) {
-                BIReportNode node = entry.getValue();
-                if (node.getTemplateid() == templateId) {
-                    long userId = node.getUserId();
-                    User userById = TableDataSyncDB.getInstance().findUserByUserId(userId);
-                    if (userById != null) {
-                        userList.add(userById);
+            List<User> users = new ArrayList<User>();
+            for (Map.Entry<Long, BISharedReportNode> entry : getTdBISharedReport_idEntrySet()) {
+                BISharedReportNode node = entry.getValue();
+                if (node.getReportId() == reportId && node.getCreateBy() == createBy) {
+                    try {
+                        users.add(UserControl.getInstance().getUser(node.getShareTo()));
+                    } catch (Exception e) {
+                        BILogger.getLogger().error(e.getMessage(), e);
                     }
                 }
             }
-            return userList.toArray(new User[userList.size()]);
+            return users;
         }
     }
 
-    public long[] findTemplateIdsAccessible4UserId(long userId) {
-        long[] ret = new long[0];
-        for (Map.Entry<Long, BIReportNode> entry : getTdBISharedReport_idEntrySet()) {
-            BIReportNode node = entry.getValue();
-            if (node.getUserId() == userId) {
-                ret = ArrayUtils.add(ret, node.getTemplateid());
+    public List<BISharedReportNode> findReportsByShare2User(long userId) {
+        List<BISharedReportNode> nodes = new ArrayList<BISharedReportNode>();
+        for (Map.Entry<Long, BISharedReportNode> entry : getTdBISharedReport_idEntrySet()) {
+            BISharedReportNode node = entry.getValue();
+            if (node.getShareTo() == userId) {
+                nodes.add(node);
             }
         }
-        return ret;
+        return nodes;
+    }
+
+    public void removeSharedByReport(long reportId, long createBy) {
+        Iterator iter = getTdBISharedReport_idEntrySet().iterator();
+        while (iter.hasNext()){
+            Map.Entry entry = (Map.Entry) iter.next();
+            BISharedReportNode node = (BISharedReportNode) entry.getValue();
+            if(node.getReportId() == reportId && node.getCreateBy() == createBy){
+                tdBISharedReport_idMap.remove(node.getId());
+            }
+            try {
+                writeTableDataBISharedReportMap(getTdBISharedReport_idEntrySet());
+                FRContext.getCurrentEnv().writeResource(BITableDataDAOManager.getInstance());
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+        }
     }
 
     /**
@@ -295,19 +315,13 @@ public class BITableDataDAOManager extends XMLFileManager {
                             tdNode.setCreatetime(new Date(Long.parseLong((String) tableData.getValueAt(i, 5))));
                             tdNode.setLastModifyTime(new Date(Long.parseLong((String) tableData.getValueAt(i, 6))));
                             //中间有删除的属性所以空掉一个
-                            Object des = tableData.getValueAt(i, 8);
-                            if (des != Primitive.NULL && des != null) {
-                                tdNode.setDescription(des.toString());
-                            }
-                            int state = BIReportConstant.BI_REPORT.NULL;
-                            try {
-                            	Object ss = tableData.getValueAt(i, 9);
-                            	 if (ss != Primitive.NULL && ss != null) {
-                            		 state = Integer.valueOf(ss.toString());
-                            	 }
-                            } catch (Exception e){
-                            }
-                            tdNode.setState(state);
+
+                            tdNode.setDescription(tableData.getValueAt(i, 8).toString());
+                            long userId = Long.valueOf(tableData.getValueAt(i, 10).toString());
+                            //挂出状态还要检查是否是存在于挂出目录结构
+                            int status = Integer.valueOf(tableData.getValueAt(i, 9).toString());
+                            tdNode.setStatus(status);
+                            tdNode.setUserId(userId);
                             tdBIReport_idMap.put(id, tdNode);
                         } catch (Exception e) {
                             FRContext.getLogger().error(e.getMessage(), e);
@@ -329,9 +343,10 @@ public class BITableDataDAOManager extends XMLFileManager {
                     for (int i = 0, len = tableData.getRowCount(); i < len; i++) {
                         try {
                             Long id = new Long(tableData.getValueAt(i, 0).toString());
-                            BIReportNode tdNode = new BIReportNode(id);
-                            tdNode.setTemplateid(new Long(tableData.getValueAt(i, 1).toString()));
-                            tdNode.setUserId(new Long(tableData.getValueAt(i, 2).toString()));
+                            BISharedReportNode tdNode = new BISharedReportNode(id);
+                            tdNode.setReportId(new Long(tableData.getValueAt(i, 1).toString()));
+                            tdNode.setCreateBy(new Long(tableData.getValueAt(i, 2).toString()));
+                            tdNode.setShareTo(new Long(tableData.getValueAt(i, 3).toString()));
                             tdBISharedReport_idMap.put(id, tdNode);
                         } catch (Exception e) {
                             FRContext.getLogger().error(e.getMessage(), e);
@@ -345,7 +360,7 @@ public class BITableDataDAOManager extends XMLFileManager {
     }
 
     public EmbeddedTableData getBIReportTabledata() {
-        synchronized (BITableDataDAOManager.class){
+        synchronized (BITableDataDAOManager.class) {
             if (biReportTableData == null) {
                 biReportTableData = BIDAOUtils.initTableDataEmbeddedTableData();
             }
@@ -364,6 +379,7 @@ public class BITableDataDAOManager extends XMLFileManager {
 
     @Override
     public void writeXML(XMLPrintWriter writer) {
+        writer.startTAG(XML_TAG);
         if (this.biReportTableData != null) {
             writer.startTAG("BIReport");
             biReportTableData.writeXML(writer);
@@ -374,5 +390,6 @@ public class BITableDataDAOManager extends XMLFileManager {
             biSharedReportTableData.writeXML(writer);
             writer.end();
         }
+        writer.end();
     }
 }

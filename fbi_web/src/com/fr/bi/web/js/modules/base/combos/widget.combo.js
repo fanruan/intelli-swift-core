@@ -12,7 +12,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         return BI.extend(conf, {
             baseCls: "bi-widget-combo"
         })
-    },  
+    },
 
     _init: function () {
         BI.WidgetCombo.superclass._init.apply(this, arguments);
@@ -22,68 +22,89 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             el: {
                 type: "bi.icon_button",
                 cls: "widget-combo-pull-down-font pull-down-trigger",
-                width: 32,
-                height: 32
+                width: 16,
+                height: 16
             },
             element: this.element,
-            height: 32,
-            width: 32
+            height: 16,
+            width: 16
         });
-        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function(v){
-            self.fireEvent(BI.WidgetCombo.EVENT_CHANGE, v); 
-        });
-        this.combo.on(BI.DownListCombo.EVENT_SON_VALUE_CHANGE, function(v){
+        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.WidgetCombo.EVENT_CHANGE, v);
         });
-        this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function(){
+        this.combo.on(BI.DownListCombo.EVENT_SON_VALUE_CHANGE, function (v) {
+            self.fireEvent(BI.WidgetCombo.EVENT_CHANGE, v);
+        });
+        this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
             this.populate(self._rebuildItems());
+            self.fireEvent(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW);
         });
     },
-    
-    _rebuildItems: function(){
+
+    _rebuildItems: function () {
         var wId = this.options.wId;
+        var isEdit = Data.SharingPool.get("edit");
+        if(!isEdit) {
+            return this._createShowComboItems();
+        }
         switch (BI.Utils.getWidgetTypeByID(wId)) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.AXIS:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE :
-            case BICst.Widget.SCATTER:
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.FUNNEL:
                 return this._createWidgetComboItems();
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return this._createDetailWidgetComboItems();
 
-            case BICst.Widget.TABLE_SHOW:
-                return BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS_SHOW;
-            
-            case BICst.Widget.DATE:
-            case BICst.Widget.YEAR :
-            case BICst.Widget.QUARTER :
-            case BICst.Widget.MONTH:
-            case BICst.Widget.YMD :
+            case BICst.WIDGET.DATE:
+            case BICst.WIDGET.YEAR :
+            case BICst.WIDGET.QUARTER :
+            case BICst.WIDGET.MONTH:
+            case BICst.WIDGET.YMD :
                 return BICst.TIME_CONTROL_SETCOMBO_ITEMS;
 
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return this._createStringTreeComboItems();
-            case BICst.Widget.TREE :
+            case BICst.WIDGET.TREE :
                 return this._createStringTreeComboItems();
-            case BICst.Widget.NUMBER :
+            case BICst.WIDGET.NUMBER :
                 return BICst.NUMBER_CONTROL_SETCOMBO_ITEMS;
-            
-            case BICst.Widget.GENERAL_QUERY:
+
+            case BICst.WIDGET.GENERAL_QUERY:
                 return BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS;
         }
     },
 
-    _createWidgetComboItems: function(){
+    _createWidgetComboItems: function () {
         var wId = this.options.wId;
-        var isShowName = BI.Utils.isShowWidgetNameByID(wId);
-        var namePos = BI.Utils.getWidgetNamePostionByID(wId);
+        var isShowName = BI.Utils.getWSShowNameByID(wId);
+        var namePos = BI.Utils.getWSNamePosByID(wId);
         return [
             [{
                 text: BI.i18nText("BI-Link_To_Dots"),
@@ -110,11 +131,13 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 children: [{
                     text: BI.i18nText("BI-Position_Left"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
-                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
+                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Position_Center"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS_CENTER,
-                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
+                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER,
+                    cls: "dot-e-font"
                 }]
             }],
             [{
@@ -140,10 +163,10 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         ]
     },
 
-    _createDetailWidgetComboItems: function(){
+    _createDetailWidgetComboItems: function () {
         var wId = this.options.wId;
-        var isShowName = BI.Utils.isShowWidgetNameByID(wId);
-        var namePos = BI.Utils.getWidgetNamePostionByID(wId);
+        var isShowName = BI.Utils.getWSShowNameByID(wId);
+        var namePos = BI.Utils.getWSNamePosByID(wId);
         return [
             [{
                 text: BI.i18nText("BI-Show_Title"),
@@ -165,11 +188,13 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 children: [{
                     text: BI.i18nText("BI-Position_Left"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
-                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
+                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Position_Center"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS_CENTER,
-                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
+                    selected: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER,
+                    cls: "dot-e-font"
                 }]
             }],
             [{
@@ -195,10 +220,10 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         ]
     },
 
-    _createStringTreeComboItems: function(){
+    _createStringTreeComboItems: function () {
         var wId = this.options.wId;
         var sort = {}, dims = BI.Utils.getAllDimDimensionIDs(wId);
-        if(dims.length > 0) {
+        if (dims.length > 0) {
             sort = BI.Utils.getDimensionSortByID(dims[0]);
         }
         return [
@@ -210,16 +235,18 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             [{
                 value: BICst.DASHBOARD_CONTROL_RANG_ASC,
                 text: BI.i18nText("BI-Ascend"),
-                selected: sort.type === BICst.SORT.ASC
+                selected: sort.type === BICst.SORT.ASC,
+                cls: "dot-e-font"
             }, {
                 value: BICst.DASHBOARD_CONTROL_RANG_DESC,
                 text: BI.i18nText("BI-Descend"),
-                selected: sort.type === BICst.SORT.DESC
+                selected: sort.type === BICst.SORT.DESC,
+                cls: "dot-e-font"
             }],
             [{
                 value: BICst.DASHBOARD_CONTROL_CLEAR,
                 text: BI.i18nText("BI-Clear_Selected_Value"),
-                cls: "widget-combo-clear"
+                cls: "widget-combo-clear-font"
             }],
             [{
                 value: BICst.DASHBOARD_WIDGET_RENAME,
@@ -239,6 +266,48 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         ]
     },
 
+    _createShowComboItems: function () {
+        var wId = this.options.wId;
+        var children = [{
+            value: BICst.WIDGET.TABLE,
+            text: BI.i18nText("BI-Group_Table"),
+            cls: "dot-e-font"
+        }, {
+            value: BICst.WIDGET.TABLE,
+            text: BI.i18nText("BI-Cross_Table"),
+            cls: "dot-e-font"
+        }, {
+            value: BICst.WIDGET.TABLE,
+            text: BI.i18nText("BI-Complex_Table"),
+            cls: "dot-e-font"
+        }];
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if (wType !== BICst.WIDGET.TABLE &&
+            wType !== BICst.WIDGET.CROSS_TABLE &&
+            wType !== BICst.WIDGET.COMPLEX_TABLE) {
+            children.push({
+                value: wType,
+                text: BI.i18nText(),
+                cls: "dot-e-font"
+            })
+        }
+        return [
+            [{
+                text: BI.i18nText("BI-Show_Filters"),
+                cls: "widget-combo-show-filter-font",
+                value: BICst.DASHBOARD_WIDGET_FILTER
+            }],
+            [{
+                el: {
+                    text: BI.i18nText("BI-Chart_Type"),
+                    iconCls1: "widget-combo-show-filter-font",
+                    value: BICst.DASHBOARD_WIDGET_SWITCH_CHART
+                },
+                children: children
+            }]
+        ];
+    },
+
     setValue: function (v) {
         this.combo.setValue(v);
     },
@@ -247,5 +316,6 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         return this.combo.getValue();
     }
 });
+BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW = "EVENT_BEFORE_POPUPVIEW";
 BI.WidgetCombo.EVENT_CHANGE = "WidgetCombo.EVENT_CHANGE";
 $.shortcut('bi.widget_combo', BI.WidgetCombo);

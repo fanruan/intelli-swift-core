@@ -8,7 +8,9 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         return BI.extend(BI.MultiSelectCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-multi-select-combo',
-            itemsCreator: BI.emptyFn
+            itemsCreator: BI.emptyFn,
+            valueFormatter: BI.emptyFn,
+            height: 30
         });
     },
 
@@ -25,8 +27,9 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
         this.popup = BI.createWidget({
             type: 'bi.multi_select_popup_view',
             itemsCreator: o.itemsCreator,
+            valueFormatter: o.valueFormatter,
             onLoaded: function () {
-                BI.defer(function () {
+                BI.nextTick(function () {
                     self.combo.adjustWidth();
                     self.combo.adjustHeight();
                     self.trigger.getCounter().adjustView();
@@ -51,6 +54,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
 
         this.trigger = BI.createWidget({
             type: "bi.multi_select_trigger",
+            height: o.height,
             adapter: this.popup,
             masker: {
                 offset: {
@@ -60,6 +64,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
                     bottom: 33
                 }
             },
+            valueFormatter: o.valueFormatter,
             itemsCreator: function (op, callback) {
                 o.itemsCreator(op, function (res) {
                     if (op.times === 1 && BI.isNotNull(op.keyword)) {
@@ -107,9 +112,6 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
         this.trigger.on(BI.MultiSelectTrigger.EVENT_BEFORE_COUNTER_POPUPVIEW, function () {
             this.getCounter().setValue(self.storeValue);
         });
-        this.trigger.on(BI.MultiSelectTrigger.EVENT_TRIGGER_CLICK, function () {
-            self.combo.toggle();
-        });
         this.trigger.on(BI.MultiSelectTrigger.EVENT_COUNTER_CLICK, function () {
             if (!self.combo.isViewVisible()) {
                 self.combo.showView();
@@ -118,7 +120,6 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
 
         this.combo = BI.createWidget({
             type: "bi.combo",
-            element: this.element,
             toggle: false,
             el: this.trigger,
             adjustLength: 1,
@@ -127,7 +128,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
 
         this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
             this.setValue(self.storeValue);
-            BI.defer(function(){
+            BI.nextTick(function () {
                 self.populate();
             });
         });
@@ -136,6 +137,37 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             self.trigger.stopEditing();
             self.fireEvent(BI.MultiSelectCombo.EVENT_CONFIRM);
         });
+
+        var triggerBtn = BI.createWidget({
+            type: "bi.trigger_icon_button",
+            width: o.height,
+            height: o.height + 2,
+            cls: "multi-select-trigger-icon-button"
+        });
+        triggerBtn.on(BI.TriggerIconButton.EVENT_CHANGE, function () {
+            self.trigger.getCounter().hideView();
+            if (self.combo.isViewVisible()) {
+                self.combo.hideView();
+            } else {
+                self.combo.showView();
+            }
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.combo,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }, {
+                el: triggerBtn,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }]
+        })
     },
 
     _defaultState: function () {
@@ -176,7 +208,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             }
             var selectedMap = self._makeMap(self.storeValue.value);
             var notSelectedMap = self._makeMap(res.value);
-            BI.each(items, function(i, item){
+            BI.each(items, function (i, item) {
                 if (BI.isNotNull(selectedMap[items[i]])) {
                     delete selectedMap[items[i]];
                 }

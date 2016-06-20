@@ -1,11 +1,11 @@
 package com.fr.bi.etl.analysis.manager;
 
-import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
-import com.fr.bi.etl.analysis.data.AnalysisTableSource;
+
+import com.finebi.cube.conf.BIDataSourceManagerProvider;
 
 /**
  * Created by 小灰灰 on 2015/12/14.
  */
-public interface BIAnalysisDataSourceManagerProvider extends BIDataSourceManagerProvider<AnalysisTableSource>{
+public interface BIAnalysisDataSourceManagerProvider extends BIDataSourceManagerProvider {
     String XML_TAG = "BIAnalysisDataSourceManager";
 }

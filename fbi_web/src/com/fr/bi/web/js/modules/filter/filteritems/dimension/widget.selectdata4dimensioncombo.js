@@ -25,6 +25,15 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
             type: 'bi.multi_select_combo',
             element: this.element,
             itemsCreator: BI.bind(this._itemsCreator, this),
+            valueFormatter: function(v){
+                var text = v;
+                var group = BI.Utils.getDimensionGroupByID(o.dId);
+                if(BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+                    var date = new Date(BI.parseInt(v));
+                    text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+                }
+                return text;
+            },
             width: o.width,
             height: o.height
         });
@@ -76,20 +85,31 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
                 hasNext: data.hasNext
             });
         }, {
-            type: BICst.Widget.STRING,
+            type: BICst.WIDGET.STRING,
             page: -1,
             text_options: options
         });
     },
 
     _createItemsByData: function (values) {
-        var result = [];
+        var self = this, result = [];
         BI.each(values, function (idx, value) {
-            result.push({
-                text: value,
-                value: value,
-                title: value
-            })
+            var group = BI.Utils.getDimensionGroupByID(self.options.dId);
+            if(BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+                var date = new Date(BI.parseInt(value));
+                var text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+                result.push({
+                    text: text,
+                    value: value,
+                    title: text
+                })
+            } else {
+                result.push({
+                    text: value,
+                    value: value,
+                    title: value
+                })
+            }
         });
         return result;
     },

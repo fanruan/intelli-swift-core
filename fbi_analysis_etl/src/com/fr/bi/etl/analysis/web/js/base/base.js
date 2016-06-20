@@ -123,13 +123,13 @@ BI.MVCWidget = FR.extend(BI.Widget, {
             //controller需要实现populate方法
             if(BI.isFunction(this.controller.populate)) {
                 var self = this;
-                // BI.defer(function () {
+                // BI.nextTick(function () {
                 self.controller.populate.apply(self.controller);
                 // })
             }
             if(BI.isFunction(this.controller.deferChange)) {
                 var self = this;
-                BI.defer(function () {
+                BI.nextTick(function () {
                     self.controller.deferChange.apply(self.controller);
                 })
             }
@@ -153,7 +153,7 @@ BI.MVCWidget = FR.extend(BI.Widget, {
         }
         if(BI.isFunction(this.controller.deferChange)) {
             var self = this;
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.controller.deferChange.apply(self.controller);
             })
         }

@@ -20,86 +20,90 @@ import java.util.Date;
  */
 public class BIReportNode extends DAOBean implements Entry {
     /* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+     * @see java.lang.Object#hashCode()
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((createtime == null) ? 0 : createtime.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((parentid == null ? 0 : parentid.hashCode()));
-		result = prime * result + ((path == null) ? 0 : path.hashCode());
-		result = prime * result + ((reportname == null) ? 0 : reportname.hashCode());
-		result = prime * result + (int) (templateid ^ (templateid >>> 32));
-		result = prime * result + (int) (userid ^ (userid >>> 32));
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((createtime == null) ? 0 : createtime.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((parentid == null ? 0 : parentid.hashCode()));
+        result = prime * result + ((path == null) ? 0 : path.hashCode());
+        result = prime * result + ((reportname == null) ? 0 : reportname.hashCode());
+        result = prime * result + (int) (templateid ^ (templateid >>> 32));
+        result = prime * result + (int) (userid ^ (userid >>> 32));
+        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        return result;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (!super.equals(obj)){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-		return equalsReportNode((BIReportNode) obj);
-	}
-	
-	
-	public boolean equalsReportNode(BIReportNode other) {
-		if (createtime == null) {
-			if (other.createtime != null){
-				return false;
-			}
-		} else if (!ComparatorUtils.equals(createtime, other.createtime)){
-			return false;
-		}
-		if (description == null) {
-			if (other.description != null){ return false; }
-		} else if (!ComparatorUtils.equals(description, other.description)){
-			return false;
-		}
-		if (parentid != other.parentid){ return false;}
-		if (path == null) {
-			if (other.path != null){
-				return false;
-			}
-		} else if (!ComparatorUtils.equals(path, other.path)){
-			return false;
-		}
-		if (reportname == null) {
-			if (other.reportname != null){
-				return false;
-			}
-		} else if (!ComparatorUtils.equals(reportname, other.reportname)){
-			return false;
-		}
-		if (templateid != other.templateid){
-			return false;
-		}
-		if (userid != other.userid){
-			return false;
-		}
-		if (username == null) {
-			if (other.username != null){
-				return false;
-			}
-		} else if (!ComparatorUtils.equals(username, other.username)){
-			return false;
-		}
-		return true;
-	}
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        return equalsReportNode((BIReportNode) obj);
+    }
 
-	/**
+
+    public boolean equalsReportNode(BIReportNode other) {
+        if (createtime == null) {
+            if (other.createtime != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(createtime, other.createtime)) {
+            return false;
+        }
+        if (description == null) {
+            if (other.description != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(description, other.description)) {
+            return false;
+        }
+        if (parentid != other.parentid) {
+            return false;
+        }
+        if (path == null) {
+            if (other.path != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(path, other.path)) {
+            return false;
+        }
+        if (reportname == null) {
+            if (other.reportname != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(reportname, other.reportname)) {
+            return false;
+        }
+        if (templateid != other.templateid) {
+            return false;
+        }
+        if (userid != other.userid) {
+            return false;
+        }
+        if (username == null) {
+            if (other.username != null) {
+                return false;
+            }
+        } else if (!ComparatorUtils.equals(username, other.username)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      *
      */
     private static final long serialVersionUID = -3662026856074945968L;
@@ -115,23 +119,85 @@ public class BIReportNode extends DAOBean implements Entry {
     private String description;
     private Date modifytime;
     //标识是否需要挂载的状态
-    private int state = BIReportConstant.BI_REPORT.NULL;
+    private int status = BIReportConstant.REPORT_STATUS.NORMAL;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public long getUserId() {
+        return userid;
+    }
+
+    public void setUserId(long userid) {
+        this.userid = userid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public long getTemplateid() {
+        return templateid;
+    }
+
+    public void setTemplateid(long templateid) {
+        this.templateid = templateid;
+    }
+
+    public String getReportName() {
+        return reportname;
+    }
+
+    public void setReportName(String reportname) {
+        this.reportname = reportname;
+    }
+
+    public String getParentid() {
+        return parentid;
+    }
+
+    public void setParentid(String parentid) {
+        this.parentid = parentid;
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getLastModifyTime() {
+        return modifytime;
+    }
+
+    public void setLastModifyTime(Date modifytime) {
+        this.modifytime = modifytime;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     /**
-	 * @return the state
-	 */
-	public int getState() {
-		return state;
-	}
-
-	/**
-	 * @param state the state to set
-	 */
-	public void setState(int state) {
-		this.state = state;
-	}
-
-	/**
      * 默认构造函数
      */
     public BIReportNode() {
@@ -155,6 +221,7 @@ public class BIReportNode extends DAOBean implements Entry {
         this.description = description;
         updateLastModifyTime();
     }
+
     /**
      * 构造
      *
@@ -171,6 +238,7 @@ public class BIReportNode extends DAOBean implements Entry {
         this.username = StringUtils.EMPTY;
         updateLastModifyTime();
     }
+
     /**
      * 构造
      *
@@ -180,45 +248,6 @@ public class BIReportNode extends DAOBean implements Entry {
         this.id = id;
     }
 
-    public long getTemplateid() {
-        return templateid;
-    }
-
-    public void setTemplateid(long templateid) {
-        this.templateid = templateid;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Date getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
-
-    public long getUserId() {
-        return userid;
-    }
-
-    public void setUserId(long userId) {
-        this.userid = userId;
-    }
-
-    public String getParentid() {
-        return this.parentid;
-    }
-
-    public void setParentid(String parentid) {
-        this.parentid = parentid;
-    }
 
     @Override
     protected int hashCode4Properties() {
@@ -235,24 +264,6 @@ public class BIReportNode extends DAOBean implements Entry {
         }
         //lastModify时间就不要比较了
         return super.equals4NoPersistence(obj);
-    }
-
-    /**
-     * 获取最后修改时间
-     *
-     * @return
-     */
-    public Date getLastModifyTime() {
-        return modifytime;
-    }
-
-    /**
-     * 设置最后修改时间
-     *
-     * @param date
-     */
-    public void setLastModifyTime(Date date) {
-        this.modifytime = date;
     }
 
     /**
@@ -287,10 +298,6 @@ public class BIReportNode extends DAOBean implements Entry {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public long getSortindex() {
         return 0;
@@ -302,16 +309,8 @@ public class BIReportNode extends DAOBean implements Entry {
     }
 
     @Override
-	public void setMobileCoverId(String s) {
+    public void setMobileCoverId(String s) {
 
-    }
-
-    public String getReportName() {
-        return this.reportname;
-    }
-
-    public void setReportName(String reportName) {
-        this.reportname = reportName;
     }
 
     @Override
@@ -328,8 +327,9 @@ public class BIReportNode extends DAOBean implements Entry {
         jo.put("pId", this.parentid);
         jo.put("text", this.reportname);
         jo.put("lastModify", modifytime.getTime());
-        jo.put("state", state);
+        jo.put("status", status);
         jo.put("value", id);
+        jo.put("createBy", this.userid);
         return jo;
     }
 
@@ -356,14 +356,6 @@ public class BIReportNode extends DAOBean implements Entry {
     @Override
     public void writeXML(XMLPrintWriter xmlPrintWriter) {
 
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
 }

@@ -120,6 +120,28 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
     },
     
+    parseDimensionFilter: function(dimId, filter) {
+        var self = this;
+        if(filter.filter_type === BICst.FILTER_TYPE.AND || filter.filter_type === BICst.FILTER_TYPE.OR) {
+            var children = [];
+            BI.each(filter.filter_value, function(i, value){
+                children.push(self.parseDimensionFilter(dimId, value));
+            });
+            return {
+                id: BI.UUID(),
+                value: filter.filter_type,
+                children: children
+            };
+        } else {
+            return {
+                id: BI.UUID(),
+                type: "bi.dimension_filter_item",
+                tId: dimId,
+                filter: filter
+            }
+        }
+    },
+    
     parseGeneralQueryFilter: function(filter){
         var self = this;
         if(BI.isNull(filter)) {
@@ -168,18 +190,18 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             return text;
         }
         switch (widgetType) {
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 if(widgetValue.type === BI.Selection.Multi) {
                     text = BI.i18nText("BI-In") + " " +  widgetValue.value;
                 } else if(widgetValue.type === BI.Selection.All) {
                     text = BI.i18nText("BI-Not_In") + " " + widgetValue.value;
                 }
                 return text;
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 return this.getNumberRangeText(widgetValue);
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 return this.getDateRangeText(widgetValue);
-            case BICst.Widget.MONTH:
+            case BICst.WIDGET.MONTH:
                 var year = widgetValue.year, month = widgetValue.month;
                 if(BI.isNumeric(year) && BI.isNumeric(month)) {
                     text = year + "/" + (month + 1);
@@ -189,7 +211,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                     text = month + 1;
                 }
                 return text;
-            case BICst.Widget.QUARTER:
+            case BICst.WIDGET.QUARTER:
                 var year = widgetValue.year, quarter = widgetValue.quarter;
                 if(BI.isNumeric(year) && BI.isNumeric(quarter)) {
                     text = year + " " + BI.i18nText("BI-Di") + quarter + BI.i18nText("BI-Quarter");
@@ -199,9 +221,9 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                     text = BI.i18nText("BI-Di") + quarter + BI.i18nText("BI-Quarter");
                 }
                 return text;
-            case BICst.Widget.YEAR:
+            case BICst.WIDGET.YEAR:
                 return widgetValue;
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YMD:
                 if(BI.isNotNull(widgetValue)) {
                     var date = this._parseComplexDate(widgetValue);
                     text = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";

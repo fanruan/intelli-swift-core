@@ -76,15 +76,15 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-            self._resizeHeader(function () {
-                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
-            });
+            self._initRegionSize();
+            self.table.resize();
+            self._resizeHeader();
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
             self._resizeRegion();
-            self._resizeHeader(function () {
-                self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
-            });
+            self._resizeHeader();
+            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
@@ -100,9 +100,8 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            self._resizeHeader(function () {
-                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
-            });
+            self._resizeHeader();
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
         });
 
         this.table.on(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE, function () {
@@ -114,20 +113,9 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self._resizeRegion();
-            self._resizeHeader(function () {
-                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
-            });
+            self._resizeHeader();
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
-
-        if (o.isNeedFreeze === true) {
-            BI.defer(function () {
-                if (self.element.is(":visible")) {
-                    self._initRegionSize();
-                    self.table.resize();
-                    self._resizeHeader();
-                }
-            });
-        }
     },
 
     _initRegionSize: function () {
@@ -137,9 +125,11 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             var maxWidth = this.table.element.width();
             if (!regionColumnSize[0] || regionColumnSize[0] > maxWidth) {
                 var freezeCols = o.freezeCols;
-                var width = freezeCols.length * this._const.perColumnSize;
-                width = width > maxWidth * 1.0 / 3 ? maxWidth * 1.0 / 3 : width;
-                this.table.setRegionColumnSize([width, "fill"]);
+                if (freezeCols.length > 0) {
+                    this.table.setRegionColumnSize([maxWidth * 1.0 / 3, "fill"]);
+                } else {
+                    this.table.setRegionColumnSize([0, "fill"]);
+                }
             }
         }
     },
@@ -175,15 +165,13 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         return !(BI.last(columnSize || this.table.getColumnSize()) > 1.05);
     },
 
-    _resizeHeader: function (callback) {
-        callback || (callback = BI.emptyFn);
+    _resizeHeader: function () {
         var self = this, o = this.options;
         if (o.isNeedFreeze === true) {
             //若是当前处于自适应调节阶段
             if (this._isAdaptiveColumn()) {
                 var columnSize = this.table.getCalculateColumnSize();
                 this.table.setHeaderColumnSize(columnSize);
-                callback();
             } else {
                 var regionColumnSize = this.table.getClientRegionColumnSize();
                 var block = this._getBlockSize();
@@ -195,20 +183,17 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
                 var newLeft = BI.clone(columnSizeLeft), newRight = BI.clone(columnSizeRight);
                 newLeft[newLeft.length - 1] = "";
                 newRight[newRight.length - 1] = "";
-                this.setColumnSize(newLeft.concat(newRight));
+                this.table.setColumnSize(newLeft.concat(newRight));
 
-                BI.delay(function () {
-                    block = self._getBlockSize();
-                    if (columnSizeLeft[columnSizeLeft.length - 1] < block.left[block.left.length - 1]) {
-                        columnSizeLeft[columnSizeLeft.length - 1] = block.left[block.left.length - 1]
-                    }
-                    if (columnSizeRight[columnSizeRight.length - 1] < block.right[block.right.length - 1]) {
-                        columnSizeRight[columnSizeRight.length - 1] = block.right[block.right.length - 1]
-                    }
+                block = self._getBlockSize();
+                if (columnSizeLeft[columnSizeLeft.length - 1] < block.left[block.left.length - 1]) {
+                    columnSizeLeft[columnSizeLeft.length - 1] = block.left[block.left.length - 1]
+                }
+                if (columnSizeRight[columnSizeRight.length - 1] < block.right[block.right.length - 1]) {
+                    columnSizeRight[columnSizeRight.length - 1] = block.right[block.right.length - 1]
+                }
 
-                    self.setColumnSize(columnSizeLeft.concat(columnSizeRight));
-                    callback();
-                }, 100);
+                self.table.setColumnSize(columnSizeLeft.concat(columnSizeRight));
             }
         } else {
             if (!this._isAdaptiveColumn()) {
@@ -221,23 +206,22 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
                 var newSize = BI.clone(size);
                 newSize[newSize.length - 1] = "";
-                this.setColumnSize(newSize);
+                this.table.setColumnSize(newSize);
                 block = this._getBlockSize();
 
                 if (size[size.length - 1] < block.size[block.size.length - 1]) {
                     size[size.length - 1] = block.size[block.size.length - 1]
                 }
-                this.setColumnSize(size);
-                callback();
-            } else {
-                callback();
+                this.table.setColumnSize(size);
             }
         }
     },
 
     _resizeBody: function () {
-        var columnSize = this.table.getCalculateColumnSize();
-        this.setColumnSize(columnSize);
+        if (this._isAdaptiveColumn()) {
+            var columnSize = this.table.getCalculateColumnSize();
+            this.setColumnSize(columnSize);
+        }
     },
 
     _resizeRegion: function () {
@@ -249,21 +233,28 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             if (sumLeft < regionColumnSize[0] || regionColumnSize[0] >= (sumLeft + sumRight)) {
                 this.table.setRegionColumnSize([sumLeft, "fill"]);
             }
+            var maxWidth = this.table.element.width();
+            if (regionColumnSize[0] < 15 || regionColumnSize[1] < 15) {
+                var freezeCols = o.freezeCols;
+                if (freezeCols.length > 0) {
+                    this.table.setRegionColumnSize([maxWidth * 1.0 / 3, "fill"]);
+                } else {
+                    this.table.setRegionColumnSize([0, "fill"]);
+                }
+            }
         }
     },
 
 
     resize: function () {
         this.table.resize();
+        this._resizeHeader();
     },
 
     setColumnSize: function (columnSize) {
-        if (this._isAdaptiveColumn(columnSize)) {
-            this.element.removeClass("fixed");
-        } else {
-            this.element.addClass("fixed");
-        }
         this.table.setColumnSize(columnSize);
+        this._resizeRegion();
+        this._resizeHeader();
     },
 
     getColumnSize: function () {
@@ -276,6 +267,8 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     setHeaderColumnSize: function (columnSize) {
         this.table.setHeaderColumnSize(columnSize);
+        this._resizeRegion();
+        this._resizeHeader();
     },
 
     setRegionColumnSize: function (columnSize) {
@@ -348,7 +341,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.table.populate.apply(this.table, arguments);
         if (o.isNeedFreeze === true) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 if (self.element.is(":visible")) {
                     self._initRegionSize();
                     self.table.resize();

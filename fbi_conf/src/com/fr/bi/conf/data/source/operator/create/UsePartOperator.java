@@ -4,10 +4,10 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -21,8 +21,13 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
 
     public static final String XML_TAG = "UsePartOperator";
     private static final int NOT_CONTAINS = 2;
+
+
     @BICoreField
     private List<String> uselessFields = new ArrayList<String>();
+
+    @BICoreField
+    private int type = NOT_CONTAINS;
 
 
     public UsePartOperator(long userId) {
@@ -46,7 +51,7 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
             ja.put(s);
         }
         jo.put("value", ja);
-        jo.put("type", NOT_CONTAINS);
+        jo.put("type", type);
         return jo;
     }
 
@@ -63,31 +68,31 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
         for (int i = 0; i < ja.length(); i++) {
             uselessFields.add(ja.getString(i));
         }
+        type = jo.optInt("type", NOT_CONTAINS);
     }
 
 
-
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
-        for (DBTable t : tables) {
-            for (BIColumn c :t.getColumnArray()){
-                if (!uselessFields.contains(c.getFieldName())){
-                    DBTable.addColumn(new BIColumn(c.getFieldName(), c.getType()));
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
+        for (IPersistentTable t : tables) {
+            for (PersistentField c : t.getFieldList()) {
+                if (type == NOT_CONTAINS ^ uselessFields.contains(c.getFieldName())) {
+                    persistentTable.addColumn(new PersistentField(c.getFieldName(), c.getSqlType()));
                 }
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         return ti.getRowCount();
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), start, end);
         return ti.getRowCount();
     }

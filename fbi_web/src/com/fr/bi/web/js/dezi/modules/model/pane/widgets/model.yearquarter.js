@@ -3,11 +3,10 @@ BIDezi.YearQuarterWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.YearQuarterWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.QUARTER,
+            type: BICst.WIDGET.QUARTER,
             dimensions: {},
             view: {},
-            value: {},
-            settings: BICst.DEFAULT_CONTROL_SETTING
+            value: {}
         })
     },
 
@@ -45,6 +44,10 @@ BIDezi.YearQuarterWidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         return false;
     },
 

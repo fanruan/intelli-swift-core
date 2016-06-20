@@ -1,5 +1,6 @@
 package com.fr.bi.web.base.utils;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.base.ConfigManager;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.base.CubeIndexManager;
@@ -16,10 +17,7 @@ import com.fr.bi.web.base.operation.BIOperationRecord;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
-import com.fr.general.ComparatorUtils;
-import com.fr.general.DeclareRecordType;
-import com.fr.general.FRLogManager;
-import com.fr.general.Inter;
+import com.fr.general.*;
 import com.fr.general.web.ParameterConsts;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -135,7 +133,7 @@ public class BIWebUtils {
                                           HttpServletResponse res, final String sessionID, Locale locale) throws Exception {
         SessionDealWith.closeSession(sessionID);
         Map<String, String> map = new HashMap<String, String>();
-        map.put("message", Inter.getLocText("BI-Contarct_No_Package", locale));
+        map.put("message", Inter.getLocText("BI-Contact_No_Package", locale));
         map.put("removeLoadingView", "yes");
         writeData(req, res, "/com/fr/bi/web/html/bi_error_message.html", map);
     }
@@ -170,11 +168,11 @@ public class BIWebUtils {
             return;
         }
         long userId = ServiceUtils.getCurrentUserID(req);
-        if (BIConfigureManagerCenter.getPackageManager().isPackagesEmpty(userId)) {
+        if (BICubeConfigureCenter.getPackageManager().isPackagesEmpty(userId)) {
             dealWithEmptyPack(req, res, sessionID, locale);
             return;
         }
-        if (BIConfigureManagerCenter.getPackageManager().isPackagesEmpty(userId)) {
+        if (!BIConfigureManagerCenter.getAuthorityManager().hasAuthPackageByUser(userId)) {
             dealWithNORightPack(req, res, sessionID, locale);
             return;
         }
@@ -206,9 +204,9 @@ public class BIWebUtils {
         map.put("reportName", node.getReportName() != null ? node.getReportName() : "null");
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
-        Date cubeTime = BIConfigureManagerCenter.getLogManager().getCubeEnd(userId);
+        Date cubeTime = BIConfigureManagerCenter.getLogManager().getConfigVersion(userId);
         if(cubeTime != null) {
-            map.put("__version__", cubeTime.getTime());
+            map.put("__version__", cubeTime.getTime() + userId);
         }
         boolean isEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         isEdit = sessionIDInfo.setEdit(isEdit);
@@ -247,7 +245,7 @@ public class BIWebUtils {
                 FRLogManager.setSession(sessionIDInfo);
 
                 FRContext.getLogger().getRecordManager().recordAccessNoExecuteInfo(reportName,
-                        DeclareRecordType.WEB_WRITE_TYPE_VIEW, null);
+                        DeclareRecordType.WEB_WRITE_TYPE_VIEW, new ExecuteInfo("",""));
             } catch (Throwable e) {
                 FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
                 FRContext.getLogger().log(Level.WARNING, "RecordManager error. Record is close.");

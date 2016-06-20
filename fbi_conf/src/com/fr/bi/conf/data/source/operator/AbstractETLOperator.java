@@ -1,8 +1,12 @@
 package com.fr.bi.conf.data.source.operator;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.*;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
@@ -55,12 +59,17 @@ public abstract class AbstractETLOperator implements IETLOperator {
 //        writer.attr("md5", fetchObjectCore());
     }
 
-    protected DBTable getBITable() {
-        return new DBTable(null, fetchObjectCore().getIDValue(), null);
+    protected IPersistentTable getBITable() {
+        return new PersistentTable(null, fetchObjectCore().getIDValue(), null);
     }
 
     @Override
     public abstract String xmlTag();
+
+    @Override
+    public int writeIndexWithParents(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol) {
+        return writeSimpleIndex(travel, parents, loader);
+    }
 
     @Override
     public BICore fetchObjectCore() {
@@ -73,10 +82,10 @@ public abstract class AbstractETLOperator implements IETLOperator {
         return BIBasicCore.EMPTY_CORE;
     }
 
-    protected BICore getSingleParentMD5(List<? extends ITableSource> parents) {
+    protected CubeTableSource getSingleParentMD5(List<? extends CubeTableSource> parents) {
         if (parents == null || parents.size() != 1) {
             return null;
         }
-        return parents.get(0).fetchObjectCore();
+        return parents.get(0);
     }
 }

@@ -11,7 +11,7 @@ BIDezi.YearMonthDetailView = BI.inherit(BI.View, {
         DETAIL_WEST_WIDTH: 280,
         DETAIL_DATA_STYLE_HEIGHT: 320,
         DETAIL_GAP_NORMAL: 10,
-        DETAIL_PANE_HORIZONTAL_GAP: 20,
+        DETAIL_PANE_HORIZONTAL_GAP: 10,
         DETAIL_TITLE_WIDTH: 400,
         DETAIL_TITLE_HEIGHT: 22
     },
@@ -27,37 +27,43 @@ BIDezi.YearMonthDetailView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
-        this.main = BI.createWidget({
-            type: "bi.border",
+        var mask = BI.createWidget();
+        mask.element.__buildZIndexMask__(0);
+        BI.createWidget({
+            type: "bi.absolute",
             element: vessel,
-            items: {
-                north: {
-                    el: this._buildNorth(),
-                    height: this.constants.DETAIL_NORTH_HEIGHT
+            items: [{
+                el: mask,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }, {
+                el: {
+                    type: "bi.htape",
+                    cls: "widget-attribute-setter-container",
+                    items: [{
+                        el: this._buildWest(),
+                        width: this.constants.DETAIL_WEST_WIDTH
+                    }, {
+                        type: "bi.vtape",
+                        items: [{
+                            el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
+                        }, {
+                            el: this._buildCenter()
+                        }]
+                    }]
                 },
-                west: {
-                    el: this._buildWest(),
-                    width: this.constants.DETAIL_WEST_WIDTH
-                },
-                center: {
-                    el: this._buildCenter()
-                }
-            }
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20
+            }]
         });
     },
 
     _buildNorth: function () {
         var self = this;
-        var widgetNameEditor = BI.createWidget({
-            type: "bi.text_editor",
-            value: this.model.get("name"),
-            height: this.constants.DETAIL_TITLE_HEIGHT,
-            width: this.constants.DETAIL_TITLE_WIDTH
-        });
-
-        widgetNameEditor.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self.model.set("name", widgetNameEditor.getValue());
-        });
 
         var complete = BI.createWidget({
             type: "bi.button",
@@ -72,9 +78,7 @@ BIDezi.YearMonthDetailView = BI.inherit(BI.View, {
 
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
-            cls: "widget-attr-north",
             items: {
-                left: [widgetNameEditor],
                 right: [complete]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
@@ -123,14 +127,13 @@ BIDezi.YearMonthDetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.vtape",
-                    cls: "widget-show-data-pane",
                     items: [{
                         el: top,
                         height: this.constants.DETAIL_DATA_STYLE_HEIGHT - this.constants.DETAIL_NORTH_HEIGHT
                     }, {
                         el: {
                             type: "bi.absolute",
-                            cls: "widget-attr-chart",
+                            cls: "widget-center-wrapper",
                             items: [{
                                 el: combo,
                                 left: 10,

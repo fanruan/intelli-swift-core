@@ -1,7 +1,7 @@
 BIDezi.PaneModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.PaneModel.superclass._defaultConfig.apply(this), {
-            layoutType: 0,
+            layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             widgets: {}
         });
     },
@@ -23,7 +23,19 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
 
     _init: function () {
         BIDezi.PaneModel.superclass._init.apply(this, arguments);
+        var self = this;
         this.operatorIndex = 0;
+        this.saveDebounce = BI.debounce(function(widgets, dims, layoutType){
+            var records = Data.SharingPool.get("records") || [];
+            records.splice(self.operatorIndex + 1);
+            records.push({
+                dimensions: dims,
+                widgets: widgets,
+                layoutType: layoutType
+            });
+            Data.SharingPool.put("records", records);
+            self.operatorIndex = records.length - 1;
+        }, 100);
     },
 
     _generateWidgetName: function (widgetName) {
@@ -105,22 +117,9 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         }
     },
 
-    similar: function (ob, key) {
-        if (key === "widgets") {
-            var obj = {};
-            obj.type = ob.type;
-            obj.name = this._generateWidgetName(ob.name);
-            obj.dimensions = ob.dimensions;
-            obj.view = ob.view;
-            obj.bounds = {
-                height: ob.bounds.height,
-                width: ob.bounds.width,
-                left: ob.bounds.left + 15,
-                top: ob.bounds.top + 15
-            };
-            obj.settings = ob.settings;
-            obj.value = ob.value;
-            return obj;
+    similar: function (ob, key1, key2) {
+        if (key1 === "widgets") {
+            return BI.Utils.getWidgetCopyByID(key2);
         }
     },
 
@@ -146,15 +145,6 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("layoutType", this.get("layoutType"));
 
         //用于undo redo
-        var records = Data.SharingPool.get("records") || [];
-        records.splice(this.operatorIndex + 1);
-        records.push({
-            dimensions: dims,
-            widgets: widgets,
-            layoutType: this.get("layoutType")
-        });
-        Data.SharingPool.put("records", records);
-        this.operatorIndex = records.length - 1;
-
+        this.saveDebounce(widgets, dims, this.get("layoutType"));
     }
 });

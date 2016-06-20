@@ -1,9 +1,11 @@
 package com.fr.bi.etl.analysis.conf;
 
-import com.fr.bi.conf.base.pack.BIPackageContainer;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
+
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.pack.imp.BIPackageContainer;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
+import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -17,7 +19,6 @@ import java.util.Locale;
  */
 public class AnalysisETLPackageSet extends BIPackageContainer {
     private static final String PACK_NAME = Inter.getLocText("BI-MYETL");
-    private static final String PACK_ID = "myetlidfe62a664c";
     private transient AnalysisETLBusiPack pack;
 
     public AnalysisETLPackageSet(long userId) {
@@ -34,13 +35,13 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
         }
         synchronized (container) {
             try {
-                pack = (AnalysisETLBusiPack) getPackage(new BIPackageID(PACK_ID));
+                pack = (AnalysisETLBusiPack) getPackage(new BIPackageID(Constants.PACK_ID));
             } catch (BIPackageAbsentException ignore_) {
                 BILogger.getLogger().error(ignore_.getMessage());
             }
             if (pack == null) {
                 try {
-                    pack = createPackage(PACK_ID, PACK_NAME);
+                    pack = createPackage(Constants.PACK_ID, PACK_NAME);
                     addPackage(pack);
                 } catch (BIPackageDuplicateException ignore) {
 
@@ -69,7 +70,7 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
         JSONObject pack = getPack().createJSON();
         if (pack.getJSONArray("tables").length() > 0){
             pack.put("name", Inter.getLocText(PACK_NAME, locale));
-            jo.put(PACK_ID, pack);
+            jo.put(Constants.PACK_ID, pack);
         }
         return jo;
     }

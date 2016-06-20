@@ -1,9 +1,9 @@
 package com.fr.bi.field.target.calculator.sum;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
 import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BITargetKey;
@@ -23,9 +23,13 @@ public class AvgCalculator extends FormulaCalculator {
 
     public AvgCalculator(BISummaryTarget target) {
         this.sum = new SumCalculator(target);
-        this.count = new CountCalculator(target, target.getStatisticElement().getFieldName());
+        this.count = new CountCalculator(target);
     }
 
+    @Override
+    public TargetGettingKey createTargetGettingKey() {
+        return new TargetGettingKey(createTargetKey(), getName());
+    }
 
     /**
      * 创建计算指标
@@ -69,7 +73,7 @@ public class AvgCalculator extends FormulaCalculator {
      * @return 创建的tablekey
      */
     @Override
-    public BITable createTableKey() {
+    public BusinessTable createTableKey() {
         return sum.createTableKey();
     }
 

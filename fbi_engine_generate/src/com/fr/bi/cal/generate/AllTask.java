@@ -3,23 +3,21 @@
  */
 package com.fr.bi.cal.generate;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.singletable.TableUpdate;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.cal.generate.index.IncreaseIndexGenerator;
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIBusinessTable;
-import com.fr.bi.conf.manager.singletable.data.SingleTableUpdateAction;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.utils.BIMapUtils;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,16 +30,18 @@ public class AllTask extends AbstractCubeTask {
     }
 
     @Override
-    protected Map<Integer, Set<ITableSource>> getGenerateTables() {
-        Map<Integer, Set<ITableSource>> generateTable = new HashMap<Integer, Set<ITableSource>>();
+    protected Map<Integer, Set<CubeTableSource>> getGenerateTables() {
+        Map<Integer, Set<CubeTableSource>> generateTable = new HashMap<Integer, Set<CubeTableSource>>();
         addOtherTables(generateTable);
-        Set<BIBusinessPackage> packs = BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPacks();
-        for (BIBusinessPackage pack : packs) {
+       
+
+        Set<IBusinessPackageGetterService> packs = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPacks();
+        for (IBusinessPackageGetterService pack : packs) {
             Set<BIBusinessTable> busiTable = pack.getBusinessTables();
             for (BIBusinessTable table : busiTable) {
-                ITableSource source = table.getSource();
+                CubeTableSource source = table.getTableSource();
                 if (source != null) {
-                    BIMapUtils.mergeSetValueMap(generateTable, table.getSource().createGenerateTablesMap());
+                    BICollectionUtils.mergeSetValueMap(generateTable, table.getTableSource().createGenerateTablesMap());
                 }
             }
         }
@@ -53,13 +53,7 @@ public class AllTask extends AbstractCubeTask {
         return false;
     }
 
-    private void addOtherTables(Map<Integer, Set<ITableSource>> generateTable) {
-        HashSet<ITableSource> set = new HashSet<ITableSource>();
-        Table key = BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getUserInfo().getTableKey();
-        if (key != null) {
-            set.add(BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(key.getID(), biUser));
-            generateTable.put(0, set);
-        }
+    private void addOtherTables(Map<Integer, Set<CubeTableSource>> generateTable) {
     }
 
     @Override
@@ -68,11 +62,11 @@ public class AllTask extends AbstractCubeTask {
     }
 
     @Override
-    protected IndexGenerator createGenerator(ITableSource source) {
+    protected IndexGenerator createGenerator(CubeTableSource source) {
         String md5 = source.fetchObjectCore().getID().getIdentityValue();
         TableCubeFile cube = new TableCubeFile(BIPathUtils.createTablePath(md5, biUser.getUserId()));
         if (!checkCubeVersion(cube)) {
-            SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(biUser.getUserId()).getSingleTableUpdateAction(new BITable(md5));
+            TableUpdate action = BICubeConfigureCenter.getTableUpdateManager().getSingleTableUpdateAction(source.getPersistentTable());
             switch (action.getUpdateType()) {
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL:
                     return new IndexGenerator(source, biUser.getUserId(), cube.getTableVersion() + 1);

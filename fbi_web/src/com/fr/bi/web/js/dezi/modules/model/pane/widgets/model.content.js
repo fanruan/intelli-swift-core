@@ -5,8 +5,7 @@ BIDezi.ContentWidgetModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.ContentWidgetModel.superclass._defaultConfig.apply(this, arguments), {
             style: {},
-            content: "",
-            settings: BICst.DEFAULT_CONTROL_SETTING
+            content: ""
         });
     },
 
@@ -23,6 +22,10 @@ BIDezi.ContentWidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
-
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
+        return false;
     }
 });

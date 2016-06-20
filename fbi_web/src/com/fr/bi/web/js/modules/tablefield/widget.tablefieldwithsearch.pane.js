@@ -14,7 +14,7 @@ BI.TableFieldWithSearchPane = FR.extend(BI.Widget, {
         BI.TableFieldWithSearchPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var tableInfo = o.tableInfo;
-        var fields = tableInfo.fields;
+        var fields = tableInfo.isFinal === true ? tableInfo.fields : [];
         var searcher = BI.createWidget({
             type: "bi.searcher",
             el: {
@@ -40,7 +40,11 @@ BI.TableFieldWithSearchPane = FR.extend(BI.Widget, {
             popup: {
                 type: "bi.table_field_info_search_result_pane",
                 onUsedFieldsChange: function (usedFields) {
-                    tableInfo.usedFields = usedFields;
+                    BI.each(tableInfo.fields, function(i, fs){
+                        BI.each(fs, function(j, field){
+                            field.is_usable = usedFields.contains(field.id);
+                        });
+                    });
                     table.populate(tableInfo);
                     self.fireEvent(BI.TableFieldWithSearchPane.EVENT_USABLE_CHANGE, usedFields);
                 },
@@ -53,7 +57,7 @@ BI.TableFieldWithSearchPane = FR.extend(BI.Widget, {
                     self.fireEvent(BI.TableFieldWithSearchPane.EVENT_TRANSLATION_CHANGE, translations);
                 }
             }
-        });
+        }); 
 
         var table = BI.createWidget({
             type: "bi.table_field_info"

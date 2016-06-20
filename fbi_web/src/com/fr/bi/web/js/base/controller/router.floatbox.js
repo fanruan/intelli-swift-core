@@ -51,7 +51,7 @@ BI.FloatBoxRouter = BI.inherit(BI.WRouter, {
             this.views[url] = view;
             this.controller.add(url, this.store[url]);
             context && context.on("end:" + view.cid, function () {
-                setTimeout(function () {
+                BI.nextTick(function () {
                     self.close(url);
 //                    view.end();
                     var t = void 0, isNew = false, keys;
@@ -76,15 +76,20 @@ BI.FloatBoxRouter = BI.inherit(BI.WRouter, {
     },
 
     close: function (url) {
-        this.controller.close(url);
+        if (this.controller) {
+            this.controller.close(url);
+        }
         return this;
     },
 
-    remove: function (url) {
-        this.controller.remove(url);
-        delete this.store[url];
-        this.views[url] && this.views[url].destroy();
-        delete this.views[url];
+    remove: function (url, context) {
+        url = context.rootURL + "/" + url;
+        if(this.controller){
+            this.controller.remove(url);
+            delete this.store[url];
+            this.views[url] && this.views[url].destroy();
+            delete this.views[url];
+        }
         return this;
     }
 });

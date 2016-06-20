@@ -21,6 +21,19 @@
             return Buffer[name];
         },
 
+        getNumberFieldMinMaxValueById: function (id, callback) {
+            var self = this, idString = id + "";
+            var cache = Buffer["NUMBER_FIELD_MIN_MAX_VALUE"] || (Buffer["NUMBER_FIELD_MIN_MAX_VALUE"] = {});
+            if (BI.isNotNull(cache[idString])) {
+                callback(cache[idString]);
+                return;
+            }
+            Data.Req.reqDeziNumberFieldMinMaxValueByfieldId({id: idString}, function (res) {
+                self.Buffer[idString] = res;
+                callback(res);
+            });
+        },
+
         getTableById: function (id, callback) {
             var self = this, idString = id + "";
             var cache = Buffer["TABLE"] || (Buffer["TABLE"] = {});
@@ -42,31 +55,6 @@
             })
         },
 
-        getFieldsByTableId: function (tableId, callback) {
-            BIReq.reqFieldsByTableId(tableId, function (res) {
-                callback(res);
-            })
-        },
-
-        getTableByConnSchemaTName: function (table, callback) {
-            var self = this, connName = table.connection_name, schemaName = table.schema_name, tableName = table.table_name;
-            var cache = Buffer["TABLE_INFO"] || (Buffer["TABLE_INFO"] = {});
-            if (BI.isNotNull(cache[connName])
-                && BI.isNotNull(cache[connName][schemaName])
-                && BI.isNotNull(cache[connName][schemaName][tableName])) {
-                callback(cache[connName][schemaName][tableName]);
-                return;
-            }
-            BIReq.reqTableByConnSchemaTName(connName, schemaName, tableName, function (res) {
-                if (self.MODE === true) {
-                    self.Buffer[connName] || (self.Buffer[connName] = {});
-                    self.Buffer[connName][schemaName] || (self.Buffer[connName][schemaName] = {});
-                    self.Buffer[connName][schemaName][tableName] = res;
-                }
-                callback(res);
-            });
-        },
-
         getField: function (id) {
             var idString = id + "";
             var cache = Buffer["Field"] || (Buffer["Field"] = {});
@@ -79,46 +67,6 @@
                 cache[idString] = table;
             }
             return table;
-        },
-
-        getPackage: function (callback) {
-            var self = this, cache = Buffer["PACKAGE"] || (Buffer["PACKAGE"] = []);
-            if (BI.isNotNull(cache)) {
-                callback(cache);
-                return;
-            }
-            BIReq.reqPackage(function (res) {
-                if (self.MODE === true) {
-                    self.Buffer["PACKAGE"] = res;
-                }
-                callback(res);
-            });
-        },
-
-        getGroups: function () {
-            var cache = Buffer["GROUP"] || (Buffer["GROUP"] = []);
-            if (BI.isNotNull(cache)) {
-                return cache;
-            }
-            var self = this;
-            var groups = BI.requestSync("fr_bi_dezi", "get_accessable_group_packages");
-            var packages = this.getPackage();
-            var store = {};//记录哪些业务包在分组中
-            BI.each(groups, function (i, group) {
-                BI.each(group, function (j, pack) {
-                    store[pack.package_name] = true;
-                })
-            })
-            BI.each(packages, function (i, pack) {
-                if (store[pack.package_name] === true) {
-                    return true;
-                }
-                groups.push({"text": pack.package_name, "value": pack.package_name});
-            });
-            if (MODE === true) {
-                Buffer["GROUP"] = groups;
-            }
-            return groups;
         },
 
         getConnectionName: function (callback) {

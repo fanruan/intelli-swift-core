@@ -41,4 +41,10 @@ public class IndexTypeKey extends IndexKey {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "IndexTypeKey{" +
+                "type=" + type +
+                '}'+super.toString();
+    }
 }

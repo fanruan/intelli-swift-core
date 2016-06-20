@@ -3,11 +3,10 @@ BIDezi.DateWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.DateWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.YMD,
+            type: BICst.WIDGET.YMD,
             dimensions: {},
             view: {},
-            value: {},
-            settings: BICst.DEFAULT_CONTROL_SETTING
+            value: {}
         })
     },
 
@@ -45,6 +44,10 @@ BIDezi.DateWidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         return false;
     },
 

@@ -18,6 +18,7 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
         return BI.extend(BI.MultiSelectTrigger.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-multi-select-trigger",
             itemsCreator: BI.emptyFn,
+            valueFormatter: BI.emptyFn,
             searcher: {},
             switcher: {},
 
@@ -34,6 +35,7 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
         this.searcher = BI.createWidget(o.searcher, {
             type: "bi.multi_select_searcher",
             itemsCreator: o.itemsCreator,
+            valueFormatter: o.valueFormatter,
             popup: {},
             adapter: o.adapter,
             masker: o.masker
@@ -52,6 +54,7 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
         });
         this.numberCounter = BI.createWidget(o.switcher, {
             type: 'bi.multi_select_check_selected_switcher',
+            valueFormatter: o.valueFormatter,
             itemsCreator: o.itemsCreator,
             adapter: o.adapter,
             masker: o.masker
@@ -71,17 +74,6 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
             }]
         });
 
-        var triggerBtn = BI.createWidget({
-            type: "bi.trigger_icon_button",
-            width: this.constants.iconSize,
-            stopPropagation: true,
-            cls: "multi-select-trigger-icon-button"
-        });
-        triggerBtn.on(BI.TriggerIconButton.EVENT_CHANGE, function () {
-            self.numberCounter.hideView();
-            self.fireEvent(BI.MultiSelectTrigger.EVENT_TRIGGER_CLICK);
-        });
-
         var wrapper = BI.createWidget({
             type: 'bi.htape',
             height: this.constants.iconSize,
@@ -94,13 +86,13 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
                     el: wrapNumberCounter,
                     width: 0
                 }, {
-                    el: triggerBtn,
-                    width: this.constants.iconSize
+                    el: BI.createWidget(),
+                    width: 30
                 }]
         });
 
         this.numberCounter.on(BI.Events.VIEW, function (b) {
-            BI.defer(function () {//自动调整宽度
+            BI.nextTick(function () {//自动调整宽度
                 wrapper.attr("items")[1].width = (b === true ? self.numberCounter.element.outerWidth() + 4 : 0);
                 wrapper.resize();
             });

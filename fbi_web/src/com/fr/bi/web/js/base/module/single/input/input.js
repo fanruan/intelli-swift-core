@@ -33,6 +33,10 @@ BI.Input = BI.inherit(BI.Single, {
                 self._keydown_ = true;
                 _keydown(e.keyCode);
             })
+            .on("input propertychange", function (e) {
+                self._keydown_ = true;
+                _keydown(e.keyCode);
+            })
             .click(function (e) {
                 e.stopPropagation();
                 _clk();
@@ -180,6 +184,7 @@ BI.Input = BI.inherit(BI.Single, {
         if (!this._isEditing === true) {
             this.element.focus();
             this._focus();
+            this.selectAll();
         }
     },
 
@@ -203,7 +208,7 @@ BI.Input = BI.inherit(BI.Single, {
 
     setValue: function (textValue) {
         this.element.val(textValue);
-        BI.defer(BI.bind(function () {
+        BI.nextTick(BI.bind(function () {
             this._checkValidationOnValueChange();
             this._defaultState();
         }, this));

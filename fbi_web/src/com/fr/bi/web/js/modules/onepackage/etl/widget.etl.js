@@ -7,6 +7,7 @@ BI.ETL = BI.inherit(BI.Widget, {
     constants: {
         ETL_OPERATOR_LAYER: "__etl_operator_layer__",
         EXCEL_VIEW_LAYER: "__excel_view_layer__",
+        EXCEL_LAYER: "__excel_layer__",
         ETL_PANE_NORTH_HEIGHT: 40,
         ETL_PANE_SOUTH_HEIGHT: 60,
         ETL_PANE_WEST_WIDTH: 580,
@@ -212,7 +213,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Update_Setup"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT
         });
-        this.updateSetButton.on(BI.Button.EVENT_CHANGE, function(){
+        this.updateSetButton.on(BI.Button.EVENT_CHANGE, function () {
             self._onClickUpdateSet();
         });
         this.excelViewButton = BI.createWidget({
@@ -221,7 +222,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Display_Data_In_Actual"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT
         });
-        this.excelViewButton.on(BI.Button.EVENT_CHANGE, function(){
+        this.excelViewButton.on(BI.Button.EVENT_CHANGE, function () {
             self._onClickExcelView();
         });
         this.saveButton = BI.createWidget({
@@ -274,20 +275,24 @@ BI.ETL = BI.inherit(BI.Widget, {
         })
     },
 
-    _onClickUpdateSet: function(){
+    _onClickUpdateSet: function () {
         var self = this;
         BI.Popovers.remove(this.model.getId());
         var updateSet = BI.createWidget({
             type: "bi.update_table_data",
             table: this.model.getValue()
         });
-        updateSet.on(BI.UpdateTableData.EVENT_SAVE, function(){
+        updateSet.on(BI.UpdateTableData.EVENT_SAVE, function () {
             self.model.setUpdateSettings(this.getValue());
+        });
+        updateSet.on(BI.UpdateTableData.EVENT_CUBE_SAVE, function (obj) {
+            self.model.setUpdateSettings(this.getValue());
+            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, obj)
         });
         BI.Popovers.create(this.model.getId(), updateSet).open(this.model.getId());
     },
 
-    _onClickExcelView: function(){
+    _onClickExcelView: function () {
         var self = this;
         var excelViewPane = BI.createWidget({
             type: "bi.excel_view_setting",
@@ -295,10 +300,10 @@ BI.ETL = BI.inherit(BI.Widget, {
             table: this.model.getValue(),
             view: this.model.getExcelView()
         });
-        excelViewPane.on(BI.ExcelViewSetting.EVENT_CANCEL, function(){
+        excelViewPane.on(BI.ExcelViewSetting.EVENT_CANCEL, function () {
             BI.Layers.remove(self.constants.EXCEL_VIEW_LAYER);
         });
-        excelViewPane.on(BI.ExcelViewSetting.EVENT_SAVE, function(view){
+        excelViewPane.on(BI.ExcelViewSetting.EVENT_SAVE, function (view) {
             BI.Layers.remove(self.constants.EXCEL_VIEW_LAYER);
             self.model.setExcelView(view);
         });
@@ -336,7 +341,6 @@ BI.ETL = BI.inherit(BI.Widget, {
 
     _populateAfterETLOperator: function () {
         var self = this;
-        this.model.setFields([]);
         var allTables = this.model.getAllTables();
         if (allTables.length === 1) {
             var mask = BI.createWidget({
@@ -346,9 +350,11 @@ BI.ETL = BI.inherit(BI.Widget, {
             });
             BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
                 self.model.setFields(data[0].fields);
+                self.model.setRelationsByETLValue(data[0]);
                 self._populate();
                 mask.destroy();
             });
+            return
         }
         self._populate();
     },
@@ -412,7 +418,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 relations: this.model.getRelations(),
                 translations: this.model.getTranslations(),
                 all_fields: this.model.getAllFields(),
-                usedFields: this.model.getUsedFields()
+                isFinal: this.model.getAllTables().length === 1
             }
         });
         tableInfo.on(BI.TableFieldWithSearchPane.EVENT_RELATION_CHANGE, function (fieldId) {
@@ -434,7 +440,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             self.model.setTranslations(translations);
         });
         tableInfo.on(BI.TableFieldWithSearchPane.EVENT_USABLE_CHANGE, function (usedFields) {
-            self.model.setUsedFields(usedFields);
+            self.model.setFieldsUsable(usedFields);
         });
         this.dataSetPane.populate([{
             el: this.tableNameWrapper,
@@ -544,7 +550,54 @@ BI.ETL = BI.inherit(BI.Widget, {
                 this.model.removeOneTable(tId);
                 this._populateAfterETLOperator();
                 break;
+            case BICst.ETL_MANAGE_EXCEL_CHANGE:
+                this._modifyExcel(tId);
+                break;
         }
+    },
+
+    _modifyExcel: function (tId) {
+        var self = this;
+        //创建一个隐藏的上传按钮，上传完destroy
+        var uploadButton = BI.createWidget({
+            type: "bi.upload_excel_button"
+        });
+        uploadButton.on(BI.UploadExcelButton.EVENT_AFTER_UPLOAD, function (files) {
+            var file = files[files.length - 1];
+            var fullFileName = file.attach_id + file.filename;
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: BICst.BODY_ELEMENT,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.saveFileGetExcelData(file.attach_id, function (data) {
+                //对比前一次fields，如果名称和个数都相同，更换full_file_name就好了
+                var fields = data.fields;
+                var newNames = [];
+                BI.each(fields, function (i, fs) {
+                    BI.each(fs, function (j, field) {
+                        newNames.push(field.field_name);
+                    });
+                });
+                var oldNames = self.model.getFieldNamesByTableId(tId);
+                var isValid = false;
+                if (newNames.length === oldNames.length) {
+                    isValid = true;
+                    BI.each(newNames, function (i, name) {
+                        name !== oldNames[i] && (isValid = false);
+                    });
+                }
+                if (isValid === true) {
+                    self.model.modifyExcelData(tId, fullFileName);
+                    BI.Msg.toast(BI.i18nText("BI-Modify_Success"), "success");
+                } else {
+                    BI.Msg.toast(BI.i18nText("BI-Excel_Modify_Fail"), "warning");
+                }
+                uploadButton.destroy();
+                mask.destroy();
+            });
+        });
+        uploadButton.element.find("input").click();
     },
 
     /**
@@ -650,7 +703,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     reopen: true,
                     isGenerated: status.isGenerated,
-                    tableInfo: table
+                    tableInfo: table,
+                    relations: self.model.getRelations()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -767,6 +821,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                     reopen: true,
                     isGenerated: status.isGenerated,
                     tableInfo: table,
+                    fields: self.model.getFields(),
                     relations: self.model.getRelations()
                 }
             });
@@ -848,6 +903,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Loading")
         });
         BI.Utils.checkCubeStatusByTable(table, function (status) {
+
             mask.destroy();
             callback(status);
         })
@@ -1027,7 +1083,8 @@ BI.ETL = BI.inherit(BI.Widget, {
             info: {
                 reopen: false,
                 isGenerated: false,
-                tableInfo: self.model.getTableById(tId)
+                tableInfo: self.model.getTableById(tId),
+                relations: self.model.getRelations()
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1099,6 +1156,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 id: self.model.getId(),
                 reopen: false,
                 isGenerated: false,
+                fields: self.model.getFields(),
                 tableInfo: self.model.getTableById(tId),
                 relations: self.model.getRelations()
             }
@@ -1156,6 +1214,7 @@ BI.ETL = BI.inherit(BI.Widget, {
     }
 });
 BI.ETL.EVENT_REMOVE = "EVENT_REMOVE";
+BI.ETL.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 BI.ETL.EVENT_CANCEL = "EVENT_CANCEL";
 BI.ETL.EVENT_SAVE = "EVENT_SAVE";
 $.shortcut("bi.etl", BI.ETL);

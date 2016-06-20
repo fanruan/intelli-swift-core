@@ -1,6 +1,8 @@
 package com.fr.bi.cal.stable.loader;
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BICore;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.cal.stable.engine.index.loader.CubeAbstractLoader;
 import com.fr.bi.cal.stable.tableindex.index.BITableIndex;
@@ -13,6 +15,7 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.structure.collection.map.TimeDeleteHashMap;
 import com.fr.bi.stable.utils.BIUserUtils;
@@ -81,6 +84,16 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
         }
     }
 
+    @Override
+    public ICubeTableService getTableIndex(CubeTableSource tableSource) {
+        return null;
+    }
+
+    @Override
+    public BIKey getFieldIndex(BusinessField column) {
+        return null;
+    }
+
     public static ICubeDataLoader getInstance(TempCubeTask task) {
         synchronized (CubeTempModelReadingTableIndexLoader.class) {
             Long key = task.getUserId();
@@ -105,7 +118,6 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
 //    }
 
 
-    @Override
     public ICubeTableService getTableIndex(BITableID id) {
         return getTableIndex(new BITable(id));
     }
@@ -124,7 +136,6 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
         }
     }
 
-    @Override
     public ICubeTableService getTableIndex(BIField td) {
         return getTableIndex(td.getTableBelongTo());
     }
@@ -199,7 +210,6 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
      * @param td
      * @return
      */
-    @Override
     public ICubeTableService getTableIndex(final Table td) {
         long threadId = Thread.currentThread().getId();
         if (storedTableIndex.get(threadId) != null) {
@@ -219,7 +229,6 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
         }
     }
 
-    @Override
     public ICubeTableService getTableIndex(BICore md5Core) {
         return getTableIndex(new BITable(md5Core.getID().getIdentityValue()));
     }
@@ -296,5 +305,10 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
             }
         }
         return manager;
+    }
+
+    @Override
+    public long getVersion() {
+        return 0;
     }
 }

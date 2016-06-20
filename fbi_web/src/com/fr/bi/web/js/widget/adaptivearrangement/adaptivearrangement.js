@@ -17,7 +17,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         return BI.extend(BI.AdaptiveArrangement.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-adaptive-arrangement",
             resizable: true,
-            layoutType: BI.Arrangement.LAYOUT_TYPE.ADAPTIVE,
+            layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             items: []
         });
     },
@@ -36,6 +36,14 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             self._initResizable(item.el);
         });
 
+        this.element.click(function (e) {
+            BI.each(self.getAllRegions(), function (i, region) {
+                if (!region.el.element.__isMouseInBounds__(e)) {
+                    region.el.element.removeClass("selected");
+                }
+            });
+        });
+
         BI.Resizers.add(this.getName(), function (e) {
             //只有window resize的时候才会触发事件
             if (BI.isWindow(e.target) && self.element.is(":visible")) {
@@ -48,19 +56,24 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
     _initResizable: function (item) {
         var self = this, o = this.options;
         item.element.css("zIndex", ++this.zIndex);
-        item.element.click(function () {
+        item.element.mousedown(function () {
             item.element.css("zIndex", ++self.zIndex);
+            BI.each(self.getAllRegions(), function (i, region) {
+                region.el.element.removeClass("selected");
+            });
+            item.element.addClass("selected");
         });
         o.resizable && item.element.resizable({
             handles: "e, s, se",
-            minWidth: 21,
-            minHeight: 21,
+            minWidth: 100,
+            minHeight: 50,
+            autoHide: true,
             helper: "bi-resizer",
             start: function () {
                 item.element.css("zIndex", ++self.zIndex);
             },
             resize: function (e, ui) {
-                self._resize(item.attr("id"), ui.size);
+                // self._resize(item.attr("id"), ui.size);
             },
             stop: function (e, ui) {
                 self._resize(item.attr("id"), ui.size);
@@ -185,15 +198,16 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                                 bottomRegions.push(region);
                             }
                         });
-                        clone[id] = BI.extend({}, region, {
-                            left: current.left,
-                            width: current.width,
-                            top: current.top + current.height,
-                            height: insert.height
-                        });
                         var bs = this.arrangement._getInDirectRelativeRegions(current.id, ["bottom"]).bottom;
                         var seen = [current.id];
                         var bottoms = bs.bottom;
+                        var occ = this.arrangement._getRegionOccupied(bottoms);
+                        clone[id] = BI.extend({}, region, {
+                            left: occ.left,
+                            width: occ.width,
+                            top: current.top + current.height,
+                            height: insert.height
+                        });
                         while (bottoms.length > 0) {
                             BI.each(bottoms, function (i, bottom) {
                                 seen.push(bottom.id);
@@ -358,7 +372,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         this.arrangement.populate(items);
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                BI.defer(function () {
+                BI.nextTick(function () {
                     self.arrangement.resize();
                 });
                 break;

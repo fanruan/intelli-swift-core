@@ -1,6 +1,54 @@
 BI.Utils = BI.Utils || {};
 
 BI.extend(BI.Utils, {
+    afterSaveTable : function(res){
+        BI.each(res, function(i, item){
+            BI.extend(Pool[i], item);
+        })
+        BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
+    },
+
+    afterReNameTable : function (id, name, title) {
+        Pool["translations"][id] = name;
+        BI.some(Pool["packages"][ETLCst.PACK_ID]['tables'], function (idx, item) {
+            if(item.id === id) {
+                item.describe = title
+                return true;
+            }
+        })
+        BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
+    },
+
+    afterDeleteTable : function (id) {
+        delete Pool["tables"][id];
+        BI.remove(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+            return item.id === id
+        })
+        BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
+    },
+
+    getDescribe : function (id) {
+        if (BI.isNotEmptyArray(BI.Utils.getFieldIDsOfTableID(id))){
+            var table =  BI.find(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+                return item.id === id
+            })
+            return table.describe;
+        } else {
+            return BI.i18nText('BI-ETL_Temp_Table_Go_On_Editing')
+        }
+    },
+    getAllETLTableNames : function (id) {
+        var names = [];
+        if (BI.isNull(Pool["packages"][ETLCst.PACK_ID])){
+            return names;
+        }
+        BI.each(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+            if(item.id !== id) {
+                names.push(Pool["translations"][item.id])
+            }
+        })
+        return names;
+    },
     getTableTypeByID :function (tableId){
         var source = Pool.tables;
         var table = source[tableId];
@@ -38,7 +86,7 @@ BI.extend(BI.Utils, {
 
     getFieldArrayFromTable : function (table) {
         var fields = [];
-        BI.each(table.fields, function (idx, item) {
+        BI.each(table[ETLCst.FIELDS], function (idx, item) {
             fields = BI.concat(fields, item);
         })
         return fields;
@@ -120,53 +168,132 @@ BI.extend(BI.Utils, {
         return fields;
     },
 
-    _buildData : function(model, filterValueGetter) {
+    createDateFieldType: function (group) {
+        switch (group) {
+            case BICst.GROUP.Y :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.S :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.M :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.W :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.YMD :
+                return BICst.COLUMN.DATE;
+        }
+    },
+
+
+    buildData : function(model, widget, callback, filterValueGetter) {
         //测试数据
         var header = [];
-        var items = [];
-        BI.each(model[ETLCst.FIELDS], function(idx, item){
-            header.push({
-                text:item.field_name,
-                field_type:item.field_type,
-                field_id:item.field_id,
-                filterValueGetter : filterValueGetter,
-                fields : model[ETLCst.FIELDS]
+        var table = {};
+        table[ETLCst.ITEMS] = [model];
+        var mask = BI.createWidget({
+                type: "bi.etl_loading_mask",
+                masker: widget.element,
+                text: BI.i18nText("BI-Loading")
             });
-            BI.each(BI.range(0 ,10), function(i){
-                if(BI.isNull(items[i])){
-                    items[i] = [];
-                }
-                items[i].push({text:"row:"+i +" column:" +idx})
-            })
 
-        })
-        return [items, header];
+        BI.ETLReq.reqPreviewTable(table, function (data) {
+            BI.each(model[ETLCst.FIELDS], function(idx, item){
+                var head = {
+                    text:item.field_name,
+                    field_type:item.field_type,
+                    field_id:item.field_id,
+                    filterValueGetter : filterValueGetter
+                }
+                head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
+                header.push(head);
+            });
+            if(mask != null) {
+                mask.destroy()
+            }
+            callback([data.value, header])
+        });
+
     },
 
     triggerPreview : function () {
-        return BI.throttle(function (widget, previewModel, operatorType, type) {
-            switch (type) {
-                case ETLCst.PREVIEW.SELECT : {
-                    widget.setPreviewOperator(operatorType);
-                    var model = {};
-                    model[ ETLCst.FIELDS] = previewModel.getTempFields();
-                    widget.populatePreview.apply(widget, BI.Utils._buildData(model, widget.controller.getFilterValue))
-                    return;
+        return BI.throttle(function () {
+            if(BI.isNull(this.runner)){
+                this.runner = new BI.RUN({
+                    args : arguments
+                })
+                var self = this;
+                var run = function (widget, previewModel, operatorType, type) {
+                    switch (type) {
+                        case ETLCst.PREVIEW.SELECT :
+                        {
+                            BI.Utils.buildData(previewModel.update4Preview(), widget.previewTable, function (data) {
+                                self.runner = self.runner.getNext();
+                                if (self.runner != null) {
+                                    self.runner.submit(run)
+                                } else {
+                                    widget.setPreviewOperator(operatorType);
+                                    widget.populatePreview.apply(widget, data)
+                                }
+                            }, widget.controller.getFilterValue)
+                            return
+                        }
+                        case  ETLCst.PREVIEW.MERGE :
+                        {
+                            BI.concat(BI.Utils.buildData(previewModel, widget, function (data) {
+                                self.runner = self.runner.getNext();
+                                if (self.runner != null) {
+                                    self.runner.submit(run)
+                                } else {
+                                    widget.populate.apply(widget, data);
+                                }
+                            }), operatorType);
+                            return;
+                        }
+                        default :
+                        {
+                            BI.Utils.buildData(previewModel.update(), widget.previewTable, function (data) {
+                                self.runner = self.runner.getNext();
+                                if (self.runner != null) {
+                                    self.runner.submit(run)
+                                } else {
+                                    widget.setPreviewOperator(operatorType);
+                                    widget.populatePreview.apply(widget, data)
+                                }
+                            }, widget.controller.getFilterValue);
+                            return
+                        }
+
+                    }
                 }
-                case ETLCst.PREVIEW.MERGE : {
-                    widget.populate.apply(widget, BI.concat(BI.Utils._buildData(previewModel), operatorType));
-                    return;
-                }
-                default : {
-                    widget.setPreviewOperator(operatorType);
-                    widget.populatePreview.apply(widget, BI.Utils._buildData(previewModel.update(), widget.controller.getFilterValue));
-                    return
-                }
+                self.runner.submit(run)
+            } else {
+                this.runner.setNext({
+                    args : arguments
+                })
             }
         }, 300)
     }
 
 })
 
-window.confirm = BI.Msg.confirm;
+BI.RUN = BI.inherit(FR.OB, {
+    _init : function () {
+        BI.RUN.superclass._init.apply(this, arguments);
+    },
+
+    setNext : function (next) {
+        this.next = new BI.RUN(next);
+    },
+
+    hasNext : function () {
+        return BI.isNotNull(this.next);
+    },
+
+    submit : function (runner) {
+        runner.apply(runner, this.options.args)
+    },
+
+    getNext : function () {
+        return this.next
+    }
+})
 

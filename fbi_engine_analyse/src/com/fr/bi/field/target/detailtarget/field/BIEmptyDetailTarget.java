@@ -1,8 +1,7 @@
 package com.fr.bi.field.target.detailtarget.field;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 
@@ -28,7 +27,7 @@ public class BIEmptyDetailTarget extends BIAbstractDetailTarget {
     }
 
     @Override
-    public BITable createTableKey() {
+    public BusinessTable createTableKey() {
         return null;
     }
 
@@ -72,7 +71,7 @@ public class BIEmptyDetailTarget extends BIAbstractDetailTarget {
      * @return 索引map
      */
     @Override
-    public ICubeColumnIndexReader createGroupValueMapGetter(Table target, ICubeDataLoader loader, long userId) {
+    public ICubeColumnIndexReader createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId) {
         return null;
     }
 

@@ -68,11 +68,11 @@ BI.CircleSelf = BI.inherit(BI.Widget, {
                     self.tab.setSelect(BI.CircleSelf.RESULT_PANE);
                     self.fireEvent(BI.CircleSelf.EVENT_SHOW_RESULT_PANE);
                     self.resultPane.populate({
-                        floors: self.levelLayerPane.getValue(),
+                        floors: self.levelLayerPane.getValue().floors,
                         divide_length: self.operatorPane.getValue().divide_length,
                         id_field_name: self.operatorPane.getValue().id_field_name,
                         parentid_field_name: self.operatorPane.getValue().parentid_field_name,
-                        field_length: self.field_length,
+                        field_length: self.levelLayerPane.getValue().field_length,
                         showfields: self.operatorPane.getValue().showfields
                     });
 

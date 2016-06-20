@@ -18,7 +18,7 @@ public class DayDiff implements DateDiffCalculator {
 		if(d1 == null || d2 == null){
 			return 0;
 		}
-		long t = d2.longValue() - d1.longValue();
+		long t = d1.longValue() - d2.longValue();
 		return (int) (t / DateConstant.DATEDELTRA.DAY);
 	}
 

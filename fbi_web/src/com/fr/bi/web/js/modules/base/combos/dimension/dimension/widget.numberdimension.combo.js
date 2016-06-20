@@ -6,7 +6,8 @@
 BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
 
     constants: {
-        customSortPos : 2
+        customSortPos : 2,
+        CordonPos: 2
     },
 
     config:{
@@ -48,6 +49,29 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
         var group = this._assertGroup(BI.Utils.getDimensionGroupByID(o.dId));
         var customSort = items[0][this.constants.customSortPos];
         group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
+        switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                break;
+            default:
+                BI.removeAt(items, this.constants.CordonPos);
+                break;
+
+        }
         return items;
     },
 
@@ -70,21 +94,26 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }, {
                 text: BI.i18nText("BI-Custom_Sort_Dot"),
                 value: BICst.DIMENSION_NUMBER_COMBO.SORT_BY_CUSTOM,
-                cls: ""
+                cls: "dot-e-font"
             }],
             [{
                 text: BI.i18nText("BI-Same_Value_A_Group"),
                 value: BICst.DIMENSION_NUMBER_COMBO.GROUP_BY_VALUE,
-                cls: ""
+                cls: "dot-e-font"
             },{
                 text: BI.i18nText("BI-Grouping_Setting"),
                 value: BICst.DIMENSION_NUMBER_COMBO.GROUP_SETTING,
+                cls: "dot-e-font"
+            }],
+            [{
+                text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Vertical") +")",
+                value: BICst.DIMENSION_NUMBER_COMBO.CORDON,
                 cls: ""
             }],
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),
                 value: BICst.DIMENSION_NUMBER_COMBO.FILTER,
-                cls: ""
+                cls: "filter-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Math_Relationships"),
@@ -94,17 +123,17 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             [{
                 text: BI.i18nText("BI-Copy"),
                 value: BICst.DIMENSION_NUMBER_COMBO.COPY,
-                cls: ""
+                cls: "copy-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.DIMENSION_NUMBER_COMBO.DELETE,
-                cls: ""
+                cls: "delete-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Dimension_From"),
                 value: BICst.DIMENSION_NUMBER_COMBO.INFO,
-                cls: "",
+                cls: "dimension-from-font",
                 disabled: true
             }]
         ]

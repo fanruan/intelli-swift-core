@@ -58,13 +58,14 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
         })
     },
 
-    setEnable : function(v) {
+    setEnable : function(v, txt) {
         var o = this.options;
         o.lock = !v;
         BI.each(this.buttons, function(idx, item){
             //被选中的不改变状态
             if(!(!BI.isUndefined(item.isSelected) && item.isSelected())){
                 item.setEnable(v)
+                item.setWarningTitle(txt);
             }
         })
     },

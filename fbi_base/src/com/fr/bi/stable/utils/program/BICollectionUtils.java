@@ -7,16 +7,18 @@ import java.util.*;
  */
 public class BICollectionUtils {
     public static <T> T unmodifiedCollection(T collection) {
-        if (collection instanceof List) {
-            return (T) Collections.unmodifiableList((List) collection);
-        } else if (collection instanceof Set) {
-            if (collection instanceof SortedSet) {
-                return (T) Collections.unmodifiableSortedSet((SortedSet) collection);
+        if (collection!=null) {
+            if (collection instanceof List) {
+                return (T) Collections.unmodifiableList((List) collection);
+            } else if (collection instanceof Set) {
+                if (collection instanceof SortedSet) {
+                    return (T) Collections.unmodifiableSortedSet((SortedSet) collection);
+                }
+                return (T) Collections.unmodifiableSet((Set) collection);
+            } else {
+                return (T) Collections.unmodifiableCollection((Collection) collection);
             }
-            return (T) Collections.unmodifiableSet((Set) collection);
-        } else {
-            return (T) Collections.unmodifiableCollection((Collection)collection);
-        }
+        }return null;
     }
 
     private static Integer INTEGER_ONE = new Integer(1);

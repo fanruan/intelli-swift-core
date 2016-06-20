@@ -3,11 +3,10 @@ BIDezi.StringWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.StringWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.STRING,
+            type: BICst.WIDGET.STRING,
             dimensions: {},
             view: {},
-            value: {},
-            settings: BICst.DEFAULT_CONTROL_SETTING
+            value: {}
         })
     },
 
@@ -45,6 +44,10 @@ BIDezi.StringWidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         if(this.has("changeSort")){
             var dimensions = this.get("dimensions");
             var key = BI.keys(dimensions)[0];

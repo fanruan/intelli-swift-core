@@ -8,6 +8,7 @@ BI.DownListCombo = BI.inherit(BI.Widget, {
             invalid: false,
             height: 25,
             items: [],
+            adjustLength: 0,
             el: {}
         })
     },
@@ -36,7 +37,7 @@ BI.DownListCombo = BI.inherit(BI.Widget, {
             element: this.element,
             type: 'bi.combo',
             isNeedAdjustWidth: false,
-
+            adjustLength: o.adjustLength,
             el: BI.createWidget(o.el, {
                 type: "bi.icon_trigger",
                 extraCls: o.iconCls ? o.iconCls : "pull-down-font",
@@ -45,6 +46,7 @@ BI.DownListCombo = BI.inherit(BI.Widget, {
             }),
             popup: {
                 el: this.popupview,
+                stopPropagation: true,
                 maxHeight: 400
             }
         });

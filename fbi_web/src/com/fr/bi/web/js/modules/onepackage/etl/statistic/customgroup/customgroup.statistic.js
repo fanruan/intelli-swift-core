@@ -26,7 +26,7 @@ BI.CustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
 
     rebuildNorth: function (north) {
         var o = this.options;
-        var dimensionName = o.fieldName;
+        var dimensionName = o.model.getDimensionNameById(o.dId);
         var name = BI.i18nText("BI-Custom_Group_Detail", dimensionName);
         BI.createWidget({
             type: "bi.label",
@@ -42,16 +42,15 @@ BI.CustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
     rebuildCenter: function (center) {
         this.customgroup = BI.createWidget({
             element: center,
-            fieldName: this.options.fieldName,
+            model: this.options.model,
+            dId: this.options.dId,
             type: "bi.etl_group_custom_group"
         })
 
     },
 
     populate: function(group){
-        this.customgroup.populate(BI.extend(group, {
-            table: this.options.table
-        }));
+        this.customgroup.populate(group);
     }
 });
 

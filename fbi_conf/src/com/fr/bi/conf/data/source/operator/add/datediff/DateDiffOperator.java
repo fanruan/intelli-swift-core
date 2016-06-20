@@ -1,21 +1,23 @@
 package com.fr.bi.conf.data.source.operator.add.datediff;
 
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.time.BIDateUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
+
 
 /**
  * Created by GUY on 2015/3/5.
@@ -59,38 +61,88 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     /**
      * 将JSON对象转换成java对象
      *
-     * @param jsonObject json对象
+     * @param jo json对象
      * @throws Exception 报错
      */
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if (jo.has("item")){
-            JSONObject jsonObject= jo.getJSONObject("item");
+        if (jo.has("item")) {
+            JSONObject jsonObject = jo.getJSONObject("item");
             if (jsonObject.has("firstField")) {
-                field1 = jo.getString("firstField");
+                field1 = jsonObject.getString("firstField");
             }
-            if (jo.has("secondField")) {
-                field2 = jo.getString("secondField");
+            if (jsonObject.has("secondField")) {
+                field2 = jsonObject.getString("secondField");
             }
-            if (jo.has("type")) {
-                unit = jo.getInt("unit");
+            if (jsonObject.has("type")) {
+                unit = jsonObject.getInt("type");
             }
         }
     }
 
+    private interface ValueGetter {
+        Long getTime(int row);
+
+        void check();
+    }
+
+    private class SystemTimeValueGetter implements ValueGetter {
+
+        long t;
+
+        SystemTimeValueGetter(long t) {
+            this.t = t;
+        }
+
+        public Long getTime(int row) {
+            return t;
+        }
+
+        public void check() {
+        }
+    }
+
+    private class DataValueGetter implements ValueGetter {
+        ICubeTableService ti;
+        BIKey key;
+
+        DataValueGetter(ICubeTableService ti, BIKey key) {
+            this.ti = ti;
+            this.key = key;
+        }
+
+        public Long getTime(int row) {
+            return (Long) ti.getRow(key, row);
+        }
+
+        public void check() {
+            BIDateUtils.checkDateFieldType(ti.getColumns(), key);
+        }
+    }
+
+
+    private ValueGetter createValueGetter(String field, ICubeTableService ti, long systemTime) {
+        ValueGetter vg = null;
+        if (ComparatorUtils.equals(field, BIReportConstant.SYSTEM_TIME)) {
+            vg = new SystemTimeValueGetter(systemTime);
+        } else {
+            vg = new DataValueGetter(ti, new IndexKey(field));
+        }
+        vg.check();
+        return vg;
+    }
 
 
     @Override
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
         int rowCount = ti.getRowCount();
         DateDiffCalculator dc = getDiffCalculator(unit);
-        BIKey key1 = new IndexKey(field1);
-        BIKey key2 = new IndexKey(field2);
-        BIDateUtils.checkDatefieldType(ti.getColumns(), key1);
-        BIDateUtils.checkDatefieldType(ti.getColumns(), key2);
+        long systemTime = System.currentTimeMillis();
+        ValueGetter g1 = createValueGetter(field1, ti, systemTime);
+        ValueGetter g2 = createValueGetter(field2, ti, systemTime);
         for (int row = 0; row < rowCount; row++) {
-            int value = dc.get((Long) ti.getRow(key1, row), (Long) ti.getRow(key2, row));
+            int value = dc.get(g1.getTime(row), g2.getTime(row));
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
@@ -102,8 +154,8 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     }
 
     @Override
-    protected int getClassType() {
-        return DBConstant.CLASS.INTEGER;
+    protected int getSqlType() {
+        return java.sql.Types.INTEGER;
     }
 
     @Override
@@ -131,7 +183,6 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
         } catch (Exception e) {
         }
         writer.end();
-
     }
 
     private static DateDiffCalculator getDiffCalculator(int unit) {

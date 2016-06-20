@@ -3,8 +3,8 @@ package com.fr.bi.stable.utils;
 import com.fr.base.TableData;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.cal.DimensionCalculatorDealer;
 import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -16,7 +16,7 @@ import com.fr.script.Calculator;
  */
 public class BIServerUtils {
 
-    public static long runServer(TableData data, BIBasicField[] columns, Traversal<BIDataValue> back) {
+    public static long runServer(TableData data, ICubeFieldSource[] columns, Traversal<BIDataValue> back) {
         DataModel dm = null;
         long rowCount = 0;
         try {
@@ -53,17 +53,19 @@ public class BIServerUtils {
 	 */
 	public static ResultDealer createDimensonDealer(BIKey[] dimension, ResultDealer lastDealer) {
 		DimensionCalculatorDealer dealer = null;
-		DimensionCalculatorDealer tempDealer = null; 
-		for(BIKey key : dimension){
-			DimensionCalculatorDealer dimensionDealer = new DimensionCalculatorDealer(key);
-			if(dealer == null){
-				dealer = dimensionDealer;
-			}
-			if(tempDealer != null){
-				tempDealer.setNext(dimensionDealer);
-			}
-			tempDealer = dimensionDealer;
-		}
+		DimensionCalculatorDealer tempDealer = null;
+        if(dimension != null) {
+            for (BIKey key : dimension) {
+                DimensionCalculatorDealer dimensionDealer = new DimensionCalculatorDealer(key);
+                if (dealer == null) {
+                    dealer = dimensionDealer;
+                }
+                if (tempDealer != null) {
+                    tempDealer.setNext(dimensionDealer);
+                }
+                tempDealer = dimensionDealer;
+            }
+        }
 		if(dealer != null){
 			tempDealer.setNext(lastDealer);
 			return dealer;

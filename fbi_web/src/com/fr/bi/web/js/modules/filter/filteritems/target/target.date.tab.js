@@ -15,7 +15,8 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TargetDateTab.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-target-date-tab",
-            dateWidgetType: []
+            dateWidgetType: [],
+            isTimePoint: true
         })
     },
 
@@ -77,7 +78,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
     },
 
     _cardCreator: function(v){
-        var self = this;
+        var self = this, o = this.options;
         var ids = BI.Utils.getAllWidgetIDs();
         if(!BI.contains(ids, v)){
             return BI.createWidget({
@@ -87,7 +88,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
             });
         }
         switch (BI.Utils.getWidgetTypeByID(v)) {
-            case BICst.Widget.YEAR:
+            case BICst.WIDGET.YEAR:
                 this.yearCombo = BI.createWidget({
                     type: "bi.year_param_combo"
                 });
@@ -95,7 +96,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
                 });
                 return this.yearCombo;
-            case BICst.Widget.MONTH:
+            case BICst.WIDGET.MONTH:
                 this.monthCombo = BI.createWidget({
                     type: "bi.year_month_param_combo"
                 });
@@ -103,7 +104,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
                 });
                 return this.monthCombo;
-            case BICst.Widget.QUARTER:
+            case BICst.WIDGET.QUARTER:
                 this.qurterCombo = BI.createWidget({
                     type: "bi.year_season_param_combo"
                 });
@@ -111,15 +112,24 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
                 });
                 return this.qurterCombo;
-            case BICst.Widget.YMD:
-                this.dateCombo = BI.createWidget({
-                    type: "bi.date_param_combo"
-                });
-                this.dateCombo.on(BI.YearParamCombo.EVENT_CONFIRM, function(){
-                    self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
-                });
+            case BICst.WIDGET.YMD:
+                if(o.isTimePoint === true){
+                    this.dateCombo = BI.createWidget({
+                        type: "bi.date_param_combo"
+                    });
+                    this.dateCombo.on(BI.DateParamCombo.EVENT_CONFIRM, function(){
+                        self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
+                    });
+                }else{
+                    this.dateCombo = BI.createWidget({
+                        type: "bi.date_interval_param_combo"
+                    });
+                    this.dateCombo.on(BI.DateIntervalParamCombo.EVENT_CONFIRM, function(){
+                        self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
+                    });
+                }
                 return this.dateCombo;
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 this.dateRangeCombo = BI.createWidget({
                     type: "bi.range_value_combo",
                     height: this.constants.comboHeight

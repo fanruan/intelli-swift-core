@@ -6,7 +6,7 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
         DETAIL_WEST_WIDTH: 280,
         DETAIL_DATA_STYLE_HEIGHT: 240,
         DETAIL_GAP_NORMAL: 10,
-        DETAIL_PANE_HORIZONTAL_GAP: 20
+        DETAIL_PANE_HORIZONTAL_GAP: 10
 
     },
 
@@ -21,31 +21,43 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
+        var mask = BI.createWidget();
+        mask.element.__buildZIndexMask__(0);
         BI.createWidget({
-            type: "bi.border",
+            type: "bi.absolute",
             element: vessel,
-            items: {
-                north: {el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT},
-                west: {el: this._buildWest(), width: this.constants.DETAIL_WEST_WIDTH},
-                center: {el: this._buildCenter()}
-            }
+            items: [{
+                el: mask,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }, {
+                el: {
+                    type: "bi.htape",
+                    cls: "widget-attribute-setter-container",
+                    items: [{
+                        el: this._buildWest(),
+                        width: this.constants.DETAIL_WEST_WIDTH
+                    }, {
+                        type: "bi.vtape",
+                        items: [{
+                            el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
+                        }, {
+                            el: this._buildCenter()
+                        }]
+                    }]
+                },
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20
+            }]
         });
     },
 
     _buildNorth: function () {
         var self = this;
-        var input = BI.createWidget({
-            type: "bi.text_editor",
-            height: 22,
-            width: 400,
-            validationChecker: function (v) {
-
-            }
-        });
-        input.setValue(this.model.get("name"));
-        input.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self.model.set("name", input.getValue());
-        });
         var shrink = BI.createWidget({
             type: "bi.button",
             height: 25,
@@ -57,9 +69,7 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
-            cls: "widget-attr-north",
             items: {
-                left: [input],
                 right: [shrink]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
@@ -72,7 +82,7 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: BI.Utils.isRealTime() ? "bi.select_string_4_realtime" : "bi.select_string",
+                    type: BI.Utils.isRealTime() ? "bi.select_string_4_realtime" : "bi.tree_select_data",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
@@ -107,14 +117,13 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.vtape",
-                    cls: "widget-show-data-pane",
                     items: [{
                         el: top,
                         height: this.constants.DETAIL_DATA_STYLE_HEIGHT - this.constants.DETAIL_NORTH_HEIGHT
                     }, {
                         el: {
                             type: "bi.absolute",
-                            cls: "widget-attr-chart",
+                            cls: "widget-center-wrapper",
                             items: [{
                                 el: combo,
                                 left: 10,

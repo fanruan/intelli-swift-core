@@ -20,6 +20,7 @@ public class BITablePathIndexBuilder4Test extends BITablePathIndexBuilder {
     public Object mainTask(IMessage lastReceiveMessage) {
         System.out.println("Table Path Index!");
         BICubeBuildProbeTool.INSTANCE.getFlag().put("tablePath", 30);
+        BICubeBuildProbeTool.INSTANCE.getFlag().put("tablePath:"+lastReceiveMessage.getFragment(),200);
 
 //        try {
 //            Thread.sleep(100);

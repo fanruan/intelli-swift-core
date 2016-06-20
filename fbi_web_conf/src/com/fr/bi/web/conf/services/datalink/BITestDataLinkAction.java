@@ -1,9 +1,8 @@
 package com.fr.bi.web.conf.services.datalink;
 
-import com.fr.base.FRContext;
 import com.fr.bi.stable.data.db.DataLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.web.base.JSONErrorHandler;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.services.datalink.data.BIConnectionTestUtils;
 import com.fr.data.core.DataCoreUtils;
@@ -31,20 +30,16 @@ public class BITestDataLinkAction extends AbstractBIConfigureAction {
         BIConnectionTestUtils utils = new BIConnectionTestUtils();
         JSONObject jo = utils.processConnectionTest(linkData);
         if(ComparatorUtils.equals(jo.getString("success"), true)){
-            com.fr.data.impl.Connection dbc = fetchConnection(linkData);
-            boolean isOracle = false;
             try {
-                isOracle = FRContext.getCurrentEnv().isOracle(dbc);
-            } catch (Exception e){
-                new JSONErrorHandler().error(req, res, e.getMessage());
-            }
-            if(isOracle){
+                com.fr.data.impl.Connection dbc = fetchConnection(linkData);
                 JSONArray ja = new JSONArray();
                 String[] schemas = DataCoreUtils.getDatabaseSchema(dbc);
                 for(int i = 0; i < schemas.length; i++){
                     ja.put(schemas[i]);
                 }
                 jo.put("schemas", ja);
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         }
         WebUtils.printAsJSON(res, jo);

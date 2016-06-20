@@ -64,7 +64,14 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     },
 
     getColumnSize: function () {
-        return this.columnSize;
+        var columnSize = [];
+        BI.each(this.columnSize, function (i, size) {
+            if (size < 80) {
+                size = 80;
+            }
+            columnSize.push(size);
+        });
+        return columnSize;
     },
 
     getHeader: function () {
@@ -99,20 +106,31 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         return this.showNumber;
     },
 
+    getThemeColor: function () {
+        return this.themeColor;
+    },
+
+    getTableForm: function () {
+        return this.tableForm;
+    },
+
+    getTableStyle: function () {
+        return this.tableStyle;
+    },
+
     setPageOperator: function (pageOperator) {
         this.pageOperator = pageOperator;
     },
 
     getExtraInfo: function () {
-        var settings = BI.Utils.getWidgetSettingsByID(this.wId) || BICst.DEFAULT_CHART_SETTING;
         var op = {};
         op.expander = {
             x: {
-                type: settings.open_col_node,
+                type: BI.Utils.getWSOpenColNodeByID(this.wId),
                 value: [this._formatExpanderTree(this.crossETree.toJSONWithNode())]
             },
             y: {
-                type: settings.open_row_node,
+                type: BI.Utils.getWSOpenRowNodeByID(this.wId),
                 value: [this._formatExpanderTree(this.eTree.toJSONWithNode())]
             }
         };
@@ -142,15 +160,16 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         });
         BI.each(drill, function (drId, drArray) {
             if (drArray.length !== 0) {
+                var dIndex = self.dimIds.indexOf(drId), cIndex = self.crossDimIds.indexOf(drId);
                 BI.remove(self.dimIds, drId);
                 BI.remove(self.crossDimIds, drId);
                 BI.each(drArray, function (i, dr) {
                     var tempDrId = dr.dId;
                     if (i === drArray.length - 1) {
                         if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
-                            self.dimIds.push(tempDrId);
+                            self.dimIds.splice(dIndex, 0, tempDrId);
                         } else {
-                            self.crossDimIds.push(tempDrId);
+                            self.crossDimIds.splice(cIndex, 0, tempDrId);
                         }
                     } else {
                         BI.remove(self.dimIds, tempDrId);
@@ -171,20 +190,23 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
      * 重置部分数据，用于无后台请求
      */
     _resetPartAttrs: function () {
-        var widgetId = this.options.wId;
-        var settings = BI.Utils.getWidgetSettingsByID(widgetId);
-        this.showNumber = settings.show_number;         //显示行号
-        this.showRowTotal = settings.show_row_total;    //显示行汇总
-        this.showColTotal = settings.show_col_total;    //显示列汇总
-        this.openRowNode = settings.open_row_node;      //展开所有行表头节点
-        this.openColNode = settings.open_col_node;      //展开所有列表头节点
-        this.freezeDim = settings.freeze_dim;
+        var wId = this.options.wId;
+        this.showNumber = BI.Utils.getWSShowNumberByID(wId);         //显示行号
+        this.showRowTotal = BI.Utils.getWSShowRowTotalByID(wId);    //显示行汇总
+        this.showColTotal = BI.Utils.getWSShowColTotalByID(wId);    //显示列汇总
+        this.openRowNode = BI.Utils.getWSOpenRowNodeByID(wId);      //展开所有行表头节点
+        this.openColNode = BI.Utils.getWSOpenColNodeByID(wId);      //展开所有列表头节点
+        this.freezeDim = BI.Utils.getWSFreezeDimByID(wId);           //冻结维度
+        this.themeColor = BI.Utils.getWSThemeColorByID(wId);         //主题色
+        this.tableForm = BI.Utils.getWSTableFormByID(wId);           //表格类型
+        this.tableStyle = BI.Utils.getWSTableStyleByID(wId);         //表格风格
+
         this.header = [];
         this.items = [];
         this.crossHeader = [];
         this.crossItems = [];
         this.mergeCols = [];
-        this.columnSize = settings.column_size || [];
+        this.columnSize = BI.Utils.getWSColumnSizeByID(wId);
 
     },
 
@@ -296,16 +318,19 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                             type: "bi.target_body_normal_cell",
                             text: cs,
                             dId: tId,
-                            clicked: pValues
+                            clicked: pValues,
+                            cls: "summary-cell"
                         });
                     });
-                    item.children.push({
-                        type: "bi.page_table_cell",
-                        text: BI.i18nText("BI-Summary_Values"),
-                        tag: BI.UUID(),
-                        isSum: true,
-                        values: vs
-                    })
+                    // item.children.push({
+                    //     type: "bi.page_table_cell",
+                    //     text: BI.i18nText("BI-Summary_Values"),
+                    //     tag: BI.UUID(),
+                    //     isSum: true,
+                    //     values: vs,
+                    //     cls: "summary-cell"
+                    // })
+                    item.values = vs;
                 }
                 item.isExpanded = true;
             } else if (BI.isNotNull(child.s)) {
@@ -489,7 +514,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             if (BI.isNotNull(tId)) {
                 targetsArray.push({
                     type: "bi.page_table_cell",
-                    text: BI.Utils.getDimensionNameByID(tId)
+                    cls: "cross-table-target-header",
+                    text: BI.Utils.getDimensionNameByID(tId),
+                    title: BI.Utils.getDimensionNameByID(tId)
                 });
             }
         });
@@ -537,11 +564,14 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 } else if (BI.isNotNull(item.isSum)) {
                     //合计
                     item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
+                    item.cls = "cross-table-target-header";
                     self.header.push(item);
                 } else {
                     self.header.push({
                         type: "bi.page_table_cell",
+                        cls: "cross-table-target-header",
                         text: dName,
+                        title: dName,
                         tag: BI.UUID()
                     })
                 }
@@ -566,16 +596,19 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     outerValues.push({
                         type: "bi.target_body_normal_cell",
                         text: v,
-                        dId: tId
+                        dId: tId,
+                        cls: "summary-cell last"
                     });
                 });
-                item.children.push({
-                    type: "bi.page_table_cell",
-                    text: BI.i18nText("BI-Summary_Values"),
-                    tag: BI.UUID(),
-                    isSum: true,
-                    values: outerValues
-                })
+                // item.children.push({
+                //     type: "bi.page_table_cell",
+                //     text: BI.i18nText("BI-Summary_Values"),
+                //     tag: BI.UUID(),
+                //     isSum: true,
+                //     values: outerValues,
+                //     cls: "summary-cell last"
+                // })
+                item.values = outerValues;
             } else {
                 //使用第一个值作为一个维度
                 BI.each(this.data.s, function (i, v) {
@@ -586,7 +619,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     outerValues.push({
                         type: "bi.target_body_normal_cell",
                         text: v,
-                        dId: tId
+                        dId: tId,
+                        cls: "summary-cell"
                     });
                 });
                 item.children.push({
@@ -595,7 +629,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     tag: BI.UUID(),
                     isSum: true,
                     values: outerValues
-                })
+                });
+                item.values = item;
             }
         }
         this.items = [item];
@@ -680,18 +715,24 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     outerValues.push({
                         type: "bi.target_body_normal_cell",
                         text: v,
-                        dId: tId
+                        dId: tId,
+                        cls: "summary-cell last"
                     });
+                });
+                BI.each(sums, function (i, sum) {
+                    sums[i].cls = "summary-cell last"
                 });
                 sums = sums.concat(outerValues);
             }
-            item.children.push({
-                type: "bi.page_table_cell",
-                text: BI.i18nText("BI-Summary_Values"),
-                tag: BI.UUID(),
-                isSum: true,
-                values: sums
-            })
+            // item.children.push({
+            //     type: "bi.page_table_cell",
+            //     text: BI.i18nText("BI-Summary_Values"),
+            //     tag: BI.UUID(),
+            //     isSum: true,
+            //     values: sums,
+            //     cls: "summary-cell"
+            // })
+            item.values = sums;
         }
 
         this.items = [item];
@@ -800,19 +841,25 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             }
             if (hasSum === true && self.showColTotal === true && BI.isNotEmptyArray(item.children)) {
                 BI.each(self.targetIds, function (k, tId) {
-                    item.children.push({
-                        type: "bi.page_table_cell",
-                        text: BI.i18nText("BI-Summary_Values"),
-                        tag: BI.UUID(),
-                        isSum: true
-                    });
+                    // item.children.push({
+                    //     type: "bi.page_table_cell",
+                    //     text: BI.i18nText("BI-Summary_Values"),
+                    //     tag: BI.UUID(),
+                    //     isSum: true,
+                    //     cls: "summary-cell"
+                    // });
+                    item.values = [""];
                 });
             }
             //最后一层（无children）
             if (BI.isNull(item.children)) {
                 BI.each(self.targetIds, function (i, tId) {
                     crossHeaderItems.push(item);
-                })
+                });
+                //无指标是否也应当直接push进去 bug 95334
+                if (self.targetIds.length === 0) {
+                    crossHeaderItems.push(item);
+                }
             } else {
                 crossHeaderItems.push(item);
             }
@@ -830,7 +877,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             self.mergeCols.push(i);
             self.freezeCols.push(i);
         });
-        this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
+        // this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
         var dtIds = this.dimIds.concat(this.targetIds);
         if (this.columnSize.length !== dtIds.length) {
             //重置列宽
@@ -851,7 +898,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             self.mergeCols.push(i);
             self.freezeCols.push(i);
         });
-        this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
+        // this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
         BI.each(this.header, function (i, id) {
             cSize.push("");
         });

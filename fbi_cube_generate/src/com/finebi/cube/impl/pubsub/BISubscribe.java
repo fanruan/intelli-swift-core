@@ -2,7 +2,10 @@ package com.finebi.cube.impl.pubsub;
 
 import com.finebi.cube.exception.*;
 import com.finebi.cube.message.IMessage;
-import com.finebi.cube.pubsub.*;
+import com.finebi.cube.pubsub.IProcessor;
+import com.finebi.cube.pubsub.ISubscribe;
+import com.finebi.cube.pubsub.ISubscribeID;
+import com.finebi.cube.pubsub.ITrigger;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.router.fragment.IFragmentTag;
 import com.finebi.cube.router.status.IStatusTag;
@@ -26,6 +29,7 @@ public class BISubscribe implements ISubscribe {
     private ISubscribeID subscribeID;
     private IRouter router;
     private ITrigger trigger;
+    private boolean verbose = true;
 
     public BISubscribe(ISubscribeID subscribeID, IProcessor processor) {
         BINonValueUtils.checkNull(subscribeID);
@@ -34,18 +38,31 @@ public class BISubscribe implements ISubscribe {
         trigger = BIFactoryHelper.getObject(ITrigger.class, processor);
     }
 
+    public void subscribeRound(int round) {
+        trigger.setTriggerCount(round);
+    }
 
     @Override
     public ISubscribeID getSubscribeID() {
         return subscribeID;
     }
 
+    public void closeVerbose() {
+        this.verbose = false;
+    }
+
     @Override
     public void handleMessage(IMessage message) {
         try {
+            if (verbose) {
+                try {
+                    System.out.println("Sub:" + subscribeID.getIdentityValue() + "\nSub receive:" + message);
+                    System.out.println("Left condition:\n" + trigger.leftCondition());
+                }catch (Exception e){
+                    BILogger.getLogger().error(e.getMessage(),e);
+                }
+            }
             trigger.handleMessage(message);
-            System.out.println("Sub:" + subscribeID.getIdentityValue() + "\n receive:" + message);
-            System.out.println("Left condition:\n" + trigger.leftCondition());
         } catch (BIThresholdIsOffException e) {
             BILogger.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl();

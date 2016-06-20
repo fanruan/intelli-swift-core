@@ -7,12 +7,17 @@ import com.finebi.cube.structure.ICube;
 import com.finebi.cube.structure.ICubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
+import com.fr.stable.bridge.StableFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -25,8 +30,8 @@ import java.util.TreeMap;
  * @since 4.0
  */
 public class BIFieldIndexGenerator<T> extends BIProcessor {
-    protected ITableSource tableSource;
-    protected DBField hostDBField;
+    protected CubeTableSource tableSource;
+    protected ICubeFieldSource hostBICubeFieldSource;
     /**
      * 当前需要生产的ColumnKey，不能通过hostDBField转换。
      * 因为子类型是无法通过DBFiled转换得到的
@@ -36,9 +41,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     protected ICube cube;
     protected long rowCount;
 
-    public BIFieldIndexGenerator(ICube cube, ITableSource tableSource, DBField hostDBField, BIColumnKey targetColumnKey) {
+    public BIFieldIndexGenerator(ICube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         this.tableSource = tableSource;
-        this.hostDBField = hostDBField;
+        this.hostBICubeFieldSource = hostBICubeFieldSource;
         this.cube = cube;
         this.targetColumnKey = targetColumnKey;
     }
@@ -56,9 +61,24 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        initial();
-        buildTableIndex();
-        return null;
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        long t=System.currentTimeMillis();
+        biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
+        try {
+            initial();
+            buildTableIndex();
+            long costTime=System.currentTimeMillis()-t;
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.infoColumn(tableSource.getPersistentTable(),hostBICubeFieldSource.getFieldName(),costTime,Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            if (null!=tableSource.getPersistentTable()) {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            }
+        } finally {
+            return null;
+        }
     }
 
     @Override
@@ -67,6 +87,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     public void buildTableIndex() {
+        if (hostBICubeFieldSource.getFieldName().equals("badd")) {
+            System.out.println("find");
+        }
         IntList nullRowNumbers = new IntList();
         Map<T, IntList> group2rowNumber = createTreeMap(nullRowNumbers);
         Iterator<Map.Entry<T, IntList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();

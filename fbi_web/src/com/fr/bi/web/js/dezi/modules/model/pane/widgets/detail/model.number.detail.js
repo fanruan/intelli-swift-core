@@ -5,7 +5,7 @@ BIDezi.NumberDetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.NUMBER,
+            type: BICst.WIDGET.NUMBER,
             value: {}
         });
     },

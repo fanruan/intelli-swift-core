@@ -2,5 +2,17 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-fit-widget .fit-widget-draggable {
-  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_hand.cur'), auto;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab;
+}
+.bi-fit-widget .fit-widget-draggable:active {
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), auto;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: grabbing;
+}
+.bi-fit-widget .fit-widget-drag-bar {
+  background: #d4dadd;
 }

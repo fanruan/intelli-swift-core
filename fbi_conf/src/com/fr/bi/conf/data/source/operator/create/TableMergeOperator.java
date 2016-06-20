@@ -1,12 +1,17 @@
 package com.fr.bi.conf.data.source.operator.create;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -22,8 +27,12 @@ import java.util.List;
 public class TableMergeOperator extends AbstractCreateTableETLOperator{
     public static final String XML_TAG = "TableMergeOperator";
     private static final int MERGE_TYPE_UNION = 5;
+    private static final int MERGE_TYPE_RIGNT_JOIN = 2;
+    @BICoreField
     private int mergeType;
+    @BICoreField
     private List<MergeColumn> columns;
+    @BIIgnoreField
     private transient IETLOperator transOp;
     @Override
     public String xmlTag() {
@@ -31,17 +40,17 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
     }
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
         return getTransOperatpr().getBITable(tables);
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         return getTransOperatpr().writeSimpleIndex(travel, parents, loader);
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         return getTransOperatpr().writePartIndex(travel, parents, loader, startCol, start, end);
     }
 
@@ -66,10 +75,10 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
             List<JoinColumn> joinColumns = new ArrayList<JoinColumn>();
             for (int i = 0; i < this.columns.size(); i++){
                 MergeColumn c = this.columns.get(i);
-                JoinColumn joinColumn = new JoinColumn(c.name, c.isLeft(), c.columns[0].name);
+                JoinColumn joinColumn = new JoinColumn(c.name, c.isLeft(), c.getJoinName());
                 if (c.columns.length == 2){
                     left.add(c.columns[0].name);
-                    left.add(c.columns[1].name);
+                    right.add(c.columns[1].name);
                 }
                 joinColumns.add(joinColumn);
             }
@@ -104,9 +113,12 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
         }
     }
 
-    private class MergeColumn implements JSONTransform{
+    private class MergeColumn implements JSONTransform, BICoreService{
+        @BICoreField
         private String name;
+        @BICoreField
         private int type;
+        @BICoreField
         private SingleColumn[] columns ;
 
         @Override
@@ -138,7 +150,16 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
         }
 
         public boolean isLeft() {
-            return columns[0].index == 0;
+            return columns.length == 2 ? mergeType != MERGE_TYPE_RIGNT_JOIN :columns[0].index == 0;
+        }
+
+        protected String getJoinName(){
+            return columns.length == 2 && mergeType == MERGE_TYPE_RIGNT_JOIN ? columns[1].name : columns[0].name;
+        }
+
+        @Override
+        public BICore fetchObjectCore() {
+            return new BICoreGenerator(this).fetchObjectCore();
         }
     }
 
@@ -160,6 +181,15 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
             this.name = jo.getString("field_name");
             this.type = jo.getInt("field_type");
             this.index = jo.getInt("table_index");
+        }
+
+        @Override
+        public String toString() {
+            return "SingleColumn{" +
+                    "name='" + name + '\'' +
+                    ", type=" + type +
+                    ", index=" + index +
+                    '}';
         }
     }
 }

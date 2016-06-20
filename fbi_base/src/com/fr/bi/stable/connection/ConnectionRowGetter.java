@@ -1,15 +1,14 @@
 package com.fr.bi.stable.connection;
 
 
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
-
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BusinessField;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 
 /**
@@ -44,9 +43,9 @@ public class ConnectionRowGetter {
         return connection.getParentTableValue(currentRow);
     }
 
-    public ICubeColumnIndexReader getConnectionMap(BIField start, BIField end, GroupValueIndex gvi, ICubeDataLoader loader) {
+    public ICubeColumnIndexReader getConnectionMap(BusinessField start, BusinessField end, GroupValueIndex gvi, ICubeDataLoader loader) {
         Object[] res = getConnectedValues(start, end, gvi, loader);
-        ICubeColumnIndexReader getter = loader.getTableIndex(end).loadGroup(loader.getFieldIndex(end));
+        ICubeColumnIndexReader getter = loader.getTableIndex(end.getTableBelongTo().getTableSource()).loadGroup(loader.getFieldIndex(end));
         CubeLinkedHashMap map = new CubeLinkedHashMap();
         Object[] gvis = getter.getGroupIndex(res);
         for (int i = 0; i < res.length; i++) {
@@ -60,9 +59,9 @@ public class ConnectionRowGetter {
      *
      * @return 行号
      */
-    public Object[] getConnectionValues(BIField start, BIField end, GroupValueIndex gvi, ICubeDataLoader loader) {
+    public Object[] getConnectionValues(BusinessField start, BusinessField end, GroupValueIndex gvi, ICubeDataLoader loader) {
         if (this.connection == null) {
-            ICubeTableService ti = loader.getTableIndex(start);
+            ICubeTableService ti = loader.getTableIndex(start.getTableBelongTo().getTableSource());
             return TableIndexUtils.getValueFromGvi(ti, ti.getColumnIndex(end), new GroupValueIndex[]{gvi});
         }
         return connection.getParentTableValues(gvi, loader.getFieldIndex(end));
@@ -74,11 +73,11 @@ public class ConnectionRowGetter {
      * @param value 起始值
      * @return 结束值的集合
      */
-    public Object[] getConnectedValues(BIField start, BIField end, Object value, ICubeDataLoader loader) {
+    public Object[] getConnectedValues(BusinessField start, BusinessField end, Object value, ICubeDataLoader loader) {
         if (connection == null) {
-            ICubeTableService ti = loader.getTableIndex(start);
+            ICubeTableService ti = loader.getTableIndex(start.getTableBelongTo().getTableSource());
             GroupValueIndex[] gvi = ti.getIndexes(ti.getColumnIndex(start), new Object[]{value});
-            return TableIndexUtils.getValueFromGvi(loader.getTableIndex(end), loader.getFieldIndex(end), gvi);
+            return TableIndexUtils.getValueFromGvi(loader.getTableIndex(end.getTableBelongTo().getTableSource()), loader.getFieldIndex(end), gvi);
         }
         return connection.getParentTableValues(start.getTableBelongTo(), value, loader.getFieldIndex(start), loader.getFieldIndex(end), loader);
     }

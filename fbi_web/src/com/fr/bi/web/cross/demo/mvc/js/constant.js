@@ -77,6 +77,8 @@ var _JS = [
     "scene/mvc.scene1.js",
 
     "scene/mvc.broadcast.js",
+    
+    "scene/mvc.draggable.cursor.js",
 
     "scene/mvc.package.data.js",
 
@@ -96,9 +98,9 @@ var _JS = [
 
     "widget/mvc.sheltereditor.js",
 
-    "widget/mvc.textarea.js",
+    "widget/mvc.codeeditor.js",
 
-    "widget/mvc.contenteditor.js",
+    "widget/mvc.textareaeditor.js",
 
     "widget/mvc.simpletree.js",
 
@@ -147,6 +149,7 @@ var _JS = [
     "widget/mvc.pager.js",
 
     "widget/mvc.numberpager.js",
+
     "widget/mvc.skippager.js",
 
     "widget/mvc.allpager.js",
@@ -200,6 +203,8 @@ var _JS = [
     "layout/mvc.float_center_adapt.js",
 
     "layout/mvc.absolutecenteradapt.js",
+
+    "layout/mvc.flexboxcenteradapt.js",
 
     "layout/mvc.verticaladapt.js",
 
@@ -346,7 +351,7 @@ var _JS = [
 
     "detail/mvc.colorchooser.js",
 
-    "detail/mvc.textareaeditor.js",
+    "detail/mvc.textarea.js",
 
     "detail/mvc.texttoolbar.js",
 
@@ -374,6 +379,10 @@ var _JS = [
 
     "detail/mvc.pagetable3.js",
 
+    "detail/mvc.sequencetable.js",
+
+    "detail/mvc.sequencetable2.js",
+
     "detail/mvc.uploadimage.js",
 
     "detail/mvc.webpage.js",
@@ -382,7 +391,16 @@ var _JS = [
 
     "detail/mvc.arrangement.js",
 
-    "detail/mvc.adaptivearrangement.js"
+    "detail/mvc.adaptivearrangement.js",
+
+    "detail/mvc.detailcharts.js",
+
+    "detail/mvc.columncharts.js",
+    "detail/mvc.othercharts.js",
+    "detail/mvc.barcharts.js",
+    "detail/mvc.areacharts.js",
+
+    "detail/mvc.selectcolorcombo.js"
 ];
 
 
@@ -417,6 +435,7 @@ var _Routes = {
     "/broadcast": "BroadcastView",
     "/package_data": "PackageDataView",
     "/etl_data": "ETLDataView",
+    "/draggable_cursor": "DraggableCursorView",
 
     //控件
     "/label": "LabelView",
@@ -425,8 +444,8 @@ var _Routes = {
     "/record_editor": "RecordEditorView",
     "/sign_editor": "SignEditorView",
     "/shelter_editor": "ShelterEditorView",
-    "/textarea": "TextAreaView",
-    "/contenteditor": "ContentEditorView",
+    "/code_editor": "CodeEditorView",
+    "/textareaeditor": "TextAreaEditorView",
     "/simpletree": "SimpleTreeView",
     "/leveltree": "LevelTreeView",
     "/branch_tree": "BranchTreeView",
@@ -480,6 +499,7 @@ var _Routes = {
     "/center_adapt": "CenterAdaptView",
     "/absolute_center_adapt": "AbsoluteCenterAdaptView",
     "/float_center_adapt": "CenterVerticalAdaptView",
+    "/flexbox_center_adapt": "FlexboxCenterAdaptView",
     "/vertical_adapt": "VerticalAdaptView",
     "/horizontal_adapt": "HorizontalAdaptView",
     "/horizontal_auto": "HorizontalAutoView",
@@ -560,7 +580,7 @@ var _Routes = {
     "/filter": "FilterView",
     "/color_chooser": "ColorChooserView",
     "/text_toolbar": "TextToolbarView",
-    "/text_area_editor": "TextAreaEditorView",
+    "/text_area": "TextAreaView",
     "/path_chooser": "PathChooserView",
     "/direction_path_chooser": "DirectionPathChooserView",
     "/file_manager": "FileManagerView",
@@ -573,12 +593,21 @@ var _Routes = {
     "/page_table": "PageTableView",
     "/page_table2": "PageTable2View",
     "/page_table3": "PageTable3View",
+    "/sequence_table": "SequenceTableView",
+    "/sequence_table2": "SequenceTable2View",
     "/upload_image": "UploadImageView",
     "/web_page": "WebPageView",
 
     "/arrangement_droppable": "ArrangementDroppableView",
     "/arrangement": "ArrangementView",
-    "/adaptive_arrangement": "AdaptiveArrangementView"
+    "/adaptive_arrangement": "AdaptiveArrangementView",
+
+    "/detail_chart": "DetailChartView",
+    "/column_charts": "ColumnChartsView",
+    "/bar_charts": "BarChartsView",
+    "/area_charts": "AreaChartsView",
+    "/other_charts": "OtherChartsView",
+    "/select_color_combo": "SelectColorComboView"
 };
 
 var _Models = {};
@@ -637,6 +666,9 @@ _Models.scene = [{
 }, {
     text: "数据结构——etl",
     value: "etl_data"
+}, {
+    text: "test draggable cursor",
+    value: "draggable_cursor"
 }];
 _Models.widget = [{
     id: 2,
@@ -727,12 +759,12 @@ _Models.widget = [{
     value: "shelter_editor"
 }, {
     pId: 2,
-    text: "bi.textarea",
-    value: "textarea"
+    text: "bi.code_editor",
+    value: "code_editor"
 }, {
     pId: 2,
-    text: "bi.contenteditor",
-    value: "contenteditor"
+    text: "bi.textareaeditor",
+    value: "textareaeditor"
 }, {
     pId: 6,
     text: "bi.combo",
@@ -900,6 +932,9 @@ _Models.layout = [{
     text: "bi.absolute_center_adapt",
     value: "absolute_center_adapt"
 }, {
+    text: "bi.flexbox_center_adapt",
+    value: "flexbox_center_adapt"
+}, {
     text: "bi.vertical_adapt",
     value: "vertical_adapt"
 }, {
@@ -1051,11 +1086,17 @@ _Models.detail = [{
     id: 27,
     text: "表格"
 }, {
+    id: 32,
+    text: "序号表格"
+}, {
     id: 28,
     text: "图片组件&web组件"
 }, {
     id: 29,
     text: "布局"
+}, {
+    id: 31,
+    text: "详细图表"
 },
 
 
@@ -1277,8 +1318,8 @@ _Models.detail = [{
         value: "text_toolbar"
     }, {
         pId: 21,
-        text: "bi.text_area_editor",
-        value: "text_area_editor"
+        text: "bi.text_area",
+        value: "text_area"
     }, {
         pId: 22,
         text: "bi.path_chooser",
@@ -1328,6 +1369,14 @@ _Models.detail = [{
         text: "bi.page_table(调整列宽)",
         value: "page_table3"
     }, {
+        pId: 32,
+        text: "bi.sequence_table",
+        value: "sequence_table"
+    }, {
+        pId: 32,
+        text: "bi.sequence_table(带有汇总)",
+        value: "sequence_table2"
+    }, {
         pId: 28,
         text: "bi.upload_image",
         value: "upload_image"
@@ -1351,6 +1400,30 @@ _Models.detail = [{
         pId: 30,
         text: "bi.simple_searcher",
         value: "simple_searcher"
+    },{
+        pId: 31,
+        text: "选色",
+        value: "select_color_combo"
+    }, {
+        pId: 31,
+        text: "bi.detail_chart",
+        value: "detail_chart"
+    }, {
+        pId: 31,
+        text: "柱形",
+        value: "column_charts"
+    },  {
+        pId: 31,
+        text: "条形图",
+        value: "bar_charts"
+    }, {
+        pId: 31,
+        text: "面积图",
+        value: "area_charts"
+    }, {
+        pId: 31,
+        text: "其他",
+        value: "other_charts"
     }];
 _Models.component = [];
 _Models.module = [];

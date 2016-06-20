@@ -11,7 +11,7 @@ import com.fr.bi.stable.data.db.BIRowValue;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.CollectionKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BIConfUtils;
@@ -33,13 +33,14 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
     private transient int currentIndex = -1;
 
 
-    public DetailPartGVIRunner(GroupValueIndex gvi,BISession session, BIDetailWidget widget, Paging paging, ICubeDataLoader loader) {
+    public DetailPartGVIRunner(GroupValueIndex gvi, BISession session, BIDetailWidget widget, Paging paging, ICubeDataLoader loader) {
         super(gvi, widget, loader, session.getUserId());
         this.paging = paging;
         this.session = session;
         paras = new DetailParas(widget, gvi, loader);
         index = new DetailSortGviIndex(session.getDetailLastValue(paras.getSortKey(), paging.getCurrentPage()), paras.getCubeIndexGetters(), paras.getAsc());
-        row = paging.getStartRow() - session.getDetailLastIndex(paras.getSortKey(), paging.getCurrentPage());;
+        row = paging.getStartRow() - session.getDetailLastIndex(paras.getSortKey(), paging.getCurrentPage());
+        ;
         row--;
     }
 
@@ -50,15 +51,15 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
             if (sortGvi == null) {
                 break;
             }
-            if (row >= paging.getEndRow()){
+            if (row >= paging.getEndRow()) {
                 break;
             }
-            if (index.isAllSort()){
-                if (setSortedCells(sortGvi, action)){
+            if (index.isAllSort()) {
+                if (setSortedCells(sortGvi, action)) {
                     break;
                 }
             } else {
-                if (setNoneSortedCells(sortGvi, action)){
+                if (setNoneSortedCells(sortGvi, action)) {
                     break;
                 }
             }
@@ -75,12 +76,12 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
             public boolean actionPerformed(int rowIndex) {
                 checkAndSetSession();
                 Boolean x = checkPage();
-                if (x != null){
+                if (x != null) {
                     return x;
                 }
                 Object[] ob = getRowValue(rowIndex);
-                boolean end =  action.actionPerformed(new BIRowValue(row, ob));
-                if (end){
+                boolean end = action.actionPerformed(new BIRowValue(row, ob));
+                if (end) {
                     ended.flag = true;
                 }
                 return end;
@@ -101,7 +102,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
         Iterator<BIDetailTarget> iterator = paras.getNoneCalculateList().iterator();
         while (iterator.hasNext()) {
             BIDetailTarget dimension = iterator.next();
-            CollectionKey<BITableSourceRelation> key = new CollectionKey<BITableSourceRelation>(BIConfUtils.convertToMD5RelationFromSimpleRelation(dimension.getRelationList(target, biUser.getUserId()),biUser));
+            CollectionKey<BITableSourceRelation> key = new CollectionKey<BITableSourceRelation>(BIConfUtils.convert2TableSourceRelation(dimension.getRelationList(target, biUser.getUserId())));
             Long row = (Long) resMap.get(key);
             values.put(dimension.getValue(), dimension.createDetailValue(row, values, loader, biUser.getUserId()));
         }
@@ -109,7 +110,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
         executeUntilCallOver(paras, values, calledTargets);
         Object[] ob = new Object[viewDimension.length];
         for (int i = 0; i < viewDimension.length; i++) {
-            ob[i] = viewDimension[i].createShowValue(values.get(viewDimension[i].getValue()));
+            ob[i] = values.get(viewDimension[i].getValue());
         }
         return ob;
     }
@@ -121,7 +122,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
             public boolean actionPerformed(int rowIndex) {
                 checkAndSetSession();
                 Boolean x = checkPage();
-                if (x != null){
+                if (x != null) {
                     return x;
                 }
                 set.add(new BIRowValue(row, getRowValue(rowIndex)));
@@ -142,23 +143,23 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
         if (paging.getStartRow() > row) {
             return false;
         }
-        if (paging.getEndRow() <= row){
+        if (paging.getEndRow() <= row) {
             return true;
         }
         return null;
     }
 
-    private void checkAndSetSession(){
+    private void checkAndSetSession() {
         currentIndex++;
         row++;
         if ((row) % paging.getPageSize() == 0) {
             try {
                 Object[] values = index.getValue().clone();
                 int page = row / paging.getPageSize() + 1;
-                session.setDetailIndexMap(paras.getSortKey(), page , currentIndex);
+                session.setDetailIndexMap(paras.getSortKey(), page, currentIndex);
                 session.setDetailValueMap(paras.getSortKey(), page, values);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage() ,e);
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         }
     }

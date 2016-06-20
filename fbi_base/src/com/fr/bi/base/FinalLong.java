@@ -8,6 +8,6 @@ import com.fr.bi.stable.structure.object.Num;
 public class FinalLong extends Num<Long> {
 
     public FinalLong() {
-        this.i = new Long(0);
+        this.value = new Long(0);
     }
 }

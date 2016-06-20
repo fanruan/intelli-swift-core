@@ -71,6 +71,7 @@ BI.TargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
             text: fieldName,
+            title: fieldName,
             width: this._constant.FIELD_NAME_BUTTON_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
             textAlign: "left",

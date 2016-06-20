@@ -1,6 +1,6 @@
 /**
  * @class BIDezi.DetailTableDetailView
- * @extend BI.View
+ * @extends BI.View
  * 明细表的详细设置————诡异的命名
  */
 BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
@@ -11,13 +11,13 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         DETAIL_WEST_WIDTH: 280,
         DETAIL_DATA_STYLE_HEIGHT: 240,
         DETAIL_GAP_NORMAL: 10,
-        DETAIL_PANE_HORIZONTAL_GAP: 20
+        DETAIL_PANE_HORIZONTAL_GAP: 10
 
     },
 
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailTableDetailView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-detail-view"
+            baseCls: "bi-widget-attribute-setter"
         })
     },
 
@@ -26,31 +26,43 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
+        var mask = BI.createWidget();
+        mask.element.__buildZIndexMask__(0);
         BI.createWidget({
-            type: "bi.border",
+            type: "bi.absolute",
             element: vessel,
-            items: {
-                north: {el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT},
-                west: {el: this._buildWest(), width: this.constants.DETAIL_WEST_WIDTH},
-                center: {el: this._buildCenter()}
-            }
+            items: [{
+                el: mask,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }, {
+                el: {
+                    type: "bi.htape",
+                    cls: "widget-attribute-setter-container",
+                    items: [{
+                        el: this._buildWest(),
+                        width: this.constants.DETAIL_WEST_WIDTH
+                    }, {
+                        type: "bi.vtape",
+                        items: [{
+                            el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
+                        }, {
+                            el: this._buildCenter()
+                        }]
+                    }]
+                },
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20
+            }]
         });
     },
 
     _buildNorth: function () {
         var self = this;
-        var input = BI.createWidget({
-            type: "bi.text_editor",
-            height: 22,
-            width: 400,
-            validationChecker: function (v) {
-
-            }
-        });
-        input.setValue(this.model.get("name"));
-        input.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self.model.set("name", input.getValue());
-        });
         var shrink = BI.createWidget({
             type: "bi.button",
             height: 25,
@@ -62,9 +74,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
-            cls: "widget-attr-north",
             items: {
-                left: [input],
                 right: [shrink]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
@@ -93,13 +103,9 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
     _buildCenter: function () {
         var self = this;
         var table = this._createTable();
-        this.center = BI.createWidget({
-            type: "bi.default",
-            cls: "widget-attr-chart"
-        });
-
         var tab = BI.createWidget({
             type: "bi.data_style_tab",
+            cls: "widget-top-wrapper",
             wId: this.model.get("id"),
             cardCreator: BI.bind(self._createTabs, this)
         });
@@ -110,14 +116,13 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.border",
-                    cls: "widget-show-data-pane",
                     items: {
                         north: {
                             el: tab,
                             height: this.constants.DETAIL_DATA_STYLE_HEIGHT,
                             bottom: this.constants.DETAIL_GAP_NORMAL
                         },
-                        center: this.table
+                        center: table
                     }
                 },
                 left: 0,
@@ -173,12 +178,27 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         return this.dimensionsManager;
     },
 
+
+    /**
+     * 图表样式设置
+     * @returns {*}
+     * @private
+     */
     _createStyle: function () {
-        return BI.createWidget({
-            type: "bi.label",
-            text: "Style"
+        var self = this;
+        this.chartSetting = BI.createWidget({
+            type: "bi.chart_setting",
+            chartType: this.model.get("type"),
+            settings: this.model.get("settings"),
+            wId: this.model.get("id")
         });
+        this.chartSetting.populate();
+        this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
+            self.model.set("settings", BI.extend(self.model.get("settings"), v));
+        });
+        return this.chartSetting;
     },
+
 
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
@@ -197,15 +217,17 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
 
     _createTable: function () {
         var self = this;
-        this.table = BI.createWidget({
+        var table = BI.createWidget({
             type: "bi.detail_table",
-            cls: "widget-attr-chart",
-            wId: this.model.get("id")
+            cls: "widget-center-wrapper",
+            wId: this.model.get("id"),
+            status: BICst.WIDGET_STATUS.DETAIL
         });
-        this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
+        table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);
         });
-        return this.table;
+        this.tablePopulate = BI.debounce(BI.bind(table.populate, table), 0);
+        return table;
     },
 
 
@@ -215,10 +237,10 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             BI.has(changed, "view") ||
             BI.has(changed, "filter_value") ||
             (BI.has(changed, "target_relation"))) {
-            this.table.populate();
+            this.tablePopulate();
         }
         if (BI.has(changed, "settings")) {
-            this.table.populate();
+            this.tablePopulate();
         }
     },
 
@@ -242,6 +264,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
-        this.table.populate();
+        this.tablePopulate();
     }
 });

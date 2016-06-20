@@ -1,12 +1,13 @@
 package com.fr.bi.conf.data.source.operator.create;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -54,20 +55,28 @@ public class TableColumnFilterOperator extends AbstractTableColumnFilterOperator
     }
 
 
-    protected GroupValueIndex createFilterIndex(List<? extends ITableSource> parents, ICubeDataLoader loader){
-        if (filter == null){
+    protected GroupValueIndex createFilterIndex(List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
+        if (filter == null) {
             return loader.getTableIndex(getSingleParentMD5(parents)).getAllShowIndex();
         }
         GroupValueIndex gvi = null;
-        for (ITableSource parent : parents){
-            GroupValueIndex temp = filter.createFilterIndex(new BITable(parent.fetchObjectCore().getID().getIdentityValue()), loader, loader.getUserId());
-            if (gvi == null){
+        for (CubeTableSource parent : parents) {
+            //TODO Connery 这里有问题Mark
+            BIBusinessTable businessTable = new BIBusinessTable(new BITableID(StringUtils.EMPTY));
+            businessTable.setSource(parent);
+            GroupValueIndex temp = filter.createFilterIndex(businessTable, loader, loader.getUserId());
+            if (gvi == null) {
                 gvi = temp;
             } else {
                 gvi = gvi.AND(temp);
             }
         }
         return gvi;
+    }
+
+    @Override
+    protected boolean hasAllCalculatorFilter() {
+        return true;
     }
 
 

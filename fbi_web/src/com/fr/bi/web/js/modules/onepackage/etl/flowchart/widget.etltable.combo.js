@@ -64,6 +64,13 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
                 items[items.length - 1].disabled = true;
                 items[items.length - 1].warningTitle = BI.i18nText("BI-Temp_Tables_No_Remove")
             }
+            if(tableInfo.connection_name === BICst.CONNECTION.EXCEL_CONNECTION) {
+                items.splice(0, 0, {
+                    text: BI.i18nText("BI-Remodify_Excel"),
+                    title: BI.i18nText("BI-Remodify_Excel"),
+                    value: BICst.ETL_MANAGE_EXCEL_CHANGE
+                });
+            }
             this._createCombo(items);
         }
     },

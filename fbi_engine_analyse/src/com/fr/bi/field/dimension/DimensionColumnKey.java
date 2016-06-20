@@ -1,9 +1,9 @@
 package com.fr.bi.field.dimension;
 
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.sort.ISort;
-import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.general.ComparatorUtils;
 
 import java.util.List;

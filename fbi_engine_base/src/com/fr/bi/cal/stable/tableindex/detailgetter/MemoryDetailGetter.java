@@ -1,16 +1,15 @@
 package com.fr.bi.cal.stable.tableindex.detailgetter;
 
+import com.fr.bi.cal.stable.cube.memory.AnyIndexArray;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
-
-import java.util.List;
 
 /**
  * Created by 小灰灰 on 2016/1/14.
  */
 public class MemoryDetailGetter<T> implements DetailGetter<T> {
-    List<T> list;
+    AnyIndexArray<T> list;
 
-    public MemoryDetailGetter(List<T> list) {
+    public MemoryDetailGetter(AnyIndexArray<T> list) {
         this.list = list;
     }
 

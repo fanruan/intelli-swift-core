@@ -51,6 +51,9 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
                 self.refresh();
                 BI.Layers.remove(self.constants.ONE_PACKAGE_LAYER);
             });
+            onePackage.on(BI.OnePackage.EVENT_CUBE_SAVE, function () {
+                self.refresh();
+            });
             onePackage.on(BI.OnePackage.EVENT_CANCEL, function () {
                 BI.Layers.remove(self.constants.ONE_PACKAGE_LAYER);
             });
@@ -80,6 +83,9 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
             onePackage.on(BI.OnePackage.EVENT_SAVE, function () {
                 self.refresh();
                 BI.Layers.remove(self.constants.ONE_PACKAGE_LAYER);
+            });
+            onePackage.on(BI.OnePackage.EVENT_CUBE_SAVE, function () {
+                self.refresh();
             });
             onePackage.on(BI.OnePackage.EVENT_CANCEL, function () {
                 BI.Layers.remove(self.constants.ONE_PACKAGE_LAYER);

@@ -19,7 +19,7 @@ CustomSignEditorView = BI.inherit(BI.View, {
                     cls: "adapt-editor-mvc mvc-border",
                     watermark: "此乃水印",
                     height: 30,
-                    value: "ASD"
+                    text: "ASD"
                 },
                 lgap: 20,
                 tgap: 20

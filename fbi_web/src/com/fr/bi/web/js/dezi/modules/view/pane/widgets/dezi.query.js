@@ -2,24 +2,24 @@
  * Created by Young's on 2016/5/5.
  */
 BIDezi.QueryView = BI.inherit(BI.View, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BIDezi.QueryView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget"
         })
     },
-    
-    _init: function(){
+
+    _init: function () {
         BIDezi.QueryView.superclass._init.apply(this, arguments);
     },
 
-    _render: function(veseel){
+    _render: function (veseel) {
         var self = this;
         var queryButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Query"),
             height: 30
         });
-        queryButton.on(BI.Button.EVENT_CHANGE, function(){
+        queryButton.on(BI.Button.EVENT_CHANGE, function () {
             //需要缓存一份所有控件的过滤条件到SharingPool中
             Data.SharingPool.put("control_filters", BI.Utils.getControlCalculations());
             BI.Utils.broadcastAllWidgets2Refresh(true);
@@ -31,7 +31,7 @@ BIDezi.QueryView = BI.inherit(BI.View, {
             height: 20,
             title: BI.i18nText("BI-Remove")
         });
-        deleteButton.on(BI.IconButton.EVENT_CHANGE, function(){
+        deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self.model.destroy();
             BI.Utils.broadcastAllWidgets2Refresh();
         });
@@ -43,17 +43,25 @@ BIDezi.QueryView = BI.inherit(BI.View, {
                 el: queryButton,
                 left: 0,
                 right: 0,
-                bottom: 0
+                top: 8
             }, {
                 el: deleteButton,
                 right: 5,
-                bottom: 5
+                top: 13
             }]
         });
-        veseel.hover(function(){
+        veseel.hover(function () {
             deleteButton.setVisible(true);
-        }, function(){
+        }, function () {
             deleteButton.setVisible(false);
         });
+    },
+
+    local: function () {
+        if (this.model.has("expand")) {
+            this.model.get("expand");
+            return true;
+        }
+        return false;
     }
 });

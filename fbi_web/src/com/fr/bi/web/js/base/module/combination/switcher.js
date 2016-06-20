@@ -151,7 +151,9 @@ BI.Switcher = BI.inherit(BI.Widget, {
                 });
             }
             this._created = true;
-            this.fireEvent(BI.Switcher.EVENT_AFTER_INIT);
+            BI.nextTick(function () {
+                self.fireEvent(BI.Switcher.EVENT_AFTER_INIT);
+            });
         }
     },
 
@@ -159,7 +161,7 @@ BI.Switcher = BI.inherit(BI.Widget, {
         this.fireEvent(BI.Switcher.EVENT_BEFORE_HIDEVIEW);
         var self = this, o = this.options;
         o.adapter ? BI.Maskers.hide(self.getName()) : (self.popupView && self.popupView.setVisible(false));
-        BI.defer(function () {
+        BI.nextTick(function () {
             o.adapter ? BI.Maskers.hide(self.getName()) : (self.popupView && self.popupView.setVisible(false));
             self.element.removeClass(o.switcherClass);
             self.fireEvent(BI.Switcher.EVENT_AFTER_HIDEVIEW);
@@ -171,7 +173,7 @@ BI.Switcher = BI.inherit(BI.Widget, {
         this._assertPopupView();
         this.fireEvent(BI.Switcher.EVENT_BEFORE_POPUPVIEW);
         o.adapter ? BI.Maskers.show(this.getName()) : self.popupView.setVisible(true);
-        BI.defer(function (name) {
+        BI.nextTick(function (name) {
             o.adapter ? BI.Maskers.show(name) : self.popupView.setVisible(true);
             self.element.addClass(o.switcherClass);
             self.fireEvent(BI.Switcher.EVENT_AFTER_POPUPVIEW);

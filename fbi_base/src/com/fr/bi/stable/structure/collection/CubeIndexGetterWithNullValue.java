@@ -21,12 +21,27 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 
     @Override
     public int sizeOfGroup() {
-        return 0;
+        return getter.sizeOfGroup() + 1;
+    }
+
+    public GroupValueIndex getIndex (Object groupValues) {
+        if(groupValues == null) {
+            return nullIndex;
+        } else {
+            return getter.getIndex(groupValues);
+        }
     }
 
     @Override
     public GroupValueIndex[] getGroupIndex(Object[] groupValues) {
-        throw new UnsupportedOperationException();
+        if(groupValues == null) {
+            return new GroupValueIndex[0];
+        }
+        GroupValueIndex[] gvi = new GroupValueIndex[groupValues.length];
+        for(int i = 0; i < gvi.length; i++) {
+            gvi[i] = getIndex(groupValues[i]);
+        }
+        return gvi;
     }
    
     /**
@@ -38,6 +53,11 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
     @Override
     public Object[] createKey(int length) {
         return getter.createKey(length);
+    }
+
+    @Override
+    public GroupValueIndex getNULLIndex() {
+        return nullIndex;
     }
 
     @Override
@@ -64,7 +84,7 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
     @Override
     public Iterator<Map.Entry> iterator(Object start) {
         if (start == null){
-            Iterator iter = getter.iterator(getter.lastKey());
+            Iterator iter = getter.iterator(getter.firstKey());
             if (iter.hasNext()){
                 iter.next();
             }
@@ -83,7 +103,7 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
     @Override
     public Iterator<Map.Entry> previousIterator(Object start) {
         if (start == null){
-            Iterator iter = getter.previousIterator(getter.firstKey());
+            Iterator iter = getter.previousIterator(getter.lastKey());
             if (iter.hasNext()){
                 iter.next();
             }
@@ -95,6 +115,11 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 
     @Override
     public Object getGroupValue(int position) {
+        return null;
+    }
+
+    @Override
+    public Object getOriginalValue(int rowNumber) {
         return null;
     }
 
@@ -161,4 +186,5 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 	public long nonPrecisionSize() {
 		return getter.nonPrecisionSize() + 1;
 	}
+
 }

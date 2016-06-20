@@ -23,33 +23,26 @@
 .bi-dashboard-widget {
   background: #ffffff;
 }
-.bi-dashboard-widget .dashboard-title .dashboard-title-text {
-  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
-  font-size: 16px;
+.bi-dashboard-widget .dashboard-title-left .shelter-editor-text {
+  cursor: default;
 }
-.bi-dashboard-widget .dashboard-title .dashboard-title-filter {
-  font-size: 16px;
+.bi-dashboard-widget .dashboard-title-left .shelter-editor-text .bi-text {
+  text-align: left !important;
+  font-size: 16px !important;
 }
-.bi-dashboard-widget .dashboard-title .dashboard-title-filter:hover,
-.bi-dashboard-widget .dashboard-title .dashboard-title-filter:active {
-  background-color: #f3f3f3;
+.bi-dashboard-widget .dashboard-title-center .shelter-editor-text {
+  cursor: default;
 }
-.bi-dashboard-widget .dashboard-title .dashboard-title-detail {
-  font-size: 16px;
+.bi-dashboard-widget .dashboard-title-center .shelter-editor-text .bi-text {
+  text-align: center !important;
+  font-size: 16px !important;
 }
-.bi-dashboard-widget .dashboard-title .operator-region {
+.bi-dashboard-widget .operator-region {
   z-index: 100000;
 }
-.bi-dashboard-widget .dashboard-title:active,
-.bi-dashboard-widget .dashboard-title.active {
-  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), -moz-zoom-out;
-}
-.bi-dashboard-widget .ui-resizable-s {
-  bottom: 0;
-}
-.bi-dashboard-widget .ui-resizable-s:hover {
-  border-bottom: 1px solid #e85050;
-}
-.bi-dashboard-widget .ui-resizable-e:hover {
-  border-right: 1px solid #e85050;
+.bi-dashboard-widget .remove-button {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background: #ffffff;
 }

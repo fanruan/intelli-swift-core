@@ -17,7 +17,7 @@ HorizontalAdaptView = BI.inherit(BI.View, {
                 type: "bi.label",
                 text: "Horizontal Adapt左右自适应",
                 cls: "layout-bg1",
-                //width: 300,
+                width: 300,
                 height: 30
             }, {
                 type: "bi.label",

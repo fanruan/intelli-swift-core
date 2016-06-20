@@ -16,6 +16,7 @@ import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.common.factory.annotation.BISingletonObject;
+import com.fr.bi.stable.utils.code.BILogger;
 
 
 /**
@@ -30,23 +31,59 @@ import com.fr.bi.common.factory.annotation.BISingletonObject;
 public class BIRouter implements IRouter {
     private ITopicRouterService topicRouterService;
     private BIMessageDispatcher messageDispatcher;
-    private boolean verbose = false;
+    private boolean verbose = true;
+    private Thread dispatcherThread;
 
     public BIRouter() {
-        topicRouterService = BIFactoryHelper.getObject(ITopicRouterService.class);
-        messageDispatcher = new BIMessageDispatcher();
-        messageDispatcher.setTopicRouterService(topicRouterService);
-        Thread thread = new Thread(messageDispatcher);
-        thread.setName("fcube-router");
-        thread.start();
-
+        this(new BIMessageDispatcher());
     }
 
+    public BIRouter(BIMessageDispatcher dispatcher) {
+        topicRouterService = BIFactoryHelper.getObject(ITopicRouterService.class);
+        messageDispatcher = dispatcher;
+        openDispatcher();
+        monitor();
+    }
+
+    public void setMessageDispatcher(BIMessageDispatcher messageDispatcher) {
+        this.messageDispatcher = messageDispatcher;
+        if (dispatcherThread != null && dispatcherThread.isAlive()) {
+            dispatcherThread.interrupt();
+        }
+        openDispatcher();
+    }
+
+    private void openDispatcher() {
+        messageDispatcher.setTopicRouterService(topicRouterService);
+        dispatcherThread = new Thread(messageDispatcher);
+        dispatcherThread.setName("fcube-router");
+        dispatcherThread.setDaemon(true);
+        dispatcherThread.start();
+    }
+
+    private void monitor() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        thread.setDaemon(true);
+        thread.setName("router-monitor");
+        thread.start();
+    }
 
     @Override
     public void deliverMessage(IMessage message) throws BIDeliverFailureException {
         if (verbose) {
-            System.out.println("Receive:" + message.toString());
+            BILogger.getLogger().info("Message Router Receive:" + message.toString());
+            System.out.println("Message Router Receive:" + message.toString());
         }
         messageDispatcher.addMessage(message);
     }
@@ -59,7 +96,9 @@ public class BIRouter implements IRouter {
 
     @Override
     public void registerTopic(ITopicTag topicTag) throws BITopicDuplicateException {
-        registerTopic(BIFactoryHelper.getObject(ITopic.class, topicTag));
+        if (!isRegistered(topicTag)) {
+            registerTopic(BIFactoryHelper.getObject(ITopic.class, topicTag));
+        }
     }
 
     @Override
@@ -69,7 +108,9 @@ public class BIRouter implements IRouter {
 
     @Override
     public void registerFragment(ITopicTag topicTag, IFragmentTag fragment) throws BITopicAbsentException, BIFragmentDuplicateException {
-        registerFragment(topicTag, BIFactoryHelper.getObject(IFragment.class, fragment));
+        if (!isRegistered(fragment)) {
+            registerFragment(topicTag, BIFactoryHelper.getObject(IFragment.class, fragment));
+        }
     }
 
     @Override
@@ -125,5 +166,16 @@ public class BIRouter implements IRouter {
     @Override
     public void reset() {
         topicRouterService.reset();
+    }
+
+    @Override
+    public boolean isDelivered() {
+        return messageDispatcher.isDispatched();
+    }
+
+    @Override
+    public void closeVerbose() {
+        this.verbose = false;
+        this.topicRouterService.closeVerbose();
     }
 }

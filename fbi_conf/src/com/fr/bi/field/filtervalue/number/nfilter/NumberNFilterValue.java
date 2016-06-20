@@ -3,9 +3,11 @@
  */
 package com.fr.bi.field.filtervalue.number.nfilter;
 
-import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
+import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -16,7 +18,7 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 
-public abstract class NumberNFilterValue implements NumberFilterValue {
+public abstract class NumberNFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue {
     /**
 	 * 
 	 */
@@ -25,6 +27,7 @@ public abstract class NumberNFilterValue implements NumberFilterValue {
     /**
      * default 10
      */
+    @BICoreField
     protected int n = 10;
 
     /**
@@ -39,7 +42,10 @@ public abstract class NumberNFilterValue implements NumberFilterValue {
         result = prime * result + n;
         return result;
     }
-
+    @Override
+    public boolean isAllCalculatorFilter() {
+        return false;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -97,7 +103,6 @@ public abstract class NumberNFilterValue implements NumberFilterValue {
     @Override
     public void readXML(XMLableReader reader) {
         if (reader.getTagName().equals("filter_value")) {
-
             try {
                 JSONObject jo = new JSONObject(reader.getAttrAsString("filter_value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
@@ -128,7 +133,7 @@ public abstract class NumberNFilterValue implements NumberFilterValue {
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         return null;
     }
 
@@ -143,10 +148,6 @@ public abstract class NumberNFilterValue implements NumberFilterValue {
         return false;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     @Override
     public boolean canCreateFilterIndex() {

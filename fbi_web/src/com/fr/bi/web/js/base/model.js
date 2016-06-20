@@ -14,7 +14,7 @@ BI.Model = BI.inherit(BI.M, {
         BI.Model.superclass._init.apply(this, arguments);
         this.on("change:current", function (obj, val) {
             BI.isNotNull(val) && this.refresh(val);
-        }).on("change", function (changed, prev) {
+        }).on("change", function (changed, prev, context, options) {
             if (this._start === true || BI.has(changed, "current")) {
                 return;
             }
@@ -22,7 +22,7 @@ BI.Model = BI.inherit(BI.M, {
             if (!this.local()) {
                 !BI.has(this._tmp, BI.keys(changed)) && this.parent && this.parent._change(this);
                 this._changing_ = true;
-                this.change(changed, prev);
+                this.change(changed, prev, context, options);
                 this._changing_ = false;
             }
         });
@@ -137,17 +137,15 @@ BI.Model = BI.inherit(BI.M, {
         var self = this;
         this._start = false;
         var _gets = this._gets.slice(0), _F = this._F.slice(0);
-        BI.each(_gets, function (i, action) {
-            self._gets.remove(action);
-            self.unset(action, {silent: true});
-        });
-        BI.each(_F, function (i, fn) {
-            self._F.remove(fn);
-            fn.f.apply(self, fn.arg);
-        });
         this._gets = [];
         this._hass = {};
         this._F = [];
+        BI.each(_gets, function (i, action) {
+            self.unset(action, {silent: true});
+        });
+        BI.each(_F, function (i, fn) {
+            fn.f.apply(self, fn.arg);
+        });
         return this;
     },
 

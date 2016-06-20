@@ -8,8 +8,6 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -38,7 +36,7 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
     @BICoreField
     private String[] fieldNames;
 
-    private int [] columnTypes;
+    private int[] columnTypes;
 
     public ExcelTableSource() {
         super();
@@ -50,7 +48,7 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
     }
 
     @Override
-    public DBTable getDbTable() {
+    public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
             dbTable = createBITable();
             BIExcelDataModel dm = null;
@@ -59,7 +57,7 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
                 int cols = dm.getColumnCount();
                 for (int i = 0; i < cols; i++) {
 
-                    BIColumn column = new BIColumn(dm.getColumnName(i), dm.getColumnType(i), 255);
+                    PersistentField column = new PersistentField(dm.getColumnName(i), dm.getColumnType(i), 255);
                     dbTable.addColumn(column);
                 }
             } catch (Exception e) {
@@ -79,12 +77,6 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
         return dbTable;
     }
 
-    @Override
-    public Set<Table> createTableKeys() {
-        Set set = new HashSet();
-        set.add(new BITable(fetchObjectCore().getID().getIdentityValue()));
-        return set;
-    }
 
     @Override
     public int getType() {
@@ -92,13 +84,13 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
     }
 
     @Override
-    public long read(final Traversal<BIDataValue> travel, DBField[] fields, ICubeDataLoader loader) {
-        final DBField[] columns = fields;
+    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
+        final ICubeFieldSource[] columns = fields;
         return BIExcelUtils.runExcel(createExcelTableData(), columns, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
                 Object resValue = null;
-                long i = v.getRow();
+                int i = v.getRow();
                 int j = v.getCol();
                 Object value = v.getValue();
                 switch (columns[j].getFieldType()) {
@@ -133,7 +125,8 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
                             }
                             break;
                         }
-                        resValue = DateUtils.string2Date(value.toString(), true).getTime();
+                        Date date = DateUtils.string2Date(value.toString(), true);
+                        resValue = date == null ? null : date.getTime();
                         break;
                 }
                 if (travel != null) {
@@ -151,12 +144,12 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
      */
     @Override
     public Set getFieldDistinctNewestValues(String fieldName, ICubeDataLoader loader, long userId) {
-        DBField field = getFields().get(fieldName);
+        ICubeFieldSource field = getFields().get(fieldName);
         final HashSet set = new HashSet();
         if (field == null) {
             return set;
         }
-        BIExcelUtils.runExcel(createExcelTableData(), new DBField[]{field}, new Traversal<BIDataValue>() {
+        BIExcelUtils.runExcel(createExcelTableData(), new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 set.add(data.getValue());
@@ -175,7 +168,7 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
         BIExcelDataModel tableData = null;
         try {
             tableData = createExcelTableData().createDataModel();
-            String [] columnNames = tableData.onlyGetColumnNames();
+            String[] columnNames = tableData.onlyGetColumnNames();
             int previewRowCount = Math.min(BIBaseConstant.PREVIEW_COUNT, tableData.getDataList().size());
             for (int col = 0; col < columnNames.length; col++) {
                 String name = columnNames[col];
@@ -232,24 +225,29 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
     }
 
     public void parseJSON(JSONObject jo) throws Exception {
-        if(jo.has("full_file_name")){
+        if (jo.has("full_file_name")) {
             fullFileName = jo.getString("full_file_name");
         }
-        if(jo.has("table_name")){
+        if (jo.has("table_name")) {
             fileName = jo.getString("table_name");
         }
-        if(jo.has("fields")){
+        if (jo.has("fields")) {
             JSONArray fields = jo.getJSONArray("fields").getJSONArray(0);
             fieldNames = new String[fields.length()];
             columnTypes = new int[fields.length()];
-            for(int i = 0; i < fields.length(); i++){
+            for (int i = 0; i < fields.length(); i++) {
                 JSONObject field = fields.getJSONObject(i);
                 fieldNames[i] = field.getString("field_name");
                 columnTypes[i] = BIDBUtils.biTypeToSql(field.getInt("field_type"));
             }
         }
+        clearCore();
     }
 
+    @Override
+    public String getTableName() {
+        return this.fileName;
+    }
 //    @Override
 //    public void readXML(XMLableReader reader) {
 //        super.readXML(reader);

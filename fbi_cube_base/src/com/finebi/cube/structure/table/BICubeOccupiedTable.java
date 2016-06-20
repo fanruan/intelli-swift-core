@@ -11,8 +11,8 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.finebi.cube.relation.BITableSourceRelation;
 
 import java.util.Date;
 import java.util.List;
@@ -27,14 +27,11 @@ import java.util.TreeSet;
  */
 public class BICubeOccupiedTable implements ICubeTableEntityService {
     @Override
-    public void recordTableStructure(List<DBField> fields) {
+    public void recordTableStructure(List<ICubeFieldSource> fields) {
 
     }
 
-    @Override
-    public void recordTableGenerateVersion(int version) {
 
-    }
 
     @Override
     public void recordRowCount(long rowCount) {
@@ -86,13 +83,9 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
         return null;
     }
 
-    @Override
-    public int getTableVersion() {
-        return 0;
-    }
 
     @Override
-    public List<DBField> getFieldInfo() {
+    public List<ICubeFieldSource> getFieldInfo() {
         return null;
     }
 
@@ -107,7 +100,7 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
     }
 
     @Override
-    public DBField getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
+    public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
         return null;
     }
 
@@ -143,6 +136,30 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
 
     @Override
     public void clear() {
+
+    }
+
+    @Override
+    public void recordFieldNamesFromParent(Set<String> fieldNames) {
+
+    }
+
+    @Override
+    public Set<String> getFieldNamesFromParent() {
+        return null;
+    }
+
+    public long getCubeVersion() {
+        return 0;
+    }
+
+    @Override
+    public void addVersion(long version) {
+
+    }
+
+    @Override
+    public void setTableOwner(ITableKey owner) {
 
     }
 }

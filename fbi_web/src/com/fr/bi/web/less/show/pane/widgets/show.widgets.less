@@ -22,38 +22,29 @@
 
 .bi-dashboard-widget{
   background: @color-bi-background-default;
-  & .dashboard-title {
-    & .dashboard-title-text {
-      cursor: url('@{dragCursor}'), -moz-zoom-out;
-      font-size: @font-size-16;
-    }
-    & .dashboard-title-filter{
-      font-size: @font-size-16;
-      &:hover, &:active{
-        background-color: @color-bi-background-normal;
+  & .dashboard-title-left{
+    & .shelter-editor-text{
+      cursor: default;
+      & .bi-text{
+        text-align: left !important;
+        font-size: @font-size-16 !important;
       }
     }
-    & .dashboard-title-detail{
-      font-size: @font-size-16;
+  }
+  & .dashboard-title-center{
+    & .shelter-editor-text{
+      cursor: default;
+      & .bi-text{
+        text-align: center !important;
+        font-size: @font-size-16 !important;
+      }
     }
-    & .operator-region{
-      z-index: @zIndex-layer;
-    }
   }
-  & .dashboard-title:active, & .dashboard-title.active {
-    cursor: url('@{dragCursor}'), -moz-zoom-out;
+  & .operator-region{
+    z-index: @zIndex-layer;
   }
-  & .bi-dashboard-block {
-
-  }
-
-  & .ui-resizable-s{
-    bottom: 0;
-  }
-  & .ui-resizable-s:hover{
-    border-bottom: 1px solid @color-bi-border-resize;
-  }
-  & .ui-resizable-e:hover{
-    border-right: 1px solid @color-bi-border-resize;
+  & .remove-button{
+    .border-radius(10px);
+    background: @color-bi-background-default;
   }
 }

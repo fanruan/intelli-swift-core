@@ -20,7 +20,7 @@ BI.SelectedUserButton = BI.inherit(BI.BasicButton, {
             height: 20
         });
         deleteButton.on(BI.Controller.EVENT_CHANGE, function(){
-            arguments[1] = o.id;
+            arguments[1] = o.user_id.toString();
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         BI.createWidget({
@@ -28,7 +28,7 @@ BI.SelectedUserButton = BI.inherit(BI.BasicButton, {
             element: this.element,
             items: [{
                 type: "bi.label",
-                text: o.name,
+                text: o.user_name,
                 height: 30
             }, {
                 type: "bi.center_adapt",

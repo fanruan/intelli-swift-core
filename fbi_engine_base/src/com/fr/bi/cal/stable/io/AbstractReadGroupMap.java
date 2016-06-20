@@ -40,6 +40,21 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
         return res;
     }
 
+
+    public GroupValueIndex getIndex(T keys) {
+        T[] v = lmp.createKey(1);
+        v[0] = keys;
+        GroupValueIndex[] res = new GroupValueIndex[1];
+        int[] indices = lmp.indexOf(v);
+        for (int i = 0; i < indices.length; i++) {
+            res[i] = (indices[i] != -1 ? indexes.get(indices[i]) : null);
+        }
+        return res[0];
+    }
+
+
+
+
     @Override
     public int sizeOfGroup() {
         return 0;
@@ -115,6 +130,11 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
 
     @Override
     public T getGroupValue(int position) {
+        return null;
+    }
+
+    @Override
+    public T getOriginalValue(int rowNumber) {
         return null;
     }
 
@@ -310,9 +330,14 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
 	public T lastKey() {
     	return getKey(size() - 1);
     }
-    
+
 	@Override
 	public long nonPrecisionSize() {
 		return size();
 	}
+
+    @Override
+    public GroupValueIndex getNULLIndex() {
+        return null;
+    }
 }

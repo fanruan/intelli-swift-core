@@ -1,10 +1,12 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
 
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
+import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.NormalIteratorManager;
 import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.cal.sssecret.GroupConnectionValue;
-import com.fr.bi.cal.analyze.cal.sssecret.GroupUtils;
-import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
-import com.fr.bi.cal.analyze.cal.sssecret.NoneDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTree;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTreeBuilder;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
@@ -18,12 +20,11 @@ import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTarg
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.manager.PlugManager;
 import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.*;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 
 import java.util.*;
@@ -287,7 +288,7 @@ public class DimensionGroupFilter {
                     GeneralANDDimensionFilter resultFilter = (GeneralANDDimensionFilter) rowDimension[deep].getFilter();
                     if (resultFilter.canCreateDirectFilter()) {
                         DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
-                        Table t = (mergerInfoList.get(i).getRoot().getTableKey() == BITable.BI_EMPTY_TABLE()) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
+                        BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
                         GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
                         ret[i] = and(ret[i], filterIndex);
                     }
@@ -345,7 +346,7 @@ public class DimensionGroupFilter {
 
     private void createFinalIndexes(GroupValueIndex[] groupValueIndexes, GroupValueIndex[][] groupValueIndexe2D) {
         for (int i = 0; i < groupValueIndexe2D.length; i++) {
-            if (mergerInfoList.get(i).getRoot().getTableKey() != BITable.BI_EMPTY_TABLE()) {
+            if (!ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BIBusinessTable.createEmptyTable())) {
                 for (int j = 0; j < groupValueIndexe2D[i].length; j++) {
                     if (groupValueIndexes[i] == MergerInfo.ALL_SHOW) {
                         groupValueIndexes[i] = groupValueIndexe2D[i][j];
@@ -595,7 +596,7 @@ public class DimensionGroupFilter {
 
     private boolean hasTargetSortByDimension() {
         for (int i = 0; i < rowDimension.length; i++) {
-            if (rowDimension[i].getSortTarget() != null) {
+            if (rowDimension[i].useTargetSort()) {
                 return true;
             }
         }
@@ -676,16 +677,39 @@ public class DimensionGroupFilter {
         return child;
     }
 
+    private RootDimensionGroup[] mergerRootDimensionGroup = null;
+
     private GroupConnectionValue[] next() {
         checkInRuntime();
-        GroupConnectionValue[] groupConnectionValues = new GroupConnectionValue[mergerInfoList.size()];
-        for (int i = 0; i < mergerInfoList.size(); i++) {
-            NodeDimensionIterator treeIterator = mergerInfoList.get(i).getRootDimensionGroup().moveNext();
-            GroupConnectionValue next = treeIterator.next();
-            groupConnectionValues[i] = next;
-        }
+        getIteratorManager().moveNext();
+        GroupConnectionValue[] groupConnectionValues = getIteratorManager().getNextGroupConnectionValues();
         return getAllMinChildGroups(groupConnectionValues);
     }
+
+    private IteratorManager iteratorManager = null;
+
+    private IteratorManager getIteratorManager() {
+        if (iteratorManager == null) {
+            iteratorManager = new NormalIteratorManager(getRootDimensionGroups());
+        }
+        return iteratorManager;
+    }
+
+    private RootDimensionGroup[] getRootDimensionGroups() {
+        if (mergerRootDimensionGroup == null) {
+            mergerRootDimensionGroup = getRootDimensionGroups0();
+        }
+        return mergerRootDimensionGroup;
+    }
+
+    private RootDimensionGroup[] getRootDimensionGroups0() {
+        RootDimensionGroup[] rootDimensionGroups = new RootDimensionGroup[mergerInfoList.size()];
+        for (int i = 0; i < rootDimensionGroups.length; i++) {
+            rootDimensionGroups[i] = mergerInfoList.get(i).getRootDimensionGroup();
+        }
+        return rootDimensionGroups;
+    }
+
 
     private void checkInRuntime() {
         checkTimeout();

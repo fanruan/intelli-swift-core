@@ -1,16 +1,13 @@
 package com.fr.bi.field.target.detailtarget.field;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.DateConstant;
-import com.fr.bi.stable.data.BIField;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 
 public class BIDateDetailTarget extends BIStringDetailTarget {
@@ -27,15 +24,19 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
         if (row != null) {
             int r = row.intValue();
             if (r > -1) {
-                ICubeTableService ti = loader.getTableIndex(this.createTableKey());
-                return ti.getRowValue(this.createKey(getStatisticElement()), r);
+                initialTableSource(loader);
+                Object ob =  cubeTableService.getRowValue(this.createKey(getStatisticElement()), r);
+                if (ob == null){
+                    return ob;
+                }
+                return group.getType() == BIReportConstant.GROUP.M ? ((Number)ob).longValue() + 1 : ((Number)ob).longValue();
             }
         }
         return null;
     }
 
     @Override
-    public BIKey createKey(BIField column) {
+    public BIKey createKey(BusinessField column) {
         if (group.getType() == BIReportConstant.GROUP.NO_GROUP) {
             return new IndexKey(column.getFieldName());
         }

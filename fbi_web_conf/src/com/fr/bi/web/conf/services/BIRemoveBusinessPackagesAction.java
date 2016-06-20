@@ -1,14 +1,15 @@
 package com.fr.bi.web.conf.services;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.relation.relation.IRelationContainer;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.base.FRContext;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
-import com.fr.bi.conf.base.relation.relation.IRelationContainer;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.stable.StringUtils;
@@ -39,7 +40,7 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         removePackageByName(packageId, userId);
         try {
-            BIConfigureManagerCenter.getPackageManager().persistData(userId);
+            BICubeConfigureCenter.getPackageManager().persistData(userId);
         } catch (Exception e) {
             FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
         }
@@ -55,28 +56,38 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
             return;
         }
         try {
-            Iterator tableIt = BIConfigureManagerCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables().iterator();
+            Iterator tableIt = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables().iterator();
             ArrayList<BITableRelation> removeList = new ArrayList<BITableRelation>();
             while (tableIt.hasNext()) {
-                BITable table = (BITable) tableIt.next();
-                if (BIConfigureManagerCenter.getTableRelationManager().containTablePrimaryRelation(userId, table)) {
-                    IRelationContainer primaryContainer = BIConfigureManagerCenter.getTableRelationManager().getPrimaryRelation(userId, table);
+                BusinessTable table = (BusinessTable) tableIt.next();
+                if (BICubeConfigureCenter.getTableRelationManager().containTablePrimaryRelation(userId, table)) {
+                    IRelationContainer primaryContainer = BICubeConfigureCenter.getTableRelationManager().getPrimaryRelation(userId, table);
                     addToRemoveList(primaryContainer, removeList);
                 }
 
-                if (BIConfigureManagerCenter.getTableRelationManager().containTableForeignRelation(userId, table)) {
-                    IRelationContainer foreignContainer = BIConfigureManagerCenter.getTableRelationManager().getForeignRelation(userId, table);
+                if (BICubeConfigureCenter.getTableRelationManager().containTableForeignRelation(userId, table)) {
+                    IRelationContainer foreignContainer = BICubeConfigureCenter.getTableRelationManager().getForeignRelation(userId, table);
                     addToRemoveList(foreignContainer, removeList);
                 }
+                //删除业务包中所有表的表名转义
+                BICubeConfigureCenter.getAliasManager().getTransManager(userId).removeTransName(table.getID().getIdentityValue());
+
+                //删除业务包中所有表中字段的转义
+                List<BusinessField> fieldsOfTableList = table.getFields();
+                Iterator<BusinessField> it = fieldsOfTableList.iterator();
+                while (it.hasNext()) {
+                    BICubeConfigureCenter.getAliasManager().getTransManager(userId).removeTransName(it.next().getFieldID().getIdentityValue());
+                }
+
             }
             for (int i = 0; i < removeList.size(); i++) {
-                BIConfigureManagerCenter.getTableRelationManager().removeTableRelation(userId, removeList.get(i));
+                BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, removeList.get(i));
             }
-            //TODO Connery: 又是名字
-            BIConfigureManagerCenter.getPackageManager().removePackage(userId, new BIPackageID(packageId));
+
+
+            BICubeConfigureCenter.getPackageManager().removePackage(userId, new BIPackageID(packageId));
         } catch (BIPackageAbsentException e) {
-            //TODO Connery: 异常应该相应的处理，通过前端显示给用户，而不是捕获记录日志
-//            BILogger.getLogger().error(e.getMessage(), e);
+
         }
     }
 

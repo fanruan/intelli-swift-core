@@ -1,9 +1,8 @@
 package com.fr.bi.web.conf.services.datalink;
 
-import com.fr.base.FRContext;
 import com.fr.bi.stable.data.db.DataLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.web.base.JSONErrorHandler;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.impl.JDBCDatabaseConnection;
@@ -22,18 +21,14 @@ public class BIGetSchemasByLinkAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String sLinkData = WebUtils.getHTTPRequestParameter(req, "linkData");
         com.fr.data.impl.Connection dbc = fetchConnection(sLinkData);
-        boolean isOracle = false;
         JSONArray ja = new JSONArray();
         try {
-            isOracle = FRContext.getCurrentEnv().isOracle(dbc);
-        } catch (Exception e){
-            new JSONErrorHandler().error(req, res, e.getMessage());
-        }
-        if(isOracle){
             String[] schemas = DataCoreUtils.getDatabaseSchema(dbc);
             for(int i = 0; i < schemas.length; i++){
                 ja.put(schemas[i]);
             }
+        } catch (Exception e){
+            BILogger.getLogger().error(e.getMessage(), e);
         }
         WebUtils.printAsJSON(res, ja);
     }

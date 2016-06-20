@@ -29,30 +29,19 @@ BI.CalculateTargetMonthOnMonthValuePane = BI.inherit(BI.CalculateTargetAbstractP
         this.logicPane.empty();
         var dimDimensionIDs = o.model.getDimDimensionIDs();
         var lastDimensionID = dimDimensionIDs.pop();
-        var secondLastDimensionID = dimDimensionIDs.pop();
         var firstLabel = BI.createWidget({
             type: "bi.label",
             textHeight: 30,
             textAlign: "left"
         });
-        firstLabel.setValue(BI.i18nText("BI-Calculate_Target_Each_Value", BI.Utils.getDimensionNameByID(lastDimensionID) || "", BI.Utils.getDimensionNameByID(this.valueCombo.getValue()[0])));
+        firstLabel.setValue(BI.i18nText("BI-Calculate_Target_Each_Value_Get", BI.Utils.getDimensionNameByID(lastDimensionID) || "", BI.Utils.getDimensionNameByID(this.valueCombo.getValue()[0])));
         this.logicPane.addItem(firstLabel);
-        BI.each(dimDimensionIDs, function (i, dId) {
-            var dimensionName = BI.Utils.getDimensionNameByID(dId);
-            var label = BI.createWidget({
-                type: "bi.label",
-                textHeight: 30,
-                textAlign: "left"
-            });
-            label.setValue(BI.i18nText("BI-Calculate_Target_Include_In_Same", dimensionName));
-            self.logicPane.addItem(label);
-        });
         var lastLabel = BI.createWidget({
             type: "bi.label",
             textAlign: "left",
             textHeight: 30
         });
-        lastLabel.setValue(BI.i18nText("BI-Calculate_Target_Include_In_Same_Last", BI.Utils.getDimensionNameByID(secondLastDimensionID) || "", BI.Utils.getDimensionNameByID(lastDimensionID) || ""))
+        lastLabel.setValue(BI.i18nText("BI-Calculate_Target_Last", BI.Utils.getDimensionNameByID(lastDimensionID) || "", BI.Utils.getDimensionNameByID(lastDimensionID) || ""))
         this.logicPane.addItem(lastLabel);
         var valueLabel = BI.createWidget({
             type: "bi.label",

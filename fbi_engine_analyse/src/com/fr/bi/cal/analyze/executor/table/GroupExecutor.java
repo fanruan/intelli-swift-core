@@ -1,15 +1,10 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
-import com.fr.bi.cal.analyze.cal.result.CrossExpander;
-import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.field.BITargetAndDimensionUtils;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -18,10 +13,13 @@ import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
+import com.fr.bi.field.BITargetAndDimensionUtils;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
@@ -43,7 +41,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         super(widget, paging, session, expander);
     }
 
-    static void dealWithNoChildNode(Node node,CBCell[][] cbcells, int row, int column,
+    static void dealWithNoChildNode(Node node, CBCell[][] cbcells, int row, int column,
                                     BIDimension[] rowColumn,
                                     BITarget[] sumColumn, TargetGettingKey[] keys) {
         int rowLength = rowColumn.length;
@@ -324,7 +322,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 return;
             }
             dealWithNoChildNode(node, cbcells, row, column,
-                    rowColumn, sumColumn, keys );
+                    rowColumn, sumColumn, keys);
             return;
         }
         //收缩着:
@@ -482,8 +480,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
      * @return 行数
      */
     public static int dealWidthNodeSummary(Node node, CBCell[][] cbcells, int row, int column, BIDimension[] rowColumn,
-                                          BITarget[] sumColumn, TargetGettingKey[] keys, int total,
-                                          int hasNumber, int tempRow, BIComplexExecutData rowData) {
+                                           BITarget[] sumColumn, TargetGettingKey[] keys, int total,
+                                           int hasNumber, int tempRow, BIComplexExecutData rowData) {
         int rowLength = rowColumn.length;
         CBCell cell = null;
         cell = new CBCell(Inter.getLocText("BI-Summary"));
@@ -580,7 +578,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
     public static void dealWithNodeChild(Node node, CBCell[][] cbcells, int row, int column,
                                          BIDimension[] rowColumn,
                                          BITarget[] sumColumn, TargetGettingKey[] keys, int total,
-                                          int hasNumber, BIComplexExecutData rowData) {
+                                         int hasNumber, BIComplexExecutData rowData) {
 
 
         int tempRow = row;
@@ -660,7 +658,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         }
 
         if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-            dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, keys, usedDimensions.length - 1,widget.isOrder(), new BIComplexExecutData(usedDimensions));
+            dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, keys, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
         } else {
             dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, keys, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
         }
@@ -688,7 +686,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
     private void generateTitle(CBCell[][] cbcells, boolean useTargetSort, int rowLength, int summaryLength, int hasNumber) {
 
         for (int i = 0; i < rowLength; i++) {
-            CBCell cell = new CBCell(usedDimensions[i].getValue());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)usedDimensions[i]).getText());
             cell.setColumn(i + hasNumber);
             cell.setRow(0);
             cell.setRowSpan(1);
@@ -710,7 +708,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
         }
         for (int i = 0; i < summaryLength; i++) {
-            CBCell cell = new CBCell(usedSumTarget[i].getValue());
+            CBCell cell = new CBCell((usedSumTarget[i].getText()));
             cell.setColumn(rowLength + i + hasNumber);
             cell.setRow(0);
             cell.setRowSpan(1);
@@ -789,13 +787,14 @@ public class GroupExecutor extends AbstractNodeExecutor {
         int rowLength = usedDimensions.length;
         int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
-        if (rowLength + summaryLength + columnLen == 0) {
+        if (columnLen == 0) {
             return null;
         }
         long start = System.currentTimeMillis();
 
         int calpage = paging.getOprator();
-        Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.useRealData(), session, expander.getYExpander());
+        CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
+        Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.useRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(null, null);
         }

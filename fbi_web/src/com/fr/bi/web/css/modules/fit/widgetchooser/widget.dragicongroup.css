@@ -14,12 +14,32 @@
   border-radius: 2px;
   font-size: 22px;
   border: 1px solid #ffffff;
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_hand.cur'), auto;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab;
 }
 .bi-drag-icon-group .widget-generator:hover {
   background: #f3f3f3;
   border: 1px solid #d4dadd;
 }
 .bi-drag-icon-group .widget-generator:active {
+  background: #f3f3f3;
+  border: 1px solid #d4dadd;
+}
+.bi-drag-icon-group .widget-more,
+.bi-drag-icon-group .widget-reuse {
+  border-radius: 2px;
+  font-size: 22px;
+  border: 1px solid #ffffff;
+}
+.bi-drag-icon-group .widget-more:hover,
+.bi-drag-icon-group .widget-reuse:hover {
+  background: #f3f3f3;
+  border: 1px solid #d4dadd;
+}
+.bi-drag-icon-group .widget-more:active,
+.bi-drag-icon-group .widget-reuse:active {
   background: #f3f3f3;
   border: 1px solid #d4dadd;
 }

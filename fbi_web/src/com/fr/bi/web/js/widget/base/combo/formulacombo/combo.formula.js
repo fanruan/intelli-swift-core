@@ -20,7 +20,7 @@ BI.FormulaCombo = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.FormulaCombo.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-formula-input-combo",
+            baseCls: "bi-formula-combo",
             items: []
         })
     },
@@ -41,6 +41,7 @@ BI.FormulaCombo = BI.inherit(BI.Widget, {
             type: "bi.combo",
             element: this.element,
             isNeedAdjustHeight: true,
+            isNeedAdjustWidth: false,
             adjustLength: this._constant.CONDITION_TYPE_COMBO_ADJUST,
             el: this.input,
             popup: {
@@ -58,7 +59,7 @@ BI.FormulaCombo = BI.inherit(BI.Widget, {
                 },
                 stopPropagation: false,
                 maxHeight: this._constant.MAX_HEIGHT,
-                maxWidth: this._constant.MAX_WIDTH
+                width: this._constant.MAX_WIDTH
             }
         });
         this.formulaInputCombo.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {

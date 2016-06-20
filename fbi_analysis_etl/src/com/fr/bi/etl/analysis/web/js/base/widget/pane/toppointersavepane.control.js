@@ -21,6 +21,12 @@ BI.TopPointerSavePaneController = BI.inherit(BI.MVCController, {
         widget.save.setWarningTitle(status === true ? "" : title);
     },
 
+    doValidCheck : function (v, widget) {
+        if(this._editing === false) {
+            widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, v);
+        }
+    },
+
     setEnable : function (v, widget) {
         //正在编辑不允许修改
         if(this._editing === true){

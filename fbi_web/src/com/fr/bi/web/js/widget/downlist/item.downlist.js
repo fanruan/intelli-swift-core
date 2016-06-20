@@ -2,7 +2,8 @@ BI.DownListItem = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         var conf = BI.DownListItem.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            extraCls: "bi-down-list-item",
+            baseCls: "bi-down-list-item",
+            cls: "",
             height: 25,
             logic: {
                 dynamic: true
@@ -41,7 +42,8 @@ BI.DownListItem = BI.inherit(BI.Single, {
         });
         this.text.on(BI.IconTextItem.EVENT_CHANGE, function () {
             self.fireEvent(BI.DownListItem.EVENT_CHANGE);
-        })
+        });
+        // this.setSelected(o.selected);
     },
 
     doRedMark: function () {
@@ -58,12 +60,11 @@ BI.DownListItem = BI.inherit(BI.Single, {
 
     setSelected: function (b) {
         this.text.setSelected(b);
-        if (b === true) {
-            this.element.addClass("dot-e-font");
-        } else {
-            this.element.removeClass("dot-e-font");
-        }
-
+        // if (b === true) {
+        //     this.element.addClass("dot-e-font");
+        // } else {
+        //     this.element.removeClass("dot-e-font");
+        // }
     },
 
     setValue: function (v) {

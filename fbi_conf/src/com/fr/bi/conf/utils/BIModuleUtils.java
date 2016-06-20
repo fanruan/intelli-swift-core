@@ -1,18 +1,20 @@
 package com.fr.bi.conf.utils;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.base.BICore;
+import com.finebi.cube.conf.BIAliasManagerProvider;
+import com.finebi.cube.conf.BIDataSourceManagerProvider;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.module.BIModule;
-import com.fr.bi.stable.data.BIField;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
-import com.fr.bi.stable.engine.index.AbstractTIPathLoader;
+import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -35,56 +37,26 @@ public class BIModuleUtils {
         return jo;
     }
 
-    public static JSONObject createGroupJSON(long userId) throws JSONException {
-        JSONObject jo = new JSONObject();
+    public static ICubeTableService getTableIndex(BusinessTable td, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
-            BISystemPackageConfigurationProvider provider = module.getBusiPackManagerProvider();
-            jo.join( provider.createGroupJSON(userId));
-        }
-        return jo;
-    }
-
-    public static ICubeTableService getTableIndex(Table td, BIUser user, Map<String, AbstractTIPathLoader> childLoaderMap) {
-        for (BIModule module : BIModuleManager.getModules()) {
-            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByID(td.getID(), user);
-            if (source != null) {
-                return childLoaderMap.get(module.getModuleName()).getTableIndexByPath(source.getSourceFile());
-            }
+            return childLoaderMap.get(module.getModuleName()).getTableIndex(td.getTableSource());
         }
         return null;
     }
 
-    public static ICubeTableService getTableIndex(BICore md5, BIUser user, Map<String, AbstractTIPathLoader> childLoaderMap) {
+    public static ICubeTableService getTableIndex(CubeTableSource tableSource,  Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByCore(md5, user);
-            if (source != null) {
-                return childLoaderMap.get(module.getModuleName()).getTableIndexByPath(source.getSourceFile());
+            if (provider.isRecord(tableSource)) {
+                return childLoaderMap.get(module.getModuleName()).getTableIndex(tableSource);
             }
         }
+        BINonValueUtils.beyondControl();
         return null;
     }
 
-    public static ITableSource getSourceByCore(BICore md5, BIUser user) {
-        for (BIModule module : BIModuleManager.getModules()) {
-            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByCore(md5, user);
-            if (source != null) {
-                return source;
-            }
-        }
-        return null;
-    }
-
-    public static BIKey getFieldIndex(BIField column, BIUser user, Map<String, AbstractTIPathLoader> childLoaderMap) {
-        ICubeTableService ti = getTableIndex(column.getTableBelongTo(), user, childLoaderMap);
-        return ti == null ? null : ti.getColumnIndex(column);
-    }
-
-
-    public static Set<BIBusinessPackage> getAllPacks(long userId) {
-        Set<BIBusinessPackage> set = new HashSet<BIBusinessPackage>();
+    public static Set<IBusinessPackageGetterService> getAllPacks(long userId) {
+        Set<IBusinessPackageGetterService> set = new HashSet<IBusinessPackageGetterService>();
         for (BIModule module : BIModuleManager.getModules()) {
             BISystemPackageConfigurationProvider provider = module.getBusiPackManagerProvider();
             set.addAll(provider.getAllPackages(userId));
@@ -92,14 +64,69 @@ public class BIModuleUtils {
         return set;
     }
 
-    public static ITableSource getSourceByID(BITableID id, BIUser user) {
+    public static CubeTableSource getSourceByID(BITableID id, BIUser user) {
+        CubeTableSource source = null;
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
-            ITableSource source = provider.getTableSourceByID(id, user);
+            try {
+                BusinessTable table = provider.getBusinessTable(id);
+                if (table != null){
+                    source = table.getTableSource();
+                }
+            } catch (BIKeyAbsentException e) {
+            }
             if (source != null) {
                 return source;
             }
         }
+        if (source == null){
+            BINonValueUtils.beyondControl();
+        }
         return null;
+    }
+
+    public static BusinessField getBusinessFieldById(BIFieldID id) {
+        BusinessField field = null;
+        for (BIModule module : BIModuleManager.getModules()) {
+            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
+            try {
+                field = provider.getBusinessField(id);
+            } catch (BIKeyAbsentException e) {
+            }
+            if (field != null) {
+                return field;
+            }
+        }
+        if (field == null){
+            BINonValueUtils.beyondControl();
+        }
+        return null;
+    }
+
+    public static BusinessTable getBusinessTableById(BITableID id) {
+        BusinessTable field = null;
+        for (BIModule module : BIModuleManager.getModules()) {
+            BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
+            try {
+                field = provider.getBusinessTable(id);
+            } catch (BIKeyAbsentException e) {
+            }
+            if (field != null) {
+                return field;
+            }
+        }
+        if (field == null){
+            BINonValueUtils.beyondControl();
+        }
+        return null;
+    }
+
+    public static JSONObject createAliasJSON(long userId) throws JSONException {
+        JSONObject jo = new JSONObject();
+        for (BIModule module : BIModuleManager.getModules()) {
+            BIAliasManagerProvider provider = module.getAliasManagerProvider();
+            jo.join(provider.getAliasJSON(userId));
+        }
+        return jo;
     }
 }

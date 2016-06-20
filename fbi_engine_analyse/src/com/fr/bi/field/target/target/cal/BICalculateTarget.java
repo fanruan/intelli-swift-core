@@ -18,8 +18,6 @@ public abstract class BICalculateTarget extends BISummaryTarget {
 
     public abstract List<BIAbstractTarget> createCalculateUseTarget(BIAbstractTarget[] sumTarget);
 
-    ;
-
     public Map<String, TargetGettingKey> getTargetMap() {
         return targetMap;
     }

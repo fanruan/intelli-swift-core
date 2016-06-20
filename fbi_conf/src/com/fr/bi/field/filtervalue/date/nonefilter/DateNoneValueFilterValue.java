@@ -1,5 +1,6 @@
 package com.fr.bi.field.filtervalue.date.nonefilter;
 
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -9,7 +10,7 @@ import com.fr.stable.xml.XMLableReader;
 /**
  * Created by sheldon on 14-8-14.
  */
-public abstract class DateNoneValueFilterValue implements DateFilterValue {
+public abstract class DateNoneValueFilterValue extends AbstractFilterValue<Long> implements DateFilterValue {
 
     /**
 	 * 
@@ -25,7 +26,10 @@ public abstract class DateNoneValueFilterValue implements DateFilterValue {
     public int hashCode() {
         return this.getClass().getName().hashCode();
     }
-
+    @Override
+    public boolean isAllCalculatorFilter() {
+        return false;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -78,11 +82,6 @@ public abstract class DateNoneValueFilterValue implements DateFilterValue {
     @Override
     public void writeXML(XMLPrintWriter writer) {
 
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
     @Override

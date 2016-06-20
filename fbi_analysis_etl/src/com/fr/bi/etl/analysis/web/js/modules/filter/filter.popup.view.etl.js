@@ -13,13 +13,14 @@ BI.ETLFilterPopupView = BI.inherit(BI.Widget, {
     _init: function () {
         BI.ETLFilterPopupView.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.loader = BI.createWidget({
+        var op = {
             type: "bi.filter_popup_pane_etl",
             field_type : o.field_type,
-            fields : o.fields,
             field_name : o.field_name,
             fieldValuesCreator : o.fieldValuesCreator
-        });
+        }
+        op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+        this.loader = BI.createWidget(op);
         this.popupView = BI.createWidget({
             type: "bi.multi_popup_view",
             width : self._constants.WIDTH,

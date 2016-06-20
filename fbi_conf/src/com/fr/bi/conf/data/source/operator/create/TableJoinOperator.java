@@ -3,17 +3,17 @@ package com.fr.bi.conf.data.source.operator.create;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.db.BIColumn;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -93,26 +93,26 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
-        DBTable leftT = tables[0];
-        DBTable rightT = tables[1];
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
+        IPersistentTable leftT = tables[0];
+        IPersistentTable rightT = tables[1];
         for (int i = 0; i < columns.size(); i++) {
-            BIColumn column = columns.get(i).isLeft() ? leftT.getBIColumn(columns.get(i).getColumnName()) : rightT.getBIColumn(columns.get(i).getColumnName());
+            PersistentField column = columns.get(i).isLeft() ? leftT.getField(columns.get(i).getColumnName()) : rightT.getField(columns.get(i).getColumnName());
             if (column != null) {
-                DBTable.addColumn(new BIColumn(columns.get(i).getName(), columns.get(i).getName(), column.getType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
+                persistentTable.addColumn(new PersistentField(columns.get(i).getName(), columns.get(i).getName(), column.getSqlType(), column.isPrimaryKey(), column.getColumnSize(), column.getScale()));
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         if (parents == null || parents.size() != 2) {
             throw new RuntimeException("invalid join parents");
         }
-        ICubeTableService lti = loader.getTableIndex(parents.get(0).fetchObjectCore());
-        ICubeTableService rti = loader.getTableIndex(parents.get(1).fetchObjectCore());
+        ICubeTableService lti = loader.getTableIndex(parents.get(0));
+        ICubeTableService rti = loader.getTableIndex(parents.get(1));
         return write(travel, lti, rti);
     }
 
@@ -129,24 +129,24 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         if (parents == null || parents.size() != 2) {
             throw new RuntimeException("invalid join parents");
         }
-        ICubeTableService lti = loader.getTableIndex( parents.get(0).fetchObjectCore(), start, end);
-        ICubeTableService rti = loader.getTableIndex( parents.get(1).fetchObjectCore(), start, end);
+        ICubeTableService lti = loader.getTableIndex(parents.get(0), start, end);
+        ICubeTableService rti = loader.getTableIndex(parents.get(1), start, end);
         return write(travel, lti, rti);
     }
 
 
     private int writeRIndex(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti) {
-        int rlen = rti.getColumnSize();
+        int rlen = getColumnSize(false);
         ArrayList<ICubeColumnIndexReader> getter = new ArrayList<ICubeColumnIndexReader>();
         for (int i = 0; i < left.size(); i++) {
             getter.add(lti.loadGroup(new IndexKey(left.get(i)), new ArrayList<BITableSourceRelation>()));
         }
         int index = 0;
-        int lleftCount = lti.getColumnSize() - left.size();
+        int lleftCount = getColumnSize(true);
         GroupValueIndex rTotalGvi = null;
         long row = rti.getRowCount();
         for (int i = 0; i < row; i++) {
@@ -178,6 +178,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         return index;
     }
+
 
     private int rtravel(Traversal<BIDataValue> travel, ICubeTableService lti, int rlen, int index, GroupValueIndex gvi, Object[] rvalues, int lleftCount) {
         if (gvi == null || gvi.getRowsCountWithData() == 0) {
@@ -211,7 +212,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     private int writeIndex(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti, boolean nullContinue, boolean writeLeft) {
-        int llen = lti.getColumnSize();
+        int llen = getColumnSize(true);
         ArrayList<ICubeColumnIndexReader> getter = new ArrayList<ICubeColumnIndexReader>();
         for (int i = 0; i < right.size(); i++) {
             getter.add(rti.loadGroup(new IndexKey(right.get(i)), new ArrayList<BITableSourceRelation>()));
@@ -228,7 +229,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             for (int j = 0; j < left.size(); j++) {
                 Object[] key = getter.get(j).createKey(1);
                 key[0] = lvalues[j] instanceof Date ? ((Date) lvalues[j]).getTime() : lvalues[j];
-                GroupValueIndex rgvi = key[0] == null ? null : getter.get(j).getGroupIndex(key)[0];
+                ICubeColumnIndexReader reader = getter.get(j);
+                GroupValueIndex rgvi = key[0] == null ? null : reader.getGroupIndex(key)[0];
                 if (rgvi == null) {
                     gvi = null;
                     break;
@@ -407,5 +409,15 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         writer.end();
 
+    }
+
+    public int getColumnSize(boolean isLeft) {
+        int i = 0;
+        for (JoinColumn c : columns) {
+            if (c.isLeft() == isLeft) {
+                i++;
+            }
+        }
+        return i;
     }
 }

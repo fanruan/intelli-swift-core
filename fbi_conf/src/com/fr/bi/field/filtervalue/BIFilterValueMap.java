@@ -1,10 +1,15 @@
 package com.fr.bi.field.filtervalue;
 
-import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
-import com.fr.bi.field.filtervalue.date.evenfilter.DateNotEqualsTargetFilterValue;
+import com.fr.bi.field.filtervalue.date.evenfilter.*;
 import com.fr.bi.field.filtervalue.date.nonefilter.DateNotNullFilterValue;
 import com.fr.bi.field.filtervalue.date.nonefilter.DateNullFilterValue;
+import com.fr.bi.field.filtervalue.date.onevaluefilter.YMDEndWithFilterValue;
+import com.fr.bi.field.filtervalue.date.onevaluefilter.YMDLikeFilterValue;
+import com.fr.bi.field.filtervalue.date.onevaluefilter.YMDNotLikeFilterValue;
+import com.fr.bi.field.filtervalue.date.onevaluefilter.YMDStartWithFilterValue;
 import com.fr.bi.field.filtervalue.date.rangefilter.DateInRangeFilterValue;
+import com.fr.bi.field.filtervalue.date.rangefilter.DateLessThanFilterValue;
+import com.fr.bi.field.filtervalue.date.rangefilter.DateMoreThanFilterValue;
 import com.fr.bi.field.filtervalue.date.rangefilter.DateNotInRangeFilterValue;
 import com.fr.bi.field.filtervalue.number.containsfilter.NumberContainsFilterValue;
 import com.fr.bi.field.filtervalue.number.containsfilter.NumberNotContainsFilterValue;
@@ -24,7 +29,9 @@ import com.fr.bi.field.filtervalue.string.nonevaluefilter.StringNotNullFilterVal
 import com.fr.bi.field.filtervalue.string.nonevaluefilter.StringNullFilterValue;
 import com.fr.bi.field.filtervalue.string.onevaluefilter.*;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
+import com.fr.bi.field.filtervalue.string.rangefilter.StringINUserFilterValue;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringNotINFilterValue;
+import com.fr.bi.field.filtervalue.string.rangefilter.StringNotInUserFilterValue;
 import com.fr.bi.stable.constant.BIReportConstant;
 
 import java.util.HashMap;
@@ -36,9 +43,9 @@ import java.util.Map;
 public class BIFilterValueMap {
     public static final Map<Integer, Class> ALL_VALUES = new HashMap<Integer, Class>(){{
         put(BIReportConstant.DIMENSION_FILTER_STRING.BELONG_VALUE, StringINFilterValue.class);
-        put(BIReportConstant.DIMENSION_FILTER_STRING.BELONG_USER, StringINFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_STRING.BELONG_USER, StringINUserFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE, StringNotINFilterValue.class);
-        put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_BELONG_USER, StringNotINFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_BELONG_USER, StringNotInUserFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_STRING.CONTAIN, StringLikeFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_CONTAIN, StringNotLikeFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_STRING.NOT_VAGUE_CONTAIN, StringNotVagueLikeFilterValue.class);
@@ -61,10 +68,20 @@ public class BIFilterValueMap {
         put(BIReportConstant.DIMENSION_FILTER_NUMBER.NOT_NULL, NumberNotNullFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_NUMBER.TOP_N, NumberTopNFilterValue.class);
         put(BIReportConstant.DIMENSION_FILTER_NUMBER.BOTTOM_N, NumberBottomNFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.BELONG_VALUE, StringINFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE, StringNotINFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.CONTAIN, YMDLikeFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.NOT_CONTAIN, YMDNotLikeFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.BEGIN_WITH, YMDStartWithFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.END_WITH, YMDEndWithFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.IS_NULL, StringNullFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.NOT_NULL, StringNotNullFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.TOP_N, StringTOPNFilterValue.class);
+        put(BIReportConstant.DIMENSION_FILTER_DATE.BOTTOM_N, StringBOTTOMNFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.BELONG_VALUE, StringINFilterValue.class);
-        put(BIReportConstant.TARGET_FILTER_STRING.BELONG_USER, StringINFilterValue.class);
+        put(BIReportConstant.TARGET_FILTER_STRING.BELONG_USER, StringINUserFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.NOT_BELONG_VALUE, StringNotINFilterValue.class);
-        put(BIReportConstant.TARGET_FILTER_STRING.NOT_BELONG_USER, StringNotINFilterValue.class);
+        put(BIReportConstant.TARGET_FILTER_STRING.NOT_BELONG_USER, StringNotInUserFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.CONTAIN, StringLikeFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.NOT_CONTAIN, StringNotLikeFilterValue.class);
         put(BIReportConstant.TARGET_FILTER_STRING.NOT_VAGUE_CONTAIN, StringNotVagueLikeFilterValue.class);
@@ -92,9 +109,14 @@ public class BIFilterValueMap {
         put(BIReportConstant.FILTER_DATE.BELONG_WIDGET_VALUE, DateInRangeFilterValue.class);
         put(BIReportConstant.FILTER_DATE.NOT_BELONG_WIDGET_VALUE, DateNotInRangeFilterValue.class);
         put(BIReportConstant.FILTER_DATE.EQUAL_TO, DateKeyTargetFilterValue.class);
+        put(BIReportConstant.FILTER_DATE.DAY_EQUAL_TO, DateDayTargetFilterValue.class);
+        put(BIReportConstant.FILTER_DATE.DAY_NOT_EQUAL_TO, DateDayNotEqualsTargetFilterValue.class);
         put(BIReportConstant.FILTER_DATE.CONTAINS, DateKeyTargetFilterValue.class);
+        put(BIReportConstant.FILTER_DATE.CONTAINS_DAY, DateDayContainsTargetFilterValue.class);
         put(BIReportConstant.FILTER_DATE.NOT_EQUAL_TO, DateNotEqualsTargetFilterValue.class);
         put(BIReportConstant.FILTER_DATE.IS_NULL, DateNullFilterValue.class);
         put(BIReportConstant.FILTER_DATE.NOT_NULL, DateNotNullFilterValue.class);
+        put(BIReportConstant.FILTER_DATE.MORE_THAN, DateMoreThanFilterValue.class);
+        put(BIReportConstant.FILTER_DATE.LESS_THAN, DateLessThanFilterValue.class);
     }};
 }

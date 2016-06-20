@@ -4,16 +4,18 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             name: "",
             bounds: {},
             linkages: [],
-            type: BICst.Widget.TABLE,
+            type: BICst.WIDGET.TABLE,
             dimensions: {},
             view: {},
-            settings: BI.deepClone(BICst.DEFAULT_CHART_SETTING)
+            settings: {}
         })
     },
 
     change: function (changed, pre) {
         if (BI.has(changed, "detail")) {
-            this.set(this.get("detail"));
+            this.set(this.get("detail"), {
+                notrefresh: true
+            });
         }
         //维度或指标改变时需要调节联动设置
         if (BI.has(changed, "dimensions")) {
@@ -42,6 +44,9 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
         if (BI.has(changed, "filter_value")) {
             this.refresh();
         }
+        if (BI.has(changed, "settings")) {
+            this.refresh();
+        }
     },
 
     refresh: function () {
@@ -60,6 +65,10 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         return false;
     },
 

@@ -9,7 +9,7 @@ import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.io.Serializable;
@@ -57,15 +57,40 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     }
 
     public GroupValueIndex getIndex(T groupValue) {
+        if (groupValue == null) {
+            return getNullValueIndex(groupValue);
+        } else {
+            return getNormalValueIndex(groupValue);
+        }
+    }
+
+    private GroupValueIndex getNormalValueIndex(T groupValue) {
         try {
-            int position = columnReaderService.getPositionOfGroup(groupValue);
-            //todo lookup 抛出异常代替返回-1
-            if (position == -1) {
-                return GVIFactory.createAllEmptyIndexGVI();
+            if (groupValue != null) {
+                int position = columnReaderService.getPositionOfGroup(groupValue);
+                //todo lookup 抛出异常代替返回-1
+                if (position == -1) {
+                    return GVIFactory.createAllEmptyIndexGVI();
+                }
+                return indexDataGetterService.getBitmapIndex(position);
+            } else {
+                throw BINonValueUtils.beyondControl("Please invoke Null value method");
+
             }
-            return indexDataGetterService.getBitmapIndex(position);
         } catch (BIResourceInvalidException e) {
             throw BINonValueUtils.beyondControl(e);
+        } catch (BICubeIndexException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    private GroupValueIndex getNullValueIndex(T groupValue) {
+        try {
+            if (groupValue == null) {
+                return columnReaderService.getNULLIndex(0);
+            } else {
+                throw BINonValueUtils.beyondControl("Please invoke Normal value method");
+            }
         } catch (BICubeIndexException e) {
             throw BINonValueUtils.beyondControl(e);
         }
@@ -82,6 +107,11 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         } catch (BICubeIndexException e) {
             throw BINonValueUtils.beyondControl(e);
         }
+    }
+
+    @Override
+    public T getOriginalValue(int rowNumber) {
+        return columnReaderService.getOriginalValueByRow(rowNumber);
     }
 
     @Override
@@ -347,5 +377,16 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         return size();
     }
 
+    public int getClassType() {
+        return columnReaderService.getClassType();
+    }
 
+    @Override
+    public GroupValueIndex getNULLIndex() {
+        try {
+            return indexDataGetterService.getNULLIndex(0);
+        } catch (BICubeIndexException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
 }

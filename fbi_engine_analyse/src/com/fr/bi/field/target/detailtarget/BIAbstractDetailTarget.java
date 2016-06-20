@@ -1,23 +1,23 @@
 package com.fr.bi.field.target.detailtarget;
 
-import com.fr.bi.base.BIUser;
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
-import com.fr.bi.stable.operation.group.group.IdGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
 import com.fr.bi.stable.operation.sort.BISortFactory;
 import com.fr.bi.stable.operation.sort.ISort;
 import com.fr.bi.stable.operation.sort.sort.NoSort;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
@@ -29,14 +29,15 @@ import java.util.Map;
 
 
 public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BIDetailTarget {
-
+    @BICoreField
     protected TargetFilter filter;
-    private ICubeTableService cubeTableService;
+    @BIIgnoreField
+    protected ICubeTableService cubeTableService;
     protected ISort sort = new NoSort();
-
+    @BICoreField
     protected IGroup group = new NoGroup();
 
-    private List<BISimpleRelation> relationList = new ArrayList<BISimpleRelation>();
+    private List<BITableRelation> relationList = new ArrayList<BITableRelation>();
 
 
     public TargetFilter getFilter() {
@@ -70,19 +71,19 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
         return null;
     }
 
-    private void initialTableSource(ICubeDataLoader loader) {
+    protected void initialTableSource(ICubeDataLoader loader) {
         if (cubeTableService == null) {
-            cubeTableService = loader.getTableIndex(this.createTableKey());
+            cubeTableService = loader.getTableIndex(this.createTableKey().getTableSource());
         }
     }
 
     @Override
-    public List<BISimpleRelation> getRelationList(Table target, long userId) {
+    public List<BITableRelation> getRelationList(BusinessTable target, long userId) {
         return relationList;
     }
 
 
-    public void setRelationList(List<BISimpleRelation> relationList) {
+    public void setRelationList(List<BITableRelation> relationList) {
         this.relationList = relationList;
     }
 
@@ -103,9 +104,9 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
      * @return 分组的map
      */
     @Override
-    public ICubeColumnIndexReader createGroupValueMapGetter(Table target, ICubeDataLoader loader, long userId) {
-        ICubeTableService ti = loader.getTableIndex(column);
-        ICubeColumnIndexReader baseGroupMap = ti.loadGroup(createKey(getStatisticElement()), BIConfUtils.convertToMD5RelationFromSimpleRelation(getRelationList(target, userId), new BIUser(userId)));
+    public ICubeColumnIndexReader createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId) {
+        ICubeTableService ti = loader.getTableIndex(column.getTableBelongTo().getTableSource());
+        ICubeColumnIndexReader baseGroupMap = ti.loadGroup(createKey(getStatisticElement()), BIConfUtils.convert2TableSourceRelation(getRelationList(target, userId)));
         ICubeColumnIndexReader sortMap = sort.createGroupedMap(baseGroupMap);
         return new CubeIndexGetterWithNullValue(sortMap, ti.getNullGroupValueIndex(createKey(getStatisticElement())));
     }
@@ -124,7 +125,9 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
             filter = TargetFilterFactory.parseFilter(jo.getJSONObject("conditions"), userId);
         }
         if (jo.has("sort")) {
-            this.sort = BISortFactory.parseSort(jo.optJSONObject("sort"));
+            JSONObject sortJo = jo.optJSONObject("sort");
+            sortJo.put("dimension_type",jo.optInt("type"));
+            this.sort = BISortFactory.parseSort(sortJo);
         }
         if (jo.has("filter_value")) {
             this.filter = TargetFilterFactory.parseFilter(jo.getJSONObject("filter_value"), userId);
@@ -173,5 +176,9 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
 
         result = prime * result + (filter != null ? filter.hashCode() : 0);
         return result;
+    }
+
+    public IGroup getGroup() {
+        return group;
     }
 }

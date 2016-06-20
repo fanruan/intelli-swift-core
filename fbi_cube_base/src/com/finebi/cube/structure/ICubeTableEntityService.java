@@ -4,10 +4,11 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.structure.column.ICubeTableColumnManagerService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.finebi.cube.relation.BITableSourceRelation;
 
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -22,9 +23,8 @@ import java.util.TreeSet;
  */
 public interface ICubeTableEntityService extends ICubeTableEntityGetterService {
 
-    void recordTableStructure(List<DBField> fields);
+    void recordTableStructure(List<ICubeFieldSource> fields);
 
-    void recordTableGenerateVersion(int version);
 
     void recordRowCount(long rowCount);
 
@@ -52,4 +52,10 @@ public interface ICubeTableEntityService extends ICubeTableEntityGetterService {
     void recordParentsTable(List<ITableKey> parents);
 
     List<ITableKey> getParentsTable();
+
+    void recordFieldNamesFromParent(Set<String> fieldNames);
+
+    Set<String> getFieldNamesFromParent();
+
+    void setTableOwner(ITableKey owner);
 }

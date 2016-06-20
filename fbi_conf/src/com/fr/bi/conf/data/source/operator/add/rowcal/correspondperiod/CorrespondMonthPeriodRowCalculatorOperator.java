@@ -13,9 +13,9 @@ import com.fr.json.JSONObject;
 
 /**
  * Created by 小灰灰 on 2016/5/9.
+ * 同期
  */
 public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCalculatorOperator {
-    @BICoreField
     private static final String XML_TAG="CorrespondMonthPeriodRowCalculatorOperator";
     @BICoreField
     private BIKey monthKey;
@@ -42,7 +42,7 @@ public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCal
         if (item.has("group")){
             JSONArray ja = item.getJSONArray("group");
             this.dimension = new IndexKey[ja.length() + 1];
-            for (int i = 0; i < ja.length() - 1; i++){
+            for (int i = 0; i < ja.length(); i++){
                 this.dimension[i] = new IndexKey(ja.getString(i));
             }
         } else {
@@ -59,7 +59,7 @@ public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCal
 
     @Override
     protected String getAddColumnType() {
-        return BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT;
+        return BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP;
     }
 
     @Override
@@ -68,3 +68,4 @@ public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCal
     }
 
 }
+

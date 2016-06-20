@@ -2,10 +2,10 @@ package com.fr.bi.conf.data.source.operator.create;
 
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.general.ComparatorUtils;
@@ -116,8 +116,8 @@ public class TableFilterOperator extends AbstractCreateTableETLOperator {
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
 
         for (int i = 0; i < tables.length; i++) {
             Iterator<FieldState> it = fieldStates.iterator();
@@ -125,22 +125,22 @@ public class TableFilterOperator extends AbstractCreateTableETLOperator {
                 FieldState fieldState = it.next();
 
                 if (fieldState.isChecked()) {
-                    BIColumn c = tables[i].getBIColumn(fieldState.getFieldName());
-                    DBTable.addColumn(new BIColumn(c.getFieldName(), c.getType(), c.getColumnSize()));
+                    PersistentField c = tables[i].getField(fieldState.getFieldName());
+                    persistentTable.addColumn(c);
                 }
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         return ti.getRowCount();
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), start, end);
         return ti.getRowCount();
     }

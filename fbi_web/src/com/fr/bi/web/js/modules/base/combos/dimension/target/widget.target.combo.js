@@ -6,7 +6,8 @@
 BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     constants: {
-        CHART_TYPE_POSITION: 1
+        CHART_TYPE_POSITION: 1,
+        CordonPos: 1
     },
 
     defaultItems: function(){
@@ -22,16 +23,20 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Qiu_Sum"),
-                    value: BICst.SUMMARY_TYPE.SUM
+                    value: BICst.SUMMARY_TYPE.SUM,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Qiu_Avg"),
-                    value: BICst.SUMMARY_TYPE.AVG
+                    value: BICst.SUMMARY_TYPE.AVG,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Qiu_Max"),
-                    value: BICst.SUMMARY_TYPE.MAX
+                    value: BICst.SUMMARY_TYPE.MAX,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Qiu_Min"),
-                    value: BICst.SUMMARY_TYPE.MIN
+                    value: BICst.SUMMARY_TYPE.MIN,
+                    cls: "dot-e-font"
                 }]
             }, {
                 el: {
@@ -41,16 +46,20 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Column_Chart"),
-                    value: BICst.Widget.COLUMN
+                    value: BICst.WIDGET.AXIS,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Stacked_Chart"),
-                    value: BICst.Widget.ACCUMULATE_COLUMN
+                    value: BICst.WIDGET.ACCUMULATE_AXIS,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Line_Chart"),
-                    value: BICst.Widget.LINE
+                    value: BICst.WIDGET.LINE,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Area_Chart"),
-                    value: BICst.Widget.AREA
+                    value: BICst.WIDGET.AREA,
+                    cls: "dot-e-font"
                 }]
             }],
             [{
@@ -63,6 +72,15 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 value: BICst.TARGET_COMBO.FILTER,
                 cls: "filter-h-font"
             }],
+            //[{
+            //    text: BI.i18nText("BI-Display"),
+            //    value: BICst.TARGET_COMBO.DISPLAY,
+            //    cls: "dot-ha-font"
+            //}, {
+            //    text: BI.i18nText("BI-Hidden"),
+            //    value: BICst.TARGET_COMBO.HIDDEN,
+            //    cls: "dot-ha-font"
+            //}],
             [{
                 text: BI.i18nText("BI-Copy"),
                 value: BICst.TARGET_COMBO.COPY,
@@ -101,19 +119,80 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _assertChartType:function(val){
         val || (val = {});
-        val.type || (val.type = BICst.Widget.COLUMN);
+        val.type || (val.type = BICst.WIDGET.AXIS);
         return val;
     },
 
     _rebuildItems: function(){
+        var o = this.options;
         var item = this.defaultItems();
-        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        var view = BI.Utils.getWidgetViewByID(wId);
+        var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
+            return did === o.dId;
+        });
         switch (wType) {
-            case BICst.Widget.TABLE:
-                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                break;
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                break;
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.BUBBLE:
+                var text = BI.i18nText("BI-Horizontal");
+                switch (regionType) {
+                    case BICst.REGION.TARGET1:
+                        text = BI.i18nText("BI-Horizontal");
+                        break;
+                    case BICst.REGION.TARGET2:
+                        text = BI.i18nText("BI-Vertical");
+                        break;
+                    case BICst.REGION.TARGET3:
+                        return;
+                }
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + text + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
                 break;
             default:
-                item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
                 break;
         }
         return item;

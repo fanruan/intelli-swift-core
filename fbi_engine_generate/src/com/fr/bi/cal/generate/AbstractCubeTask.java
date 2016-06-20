@@ -1,11 +1,14 @@
 package com.fr.bi.cal.generate;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.generate.relation.RelationGenerator;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -25,6 +28,8 @@ public abstract class AbstractCubeTask implements CubeTask {
 
     private Date end;
     protected BIUser biUser;
+    private CubeBuildStuff cubeBuildStuff;
+    
 
     public AbstractCubeTask(long userId) {
         biUser = new BIUser(userId);
@@ -48,12 +53,16 @@ public abstract class AbstractCubeTask implements CubeTask {
     @Override
     public void start() {
         start = new Date();
+        cubeBuildStuff=new CubeBuildStuffManager(biUser);
+        BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }
 
     @Override
     public void end() {
         end = new Date();
+        BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
+        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuildStuff.getTableRelationSet());
         BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
     }
 
@@ -63,7 +72,7 @@ public abstract class AbstractCubeTask implements CubeTask {
         return name;
     }
 
-    protected abstract Map<Integer, Set<ITableSource>> getGenerateTables();
+    protected abstract Map<Integer, Set<CubeTableSource>> getGenerateTables();
 
 
     @Override
@@ -72,7 +81,7 @@ public abstract class AbstractCubeTask implements CubeTask {
         loadRelation();
     }
 
-    protected void loadIndex(Map<Integer, Set<ITableSource>> tables) {
+    protected void loadIndex(Map<Integer, Set<CubeTableSource>> tables) {
         if (tables == null || tables.isEmpty()) {
             return;
         }
@@ -81,9 +90,9 @@ public abstract class AbstractCubeTask implements CubeTask {
         BILogger.getLogger().info("start sync data from database");
         long start = System.currentTimeMillis();
             List<IndexGenerator> threadList = new ArrayList<IndexGenerator>();
-        for (Map.Entry<Integer, Set<ITableSource>> entry : tables.entrySet()) {
+        for (Map.Entry<Integer, Set<CubeTableSource>> entry : tables.entrySet()) {
             List<IndexGenerator> ilist = new ArrayList<IndexGenerator>();
-            for (ITableSource source : entry.getValue()) {
+            for (CubeTableSource source : entry.getValue()) {
                 IndexGenerator generator = createGenerator(source);
                 if (generator != null) {
                     threadList.add(generator);
@@ -108,7 +117,7 @@ public abstract class AbstractCubeTask implements CubeTask {
 
     protected abstract boolean checkCubeVersion(TableCubeFile cube);
 
-    protected abstract IndexGenerator createGenerator(ITableSource source);
+    protected abstract IndexGenerator createGenerator(CubeTableSource source);
 
     protected void loadRelation() {
         BIConfigureManagerCenter.getLogManager().logRelationStart(biUser.getUserId());

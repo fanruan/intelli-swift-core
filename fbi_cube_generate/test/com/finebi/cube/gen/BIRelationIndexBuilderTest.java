@@ -2,12 +2,12 @@ package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
-import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.tools.BICubeRelationTestTool;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 
 /**
@@ -18,8 +18,8 @@ import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
  */
 public class BIRelationIndexBuilderTest extends BICubeTestBase {
     private BIRelationIndexGenerator indexGenerator;
-    ITableSource tableA;
-    ITableSource tableB;
+    CubeTableSource tableA;
+    CubeTableSource tableB;
     BICubeRelation relation;
 
     @Override
@@ -31,15 +31,16 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
         relation = BICubeRelationTestTool.getTaTb();
     }
 
-    public void setTableA(ITableSource tableA) {
+    public void setTableA(CubeTableSource tableA) {
         this.tableA = tableA;
     }
 
-    public void setTableB(ITableSource tableB) {
+    public void setTableB(CubeTableSource tableB) {
         this.tableB = tableB;
     }
 
-    public void generateRelationIndex(BICubeRelation relation, int primaryIndex, int foreignIndex) {
+    public void generateRelationIndex(BICubeRelation relation, CubeTableSource tableA,
+                                      CubeTableSource tableB, int primaryIndex, int foreignIndex) {
         try {
             setUp();
         } catch (Exception e) {
@@ -56,12 +57,23 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
 
         indexGenerator = new BIRelationIndexGenerator(cube, relation);
         indexGenerator.mainTask(null);
+    }
 
+    public void generateRelationIndex(BICubeRelation relation) {
+        try {
+            setUp();
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        indexGenerator = new BIRelationIndexGenerator(cube, relation);
+        indexGenerator.mainTask(null);
     }
 
     public void testRelationTest() {
         try {
-            generateRelationIndex(relation, 1, 2);
+            generateRelationIndex(relation, tableA, tableB, 1, 2);
             ICubeRelationEntityGetterService relationService = cube.getCubeRelation(BITableKeyUtils.convert(tableA), relation);
             assertEquals(relationService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0}));
             assertEquals(relationService.getBitmapIndex(1), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{2, 4, 6}));
@@ -77,4 +89,24 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
 
     }
 
+    /**
+     * Detail:测试关联表中包含空值的索引情况
+     * <p/>
+     * Target:TableContainNull
+     * History:
+     * Date:2016/6/15
+     */
+    public void testTableContainNull() {
+        try {
+            BICubeRelation relation = BICubeRelationTestTool.getNullTableRelation();
+            generateRelationIndex(relation, BIMemoryDataSourceFactory.generateTableNullParent(),
+                    BIMemoryDataSourceFactory.generateTableNullChild(), 0, 1);
+            ICubeRelationEntityGetterService relationService = cube.getCubeRelation(relation.getPrimaryTable(), relation);
+            assertEquals(relationService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{3}));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 }

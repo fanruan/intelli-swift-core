@@ -1,10 +1,11 @@
 package com.finebi.cube.structure;
 
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 表的基本属性。
@@ -18,10 +19,9 @@ import java.util.List;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeTablePropertyService extends Release {
-    void recordTableStructure(List<DBField> fields);
+public interface ICubeTablePropertyService extends Release, ICubeVersion {
+    void recordTableStructure(List<ICubeFieldSource> fields);
 
-    void recordTableGenerateVersion(int version);
 
     void recordRowCount(long rowCount);
 
@@ -35,12 +35,17 @@ public interface ICubeTablePropertyService extends Release {
 
     Date getCubeLastTime();
 
-    int getTableVersion();
 
-    List<DBField> getFieldInfo();
+    List<ICubeFieldSource> getFieldInfo();
 
     Boolean isPropertyExist();
 
     Boolean isRowCountAvailable();
+
+    void recordFieldNamesFromParent(Set<String> fieldNames);
+
+    Set<String> getFieldNamesFromParent();
+
+    void forceRelease();
 
 }

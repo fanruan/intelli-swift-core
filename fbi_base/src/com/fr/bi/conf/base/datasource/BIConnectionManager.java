@@ -24,6 +24,7 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,38 +35,52 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BIConnectionManager extends XMLFileManager {
     private static final String XML_TAG = "BIConnectionManager";
     private Map<String, BIConnection> connMap = new ConcurrentHashMap<String, BIConnection>();
-
+    private Map<String, JDBCDatabaseConnection> availableConnection = new HashMap<String, JDBCDatabaseConnection>();
     private static BIConnectionManager manager;
 
-    private BIConnectionManager(){
+    private BIConnectionManager() {
 
     }
 
-    public static BIConnectionManager getInstance(){
-        synchronized (BIConnectionManager.class){
-            if (manager == null){
+    public void updateAvailableConnection() {
+        availableConnection.clear();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
+        while (nameIt.hasNext()) {
+            String name = nameIt.next();
+            JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
+            if (c != null && testConnection(c)) {
+                availableConnection.put(name, c);
+            }
+        }
+    }
+
+    public static BIConnectionManager getInstance() {
+        synchronized (BIConnectionManager.class) {
+            if (manager == null) {
                 manager = new BIConnectionManager();
                 manager.readXMLFile();
+                manager.updateAvailableConnection();
             }
             return manager;
         }
     }
 
-    public String getSchema(String name){
-        if (connMap.containsKey(name)){
+    public String getSchema(String name) {
+        if (connMap.containsKey(name)) {
             return connMap.get(name).getSchema();
         }
         Connection connection = DatasourceManager.getInstance().getConnection(name);
-        if (needSchema(connection)){
+        if (needSchema(connection)) {
             String[] schemas = DataCoreUtils.getDatabaseSchema(connection);
-            connMap.put(name, new BIConnection(name,  schemas != null && schemas.length != 0 ? schemas[0] : StringUtils.EMPTY));
+            connMap.put(name, new BIConnection(name, schemas != null && schemas.length != 0 ? schemas[0] : StringUtils.EMPTY));
         } else {
             connMap.put(name, new BIConnection(name, null));
         }
         return null;
     }
 
-    public Connection getConnection(String name){
+    public Connection getConnection(String name) {
         return DatasourceManager.getInstance().getConnection(name);
     }
 
@@ -89,9 +104,9 @@ public class BIConnectionManager extends XMLFileManager {
 
     @Override
     public void readXML(XMLableReader reader) {
-        if (reader.isChildNode()){
-            if (ComparatorUtils.equals(reader.getTagName(), "conn")){
-                BIConnection connection = new BIConnection(reader.getAttrAsString("name",StringUtils.EMPTY), reader.getAttrAsString("schema",null));
+        if (reader.isChildNode()) {
+            if (ComparatorUtils.equals(reader.getTagName(), "conn")) {
+                BIConnection connection = new BIConnection(reader.getAttrAsString("name", StringUtils.EMPTY), reader.getAttrAsString("schema", null));
                 connMap.put(connection.getName(), connection);
             }
         }
@@ -100,10 +115,10 @@ public class BIConnectionManager extends XMLFileManager {
     @Override
     public void writeXML(XMLPrintWriter writer) {
         writer.startTAG(XML_TAG);
-        for (BIConnection connection : connMap.values()){
+        for (BIConnection connection : connMap.values()) {
             writer.startTAG("conn");
             writer.attr("name", connection.getName());
-            if (connection.getSchema() != null){
+            if (connection.getSchema() != null) {
                 writer.attr("schema", connection.getSchema());
             }
             writer.end();
@@ -137,7 +152,7 @@ public class BIConnectionManager extends XMLFileManager {
     }
 
     public void removeConnection(String name) {
-        if (StringUtils.isEmpty(name)){
+        if (StringUtils.isEmpty(name)) {
             return;
         }
         connMap.remove(name);
@@ -159,6 +174,44 @@ public class BIConnectionManager extends XMLFileManager {
         }
     }
 
+    private boolean testConnection(Connection c) {
+        try {
+            c.testConnection();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+//    public JSONObject createJSON() throws JSONException {
+//        JSONObject jsonObject = new JSONObject();
+//        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+//        Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
+//
+//        int index = 0;
+//        for (Map.Entry<String, JDBCDatabaseConnection> connectionMap : availableConnection.entrySet()) {
+//            String name = connectionMap.getKey();
+//            JDBCDatabaseConnection c = connectionMap.getValue();
+//            if (c != null) {
+//                if (isMicrosoftAccessDatabase(c)) {
+//                    continue;
+//                }
+//                JSONObject jo = new JSONObject();
+//                jo.put("name", name);
+//                jo.put("driver", c.getDriver());
+//                jo.put("url", c.getURL());
+//                jo.put("user", c.getUser());
+//                jo.put("password", c.getPassword());
+//                jo.put("originalCharsetName", StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
+//                jo.put("newCharsetName", StringUtils.alwaysNotNull(c.getNewCharsetName()));
+//                jo.put("schema", getSchema(name));
+//                jsonObject.put("link" + index++, jo);
+//            }
+//        }
+//
+//        return jsonObject;
+//    }
 
     public JSONObject createJSON() throws JSONException {
         JSONObject jsonObject = new JSONObject();
@@ -179,8 +232,8 @@ public class BIConnectionManager extends XMLFileManager {
                 jo.put("url", c.getURL());
                 jo.put("user", c.getUser());
                 jo.put("password", c.getPassword());
-                jo.put("originalCharsetName",  StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
-                jo.put("newCharsetName",  StringUtils.alwaysNotNull(c.getNewCharsetName()));
+                jo.put("originalCharsetName", StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
+                jo.put("newCharsetName", StringUtils.alwaysNotNull(c.getNewCharsetName()));
                 jo.put("schema", getSchema(name));
                 jsonObject.put("link" + index++, jo);
             }
@@ -193,16 +246,18 @@ public class BIConnectionManager extends XMLFileManager {
         return "sun.jdbc.odbc.JdbcOdbcDriver".equals(c.getDriver()) && c.getURL().indexOf("Microsoft Access Driver") > 0;
     }
 
-    private boolean needSchema(Connection c){
+    private boolean needSchema(Connection c) {
         java.sql.Connection conn = null;
-        try {
-            conn = c.createConnection();
-            Dialect dialcet = DialectFactory.generateDialect(conn,c.getDriver());
-            return dialcet instanceof OracleDialect || dialcet instanceof MSSQLDialect;
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        } finally {
-            DBUtils.closeConnection(conn);
+        if (testConnection(c)) {
+            try {
+                conn = c.createConnection();
+                Dialect dialcet = DialectFactory.generateDialect(conn, c.getDriver());
+                return dialcet instanceof OracleDialect || dialcet instanceof MSSQLDialect;
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            } finally {
+                DBUtils.closeConnection(conn);
+            }
         }
         return false;
     }

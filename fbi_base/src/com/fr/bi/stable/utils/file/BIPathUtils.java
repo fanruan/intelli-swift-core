@@ -1,10 +1,10 @@
 package com.fr.bi.stable.utils.file;
 
+import com.finebi.cube.relation.BIBasicRelation;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.conf.cubeconf.CubeConfManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.relation.BIBasicRelation;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 import com.fr.stable.StringUtils;
@@ -86,6 +86,9 @@ public class BIPathUtils {
         return createUserETLTableBasePath(md5) + File.separator + path;
     }
 
+    public static String createUserETLCubePath(String md5, String path) {
+        return createUserETLTableBasePath(md5) + File.separator + path + File.separator + md5;
+    }
 
     public static String createUserTotalPath(long userId) {
         return createBasePath()

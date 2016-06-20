@@ -1,7 +1,7 @@
 package com.fr.bi.field.target.calculator.cal;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
-import com.fr.bi.stable.data.BITable;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.report.key.SummaryCalculator;
@@ -123,7 +123,7 @@ public abstract class CalCalculator implements TargetCalculator {
 
 
     @Override
-    public BITable createTableKey() {
+    public BusinessTable createTableKey() {
         return target.createTableKey();
     }
 

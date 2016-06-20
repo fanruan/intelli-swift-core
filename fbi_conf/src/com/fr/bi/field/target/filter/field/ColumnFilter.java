@@ -1,5 +1,8 @@
 package com.fr.bi.field.target.filter.field;
 
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.filtervalue.FilterValueFactory;
@@ -19,6 +22,7 @@ public abstract class ColumnFilter implements TargetFilter {
      */
     private static final long serialVersionUID = -8910896122633672021L;
     protected JSONObject valueJo;
+    @BICoreField
     protected FilterValue filterValue;
 
     public ColumnFilter() {
@@ -88,4 +92,16 @@ public abstract class ColumnFilter implements TargetFilter {
         return super.clone();
     }
 
+    @Override
+    public boolean hasAllCalculatorFilter() {
+        if (filterValue == null){
+            return false;
+        }
+        return filterValue.isAllCalculatorFilter();
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
+    }
 }

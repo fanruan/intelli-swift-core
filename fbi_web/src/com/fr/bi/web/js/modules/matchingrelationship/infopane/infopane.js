@@ -69,7 +69,7 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         if(BI.isEmpty(res)){
             var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
-            if(!BI.isEmpty(dimensionMap)){
+            if(BI.isNotEmptyObject(dimensionMap)){
                 BI.each(dimensionMap, function(tId, content){
                     self.stored_paths[tId] = [content.target_relation];
                     self.stored_value[tId] = content;
@@ -95,12 +95,12 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
             s += pArray[0].field_id;
             return s;
         };
-        if(BI.isArray(path)){
-            res = getMD5Result(path);
-        }else{
+        if(BI.isArray(path[0])){
             BI.each(path, function(idx, p){
                 res += getMD5Result(p);
             })
+        }else{
+            res = getMD5Result(path);
         }
         return BI.MD5.hex_md5(res);
     },

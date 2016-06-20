@@ -20,7 +20,8 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.model = new BI.UpdateSingleTableSettingModel({
             update_setting: o.update_setting,
-            table: o.table
+            table: o.table,
+            currentTable:o.currentTable
         });
 
         //最上面的更新方式下拉框
@@ -66,6 +67,28 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         //定时设置
         var timeSetting = this._createTimeSetting();
 
+        this.immediateButton = BI.createWidget({
+            type: "bi.button",
+            text: BI.i18nText("BI-Update_Table_Immedi"),
+            height: 30,
+            
+            //效果:保存(新增)该表所在业务包的所有操作并更新对应cube
+            handler: function () {
+                self.immediateButton.setEnable(false);
+                self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                //若为ETL,使用ETL的id
+                if (self.model.options.currentTable.connection_name=="__FR_BI_ETL__"){
+                    self.model.table.id=self.model.currentTable.id
+                }
+                    self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
+                self._createCheckInterval();
+                // BI.Utils.generateCubeByTable(self.model.table, function () {
+                //     self._createCheckInterval();
+                // });
+
+            }
+        });
+
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
@@ -85,11 +108,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     el: this.updateType,
                     width: "fill"
                 }, {
-                    el: {
-                        type: "bi.button",
-                        text: BI.i18nText("BI-Update_Table_Immedi"),
-                        height: 30
-                    },
+                    el: this.immediateButton,
                     width: 105
                 }],
                 hgap: 5,
@@ -239,7 +258,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         switch (v) {
             case this._constants.PART_ADD:
                 this.partAddSql = BI.createWidget({
-                    type: "bi.textarea",
+                    type: "bi.code_editor",
                     cls: "sql-container"
                 });
                 this.partAddSql.setValue(this.model.getAddSql());
@@ -255,7 +274,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 });
             case this._constants.PART_DELETE:
                 this.partDeleteSql = BI.createWidget({
-                    type: "bi.textarea",
+                    type: "bi.code_editor",
                     cls: "sql-container"
                 });
                 this.partDeleteSql.setValue(this.model.getDeleteSql());
@@ -271,7 +290,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 });
             case this._constants.PART_MODIFY:
                 this.partModifySql = BI.createWidget({
-                    type: "bi.textarea",
+                    type: "bi.code_editor",
                     cls: "sql-container"
                 });
                 this.partModifySql.setValue(this.model.getModifySql());
@@ -409,9 +428,26 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             together_never: this.globalUpdateSet.getValue()[0],
             time_list: this.timeSettingGroup.getValue()
         }
+    },
+    _createCheckInterval: function () {
+        var self = this;
+        self.cubeInterval=setInterval(function () {
+            BI.Utils.checkCubeStatusByTable(self.model.table, function (data) {
+                    if (data.isGenerated == true) {
+                        self.immediateButton.setEnable(true);
+                        self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
+                        clearInterval(self.cubeInterval);
+                    }
+                }
+            )
+
+        }, 2000)
     }
+
+
 });
 BI.UpdateSingleTableSetting.EVENT_CHANGE = "EVENT_CHANGE";
+BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW = "EVENT_OPEN_PREVIEW";
 BI.UpdateSingleTableSetting.EVENT_CLOSE_PREVIEW = "EVENT_CLOSE_PREVIEW";
 $.shortcut("bi.update_single_table_setting", BI.UpdateSingleTableSetting);

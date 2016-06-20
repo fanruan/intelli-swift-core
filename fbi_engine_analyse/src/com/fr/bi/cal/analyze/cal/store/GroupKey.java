@@ -1,36 +1,35 @@
 package com.fr.bi.cal.analyze.cal.store;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.report.widget.field.dimension.filter.ResultFilter;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-
 import com.fr.bi.stable.utils.algorithem.BIHashCodeUtils;
 import com.fr.general.ComparatorUtils;
 
 public class GroupKey {
 
     private DimensionCalculator[] key;
-    private Table targetTableKey;
+    private BusinessTable targetTableKey;
     private ResultFilter resultFilter;
 
 
     private boolean useRealData = true;
 
-    public GroupKey(Table targetTableKey, DimensionCalculator[] key) {
+    public GroupKey(BusinessTable targetTableKey, DimensionCalculator[] key) {
         this(targetTableKey, key, null, true);
     }
 
-    public GroupKey(Table targetTableKey, DimensionCalculator[] key, boolean useRealData) {
+    public GroupKey(BusinessTable targetTableKey, DimensionCalculator[] key, boolean useRealData) {
         this(targetTableKey, key, null, useRealData);
     }
 
-    public GroupKey(Table targetTableKey, DimensionCalculator[] key, ResultFilter resultFilter) {
+    public GroupKey(BusinessTable targetTableKey, DimensionCalculator[] key, ResultFilter resultFilter) {
         this.targetTableKey = targetTableKey;
         this.key = key;
         this.resultFilter = resultFilter;
     }
 
-    public GroupKey(Table targetTableKey, DimensionCalculator[] key, ResultFilter resultFilter, boolean useRealData) {
+    public GroupKey(BusinessTable targetTableKey, DimensionCalculator[] key, ResultFilter resultFilter, boolean useRealData) {
         this.targetTableKey = targetTableKey;
         this.key = key;
         this.resultFilter = resultFilter;
@@ -38,9 +37,6 @@ public class GroupKey {
     }
 
 
-    public Table getTargetTableKey() {
-        return targetTableKey;
-    }
 
     /**
      * hashֵ

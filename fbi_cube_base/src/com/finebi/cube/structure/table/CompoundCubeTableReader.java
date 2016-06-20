@@ -3,8 +3,10 @@ package com.finebi.cube.structure.table;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
+import com.finebi.cube.exception.BICubeTableAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICubeRelationEntityGetterService;
 import com.finebi.cube.structure.ICubeTableEntityService;
@@ -13,10 +15,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -33,13 +32,14 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
      * 上次Table对象
      */
     private ICubeTableEntityService parentTable;
-    protected Map<DBField, ICubeTableEntityService> fieldSource = new HashMap<DBField, ICubeTableEntityService>();
-    private List<DBField> compoundFields = new ArrayList<DBField>();
+    protected Map<ICubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, ICubeTableEntityService>();
+    private List<ICubeFieldSource> compoundFields = new ArrayList<ICubeFieldSource>();
 
     public CompoundCubeTableReader(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         hostTable = new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
         if (hostTable.getParentsTable() != null && !hostTable.getParentsTable().isEmpty()) {
             parentTable = new CompoundCubeTableReaderNode(hostTable.getParentsTable(), resourceRetrievalService, discovery);
+            parentTable.setTableOwner(tableKey);
         }
         initialFields();
     }
@@ -50,18 +50,18 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     private void initialFields() {
         if (hostTable.tableDataAvailable()) {
-            for (DBField field : hostTable.getFieldInfo()) {
+            for (ICubeFieldSource field : hostTable.getFieldInfo()) {
                 if (!compoundFields.contains(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, hostTable);
                 }
             }
         } else {
-            throw BINonValueUtils.beyondControl("Please generate Cube firstly");
+            throw new BICubeTableAbsentException("Please generate Cube firstly");
         }
         if (isParentAvailable()) {
-            for (DBField field : parentTable.getFieldInfo()) {
-                if (!compoundFields.contains(field)) {
+            for (ICubeFieldSource field : parentTable.getFieldInfo()) {
+                if (!compoundFields.contains(field) && isInFacedFields(field)) {
                     compoundFields.add(field);
                     fieldSource.put(field, parentTable);
 
@@ -70,21 +70,20 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         }
     }
 
+    private boolean isInFacedFields(ICubeFieldSource field) {
+        return getFieldNamesFromParent().contains(field.getFieldName());
+    }
+
     private boolean isParentAvailable() {
         return parentTable != null;
     }
 
     @Override
-    public void recordTableStructure(List<DBField> fields) {
+    public void recordTableStructure(List<ICubeFieldSource> fields) {
         throw new UnsupportedOperationException();
 
     }
 
-    @Override
-    public void recordTableGenerateVersion(int version) {
-        throw new UnsupportedOperationException();
-
-    }
 
     @Override
     public void recordRowCount(long rowCount) {
@@ -129,13 +128,9 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     }
 
-    @Override
-    public int getTableVersion() {
-        return hostTable.getTableVersion();
-    }
 
     @Override
-    public List<DBField> getFieldInfo() {
+    public List<ICubeFieldSource> getFieldInfo() {
         return compoundFields;
     }
 
@@ -167,8 +162,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public DBField getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
-        for (DBField field : compoundFields) {
+    public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
+        for (ICubeFieldSource field : compoundFields) {
             if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
                 return field;
             }
@@ -182,7 +177,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
-        DBField field = getSpecificColumn(fieldName);
+        ICubeFieldSource field = getSpecificColumn(fieldName);
         return fieldSource.get(field);
     }
 
@@ -198,11 +193,8 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
 
     @Override
     public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
-        try {
-            return pickTableService(path.getPrimaryField().getColumnName()).getRelationIndexGetter(path);
-        } catch (BITablePathEmptyException e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
+
+        return hostTable.getRelationIndexGetter(path);
 
     }
 
@@ -232,5 +224,32 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     @Override
     public boolean isRowCountAvailable() {
         return hostTable.isRowCountAvailable() || (isParentAvailable() && parentTable.isRowCountAvailable());
+    }
+
+    @Override
+    public void recordFieldNamesFromParent(Set<String> fieldNames) {
+        hostTable.recordFieldNamesFromParent(fieldNames);
+    }
+
+    @Override
+    public Set<String> getFieldNamesFromParent() {
+        return hostTable.getFieldNamesFromParent();
+    }
+
+    public long getCubeVersion() {
+        return hostTable.getCubeVersion();
+    }
+
+    @Override
+    public void addVersion(long version) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setTableOwner(ITableKey owner) {
+        hostTable.setTableOwner(owner);
+        if (parentTable != null) {
+            parentTable.setTableOwner(owner);
+        }
     }
 }

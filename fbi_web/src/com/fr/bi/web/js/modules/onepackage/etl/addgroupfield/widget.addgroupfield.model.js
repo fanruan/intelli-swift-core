@@ -47,6 +47,10 @@ BI.AddGroupFieldModel = BI.inherit(FR.OB, {
         this.isGenerated = v;
     },
 
+    getAllFields: function () {
+        return BI.deepClone(this.tableInfo.fields)
+    },
+
     getFields: function () {
         return BI.deepClone(this.fields);
     },

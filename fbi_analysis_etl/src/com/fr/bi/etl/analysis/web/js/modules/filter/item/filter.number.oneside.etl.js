@@ -13,7 +13,7 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
         var conf = BI.ETLNumberFilterOneSidePane.superclass._defaultConfig.apply(this, arguments)
         return BI.extend(conf, {
             baseCls: "bi-etl-filter-number-oneside",
-            defaultValue : {type : BICst.ETL_FILTER_NUMBER_VALUE.SETTED, close : 0}
+            defaultValue : {type : BICst.ETL_FILTER_NUMBER_VALUE.SETTED, close : 0, groupType : BICst.ETL_FILTER_NUMBER_AVG_TYPE.ALL}
         })
     },
 
@@ -39,20 +39,20 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
             type: "bi.icon_combo",
             items: o.filter_type === BICst.TARGET_FILTER_NUMBER.SMALL_OR_EQUAL_CAL_LINE ? [{
                 text: "(" + BI.i18nText("BI-Less_Than") + ")",
-                iconClass: "less-arrow-font",
+                iconClass: "less-font",
                 value: 0
             }, {
                 text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
                 value: 1,
-                iconClass: "less-equal-arrow-font"
+                iconClass: "less-equal-font"
             }] : [{
                 text: "(" + BI.i18nText("BI-More_Than") + ")",
-                iconClass: "more-arrow-font",
+                iconClass: "more-font",
                 value: 0
             }, {
                 text: "(" + BI.i18nText("BI-More_Than_And_Equal") + ")",
                 value: 1,
-                iconClass: "more-equal-arrow-font"
+                iconClass: "more-equal-font"
             }]
         });
         self.smallCombo.on(BI.IconCombo.EVENT_CHANGE, function () {
@@ -129,9 +129,6 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
                 self.storedValue.value = self.editor.getValue();
                 self.fireEvent(BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM);
             })
-            if (!BI.isNumeric(self.storedValue.value)){
-                delete self.storedValue.value;
-            }
             self.editor.setValue(self.storedValue.value);
             self.editorPane.addItem({
                 el :self.editor,
@@ -141,9 +138,6 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
                 top : 0,
             });
         } else {
-            if (!BI.isObject(self.storedValue.value)){
-                self.storedValue.value = {type : BICst.ETL_FILTER_NUMBER_AVG_TYPE.ALL};
-            }
             self.editor = BI.createWidget({
                 type: "bi.text_value_combo",
                 width:'',
@@ -162,11 +156,11 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
                 top : 0,
             });
             self.editor.on(BI.TextValueCombo.EVENT_CHANGE, function(v){
-                self.storedValue.value.type = v;
+                self.storedValue.groupType = v;
                 self.populateGroupContainer();
                 self.fireEvent(BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM);
             });
-            self.editor.setValue(self.storedValue.value.type)
+            self.editor.setValue(self.storedValue.groupType)
         }
         self.populateGroupContainer();
     },
@@ -174,15 +168,16 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         self.groupContainer.empty();
         if (self.editor.getValue() == BICst.ETL_FILTER_NUMBER_AVG_TYPE.INNER_GROUP){
-            self.group = BI.createWidget({
+            var op ={
                 type :'bi.filter_etl_group_setting',
-                fields : o.fields,
                 field_name : o.field_name,
                 filterType : o.filterType,
-                value : self.storedValue.value.group
-            })
+                value : self.storedValue.group
+            }
+            op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+            self.group = BI.createWidget(op)
             self.group.on(BI.ETLGroupSettingPane.EVENT_VALUE_CHANGED, function () {
-                self.storedValue.value.group = self.group.getValue();
+                self.storedValue.group = self.group.getValue();
                 self.fireEvent(BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM);
             })
             self.group.populate();

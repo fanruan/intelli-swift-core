@@ -30,8 +30,8 @@ public class BIGetTableStringFieldAction extends AbstractBIConfigureAction {
 //			Iterator iter = t.getBIColumnIterator();
 //			while(iter.hasNext()){
 //				BIColumn col = (BIColumn) iter.next();
-//				BIDataColumn dataColumn = new BIDataColumn(td.getDbName(), td.getSchema(), td.getTableName(), col.getFieldName(), BIBaseConstant.checkColumnClassTypeFromSQL(col.getType()), col.getColumnSize(), userId);
-//				if(dataColumn.getType() == BIBaseConstant.COLUMN.STRING){
+//				BIDataColumn dataColumn = new BIDataColumn(td.getDbName(), td.getSchema(), td.getTableName(), col.getFieldName(), BIBaseConstant.checkColumnClassTypeFromSQL(col.getSqlType()), col.getColumnSize(), userId);
+//				if(dataColumn.getSqlType() == BIBaseConstant.COLUMN.STRING){
 //					ja.put(dataColumn.createJSON());
 //				}
 //			}

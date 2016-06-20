@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.UUID;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 
@@ -22,10 +24,13 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     private FileChannel fc;
     private long currentIndex = -1L;
     private ICubeSourceReleaseManager releaseManager;
+    protected final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private long file_index = -1L;
     private boolean isReleased = false;
+    private String writerHandler;
 
     public BIBasicNIOWriter(File cacheFile) {
+        writerHandler = UUID.randomUUID().toString();
         this.baseFile = cacheFile;
         if (!baseFile.exists()) {
             try {
@@ -45,28 +50,48 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 
 
     @Override
-    public void clear() {
-        synchronized (this) {
+    public void releaseHandler() {
+        readWriteLock.writeLock().lock();
+        try {
             if (useReleaseManager()) {
                 releaseManager.release(this);
             } else {
                 releaseSource();
             }
+
+        } finally {
+            readWriteLock.writeLock().unlock();
         }
     }
 
     public void releaseSource() {
         if (!isReleased) {
-            clearBuffer();
-            currentIndex = -1L;
-            file_index = -1L;
-            isReleased = true;
+            readWriteLock.writeLock().lock();
+            try {
+
+                clearBuffer();
+                currentIndex = -1L;
+                file_index = -1L;
+                isReleased = true;
+            } finally {
+                readWriteLock.writeLock().unlock();
+            }
         }
+    }
+
+    @Override
+    public String getWriterHandler() {
+        return writerHandler;
     }
 
     @Override
     public void forceRelease() {
         releaseSource();
+    }
+
+    @Override
+    public boolean canWriter() {
+        return !isReleased;
     }
 
     @Override
@@ -79,17 +104,23 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     }
 
     public void clearBuffer() {
-        if (buffer != null) {
-            releaseChild();
-            BIMemoryUtils.un_map(buffer);
-            buffer = null;
-        }
+        readWriteLock.writeLock().lock();
         try {
-            if (fc != null) {
-                fc.close();
-                fc = null;
+
+            if (buffer != null) {
+                releaseChild();
+                BIMemoryUtils.un_map(buffer);
+                buffer = null;
             }
-        } catch (IOException ignore) {
+            try {
+                if (fc != null) {
+                    fc.close();
+                    fc = null;
+                }
+            } catch (IOException ignore) {
+            }
+        } finally {
+            readWriteLock.writeLock().unlock();
         }
     }
 
@@ -100,8 +131,14 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     @Override
     public void recordSpecificPositionValue(long position, T value) {
         if (position >= 0) {
-            initBuffer(position);
-            addValue((int) getRow(position), value);
+            readWriteLock.writeLock().lock();
+
+            try {
+                initBuffer(position);
+                addValue((int) getRow(position), value);
+            } finally {
+                readWriteLock.writeLock().unlock();
+            }
         } else {
             throw BINonValueUtils.illegalArgument("The value of position is" + position + ",which must be positive value.");
         }
@@ -119,21 +156,27 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     protected void initBuffer(long row) {
         long index = getIndex(row);
         if (index != currentIndex || buffer == null) {
-            long fileIndex = row >> (NIOConstant.MAX_SINGLE_FILE_PART_SIZE + getPageStep());
-            initFile(fileIndex);
+            readWriteLock.writeLock().lock();
             try {
-                if (buffer != null) {
-                    releaseChild();
-                    BIMemoryUtils.un_map(buffer);
+                long fileIndex = row >> (NIOConstant.MAX_SINGLE_FILE_PART_SIZE + getPageStep());
+                initFile(fileIndex);
+                try {
+                    if (buffer != null) {
+                        releaseChild();
+                        BIMemoryUtils.un_map(buffer);
+                    }
+                    long start = getStart(index) - (fileIndex << NIOConstant.MAX_SINGLE_FILE_PART_MOVE_ALL);
+                    buffer = fc.map(FileChannel.MapMode.READ_WRITE, start, getLen(index));
+                    initChild();
+                    currentIndex = index;
+                } catch (IOException e) {
+                    BILogger.getLogger().error(e.getMessage(), e);
                 }
-                long start = getStart(index) - (fileIndex << NIOConstant.MAX_SINGLE_FILE_PART_MOVE_ALL);
-                buffer = fc.map(FileChannel.MapMode.READ_WRITE, start, getLen(index));
-                initChild();
-                currentIndex = index;
-            } catch (IOException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+            } finally {
+                readWriteLock.writeLock().unlock();
             }
         }
+
     }
 
     private long getRow(long row) {
@@ -184,25 +227,30 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     private void initFile(long fileIndex) {
         if (fileIndex != file_index) {
             //兼容之前的
-            File cacheFile = null;
-            if (fileIndex == 0) {
-                cacheFile = baseFile;
-            } else {
-                cacheFile = new File(baseFile.getAbsolutePath() + "_" + fileIndex);
-            }
-            clearBuffer();
+            readWriteLock.writeLock().lock();
             try {
-                if (cacheFile.exists()) {
-                    cacheFile.delete();
+                File cacheFile = null;
+                if (fileIndex == 0) {
+                    cacheFile = baseFile;
+                } else {
+                    cacheFile = new File(baseFile.getAbsolutePath() + "_" + fileIndex);
                 }
-                cacheFile.createNewFile();
-                fc = new RandomAccessFile(cacheFile, "rw").getChannel();
-            } catch (FileNotFoundException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            } catch (IOException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                clearBuffer();
+                try {
+                    if (cacheFile.exists()) {
+                        cacheFile.delete();
+                    }
+                    cacheFile.createNewFile();
+                    fc = new RandomAccessFile(cacheFile, "rw").getChannel();
+                } catch (FileNotFoundException e) {
+                    BILogger.getLogger().error(e.getMessage(), e);
+                } catch (IOException e) {
+                    BILogger.getLogger().error(e.getMessage(), e);
+                }
+                file_index = fileIndex;
+            } finally {
+                readWriteLock.writeLock().unlock();
             }
-            file_index = fileIndex;
         }
     }
 

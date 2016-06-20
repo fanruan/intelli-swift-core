@@ -15,7 +15,7 @@ public class SeasonGetter extends MonthGetter {
 	@Override
 	public int get(Long v) {
 		int month = super.get(v);
-		return month / DateConstant.DATEDELTRA.MONTH_OF_SEASON;
+		return (month - 1) / DateConstant.DATEDELTRA.MONTH_OF_SEASON + 1;
 	}
 
 }

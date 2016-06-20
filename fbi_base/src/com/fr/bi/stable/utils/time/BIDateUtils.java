@@ -5,7 +5,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.constant.DateConstant;
-import com.fr.bi.stable.data.BIBasicField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -113,8 +113,8 @@ public class BIDateUtils {
         return DateUtils.DATETIMEFORMAT2.format(new Date());
     }
 
-	public static void checkDatefieldType(Map<BIKey, ? extends BIBasicField> map, BIKey key) {
-		BIBasicField field = map.get(key);
+	public static void checkDateFieldType(Map<BIKey, ? extends ICubeFieldSource> map, BIKey key) {
+        ICubeFieldSource field = map.get(key);
 		if(field == null || field.getFieldType() != DBConstant.COLUMN.DATE){
 			throw NOT_DATE_FIELD_EXCEPTION;
 		}
@@ -123,42 +123,6 @@ public class BIDateUtils {
 	public static final RuntimeException NOT_DATE_FIELD_EXCEPTION = new RuntimeException("not date field");
 
     public static GroupValueIndex createFilterIndex(ICubeColumnIndexReader yearMap, ICubeColumnIndexReader monthMap, ICubeColumnIndexReader dayMap, BIDay start, BIDay end){
-        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
-        if(start == null){
-            start = new BIDay(Integer.parseInt(yearMap.firstKey().toString()), Integer.parseInt(monthMap.firstKey().toString()), Integer.parseInt(dayMap.firstKey().toString()));
-        }
-        if(end == null){
-            end = new BIDay(Integer.parseInt(yearMap.lastKey().toString()), Integer.parseInt(monthMap.lastKey().toString()), Integer.parseInt(dayMap.lastKey().toString()));
-        }
-        if (start.compareTo(end) < 0){
-            gvi = createRangeIndex(yearMap, start.getYear() + 1, end.getYear());
-            GroupValueIndex startYear = yearMap.getGroupIndex(new Integer[]{start.getYear()})[0];
-            if (startYear != null){
-                GroupValueIndex startMonth = monthMap.getGroupIndex(new Integer[]{start.getMonth()})[0];
-                if (startMonth != null){
-                    startMonth = startMonth.and(createRangeIndex(dayMap, start.getDay(), MAX_DAY + 1));
-                    gvi = gvi.or(startYear.and(startMonth.or(createRangeIndex(monthMap, start.getMonth() + 1, MAX_MONTH + 1))));
-                }
-            }
-            GroupValueIndex endYear = yearMap.getGroupIndex(new Integer[]{end.getYear()})[0];
-            if (endYear != null){
-                GroupValueIndex endMonth = monthMap.getGroupIndex(new Integer[]{end.getMonth()})[0];
-                if (endMonth != null){
-                    endMonth = endMonth.and(createRangeIndex(dayMap,0, end.getDay() + 1));
-                    gvi = gvi.or(endYear.and(endMonth.or(createRangeIndex(monthMap, 0, end.getMonth()))));
-                }
-            }
-        }
-        return gvi;
+        return new RangeIndexGetter(yearMap, monthMap, dayMap).createRangeIndex(start, end);
     }
-
-    private static GroupValueIndex createRangeIndex(ICubeColumnIndexReader map, Integer start, Integer end){
-        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
-        for (int i = start; i < end; i ++){
-            GroupValueIndex temp = map.getGroupIndex(new Integer[]{i})[0];
-            gvi = gvi.or(temp);
-        }
-        return gvi;
-    }
-	
 }
