@@ -608,6 +608,12 @@
                 BICst.DEFAULT_CHART_SETTING.freeze_dim;
         },
 
+        getWSFreezeFirstColumnById: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.freeze_first_column) ? ws.freeze_first_column :
+                BICst.DEFAULT_CHART_SETTING.freeze_first_column;
+        },
+
         getWSTransferFilterByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.transfer_filter) ? ws.transfer_filter :
@@ -2143,9 +2149,9 @@
             }
         }
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
-            if(BI.isNull(filterValue)){
+            if (BI.isNull(filterValue)) {
                 filterValue = {};
-            }else{
+            } else {
                 filterValue.values = parseComplexDate(filterValue);
                 filterValue.type = BICst.GROUP.YMD;
             }
