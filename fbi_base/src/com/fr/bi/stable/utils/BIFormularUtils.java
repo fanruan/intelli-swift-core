@@ -120,7 +120,7 @@ public class BIFormularUtils {
             if (value != null) {
                 c.set(columnName, value);
             } else {
-                c.set(columnName, 0);
+                c.remove(columnName);
             }
         }
         try {

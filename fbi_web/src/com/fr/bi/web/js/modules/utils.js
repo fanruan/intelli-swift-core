@@ -173,7 +173,6 @@
                     filterFiledIds.push(fId);
                 }
             });
-            var countIds = this.getCountFieldIDsOfTableID(tableId) || [];
             var tNum = [], tString = [], tDate = [], fNum = [], fString = [], fDate = [];
             BI.each(transIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
@@ -184,9 +183,6 @@
                         tString.push(id);
                         break;
                     case BICst.COLUMN.DATE:
-                        tDate.push(id);
-                        break;
-                    case BICst.COLUMN.COUNTER:
                         tDate.push(id);
                         break;
                 }
@@ -204,7 +200,7 @@
                         break;
                 }
             });
-            return countIds.concat(tNum).concat(tString).concat(tDate).concat(fNum).concat(fString).concat(fDate);
+            return tNum.concat(tString).concat(tDate).concat(fNum).concat(fString).concat(fDate);
         },
 
         getExcelViewByTableId: function (tableId) {

@@ -53,8 +53,8 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             //    cls: "dot-ha-font"
             //}],
             [{
-                text: BI.i18nText("BI-Rename"),
-                value: BICst.CALCULATE_TARGET_COMBO.RENAME
+                text: BI.i18nText("BI-Modify_Cal_Target"),
+                value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
             }],
             [{
                 text: BI.i18nText("BI-Copy"),
@@ -149,6 +149,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         }
         return item;
     },
+
     _createValue: function () {
         var o = this.options;
         var used = BI.Utils.isDimensionUsable(o.dId);

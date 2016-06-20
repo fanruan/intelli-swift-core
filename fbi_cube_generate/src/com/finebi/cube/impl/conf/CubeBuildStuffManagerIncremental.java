@@ -1,10 +1,7 @@
 package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CalculateDependTool;
-import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
@@ -15,7 +12,9 @@ import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIPathUtils;
 
+import java.io.File;
 import java.util.*;
 
 import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager;
@@ -239,5 +238,14 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
         return this.cubeGenerateRelationSet;
+    }
+
+    @Override
+    public boolean preConditionsCheck(){
+        CubePreConditionsCheck check=new CubePreConditionsCheckManager();
+        File cubeFile=new File(BIPathUtils.createBasePath());
+        boolean spaceCheck = check.HDSpaceCheck(cubeFile);
+        boolean connectionCheck = check.ConnectionCheck();
+        return spaceCheck&&connectionCheck;
     }
 }
