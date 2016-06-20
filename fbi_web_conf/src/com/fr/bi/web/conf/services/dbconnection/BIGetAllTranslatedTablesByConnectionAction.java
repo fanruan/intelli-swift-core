@@ -58,28 +58,22 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
             dealWithServerTableData(ja);
         } else {
             com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
-            boolean isOracle = false;
-            try {
-                isOracle = FRContext.getCurrentEnv().isOracle(dbc);
-            } catch (Exception e){
-                new JSONErrorHandler().error(req, res, e.getMessage());
-            }
             TableProcedure[] tps = new TableProcedure[0];
             TableProcedure[] views = new TableProcedure[0];
-            if (isOracle) {
-                String schema = BIConnectionManager.getInstance().getSchema(connectionName);
-                TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schema, true);
-                tps = (TableProcedure[]) ArrayUtils.addAll(tps, sqlTables);
-                views = (TableProcedure[]) ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schema));
+            String schemaName = BIConnectionManager.getInstance().getSchema(connectionName);
+            if (schemaName != null) {
+                TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schemaName, true);
+                tps = ArrayUtils.addAll(tps, sqlTables);
+                views = ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schemaName));
             } else {
                 try {
                     tps = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.TABLE, null);
                     views = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, null);
-                } catch (Exception e){
+                } catch (Exception e) {
                     new JSONErrorHandler().error(req, res, e.getMessage());
                 }
             }
-            TableProcedure[] result = (TableProcedure[]) ArrayUtils.addAll(tps, views);
+            TableProcedure[] result = ArrayUtils.addAll(tps, views);
             Map<String, ArrayList<TableProcedure>> tpMap = splitTableProcedureBySchema(result);
             Set<String> set = tpMap.keySet();
             for (String schema : set) {
