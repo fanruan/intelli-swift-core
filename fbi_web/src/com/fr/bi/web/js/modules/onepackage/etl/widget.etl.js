@@ -556,23 +556,48 @@ BI.ETL = BI.inherit(BI.Widget, {
         }
     },
 
-    _modifyExcel: function(tId) {
+    _modifyExcel: function (tId) {
         var self = this;
-        BI.Layers.remove(this.constants.EXCEL_LAYER);
-        var excelUpload = BI.createWidget({
-            type: "bi.excel_upload",
-            element: BI.Layers.create(this.constants.EXCEL_LAYER),
-            full_file_name: this.model.getTableById(tId).full_file_name
+        //创建一个隐藏的上传按钮，上传完destroy
+        var uploadButton = BI.createWidget({
+            type: "bi.upload_excel_button"
         });
-        BI.Layers.show(this.constants.EXCEL_LAYER);
-        excelUpload.on(BI.ExcelUpload.EVENT_CANCEL, function () {
-            BI.Layers.remove(self.constants.EXCEL_LAYER);
+        uploadButton.on(BI.UploadExcelButton.EVENT_AFTER_UPLOAD, function (files) {
+            var file = files[files.length - 1];
+            var fullFileName = file.attach_id + file.filename;
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: BICst.BODY_ELEMENT,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.saveFileGetExcelData(file.attach_id, function (data) {
+                //对比前一次fields，如果名称和个数都相同，更换full_file_name就好了
+                var fields = data.fields;
+                var newNames = [];
+                BI.each(fields, function (i, fs) {
+                    BI.each(fs, function (j, field) {
+                        newNames.push(field.field_name);
+                    });
+                });
+                var oldNames = self.model.getFieldNamesByTableId(tId);
+                var isValid = false;
+                if (newNames.length === oldNames.length) {
+                    isValid = true;
+                    BI.each(newNames, function (i, name) {
+                        name !== oldNames[i] && (isValid = false);
+                    });
+                }
+                if (isValid === true) {
+                    self.model.modifyExcelData(tId, fullFileName);
+                    BI.Msg.toast(BI.i18nText("BI-Modify_Success"), "success");
+                } else {
+                    BI.Msg.toast(BI.i18nText("BI-Excel_Modify_Fail"), "warning");
+                }
+                uploadButton.destroy();
+                mask.destroy();
+            });
         });
-        excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function (data) {
-            self.model.saveTableById(tId, data);
-            self._populateAfterETLOperator();
-            BI.Layers.remove(self.constants.EXCEL_LAYER);
-        });
+        uploadButton.element.find("input").click();
     },
 
     /**

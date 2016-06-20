@@ -114,7 +114,7 @@
   }
 }
 
-.icon_custom(@class, @iconPath, @hoverPath:none, @activePath:none, @disablePath:none) {
+.icon_custom(@class, @iconPath, @hoverPath:none, @activePath:none, @disablePath:none, @activeDisablePath:none) {
   .@{class} {
     & .x-icon {
       display: block;
@@ -136,6 +136,11 @@
     &.disabled .x-icon {
       display: block;
       .imagePath(@disablePath, 0, 0);
+    }
+    &.native .x-icon,
+    &.disabled.active .x-icon{
+      display: block;
+      .imagePath(@activeDisablePath, 0, 0);
     }
   }
 }

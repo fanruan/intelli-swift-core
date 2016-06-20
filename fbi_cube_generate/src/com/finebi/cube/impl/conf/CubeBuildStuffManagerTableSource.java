@@ -4,9 +4,7 @@ package com.finebi.cube.impl.conf;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
@@ -14,6 +12,7 @@ import java.util.*;
 
 /**
  * Created by wuk on 16/6/1.
+ * 看了下usage，貌似唯一被用到的地方就是自己写的单元测试……
  */
 public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
 
@@ -106,5 +105,15 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
     @Override
     public Map<CubeTableSource, Long> getVersions() {
         return null;
+    }
+
+    @Override
+    public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
+        return new HashSet<BICubeGenerateRelationPath>();
+    }
+
+    @Override
+    public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
+        return new HashSet<BICubeGenerateRelation>();
     }
 }

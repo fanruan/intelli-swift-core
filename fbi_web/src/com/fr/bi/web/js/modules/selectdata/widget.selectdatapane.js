@@ -43,7 +43,7 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                 var result = [];
                 BI.each(ids, function (i, fid) {
                     //暂时去除记录数
-                    if (BI.Utils.getFieldIsUsableByID(fid) === true && BI.Utils.getFieldTypeByID(fid) != BICst.COLUMN.COUNTER) {
+                    if (BI.Utils.getFieldIsUsableByID(fid) === true) {
                         result.push({
                             id: fid
                         })

@@ -3285,3 +3285,30 @@
   content: "\e64b";
   color: #808080;
 }
+.delete-font-package .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
+.delete-font-package.native .b-font:before,
+.delete-font-package.disabled .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
+.delete-h-font-package .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
+.delete-h-font-package.native .b-font:before,
+.delete-h-font-package.disabled .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
+.rename-font-package .b-font:before {
+  content: "\e687";
+  color: #009de3;
+}
+.rename-font-package.native .b-font:before,
+.rename-font-package.disabled .b-font:before {
+  content: "\e687";
+  color: #009de3;
+}

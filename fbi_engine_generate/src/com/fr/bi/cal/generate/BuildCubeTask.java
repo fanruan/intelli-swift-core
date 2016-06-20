@@ -99,11 +99,10 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void run() {
-
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
         operationManager.initialWatcher();
-
+        operationManager.subscribeStartMessage();
         manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
         manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getBiTableSourceRelationPathSet());
@@ -111,12 +110,12 @@ public class BuildCubeTask implements CubeTask {
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
         operationManager.setVersionMap(cubeBuildStuff.getVersions());
         operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
-        operationManager.generateRelationBuilder(cubeBuildStuff.getTableSourceRelationSet());
-        operationManager.generateTableRelationPath(relationPathSet);
+        operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
+        operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
-            BIConfigureManagerCenter.getLogManager().reLationSet(cubeBuildStuff.getTableSourceRelationSet(),biUser.getUserId());
-            BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getAllSingleSources(),biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().reLationPathSet(cubeBuildStuff.getBiTableSourceRelationPathSet(), biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getAllSingleSources(), biUser.getUserId());
             router.deliverMessage(generateMessageDataSourceStart());
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);

@@ -1,11 +1,11 @@
 package com.finebi.cube.conf.pack;
 
+import com.finebi.cube.conf.data.BIBusinessPackageTestTool;
 import com.finebi.cube.conf.pack.data.BIGroupTagName;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
 import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
 import com.fr.bi.base.BIUser;
-import com.finebi.cube.conf.data.BIBusinessPackageTestTool;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
@@ -333,5 +333,10 @@ public class SystemPackageTest extends TestCase {
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
+    }
+/*
+* todo kary 获取currentPackage
+* */
+    public void testCurrentPackage(){
     }
 }

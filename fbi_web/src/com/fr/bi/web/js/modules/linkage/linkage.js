@@ -126,33 +126,39 @@ BI.Linkage = BI.inherit(BI.Widget, {
             var linkedWIds = self.model.getLinkedWidgetsByTargetId(tId);
             BI.each(linkedWIds, function (i, wId) {
                 targetContainer.addItem({
-                    type: "bi.left",
+                    type: "bi.htape",
                     items: [{
-                        type: "bi.center_adapt",
-                        cls: self.model.getWidgetIconClsByWidgetId(wId) + " widget-type-icon",
-                        items: [{
-                            type: "bi.icon"
-                        }],
-                        width: 26,
-                        height: 26
+                        el: {
+                            type: "bi.center_adapt",
+                            cls: self.model.getWidgetIconClsByWidgetId(wId) + " widget-type-icon",
+                            items: [{
+                                type: "bi.icon"
+                            }],
+                            width: 26,
+                            height: 26
+                        },
+                        width: 26
                     }, {
-                        type: "bi.label",
-                        text: BI.Utils.getWidgetNameByID(wId),
-                        height: 26,
-                        width: 160,
-                        textAlign: "left"
-                    }, {
-                        type: "bi.icon_button",
-                        cls: "close-h-font",
-                        width: 20,
-                        height: 26,
-                        handler: function(){
-                            self.model.deleteLinkage(tId, wId);
-                            self.populate();
+                        el: {
+                            type: "bi.label",
+                            text: BI.Utils.getWidgetNameByID(wId),
+                            height: 26,
+                            textAlign: "left"
                         }
+                    }, {
+                        el: {
+                            type: "bi.icon_button",
+                            cls: "close-h-font",
+                            width: 20,
+                            height: 26,
+                            handler: function(){
+                                self.model.deleteLinkage(tId, wId);
+                                self._populate();
+                            }
+                        },
+                        width: 20
                     }],
-                    hgap: 5,
-                    vgap: 2
+                    height: 30
                 });
             });
             self.dragContainer.addItem(targetContainer);

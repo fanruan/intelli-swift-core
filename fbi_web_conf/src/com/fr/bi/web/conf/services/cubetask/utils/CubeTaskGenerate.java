@@ -1,36 +1,31 @@
-package com.fr.bi.web.conf.services.cubetask;
+package com.fr.bi.web.conf.services.cubetask.utils;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.conf.pack.imp.BIPackageTableSourceConfigManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerIncremental;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
-import com.fr.fs.control.UserControl;
 
 import java.util.Set;
 
 /**
  * Created by wuk on 16/5/30.
  */
-public class CubeTaskBuild {
+public class CubeTaskGenerate {
 
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
     public static void CubeBuild(long userId, CubeBuildStuff cubeBuildStuff) {
-        if (null != cubeBuildStuff) {
-            cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
-        }
+        cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
     }
 
     public static void CubeBuild(long userId) {
         BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
-        BIPackageTableSourceConfigManager biPackageFindTableSourceConfigManager = new BIPackageTableSourceConfigManager();
-        Set<BIBusinessTable> newTables = biPackageFindTableSourceConfigManager.getTables4Generate(UserControl.getInstance().getSuperManagerID());
-        CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, -999);
+        Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
+        CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
         cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
     }
 }
