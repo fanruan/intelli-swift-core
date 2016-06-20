@@ -156,7 +156,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 config.radiusAxis.push(newrAxis);
                 break;
         }
-        addOptionsToConfig();
+        //addOptionsToConfig();
         return [result, config];
 
         function createAxisForCommon() {

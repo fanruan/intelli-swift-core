@@ -589,7 +589,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             });
             if(type === BICst.WIDGET.MAP || type === BICst.WIDGET.GIS_MAP){
-                options.geo = {data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)]}
+                options.geo = {data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]}
             }
             callback(types, data, options);
         }, {

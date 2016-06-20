@@ -443,10 +443,10 @@ BICst.MAP_TYPE.JIANGSU = 11010;
 BICst.MAP_TYPE.SHANDONG = 11020;
 
 BICst.MAP_PATH = {};
-BICst.MAP_PATH[BICst.MAP_TYPE.WORLD] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
-BICst.MAP_PATH[BICst.MAP_TYPE.CHINA] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
-BICst.MAP_PATH[BICst.MAP_TYPE.JIANGSU] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/jiangsu.json";
-BICst.MAP_PATH[BICst.MAP_TYPE.SHANDONG] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/shandong.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.WORLD] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.CHINA] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.JIANGSU] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/jiangsu.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.SHANDONG] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/shandong.json";
 
 BICst.MAP_NAME = {};
 BICst.MAP_NAME["世界"] = BICst.MAP_TYPE.WORLD;
