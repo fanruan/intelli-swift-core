@@ -197,4 +197,9 @@ public class BICubeIndexData implements ICubeIndexDataService {
     public boolean isEmpty() {
         return !getIndexReader().canRead();
     }
+
+    @Override
+    public ICubeResourceLocation getResourceLocation() {
+        return currentLocation.copy();
+    }
 }
