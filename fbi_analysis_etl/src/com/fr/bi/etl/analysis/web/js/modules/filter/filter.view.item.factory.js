@@ -201,6 +201,14 @@ BI.ETLFilterViewItemFactory = {
                 return this._createItems([fieldName + ' = ' +this._getDateText(filterValue)]);
             case BICst.FILTER_DATE.DAY_NOT_EQUAL_TO :
                 return this._createItems([[fieldName , this._createItemByCls('not-equal-font') , this._getDateText(filterValue)]]);
+            case BICst.TARGET_FILTER_STRING.IS_NULL :
+            case BICst.TARGET_FILTER_NUMBER.IS_NULL :
+            case BICst.FILTER_DATE.IS_NULL :
+                return this._createItems([BI.i18nText("BI-Is_Null")]);
+            case BICst.TARGET_FILTER_STRING.NOT_NULL :
+            case BICst.TARGET_FILTER_NUMBER.NOT_NULL :
+            case BICst.FILTER_DATE.NOT_NULL :
+                return this._createItems([BI.i18nText("BI-Not_Null")]);
             default :
                 return[];
         }

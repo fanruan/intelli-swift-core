@@ -22,7 +22,13 @@ BICst.ETL_FILTER_STRING_COMBO = [[{
 },{
     text: BI.i18nText("BI-Not_End_With"),
     value: BICst.TARGET_FILTER_STRING.NOT_END_WITH
-}] ,[{
+}],[{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.TARGET_FILTER_STRING.IS_NULL
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.TARGET_FILTER_STRING.NOT_NULL
+}],[{
     text: BI.i18nText("BI-Formula"),
     value: BICst.FILTER_TYPE.FORMULA
 }]];
@@ -54,6 +60,12 @@ BICst.ETL_FILTER_NUMBER_COMBO = [[{
 }, {
     text: BI.i18nText("BI-ETL_Bottom_N", 'N'),
     value: BICst.TARGET_FILTER_NUMBER.BOTTOM_N
+}],[{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.TARGET_FILTER_NUMBER.IS_NULL
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_NULL
 }],[{
     text: BI.i18nText("BI-Formula"),
     value: BICst.FILTER_TYPE.FORMULA
@@ -110,6 +122,12 @@ BICst.ETL_FILTER_DATE_COMBO = [[{
     text: BI.i18nText("BI-Not_Equal_To")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Date'),
     value: BICst.FILTER_DATE.DAY_NOT_EQUAL_TO
 }], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.FILTER_DATE.IS_NULL
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.FILTER_DATE.NOT_NULL
+}],[{
     text: BI.i18nText("BI-Formula"),
     value: BICst.FILTER_TYPE.FORMULA
 }]];
