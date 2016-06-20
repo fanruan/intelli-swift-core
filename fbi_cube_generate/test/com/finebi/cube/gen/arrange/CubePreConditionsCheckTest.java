@@ -11,7 +11,7 @@ public class CubePreConditionsCheckTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        check=new CubePreConditionsCheckManager();
+        check = new CubePreConditionsCheckManager();
         super.setUp();
     }
 
@@ -27,7 +27,7 @@ public class CubePreConditionsCheckTest extends TestCase {
         assertTrue(spaceCheck);
     }
 
-    public void testConnection(){
+    public void testConnection() {
 
     }
 

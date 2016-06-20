@@ -139,9 +139,6 @@ public class CubeRunner {
         CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser,cubeBuildStuff),biUser.getUserId());
     }
 
-    private void start() {
-    }
-
     private void backup() {
         BackUpUtils.backup();
     }

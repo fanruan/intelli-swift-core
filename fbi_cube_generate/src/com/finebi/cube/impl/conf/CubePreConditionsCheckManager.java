@@ -28,8 +28,11 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
         if (file.isDirectory()) {
             File[] children = file.listFiles();
             double size = 0;
-            for (File f : children)
-                size += getDirSize(f);
+            if (null != children) {
+                for (File f : children) {
+                    size += getDirSize(f);
+                }
+            }
             return size;
         } else {
             double size = file.length();
