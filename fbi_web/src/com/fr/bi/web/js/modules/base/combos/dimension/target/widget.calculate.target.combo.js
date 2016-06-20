@@ -19,19 +19,6 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
             }],
             [{
-                text: BI.i18nText("BI-Display"),
-                value: BICst.CALCULATE_TARGET_COMBO.DISPLAY,
-                cls: "dot-ha-font"
-            }, {
-                text: BI.i18nText("BI-Hidden"),
-                value: BICst.CALCULATE_TARGET_COMBO.HIDDEN,
-                cls: "dot-ha-font"
-            }],
-            [{
-                text: BI.i18nText("BI-Rename"),
-                value: BICst.CALCULATE_TARGET_COMBO.RENAME
-            }],
-            [{
                 text: BI.i18nText("BI-Copy"),
                 value: BICst.CALCULATE_TARGET_COMBO.COPY
             }],
