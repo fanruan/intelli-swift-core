@@ -1100,6 +1100,7 @@ BICst.DEFAULT_CHART_SETTING = {
     max_row: BICst.TABLE_MAX_ROW,
     max_col: BICst.TABLE_MAX_COL,
     freeze_dim: true,
+    freeze_first_column: false,
     transfer_filter: true,
     show_name: true,
     name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
