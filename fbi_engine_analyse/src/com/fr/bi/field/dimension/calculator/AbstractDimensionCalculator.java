@@ -20,6 +20,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -224,11 +225,31 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getGroup();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbstractDimensionCalculator that = (AbstractDimensionCalculator) o;
+        return ComparatorUtils.equals(fetchObjectCore(), that.fetchObjectCore());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return fetchObjectCore().hashCode();
+    }
+
     public class BIDimensionCore extends BICoreWrapper {
         public BIDimensionCore() throws Exception {
-            super(field, relations, dimension.getGroup(), dimension.getSort());
+            super(field,
+                    relations,
+                    dimension == null ? null : dimension.getGroup(),
+                    dimension == null ? null : dimension.getSort());
         }
     }
+
 
 
 }
