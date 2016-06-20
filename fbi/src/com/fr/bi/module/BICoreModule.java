@@ -1,19 +1,24 @@
 package com.fr.bi.module;
 
+import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.conf.*;
+import com.finebi.cube.conf.datasource.BIDataSourceManager;
+import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
+import com.finebi.cube.conf.relation.BISystemTableRelationManager;
+import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
+import com.finebi.cube.conf.timer.UpdateFrequencyManager;
+import com.finebi.cube.conf.trans.BIAliasManager;
 import com.fr.base.FRContext;
 import com.fr.bi.DemoService;
 import com.fr.bi.cal.BICubeManager;
-import com.fr.bi.cal.log.BILogManager;
-import com.fr.bi.cal.stable.loader.BIReadingTableIndexLoader;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.manager.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
-import com.fr.bi.conf.base.datasource.BIDataSourceManager;
+import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
+import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
-import com.fr.bi.conf.base.pack.BISystemPackageConfigurationManager;
-import com.fr.bi.conf.base.relation.BISystemTableRelationManager;
-import com.fr.bi.conf.base.trans.BIAliasManager;
+import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
@@ -23,7 +28,6 @@ import com.fr.bi.fs.HSQLBIReportDAO;
 import com.fr.bi.fs.TableDataBIReportDAO;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
-import com.fr.bi.stable.engine.index.AbstractTIPathLoader;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.base.Service4BIBase;
@@ -49,13 +53,9 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * Created by 小灰灰 on 2015/12/15.
@@ -63,7 +63,7 @@ import java.util.Iterator;
 public class BICoreModule extends AbstractModule {
     @Override
     public void start() {
-        registProviders();
+        registerProviders();
         initDataSourcePool();
         registerClusterIfNeed();
         registerSystemManager();
@@ -83,13 +83,21 @@ public class BICoreModule extends AbstractModule {
     }
 
     @Override
-    public Class<? extends AbstractTIPathLoader> getTIPathLoaderClass() {
-        return BIReadingTableIndexLoader.class;
+    public BIAliasManagerProvider getAliasManagerProvider() {
+        return StableFactory.getMarkedObject(BIAliasManagerProvider.XML_TAG, BIAliasManagerProvider.class);
+    }
+
+    @Override
+    public ICubeDataLoaderCreator getCubeDataLoaderCreator() {
+        return StableFactory.getMarkedObject(ICubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
     }
 
 
-    private void registProviders() {
+    private void registerProviders() {
+        StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
+        StableFactory.registerMarkedObject(BIAuthorityManageProvider.XML_TAG, new BISystemAuthorityManager());
+        StableFactory.registerMarkedObject(ICubeDataLoaderCreator.XML_TAG, com.finebi.cube.api.BICubeManager.getInstance());
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
         StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, getConnectionManagerProvider());
@@ -97,7 +105,10 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, new BIExcelViewManager());
-        StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
+        StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, new BISystemCubeConfManager());
+        StableFactory.registerMarkedObject(UpdateFrequencyManager.XML_TAG, new UpdateFrequencyManager());
+        StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
+
 
     }
 
@@ -244,7 +255,7 @@ public class BICoreModule extends AbstractModule {
      *
      */
     private void registerTableAddColumn() {
-        addTableColumn4NewConnection(BITableMapper.BI_REPORT_NODE.TABLE_NAME, new Column(BITableMapper.BI_REPORT_NODE.FIELD_STATE, Types.INTEGER, new ColumnSize(10)));
+        addTableColumn4NewConnection(BITableMapper.BI_REPORT_NODE.TABLE_NAME, new Column(BITableMapper.BI_REPORT_NODE.FIELD_STATUS, Types.INTEGER, new ColumnSize(10)));
     }
 
     private static void addTableColumn4NewConnection(String tableName, Column column) {
@@ -338,11 +349,27 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, ResourceHelper.getFormulaCollectionJS(), ResourceHelper.FormulaTransmitter);
     }
 
+    public void loadResources (Locale[] locales) {
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_CONF_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_SHOW_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS);
+        ResourceHelper.FormulaTransmitter.transmit(ResourceHelper.getFormulaCollectionJS());
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_SHOW_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_MODULE_CSS);
+    }
+
     private void registerSystemManager() {
     }
 
-	@Override
-	public Service[] service4Register() {
+    @Override
+    public Service[] service4Register() {
         return new Service[]{
                 new Service4BIConfigure(),
                 new Service4BIReport(),
@@ -352,7 +379,7 @@ public class BICoreModule extends AbstractModule {
 
                 new DemoService()
         };
-	}
+    }
 
 
 }

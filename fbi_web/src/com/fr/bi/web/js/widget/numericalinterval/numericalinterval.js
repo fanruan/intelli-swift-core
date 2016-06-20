@@ -92,12 +92,12 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                 height: o.height - 2,
                 items: [{
                     text: "(" + BI.i18nText("BI-Less_Than") + ")",
-                    iconClass: "less-arrow-font",
+                    iconClass: "less-font",
                     value: 0
                 }, {
                     text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
                     value: 1,
-                    iconClass: "less-equal-arrow-font"
+                    iconClass: "less-equal-font"
                 }]
             });
             if (o.closemin === true) {
@@ -111,12 +111,12 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
                 height: o.height - 2,
                 items: [{
                     text: "(" + BI.i18nText("BI-Less_Than") + ")",
-                    iconClass: "less-arrow-font",
+                    iconClass: "less-font",
                     value: 0
                 }, {
                     text: "(" + BI.i18nText("BI-Less_And_Equal") + ")",
                     value: 1,
-                    iconClass: "less-equal-arrow-font"
+                    iconClass: "less-equal-font"
                 }]
             });
             if (o.closemax === true) {
@@ -342,21 +342,37 @@ BI.NumericalInterval = BI.inherit(BI.Single, {
             })
         },
 
+
+
         _setEditorValueChangedEvent: function (w) {
             var self = this, c = this.constants;
             w.on(BI.Editor.EVENT_CHANGE, function () {
-                self._checkValidation();
+                switch (self._checkValidation()) {
+                    case c.typeError:
+                        BI.Bubbles.show(c.typeError, BI.i18nText("BI-Numerical_Interval_Input_Data"), self, {
+                            offsetStyle: "center"
+                        });
+                        break;
+                    case c.numberError:
+                        BI.Bubbles.show(c.numberError, BI.i18nText("BI-Numerical_Interval_Number_Value"), self, {
+                            offsetStyle: "center"
+                        });
+                        break;
+                    case c.signalError:
+                        BI.Bubbles.show(c.signalError, BI.i18nText("BI-Numerical_Interval_Signal_Value"), self, {
+                            offsetStyle: "center"
+                        });
+                        break;
+                    default :
+                        break;
+                }
                 self.fireEvent(BI.NumericalInterval.EVENT_CHANGE);
             });
-            w.on(BI.Editor.EVENT_STOP, function () {
-                self.fireEvent(BI.NumericalInterval.EVENT_CHANGE);
-            })
-
         },
 
         _setComboValueChangedEvent: function (w) {
             var self = this, c = this.constants;
-            w.on(BI.NumericalIntervalCombo.EVENT_CHANGE, function () {
+            w.on(BI.IconCombo.EVENT_CHANGE, function () {
                 switch (self._checkValidation()) {
                     case c.typeError:
                         self._setTitle(BI.i18nText("BI-Numerical_Interval_Input_Data"));

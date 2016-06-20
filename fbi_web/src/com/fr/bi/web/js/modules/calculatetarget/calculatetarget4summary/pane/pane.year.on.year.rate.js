@@ -13,13 +13,13 @@ BI.CalculateTargetYearOnYearRatePane = BI.inherit(BI.CalculateTargetAbstractPeri
     },
 
     setValue: function (expression) {
-        this.valueCombo.setValue(expression.cal_target_name);
+        this.valueCombo.setValue(expression.ids);
         this._refreshLabel();
     },
 
     getValue: function () {
         var result = {};
-        result.cal_target_name = this.valueCombo.getValue()[0];
+        result.ids = this.valueCombo.getValue();
         result.period_type = BICst.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE;
         return result;
     },
@@ -28,14 +28,17 @@ BI.CalculateTargetYearOnYearRatePane = BI.inherit(BI.CalculateTargetAbstractPeri
         var self = this, o = this.options;
         this.logicValuePane.empty();
         this.logicPane.empty();
+        var dimDimensionIDs = o.model.getDimDimensionIDs();
+        var lastDimensionID = dimDimensionIDs.pop();
+        var secondLastDimensionID = dimDimensionIDs.pop();
         var firstLabel = BI.createWidget({
             type: "bi.label",
             textHeight: 30,
             textAlign: "left"
         });
-        firstLabel.setValue(BI.i18nText("BI-Calculate_Target_Each_Value", BI.i18nText("BI-Month_Fen"), BI.Utils.getDimensionNameByID(this.valueCombo.getValue()[0])));
+        firstLabel.setValue(BI.i18nText("BI-Calculate_Target_Each_Value", BI.Utils.getDimensionNameByID(lastDimensionID) || "", BI.Utils.getDimensionNameByID(this.valueCombo.getValue()[0])));
         this.logicValuePane.addItem(firstLabel);
-        BI.each(o.model.getDimDimensionIDs(), function (i, dId) {
+        BI.each(dimDimensionIDs, function (i, dId) {
             var dimensionName = BI.Utils.getDimensionNameByID(dId);
             var label = BI.createWidget({
                 type: "bi.label",
@@ -50,7 +53,7 @@ BI.CalculateTargetYearOnYearRatePane = BI.inherit(BI.CalculateTargetAbstractPeri
             textAlign: "left",
             textHeight: 30
         });
-        lastLabel.setValue(BI.i18nText("BI-Calculate_Target_Last_Include_In_Same", BI.i18nText("BI-Year_Fen"), BI.i18nText("BI-Month_Fen")))
+        lastLabel.setValue(BI.i18nText("BI-Calculate_Target_Last_Include_In_Same", BI.Utils.getDimensionNameByID(secondLastDimensionID) || "", BI.Utils.getDimensionNameByID(lastDimensionID) || ""));
         this.logicPane.addItem(lastLabel);
         var valueLabel = BI.createWidget({
             type: "bi.label",

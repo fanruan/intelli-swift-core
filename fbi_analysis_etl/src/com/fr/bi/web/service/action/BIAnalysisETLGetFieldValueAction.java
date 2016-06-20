@@ -1,6 +1,14 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.key.BIKey;
+import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
+import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.constant.BIJSONConstant;
+import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.utils.DateUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -9,11 +17,16 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/4/19.
  */
 public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
+    private static final int MAX_ROW = 1000;
+
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         String field = WebUtils.getHTTPRequestParameter(req, "field");
@@ -22,20 +35,31 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
             return;
         }
         long userId = ServiceUtils.getCurrentUserID(req);
-//        ITableSource source = AnalysisETLSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, "table")), userId);
-//        Set set = source.getFieldDistinctNewestValues(field, CubeReadingTableIndexLoader.getInstance(userId), userId);
-
+        String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
+        JSONObject jo = new JSONObject(tableJSON);
+        JSONArray items = jo.getJSONArray(Constants.ITEMS);
+        UserCubeTableSource source = AnalysisETLSourceFactory.createTableSource(items, userId).createUserTableSource(userId);
+        ICubeTableService service = PartCubeDataLoader.getInstance(userId, source).getTableIndex(source, 0, Integer.MAX_VALUE);
         JSONArray ja = new JSONArray();
-        ja.put("1");
-        ja.put("2");
-        ja.put("3");
-        ja.put("4");
-        ja.put("5");
-        ja.put("6");
+        BIKey key = new IndexKey(field);
+        int filedType = service.getColumns().get(key).getFieldType();
+        Set set = new HashSet();
+        for (int i = 0; i < service.getRowCount() && set.size() < MAX_ROW; i ++){
+            set.add(service.getRow(key, i));
+        }
+        for (Object ob : set){
+            ja.put(getText(ob, filedType));
+        }
+        JSONObject result = new JSONObject();
+        result.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
+        WebUtils.printAsJSON(res, result);
+    }
 
-        JSONObject jo = new JSONObject();
-        jo.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
-        WebUtils.printAsJSON(res, jo);
+    private Object getText(Object ob, int fieldType) {
+        if (ob != null && fieldType == DBConstant.COLUMN.DATE){
+            return DateUtils.format(new Date((Long)ob));
+        }
+        return ob == null ? StringUtils.EMPTY : ob;
     }
 
     @Override

@@ -1,11 +1,12 @@
 package com.fr.bi.field.dimension.filter.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
+import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.fr.bi.field.filtervalue.FilterValueFactory;
-import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -18,8 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DimensionTargetValueFilter extends AbstractDimensionFilter {
-
+    @BICoreField
     private FilterValue filterValue;
+    @BICoreField
     private String target_id;
 
     @Override
@@ -36,9 +38,9 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
      */
     @Override
     public List<String> getUsedTargets() {
-        if(target_id == null){
+        if (target_id == null) {
             return new ArrayList<String>();
-        }else{
+        } else {
             List<String> result = new ArrayList<String>();
             result.add(target_id);
             return result;
@@ -47,7 +49,7 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
 
 
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         return filterValue.createFilterIndex(dimension, target, loader, userId);
     }
 
@@ -92,9 +94,11 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
     @Override
     public boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
         TargetCalculator targetCalculator = targetsMap.get(target_id);
-        if(targetCalculator != null){
+        if (targetCalculator != null) {
             return filterValue.showNode(node, targetsMap.get(target_id).createTargetGettingKey(), loader);
         }
         return filterValue.showNode(node, null, loader);
     }
+
+
 }

@@ -26,7 +26,7 @@
             this.editor.on("change", function (cm, change) {
                 self._checkWaterMark();
                 CodeMirror.showHint(cm, CodeMirror.formulaHint, {completeSingle: false});
-                BI.defer(function () {
+                BI.nextTick(function () {
                     self.fireEvent(BI.FormulaEditor.EVENT_CHANGE)
                 });
             });
@@ -107,7 +107,7 @@
             var from = this.editor.getCursor();
             this.editor.replaceSelection(field);
             var to = this.editor.getCursor();
-            this.editor.markText(from, to, {className: 'fieldName', atomic: true});
+            this.editor.markText(from, to, {className: 'fieldName', atomic: true, startStyle : "start", endStyle:"end"});
             this.editor.replaceSelection(" ");
             this.editor.focus();
         },
@@ -215,9 +215,9 @@
 
         refresh: function () {
             var self = this;
-            BI.delay(function () {
+            BI.nextTick(function () {
                 self.editor.refresh();
-            }, 0);
+            });
         }
 
     });

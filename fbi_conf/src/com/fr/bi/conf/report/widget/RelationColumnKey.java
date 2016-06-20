@@ -1,14 +1,13 @@
 package com.fr.bi.conf.report.widget;
 
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.fr.general.ComparatorUtils;
-import com.fr.json.JSONArray;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
 
 import java.util.List;
 
-public class RelationColumnKey extends BIField {
+public class RelationColumnKey implements JSONCreator{
 
 
     /**
@@ -16,11 +15,11 @@ public class RelationColumnKey extends BIField {
      */
     private static final long serialVersionUID = 434756052109265970L;
     protected List<BITableSourceRelation> relations;
+    protected ICubeFieldSource field;
 
-
-    public RelationColumnKey(BIField define,
+    public RelationColumnKey(ICubeFieldSource define,
                              List<BITableSourceRelation> relations) {
-        super(define);
+        field = define;
         this.relations = relations;
     }
 
@@ -36,29 +35,16 @@ public class RelationColumnKey extends BIField {
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        RelationColumnKey other = (RelationColumnKey) obj;
-        if (relations == null) {
-            if (other.relations != null) {
-                return false;
-            }
-        } else if (!ComparatorUtils.equals(relations, other.relations)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RelationColumnKey)) return false;
+
+        RelationColumnKey that = (RelationColumnKey) o;
+
+        if (relations != null ? !relations.equals(that.relations) : that.relations != null) return false;
+        return !(field != null ? !field.equals(that.field) : that.field != null);
+
     }
 
     public List<BITableSourceRelation> getRelations() {
@@ -67,12 +53,20 @@ public class RelationColumnKey extends BIField {
 
     @Override
     public JSONObject createJSON() throws Exception {
-        JSONObject jo = super.createJSON();
+        JSONObject jo = field.createJSON();
         List<BITableSourceRelation> relations = getRelations();
-        JSONArray ja = new JSONArray();
+        JSONObject ja = new JSONObject();
+        /**
+         * Connery:Pony说不用createJSON，但是外面有调用的，删不掉。
+         * kary:不要删，日志用得着
+         */
         if (relations != null) {
             for (BITableSourceRelation relation : relations) {
-                ja.put(relation.createJSON());
+//                ja.put(relation.createJSON());
+                ja.put("primaryTableName",relation.getPrimaryTable().getTableName());
+                ja.put("primaryFieldName",relation.getPrimaryField().getFieldName());
+                ja.put("foreignTableName",relation.getForeignTable().getTableName());
+                ja.put("foreignFieldName",relation.getForeignField().getFieldName());
             }
         }
         jo.put("relation", ja);

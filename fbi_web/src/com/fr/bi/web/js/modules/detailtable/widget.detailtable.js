@@ -1,76 +1,113 @@
 /**
  * @class BI.DetailTable
- * @extend BI.Widget
+ * @extends BI.Pane
  * 明细表的表格
  */
-BI.DetailTable = BI.inherit(BI.Widget, {
+BI.DetailTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detail-table"
+            baseCls: "bi-detail-table",
+            wId: ""
         })
     },
 
     _init: function () {
         BI.DetailTable.superclass._init.apply(this, arguments);
         var self = this;
+        var o = this.options;
+
         this.pager = BI.createWidget({
-            type: "bi.all_pager"
-        });
-        this.pager.on(BI.AllPagger.EVENT_CHANGE, function () {
-            self.populate(self.pager.getCurrentPage())
+            type: "bi.all_pager",
+            cls: "page-table-pager",
+            height: 18
         });
 
-        this.tabler = BI.createWidget({
-            type: "bi.tabler",
+        this.table = BI.createWidget({
+            type: "bi.style_table",
+            el: {
+                type: "bi.page_table",
+                el: {
+                    el: {
+                        el: {
+                            el: {
+                                type: "bi.table_view"
+                            }
+                        }
+                    },
+                    sequence: {
+                        type: "bi.sequence_table_list_number",
+                        pageSize: 100
+                    }
+                },
+                itemsCreator: function (op, populate) {
+                    var vPage = op.vpage;
+                    self._onPageChange(vPage, function (items, header, crossItems, crossHeader) {
+                        populate.apply(self.table, arguments);
+                    })
+                },
+                pager: this.pager
+            }
+        });
+
+        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+            self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: self.table.getColumnSize()})});
+        });
+
+        this.tab = BI.createWidget({
+            type: "bi.tab",
             element: this.element,
-            pager: this.pager,
-            layout: [{
-                type: "bi.right"
-            }]
+            defaultShowIndex: BI.DetailTable.SHOW_TABLE,
+            cardCreator: function (v) {
+                switch (v) {
+                    case BI.DetailTable.SHOW_TABLE:
+                        return self.table;
+                    case BI.DetailTable.SHOW_TIP:
+                        return BI.createWidget({
+                            type: "bi.layout",
+                            cls: o.status === BICst.WIDGET_STATUS.EDIT ? "table-detail-text-tip-background" : "table-detail-tip-background"
+                        })
+                }
+            }
         });
-
-
     },
 
-    populate: function (page) {
+    _onPageChange: function (vPage, callback) {
         var self = this;
         var widgetId = this.options.wId;
+        if (BI.Utils.getAllUsableDimensionIDs(widgetId).length === 0) {
+            this.tab.setSelect(BI.DetailTable.SHOW_TIP);
+            return;
+        }
+        this.tab.setSelect(BI.DetailTable.SHOW_TABLE);
+        this.loading();
         this.data = [];
+        var hyperLinkExpressions = [];
+        var isUseHyperLinkDimension = [];
         var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
         if (BI.isEmpty(dimensions)) {
-            this.tabler.populate({
-                items: [],
-                header: [],
-                columnSize: []
-            });
-            self.pager.setAllPages(0);
-            self.pager.setValue(0);
+            this.loaded();
+            callback([], [], [], []);
+            self.pager.setAllPages(1);
+            self.pager.setValue(1);
             return;
 
         }
-        this.pageOperator = page || BICst.TABLE_PAGE_OPERATOR.REFRESH;
-        function formatTree(tree) {
-            var result = [];
-            BI.each(tree, function (i, t) {
-                var item = {};
-                item.name = t.node.name;
-                if (BI.isNotNull(t.children)) {
-                    item.children = formatTree(t.children);
-                }
-                result.push(item);
-            });
-            return result;
-        }
+        this.pageOperator = vPage || BICst.TABLE_PAGE_OPERATOR.REFRESH;
 
         var ob = {};
         ob.page = this.pageOperator;
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
-            var json = jsonData.data, row = jsonData.row, page = jsonData.page, size = jsonData.size;
+            self.loaded();
+            var json = jsonData.data, row = jsonData.row, size = jsonData.size;
             if (BI.isNull(json) || BI.isNull(row)) {
+                callback([], [], [], []);
                 return;
             }
             var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
             BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
+                var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId) || {};
+                isUseHyperLinkDimension.push(hyperlink.used || false);
+                hyperLinkExpressions.push(hyperlink.expression || "");
                 BI.isNotNull(dId) &&
                 BI.Utils.isDimensionUsable(dId) === true &&
                 header.push({
@@ -83,31 +120,33 @@ BI.DetailTable = BI.inherit(BI.Widget, {
                     }
                 });
             });
-            var items = [], values = json.value;
-            BI.each(values, function (i, row) {
-                var rowItems = [];
-                BI.each(row, function (j, v) {
-                    var item = {};
-                    item.text = v;
-                    rowItems.push(item);
-                });
-                items.push({
-                    values: rowItems
-                });
-            });
-            var columnSize = [];
-            BI.each(header, function (i, item) {
-                columnSize.push("");
-            });
+            var items = self._createTableItems(json.value);
+
             self.pager.setAllPages(Math.ceil(row / size));
-            self.pager.setValue(page);
-            self.tabler.populate({
-                items: items,
-                header: header,
-                columnSize: columnSize
-            })
+            self.pager.setValue(vPage);
+            callback(items, [header]);
+
+            //显示序号
+            if (BI.Utils.getWSShowNumberByID(widgetId)) {
+                self.table.showSequence();
+            } else {
+                self.table.hideSequence();
+            }
+
+            //设置样式和颜色
+            self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(widgetId), BI.Utils.getWSThemeColorByID(widgetId));
         }, ob);
     },
+
+
+    _getColumnSize: function (header) {
+        var columnSize = BI.Utils.getWidgetSettingsByID(this.options.wId).column_size;
+        if (BI.isNull(columnSize)) {
+            columnSize = BI.makeArray(header.length, "");
+        }
+        return columnSize;
+    },
+
 
     _headerOperatorChange: function (v, dId) {
         switch (v) {
@@ -150,13 +189,50 @@ BI.DetailTable = BI.inherit(BI.Widget, {
             dId: dId
         });
         popup.on(BI.DetailTableFilterPopup.EVENT_CHANGE, function (v) {
-            var filterValue = BI.Utils.getWidgetFilterValueByID(self.options.wId) || {};
+            var filterValue = BI.Utils.getWidgetFilterValueByID(self.options.wId);
             filterValue[dId] = v;
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {filter_value: filterValue});
         });
         BI.Popovers.create(dId, popup).open(dId);
         popup.populate();
+    },
+
+    _createTableItems: function (values) {
+        var tableItems = [], self = this;
+        BI.each(values, function (i, row) {
+            tableItems.push(self._createRowItem(row));
+        });
+        return tableItems
+    },
+
+    _createRowItem: function (rowValues, dId) {
+        var dimensionIds = BI.Utils.getWidgetViewByID(this.options.wId)[BICst.REGION.DIMENSION1];
+
+        return BI.map(rowValues, function (i, rowValue) {
+            return {
+                text: rowValue,
+                type: "bi.detail_table_cell",
+                dId: dimensionIds[i]
+            };
+        });
+    },
+
+    populate: function () {
+        var self = this;
+        this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
+            self.table.attr("columnSize", self._getColumnSize(header));
+            self.table.populate(items, header);
+        });
+    },
+
+    resize: function () {
+        this.table.resize();
     }
+
+});
+BI.extend(BI.DetailTable, {
+    SHOW_TABLE: 1,
+    SHOW_TIP: 2
 });
 BI.DetailTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.detail_table", BI.DetailTable);

@@ -3,21 +3,24 @@
  */
 package com.fr.bi.field.filtervalue.number.containsfilter;
 
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.fr.bi.stable.data.Table;
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.base.key.BIKey;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
+import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -29,14 +32,14 @@ import java.util.Set;
 /**
  * @author Daniel
  */
-public abstract class NumberValuesFilterValue implements NumberFilterValue {
+public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue {
 
 
     /**
      *
      */
     private static final long serialVersionUID = 2181210581260108345L;
-
+    @BICoreField
     protected Set<Double> valueSet = new HashSet<Double>();
 
 
@@ -46,13 +49,18 @@ public abstract class NumberValuesFilterValue implements NumberFilterValue {
     }
 
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader,
+    public boolean isAllCalculatorFilter() {
+        return false;
+    }
+
+    @Override
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader,
                                              long userId) {
         if (valueSet.isEmpty()) {
             return null;
         }
         return createFilterIndexByRelations(dimension.getRelationList(), dimension.createNoneSortGroupValueMapGetter(target, loader),
-                loader.getTableIndex(dimension.getField()), loader.getTableIndex(target), dimension.createKey());
+                loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()), loader.getTableIndex(target.getTableSource()), dimension.createKey());
     }
 
 
@@ -60,7 +68,7 @@ public abstract class NumberValuesFilterValue implements NumberFilterValue {
         if (relations == null) {
             return null;
         }
-        Double[] value = valueSet.toArray(new Double[valueSet.size()]);
+        Object[] value = copyValue(sgm);;
         GroupValueIndex sgvi = GVIFactory.createAllEmptyIndexGVI();
         Object[] indexs = sgm.getGroupIndex(value);
         boolean hasValue = value.length > 0;
@@ -73,20 +81,69 @@ public abstract class NumberValuesFilterValue implements NumberFilterValue {
         return hasValue ? sgvi : null;
     }
 
+    //TODO 暂时没有更好的解决办法，先这样处理
+    private Object[]  copyValue(ICubeColumnIndexReader sgm) {
+        Object[] v = sgm.createKey(valueSet.size());
+        Object firstKey = sgm.firstKey();
+        if(firstKey instanceof  Long) {
+            Iterator<Double> iter = valueSet.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                Double d = iter.next();
+                if(Double.isNaN(d)) {
+                    v[i++] = null;
+                } else {
+                    v[i++] = d.longValue();
+                }
+            }
+            return v;
+        } if(firstKey instanceof Integer) {
+            Iterator<Double> iter = valueSet.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                Double d = iter.next();
+                if(Double.isNaN(d)) {
+                    v[i++] = null;
+                } else {
+                    v[i++] = d.intValue();
+                }
+            }
+            return v;
+        } else {
+            Iterator<Double> iter = valueSet.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                Double d = iter.next();
+                if(Double.isNaN(d)) {
+                    v[i++] = null;
+                } else {
+                    v[i++] = d;
+                }
+            }
+            return v;
+        }
+    }
+
+
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-        if (jo.has("value")) {
+        if (jo.has("filter_value")) {
             JSONArray ja = null;
             try {
-                JSONObject valueOb = jo.getJSONObject("value");
+                JSONObject valueOb = jo.getJSONObject("filter_value");
                 ja = valueOb.getJSONArray("value");
             } catch (JSONException e) {
                 ja = new JSONArray();
             }
             for (int i = 0, len = ja.length(); i < len; i++) {
                 Object o = ja.get(i);
+
                 if (o != null) {
-                    valueSet.add(Double.valueOf(o.toString()));
+                    if(StringUtils.isEmpty(o.toString())){
+                        valueSet.add(Double.NaN);
+                    } else {
+                        valueSet.add(Double.valueOf(o.toString()));
+                    }
                 }
             }
         }
@@ -122,10 +179,5 @@ public abstract class NumberValuesFilterValue implements NumberFilterValue {
         return true;
     }
 
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
 }

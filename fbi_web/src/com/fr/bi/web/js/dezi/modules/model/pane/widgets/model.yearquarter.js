@@ -3,7 +3,7 @@ BIDezi.YearQuarterWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.YearQuarterWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.QUARTER,
+            type: BICst.WIDGET.QUARTER,
             dimensions: {},
             view: {},
             value: {}
@@ -14,14 +14,14 @@ BIDezi.YearQuarterWidgetModel = BI.inherit(BI.Model, {
         if (BI.has(changed, "detail")) {
             this.set(this.get("detail"));
         }
-        if (BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "value")) {
             this.tmp({
                 detail: {
                     name: this.get("name"),
                     dimensions: this.get("dimensions"),
                     view: this.get("view"),
                     type: this.get("type"),
-                    value: changed.value
+                    value: this.get("value")
                 }
             }, {
                 silent: true
@@ -44,6 +44,10 @@ BIDezi.YearQuarterWidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         return false;
     },
 

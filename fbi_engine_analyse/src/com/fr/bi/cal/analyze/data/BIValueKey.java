@@ -19,7 +19,7 @@ public class BIValueKey extends BIField {
     private BITargetAndDimension dimension;
 
     public BIValueKey(BITargetAndDimension dimension, Object value, GroupValueIndex gvi) {
-        super(dimension.createColumnKey());
+        super(dimension.createColumnKey().getTableBelongTo().getID().getIdentityValue(), dimension.createColumnKey().getFieldName());
         this.dimension = dimension;
         this.name = dimension.getValue();
         this.value = value;

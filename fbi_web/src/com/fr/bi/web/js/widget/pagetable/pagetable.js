@@ -15,7 +15,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         return BI.extend(BI.PageTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-page-table",
             el: {
-                type: "bi.custom_scroll_table"
+                type: "bi.sequence_table"
             },
 
             hasHNext: BI.emptyFn,
@@ -78,7 +78,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this.hpage = 1;
 
         this.table = BI.createWidget(o.el, {
-            type: "bi.custom_scroll_table",
+            type: "bi.sequence_table",
             element: this.element,
 
             pageSpace: 95,
@@ -189,20 +189,27 @@ BI.PageTable = BI.inherit(BI.Widget, {
         });
 
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
+            self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_INIT);
+            self._dealWithPager();
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-
+            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
+            self._dealWithPager();
         });
 
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
-
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             self._hideCurrentColumn();
+            self._dealWithPager();
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
+            self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.PageTable.EVENT_COLUMN_RESIZE);
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
+            self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
         this.pager = BI.createWidget(o.pager, {
             type: "bi.number_pager",
@@ -212,18 +219,32 @@ BI.PageTable = BI.inherit(BI.Widget, {
         });
         this.pager.on(BI.NumberPager.EVENT_CHANGE, function () {
             self._loading();
+            var vpage = this.getCurrentPage();
             o.itemsCreator({
-                vpage: this.getCurrentPage()
+                vpage: vpage
             }, function (items, header, crossItems, crossHeader) {
+                self.setVPage(vpage);
                 self.populate.apply(self, arguments);
                 self._loaded();
             });
+        });
+
+        this.tipPager = BI.createWidget({
+            type: "bi.label",
+            invisible: false,
+            cls: "page-table-min-pager",
+            width: this._const.scrollWidth,
+            height: this._const.scrollWidth
         });
 
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
             items: [{
+                el: this.tipPager,
+                right: 0,
+                bottom: 0
+            }, {
                 el: this.pager,
                 right: 0,
                 bottom: 0
@@ -262,50 +283,71 @@ BI.PageTable = BI.inherit(BI.Widget, {
     _showCurrentColumn: function () {
         var self = this, o = this.options;
         this._hideCurrentColumn();
-        this._currentColumn = BI.createWidget({
-            type: "bi.text_button",
-            cls: "page-table-current-column",
-            text: BI.i18nText("BI-Di_A_Col", ((this.hpage - 1) * 20 + 1)),
-            hgap: 15,
-            height: 20,
-            handler: function () {
-                self._hideCurrentColumn();
-            }
-        });
-        if (BI.isNotNull(o.isNeedFreeze)) {
-            var regionSize = this.table.getRegionColumnSize();
-            BI.createWidget({
-                type: "bi.absolute",
-                element: this.element,
-                items: [{
-                    el: this._currentColumn,
-                    left: regionSize[0] + 2,
-                    bottom: this._const.scrollWidth + 2
-                }]
-            })
-        } else {
-            BI.createWidget({
-                type: "bi.absolute",
-                element: this.element,
-                items: [{
-                    el: this._currentColumn,
-                    left: 2,
-                    bottom: this._const.scrollWidth + 2
-                }]
-            })
-        }
+        /**
+         * 暂时不用显示分页信息
+         */
+        //this._currentColumn = BI.createWidget({
+        //    type: "bi.text_button",
+        //    cls: "page-table-current-column",
+        //    text: BI.i18nText("BI-Di_A_Col", ((this.hpage - 1) * 20 + 1)),
+        //    hgap: 15,
+        //    height: 20,
+        //    handler: function () {
+        //        self._hideCurrentColumn();
+        //    }
+        //});
+        //if (BI.isNotNull(o.isNeedFreeze)) {
+        //    var regionSize = this.table.getRegionColumnSize();
+        //    BI.createWidget({
+        //        type: "bi.absolute",
+        //        element: this.element,
+        //        items: [{
+        //            el: this._currentColumn,
+        //            left: regionSize[0] + 2,
+        //            bottom: this._const.scrollWidth + 2
+        //        }]
+        //    })
+        //} else {
+        //    BI.createWidget({
+        //        type: "bi.absolute",
+        //        element: this.element,
+        //        items: [{
+        //            el: this._currentColumn,
+        //            left: 2,
+        //            bottom: this._const.scrollWidth + 2
+        //        }]
+        //    })
+        //}
     },
 
     _hideCurrentColumn: function () {
         this._currentColumn && this._currentColumn.destroy();
     },
 
+    _dealWithPager: function () {
+        var o = this.options;
+        var regionSize = this.table.getCalculateRegionColumnSize();
+
+        var sWidth = o.isNeedFreeze === true ? regionSize[1] : regionSize[0];
+
+        if (sWidth <= 200) {
+            this.tipPager.setValue(this.getVPage());
+            this.pager.setVisible(false);
+            this.tipPager.setVisible(true);
+        } else {
+            this.tipPager.setVisible(false);
+            this.pager.setVisible(true);
+        }
+    },
+
     setHPage: function (v) {
         this.hpage = v;
+        this.table.setHPage && this.table.setHPage(v);
     },
 
     setVPage: function (v) {
         this.pager.setValue(v);
+        this.table.setVPage && this.table.setVPage(v);
     },
 
     getHPage: function () {
@@ -328,16 +370,37 @@ BI.PageTable = BI.inherit(BI.Widget, {
         return this.table.getColumnSize();
     },
 
+    getCalculateColumnSize: function () {
+        return this.table.getCalculateColumnSize();
+    },
+
+    getCalculateRegionColumnSize: function () {
+        return this.table.getCalculateRegionColumnSize();
+    },
+
+    getVerticalScroll: function () {
+        return this.table.getVerticalScroll();
+    },
+
     attr: function () {
         BI.PageTable.superclass.attr.apply(this, arguments);
         this._hideCurrentColumn();
         this.table.attr.apply(this.table, arguments);
     },
 
+    showSequence: function () {
+        this.table.showSequence();
+    },
+
+    hideSequence: function () {
+        this.table.hideSequence();
+    },
+
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
-        this._hideCurrentColumn();
         this.pager.populate();
+        this._hideCurrentColumn();
+        this._dealWithPager();
     },
 
     destroy: function () {
@@ -346,5 +409,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
     }
 });
 BI.PageTable.EVENT_CHANGE = "PageTable.EVENT_CHANGE";
-BI.PageTable.EVENT_COLUMN_RESIZE = "EVENT_COLUMN_RESIZE";
+BI.PageTable.EVENT_TABLE_AFTER_INIT = "EVENT_TABLE_AFTER_INIT";
+BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE = "PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE";
+BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE = "PageTable.EVENT_TABLE_AFTER_REGION_RESIZE";
 $.shortcut('bi.page_table', BI.PageTable);

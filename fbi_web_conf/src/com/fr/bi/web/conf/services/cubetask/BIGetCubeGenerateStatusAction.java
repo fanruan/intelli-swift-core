@@ -3,9 +3,10 @@
  */
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.fr.bi.conf.provider.BICubeManagerProvider;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.utils.BIPackUtils;
+
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.conf.utils.BIPackUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -29,7 +30,7 @@ public class BIGetCubeGenerateStatusAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
 
         long useId = ServiceUtils.getCurrentUserID(req);
-        BICubeManagerProvider cubeManager = BIConfigureManagerCenter.getCubeManager();
+        BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
         boolean hasCheck = false;
         boolean isChecking = false;
         boolean isAlling = false;
@@ -53,7 +54,7 @@ public class BIGetCubeGenerateStatusAction extends AbstractBIConfigureAction {
         jo.put("isChecking", isChecking);
         jo.put("isAlling", isAlling);
         jo.put("isSingleing", isSingleing);
-        WebUtils.printAsJSON(res,  jo);
+        WebUtils.printAsJSON(res, jo);
 
     }
 

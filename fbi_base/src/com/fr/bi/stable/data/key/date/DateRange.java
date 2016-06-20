@@ -54,7 +54,14 @@ public class DateRange implements JSONParser, JSONCreator, XMLable {
      */
     @Override
     public JSONObject createJSON() throws Exception {
-        return null;
+        JSONObject jo = new JSONObject();
+        if (this.start != null){
+            jo.put("start", this.start.getTime());
+        }
+        if (this.end != null){
+            jo.put("end", this.end.getTime());
+        }
+        return jo;
     }
 
     /**
@@ -142,5 +149,13 @@ public class DateRange implements JSONParser, JSONCreator, XMLable {
         }
 
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "DateRange{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
     }
 }

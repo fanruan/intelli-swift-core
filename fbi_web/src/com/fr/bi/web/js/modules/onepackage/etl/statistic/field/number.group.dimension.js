@@ -38,6 +38,9 @@ BI.NumberGroupDimension = BI.inherit(BI.AbstractDimension, {
                 case BICst.STATISTICS_GROUP_NUMBER_COMBO.GROUP_SETTING:
                     self._setGroups();
                     break;
+                case BICst.STATISTICS_GROUP_NUMBER_COMBO.RENAME:
+                    self.nameEditor.focus();
+                    break;
                 case BICst.STATISTICS_GROUP_NUMBER_COMBO.DELETE:
                     self.fireEvent(BI.AbstractDimension.EVENT_DESTROY);
                     break;
@@ -52,9 +55,8 @@ BI.NumberGroupDimension = BI.inherit(BI.AbstractDimension, {
         BI.Popovers.remove(id);
         var popup = BI.createWidget({
             type: "bi.number_custom_group_popup",
-            id: id,
-            fieldName: o.fieldName,
-            table: this.options.table
+            dId: o.dId,
+            model: o.model
         });
         popup.on(BI.NumberCustomGroupPopup.EVENT_CHANGE, function(v){
             o.model.setDimensionGroupById(o.dId, v);

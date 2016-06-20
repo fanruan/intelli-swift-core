@@ -339,7 +339,7 @@ TestView = BI.inherit(BI.View, {
                 north: {
                     el: {
                         type: "bi.label",
-                        text: "部件 >",
+                        text: "部件+服务 >",
                         cls: "right-classify",
                         textAlign: "left",
                         hgap: 30,
@@ -624,7 +624,7 @@ $(function () {
         },
         index: function () {
             BI.Factory.createView("", TViews.get(""), BI.extend({}, TModels.get("")), {
-                element: "body"
+                element: "#wrapper"
             }, null);
         }
     });

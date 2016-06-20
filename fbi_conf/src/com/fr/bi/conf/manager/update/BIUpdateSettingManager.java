@@ -1,6 +1,6 @@
 package com.fr.bi.conf.manager.update;
 
-import com.fr.bi.conf.base.BISystemDataManager;
+import com.finebi.cube.conf.BISystemDataManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
@@ -21,6 +21,11 @@ public class BIUpdateSettingManager extends BISystemDataManager<SingleUserBIUpda
     @Override
     public String managerTag() {
         return "BIUpdateSettingManager";
+    }
+
+    @Override
+    public String persistUserDataName(long key) {
+        return managerTag();
     }
 
     @Override

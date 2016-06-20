@@ -21,7 +21,7 @@ import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
@@ -101,7 +101,7 @@ public class DateColumnFile implements ColumnFile<Long> {
     }
 
     @Override
-    public void addDataValue(long row, Long value) {
+    public void addDataValue(int row, Long value) {
         base.addDataValue(row, value);
     }
 

@@ -6,10 +6,10 @@ BIDezi.DetailView = BI.inherit(BI.View, {
     constants: {
         DETAIL_NORTH_HEIGHT: 40,
         DETAIL_TAB_HEIGHT: 40,
-        DETAIL_WEST_WIDTH: 280,
+        DETAIL_WEST_WIDTH: 270,
         DETAIL_DATA_STYLE_HEIGHT: 320,
         DETAIL_GAP_NORMAL: 10,
-        DETAIL_PANE_HORIZONTAL_GAP: 20,
+        DETAIL_PANE_HORIZONTAL_GAP: 10,
         DETAIL_TAB_WIDTH: 200
     },
 
@@ -26,7 +26,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();
-            BI.Broadcasts.send(old._src.id);
         }
     },
 
@@ -47,56 +46,65 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "type")) {
             this.tableChartPopupulate();
+            this._refreshDimensions();
         }
         if (BI.has(changed, "settings")) {
-            this.tableChartPopupulate();
-        }
-        if (BI.has(changed, "dimensions")) {
-            if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
-                    return !BI.has(prev.dimensions, did);
-                });
-                BI.Broadcasts.send(result._src.id, true);
-            }
-            if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
-                this.model.set("clicked", {}, {silent: true});
+            var diffs = BI.deepDiff(changed.settings, prev.settings);
+            if (diffs.length > 0 && (diffs.length > 1 || diffs[0] !== "column_size")) {
+                this.tableChartPopupulate();
             }
         }
         if (BI.has(changed, "clicked")) {
-            //click的是指标无需属性当前的table
             this.tableChartPopupulate();
         }
         if (BI.has(changed, "dimensions")) {
+            this.dimensionsManager.populate();
+            this._refreshDimensions();
+        }
+        if (BI.has(changed, "view")) {
+            this.dimensionsManager.populate();
             this._refreshDimensions();
         }
     },
 
     _render: function (vessel) {
+        var mask = BI.createWidget();
+        mask.element.__buildZIndexMask__(0);
         BI.createWidget({
-            type: "bi.border",
+            type: "bi.absolute",
             element: vessel,
-            items: {
-                north: {el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT},
-                west: {el: this._buildWest(), width: this.constants.DETAIL_WEST_WIDTH},
-                center: {el: this._buildCenter()}
-            }
+            items: [{
+                el: mask,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }, {
+                el: {
+                    type: "bi.htape",
+                    cls: "widget-attribute-setter-container",
+                    items: [{
+                        el: this._buildWest(),
+                        width: this.constants.DETAIL_WEST_WIDTH
+                    }, {
+                        type: "bi.vtape",
+                        items: [{
+                            el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
+                        }, {
+                            el: this._buildCenter()
+                        }]
+                    }]
+                },
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20
+            }]
         });
     },
 
     _buildNorth: function () {
         var self = this;
-        var input = BI.createWidget({
-            type: "bi.text_editor",
-            height: 22,
-            width: 400,
-            validationChecker: function (v) {
-
-            }
-        });
-        input.setValue(this.model.get("name"));
-        input.on(BI.TextEditor.EVENT_CHANGE, function () {
-            self.model.set("name", input.getValue());
-        });
         var shrink = BI.createWidget({
             type: "bi.button",
             height: 25,
@@ -108,9 +116,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
-            cls: "widget-attr-north",
             items: {
-                left: [input],
                 right: [shrink]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
@@ -143,7 +149,9 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         var self = this;
         this.tableChartTab = BI.createWidget({
             type: "bi.table_chart_manager",
-            wId: this.model.get("id")
+            cls: "widget-center-wrapper",
+            wId: this.model.get("id"),
+            status: BICst.WIDGET_STATUS.DETAIL
         });
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChartTab.populate, this.tableChartTab), 0);
         this.tableChartTab.on(BI.TableChartManager.EVENT_CHANGE, function (obs) {
@@ -153,14 +161,22 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             type: "bi.real_data_checkbox"
         });
 
+        var data_style_tab = BI.createWidget({
+            type: "bi.data_style_tab",
+            wId: this.model.get("id"),
+            cardCreator: BI.bind(this._createTabs, this)
+        });
+
+        data_style_tab.on(BI.DataStyleTab.EVENT_CHANGE, function () {
+            if (this.getSelect() === BICst.DETAIL_TAB_STYLE) {
+                self.chartSetting.populate();
+            }
+        });
+
         var top = BI.createWidget({
             type: "bi.vtape",
             cls: "widget-top-wrapper",
-            items: [{
-                type: "bi.data_style_tab",
-                wId: this.model.get("id"),
-                cardCreator: BI.bind(this._createTabs, this)
-            }, {
+            items: [data_style_tab, {
                 el: checkbox,
                 height: this.constants.DETAIL_NORTH_HEIGHT
             }]
@@ -172,7 +188,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.border",
-                    cls: "widget-show-data-pane",
                     items: {
                         north: {
                             el: top,
@@ -208,9 +223,9 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         var self = this;
         this.chartSetting = BI.createWidget({
             type: "bi.chart_setting",
-            chartType: this.model.get("type"),
-            settings: this.model.get("settings")
+            wId: this.model.get("id")
         });
+        this.chartSetting.populate();
         this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
             self.model.set("settings", BI.extend(self.model.get("settings"), v));
         });
@@ -264,7 +279,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         var self = this;
         BI.each(self.model.cat("view"), function (regionType, dids) {
             BI.each(dids, function (i, dId) {
-                self.skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
+                self.skipTo(regionType + "/" + dId, dId, "dimensions." + dId, {}, {force: true});
             });
         });
     },

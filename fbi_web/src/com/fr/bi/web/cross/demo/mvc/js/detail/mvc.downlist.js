@@ -26,19 +26,16 @@ DownListView = BI.inherit(BI.View, {
                         {
                             text: "column 1.1",
                             value: 21,
-                            cls: "dot-e-font"
+                            selected: true
                         }, {
                             text: "column 1.222222222222222222222222222222222222",
                             value: 22,
-                            cls: "dot-e-font"
                         }, {
                             text: "column 1.3",
                             value: 23,
-                            cls: "dot-e-font"
                         }, {
                             text: "column 1.4",
                             value: 24,
-                            cls: "dot-e-font"
                         }, {
                             text: "column 1.5",
                             value: 25
@@ -108,15 +105,13 @@ DownListView = BI.inherit(BI.View, {
                 [
                     {
                         text: "column 8",
-                        cls: "dot-e-font",
-                        value: 18
+                        value: 18,
+                        selected: true
                     },
                     {
 
                         text: "column 9",
-                        cls: "dot-e-font",
                         value: 19
-
                     }
                 ]
 
@@ -152,7 +147,7 @@ DownListView = BI.inherit(BI.View, {
                 type: "bi.button",
                 text: "setValue",
                 handler: function () {
-                    self.down.setValue([{value: 11, childValue: 24}, {value: 18}])
+                    self.down.setValue()
                 }
             },
                 {

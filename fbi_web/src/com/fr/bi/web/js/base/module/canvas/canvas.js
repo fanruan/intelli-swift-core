@@ -115,7 +115,7 @@ BI.Canvas = BI.inherit(BI.Widget, {
 
     stroke: function (callback) {
         var self = this;
-        BI.defer(function () {
+        BI.nextTick(function () {
             var ctx = self._getContext();
             BI.each(self._queue, function (i, q) {
                 if (BI.isFunction(ctx[q.k])) {

@@ -10,7 +10,8 @@ BI.PageTableCell = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.PageTableCell.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-page-table-cell",
-            text: ""
+            text: "",
+            title: ""
         })
     },
 
@@ -23,8 +24,10 @@ BI.PageTableCell = BI.inherit(BI.Widget, {
             whiteSpace: "nowrap",
             height: this.options.height,
             text: this.options.text,
+            title: this.options.title,
             value: this.options.value,
-            lgap: 5
+            lgap: 5,
+            rgap: 5
         });
     }
 });

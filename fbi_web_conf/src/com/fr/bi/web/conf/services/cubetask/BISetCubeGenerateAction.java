@@ -1,11 +1,14 @@
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.fr.bi.base.BIUser;
-import com.fr.bi.cal.generate.BuildCubeTask;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BICubeManagerProvider;
+import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.bi.web.conf.services.cubetask.utils.CubeTaskGenerate;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.stable.StringUtils;
+import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,14 +26,16 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
 
         long userId = ServiceUtils.getCurrentUserID(req);
-
-        BICubeManagerProvider cubeManager = BIConfigureManagerCenter.getCubeManager();
-//        if (BIPackUtils.isNoPackageChange(userId) && BIPackUtils.isNoGeneratingChange(userId)) {
-//            cubeManager.addTask(new AllTask(userId), userId);
-//        } else {
-//            cubeManager.addTask(new CheckTask(userId), userId);
-//        }
-        cubeManager.addTask(new BuildCubeTask(new BIUser(userId)), userId);
+        String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
+//        todo kary 优化ETL的更新方式,可能要单独实现ETL更新方法
+        if (StringUtils.isEmpty(tableId)){
+//            CubeBuildStuff cubeBuildStuff= new CubeBuildStuffManager(new BIUser(userId));
+//            CubeTaskGenerate.CubeBuild(userId, cubeBuildStuff);
+            CubeTaskGenerate.CubeBuild(userId);
+        }else{
+            CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
+            CubeTaskGenerate.CubeBuild(userId, cubeBuildStuff);
+        }
     }
 
 }

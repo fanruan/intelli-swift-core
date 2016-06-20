@@ -1,16 +1,13 @@
 package com.fr.bi.field.target.detailtarget.field;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.DateConstant;
-import com.fr.bi.stable.data.BIField;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 
 public class BIDateDetailTarget extends BIStringDetailTarget {
@@ -27,15 +24,19 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
         if (row != null) {
             int r = row.intValue();
             if (r > -1) {
-                ICubeTableService ti = loader.getTableIndex(this.createTableKey());
-                return ti.getRowValue(this.createKey(getStatisticElement()), r);
+                initialTableSource(loader);
+                Object ob =  cubeTableService.getRowValue(this.createKey(getStatisticElement()), r);
+                if (ob == null){
+                    return ob;
+                }
+                return group.getType() == BIReportConstant.GROUP.M ? ((Number)ob).longValue() + 1 : ((Number)ob).longValue();
             }
         }
         return null;
     }
 
     @Override
-    public BIKey createKey(BIField column) {
+    public BIKey createKey(BusinessField column) {
         if (group.getType() == BIReportConstant.GROUP.NO_GROUP) {
             return new IndexKey(column.getFieldName());
         }
@@ -50,39 +51,24 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
      */
     @Override
     public Object createShowValue(Object value) {
-        Date date = (Date) value;
-        if (date == null) {
+        if (value == null) {
             return null;
         }
         Calendar c = Calendar.getInstance();
-
-        c.setTime(date);
         switch (group.getType()) {
-            case BIReportConstant.GROUP.YMD: {
+            case BIReportConstant.GROUP.YMD:
+                c.setTimeInMillis((Long) value);
                 return c.get(Calendar.YEAR) + "/" + insertZero(c.get(Calendar.MONTH) + 1) + "/" + insertZero(c.get(Calendar.DAY_OF_MONTH));
-            }
-            case BIReportConstant.GROUP.Y: {
-                return c.get(Calendar.YEAR);
-            }
-            case BIReportConstant.GROUP.S: {
-                int m = c.get(Calendar.MONTH);
-                return (m / 3 + 1);
-            }
-            case BIReportConstant.GROUP.M: {
-                int m = c.get(Calendar.MONTH);
-                return insertZero(m + 1);
-            }
-            case BIReportConstant.GROUP.W: {
-                int m = c.get(Calendar.DAY_OF_WEEK);
-                return DateConstant.getWeekString(m);
-            }
+            case BIReportConstant.GROUP.YMDHMS:
+                c.setTimeInMillis((Long) value);
+                return c.get(Calendar.YEAR) + "/"
+                        + insertZero(c.get(Calendar.MONTH) + 1) + "/"
+                        + insertZero(c.get(Calendar.DAY_OF_MONTH)) + "/ "
+                        + insertZero(c.get(Calendar.HOUR_OF_DAY)) + ":"
+                        + insertZero(c.get(Calendar.MINUTE)) + ":"
+                        + insertZero(c.get(Calendar.SECOND));
         }
-        return c.get(Calendar.YEAR) + "/"
-                + insertZero(c.get(Calendar.MONTH) + 1) + "/"
-                + insertZero(c.get(Calendar.DAY_OF_MONTH)) + "/ "
-                + insertZero(c.get(Calendar.HOUR_OF_DAY)) + ":"
-                + insertZero(c.get(Calendar.MINUTE)) + ":"
-                + insertZero(c.get(Calendar.SECOND));
+        return value;
     }
 
     private Object insertZero(int time) {

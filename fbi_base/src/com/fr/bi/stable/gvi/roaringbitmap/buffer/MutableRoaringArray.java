@@ -13,8 +13,8 @@ import java.util.Arrays;
 
 
 /**
- * Specialized array to store the containers used by a RoaringBitmap. This class
- * is similar to org.roaringbitmap.RoaringArray but meant to be used with memory
+ * Specialized array to store the containers usable by a RoaringBitmap. This class
+ * is similar to org.roaringbitmap.RoaringArray but meant to be usable with memory
  * mapping. This is not meant to be used by end users.
  * 
  * Objects of this class reside in RAM.
@@ -79,7 +79,7 @@ public final class MutableRoaringArray implements Cloneable, Externalizable,
 
     /**
      * Create a roaring array based on a previously serialized ByteBuffer. As
-     * much as possible, the ByteBuffer is used as the backend, however if you
+     * much as possible, the ByteBuffer is usable as the backend, however if you
      * modify the content, the result is unspecified.
      * 
      * @param bb

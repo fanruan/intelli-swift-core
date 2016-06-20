@@ -11,9 +11,9 @@ public class BIPeriodCalTargetKey extends BIConfiguratedCalculatorTargetKey {
      */
     private static final long serialVersionUID = -2798444466230489292L;
 
-    public BIPeriodCalTargetKey(String targetName, String cal_target_name,
+    public BIPeriodCalTargetKey(String targetName, String target_id,
                                 Map targetMap, int start_group) {
-        super(targetName, cal_target_name, targetMap, start_group);
+        super(targetName, target_id, targetMap, start_group);
     }
 
     @Override

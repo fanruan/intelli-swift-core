@@ -6,9 +6,9 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.file.DatasourceManager;
 import com.fr.fs.web.service.ServiceUtils;
@@ -64,7 +64,7 @@ public class BIGetTransFromDBAction extends AbstractBIConfigureAction {
         Map<String, DBTableSource> sources = new HashMap<String, DBTableSource>();
         while (iterator.hasNext()){
             String id = iterator.next();
-            ITableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
+            CubeTableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
             if (source.getType() == BIBaseConstant.TABLETYPE.DB){
                 sources.put(id, (DBTableSource)source);
             }
@@ -87,11 +87,11 @@ public class BIGetTransFromDBAction extends AbstractBIConfigureAction {
         Iterator<Map.Entry<String, DBTableSource>> it = getDBSource(tableJsonString, userId).entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, DBTableSource> entry = it.next();
-            DBTable table = entry.getValue().getDbTable();
+            IPersistentTable table = entry.getValue().getPersistentTable();
             if (!StringUtils.isEmpty(table.getRemark())) {
                 tableTrans.put(entry.getKey(), table.getRemark());
             }
-            for (BIColumn column : table.getColumnArray()) {
+            for (PersistentField column : table.getFieldList()) {
                 if (!StringUtils.isEmpty(column.getRemark())) {
                     fieldTrans.put(entry.getKey() + column.getFieldName(), column.getRemark());
                 }

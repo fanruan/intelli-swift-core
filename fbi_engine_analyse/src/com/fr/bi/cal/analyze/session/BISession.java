@@ -1,16 +1,23 @@
 package com.fr.bi.cal.analyze.session;
 
-import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
+import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
+import com.fr.bi.cal.stable.engine.TempCubeTask;
+import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
+import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
-import com.fr.bi.stable.data.Table;
+import com.fr.bi.stable.constant.BIExcutorConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
@@ -36,10 +43,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BISession extends BIAbstractSession {
 
     private boolean isEdit;
+    private boolean isRealTime;
     private BIReportNode node;
     //pony 缓存loader
     private ICubeDataLoader loader;
     private CubeGenerateStatusProvider provider;
+    private String tempTableMd5;
     //pony 明细表缓存的分页信息
     private Map<DetailSortKey, ConcurrentHashMap<Integer, Integer>> detailIndexMap = new ConcurrentHashMap<DetailSortKey, ConcurrentHashMap<Integer, Integer>>();
     private Map<DetailSortKey, ConcurrentHashMap<Integer, Object[]>> detailValueMap = new ConcurrentHashMap<DetailSortKey, ConcurrentHashMap<Integer, Object[]>>();
@@ -49,15 +58,21 @@ public class BISession extends BIAbstractSession {
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> partpageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
 
 
+    public BISession(String remoteAddress, BIWeblet let, long userId) {
+        super(remoteAddress, let, userId);
+    }
+
     private BISession(String remoteAddress, BIWeblet let, long userId, BIReportNode node) {
         super(remoteAddress, let, userId);
         this.node = node;
+        updateTime();
     }
 
     public BISession(String remoteAddress, BIWeblet let, long userId, Locale locale, BIReportNode node) {
         this(remoteAddress, let, userId, node);
         // TODO:richie在这里改变国际化的环境
         GeneralContext.setLanguage(1);
+        updateTime();
     }
 
     //TODO : 这边userid 也要把loader什么的换下，在这边实现起来不好
@@ -84,26 +99,27 @@ public class BISession extends BIAbstractSession {
 
     /**
      * 半推半就
+     *
      * @param isEdit
      * @return
      */
     public boolean setEdit(boolean isEdit) {
-    	BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-    	if(isEdit){
-    		isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId());
-    	} else {
-    		releaseLock();
-    	}
-    	this.isEdit = isEdit;
-		return isEdit;
+        BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        if (isEdit) {
+            isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId());
+        } else {
+            releaseLock();
+        }
+        this.isEdit = isEdit;
+        return isEdit;
     }
-    
-    private void releaseLock(){
-    	BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-    	BIReportNodeLock lock = lockDAO.getLock(this.sessionID, node.getUserId(), node.getId());
-    	if(lock != null){
-    		lockDAO.release(lock);
-    	}
+
+    private void releaseLock() {
+        BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        BIReportNodeLock lock = lockDAO.getLock(this.sessionID, node.getUserId(), node.getId());
+        if (lock != null) {
+            lockDAO.release(lock);
+        }
     }
 
     public CubeGenerateStatusProvider getProvider() {
@@ -114,17 +130,44 @@ public class BISession extends BIAbstractSession {
         this.provider = provider;
     }
 
+    public String getTempTableMd5() {
+        return tempTableMd5;
+    }
+
+    public void setTempTableMd5(String tempTableMd5) {
+        this.tempTableMd5 = tempTableMd5;
+    }
+
+    public boolean isRealTime() {
+        return isRealTime;
+    }
+
+    public void setIsRealTime(boolean isRealTime) {
+        this.isRealTime = isRealTime;
+    }
+
     public ResultWorkBook getExportBookByName(String name) throws CloneNotSupportedException {
         BIWidget widget = report.getWidgetByName(name);
         if (widget != null) {
             widget = (BIWidget) widget.clone();
+            switch (widget.getType()) {
+                case BIReportConstant.WIDGET.TABLE:
+                case BIReportConstant.WIDGET.CROSS_TABLE:
+                case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                    ((TableWidget)widget).setComplexExpander(new ComplexAllExpalder());
+                    ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
+                    break;
+                case BIReportConstant.WIDGET.DETAIL:
+                    ((BIDetailWidget)widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
+                    break;
+            }
+
             widget.setWidgetName(widget.getWidgetName() + Math.random());
             TemplateWorkBook workBook = widget.createWorkBook(this);
             return ((BIWorkBook) workBook).execute4BI(getParameterMap4Execute());
         }
         return null;
     }
-
 
 
     @Override
@@ -184,10 +227,10 @@ public class BISession extends BIAbstractSession {
 
     @Override
     public void release() {
-        synchronized (detailIndexMap){
+        synchronized (detailIndexMap) {
             detailIndexMap.clear();
         }
-        synchronized (detailValueMap){
+        synchronized (detailValueMap) {
             detailValueMap.clear();
         }
         releaseLock();
@@ -196,15 +239,23 @@ public class BISession extends BIAbstractSession {
     @Override
     public ICubeDataLoader getLoader() {
         synchronized (this) {
-           // if (!needGenerateTempCube()) {
-                return BICubeManager.getInstance().fetchCubeLoader(accessUserId);
-//            } else {
-//
-//                if (loader == null) {
-//                    loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTable(), getUserId()));
-//                }
-//                return loader;
-//            }
+            if (!isRealTime()) {
+                return CubeReadingTableIndexLoader.getInstance(accessUserId);
+            } else {
+                if (loader == null) {
+                    loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getUserId()));
+                }
+                return loader;
+            }
+        }
+    }
+
+    @Override
+    public void updateTime() {
+        this.lastTime = System.currentTimeMillis();
+        if (isRealTime()) {
+            CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getUserId()));
+            loader.updateTime();
         }
     }
 
@@ -212,7 +263,7 @@ public class BISession extends BIAbstractSession {
 
     }
 
-    public boolean hasPackageAccessiblePrivilege(Table key) {
+    public boolean hasPackageAccessiblePrivilege(BusinessTable key) {
         return true;
     }
 
@@ -253,15 +304,15 @@ public class BISession extends BIAbstractSession {
         return null;
     }
 
-    public GroupValueIndex createFilterGvi(Table key) {
-        return getLoader().getTableIndex(key).getAllShowIndex();
+    public GroupValueIndex createFilterGvi(BusinessTable key) {
+        return getLoader().getTableIndex(key.getTableSource()).getAllShowIndex();
     }
 
     public Long getReportId() {
         return node.getId();
     }
 
-    public int getDetailLastIndex (DetailSortKey key, int page) {
+    public int getDetailLastIndex(DetailSortKey key, int page) {
         int index = 0;
         ConcurrentHashMap<Integer, Integer> imap = detailIndexMap.get(key);
         if (imap != null && imap.containsKey(page)) {
@@ -270,7 +321,7 @@ public class BISession extends BIAbstractSession {
         return index;
     }
 
-    public Object[] getDetailLastValue (DetailSortKey key, int page) {
+    public Object[] getDetailLastValue(DetailSortKey key, int page) {
         ConcurrentHashMap<Integer, Object[]> vmap = detailValueMap.get(key);
         if (vmap != null && vmap.containsKey(page)) {
             return vmap.get(page);
@@ -278,32 +329,32 @@ public class BISession extends BIAbstractSession {
         return new Object[0];
     }
 
-    public void setDetailIndexMap (DetailSortKey key, int page,  int lastIndex) {
+    public void setDetailIndexMap(DetailSortKey key, int page, int lastIndex) {
         ConcurrentHashMap<Integer, Integer> imap = detailIndexMap.get(key);
         if (imap != null) {
             imap.put(page, lastIndex);
         } else {
             imap = new ConcurrentHashMap<Integer, Integer>();
-            detailIndexMap.put(key ,imap);
+            detailIndexMap.put(key, imap);
             imap.put(page, lastIndex);
         }
     }
 
-    public void setDetailValueMap (DetailSortKey key, int page, Object[] value) {
+    public void setDetailValueMap(DetailSortKey key, int page, Object[] value) {
         ConcurrentHashMap<Integer, Object[]> vmap = detailValueMap.get(key);
         if (vmap != null) {
             vmap.put(page, value);
         } else {
             vmap = new ConcurrentHashMap<Integer, Object[]>();
-            detailValueMap.put(key ,vmap);
+            detailValueMap.put(key, vmap);
             vmap.put(page, value);
         }
     }
 
-	/**
-	 * @return
-	 */
-	public BIReportNode getReportNode() {
-		return node;
-	}
+    /**
+     * @return
+     */
+    public BIReportNode getReportNode() {
+        return node;
+    }
 }

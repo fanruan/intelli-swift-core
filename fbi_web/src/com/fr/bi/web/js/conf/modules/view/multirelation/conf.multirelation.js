@@ -217,6 +217,9 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         var relations = self.model.get("relations");
         var availableRelations = self.model.get("availableRelations");
         self.mask.destroy();
+        relations = BI.sortBy(relations, function (i, item) {
+            return BI.Utils.getTableNameByFieldId4Conf(BI.lastObject(item[0]).foreignKey.field_id)
+        });
         self.multiRelation.populate(relations, availableRelations);
         self.cubeLabel.setValue(BI.i18nText("BI-Multi_Path_Use_Cur_Cube_Version") + ": " + cubeEnd);
         BI.size(relations) > 0 ? this.tab.setSelect(c.HAS_MULTI_PATH) : this.tab.setSelect(c.NONE_MULTI_PATH);

@@ -9,7 +9,6 @@ import com.fr.stable.xml.XMLReadable;
 import com.fr.stable.xml.XMLableReader;
 
 import java.beans.IntrospectionException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
@@ -31,7 +30,7 @@ public abstract class XMLValueReader {
      * 仍然需要通过解析xml。因为是流式解析，
      * 没有办法跳过某一部分的xml
      *
-     * @param uuid
+     * @param component
      * @param className
      * @return
      * @throws IntrospectionException
@@ -79,6 +78,7 @@ public abstract class XMLValueReader {
     }
 
     private int getSize(String component) {
+
         if (component.contains("#")) {
             return Integer.valueOf(component.split("#")[1]);
         } else {
@@ -139,7 +139,7 @@ public abstract class XMLValueReader {
     }
 
     protected Object constructArrayObject(Class clazz, int size) {
-        return Array.newInstance(clazz, size);
+        return BIConstructorUtils.constructArrayObject(clazz, size);
     }
 
     private BIBeanXMLReaderWrapper getGeneratedWrapper(String uuid) {
@@ -177,6 +177,7 @@ public abstract class XMLValueReader {
                             if (beanWrapper == null) {
                                 String component = xmLableReader.getAttrAsString(BIXMLTag.APPEND_INFO, "null");
                                 String clazz = xmLableReader.getAttrAsString("class", "null");
+
                                 beanWrapper = new BIBeanXMLReaderWrapper(getObjectWrapper(component, clazz));
                             }
 
@@ -189,7 +190,7 @@ public abstract class XMLValueReader {
             });
 //            }
         } catch (Exception e) {
-
+            BILogger.getLogger().error(e.getMessage(), e);
         }
     }
 

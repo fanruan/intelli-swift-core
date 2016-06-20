@@ -17,8 +17,11 @@ public class NumberLargeOrEqualsCLFilter extends NumberCalculateLineFilter {
 	/**
 	 * @param t
 	 */
-	NumberLargeOrEqualsCLFilter() {
+	public NumberLargeOrEqualsCLFilter() {
 		super(LargeOrEquals.INSTANCE);
 	}
 
+    protected  void parsClose(boolean isClose){
+        t = isClose ? LargeOrEquals.INSTANCE : Large.INSTANCE;
+    }
 }

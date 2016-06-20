@@ -75,6 +75,10 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
         return tables;
     },
 
+    getAllFields: function () {
+        return BI.deepClone(this.old_tables.fields);
+    },
+
     getOperatorTableName: function () {
         return this.tmp_operatorTableName;
     },
@@ -91,7 +95,7 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
         return {
             etl_type: "filter",
             etl_value: {
-                filter_value: this.getFilterValue()[0]
+                filter_value: this.parseFilter(this.getFilterValue()[0])
             },
             connection_name: BICst.CONNECTION.ETL_CONNECTION,
             tables: [this.getTableStructure()]
@@ -103,11 +107,88 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
     },
 
     populate: function (info) {
-        var etlValue = info.tableInfo.etl_value;
+        var etlValue = info.tableInfo.etl_value || {};
+        var filter_value = etlValue.filter_value || {};
         this.reopen = info.reopen;
-        this.filter_value = info.reopen === true ? [etlValue.filter_value] : [];
+        this.filter_value = info.reopen === true ? [filter_value] : [];
         this.tables = info.tableInfo.tables;
         this.old_tables = BI.extend(info.tableInfo, {id: BI.UUID()});
         this.isGenerated = info.isGenerated;
+    },
+
+    parseFilter: function (filter) {
+        var self = this;
+        var filterType = filter.filter_type, filterValue = filter.filter_value;
+        if (BI.isEmptyObject(filterValue)) {
+            return;
+        }
+        if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+            BI.each(filterValue, function (i, value) {
+                self.parseFilter(value);
+            });
+        }
+        if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
+            var start = filterValue.start, end = filterValue.end;
+            if (BI.isNull(start)) {
+                delete filterValue.start;
+            }
+            if (BI.isNull(end)) {
+                delete filterValue.end;
+            }
+        }
+
+        if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
+            filterValue.values = parseComplexDate(filterValue);
+            filterValue.type = filterValue.type || BICst.GROUP.YMD
+        }
+        return filter;
+
+        function parseComplexDate(v) {
+            var type = v.type, value = v.value;
+            var date = new Date();
+            var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
+            var tool = new BI.MultiDateParamTrigger();
+            if (BI.isNull(type) && BI.isNotNull(v.year)) {
+                return new Date(v.year, v.month, v.day).getTime();
+            }
+            switch (type) {
+                case BICst.MULTI_DATE_YEAR_PREV:
+                    return new Date(currY - 1 * value, currM, currD).getTime();
+                case BICst.MULTI_DATE_YEAR_AFTER:
+                    return new Date(currY + 1 * value, currM, currD).getTime();
+                case BICst.MULTI_DATE_YEAR_BEGIN:
+                    return new Date(currY, 1, 1).getTime();
+                case BICst.MULTI_DATE_YEAR_END:
+                    return new Date(currY, 11, 31).getTime();
+                case BICst.MULTI_DATE_MONTH_PREV:
+                    return tool._getBeforeMultiMonth(value).getTime();
+                case BICst.MULTI_DATE_MONTH_AFTER:
+                    return tool._getAfterMultiMonth(value).getTime();
+                case BICst.MULTI_DATE_MONTH_BEGIN:
+                    return new Date(currY, currM, 1).getTime();
+                case BICst.MULTI_DATE_MONTH_END:
+                    return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
+                case BICst.MULTI_DATE_QUARTER_PREV:
+                    return tool._getBeforeMulQuarter(value).getTime();
+                case BICst.MULTI_DATE_QUARTER_AFTER:
+                    return tool._getAfterMulQuarter(value).getTime();
+                case BICst.MULTI_DATE_QUARTER_BEGIN:
+                    return tool._getQuarterStartDate().getTime();
+                case BICst.MULTI_DATE_QUARTER_END:
+                    return tool._getQuarterEndDate().getTime();
+                case BICst.MULTI_DATE_WEEK_PREV:
+                    return date.getOffsetDate(-7 * value).getTime();
+                case BICst.MULTI_DATE_WEEK_AFTER:
+                    return date.getOffsetDate(7 * value).getTime();
+                case BICst.MULTI_DATE_DAY_PREV:
+                    return date.getOffsetDate(-1 * value).getTime();
+                case BICst.MULTI_DATE_DAY_AFTER:
+                    return date.getOffsetDate(1 * value).getTime();
+                case BICst.MULTI_DATE_DAY_TODAY:
+                    return date.getTime();
+                case BICst.MULTI_DATE_CALENDAR:
+                    return new Date(value.year, value.month, value.day).getTime();
+            }
+        }
     }
 });

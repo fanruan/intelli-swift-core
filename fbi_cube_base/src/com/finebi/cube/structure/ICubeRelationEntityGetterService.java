@@ -6,7 +6,7 @@ package com.finebi.cube.structure;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeRelationEntityGetterService extends ICubeIndexDataGetterService {
+public interface ICubeRelationEntityGetterService extends ICubeIndexDataGetterService ,ICubeVersion{
 
 
 }

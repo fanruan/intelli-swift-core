@@ -8,8 +8,7 @@
   color: #808080;
 }
 .bi-table-field-info-search-result-pane > div > div > table {
-  border-left: 1px solid #d4dadd;
-  border-top: 1px solid #d4dadd;
+  border-right: 1px solid #eaeaea;
 }
 .bi-table-field-info-search-result-pane > div > div > table > thead > tr > td {
   background: #f4f4f4;
@@ -22,10 +21,6 @@
 }
 .bi-table-field-info-search-result-pane > div > div > table > tbody > tr > td:nth-child(2) {
   background: #f4f4f4;
-}
-.bi-table-field-info-search-result-pane > div > div > table td {
-  border-right: 1px solid #d4dadd;
-  border-bottom: 1px solid #d4dadd;
 }
 .bi-table-field-info-search-result-pane .field-type {
   font-size: 18px;

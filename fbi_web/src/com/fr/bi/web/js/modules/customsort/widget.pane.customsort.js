@@ -13,6 +13,13 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
         BI.CustomSortPane.superclass._init.apply(this, arguments);
         var id = o.dId;
         var all = 0;
+
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: self.element,
+            text: BI.i18nText("BI-Loading")
+        });
+
         this.loader = BI.createWidget({
             type: "bi.list_loader",
             height: "100%",
@@ -27,6 +34,7 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
             },
             itemsCreator: function (options, populate) {
                 BI.Utils.getDataByDimensionID(id, function (allDate) {
+                    mask.destroy();
                     all = allDate;
                     populate(self._createItems(allDate))
                 })
@@ -46,7 +54,14 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
                     var holder = BI.createWidget({
                         type: "bi.label",
                         cls: "bi-sortable-holder",
-                        height: 20
+                        height: $currentItem.outerHeight()
+                    });
+                    holder.element.css({
+                        "margin-left": $currentItem.css("margin-left"),
+                        "margin-right": $currentItem.css("margin-right"),
+                        "margin-top": $currentItem.css("margin-top"),
+                        "margin-bottom": $currentItem.css("margin-bottom"),
+                        "margin": $currentItem.css("margin")
                     });
                     return holder.element;
                 },
@@ -93,6 +108,7 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
+        var o = this.options;
         var result = {};
         result.type = BICst.SORT.CUSTOM;
         result.details = this.loader.element.sortable("toArray", {attribute: "itemvalue"});

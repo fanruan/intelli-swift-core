@@ -1,36 +1,45 @@
 package com.fr.bi;
 
+
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.BITableRelationConfigurationProvider;
+import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
-import com.fr.bi.conf.provider.BICubeManagerProvider;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
-import com.fr.bi.conf.provider.BITableRelationConfigurationProvider;
+import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleManager;
 import com.fr.bi.fs.BITableMapper;
+import com.fr.bi.fs.entry.BIReportEntry;
+import com.fr.bi.fs.entry.BIReportEntryDAO;
+import com.fr.bi.fs.entry.EntryConstants;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIClassUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.MToMRelationFCMapper;
 import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.RelationFCMapper;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.base.entity.PlatformManageModule;
+import com.fr.fs.control.EntryPoolFactory;
+import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
-import com.fr.fs.dao.BIReportEntryDAO;
 import com.fr.fs.dao.EntryDAO;
+import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.Inter;
 import com.fr.plugin.ExtraClassManager;
-import com.fr.stable.ActorConstants;
-import com.fr.stable.ActorFactory;
-import com.fr.stable.ArrayUtils;
-import com.fr.stable.EnvChangedListener;
+import com.fr.stable.*;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
+import com.fr.stable.plugin.PluginSimplify;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -38,6 +47,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * BI模块启动时做的一些初始化工作，通过反射调用
@@ -47,24 +57,77 @@ public class BIPlate extends AbstractFSPlate {
     @Override
     public void initData() {
 //        SystemFactoryRegister.systemRegister();
+        registerDebug();
         initModules();
         super.initData();
         startModules();
         initPlugin();
+        registerEntrySomething();
         initOOMKillerForLinux();
-        StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class).generateCubes();
+        BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
+        loadMemoryData();
+        if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
+            markedObject.generateCubes();
+        }
+    }
+
+    private void registerDebug() {
+        try {
+            Class c = Class.forName("com.fr.bi.test.DebugUtils");
+            c.newInstance();
+        } catch (Throwable t) {
+        }
+    }
+
+    public void loadMemoryData() {
+        try {
+            loadResources();
+            BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID());
+            BIConnectionManager.getInstance();
+            BICubeConfigureCenter.getTableRelationManager().getAllTablePath(UserControl.getInstance().getSuperManagerID());
+            BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable();
+            BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(UserControl.getInstance().getSuperManagerID());
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    private void  loadResources () {
+        if(!StableUtils.isDebug()) {
+            Locale[] locales = new Locale[]{Locale.CHINA, Locale.US};
+            for(Locale locale : locales) {
+                try {
+                    com.fr.web.ResourceHelper.createDefaultJs(locale);
+                } catch (Exception e) {
+                }
+            }
+            try {
+                com.fr.web.ResourceHelper.createDefaultCss();
+            } catch (Exception e) {
+            }
+            for(BIModule module : BIModuleManager.getModules()) {
+                module.loadResources(locales);
+            }
+        }
+    }
+
+    private void registerEntrySomething() {
+        EntryPoolFactory.registerEntryDAO(EntryConstants.BIREPORT, BIReportEntryDAO.getInstance());
+        EntryPoolFactory.registerEntry("bireport", BIReportEntry.class);
+        EntryPoolFactory.registerEntryTableNames(new String[]{BIReportEntry.TABLE_NAME});
+        EntryPoolFactory.registerMobileEntryTableNames(new String[]{BIReportEntry.TABLE_NAME});
     }
 
     private void initOOMKillerForLinux() {
         String os = System.getProperty("os.name");
         BILogger.getLogger().info("OS:" + os);
-        if(os.toUpperCase().contains("LINUX")){
+        if (os.toUpperCase().contains("LINUX")) {
             String name = ManagementFactory.getRuntimeMXBean().getName();
             String pid = name.split("@")[0];
             try {
-                String cmd = "echo -17 > /proc/" + pid +"/oom_adj";
+                String cmd = "echo -17 > /proc/" + pid + "/oom_adj";
                 BILogger.getLogger().info("execute command:" + cmd);
-                Runtime.getRuntime().exec(new String[]{"/bin/sh","-c", cmd});
+                Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});
             } catch (IOException e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
@@ -110,7 +173,11 @@ public class BIPlate extends AbstractFSPlate {
     }
 
     private void initPlugin() {
-        ExtraClassManager.getInstance().addDialectCreator(DialectCreatorImpl.class.getName());
+        try {
+            ExtraClassManager.getInstance().addDialectCreator(new DialectCreatorImpl(), PluginSimplify.create("bi", "bi.db.ads"));
+        } catch (Exception e) {
+            FRLogger.getLogger().error(e.getMessage(), e);
+        }
     }
 
 
@@ -140,6 +207,8 @@ public class BIPlate extends AbstractFSPlate {
 
                 "/com/fr/bi/web/cross/css/theme/bi.theme.css",
 
+                "/com/fr/bi/web/cross/css/reporthangout/hangoutreport.plate.css",
+
                 "/com/fr/bi/web/cross/css/bi.text.css",
         });
     }
@@ -155,10 +224,14 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/bi.user.manager.js",
                 "/com/fr/bi/web/cross/js/effect/create.by.me.js",
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",
+                "/com/fr/bi/web/cross/js/effect/allreports.js",
                 "/com/fr/bi/web/cross/js/bi.share.js",
                 "/com/fr/bi/web/cross/js/theme/bi.theme.js",
                 "/com/fr/bi/web/cross/js/theme/bi.widget.newanalysis.js",
                 "/com/fr/bi/web/cross/js/bi.toolbar.add.js",
+                "/com/fr/bi/web/cross/js/bi.directory.edit.js",
+                "/com/fr/bi/web/cross/js/reporthangout/hangoutreport.plate.js",
+                "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js",
                 "/com/fr/bi/web/cross/js/bi.extra.dialog.js",
                 "/com/fr/bi/web/cross/js/bi.segment.js",
                 "/com/fr/bi/web/cross/js/bi.combo.js",
@@ -215,13 +288,13 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public ObjectTableMapper[] mappers4Register() {
-        ObjectTableMapper[] mappers = new ObjectTableMapper[]{
+        return new ObjectTableMapper[]{
                 BITableMapper.BI_REPORT_NODE.TABLE_MAPPER,
                 BITableMapper.BI_SHARED_REPORT_NODE.TABLE_MAPPER,
                 BITableMapper.BI_CREATED_TEMPLATE_FOLDER.TABLE_MAPPER,
-                BITableMapper.BI_REPORT_NODE_LOCK.TABLE_MAPPER
+                BITableMapper.BI_REPORT_NODE_LOCK.TABLE_MAPPER,
+                BIReportEntry.TABLE_MAPPER
         };
-        return mappers;
     }
 
     @Override

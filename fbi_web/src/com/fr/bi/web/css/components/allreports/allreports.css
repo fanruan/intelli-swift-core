@@ -1,0 +1,44 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-all-reports .hangout-count {
+  font-size: 14px;
+  color: #1a1a1a;
+}
+.bi-all-reports .push-bar {
+  background: #ffffff;
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px 2px 0 0;
+  -moz-border-radius: 2px 2px 0 0;
+  border-radius: 2px 2px 0 0;
+}
+.bi-all-reports .push-bar .filter-report-label {
+  color: #1a1a1a;
+  font-size: 14px;
+}
+.bi-all-reports .push-bar .reports-count {
+  color: #009de3;
+  font-size: 14px;
+}
+.bi-all-reports .push-bar .push-button {
+  -webkit-border-radius: 16px;
+  -moz-border-radius: 16px;
+  border-radius: 16px;
+  font-size: 16px;
+}
+.bi-all-reports .push-bar .push-button:hover {
+  background: #eaeaea;
+}
+.bi-all-reports .all-reports {
+  background: #ffffff;
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-all-reports .all-reports-view .view-button {
+  background: #d4dadd;
+}
+.bi-all-reports .all-reports-view .view-button.active {
+  background: #ffffff;
+}

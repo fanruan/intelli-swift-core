@@ -80,16 +80,26 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
                 value: i
             })
         });
+        var title = "";
+        if(BI.isNotNull(isValidOb.comment)) {
+            title = isValidOb.comment;
+        }
+        if(BI.isNotNull(allFields[fArray[index]])) {
+            title = allFields[fArray[index]].field_name;
+        }
         var combo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height: 30,
+            width: "100%",
             cls: "table-field-combo",
             items: tFields,
-            tipType: "warning"
+            el: {
+                tipType: isValidOb.valid === true ? "success" : "warning",
+                title: title
+            }
         });
-        isValidOb.valid === false && (combo.setWarningTitle(isValidOb.comment));
         combo.setValue(fArray[index]);
-        combo.on(BI.TextIconCombo.EVENT_CHANGE, function(){
+        combo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self.fireEvent(BI.TableAddUnion.EVENT_CHANGE, indexOfMerge, index, combo.getValue()[0]);
         });
         return combo;
@@ -142,7 +152,7 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
                 validArray.push({valid: true}) :
                 validArray.push({
                     valid: false,
-                    comment: fieldTypeValid === false ? BI.i18nText("BI-Field_Type_InValid") : BI.i18nText("BI-ETL_Join_Wrong_Merge_Field")
+                    comment: fieldTypeValid === false ? BI.i18nText("BI-Field_Type_InValid") : BI.i18nText("BI-Two_More_Fields_Can_Merge")
                 });
         });
         return validArray;

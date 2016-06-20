@@ -64,6 +64,14 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
 
         //没有表的
         if(BI.isEmptyArray(items)) {
+            this.wrapper.addItem({
+                el: {
+                    type: "bi.label",
+                    height: 50,
+                    text: BI.i18nText("BI-No_Usable_Table"),
+                    cls: "no-usable-table-comment"
+                }
+            });
             return;
         }
 
@@ -78,7 +86,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
                 })
             });
             this.schemaCombo = BI.createWidget({
-                type: "bi.text_icon_check_combo",
+                type: "bi.text_value_check_combo",
                 items: comboItems,
                 height: 28,
                 width: 230

@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.packs;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.base.FRContext;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -26,7 +26,6 @@ public class BIUpdatePackageGroupAction extends
         String groupString = WebUtils.getHTTPRequestParameter(req, "groups");
         long userId = ServiceUtils.getCurrentUserID(req);
         updatePackageGroup(groupString, userId);
-
     }
 
     /**
@@ -41,7 +40,7 @@ public class BIUpdatePackageGroupAction extends
         }
 
         JSONObject jo = new JSONObject(groupString);
-        BIConfigureManagerCenter.getPackageManager().parseGroupJSON(userId, jo);
+        BICubeConfigureCenter.getPackageManager().parseGroupJSON(userId, jo);
         try {
             /**
              * Todo 保存资源

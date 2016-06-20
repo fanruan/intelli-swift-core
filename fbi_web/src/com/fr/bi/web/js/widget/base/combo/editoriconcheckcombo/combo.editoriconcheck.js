@@ -1,12 +1,18 @@
 /**
  * Created by Young's on 2016/4/28.
  */
-BI.EditorIconCheckCombo = BI.inherit(BI.Single, {
+BI.EditorIconCheckCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.EditorIconCheckCombo.superclass._defaultConfig.apply(this, arguments), {
+            baseClass: "bi-check-editor-combo",
             width: 100,
             height: 22,
-            chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
+            chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE,
+            validationChecker: BI.emptyFn,
+            quitChecker: BI.emptyFn,
+            allowBlank: true,
+            watermark: "",
+            errorText: ""
         })
     },
 
@@ -16,18 +22,23 @@ BI.EditorIconCheckCombo = BI.inherit(BI.Single, {
         this.trigger = BI.createWidget({
             type: "bi.editor_trigger",
             items: o.items,
-            height: o.height
+            height: o.height,
+            validationChecker: o.validationChecker,
+            quitChecker: o.quitChecker,
+            allowBlank: o.allowBlank,
+            watermark: o.watermark,
+            errorText: o.errorText
         });
-        this.trigger.on(BI.EditorTrigger.EVENT_CHANGE, function(){
+        this.trigger.on(BI.EditorTrigger.EVENT_CHANGE, function () {
             self.popup.setValue(this.getValue());
             self.fireEvent(BI.EditorIconCheckCombo.EVENT_CHANGE);
         });
         this.popup = BI.createWidget({
-            type: "bi.text_icon_check_combo_popup",
+            type: "bi.text_value_check_combo_popup",
             chooseType: o.chooseType,
             items: o.items
         });
-        this.popup.on(BI.TextIconCheckComboPopup.EVENT_CHANGE, function () {
+        this.popup.on(BI.TextValueCheckComboPopup.EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.editorIconCheckCombo.hideView();
             self.fireEvent(BI.EditorIconCheckCombo.EVENT_CHANGE);
@@ -42,7 +53,6 @@ BI.EditorIconCheckCombo = BI.inherit(BI.Single, {
             el: this.trigger,
             popup: {
                 el: this.popup,
-                maxWidth: "",
                 maxHeight: 300
             }
         });

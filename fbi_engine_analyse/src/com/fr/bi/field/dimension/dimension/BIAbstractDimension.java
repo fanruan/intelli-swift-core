@@ -1,9 +1,10 @@
 package com.fr.bi.field.dimension.dimension;
 
-import com.fr.bi.field.BIAbstractTargetAndDimension;
-import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
+import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
@@ -14,6 +15,7 @@ import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +24,10 @@ import java.util.Map;
 
 public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension implements BIDimension {
 
+    @BICoreField
     protected DimensionFilter filter;
     protected ISort sort = new NoSort();
+    @BICoreField
     protected IGroup group = new NoGroup();
     private String sort_target;
 
@@ -81,7 +85,9 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if (jo.has("sort")) {
-            this.sort = BISortFactory.parseSort(jo.optJSONObject("sort"));
+            JSONObject sortJo = jo.optJSONObject("sort");
+            sortJo.put("dimension_type", jo.optInt("type"));
+            this.sort = BISortFactory.parseSort(sortJo);
             JSONObject s = jo.getJSONObject("sort");
             if (s.has("sort_target")) {
                 this.sort_target = s.optString("sort_target");
@@ -143,7 +149,13 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         if (sort_target != null) {
             res.add(sort_target);
         }
+        res.remove(id);
         return res;
+    }
+
+    @Override
+    public boolean useTargetSort() {
+        return sort_target != null && !ComparatorUtils.equals(sort_target, id);
     }
 
 
@@ -153,5 +165,10 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
             return filter.showNode(node, targetsMap, null);
         }
         return true;
+    }
+
+    @Override
+    public Object getValueByType(Object data) {
+        return data == null ? StringUtils.EMPTY : data.toString();
     }
 }

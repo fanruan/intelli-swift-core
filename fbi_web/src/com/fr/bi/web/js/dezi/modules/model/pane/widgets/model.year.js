@@ -3,7 +3,7 @@ BIDezi.YearWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.YearWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.Widget.YEAR,
+            type: BICst.WIDGET.YEAR,
             dimensions: {},
             view: {},
             value: null
@@ -44,6 +44,10 @@ BIDezi.YearWidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         return false;
     },
 

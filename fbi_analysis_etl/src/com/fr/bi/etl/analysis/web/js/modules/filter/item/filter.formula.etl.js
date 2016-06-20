@@ -5,7 +5,8 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
     _constants: {
         BUTTON_HEIGHT : 30,
         BUTTON_WIDTH : 88,
-        BUTTON_LEFT : 65
+        BUTTON_LEFT : 65,
+        PANE_HEIGHT : 120,
     },
 
     _defaultConfig: function () {
@@ -25,7 +26,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
             text : BI.i18nText('BI-Edit') + BI.i18nText('BI-Formula')
         });
         self.fieldItems = [];
-        BI.each(o.fields, function (i, item) {
+        BI.each(o[ETLCst.FIELDS], function (i, item) {
             self.fieldItems.push({
                 text : item.field_name,
                 value : item.field_name,
@@ -37,14 +38,19 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
                 type: "bi.etl_filter_formula_popup",
                 fieldItems: self.fieldItems
             });
+            formulaPopOver.on(BI.PopoverSection.EVENT_CLOSE, function () {
+                BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            })
             formulaPopOver.on(BI.ETLFilterFormulaPopup.EVENT_CHANGE, function () {
                 self.storedValue = formulaPopOver.getValue();
                 self.populate();
                 self.fireEvent(BI.ETLFormulaSettingPane.EVENT_CONFIRM);
             });
             formulaPopOver.setValue(self.storedValue);
+            var layer = BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
+            BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
             BI.Popovers.remove("etlFormula");
-            BI.Popovers.create("etlFormula", formulaPopOver).open("etlFormula");
+            BI.Popovers.create("etlFormula", formulaPopOver, {container: layer}).open("etlFormula");
         });
         self.label = BI.createWidget({
             type : 'bi.label',
@@ -56,6 +62,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
         BI.createWidget({
             type : 'bi.vertical',
             element : self.element,
+            height : self._constants.PANE_HEIGHT,
             items : [
                 BI.createWidget({
                     type : 'bi.absolute',
@@ -75,7 +82,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
     },
 
     populate : function () {
-        this.label.setText(BI.isNotNull(this.storedValue) ? BI.i18nText('BI-(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
+        this.label.setText((BI.isNull(this.storedValue) || BI.isEmptyString(this.storedValue)) ? BI.i18nText('BI-(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
     },
     
     getValue: function () {

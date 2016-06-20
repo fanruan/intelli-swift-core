@@ -25,14 +25,14 @@ BI.FilterData = BI.inherit(BI.Widget, {
         SHOW_PREVIEW_TABLE: 3
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.FilterData.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-etl-filter",
             info: {}
         });
     },
 
-    _init: function(){
+    _init: function () {
         BI.FilterData.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.FilterDataModel({
@@ -60,18 +60,18 @@ BI.FilterData = BI.inherit(BI.Widget, {
         this.populate(o.info);
     },
 
-    _checkMasker: function(){
-        if(BI.isNotNull(this.previewLoadingMasker)){
+    _checkMasker: function () {
+        if (BI.isNotNull(this.previewLoadingMasker)) {
             this.previewLoadingMasker.destroy();
             this.previewLoadingMasker = null;
         }
-        if(BI.isNotNull(this.loadingMasker)){
+        if (BI.isNotNull(this.loadingMasker)) {
             this.loadingMasker.destroy();
             this.loadingMasker = null;
         }
     },
 
-    _buildNorth: function(){
+    _buildNorth: function () {
         return BI.createWidget({
             type: "bi.left",
             cls: "filter-north",
@@ -85,29 +85,29 @@ BI.FilterData = BI.inherit(BI.Widget, {
         })
     },
 
-    _buildSouth: function(){
+    _buildSouth: function () {
         var self = this;
 
         var cancel = BI.createWidget({
-            type:"bi.button",
-            level:"ignore",
-            text:BI.i18nText("BI-Cancel"),
+            type: "bi.button",
+            level: "ignore",
+            text: BI.i18nText("BI-Cancel"),
             height: this.constants.FILTER_BUTTON_HEIGHT
         });
 
         this.save = BI.createWidget({
-            type:"bi.button",
-            text:BI.i18nText("BI-Save"),
+            type: "bi.button",
+            text: BI.i18nText("BI-Save"),
             tipType: "warning",
             height: this.constants.FILTER_BUTTON_HEIGHT
         });
 
-        cancel.on(BI.Button.EVENT_CHANGE,function(){
+        cancel.on(BI.Button.EVENT_CHANGE, function () {
             self._checkMasker();
             self.fireEvent(BI.FilterData.EVENT_CANCEL);
         });
 
-        this.save.on(BI.Button.EVENT_CHANGE, function() {
+        this.save.on(BI.Button.EVENT_CHANGE, function () {
             self._checkMasker();
             self.fireEvent(BI.FilterData.EVENT_SAVE, self.model.getValue());
         });
@@ -125,7 +125,7 @@ BI.FilterData = BI.inherit(BI.Widget, {
         });
     },
 
-    _buildWest: function(){
+    _buildWest: function () {
         var self = this;
 
         this.filterOpeartor = BI.createWidget({
@@ -133,9 +133,9 @@ BI.FilterData = BI.inherit(BI.Widget, {
             cls: "filter-operator-pane"
         });
 
-        this.filterOpeartor.on(BI.FieldFilter.EVENT_CHANGE, function(){
+        this.filterOpeartor.on(BI.FieldFilter.EVENT_CHANGE, function () {
             self.model.setFilterValue(this.getValue());
-            if(self.filterOpeartor.isEmpty()){
+            if (self.filterOpeartor.isEmpty()) {
                 self.save.setEnable(false);
                 self.save.setTitle(BI.i18nText("BI-Please_Set_Filter_Condition"));
                 return;
@@ -153,14 +153,14 @@ BI.FilterData = BI.inherit(BI.Widget, {
                     cls: "filter-table-name",
                     items: [{
                         type: "bi.absolute",
-                        items:[{
-                            el:{
+                        items: [{
+                            el: {
                                 type: "bi.label",
                                 cls: "table-name-text",
                                 textAlign: "left",
                                 textHeight: this.constants.FILTER_EDITOR_HEIGHT,
                                 width: this.constants.FILTER_TABLE_NAME_WIDTH,
-                                text:BI.i18nText("BI-Table_Name") + ":"
+                                text: BI.i18nText("BI-Table_Name") + ":"
                             },
                             width: this.constants.FILTER_TABLE_NAME_WIDTH,
                             top: this.constants.FILTER_GAP_TEN,
@@ -172,7 +172,7 @@ BI.FilterData = BI.inherit(BI.Widget, {
                         type: "bi.absolute",
                         items: [{
                             el: {
-                                type:"bi.label",
+                                type: "bi.label",
                                 height: this.constants.FILTER_EDITOR_HEIGHT,
                                 width: this.constants.FILTER_EDITOR_WIDTH,
                                 cls: "filter-table-name-editor",
@@ -201,7 +201,7 @@ BI.FilterData = BI.inherit(BI.Widget, {
         return this.west;
     },
 
-    _buildCenter: function(){
+    _buildCenter: function () {
         var self = this;
         this.displayResultArea = BI.createWidget({
             type: "bi.tab",
@@ -209,8 +209,8 @@ BI.FilterData = BI.inherit(BI.Widget, {
             cardCreator: BI.bind(_createTabs, this)
         });
 
-        function _createTabs(v){
-            switch(v) {
+        function _createTabs(v) {
+            switch (v) {
                 case this.constants.SHOW_PREVIEW_TIP:
                     return BI.createWidget({
                         type: "bi.float_center_adapt",
@@ -227,8 +227,8 @@ BI.FilterData = BI.inherit(BI.Widget, {
                         height: this.constants.PREVIEW_BUTTON_HEIGHT,
                         width: this.constants.PREVIEW_BUTTON_WIDTH
                     });
-                    previewButton.on(BI.Button.EVENT_CHANGE, function(){
-                        if(!self.previewLoadingMasker){
+                    previewButton.on(BI.Button.EVENT_CHANGE, function () {
+                        if (!self.previewLoadingMasker) {
                             self.previewLoadingMasker = BI.createWidget({
                                 type: "bi.loading_mask",
                                 masker: self.center,
@@ -242,23 +242,32 @@ BI.FilterData = BI.inherit(BI.Widget, {
                             })
                         }
 
-                        BI.Utils.getPreviewDataByTableAndFields(self.model.getPreTableStructure(), [], function(data){
+                        BI.Utils.getPreviewDataByTableAndFields(self.model.getPreTableStructure(), [], function (data) {
                             var fields = data.fields, values = data.value;
                             var header = [], items = [];
-                            BI.each(fields, function(i, field){
+                            BI.each(fields, function (i, field) {
                                 header.push({
                                     text: field
                                 });
                             });
-                            BI.each(values, function(i, value){
-                                BI.each(value, function(j, v){
-                                    if(BI.isNotNull(items[j])){
+
+                            var fieldTypes = [];
+                            BI.each(self.model.getAllFields(), function (i, fs) {
+                                BI.each(fs, function (j, field) {
+                                    fieldTypes.push(field.field_type);
+                                });
+                            });
+
+                            BI.each(values, function (i, value) {
+                                var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
+                                BI.each(value, function (j, v) {
+                                    if (BI.isNotNull(items[j])) {
                                         items[j].push({
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         });
                                     } else {
                                         items.push([{
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         }]);
                                     }
                                 });
@@ -311,7 +320,15 @@ BI.FilterData = BI.inherit(BI.Widget, {
         return this.center;
     },
 
-    populate: function(info){
+    _formatDate: function (d) {
+        if (BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
+        var date = new Date(BI.parseInt(d));
+        return date.print("%Y/%X/%d %H:%M:%S")
+    },
+
+    populate: function (info) {
         var self = this;
         this.model.populate(info);
         this.loadingMasker = BI.createWidget({
@@ -330,7 +347,7 @@ BI.FilterData = BI.inherit(BI.Widget, {
         var conditions = this.model.getFilterValue();
         self.save.setEnable(!BI.isEmpty(conditions));
         self.save.setTitle(self.save.isEnabled() ? "" : BI.i18nText("BI-Please_Set_Filter_Condition"));
-        this.model.getTablesDetailInfoByTables(function(data){
+        this.model.getTablesDetailInfoByTables(function (data) {
             fields = data[0].fields;
             self.filterOpeartor.populate({
                 conditions: conditions || [],
@@ -345,7 +362,7 @@ BI.FilterData = BI.inherit(BI.Widget, {
 
         //刷新右侧预览区域
         var isGenerated = this.model.isCubeGenerated();
-        if(BI.isNotNull(isGenerated) && isGenerated === true){
+        if (BI.isNotNull(isGenerated) && isGenerated === true) {
             this.displayResultArea.setSelect(this.constants.SHOW_PREVIEW_BUTTON);
         } else {
             this.displayResultArea.setSelect(this.constants.SHOW_PREVIEW_TIP);

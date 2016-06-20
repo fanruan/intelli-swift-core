@@ -5,7 +5,7 @@ BIDezi.DateRangeDetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.DATE,
+            type: BICst.WIDGET.DATE,
             value: {}
         });
     },
@@ -14,12 +14,29 @@ BIDezi.DateRangeDetailModel = BI.inherit(BI.Model, {
 
     },
 
-    change : function(changed){
-
+    change: function (changed, prev) {
+        if (BI.has(changed, "dimensions")) {
+            if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
+            }
+            if (BI.size(changed.dimensions) >= BI.size(prev.dimensions)) {
+                var result = BI.find(changed.dimensions, function (did, dimension) {
+                    return !BI.has(prev.dimensions, did);
+                });
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+            }
+            if (BI.size(changed.dimensions) < BI.size(prev.dimensions)) {
+                var res = BI.find(prev.dimensions, function (did, dimension) {
+                    return !BI.has(changed.dimensions, did);
+                });
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + res._src.id);
+            }
+        }
     },
 
-    splice: function(old, key1, key2){
-        if(key1 === "dimensions"){
+    splice: function (old, key1, key2) {
+        if (key1 === "dimensions") {
             var views = this.get("view");
             BI.each(views, function (region, arr) {
                 BI.remove(arr, function (i, id) {
@@ -27,6 +44,12 @@ BIDezi.DateRangeDetailModel = BI.inherit(BI.Model, {
                 })
             });
             this.set("view", views);
+        }
+        if (key1 === "dimensions") {
+            BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + old._src.id);
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+            //全局维度增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
         }
     },
 
@@ -36,7 +59,7 @@ BIDezi.DateRangeDetailModel = BI.inherit(BI.Model, {
             var src = dimension.src;
             var dId = dimension.dId;
             var dimensions = this.get("dimensions");
-            if(!dimensions[dId]){
+            if (!dimensions[dId]) {
                 //维度指标基本属性
                 dimensions[dId] = {
                     name: src.name,

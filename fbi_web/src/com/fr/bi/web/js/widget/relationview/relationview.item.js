@@ -5,7 +5,7 @@
  * @class BI.RelationViewItem
  * @extends BI.Widget
  */
-BI.RelationViewItem = BI.inherit(BI.Single, {
+BI.RelationViewItem = BI.inherit(BI.BasicButton, {
 
     _defaultConfig: function () {
         return BI.extend(BI.RelationViewItem.superclass._defaultConfig.apply(this, arguments), {

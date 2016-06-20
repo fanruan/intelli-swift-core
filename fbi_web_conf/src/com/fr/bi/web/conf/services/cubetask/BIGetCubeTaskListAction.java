@@ -3,7 +3,8 @@
  */
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -29,15 +30,15 @@ public class BIGetCubeTaskListAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject jo = new JSONObject();
-        CubeTask generated =  BIConfigureManagerCenter.getCubeManager().getGeneratedTask(userId);
+        CubeTask generated =  CubeGenerationManager.getCubeManager().getGeneratedTask(userId);
         if (generated != null) {
             jo.put("generated", generated.createJSON());
         }
-        CubeTask generating =  BIConfigureManagerCenter.getCubeManager().getGeneratingTask(userId);
+        CubeTask generating =  CubeGenerationManager.getCubeManager().getGeneratingTask(userId);
         if (generating != null) {
             jo.put("generating", generating.createJSON());
         }
-        Iterator<CubeTask> iter =  BIConfigureManagerCenter.getCubeManager().getWaitingTaskIterator(userId);
+        Iterator<CubeTask> iter =  CubeGenerationManager.getCubeManager().getWaitingTaskIterator(userId);
         JSONArray ja = new JSONArray();
         jo.put("waiting", ja);
         while (iter.hasNext()) {

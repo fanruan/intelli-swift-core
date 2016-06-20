@@ -11,6 +11,8 @@ public interface ICubeColumnIndexReader<T> {
 
     GroupValueIndex[] getGroupIndex(T[] groupValues);
 
+    GroupValueIndex getIndex(T groupValue);
+
     T firstKey();
 
     T lastKey();
@@ -61,5 +63,25 @@ public interface ICubeColumnIndexReader<T> {
 
 
     T createValue(Object v);
+
+    /**
+     * 获得相应位置的Group数据。
+     *
+     * @param position 位置
+     * @return Group的值
+     */
+    T getGroupValue(int position);
+
+
+    T getOriginalValue(int rowNumber);
+
+    int sizeOfGroup();
+
+    /**
+     * 获取当前Column的空值索引
+     *
+     * @return
+     */
+    GroupValueIndex getNULLIndex();
 
 }

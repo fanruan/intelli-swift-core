@@ -3,9 +3,10 @@
  */
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.Release;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 
 /**
  * @author Daniel
@@ -13,19 +14,26 @@ import com.finebi.cube.api.ICubeTableService;
  */
 public interface UserETLCubeManagerProvider extends Release{
 	
-	public void setCubePath(String md5Key, String path);
+	void setCubePath(String md5Key, String path);
+
+	/**
+	 * @return
+	 */
+	ICubeTableService getTableIndex(AnalysisCubeTableSource core, BIUser user);
+
+    void checkTableIndex(AnalysisCubeTableSource core, BIUser user);
 
 	/**
 	 * @param md5
-	 * @param userId
 	 * @return
 	 */
-	public ICubeTableService getTableIndex(String md5, BIUser user);
+	String getCubePath(String md5);
 
-	/**
-	 * @param md5
-	 * @return
-	 */
-	public String getCubePath(String md5);
+    boolean checkVersion(AnalysisCubeTableSource source, BIUser user);
 
+    void envChanged();
+
+    void releaseCurrentThread();
+
+    void invokeUpdate(String identityValue);
 }

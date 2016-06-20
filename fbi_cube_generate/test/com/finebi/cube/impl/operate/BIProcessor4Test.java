@@ -1,5 +1,6 @@
 package com.finebi.cube.impl.operate;
 
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.pubsub.IProcessor;
 import com.finebi.cube.pubsub.IPublish;
 
@@ -17,7 +18,7 @@ public class BIProcessor4Test implements IProcessor<Integer> {
     }
 
     @Override
-    public void process() {
+    public void process(IMessage lastReceiveMessage) {
         isReceiveMess = true;
     }
 

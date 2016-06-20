@@ -24,10 +24,17 @@ BIDezi.NumberDimensionView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
-        this.label = BI.createWidget({
-            type: "bi.label",
+        var self = this;
+        this.editor = BI.createWidget({
+            type: "bi.sign_editor",
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
-            cls: "bi-dimension-name"
+            cls: "bi-dimension-name",
+            validationChecker: function () {
+                return self._checkDimensionName(self.editor.getValue());
+            }
+        });
+        this.editor.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.model.set("name", self.editor.getValue());
         });
 
         this._createCombo();
@@ -37,17 +44,18 @@ BIDezi.NumberDimensionView = BI.inherit(BI.View, {
             element: vessel,
             items: {
                 east: {el: this.combo, width: this.constants.COMBO_WIDTH},
-                center: {el: this.label}
+                center: {el: this.editor}
             }
         });
         var tableId = BI.Utils.getTableIdByFieldID(this.model.get("_src").field_id);
-        this.label.setValue(BI.Utils.getTableNameByID(tableId) + "." + this.model.get("name"));
+        this.editor.setValue(BI.Utils.getTableNameByID(tableId) + "." + this.model.get("name"));
     },
 
     _createCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.control_dimension_combo"
+            type: "bi.control_dimension_combo",
+            dId: this.model.get("id")
         });
         this.combo.on(BI.ControlDimensionCombo.EVENT_CHANGE, function (v) {
             switch (v) {
@@ -60,5 +68,24 @@ BIDezi.NumberDimensionView = BI.inherit(BI.View, {
 
     _deleteDimension: function () {
         this.model.destroy();
+    },
+
+    _checkDimensionName: function (name) {
+        var currId = this.model.get("id");
+        var widgetId = BI.Utils.getWidgetIDByDimensionID(currId);
+        var dimsId = BI.Utils.getAllDimensionIDs(widgetId);
+        var valid = true;
+        BI.some(dimsId, function (i, id) {
+            if (currId !== id && BI.Utils.getDimensionNameByID(id) === name) {
+                valid = false;
+                return true;
+            }
+        });
+        return valid;
+    },
+
+    refresh: function(){
+        this.editor.setValue(this.model.get("name"));
+        this.editor.setState(this.model.get("name"));
     }
 });

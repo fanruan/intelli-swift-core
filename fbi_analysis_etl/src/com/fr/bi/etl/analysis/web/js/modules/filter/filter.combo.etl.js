@@ -17,15 +17,16 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
             type: "bi.icon_trigger",
             el:{extraCls: "filter-font"},
             width: self._constant.BUTTON_WIDTH,
-            height: self._constant.BUTTON_WIDTH
+            height: self._constant.BUTTON_HEIGHT
         });
-        this.popup = BI.createWidget({
+        var op = {
             type: "bi.filter_popup_etl",
             field_type : o.field_type,
             field_name : o.field_name,
-            fields : o.fields,
             fieldValuesCreator : o.fieldValuesCreator
-        });
+        }
+        op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+        this.popup = BI.createWidget(op);
         this.combo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
@@ -37,7 +38,7 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
             }
         });
         this.popup.on(BI.ETLFilterPopupView.EVENT_CLICK_CONFIRM, function () {
-            self.storedValue = BI.deepClone(self.combo.getValue());
+            self.storedValue = BI.extend(BI.deepClone(self.combo.getValue()), {field_name : this.options.field_name, field_type : this.options.field_type});
             self.combo.hideView();
             self.fireEvent(BI.ETLFilterCombo.EVENT_VALUE_CHANGED);
         });
@@ -51,12 +52,15 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
     },
 
     setValue: function(v){
-        self.storedValue = v;
+        this.storedValue = v;
+        if (BI.isNotNull(this.storedValue) && BI.isNotNull(this.storedValue.field_type) && this.storedValue.field_type !==this.options.field_type){
+            v = {};
+        }
         this.combo.setValue(BI.deepClone(v));
     },
 
     getValue : function (){
-        return BI.extend(this.storedValue, {field_name : this.options.field_name});
+        return this.storedValue;
     },
 
     populate : function (items){

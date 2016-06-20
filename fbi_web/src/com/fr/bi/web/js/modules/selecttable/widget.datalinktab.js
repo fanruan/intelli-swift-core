@@ -33,12 +33,14 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
                 value: BICst.DATA_LINK.DATA_SOURCE + name
             })
         });
-        BI.each(Data.SharingPool.get("packages"), function (id, pack) {
-            packages.push({
-                text: pack.name,
-                value: BICst.DATA_LINK.PACKAGES + id
-            })
-        });
+        if(BI.isNotNull(o.translations)) {
+            BI.each(Data.SharingPool.get("packages"), function (id, pack) {
+                packages.push({
+                    text: pack.name,
+                    value: BICst.DATA_LINK.PACKAGES + id
+                })
+            });
+        }
         if (BI.isNotEmptyArray(o.etl)) {
             etl.push({
                 text: BI.i18nText("BI-Etl_Stream"),

@@ -1,7 +1,12 @@
 package com.finebi.cube.tools;
 
-import com.fr.bi.stable.relation.BIRowField;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+
+import com.finebi.cube.relation.BIRowField;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class created on 2016/3/9.
@@ -30,12 +35,34 @@ public class BITableSourceRelationTestTool {
         return new BITableSourceRelation(BIRowField.rowNumberField, BIRowField.rowNumberField, BIMemoryDataSourceFactory.generateTableA(), BIMemoryDataSourceFactory.generateTableB());
     }
 
+
     public static BITableSourceRelation getMemoryBC() {
         return new BITableSourceRelation(BIRowField.rowNumberField, BIRowField.rowNumberField, BIMemoryDataSourceFactory.generateTableB(), BIMemoryDataSourceFactory.generateTableC());
     }
 
     public static BITableSourceRelation getMemoryCD() {
         return new BITableSourceRelation(BIRowField.rowNumberField, BIRowField.rowNumberField, BIMemoryDataSourceFactory.generateTableC(), BIMemoryDataSourceFactory.generateTableD());
+    }
+
+    /*log不支持BIRowField，所以用BICubeFieldSource替代*/
+    public static BITableSourceRelation getABWithBICubeFieldSource() {
+        BICubeFieldSource primaryIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceA(), "id", 0, 10);
+        BICubeFieldSource foreignIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceB(), "id", 0, 10);
+        return new BITableSourceRelation(primaryIdField, foreignIdField, BITableSourceTestTool.getDBTableSourceA(), BITableSourceTestTool.getDBTableSourceB());
+    }
+
+    /*log不支持BIRowField，所以用BICubeFieldSource替代*/
+    public static BITableSourceRelation getBCWithBICubeFieldSource() {
+        BICubeFieldSource primaryIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceB(), "id", 0, 10);
+        BICubeFieldSource foreignIdField = new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceC(), "id", 0, 10);
+        return new BITableSourceRelation(primaryIdField, foreignIdField, BITableSourceTestTool.getDBTableSourceA(), BITableSourceTestTool.getDBTableSourceB());
+    }
+
+    public static Set<BITableSourceRelation> getRelationSetABC() {
+        Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
+        relations.add(getMemoryAB());
+        relations.add(getMemoryBC());
+        return relations;
     }
 
 }

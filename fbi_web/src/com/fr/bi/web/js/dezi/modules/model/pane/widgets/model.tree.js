@@ -6,7 +6,7 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.TreeWidgetModel.superclass._defaultConfig.apply(this, arguments), {
             name: "",
             bounds: {},
-            type: BICst.Widget.TREE,
+            type: BICst.WIDGET.TREE,
             dimensions: {},
             view: {},
             value: {}
@@ -29,7 +29,6 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
                     dimensions: this.get("dimensions"),
                     view: this.get("view"),
                     type: this.get("type"),
-                    settings: this.get("settings"),
                     value: this.get("value")
                 }
             }, {
@@ -47,7 +46,6 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
                 dimensions: this.get("dimensions"),
                 view: this.get("view"),
                 type: this.get("type"),
-                settings: this.get("settings"),
                 value: this.get("value")
             }
         }, {
@@ -55,6 +53,20 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
         });
     },
     local: function () {
+        var self = this;
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
+        if (this.has("changeSort")) {
+            var dimensions = this.get("dimensions");
+            BI.each(dimensions, function (id, dimension) {
+                var sort = self.get("changeSort");
+                dimension.sort = {type: sort.type};
+            });
+            this.set("dimensions", dimensions);
+            return true;
+        }
         return false;
-    },
+    }
 });

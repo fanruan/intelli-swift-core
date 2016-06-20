@@ -13,4 +13,10 @@ public class BIStatusID extends BIIdentity<String> implements IStatusID {
     public BIStatusID(String id) {
         super(id);
     }
+
+    @Override
+    public String toString() {
+        return identity;
+
+    }
 }

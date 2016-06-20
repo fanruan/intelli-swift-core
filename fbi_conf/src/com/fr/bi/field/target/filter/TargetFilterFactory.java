@@ -3,7 +3,9 @@ package com.fr.bi.field.target.filter;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.target.filter.field.ColumnFieldFilter;
 import com.fr.bi.field.target.filter.field.ColumnNameFilter;
+import com.fr.bi.field.target.filter.field.EmptyColumnFilter;
 import com.fr.bi.field.target.filter.field.SummaryNumberFilter;
+import com.fr.bi.field.target.filter.formula.EmptyFormulaFilter;
 import com.fr.bi.field.target.filter.formula.FormulaFilter;
 import com.fr.bi.field.target.filter.general.GeneralANDFilter;
 import com.fr.bi.field.target.filter.general.GeneralORFilter;
@@ -35,7 +37,6 @@ public class TargetFilterFactory {
                     filter = new GeneralORFilter();
                     break;
                 case BIReportConstant.FILTER_TYPE.FORMULA:
-                case BIReportConstant.FILTER_TYPE.EMPTY_FORMULA:
                     filter = new FormulaFilter();
                     break;
                 case BIReportConstant.FILTER_TYPE.TREE_FILTER:
@@ -48,8 +49,11 @@ public class TargetFilterFactory {
                 case BIReportConstant.FILTER_TYPE.NUMBER_COUNT:
                     filter = new SummaryNumberFilter();
                     break;
+                case BIReportConstant.FILTER_TYPE.EMPTY_FORMULA:
+                    filter = new EmptyFormulaFilter();
+                    break;
                 case BIReportConstant.FILTER_TYPE.EMPTY_CONDITION:
-                    filter = null;
+                    filter = new EmptyColumnFilter();
                     break;
                 default:
                     filter = jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT) ? new ColumnFieldFilter() : new ColumnNameFilter();

@@ -23,10 +23,10 @@ public class DimensionFilterFactory {
                 case BIReportConstant.FILTER_TYPE.OR:
                     filter = new GeneralORDimensionFilter();
                     break;
-                case BIReportConstant.FILTER_TYPE.EMPTY_FORMULA:
                 case BIReportConstant.FILTER_TYPE.FORMULA:
                     filter = new FormulaValueFilter();
                     break;
+                case BIReportConstant.FILTER_TYPE.EMPTY_FORMULA:
                 case BIReportConstant.FILTER_TYPE.EMPTY_CONDITION:
                     filter = null;
                     break;

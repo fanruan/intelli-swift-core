@@ -47,18 +47,9 @@
   border-radius: 2px;
   background: #ffffff;
 }
-.bi-etl-join .join-merge-field .add-merge-field {
-  border-bottom: 1px solid #d4dadd;
-}
 .bi-etl-join .join-merge-field .add-merge-field .merge-field-text {
   color: #808080;
   font-size: 14px;
-}
-.bi-etl-join .join-merge-field table {
-  border-left: 1px solid #d4dadd;
-}
-.bi-etl-join .join-merge-field table td {
-  border-bottom: 1px solid #d4dadd;
 }
 .bi-etl-join .join-preview-result {
   background: #ffffff;

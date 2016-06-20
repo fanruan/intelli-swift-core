@@ -6,7 +6,8 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
 
     _constant : {
         nullCard : "null_card",
-        tableCard : "table_card"
+        tableCard : "table_card",
+        errorCard : "error_card"
     },
 
     _defaultConfig: function() {
@@ -62,12 +63,22 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                    items : [{
                        type:"bi.label",
                        cls: o.baseCls +"-null-label",
-                       text: BI.i18nText("BI-add_fields_first")
+                       text: BI.i18nText("BI-Add_Fields_First")
                    }]
                }
             }, {
                 el :this.table,
                 cardName: this._constant.tableCard
+            }, {
+                cardName : this._constant.errorCard,
+                el : {
+                    type : "bi.center_adapt",
+                    items : [{
+                        type:"bi.label",
+                        cls: o.baseCls +"-null-label warning",
+                        text: BI.i18nText("BI-Current_Tab_Error")
+                    }]
+                }
             }]
         })
         this._showCard()
@@ -89,19 +100,19 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
         });
 
         this.dropHelper.refreshPosition = function(e, ui) {
-            var absolutePosition = ui.position.left + self.dragHepler.scrollTable[0].scrollLeft + (e.pageX - ui.helper.offset().left);
+            var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll()+ (e.pageX - ui.helper.offset().left);
             var nearPosition= self._getNearPosFromArray(self.dropHelper.dropPosition, absolutePosition);
-            self.dropHelper.stroke(self.dragHepler.dragHeight, 0, nearPosition - self.dragHepler.scrollTable[0].scrollLeft);
+            self.dropHelper.stroke(self.dragHepler.dragHeight, 0, nearPosition - self.table.getRightHorizontalScroll());
         }
 
         this.dropHelper.hide();
         self.element.droppable({
             accept:"."+ ETLCst.ANALYSIS_DRAG_CLASS,
             drop : function(e, ui) {
-                var absolutePosition = ui.position.left + self.dragHepler.scrollTable[0].scrollLeft + (e.pageX - ui.helper.offset().left);
+                var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll() + (e.pageX - ui.helper.offset().left);
                 var insertIndex= self._getNearIndexFromArray(self.dropHelper.dropPosition, absolutePosition)
                 //这个insertIndex是包含原元素的index
-                self.dropHelper.scrollLeft = self.dragHepler.scrollTable[0].scrollLeft;
+                self.dropHelper.scrollLeft = self.table.getRightHorizontalScroll();
                 if(BI.isNotNull(self.dragHepler.timeoutTimer)) {
                     clearTimeout(self.dragHepler.timeoutTimer)
                     self.dragHepler.timeoutTimer = null;
@@ -132,7 +143,6 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                     self.dragHepler.dragWidth = self.element.width();
                     self.dragHepler.dragHeight = $(".table", self.table.element).height();
                     self.dragHepler.helperWidth = ui.helper.width();
-                    self.dragHepler.scrollTable = $(".scroll-table", self.table.element);
                     self.dropHelper.dropPosition = [];
                     var start = 0;
                     self.dropHelper.dropPosition.push(start)
@@ -155,14 +165,14 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                     self.dropHelper.refreshPosition(e, ui);
                     if(ui.position.left === 0) {
                         if(BI.isNull(self.dragHepler.timer)) {
-                            if(self.dragHepler.scrollTable[0].scrollLeft > 0) {
+                            if(self.table.getRightHorizontalScroll() > 0) {
                                 self.dragHepler.timer = setInterval(function(){
-                                    var currentLeft = self.dragHepler.scrollTable[0].scrollLeft;
-                                    self.dragHepler.scrollTable[0].scrollLeft -= 10;
-                                    var move = currentLeft - self.dragHepler.scrollTable[0].scrollLeft;
+                                    var currentLeft = self.table.getRightHorizontalScroll();
+                                    self.table.setRightHorizontalScroll(currentLeft - 10);
+                                    var move = currentLeft - self.table.getRightHorizontalScroll();
                                     self.dragHepler.moveLeft(move)
                                     self.dropHelper.refreshPosition(e, ui);
-                                    if(self.dragHepler.scrollTable[0].scrollLeft <=0 ){
+                                    if(self.table.getRightHorizontalScroll() <=0 ){
                                         clearInterval(self.dragHepler.timer);
                                         self.dragHepler.timer = null;
                                     }
@@ -171,14 +181,14 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                         }
                     } else if(ui.position.left + self.dragHepler.helperWidth  >= self.dragHepler.dragWidth) {
                         if(BI.isNull(self.dragHepler.timer)) {
-                            if(self.dragHepler.scrollTable[0].scrollLeft + self.dragHepler.dragWidth < self.dragHepler.scrollTable[0].scrollWidth) {
+                            if(self.table.getRightHorizontalScroll() + self.dragHepler.dragWidth < self.table.scrollContainer.element[0].scrollWidth) {
                                 self.dragHepler.timer = setInterval(function(){
-                                    var currentLeft = self.dragHepler.scrollTable[0].scrollLeft;
-                                    self.dragHepler.scrollTable[0].scrollLeft += 10;
-                                    var move = currentLeft - self.dragHepler.scrollTable[0].scrollLeft;
+                                    var currentLeft = self.table.getRightHorizontalScroll();
+                                    self.table.setRightHorizontalScroll(currentLeft + 10);
+                                    var move = currentLeft - self.table.getRightHorizontalScroll();
                                     self.dragHepler.moveLeft(move)
                                     self.dropHelper.refreshPosition(e, ui);
-                                    if(self.dragHepler.scrollTable[0].scrollLeft + self.dragHepler.dragWidth >= self.dragHepler.scrollTable[0].scrollWidth ){
+                                    if(self.table.getRightHorizontalScroll() + self.dragHepler.dragWidth >= self.table.scrollContainer.element[0].scrollWidth ){
                                         clearInterval(self.dragHepler.timer);
                                         self.dragHepler.timer = null;
                                     }
@@ -232,18 +242,14 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                         if(value[0] === -1){
                             self.dragHepler.hide();
                         } else {
-                            var scrollTable = value[2].parents(".scroll-table:eq(0)", self.table.element)
-                            if(scrollTable.parent().length === 0) {
-                                return;
-                            }
-                            self.dragHepler.stroke(value[1].outerWidth(), value[2].outerHeight(), 0, value[1][0].offsetLeft - scrollTable[0].scrollLeft);
+                            self.dragHepler.stroke(value[1].outerWidth(), Math.min(self.element.outerHeight(),value[2].outerHeight()), 0, value[1][0].offsetLeft - self.table.getRightHorizontalScroll());
                         }
                         e.stopPropagation();
                     }
                     var el = $(e.target)
                     if(self.dragHepler.prepareDragging === true){
                         //放到DragButton之后所有事件要延迟执行，不然黑没有开始dragging 这边就继续执行了，结果就跑偏了
-                        self.dragHepler.timeoutTimer = setTimeout(fn, 100);
+                        self.dragHepler.timeoutTimer = BI.delay(fn, 100);
                     } else {
                         fn.apply();
                     }
@@ -364,11 +370,15 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
     },
 
     _showCard : function () {
-        if(this.options.header.length === 0){
+        if(this.options.operator === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR) {
+            this.card.showCardByName(this._constant.errorCard)
+        } else if(this.options.header.length === 0){
             this.card.showCardByName(this._constant.nullCard)
         } else {
             this.card.showCardByName(this._constant.tableCard)
+            return true;
         }
+        return false;
     },
 
     _adjustColumns : function () {
@@ -377,7 +387,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
 
     populate: function(items, header, operator) {
         var self = this;
-        setTimeout(function(e){
+        BI.nextTick(function(e){
             self.options.operator = operator
             if(BI.isNull(header)) {
                 header = self.options.header;
@@ -387,7 +397,10 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
             }
             self.options.header = header;
             self.options.items = items;
-            self._showCard()
+            var showTable = self._showCard()
+            if(showTable === false) {
+                return;
+            }
             self.table.populate(self._createCell(), self._createHeader())
             self.dragHepler.reInitDrag()
             if(BI.isNotNull(self.dropHelper.scrollLeft)){
@@ -406,7 +419,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                 })
             })
 
-        }, 0)
+        })
     }
 })
 

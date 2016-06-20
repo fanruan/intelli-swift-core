@@ -1,11 +1,11 @@
 package com.fr.bi.conf.report.widget.field.dimension;
 
-import com.fr.bi.conf.report.widget.BIDataColumn;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.sort.ISort;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
@@ -37,10 +37,16 @@ public interface BIDimension extends BITargetAndDimension {
 
     void setFilter(DimensionFilter filter);
 
-    DimensionCalculator createCalculator(BIDataColumn column, List<BITableSourceRelation> relations);
+    DimensionCalculator createCalculator(BusinessField column, List<BITableSourceRelation> relations);
+
+    DimensionCalculator createCalculator(BusinessField column, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations);
 
     List<String> getUsedTargets();
 
+    boolean useTargetSort();
+
     boolean showNode(BINode node,
                      Map<String, TargetCalculator> targetsMap);
+
+    Object getValueByType(Object data);
 }

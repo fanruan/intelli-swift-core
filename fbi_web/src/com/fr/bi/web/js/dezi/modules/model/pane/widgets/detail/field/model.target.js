@@ -27,8 +27,17 @@ BIDezi.TargetModel = BI.inherit(BI.Model, {
     },
 
     destroy: function () {
-        if (BI.Utils.isDimensionUsedByOtherDimensionsByDimensionID(this.get("id"))) {
-            BI.Msg.alert(BI.i18nText("BI-Failure_Toast"), BI.i18nText("BI-Target_Used_In_Calculate_Cannot_Delete"));
+        var dIds = BI.Utils.getDimensionUsedByOtherDimensionsByDimensionID(this.get("id"));
+        if (dIds.length > 0) {
+            var str = "";
+            BI.each(dIds, function (i, dId) {
+                if (i === 0) {
+                    str = BI.Utils.getDimensionNameByID(dId);
+                } else {
+                    str += "," + BI.Utils.getDimensionNameByID(dId);
+                }
+            });
+            BI.Msg.alert(BI.i18nText("BI-Failure_Toast"), BI.i18nText("BI-Target_Used_In_Calculate_Cannot_Delete", str));
         } else {
             BIDezi.TargetModel.superclass.destroy.apply(this, arguments);
         }

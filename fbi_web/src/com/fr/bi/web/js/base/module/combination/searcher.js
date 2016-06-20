@@ -118,7 +118,9 @@ BI.Searcher = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.Searcher.EVENT_CHANGE, value, obj);
                 }
             });
-            this.fireEvent(BI.Searcher.EVENT_AFTER_INIT);
+            BI.nextTick(function () {
+                self.fireEvent(BI.Searcher.EVENT_AFTER_INIT);
+            });
         }
     },
 
@@ -130,7 +132,7 @@ BI.Searcher = BI.inherit(BI.Widget, {
         this.popupView.startSearch && this.popupView.startSearch();
         //搜索前先清空dom
         BI.Maskers.get(this.getName()).empty();
-        BI.defer(function (name) {
+        BI.nextTick(function (name) {
             BI.Maskers.show(name);
         }, this.getName());
     },
@@ -152,7 +154,7 @@ BI.Searcher = BI.inherit(BI.Widget, {
         BI.Maskers.hide(name);
         if (BI.Maskers.has(name) && this._isSearching === true) {
             //搜索后清空dom
-            BI.defer(function () {
+            BI.nextTick(function () {
                 BI.Maskers.has(name) && BI.Maskers.get(name).empty();
             });
             this.popupView && this.popupView.stopSearch && this.popupView.stopSearch();
@@ -163,7 +165,7 @@ BI.Searcher = BI.inherit(BI.Widget, {
 
     _search: function () {
         var self = this, o = this.options, keyword = this.editor.getValue();
-        if (this._stop) {
+        if (keyword === "" || this._stop) {
             return;
         }
         if (o.isAutoSearch) {
@@ -208,7 +210,16 @@ BI.Searcher = BI.inherit(BI.Widget, {
 
     stopSearch: function () {
         this._stopSearch();//先停止搜索，然后再去设置editor为空
-        this.editor.setValue("");
+        //important:停止搜索必须退出编辑状态,这里必须加上try(input框不显示时blur会抛异常)
+        try {
+            this.editor.blur();
+        } catch (e) {
+            if (!this.editor.blur) {
+                throw new Error("editor没有实现blur方法");
+            }
+        } finally {
+            this.editor.setValue("");
+        }
     },
 
     isSearching: function () {

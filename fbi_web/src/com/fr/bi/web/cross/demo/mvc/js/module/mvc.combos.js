@@ -24,7 +24,7 @@ CombosView = BI.inherit(BI.View, {
             }, {
                 type: "bi.widget_combo",
                 width: 32,
-                widgetType: BICst.Widget.TABLE
+                widgetType: BICst.WIDGET.TABLE
             }, {
                 type: "bi.label",
                 height: 25,

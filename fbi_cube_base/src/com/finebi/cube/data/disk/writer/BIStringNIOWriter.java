@@ -4,6 +4,7 @@ import com.finebi.cube.BICubeLongTypePosition;
 import com.finebi.cube.data.output.ICubeByteArrayWriter;
 import com.finebi.cube.data.output.ICubeStringWriter;
 import com.fr.bi.stable.constant.CubeConstant;
+import com.fr.bi.stable.utils.code.BILogger;
 
 import java.io.UnsupportedEncodingException;
 
@@ -25,6 +26,7 @@ public class BIStringNIOWriter implements ICubeStringWriter {
             try {
                 b = value.getBytes(CubeConstant.CODE);
             } catch (UnsupportedEncodingException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         }
         byteWriteMappedList.recordSpecificValue(specificPosition, b);
@@ -51,5 +53,15 @@ public class BIStringNIOWriter implements ICubeStringWriter {
 
     @Override
     public void saveStatus() {
+    }
+
+    @Override
+    public void forceRelease() {
+        byteWriteMappedList.forceRelease();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return byteWriteMappedList.isForceReleased();
     }
 }

@@ -2,7 +2,10 @@ package com.finebi.cube.impl.pubsub;
 
 import com.finebi.cube.exception.*;
 import com.finebi.cube.message.IMessage;
-import com.finebi.cube.pubsub.*;
+import com.finebi.cube.pubsub.IProcessor;
+import com.finebi.cube.pubsub.ISubscribe;
+import com.finebi.cube.pubsub.ISubscribeID;
+import com.finebi.cube.pubsub.ITrigger;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.router.fragment.IFragmentTag;
 import com.finebi.cube.router.status.IStatusTag;
@@ -26,6 +29,7 @@ public class BISubscribe implements ISubscribe {
     private ISubscribeID subscribeID;
     private IRouter router;
     private ITrigger trigger;
+    private boolean verbose = true;
 
     public BISubscribe(ISubscribeID subscribeID, IProcessor processor) {
         BINonValueUtils.checkNull(subscribeID);
@@ -34,20 +38,40 @@ public class BISubscribe implements ISubscribe {
         trigger = BIFactoryHelper.getObject(ITrigger.class, processor);
     }
 
+    public void subscribeRound(int round) {
+        trigger.setTriggerCount(round);
+    }
 
     @Override
     public ISubscribeID getSubscribeID() {
         return subscribeID;
     }
 
+    public void closeVerbose() {
+        this.verbose = false;
+    }
+
     @Override
     public void handleMessage(IMessage message) {
         try {
+            if (verbose) {
+                try {
+                    System.out.println("Sub:" + subscribeID.getIdentityValue() + "\nSub receive:" + message);
+                    System.out.println("Left condition:\n" + trigger.leftCondition());
+                }catch (Exception e){
+                    BILogger.getLogger().error(e.getMessage(),e);
+                }
+            }
             trigger.handleMessage(message);
         } catch (BIThresholdIsOffException e) {
             BILogger.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl();
         }
+    }
+
+    @Override
+    public boolean keepSubscribe() {
+        return trigger.keepTriggerOn();
     }
 
     @Override
@@ -91,6 +115,59 @@ public class BISubscribe implements ISubscribe {
     public void subscribe(ITopicTag topicTag) throws BITopicAbsentException, BIRegisterIsForbiddenException {
         try {
             trigger.addAndTopic(topicTag);
+        } catch (BITopicDuplicateException ignore) {
+            BILogger.getLogger().error("ignore", ignore);
+        }
+        if (!router.isSubscribed(this, topicTag)) {
+            try {
+                router.subscribe(this, topicTag);
+            } catch (BISubscribeDuplicateException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+        }
+    }
+
+    @Override
+    public void orSubscribe(IFragmentTag fragmentTag) throws BITopicAbsentException, BIFragmentAbsentException, BIRegisterIsForbiddenException {
+        ITopicTag superTopicTag = fragmentTag.getSuperTopicTag();
+        try {
+            trigger.addOrFragment(fragmentTag);
+        } catch (BIFragmentDuplicateException ignore) {
+            BILogger.getLogger().error("ignore", ignore);
+        }
+        if (!router.isSubscribed(this, superTopicTag, fragmentTag)) {
+            try {
+                router.subscribe(this, superTopicTag, fragmentTag);
+            } catch (BISubscribeDuplicateException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+        }
+
+    }
+
+    @Override
+    public void orSubscribe(IStatusTag statusTag) throws BITopicAbsentException, BIFragmentAbsentException,
+            BIStatusAbsentException, BIRegisterIsForbiddenException {
+        IFragmentTag superFragmentTag = statusTag.getSuperFragmentTag();
+        ITopicTag superTopicTag = superFragmentTag.getSuperTopicTag();
+        try {
+            trigger.addOrStatus(statusTag);
+        } catch (BIStatusDuplicateException ignore) {
+            BILogger.getLogger().error("ignore", ignore);
+        }
+        if (!router.isSubscribed(this, superTopicTag, superFragmentTag, statusTag)) {
+            try {
+                router.subscribe(this, superTopicTag, superFragmentTag, statusTag);
+            } catch (BISubscribeDuplicateException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+        }
+    }
+
+    @Override
+    public void orSubscribe(ITopicTag topicTag) throws BITopicAbsentException, BIRegisterIsForbiddenException {
+        try {
+            trigger.addOrTopic(topicTag);
         } catch (BITopicDuplicateException ignore) {
             BILogger.getLogger().error("ignore", ignore);
         }

@@ -1,10 +1,14 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
+import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,6 +16,10 @@ import java.util.List;
  */
 public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
+
+    public GetDisplayTreeNodeExecutor(TreeWidget widget, Paging paging, BISession session) {
+        super(widget, paging, session);
+    }
 
     public JSONObject getResultJSON() throws JSONException {
         JSONArray result = new JSONArray();
@@ -24,6 +32,7 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
             return jo;
         }
         doCheck(result, new String[0], String.valueOf(0), 0, selected_values);
+        jo.put("hasNext", false);
         jo.put("items", result);
         return jo;
     }
@@ -39,7 +48,10 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
             for (int i = 0; i < vl.size(); i++) {
                 String aVl = vl.get(i);
                 String id = pID + "_" + i;
-                createOneJson(result, aVl, getPID(id), id, floors == this.floors - 1 ? 0 : getChildren(selectedValues.optJSONObject(aVl), parents));
+                String[] allParents = Arrays.copyOf(parents, parents.length + 1);
+                allParents[parents.length] = aVl;
+                JSONObject selectedValuesJo = selectedValues.optJSONObject(aVl);
+                createOneJson(result, aVl, getPID(id), id, floors == this.floors - 1 ? 0 : getSelectedChildren(selectedValuesJo == null ? new JSONObject() : selectedValuesJo, allParents));
                 String[] newParents = new String[parents.length + 1];
                 for (int j = 0; j < parents.length; j++) {
                     newParents[j] = parents[j];
@@ -52,7 +64,11 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
         for (int i = 0; i < names.length(); i++) {
             String name = names.getString(i);
             String id = getID(pID, parents, name);
-            createOneJson(result, name, getPID(id), id, floors == this.floors - 1 ? 0 : getChildren(selectedValues.optJSONObject(name), parents));
+            String[] allParents = Arrays.copyOf(parents, parents.length + 1);
+            allParents[parents.length] = name;
+            JSONObject selectedValuesJo = selectedValues.optJSONObject(name);
+
+            createOneJson(result, name, getPID(id), id, floors == this.floors - 1 ? 0 : getSelectedChildren(selectedValuesJo == null ? new JSONObject() : selectedValuesJo, allParents));
             JSONObject nextJO = selectedValues.optJSONObject(name);
             String[] newParents = new String[parents.length + 1];
             for (int j = 0; j < parents.length; j++) {
@@ -85,12 +101,12 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
         result.put(obj);
     }
 
-    private int getChildren(JSONObject selectedValues, String[] parents) throws JSONException {
+    private int getSelectedChildren(JSONObject selectedValues, String[] parents) throws JSONException {
         if (selectedValues == null) {
             return 0;
         }
         if (selectedValues.length() == 0) {
-            return 1;
+            return createData(parents, -1).size();
         }
         return selectedValues.names().length();
     }

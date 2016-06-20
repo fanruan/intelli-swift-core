@@ -172,7 +172,7 @@ BI.CalculateTargetPopupSummary = BI.inherit(BI.BarPopoverSection, {
         });
 
         this.calTypeCombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height: 30,
             items: BICst.CAL_TARGET_TYPE
         });

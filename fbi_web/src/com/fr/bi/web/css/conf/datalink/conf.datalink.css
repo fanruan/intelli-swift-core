@@ -1,14 +1,11 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
+.bi-data-link-pane .data-links-table > div > div > table {
+  border-right: 1px solid #eaeaea;
+}
 .bi-data-link-pane .data-links-table > div > div > table > thead > tr {
   background: #f4f4f4;
-}
-.bi-data-link-pane .data-links-table > div > div > table > thead > tr > td,
-.bi-data-link-pane .data-links-table > div > div > table > tbody > tr > td {
-  border-top: 1px solid #eaeaea;
-  border-bottom: 1px solid #eaeaea;
-  border-right: 1px solid #eaeaea;
 }
 .bi-data-link-pane .data-links-table > div > div > table > tbody > tr:hover {
   background: #f4f4f4;

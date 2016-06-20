@@ -1,10 +1,9 @@
 package com.fr.bi.web.conf.services.packs;
 
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -40,7 +39,7 @@ public class BIGetBriefTablesOfOnePackageAction extends AbstractBIConfigureActio
             JSONArray tables = packJSON.getJSONArray("tables");
             for (int i = 0; i < tables.length(); i++) {
                 String tableId = tables.getJSONObject(i).getString("id");
-                tableData.put(tableId, BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), new BIUser(userId)).createJSON());
+                tableData.put(tableId, BusinessTableHelper.getTableDataSource(new BITableID(tableId)).createJSON());
             }
             WebUtils.printAsJSON(res, tableData);
         }

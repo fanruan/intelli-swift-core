@@ -10,7 +10,7 @@ BI.Model.prototype._opt = function (options) {
     options.data || (options.data = {});
     options.data.sessionID = Data.SharingPool.get("sessionID");
     options.error = function () {
-        BI.Msg.toast("Ajax Error!", "warning")
+        BI.Msg.toast(BI.i18nText("BI-Ajax_Error"), "warning")
     };
     return options;
 };

@@ -13,18 +13,18 @@
   border-top-color: #f4f4f4;
   background: #f4f4f4;
 }
-.bi-tab-sheet-button .icon-anamate {
+.bi-tab-sheet-button .icon-animate {
   transition: transform 0.5s ease;
   -webkit-transition: -webkit-transform 0.5s ease;
   -moz-transition: -moz-transform 0.5s ease;
   -o-transition: -o-transform 0.5s ease;
 }
-.bi-tab-sheet-button .icon-anamate:hover,
-.bi-tab-sheet-button .icon-anamate.hover {
-  transform: scale(1.2);
-  -webkit-transform: scale(1.2);
-  -moz-transform: scale(1.2);
-  -o-transform: scale(1.2);
+.bi-tab-sheet-button .icon-animate:hover,
+.bi-tab-sheet-button .icon-animate.hover {
+  transform: rotate(90deg) scale(1.2);
+  -webkit-transform: rotate(90deg) scale(1.2);
+  -moz-transform: rotate(90deg) scale(1.2);
+  -o-transform: rotate(90deg) scale(1.2);
 }
 .bi-tab-sheet-button .bi-label {
   margin-left: 10px;

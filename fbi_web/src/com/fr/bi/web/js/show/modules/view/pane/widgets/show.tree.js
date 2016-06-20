@@ -1,5 +1,5 @@
 /**
- * Created by wuk on 16/4/15.
+ * Created by roy on 16/4/13.
  */
 BIShow.TreeWidgetView = BI.inherit(BI.View, {
     _defaultConfig: function () {
@@ -10,96 +10,125 @@ BIShow.TreeWidgetView = BI.inherit(BI.View, {
 
     _init: function () {
         BIShow.TreeWidgetView.superclass._init.apply(this, arguments);
+        var self = this;
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function(){
+            self._resetValue();
+        });
     },
 
     _render: function (vessel) {
         var self = this;
-        this.title = this._buildWidgetTitle();
+        this._buildWidgetTitle();
+        this._createTools();
 
         this.combo = BI.createWidget({
-            type: "bi.big_value_chooser_combo",
+            type: "bi.multi_tree_combo",
             itemsCreator: function (op, callback) {
-                callback();
+                var data = BI.extend({
+                    floors: BI.size(self.model.get("dimensions"))
+                }, op);
+                BI.Utils.getWidgetDataByID(self.model.get("id"), function (jsonData) {
+                    callback(jsonData);
+                }, {tree_options: data})
             }
         });
-
+        this.combo.on(BI.MultiTreeCombo.EVENT_CONFIRM, function () {
+            self.model.set("value", self.combo.getValue());
+        });
 
         this.widget = BI.createWidget({
-            type: "bi.vtape",
+            type: "bi.absolute",
             element: vessel,
             items: [{
                 el: this.title,
-                height: 32
+                top: 10,
+                left: 10
             }, {
-                type: "bi.vertical",
-                items: [this.combo]
+                el: this.combo,
+                top: 10,
+                right: 10
+            }, {
+                el: this.tools,
+                top: 0,
+                right: 10
             }]
-        })
+        });
+        this.widget.element.hover(function(){
+            self.tools.setVisible(true);
+        }, function(){
+            if (!self.widget.element.parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        });
     },
 
     _buildWidgetTitle: function () {
-        var self = this, o = this.options;
+        var self = this;
+        var id = this.model.get("id");
         if (!this.title) {
-            var text = this.title = BI.createWidget({
-                type: "bi.label",
-                cls: "dashboard-title-text",
-                text: BI.Utils.getWidgetNameByID(this.model.get("id")),
+            this.title = BI.createWidget({
+                type: "bi.shelter_editor",
+                cls: "dashboard-title-left",
+                value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 32
-            });
-
-            var expand = BI.createWidget({
-                type: "bi.icon_button",
-                width: 32,
-                height: 32,
-                cls: "dashboard-widget-combo-detail-set-font dashboard-title-detail"
-            });
-            expand.on(BI.IconButton.EVENT_CHANGE, function () {
-                self._expandWidget();
-            });
-
-            var combo = BI.createWidget({
-                type: "bi.widget_combo",
-                widgetType: BICst.Widget.TREE
-            });
-            combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
-                switch (type) {
-                    case BICst.DASHBOARD_WIDGET_DELETE:
-                        self.model.destroy();
-                        break;
-                    case BICst.DASHBOARD_WIDGET_EXPAND:
-                        self._expandWidget();
-                        break;
-                    case BICst.DASHBOARD_CONTROL_CLEAR:
-                        break;
-                    case BICst.DASHBOARD_WIDGET_COPY:
-                        self.model.copy();
-                        break;
-                    case BICst.DASHBOARD_CONTROL_RANG_ASC:
-                        break;
-                    case BICst.DASHBOARD_CONTROL_RANG_DESC:
-                        break;
+                height: 30,
+                allowBlank: false,
+                errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
+                validationChecker: function(v){
+                    return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
-
-            return BI.createWidget({
-                type: "bi.border",
-                cls: "dashboard-title",
-                items: {
-                    center: text,
-                    east: {
-                        el: BI.createWidget({
-                            type: "bi.center_adapt",
-                            cls: "operator-region",
-                            items: [expand, combo]
-                        }),
-                        width: 64
-                    }
-                }
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function(){
+                self.model.set("name", this.getValue());
             });
         } else {
             this.title.setValue(BI.Utils.getWidgetNameByID(this.model.get("id")));
         }
+    },
+
+    _createTools: function(){
+        var self = this;
+        this.tools = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "widget-tools-clear-font show-tools",
+            title: BI.i18nText("BI-Clear_Selected_Value"),
+            width: 16,
+            height: 16
+        });
+        this.tools.on(BI.IconButton.EVENT_CHANGE, function(){
+            self._resetValue();
+        });
+        this.tools.setVisible(false);
+    },
+
+    _refreshLayout: function(){
+        var bounds = this.model.get("bounds");
+        var height = bounds.height, width = bounds.width;
+        var widgetName = this.model.get("name");
+        var minComboWidth = 70;     //默认combo的最小宽度
+        var minNameWidth = 30;      //默认editor的最小宽度
+        var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
+        // width =  5 + 10 + (4 + nameWidth + 4) + 10 + comboWidth + 10 + 5
+        if(height < 100) {
+            this.widget.attr("items")[1].top = 10;
+            if(width < minComboWidth + minNameWidth + 48) {
+                this.combo.setVisible(false);
+                this.widget.attr("items")[0].right = 10;
+            } else if(width < nameWidth + minComboWidth + 48) {
+                this.combo.setVisible(true);
+                this.widget.attr("items")[0].right = minComboWidth + 25;
+                this.widget.attr("items")[1].left = width - 15 - minComboWidth;
+            } else {
+                this.combo.setVisible(true);
+                this.widget.attr("items")[0].right = width - 33 - nameWidth;
+                this.widget.attr("items")[1].left = 33 + nameWidth;
+            }
+        } else {
+            this.widget.attr("items")[0].right = 10;
+            this.widget.attr("items")[1].top = 50;
+            this.widget.attr("items")[1].left = 10;
+        }
+        this.widget.resize();
     },
 
     _expandWidget: function () {
@@ -111,9 +140,17 @@ BIShow.TreeWidgetView = BI.inherit(BI.View, {
             id: wId
         })
     },
+    
+    _resetValue: function(){
+        this.model.set("value", {});
+        this.refresh();
+    },
 
     change: function (changed) {
-        if(BI.has(changed, "value")) {
+        if(BI.has(changed, "bounds")) {
+            this._refreshLayout();
+        }
+        if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },
@@ -123,6 +160,7 @@ BIShow.TreeWidgetView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
+        this._refreshLayout();
         this._buildWidgetTitle();
         this.combo.setValue(this.model.get("value"));
     }

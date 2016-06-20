@@ -41,7 +41,7 @@ public class BIGetFieldsInfor4BuildRelation extends AbstractBIConfigureAction {
 //            Entry<String, BIField> entry = iter.next();
 //            String columnName = entry.getOriginalValue();
 //            BIField f = entry.getKey();
-//            if(f.getType() != fieldType) {
+//            if(f.getSqlType() != fieldType) {
 //                continue;
 //            }
 //            ja.put(asTableJson(columnName, tableName, connectionName, dbLink, schemaName, userId));

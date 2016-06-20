@@ -5,7 +5,7 @@
 BI.DetailSelectDimensionLevel0Item = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailSelectDimensionLevel0Item.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-select-data-level0-item",
+            extraCls: "bi-select-reuse-data-level0-item bi-select-data-level0-item",
             height: 25,
             hgap: 0,
             fieldType: BICst.COLUMN.STRING,
@@ -82,18 +82,9 @@ BI.DetailSelectDimensionLevel0Item = BI.inherit(BI.Single, {
         });
         this.topLine.invisible();
         this.bottomLine.invisible();
-
-        //标蓝
-        //BI.Utils.isDimensionUsedById(o.value) === true && this.doHighLight();
-        //BI.Broadcasts.on("onedimensionisused", function(v){
-        //    if(v === true){
-        //        self.doHighLight();
-        //    } else {
-        //        if(BI.Utils.isDimensionUsedById(o.value) === false){
-        //            self.unHighLight();
-        //        }
-        //    }
-        //});
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
+            self.setSelected(false);
+        });
     },
 
     isSelected: function () {

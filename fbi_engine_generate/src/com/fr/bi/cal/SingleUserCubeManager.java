@@ -1,13 +1,13 @@
 package com.fr.bi.cal;
 
+import com.finebi.cube.impl.conf.CubeBuildStuffManager;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.CubeRunner;
 import com.fr.bi.cal.generate.TimerRunner;
-import com.fr.bi.conf.engine.CubeBuildStuffManager;
-import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;

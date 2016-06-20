@@ -1,23 +1,25 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.conf.BISystemDataManager;
+import com.finebi.cube.conf.pack.data.*;
+import com.finebi.cube.conf.pack.group.BIBusinessGroup;
+import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.conf.base.BISystemDataManager;
-import com.fr.bi.conf.base.pack.data.*;
-import com.fr.bi.conf.base.pack.group.BIBusinessGroup;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
-import com.fr.bi.conf.manager.singletable.SingleTableUpdateManager;
-import com.fr.bi.conf.manager.timer.UpdateFrequencyManager;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.io.File;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -26,11 +28,6 @@ import java.util.Set;
 public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnalysisBusiPackManager> implements BIAnalysisBusiPackManagerProvider {
 
     private static final String TAG = "AnalysisBusiPackManager";
-
-    @Override
-    public SingleUserAnalysisBusiPackManager constructValue(Long key) {
-        return BIFactoryHelper.getObject(SingleUserAnalysisBusiPackManager.class, key);
-    }
 
     public SingleUserAnalysisBusiPackManager getUserAnalysisBusiPackManager(long userId) {
         try {
@@ -52,14 +49,19 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
-    public Set<BIBusinessPackage> getAllPackages(long userId) {
-        return null;
+    public String persistUserDataName(long key) {
+        return "sue" + File.separator + "pack" + key;
     }
 
     @Override
-    public UpdateFrequencyManager getUpdateManager(long userId) {
-        return null;
+    public Set<IBusinessPackageGetterService> getAllPackages(long userId) {
+        Set<IBusinessPackageGetterService> result = new HashSet<IBusinessPackageGetterService>();
+        for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(userId).getAllPacks()) {
+            result.add(biBusinessPackage);
+        }
+        return result;
     }
+
 
     @Override
     public boolean isPackageDataChanged(long userId) {
@@ -67,7 +69,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
-    public BIBusinessPackageGetterService getPackage(long userId, BIPackageID packageID) throws BIPackageAbsentException {
+    public IBusinessPackageGetterService getPackage(long userId, BIPackageID packageID) throws BIPackageAbsentException {
         return null;
     }
 
@@ -117,7 +119,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
-    public void createEmptyGroup(long userId, BIGroupTagName groupTagName) throws BIGroupDuplicateException {
+    public void createEmptyGroup(long userId, BIGroupTagName groupTagName, long position) throws BIGroupDuplicateException {
 
     }
 
@@ -168,7 +170,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject createGroupJSON(long userId) throws JSONException {
-        return null;
+        return new JSONObject();
     }
 
     @Override
@@ -178,7 +180,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject createPackageJSON(long userId) throws Exception {
-        return null;
+        return getUserAnalysisBusiPackManager(userId).createJSON(Locale.CHINA);
+    }
+
+    @Override
+    public JSONObject createPackageJSON(long userId, Locale locale) throws Exception {
+        return getUserAnalysisBusiPackManager(userId).createJSON(locale);
     }
 
     @Override
@@ -197,7 +204,6 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
 
-    @Override
     public SingleTableUpdateManager getSingleTableUpdateManager(long userId) {
         return null;
     }
@@ -211,13 +217,13 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
 
-    public boolean hasPackageAccessiblePrivilege(Table table, long userId) throws BITableAbsentException {
+    public boolean hasPackageAccessiblePrivilege(BusinessTable table, long userId) throws BITableAbsentException {
         return getUserAnalysisBusiPackManager(userId).getTable(table.getID().getIdentityValue()) != null;
     }
 
     @Override
     public void addTable(AnalysisBusiTable table) {
-        getUserAnalysisBusiPackManager(table.getUser().getUserId()).addTable(table);
+        getUserAnalysisBusiPackManager(table.getUserId()).addTable(table);
     }
 
     @Override
@@ -231,7 +237,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
-    public Set<Table> getAllTables(long userId) {
+    public Set<BusinessTable> getAllTables(long userId) {
+        return null;
+    }
+
+    @Override
+    public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId) {
         return null;
     }
 }

@@ -35,18 +35,20 @@ BI.Fit = BI.inherit(BI.Widget, {
             type: "bi.border",
             element: this.element,
             items: {
-                "west": {el: nav, width: 90, right: 1},
+                "west": {el: nav, width: 140, right: 1},
                 "center": {el: this.arrangement}
             }
         });
 
         this.layoutCombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             items: BICst.DASHBOARD_LAYOUT_ARRAY,
+            width: 120,
+            height: 25,
             cls: "layout-combo"
         });
         this.layoutCombo.setValue(o.layoutType);
-        this.layoutCombo.on(BI.TextIconCombo.EVENT_CHANGE, function (v) {
+        this.layoutCombo.on(BI.TextValueCombo.EVENT_CHANGE, function (v) {
             self.arrangement.setLayoutType(v);
             self.fireEvent(BI.Fit.EVENT_CHANGE);
         });
@@ -67,7 +69,7 @@ BI.Fit = BI.inherit(BI.Widget, {
         });
     },
 
-    _createItem: function (id, info) {
+    _createItem: function (id, size, position, info) {
         var self = this, o = this.options;
         id || (id = BI.UUID());
         if (BI.isNotNull(this.store[id])) {
@@ -76,18 +78,18 @@ BI.Fit = BI.inherit(BI.Widget, {
             var widget = this.store[id] = BI.createWidget({
                 type: "bi.fit_widget",
                 widgetCreator: function () {
-                    return o.widgetCreator(id, info);
+                    return o.widgetCreator(id, info, size, position);
                 },
                 id: id
             });
             widget.getDraggable().element.draggable({
-                cursor: BICst.cursorUrl,
+                // cursor: "move",
                 cursorAt: {left: 0, top: 0},
                 start: function (e, ui) {
-                    self._startDrag(widget, ui.position, e);
+                    self._startDrag(id, ui.position, e);
                 },
                 drag: function (e, ui) {
-                    self._drag(id, info, ui.position);
+                    self._drag(id, size || {}, ui.position);
                 },
                 stop: function (e, ui) {
                     self._stopDrag(widget);
@@ -101,10 +103,10 @@ BI.Fit = BI.inherit(BI.Widget, {
         return widget;
     },
 
-    _startDrag: function (widget, position, e) {
+    _startDrag: function (id, position, e) {
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                this.flag = this.arrangement.deleteRegion(widget.attr("id"));
+                this.flag = this.arrangement.deleteRegion(id);
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 this.diff = {
@@ -115,7 +117,7 @@ BI.Fit = BI.inherit(BI.Widget, {
         }
     },
 
-    _drag: function (id, info, position) {
+    _drag: function (id, size, position) {
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 if (BI.isNotNull(this.flag)) {
@@ -123,8 +125,8 @@ BI.Fit = BI.inherit(BI.Widget, {
                         left: position.left,
                         top: position.top
                     }, {
-                        width: info.bounds.width,
-                        height: info.bounds.height
+                        width: size.width,
+                        height: size.height
                     });
                 }
                 break;
@@ -165,15 +167,15 @@ BI.Fit = BI.inherit(BI.Widget, {
         }
     },
 
-    _dragIcon: function (info, position) {
+    _dragIcon: function (size, position, opt) {
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 this.arrangement.setPosition({
                     left: position.left,
                     top: position.top
                 }, {
-                    width: info.bounds.width,
-                    height: info.bounds.height
+                    width: size.width,
+                    height: size.height
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
@@ -181,26 +183,24 @@ BI.Fit = BI.inherit(BI.Widget, {
                     left: position.left,
                     top: position.top
                 }, {
-                    width: info.bounds.width,
-                    height: info.bounds.height
+                    width: size.width,
+                    height: size.height
                 });
                 break;
         }
     },
 
-    _stopDragIcon: function (info, position) {
+    _stopDragIcon: function (size, position, opt) {
         var flag = false;
-        info.bounds.left = position.left;
-        info.bounds.top = position.top;
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 flag = this.arrangement.addRegion({
-                    el: this._createItem(BI.UUID(), info)
+                    el: this._createItem(BI.UUID(), size, position, opt)
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 flag = this.arrangement.addRegion({
-                    el: this._createItem(BI.UUID(), info)
+                    el: this._createItem(BI.UUID(), size, position, opt)
                 });
                 break;
         }
@@ -213,11 +213,13 @@ BI.Fit = BI.inherit(BI.Widget, {
         var self = this;
         var dragGroup = BI.createWidget({
             type: "bi.drag_icon_group",
-            drag: function (info, position) {
-                self._dragIcon(info, position);
+            drag: function (size, position, opt) {
+                self._dragIcon(size, position, opt);
             },
-            stop: function (info, position) {
-                self._stopDragIcon(info, position);
+            stop: function (size, position, opt) {
+                if (self.arrangement.setPosition(position, size)) {
+                    self._stopDragIcon(size, position, opt);
+                }
             },
             helper: function () {
                 var helper = self.arrangement.getHelper();
@@ -266,28 +268,39 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            layoutStyle: this.getLayoutType(),
+            layoutType: this.getLayoutType(),
             regions: this.getAllRegions()
         }
     },
 
-    copyRegion: function (id, el) {
+    copyRegion: function (id, newId) {
         var flag = false;
         var region = this.arrangement.getRegionByName(id);
-        if (!(flag = this.arrangement.addRegion(el, {
-                left: region.left + region.width / 2,
-                top: region.top + region.height / 2
+        var el = this._createItem(newId, {
+            width: region.width,
+            height: region.height
+        });
+        if (!(flag = this.arrangement.addRegion({
+                el: el,
+                width: region.width,
+                height: region.height
+            }, {
+                left: region.left + region.width / 2 + 1,
+                top: region.top + region.height / 2 + 1
             }))) {
             if (!(flag = this.arrangement.addRegion(el, {
                     left: region.left + region.width / 2,
-                    top: region.top + region.height / 4
+                    top: region.top + region.height / 4 - 1
                 }))) {
                 if (!(flag = this.arrangement.addRegion(el, {
                         left: region.left + region.width / 2,
-                        top: region.top + region.height * 3 / 4
+                        top: region.top + region.height * 3 / 4 + 1
                     }))) {
                 }
             }
+        }
+        if (flag === true) {
+            this.fireEvent(BI.Fit.EVENT_CHANGE);
         }
         return flag;
     },
@@ -300,14 +313,21 @@ BI.Fit = BI.inherit(BI.Widget, {
         return flag;
     },
 
+    resize: function () {
+        this.arrangement.resize();
+    },
+
     populate: function () {
         var self = this;
-        var layoutStyle = Data.SharingPool.get("layoutStyle") || BI.Arrangement.LAYOUT_TYPE.ADAPTIVE;
+        var layoutType = Data.SharingPool.get("layoutType");
+        if (BI.isNull(layoutType)) {
+            layoutType = BI.Arrangement.LAYOUT_TYPE.FREE;
+        }
         var result = [];
         var widgets = Data.SharingPool.cat("widgets");
         BI.each(widgets, function (id, widget) {
-            var item = self._createItem(id, widget);
             var bounds = widget.bounds;
+            var item = self._createItem(id, bounds);
             result.push({
                 el: item,
                 left: bounds.left,
@@ -316,7 +336,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 height: bounds.height
             });
         });
-        this.setLayoutType(layoutStyle);
+        this.setLayoutType(layoutType);
         this.arrangement.populate(result);
     },
 

@@ -1,14 +1,16 @@
 package com.fr.bi.test;
 
-import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.bi.base.FinalLong;
-import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.db.BIColumn;
-import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.db.DBField;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
+import com.fr.bi.util.BICubeDBUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
@@ -18,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by Root on 2015/9/6.
@@ -41,26 +42,30 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
         int times = timesString == null ? 1 : Integer.parseInt(timesString);
         int count = countString == null ? BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT : Integer.parseInt(countString);
 
-        DBTable table = BIDBUtils.getDBTable("important", "items");
-        BIColumn[] columns = table.getColumnArray();
+        IPersistentTable table = BIDBUtils.getDBTable("important", "items");
+        List<PersistentField> columns = table.getFieldList();
 
-        DBField[] fields = new DBField[1];
-
-        fields[0] = new DBField(UUID.randomUUID().toString(), columns[0].getFieldName(),
-                BIDBUtils.checkColumnClassTypeFromSQL(columns[0].getType(), columns[0].getColumnSize(), columns[0].getScale()),
-                columns[0].getColumnSize());
+        BICubeFieldSource[] fields = new BICubeFieldSource[1];
+        /**
+         * Connery
+         * 原来是        UUID.randomUUID().toString()
+         * 现在改成空TableSource
+         */
+        fields[0] = new BICubeFieldSource(new DBTableSource("", ""), columns.get(0).getFieldName(),
+                BIDBUtils.checkColumnClassTypeFromSQL(columns.get(0).getSqlType(), columns.get(0).getColumnSize(), columns.get(0).getScale()),
+                columns.get(0).getColumnSize());
 
         final List<String> list = new ArrayList<String>();
         final int start = (times - 1) * count;
         final int end = times * count;
         final FinalLong all = new FinalLong();
-        BIDBUtils.runSQL(BIDBUtils.getSQLStatement("important", "items"), fields, new Traversal<BIDataValue>() {
+        BICubeDBUtils.runSQL(BIDBUtils.getSQLStatement("important", "items"), fields, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 if (data.getRow() >= start && data.getRow() < end) {
                     list.add((String) data.getValue());
                 }
-                all.i++;
+                all.value++;
             }
         });
         JSONArray ja = new JSONArray();
@@ -72,7 +77,7 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
         }
 
         JSONObject jo = new JSONObject();
-        jo.put("all", all.i);
+        jo.put("all", all.value);
         jo.put("items", ja);
         WebUtils.printAsJSON(res, jo);
     }

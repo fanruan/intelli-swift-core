@@ -1,18 +1,18 @@
 package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -70,27 +70,27 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
 
 
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
         Iterator<Map.Entry<String, Integer>> it = fields.entrySet().iterator();
         for (int i = 0; i < tables.length; i++) {
-            DBTable ptalbe = tables[i];
-            int size = ptalbe.getBIColumn(idFieldName).getColumnSize();
-            int columnType = ptalbe.getBIColumn(idFieldName).getBIType();
+            IPersistentTable ptalbe = tables[i];
+            int size = ptalbe.getField(idFieldName).getColumnSize();
+            int columnType = ptalbe.getField(idFieldName).getBIType();
             while (it.hasNext()) {
                 Map.Entry<String, Integer> entry = it.next();
-                DBTable.addColumn(new UnionRelationColumn(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
+                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
             }
         }
-        return DBTable;
+        return persistentTable;
     }
 
     @Override
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
         int rowCount = ti.getRowCount();
         ICubeColumnIndexReader idmap = ti.loadGroup(new IndexKey(idFieldName), new ArrayList<BITableSourceRelation>());
-        BIBasicField idColumn = ti.getColumns().get(new IndexKey(idFieldName));
-        BIBasicField pidColumn = ti.getColumns().get(new IndexKey(parentIdFieldName));
+        ICubeFieldSource idColumn = ti.getColumns().get(new IndexKey(idFieldName));
+        ICubeFieldSource pidColumn = ti.getColumns().get(new IndexKey(parentIdFieldName));
         int columnLength = fields.size();
         if (idColumn != null && pidColumn != null && idColumn.getFieldType() == pidColumn.getFieldType()) {
             for (int i = 0; i < rowCount; i++) {

@@ -6,6 +6,7 @@ import com.finebi.cube.exception.BIStatusAbsentException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.BICubeBuildFragmentTag;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
+import com.finebi.cube.gen.mes.BIStatusUtils;
 import com.finebi.cube.impl.pubsub.BIPublishID;
 import com.finebi.cube.impl.pubsub.BISubscribeID;
 import com.finebi.cube.operate.IOperation;
@@ -90,6 +91,13 @@ public class BIOperation<R> implements IOperation<R> {
     public void subscribe(IStatusTag statusTag) throws BITopicAbsentException,
             BIFragmentAbsentException, BIStatusAbsentException, BIRegisterIsForbiddenException {
         this.preconditionSubscribe.subscribe(statusTag);
+        this.preconditionSubscribe.orSubscribe(BIStatusUtils.generateStopFromFinish(statusTag));
+    }
+
+    @Override
+    public void orSubscribe(IStatusTag statusTag) throws BITopicAbsentException,
+            BIFragmentAbsentException, BIStatusAbsentException, BIRegisterIsForbiddenException {
+        this.preconditionSubscribe.orSubscribe(statusTag);
     }
 
     @Override

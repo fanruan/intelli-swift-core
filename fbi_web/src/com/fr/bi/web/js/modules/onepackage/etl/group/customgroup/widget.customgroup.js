@@ -10,7 +10,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CustomGroup.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-custom-group",
-            did: ""
+            dId: ""
         })
     },
     _init: function () {
@@ -309,6 +309,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
                 self.copy2group.populate(groupItems);
                 self.copy2group.setValue(groupName);
                 self._scrollToBottom();
+                this.scrollToBottom();
             } else if (otherDuplicate === true) {
                 BI.Msg.alert(BI.i18nText("BI-Failure_Toast"), "\"" + duplicatedName + "\"" + BI.i18nText("BI-Failute_Fieldname_Othername_Duplicate"));
             }
@@ -469,7 +470,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         var groupedItems = configs.details, ungroup2Other = configs.ungroup2Other, ungroup2OtherName = configs.ungroup2OtherName;
         var fieldName = o.fieldName;
         self.bottom.populate(ungroup2Other, ungroup2OtherName);
-        BI.Utils.getConfDataByField(configs.table, fieldName, {}, function (unGroupedFields) {
+        o.model.getValuesForCustomGroup(o.dId, function(unGroupedFields){
             if (BI.size(unGroupedFields) > 1000) {
                 if (!BI.Maskers.has(self.getName())) {
                     self._tooManyFieldsPane = BI.createWidget({
@@ -483,9 +484,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
                                 textHeight: 30
                             }
                         ],
-                        element: BI.Maskers.create(self.getName(), self, {
-                            container: self
-                        })
+                        element: BI.Maskers.make(self.getName(), self)
                     });
                 }
                 BI.Maskers.show(self.getName());

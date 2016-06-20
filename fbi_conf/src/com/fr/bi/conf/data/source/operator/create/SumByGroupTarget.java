@@ -45,7 +45,9 @@ public class SumByGroupTarget implements JSONTransform {
         }
         if(jsonObject.has("_src")){
             JSONObject jo = jsonObject.optJSONObject("_src");
-            this.name = BIIDUtils.getFieldNameFromFieldID(jo.getString("field_id"));
+            if (jo.has("field_name")){
+                this.name = jo.getString("field_name");
+            }
         }
     }
 
@@ -63,6 +65,8 @@ public class SumByGroupTarget implements JSONTransform {
                 return ti.getSUMValue(gvi, new IndexKey(name));
             case BIReportConstant.SUMMARY_TYPE.APPEND:
                 return getAppendString(ti, gvi);
+            case BIReportConstant.SUMMARY_TYPE.RECORD_COUNT:
+                return (double)gvi.getRowsCountWithData();
         }
         return null;
     }

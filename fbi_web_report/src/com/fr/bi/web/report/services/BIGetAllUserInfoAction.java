@@ -31,12 +31,11 @@ public class BIGetAllUserInfoAction extends ActionNoSessionCMD {
         JSONArray ja = new JSONArray();
         for(int i = 0; i < userList.size(); i++){
             User user = userList.get(i);
-            JSONObject jo = new JSONObject();
-            jo.put("id", String.valueOf(user.getId()));
-            jo.put("name", user.getUsername());
+            JSONObject jo = user.createJSON4Share();
             jo.put("roles", UserControl.getInstance().getAllSRoleNames(user.getId()));
             ja.put(jo);
         }
+
         WebUtils.printAsJSON(res, ja);
     }
 }

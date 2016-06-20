@@ -2,6 +2,7 @@ package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
 import com.fr.bi.field.target.key.cal.configuration.BIRankCalTargetKey;
+import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ASCComparator;
@@ -21,8 +22,8 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
     private static final long serialVersionUID = 7481595795461223558L;
     private int type = BIReportConstant.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC;
 
-    public RankConfigureCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group, int rank_type) {
-        super(target, cal_target_name, start_group);
+    public RankConfigureCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group, int rank_type) {
+        super(target, target_id, start_group);
         this.type = rank_type;
     }
 
@@ -37,7 +38,9 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
-            tempNode = tempNode.getFirstChild();
+            if (tempNode.getFirstChild().getFirstChild() != null) {
+                tempNode = tempNode.getFirstChild();
+            }
         }
         List nodeList = new ArrayList();
         LightNode cursor_node = tempNode;
@@ -80,7 +83,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
 
     @Override
     public BITargetKey createTargetKey() {
-        return new BIRankCalTargetKey(targetName, cal_target_name, targetMap, start_group, type);
+        return new BIRankCalTargetKey(targetName, target_id, targetMap, start_group, type);
     }
 
 
@@ -95,6 +98,8 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
         @Override
         public Object call() throws Exception {
             Object key = getCalKey();
+            String targetName = ((TargetGettingKey) key).getTargetName();
+            BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
             int deep = 0;
             LightNode temp_node = rank_node;
             while (temp_node.getFirstChild() != null) {
@@ -106,7 +111,12 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             TreeMap sortMap = new TreeMap(c);
             LightNode cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Comparable value = (Comparable) cursor_node.getSummaryValue(key);
+                Comparable value;
+                if (targetKey instanceof AvgKey) {
+                    value = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
+                } else {
+                    value = (Comparable) cursor_node.getSummaryValue(key);
+                }
                 Integer time = (Integer) sortMap.get(value);
                 if (time == null) {
                     time = new Integer(1);
@@ -126,7 +136,12 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             }
             cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Object value = cursor_node.getSummaryValue(key);
+                Object value;
+                if (targetKey instanceof AvgKey) {
+                    value = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
+                } else {
+                    value = cursor_node.getSummaryValue(key);
+                }
                 cursor_node.setSummaryValue(createTargetGettingKey(), result.get(value));
                 cursor_node = cursor_node.getSibling();
             }

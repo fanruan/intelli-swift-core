@@ -1,24 +1,29 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.finebi.cube.relation.BITableRelation;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
-import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
-import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.conf.utils.BIModuleUtils;
+import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
+import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
+import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BISimpleRelation;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONArray;
@@ -29,18 +34,29 @@ import com.fr.report.poly.TemplateBlock;
 import java.util.*;
 
 public class BIDetailWidget extends BIAbstractWidget {
-
+    @BICoreField
     private BIDetailSetting data;
+    @BICoreField
     private BIDetailTarget[] dimensions = new BIDetailTarget[0];
-    private Map<String, TargetFilter> targetFilterMap = new HashMap<String, TargetFilter>();
-    private Table target;//目标表
+    @BIIgnoreField
+    private transient BIDetailTarget[] usedDimensions;
+    @BICoreField
+    private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
+    @BICoreField
+    private BusinessTable target;//目标表
     private List<String> parent_widget = new ArrayList<String>();
-
     private String[] sortTargets = new String[0];
 
     //page from 1~ max
     private int page = 1;
 
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
 
     @Override
     public BIDetailTarget[] getDimensions() {
@@ -49,6 +65,10 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     @Override
     public BIDetailTarget[] getViewDimensions() {
+        if(usedDimensions != null) {
+            return usedDimensions;
+        }
+        BIDetailTarget[] dims = getDimensions();
         if (data != null) {
             String[] array = data.getView();
             List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
@@ -59,9 +79,10 @@ public class BIDetailWidget extends BIAbstractWidget {
                 }
 
             }
-            return usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
+            dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
         }
-        return dimensions;
+        usedDimensions = dims;
+        return dims;
     }
 
     @Override
@@ -75,8 +96,8 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
     @Override
-    public List<Table> getUsedTableDefine() {
-        List<Table> result = new ArrayList<Table>();
+    public List<BusinessTable> getUsedTableDefine() {
+        List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDetailTarget[] dm = this.getDimensions();
         if (dm != null) {
             for (int i = 0; i < dm.length; i++) {
@@ -88,8 +109,8 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
     @Override
-    public List<BIField> getUsedFieldDefine() {
-        List<BIField> result = new ArrayList<BIField>();
+    public List<BusinessField> getUsedFieldDefine() {
+        List<BusinessField> result = new ArrayList<BusinessField>();
         BIDetailTarget[] dm = this.getDimensions();
         if (dm != null) {
             for (int i = 0; i < dm.length; i++) {
@@ -107,12 +128,18 @@ public class BIDetailWidget extends BIAbstractWidget {
 
 
     public void setTargetTable(long userID) {
-        BITableID targetTableID = dimensions[0].createTableKey().getID();
-        target = new BITable(targetTableID);
+        BITableID targetTableID = new BITableID();
+        for (BIDetailTarget target : dimensions) {
+            if (!(target instanceof BINumberFormulaDetailTarget)) {
+                targetTableID = target.createTableKey().getID();
+                break;
+            }
+        }
+        target = BIModuleUtils.getBusinessTableById(new BITableID(targetTableID));
         for (int i = 0; i < dimensions.length; i++) {
-            List<BISimpleRelation> relations = dimensions[i].getRelationList(null, userID);
+            List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
             if (!relations.isEmpty()) {
-                target = relations.get(relations.size() - 1).getTableRelation().getForeignTable();
+                target = relations.get(relations.size() - 1).getForeignTable();
                 break;
             }
         }
@@ -165,11 +192,9 @@ public class BIDetailWidget extends BIAbstractWidget {
             JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
             Iterator it = dimensionMap.keys();
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
-            List<BISimpleRelation> relationList = new ArrayList<BISimpleRelation>();
+            List<BITableRelation> relationList = new ArrayList<BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
-                BISimpleRelation viewRelation = new BISimpleRelation();
-                viewRelation.parseJSON(relationJa.getJSONObject(j));
-                relationList.add(viewRelation);
+                relationList.add(BITableRelationHelper.getRelation(relationJa.getJSONObject(j)));
             }
             this.dimensions[i].setRelationList(relationList);
         }
@@ -177,7 +202,7 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
 
-    public Table getTargetDimension() {
+    public BusinessTable getTargetDimension() {
         return target;
     }
 
@@ -200,6 +225,11 @@ public class BIDetailWidget extends BIAbstractWidget {
         jo.put("row", paging.getTotalSize());
         jo.put("size", paging.getPageSize());
         return jo;
+    }
+
+    @Override
+    public int getType() {
+        return BIReportConstant.WIDGET.DETAIL;
     }
 
     @Override

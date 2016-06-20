@@ -4,7 +4,7 @@
 BIDezi.WebWidgetView = BI.inherit(BI.View, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.WebWidgetView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-text"
+            baseCls: "bi-dashboard-widget"
         })
     },
 
@@ -20,17 +20,28 @@ BIDezi.WebWidgetView = BI.inherit(BI.View, {
         var self = this;
         this.web = BI.createWidget({
             type: "bi.web_page",
-            element: vessel,
-            height: '100%'
+            element: vessel
         });
 
         this.web.on(BI.WebPage.EVENT_DESTROY, function () {
-            self.model.destroy()
+            BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete"), function (v) {
+                if (v === true) {
+                    self.model.destroy();
+                }
+            });
         });
 
         this.web.on(BI.WebPage.EVENT_VALUE_CHANGE, function () {
             self.model.set("url", self.web.getValue())
         })
+    },
+
+    local: function () {
+        if (this.model.has("expand")) {
+            this.model.get("expand");
+            return true;
+        }
+        return false;
     },
 
     refresh: function () {

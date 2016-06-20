@@ -64,7 +64,7 @@ BI.HTapeLayout = BI.inherit(BI.Layout, {
             if (BI.isNull(left[i])) {
                 left[i] = left[i - 1] + items[i - 1].width + 2 * o.hgap + o.lgap + o.rgap;
             }
-            if (item.width <= 1 && item.width >= 0) {
+            if (item.width < 1 && item.width >= 0) {
                 w.element.css({"left": left[i] * 100 + "%", width: item.width * 100 + "%"})
             } else {
                 w.element.css({
@@ -81,7 +81,7 @@ BI.HTapeLayout = BI.inherit(BI.Layout, {
             if (BI.isNull(right[i])) {
                 right[i] = right[i + 1] + items[i + 1].width + 2 * o.hgap + o.lgap + o.rgap;
             }
-            if (item.width <= 1 && item.width >= 0) {
+            if (item.width < 1 && item.width >= 0) {
                 w.element.css({"right": right[i] * 100 + "%", width: item.width * 100 + "%"})
             } else {
                 w.element.css({
@@ -170,7 +170,7 @@ BI.VTapeLayout = BI.inherit(BI.Layout, {
             if (BI.isNull(top[i])) {
                 top[i] = top[i - 1] + items[i - 1].height + 2 * o.vgap + o.tgap + o.bgap;
             }
-            if (item.height <= 1 && item.height >= 0) {
+            if (item.height < 1 && item.height >= 0) {
                 w.element.css({"top": top[i] * 100 + "%", height: item.height * 100 + "%"})
             } else {
                 w.element.css({
@@ -187,7 +187,7 @@ BI.VTapeLayout = BI.inherit(BI.Layout, {
             if (BI.isNull(bottom[i])) {
                 bottom[i] = bottom[i + 1] + items[i + 1].height + 2 * o.vgap + o.tgap + o.bgap;
             }
-            if (item.height <= 1 && item.height >= 0) {
+            if (item.height < 1 && item.height >= 0) {
                 w.element.css({"bottom": bottom[i] * 100 + "%", height: item.height * 100 + "%"})
             } else {
                 w.element.css({

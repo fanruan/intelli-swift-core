@@ -15,6 +15,9 @@ ChartsView = BI.inherit(BI.View, {
         var chart = BI.createWidget({
             type: 'bi.chart'
         });
+        chart.on(BI.Chart.EVENT_CHANGE, function(){
+            alert("wqwqw");
+        });
         var data = [{
             "data": [
                 {"x": "孙林", "y": 789},

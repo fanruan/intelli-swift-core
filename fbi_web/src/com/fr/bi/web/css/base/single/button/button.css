@@ -79,6 +79,13 @@
 .bi-button.button-ignore.disabled .b-font:before {
   color: #c4c6c6 !important;
 }
+.bi-basic-button.button-common .bi-button-mask,
+.bi-basic-button.button-success .bi-button-mask,
+.bi-basic-button.button-warning .bi-button-mask {
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  background-color: #ffffff;
+}
 .bi-basic-button .bi-button-mask {
   opacity: 0.2;
   filter: alpha(opacity=20);

@@ -32,7 +32,7 @@ BI.MultiTreeCheckPane = BI.inherit(BI.Pane, {
         });
         continueSelect.on(BI.TextButton.EVENT_CHANGE, function () {
             opts.onClickContinueSelect();
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.empty();
             });
         });

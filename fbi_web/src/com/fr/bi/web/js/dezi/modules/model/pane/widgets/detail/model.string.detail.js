@@ -5,7 +5,7 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             name: "",
-            type: BICst.Widget.STRING,
+            type: BICst.WIDGET.STRING,
             value: {}
         });
     },
@@ -14,15 +14,39 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
 
     },
 
-    change : function(changed){
-
+    change: function (changed, prev) {
+        if (BI.has(changed, "dimensions")) {
+            if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
+            }
+            if (BI.size(changed.dimensions) >= BI.size(prev.dimensions)) {
+                var result = BI.find(changed.dimensions, function (did, dimension) {
+                    return !BI.has(prev.dimensions, did);
+                });
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+            }
+            if (BI.size(changed.dimensions) < BI.size(prev.dimensions)) {
+                var res = BI.find(prev.dimensions, function (did, dimension) {
+                    return !BI.has(changed.dimensions, did);
+                });
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + res._src.id);
+            }
+            this.set("value", {});
+        }
     },
 
-    splice: function(old, key1, key2){
-        if(key1 === "dimensions"){
+    splice: function (old, key1, key2) {
+        if (key1 === "dimensions") {
             var views = this.get("view");
             views[BICst.REGION.DIMENSION1] = [];
             this.set("view", views);
+        }
+        if (key1 === "dimensions") {
+            BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + old._src.id);
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+            //全局维度增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
         }
     },
 
@@ -34,7 +58,7 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
             var dimensions = this.get("dimensions");
             var view = this.get("view");
             //维度指标基本属性
-            if(!dimensions[dId]){
+            if (!dimensions[dId]) {
                 dimensions[dId] = {
                     name: src.name,
                     _src: src._src,

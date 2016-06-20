@@ -8,7 +8,7 @@ BIShow.DimensionView = BI.inherit(BI.View, {
         COMBO_WIDTH: 25,
         CONTAINER_HEIGHT: 25,
         ICON_BUTTON_WIDTH: 12,
-        // ICON_BUTTON_POS: bi.dimensions_manager2
+        ICON_BUTTON_POS: 2
     },
 
     _defaultConfig: function () {
@@ -16,8 +16,6 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             baseCls: "bi-dimension"
         })
     },
-
-    events: {},
 
     _init: function () {
         BIShow.DimensionView.superclass._init.apply(this, arguments);
@@ -39,7 +37,6 @@ BIShow.DimensionView = BI.inherit(BI.View, {
         this.usedCheck = BI.createWidget({
             type: "bi.checkbox"
         });
-        this.usedCheck.setSelected(this.model.get("used"));
         this.usedCheck.on(BI.Checkbox.EVENT_CHANGE, function () {
             self.model.set("used", self.usedCheck.isSelected());
         });
@@ -51,8 +48,6 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                 return self._checkDimensionName(self.editor.getValue());
             }
         });
-        this.editor.setValue(this.model.get("name"));
-        this.editor.setState(this.model.get("name"));
         this.editor.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.model.set("name", self.editor.getValue());
         });
@@ -68,20 +63,18 @@ BIShow.DimensionView = BI.inherit(BI.View, {
         });
 
         switch (this.model.get("type")) {
-            case BICst.COLUMN.STRING:
+            case BICst.TARGET_TYPE.STRING:
                 this._createStringCombo();
                 break;
-            case BICst.COLUMN.NUMBER:
+            case BICst.TARGET_TYPE.NUMBER:
                 this._createNumberCombo();
                 break;
-            case BICst.COLUMN.DATE:
+            case BICst.TARGET_TYPE.DATE:
                 this._createDateCombo();
                 break;
             default :
                 this._createStringCombo();
         }
-
-        var filterIconWidth = BI.isEmpty(this.model.get("filter_value")) ? 0 : this.constants.ICON_BUTTON_WIDTH;
 
         this.htape = BI.createWidget({
             type: "bi.htape",
@@ -92,7 +85,7 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                     items: [this.usedCheck]
                 },
                 width: this.constants.COMBO_WIDTH
-            }, this.editor, {el: this.iconButton, width: filterIconWidth},
+            }, this.editor, {el: this.iconButton, width: 0},
                 {
                     el: {
                         type: "bi.center_adapt",
@@ -109,6 +102,21 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             data: {id: this.model.get("id")},
             items: [this.htape]
         });
+    },
+
+    _checkUsedEnable: function () {
+        var isUsed = this.model.get("used");
+        var wId = BI.Utils.getWidgetIDByDimensionID(this.model.get("id"));
+        this.usedCheck.setEnable(true);
+        this.usedCheck.setSelected(isUsed);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if ((wType !== BICst.WIDGET.TABLE &&
+            wType !== BICst.WIDGET.CROSS_TABLE &&
+            wType !== BICst.WIDGET.COMPLEX_TABLE)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION2
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
+            this.usedCheck.setEnable(false);
+        }
     },
 
     _checkDimensionName: function (name) {
@@ -130,9 +138,8 @@ BIShow.DimensionView = BI.inherit(BI.View, {
         this.combo = BI.createWidget({
             type: "bi.dimension_string_combo_show",
             dId: self.model.get("id")
-
         });
-        this.combo.on(BI.AbstractDimensionCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_STRING_COMBO.ASCEND:
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
@@ -157,7 +164,20 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                 case BICst.DIMENSION_STRING_COMBO.GROUP_BY_CUSTOM:
                     self._buildCustomGroupPane();
                     break;
-
+                case BICst.DIMENSION_STRING_COMBO.FILTER:
+                    self._buildFilterPane();
+                    break;
+                case BICst.DIMENSION_STRING_COMBO.DT_RELATION:
+                    self._buildMatchingRelationShipPane();
+                    break;
+                case BICst.DIMENSION_STRING_COMBO.COPY:
+                    self._copyDimension();
+                    break;
+                case BICst.DIMENSION_STRING_COMBO.DELETE:
+                    self._deleteDimension();
+                    break;
+                case BICst.DIMENSION_STRING_COMBO.INFO:
+                    break;
             }
         })
     },
@@ -168,18 +188,16 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             type: "bi.dimension_number_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.DIMENSION_NUMBER_COMBO.ASCEND:
-                    self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
+                    self.model.set("sort", {type: BICst.SORT.ASC, sort_target: s});
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.DESCEND:
-                    self.model.set("changeSort", {type: BICst.SORT.DESC, sort_target: s});
-                    break;
-                case BICst.DIMENSION_NUMBER_COMBO.NOT_SORT:
-                    self.model.set("changeSort", {type: BICst.SORT.NONE, sort_target: s});
+                    self.model.set("sort", {type: BICst.SORT.DESC, sort_target: s});
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.SORT_BY_CUSTOM:
+                    self._buildCustomSortPane();
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.GROUP_BY_VALUE:
                     self.model.set("changeGroup", {type: BICst.GROUP.ID_GROUP});
@@ -189,6 +207,15 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.FILTER:
                     self._buildFilterPane();
+                    break;
+                case BICst.DIMENSION_NUMBER_COMBO.DT_RELATION:
+                    self._buildMatchingRelationShipPane();
+                    break;
+                case BICst.DIMENSION_NUMBER_COMBO.COPY:
+                    self._copyDimension();
+                    break;
+                case BICst.DIMENSION_NUMBER_COMBO.DELETE:
+                    self._deleteDimension();
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.INFO:
                     break;
@@ -202,15 +229,22 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             type: "bi.dimension_date_combo_show",
             dId: self.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetComboShow.EVENT_CHANGE, function (v, s) {
             switch (v) {
+                case BICst.DIMENSION_DATE_COMBO.DATE:
+                    self.model.set("group", {type: BICst.GROUP.YMD});
+                    break;
                 case BICst.DIMENSION_DATE_COMBO.YEAR:
+                    self.model.set("group", {type: BICst.GROUP.Y});
                     break;
                 case BICst.DIMENSION_DATE_COMBO.QUARTER:
+                    self.model.set("group", {type: BICst.GROUP.S});
                     break;
                 case BICst.DIMENSION_DATE_COMBO.MONTH:
+                    self.model.set("group", {type: BICst.GROUP.M});
                     break;
                 case BICst.DIMENSION_DATE_COMBO.WEEK:
+                    self.model.set("group", {type: BICst.GROUP.W});
                     break;
                 case BICst.DIMENSION_DATE_COMBO.ASCEND:
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
@@ -220,6 +254,15 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_DATE_COMBO.FILTER:
                     self._buildFilterPane();
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.DT_RELATION:
+                    self._buildMatchingRelationShipPane();
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.COPY:
+                    self._copyDimension();
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.DELETE:
+                    self._deleteDimension();
                     break;
                 case BICst.DIMENSION_DATE_COMBO.INFO:
                     break;
@@ -253,7 +296,27 @@ BIShow.DimensionView = BI.inherit(BI.View, {
         popup.populate();
     },
 
+    _buildMatchingRelationShipPane: function () {
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.matching_relation_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.MatchingRelationPopup.EVENT_CHANGE, function (v) {
+            self.model.set("dimension_map", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
+    },
 
+    _copyDimension: function () {
+        this.model.copy();
+    },
+
+    _deleteDimension: function () {
+        this.model.destroy();
+    },
 
     local: function () {
         if (this.model.has("changeSort")) {
@@ -268,6 +331,13 @@ BIShow.DimensionView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
-        this.usedCheck.setSelected(this.model.get("used"));
+        this._checkUsedEnable();
+        this.editor.setValue(this.model.get("name"));
+        this.editor.setState(this.model.get("name"));
+        var filterIconWidth = BI.isEmpty(this.model.get("filter_value")) ? 0 : this.constants.ICON_BUTTON_WIDTH;
+        var items = this.htape.attr("items");
+        items[this.constants.ICON_BUTTON_POS].width = filterIconWidth;
+        this.htape.attr("items", items);
+        this.htape.resize();
     }
 });

@@ -24,6 +24,15 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: o.height,
+            validationChecker: function (v) {
+                var date = v.match(/\d+/g);
+                self._autoAppend(v, date);
+                return self._dateCheck(v) && Date.checkLegal(v) && self._checkVoid({
+                        year: date[0],
+                        month: date[1],
+                        day: date[2]
+                    });
+            },
             quitChecker: function () {
                 return false;
             },
@@ -32,6 +41,9 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             allowBlank: true,
             watermark: c.watermark,
             errorText: c.errorText
+        });
+        this.editor.on(BI.SignEditor.EVENT_KEY_DOWN, function () {
+            self.fireEvent(BI.MultiDateParamTrigger.EVENT_KEY_DOWN);
         });
         this.editor.on(BI.SignEditor.EVENT_FOCUS, function () {
             self.fireEvent(BI.MultiDateParamTrigger.EVENT_FOCUS);
@@ -127,13 +139,17 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
         var type, value, self = this;
         this.stored_value = v;
         var date = new Date();
-        if (BI.isNotNull(v) && BI.has(v, "value")) {
-            type = v.type, value = v.value;
-            var name = BI.Utils.getWidgetNameByID(value.wId || value);
-            if(BI.isNull(name) && type === BICst.MULTI_DATE_PARAM){
-                return;
+        if (BI.isNotNull(v)) {
+            if(BI.has(v, "value")){
+                type = v.type, value = v.value;
+                var name = BI.Utils.getWidgetNameByID(value.wId || value);
+                if(BI.isNull(name) && type === BICst.MULTI_DATE_PARAM){
+                    return;
+                }
+                this.stored_value = v;
+            }else{
+                value = v;
             }
-            this.stored_value = v;
         }
         var _setInnerValue = function (date, text) {
             var dateStr = date.print("%Y-%x-%e");
@@ -307,7 +323,16 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
         return this.editor.getValue();
     },
     getValue: function () {
-        return this.stored_value;
+        var dateStr = this.editor.getValue();
+        if (BI.isNotEmptyString(dateStr)) {
+            var date = dateStr.split("-");
+            return {
+                year: date[0] | 0,
+                month: date[1] - 1,
+                day: date[2] | 0
+            }
+        }
+        return this.store_value;
     },
 
     _setChangeIconVisible: function (v) {
@@ -322,6 +347,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
     }
 });
 BI.MultiDateParamTrigger.EVENT_FOCUS = "EVENT_FOCUS";
+BI.MultiDateParamTrigger.EVENT_KEY_DOWN = "EVENT_KEY_DOWN";
 BI.MultiDateParamTrigger.EVENT_START = "EVENT_START";
 BI.MultiDateParamTrigger.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.MultiDateParamTrigger.EVENT_CHANGE = "EVENT_CHANGE";

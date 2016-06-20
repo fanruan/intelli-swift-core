@@ -1,5 +1,6 @@
 package com.fr.bi.base;
 
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.bi.stable.utils.time.BITimeUtils;
@@ -77,6 +78,32 @@ public class ValueConverterFactory {
                 return WEEK;
             }
             case DateConstant.DATE.YMD: {
+                return YMD;
+            }
+            default: {
+                return ValueConverter.DEFAULT;
+            }
+        }
+    }
+
+    public static ValueConverter createDateValueConverterByGroupType(int type) {
+        switch (type) {
+            case BIReportConstant.GROUP.Y: {
+                return YEAR;
+            }
+            case BIReportConstant.GROUP.M: {
+                return MONTH;
+            }
+            case  BIReportConstant.GROUP.S: {
+                return SEASON;
+            }
+            case  BIReportConstant.GROUP.MD: {
+                return DAY;
+            }
+            case  BIReportConstant.GROUP.W: {
+                return WEEK;
+            }
+            case  BIReportConstant.GROUP.YMD: {
                 return YMD;
             }
             default: {

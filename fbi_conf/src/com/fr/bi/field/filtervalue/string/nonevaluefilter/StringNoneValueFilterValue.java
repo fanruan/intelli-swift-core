@@ -1,5 +1,6 @@
 package com.fr.bi.field.filtervalue.string.nonevaluefilter;
 
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.finebi.cube.api.ICubeDataLoader;
@@ -12,7 +13,7 @@ import com.fr.stable.xml.XMLableReader;
 /**
  * Created by sheldon on 14-8-14.
  */
-public abstract class StringNoneValueFilterValue implements StringFilterValue {
+public abstract class StringNoneValueFilterValue extends AbstractFilterValue<String> implements StringFilterValue {
 
     private static final long serialVersionUID = -7727949200202027961L;
 
@@ -81,11 +82,6 @@ public abstract class StringNoneValueFilterValue implements StringFilterValue {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
     public boolean canCreateFilterIndex() {
         return true;
     }
@@ -102,5 +98,10 @@ public abstract class StringNoneValueFilterValue implements StringFilterValue {
         String value = StringFilterValueUtils.toString(node.getShowValue());
         //FIXME 这里之前将空值保存为空字符串
         return isMatchValue(value);
+    }
+
+    @Override
+    public boolean isAllCalculatorFilter() {
+        return false;
     }
 }

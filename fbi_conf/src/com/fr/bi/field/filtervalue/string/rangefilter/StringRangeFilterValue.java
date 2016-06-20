@@ -3,27 +3,25 @@
  */
 package com.fr.bi.field.filtervalue.string.rangefilter;
 
-import com.fr.bi.base.BIUser;
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.report.widget.BIDataColumn;
-import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
-import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
-import com.fr.bi.stable.data.Table;
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.base.key.BIKey;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
+import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
+import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -34,17 +32,16 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.List;
 
 
-public abstract class StringRangeFilterValue implements StringFilterValue {
+public abstract class StringRangeFilterValue extends AbstractFilterValue<String> implements StringFilterValue {
     /**
      *
      */
     private static final long serialVersionUID = -8598939332490484510L;
     private static String XML_TAG = "StringRangeFilterValue";
-
+    @BICoreField
     protected StringValueSet valueSet = new StringValueSet();
     //TODO 这个保存着实在太J了
     protected JSONObject valueJo = new JSONObject();
-    protected BIDataColumn column = null;
     protected BIUser user;
 
     /* (non-Javadoc)
@@ -54,8 +51,13 @@ public abstract class StringRangeFilterValue implements StringFilterValue {
     public int hashCode() {
         final int prime = 31;
         int result = this.getClass().getName().hashCode();
-        result = prime * result + ((column == null) ? ((valueSet == null) ? 0 : valueSet.hashCode())  : column.hashCode());
+        result = prime * result + ((valueSet == null) ? 0 : valueSet.hashCode());
         return result;
+    }
+
+    @Override
+    public boolean isAllCalculatorFilter() {
+        return false;
     }
 
     /* (non-Javadoc)
@@ -70,23 +72,6 @@ public abstract class StringRangeFilterValue implements StringFilterValue {
             return false;
         }
         if (getClass() != obj.getClass()) {
-            return false;
-        }
-        StringRangeFilterValue other = (StringRangeFilterValue) obj;
-
-        if (column == null) {
-            if (other.column != null) {
-                return false;
-            } else {
-                if (valueSet == null) {
-                    if (other.valueSet != null) {
-                        return false;
-                    }
-                } else if (!ComparatorUtils.equals(valueSet, other.valueSet)) {
-                    return false;
-                }
-            }
-        } else if (!ComparatorUtils.equals(column, other.column)) {
             return false;
         }
         return true;
@@ -114,23 +99,7 @@ public abstract class StringRangeFilterValue implements StringFilterValue {
             }
 
             for (int i = 0, len = ja.length(); i < len; i++) {
-                Object o = ja.get(i);
-                if (o instanceof JSONObject) {
-                    JSONObject j = (JSONObject) o;
-                    if (j.has("login_user")) {
-                        User user = UserControl.getInstance().getUser(userId);
-                        valueSet.getValues().add(user.getUsername());
-                    } else {
-                        BIDataColumn column = null;
-                        column = new BIDataColumn();
-                        column.parseJSON(j);
-                        this.column = column;
-                    }
-                } else {
-                    if (o != null) {
-                        valueSet.getValues().add(o.toString());
-                    }
-                }
+                valueSet.getValues().add(ja.getString(i));
             }
         }
     }
@@ -187,13 +156,12 @@ public abstract class StringRangeFilterValue implements StringFilterValue {
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
-        addLogUserInfo(loader);
-        if (valueSet.getValues().isEmpty()) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
+        if (valueSet.getValues() == null || valueSet.getValues().isEmpty()) {
             return null;
         }
         return createFilterIndexByRelations(dimension.getRelationList(), dimension.createNoneSortGroupValueMapGetter(target, loader),
-                loader.getTableIndex(dimension.getField()), loader.getTableIndex(target), dimension.createKey());
+                loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()), loader.getTableIndex(target.getTableSource()), dimension.createKey());
     }
 
     private GroupValueIndex createFilterIndexByRelations(List<BITableSourceRelation> relations, ICubeColumnIndexReader sgm, ICubeTableService cti, ICubeTableService eti, BIKey ckey) {
@@ -228,30 +196,12 @@ public abstract class StringRangeFilterValue implements StringFilterValue {
         return hasValue ? (valueSet.isContains() ? sgvi : sgvi.NOT(eti.getRowCount())) : null;
     }
 
-    protected void addLogUserInfo(ICubeDataLoader loader) {
-        if (this.column != null && BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(user.getUserId()).getAnylysisUserInfo() != null) {
-            try {
-                User frUser = UserControl.getInstance().getUser(user.getUserId());
-                Object fieldValue = BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(user.getUserId()).getAnylysisUserInfo().getFieldValue(frUser.getUsername(), column.createColumnKey(), loader);
-                if (fieldValue != null) {
-                    valueSet.getValues().add(fieldValue.toString());
-                }
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
-        }
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     @Override
     public boolean canCreateFilterIndex() {
         return true;
     }
-    
+
     /**
      * 是否显示记录
      *
@@ -260,7 +210,6 @@ public abstract class StringRangeFilterValue implements StringFilterValue {
      */
     @Override
     public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        addLogUserInfo(loader);
         String value = StringFilterValueUtils.toString(node.getShowValue());
         if (valueSet.getValues() == null || valueSet.getValues().isEmpty()) {
             return true;

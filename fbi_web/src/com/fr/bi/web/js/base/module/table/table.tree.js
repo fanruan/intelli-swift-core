@@ -43,101 +43,10 @@ BI.TableTree = BI.inherit(BI.Widget, {
         })
     },
 
-    _formatCrossItems: function (nodes, deep) {
-        var items = this._formatItems(nodes, deep, true);
-        return BI.unzip(items);
-    },
-
-    _maxDeep: function (nodes) {
-        function track(deep, node) {
-            var d = deep;
-            if (BI.isNotEmptyArray(node.children)) {
-                BI.each(node.children, function (index, child) {
-                    d = Math.max(d, track(deep + 1, child));
-                });
-            }
-            return d;
-        }
-
-        var deep = 1;
-        if (BI.isObject(nodes)) {
-            BI.each(nodes, function (i, node) {
-                deep = Math.max(deep, track(1, node));
-            });
-        }
-        return deep;
-    },
-
-    _formatItems: function (nodes, deep, isCross) {
-        var self = this;
-        var result = [];
-
-        function track(store, node) {
-            if (BI.isNotEmptyArray(node.children)) {
-                var next;
-                BI.each(node.children, function (index, child) {
-                    var next;
-                    if (store != -1) {
-                        next = BI.clone(store);
-                        next.push(node);
-                    } else {
-                        next = [];
-                    }
-                    track(next, child);
-                });
-                if (store != -1) {
-                    next = BI.clone(store);
-                    next.push(node);
-                } else {
-                    next = [];
-                }
-                if (BI.isNotEmptyArray(node.values)) {
-                    var id = BI.UUID();
-                    for (var i = next.length; i < deep; i++) {
-                        next.push({text: "汇总", tag: id});
-                    }
-                    if (!isCross) {
-                        next = next.concat(node.values);
-                    }
-                    if (next.length > 0) {
-                        result.push(next);
-                    }
-                }
-                return;
-            }
-            if (store != -1) {
-                next = BI.clone(store);
-                for (var i = next.length; i < deep; i++) {
-                    next.push(node);
-                }
-            } else {
-                next = [];
-            }
-            if (!isCross && BI.isArray(node.values)) {
-                next = next.concat(node.values);
-            }
-            if (next.length > 0) {
-                result.push(next);
-            }
-        }
-
-        BI.each(nodes, function (i, node) {
-            track(-1, node);
-        });
-        //填充空位
-        BI.each(result, function (i, line) {
-            var last = BI.last(line);
-            for (var i = line.length; i < deep; i++) {
-                line.push(last);
-            }
-        });
-        return result;
-    },
-
     _createHeader: function (deep, vDeep) {
         var self = this, o = this.options;
         var header = o.header || [], crossHeader = o.crossHeader || [];
-        var items = this._formatCrossItems(o.crossItems, vDeep);
+        var items = BI.TableTree.formatCrossItems(o.crossItems, vDeep);
         var result = [];
         BI.each(items, function (row, node) {
             var c = [];
@@ -150,13 +59,22 @@ BI.TableTree = BI.inherit(BI.Widget, {
         return result;
     },
 
+    _getVDeep: function () {
+        return this.options.crossHeader.length;//纵向深度
+    },
+
+    _getHDeep: function () {
+        var o = this.options;
+        return Math.max(o.mergeCols.length, o.freezeCols.length, BI.TableTree.maxDeep(o.items) - 1);
+    },
+
     _init: function () {
         BI.TableTree.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var deep = Math.max(o.mergeCols.length, this._maxDeep(o.items) - 1);
-        var vDeep = this._maxDeep(o.crossItems) - 1; //纵向深度
+        var deep = this._getHDeep();
+        var vDeep = this._getVDeep();
         var header = this._createHeader(deep, vDeep);
-        var items = this._formatItems(o.items, deep);
+        var items = BI.TableTree.formatItems(o.items, deep);
         this.table = BI.createWidget({
             type: "bi.table_view",
             element: this.element,
@@ -308,16 +226,117 @@ BI.TableTree = BI.inherit(BI.Widget, {
         if (crossHeader) {
             o.crossHeader = crossHeader;
         }
-        var deep = Math.max(o.mergeCols.length, this._maxDeep(o.items) - 1);
-        var vDeep = this._maxDeep(o.crossItems) - 1; //纵向深度
+        var deep = this._getHDeep();
+        var vDeep = this._getVDeep();
         var header = this._createHeader(deep, vDeep);
-        items = this._formatItems(o.items, deep);
+        items = BI.TableTree.formatItems(o.items, deep);
         this.table.populate(items, header);
     },
 
     destroy: function () {
         this.table.destroy();
         BI.TableTree.superclass.destroy.apply(this, arguments);
+    }
+});
+
+BI.extend(BI.TableTree, {
+    formatItems: function (nodes, deep, isCross) {
+        var self = this;
+        var result = [];
+
+        function track(store, node) {
+            var next;
+            if (BI.isNotEmptyArray(node.children)) {
+                BI.each(node.children, function (index, child) {
+                    var next;
+                    if (store != -1) {
+                        next = BI.clone(store);
+                        next.push(node);
+                    } else {
+                        next = [];
+                    }
+                    track(next, child);
+                });
+                if (store != -1) {
+                    next = BI.clone(store);
+                    next.push(node);
+                } else {
+                    next = [];
+                }
+                if (BI.isNotEmptyArray(node.values)) {
+                    var cls = store === -1 ? " last" : "";
+                    var id = BI.UUID();
+                    for (var i = next.length; i < deep; i++) {
+                        next.push({text: BI.i18nText("BI-Summary_Values"), tag: id, cls: "summary-cell" + cls});
+                    }
+                    if (!isCross) {
+                        next = next.concat(node.values);
+                    }
+                    if (next.length > 0) {
+                        result.push(next);
+                    }
+                }
+                return;
+            }
+            if (store != -1) {
+                next = BI.clone(store);
+                for (var i = next.length; i < deep; i++) {
+                    next.push(node);
+                }
+            } else {
+                next = [];
+            }
+            if (!isCross && BI.isArray(node.values)) {
+                next = next.concat(node.values);
+            }
+            if (isCross && BI.isArray(node.values)) {
+                for (var i = 0, len = node.values.length; i < len - 1; i++) {
+                    if (next.length > 0) {
+                        result.push(next);
+                    }
+                }
+            }
+            if (next.length > 0) {
+                result.push(next);
+            }
+        }
+
+        BI.each(nodes, function (i, node) {
+            track(-1, node);
+        });
+        //填充空位
+        BI.each(result, function (i, line) {
+            var last = BI.last(line);
+            for (var i = line.length; i < deep; i++) {
+                line.push(last);
+            }
+        });
+        return result;
+    },
+
+    formatCrossItems: function (nodes, deep) {
+        var items = BI.TableTree.formatItems(nodes, deep, true);
+        return BI.unzip(items);
+    },
+
+    maxDeep: function (nodes) {
+        function track(deep, node) {
+            var d = deep;
+            if (BI.isNotEmptyArray(node.children)) {
+                BI.each(node.children, function (index, child) {
+                    d = Math.max(d, track(deep + 1, child));
+                });
+            }
+            return d;
+        }
+
+        var deep = 1;
+        if (BI.isObject(nodes)) {
+            BI.each(nodes, function (i, node) {
+                deep = Math.max(deep, track(1, node));
+            });
+        }
+        return deep;
     }
 });
 

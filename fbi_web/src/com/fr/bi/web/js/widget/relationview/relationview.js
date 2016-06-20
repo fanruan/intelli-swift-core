@@ -84,26 +84,26 @@ BI.RelationView = BI.inherit(BI.Widget, {
         //算出所有的区域和关联
         var regions = this.regions = {}, relations = this.relations = {};
         BI.each(items, function (i, item) {
-            var pr = item.primary.region, fr = item.foreign.region;
-            if (!relations[pr]) {
+            var pr = item.primary.region, fr = item.foreign && item.foreign.region;
+            if (pr && !relations[pr]) {
                 relations[pr] = {};
             }
-            if (!relations[pr][fr]) {
+            if (pr && fr && !relations[pr][fr]) {
                 relations[pr][fr] = [];
             }
-            if (!regions[pr]) {
+            if (pr && !regions[pr]) {
                 regions[pr] = [];
             }
-            if (!regions[fr]) {
+            if (fr && !regions[fr]) {
                 regions[fr] = [];
             }
-            if (!BI.deepContains(regions[pr], item.primary)) {
+            if (pr && !BI.deepContains(regions[pr], item.primary)) {
                 regions[pr].push(item.primary);
             }
-            if (!BI.deepContains(regions[fr], item.foreign)) {
+            if (fr && !BI.deepContains(regions[fr], item.foreign)) {
                 regions[fr].push(item.foreign);
             }
-            relations[pr][fr].push(item);
+            pr && fr && relations[pr][fr].push(item);
         });
         //求拓扑
         var topology = [];
@@ -112,7 +112,7 @@ BI.RelationView = BI.inherit(BI.Widget, {
             var clone = BI.clone(rs);
             BI.each(o.items, function (i, item) {
                 if (!store[item.primary.region]) {
-                    delete clone[item.foreign.region];
+                    delete clone[item.foreign && item.foreign.region];
                 }
             });
             topology.push(BI.keys(clone));
@@ -130,10 +130,13 @@ BI.RelationView = BI.inherit(BI.Widget, {
             }
             var horizontal = [];
             BI.each(items, function (j, region) {
+                var items = regions[region];
                 views[i][j] = storeViews[region] = BI.createWidget({
                     type: "bi.relation_view_region",
-                    header: region,
-                    items: regions[region]
+                    value: region,
+                    text: items.length > 0 ? items[0].regionText : "",
+                    handler: items.length > 0 ? items[0].regionHandler : BI.emptyFn,
+                    items: items
                 });
                 views[i][j].on(BI.RelationViewRegion.EVENT_HOVER_IN, function (v) {
                     self._hoverIn(v)

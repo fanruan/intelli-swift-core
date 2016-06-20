@@ -33,7 +33,7 @@ BI.AbstractDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
         if (!BI.Utils.isTableUsableByWidgetID(o.value, o.wId)) {
             this.setEnable(false);
         }
-        BI.Broadcasts.on(o.wId + "usable", function (tableId) {
+        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function (tableId) {
             var enable = BI.Utils.isTableUsableByWidgetID(o.value, o.wId);
             if (enable === false) {
                 self.setEnable(false);
@@ -49,6 +49,9 @@ BI.AbstractDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
                 enable = BI.Utils.isTableInRelativeTables(tIds, tableId);
             }
             self.setEnable(enable);
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function () {
+            self.setValue([]);
         });
     },
 

@@ -1,5 +1,6 @@
 package com.finebi.cube.impl.operate;
 
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.pubsub.IProcessor;
 import com.finebi.cube.pubsub.IPublish;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -14,7 +15,7 @@ public class BIPrcessorStepTwo implements IProcessor {
     private IPublish publish;
 
     @Override
-    public void process() {
+    public void process(IMessage lastReceiveMessage) {
         try {
             publish.publicRunningMessage(null);
             System.out.println("Start Second Step");

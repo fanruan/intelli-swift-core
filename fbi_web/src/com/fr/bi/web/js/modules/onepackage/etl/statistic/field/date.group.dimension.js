@@ -51,6 +51,9 @@ BI.DateGroupDimension = BI.inherit(BI.AbstractDimension, {
                     o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.W});
                     self.checkStatus();
                     break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.RENAME:
+                    self.nameEditor.focus();
+                    break;
                 case BICst.STATISTICS_GROUP_DATE_COMBO.DELETE:
                     self.fireEvent(BI.AbstractDimension.EVENT_DESTROY);
                     break;

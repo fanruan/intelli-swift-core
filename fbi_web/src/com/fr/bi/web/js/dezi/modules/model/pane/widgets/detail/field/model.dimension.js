@@ -63,14 +63,14 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
                 });
                 self.set("sort", sortObject)
             }
-            if(this.get("type") === BICst.TARGET_TYPE.NUMBER){
+            if (this.get("type") === BICst.TARGET_TYPE.NUMBER) {
                 var sort = this.get("sort");
-                if(this.get("group").type === BICst.GROUP.ID_GROUP){
-                    if(!BI.has(sort, "type") || sort.type === BICst.SORT.CUSTOM){
+                if (this.get("group").type === BICst.GROUP.ID_GROUP) {
+                    if (!BI.has(sort, "type") || sort.type === BICst.SORT.CUSTOM) {
                         self.set("sort", {type: BICst.SORT.ASC, sort_target: this.get("id")})
                     }
                 }
-                if(BI.isNotNull(prev.group) && prev.group.type === BICst.GROUP.ID_GROUP && (change.group.type === BICst.GROUP.AUTO_GROUP || change.group.type === BICst.GROUP.CUSTOM_NUMBER_GROUP)){
+                if (BI.isNotNull(prev.group) && prev.group.type === BICst.GROUP.ID_GROUP && (change.group.type === BICst.GROUP.AUTO_GROUP || change.group.type === BICst.GROUP.CUSTOM_NUMBER_GROUP)) {
                     self.set("sort", {type: BICst.SORT.CUSTOM});
                 }
             }
@@ -86,6 +86,7 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
         if (this.has("changeGroup")) {
             var group = this.get("changeGroup");
             this.set("group", {type: group.type, details: []});
+            return true;
         }
         return false;
     }

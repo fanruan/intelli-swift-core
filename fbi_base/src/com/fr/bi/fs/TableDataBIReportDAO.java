@@ -88,23 +88,21 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      * 充值共享的报表及用户
      *
      * @param reportId 报表ID
-     * @param userids  用户ID数组
      * @throws Exception
      */
     @Override
-    public void resetSharedByReportIdAndUsers(long reportId, long[] userids) throws Exception {
-        BITableDataDAOManager.getInstance().resetSharedByReportIdAndUsers(reportId, userids);
+    public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds) throws Exception {
+        BITableDataDAOManager.getInstance().resetSharedByReportIdAndUsers(reportId, createBy, userIds);
     }
 
     /**
      * 根据模板ID查找具有权限的用户
      *
-     * @param id 模板ID
      * @return 具有权限的用户数组
      */
     @Override
-    public User[] findUsersByReportId(long id) {
-        return BITableDataDAOManager.getInstance().findUsersAccessibleOfTemplateId(id);
+    public List<User> findUsersByReport(long reportId, long createBy) {
+        return BITableDataDAOManager.getInstance().findUsersAccessibleOfTemplateId(reportId, createBy);
     }
 
     /**
@@ -114,8 +112,13 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      * @return 模板ID数组
      */
     @Override
-    public long[] findTemplateIdsByUserId(long userId) {
-        return BITableDataDAOManager.getInstance().findTemplateIdsAccessible4UserId(userId);
+    public List<BISharedReportNode> findReportsByShare2User(long userId) {
+        return BITableDataDAOManager.getInstance().findReportsByShare2User(userId);
+    }
+
+    @Override
+    public void removeSharedByReport(long reportId, long createBy) {
+        BITableDataDAOManager.getInstance().removeSharedByReport(reportId, createBy);
     }
 
 

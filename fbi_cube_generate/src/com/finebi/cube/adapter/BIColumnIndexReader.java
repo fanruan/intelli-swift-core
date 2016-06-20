@@ -4,12 +4,12 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.ICubeIndexDataGetterService;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.io.Serializable;
@@ -24,20 +24,27 @@ import java.util.*;
 public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     protected ICubeColumnReaderService<T> columnReaderService;
     private BICubeTablePath path;
-    private ICubeRelationEntityGetterService relationEntityGetterService;
+    private ICubeIndexDataGetterService indexDataGetterService;
     private CSet<Map.Entry<T, GroupValueIndex>> ascSet = new CSet<Map.Entry<T, GroupValueIndex>>(true);
     private CSet<Map.Entry<T, GroupValueIndex>> descSet = new CSet<Map.Entry<T, GroupValueIndex>>(false);
 
     public BIColumnIndexReader(ICubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
         this.columnReaderService = columnReaderService;
-        path = BICubePathUtils.convert(relationList);
-        try {
-            relationEntityGetterService = columnReaderService.getRelationIndexGetter(path);
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
+        if (isRelationIndex(relationList)) {
+            path = BICubePathUtils.convert(relationList);
+            try {
+                indexDataGetterService = columnReaderService.getRelationIndexGetter(path);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
+        } else {
+            indexDataGetterService = columnReaderService;
         }
     }
 
+    private boolean isRelationIndex(List<BITableSourceRelation> relationList) {
+        return relationList != null && !relationList.isEmpty();
+    }
 
     @Override
     public GroupValueIndex[] getGroupIndex(T[] groupValues) {
@@ -50,13 +57,26 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     }
 
     public GroupValueIndex getIndex(T groupValue) {
+        if (groupValue == null) {
+            return getNullValueIndex(groupValue);
+        } else {
+            return getNormalValueIndex(groupValue);
+        }
+    }
+
+    private GroupValueIndex getNormalValueIndex(T groupValue) {
         try {
-            int position = columnReaderService.getPositionOfGroup(groupValue);
-            //todo lookup 抛出异常代替返回-1
-            if(position == -1){
-                return GVIFactory.createAllEmptyIndexGVI();
+            if (groupValue != null) {
+                int position = columnReaderService.getPositionOfGroup(groupValue);
+                //todo lookup 抛出异常代替返回-1
+                if (position == -1) {
+                    return GVIFactory.createAllEmptyIndexGVI();
+                }
+                return indexDataGetterService.getBitmapIndex(position);
+            } else {
+                throw BINonValueUtils.beyondControl("Please invoke Null value method");
+
             }
-            return relationEntityGetterService.getBitmapIndex(position);
         } catch (BIResourceInvalidException e) {
             throw BINonValueUtils.beyondControl(e);
         } catch (BICubeIndexException e) {
@@ -64,16 +84,34 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         }
     }
 
-    private T getGroupValue(int groupValuePosition) {
+    private GroupValueIndex getNullValueIndex(T groupValue) {
+        try {
+            if (groupValue == null) {
+                return columnReaderService.getNULLIndex(0);
+            } else {
+                throw BINonValueUtils.beyondControl("Please invoke Normal value method");
+            }
+        } catch (BICubeIndexException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    @Override
+    public T getGroupValue(int groupValuePosition) {
         return columnReaderService.getGroupValue(groupValuePosition);
     }
 
     private GroupValueIndex getGroupValueIndex(int groupValuePosition) {
         try {
-            return relationEntityGetterService.getBitmapIndex(groupValuePosition);
+            return indexDataGetterService.getBitmapIndex(groupValuePosition);
         } catch (BICubeIndexException e) {
             throw BINonValueUtils.beyondControl(e);
         }
+    }
+
+    @Override
+    public T getOriginalValue(int rowNumber) {
+        return columnReaderService.getOriginalValueByRow(rowNumber);
     }
 
     @Override
@@ -108,8 +146,14 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         return descSet.iterator(start);
     }
 
+
     public int size() {
         return columnReaderService.sizeOfGroup();
+    }
+
+    @Override
+    public int sizeOfGroup() {
+        return size();
     }
 
     public boolean isEmpty() {
@@ -118,6 +162,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     public void clear() {
         columnReaderService.clear();
+        indexDataGetterService.clear();
     }
 
     @Override
@@ -127,7 +172,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     @Override
     public T createValue(Object v) {
-        return (T)v;
+        return (T) v;
     }
 
     private class CSet<V> implements Set<V>, Serializable {
@@ -330,5 +375,18 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     @Override
     public long nonPrecisionSize() {
         return size();
+    }
+
+    public int getClassType() {
+        return columnReaderService.getClassType();
+    }
+
+    @Override
+    public GroupValueIndex getNULLIndex() {
+        try {
+            return indexDataGetterService.getNULLIndex(0);
+        } catch (BICubeIndexException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 }

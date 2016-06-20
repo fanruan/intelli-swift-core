@@ -14,6 +14,7 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
     _init: function () {
         BI.SelectSingleRelationTableField.superclass._init.apply(this, arguments);
         this.model = this.options.model;
+        this._initAllRelationTables();
         var self = this, packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON4Conf();
         var mask = BI.createWidget({
             type: "bi.loading_mask",
@@ -89,13 +90,15 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
             BI.each(result, function (i, sch) {
                 BI.each(sch.finded, function (j, finded) {
                     if (!map[finded.pId]) {
+                        var isInvalid = self.allRelationTables.contains(finded.pId) || finded.pId === self.model.getTableIdByFieldId(self.model.getFieldId());
                         searchResult.push({
                             id: finded.pId,
                             type: "bi.select_data_level0_node",
                             text: translations[finded.pId],
                             value: finded.pId,
                             isParent: true,
-                            open: true
+                            open: !isInvalid,
+                            disabled: isInvalid
                         });
                         map[finded.pId] = true;
                     }
@@ -107,23 +110,28 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
         callback({finded: searchResult, matched: matchResult});
     },
 
-    _getTablesStructureByPackId: function (pId) {
+    _initAllRelationTables: function(){
         var self = this;
-        var translations = this.model.getTranslations(), relations = this.model.getRelations(), fieldId = this.model.getFieldId();
+        var relations = this.model.getRelations(), fieldId = this.model.getFieldId();
         //灰化：所有已与当前表建立过关联关系的表灰化
         //只需要遍历connectionSet
         var connectionSet = relations.connectionSet;
-        var allRelationTables = [];
+        this.allRelationTables = [];
         var tableId = this.model.getTableIdByFieldId(fieldId);
         BI.each(connectionSet, function (i, pf) {
             var primaryKey = pf.primaryKey, foreignKey = pf.foreignKey;
             if (tableId === self.model.getTableIdByFieldId(primaryKey.field_id)) {
-                allRelationTables.push(self.model.getTableIdByFieldId(foreignKey.field_id));
+                self.allRelationTables.push(self.model.getTableIdByFieldId(foreignKey.field_id));
             } else if (tableId === self.model.getTableIdByFieldId(foreignKey.field_id)) {
-                allRelationTables.push(self.model.getTableIdByFieldId(primaryKey.field_id));
+                self.allRelationTables.push(self.model.getTableIdByFieldId(primaryKey.field_id));
             }
         });
+    },
 
+    _getTablesStructureByPackId: function (pId) {
+        var self = this;
+        var translations = this.model.getTranslations();
+        var tableId = this.model.getTableIdByFieldId(this.model.getFieldId());
         var tablesStructure = [];
         //当前编辑业务包从Sharing Pool取
         if (pId === BI.Utils.getCurrentPackageId4Conf()) {
@@ -136,8 +144,8 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                     value: id,
                     isParent: true,
                     open: false,
-                    disabled: allRelationTables.contains(id) || id === tableId,
-                    title: allRelationTables.contains(id) ? BI.i18nText("BI-Already_Relation_With_Current_Table") : translations[id]
+                    disabled:self.allRelationTables.contains(id) || id === tableId,
+                    title: self.allRelationTables.contains(id) ? BI.i18nText("BI-Already_Relation_With_Current_Table") : translations[id]
                 });
             });
         } else {
@@ -150,8 +158,8 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                     value: id,
                     isParent: true,
                     open: false,
-                    disabled: allRelationTables.contains(id) || id === tableId,
-                    title: allRelationTables.contains(id) ? BI.i18nText("BI-Already_Relation_With_Current_Table") : translations[id]
+                    disabled: self.allRelationTables.contains(id) || id === tableId,
+                    title: self.allRelationTables.contains(id) ? BI.i18nText("BI-Already_Relation_With_Current_Table") : translations[id]
                 });
             });
         }
@@ -184,7 +192,7 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                 return BI.some(pack, function(tId, fields){
                     if(tableId === tId) {
                         BI.each(fields, function(i, field){
-                            if(field.field_type !== fieldType) {
+                            if(field.field_type === fieldType) {
                                 fieldStructure.push({
                                     id: field.id,
                                     pId: tableId,

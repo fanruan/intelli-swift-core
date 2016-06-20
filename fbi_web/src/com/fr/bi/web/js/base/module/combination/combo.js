@@ -107,7 +107,7 @@ BI.Combo = BI.inherit(BI.Widget, {
                         }
                     });
                     break;
-                default :
+                case "click":
                     if (ev) {
                         self.element.off(ev + "." + self.getName()).on(ev + "." + self.getName(), BI.debounce(function (e) {
                             if (self.combo.element.__isMouseInBounds__(e)) {
@@ -147,7 +147,9 @@ BI.Combo = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
             });
             this.popupView.setVisible(false);
-            this.fireEvent(BI.Combo.EVENT_AFTER_INIT);
+            BI.nextTick(function () {
+                self.fireEvent(BI.Combo.EVENT_AFTER_INIT);
+            });
         }
     },
 
@@ -210,9 +212,13 @@ BI.Combo = BI.inherit(BI.Widget, {
         if (o.isNeedAdjustWidth === true) {
             this.resetListWidth("");
             var width = this.popupView.element.outerWidth();
-            if (width < (this.element.outerWidth() || o.width)) {
-                this.resetListWidth(this.element.outerWidth() || o.width);
+            var maxW = this.element.outerWidth() || o.width;
+            if (width > maxW + 80) {
+                maxW = maxW + 80;
+            } else if (width > maxW) {
+                maxW = width;
             }
+            this.resetListWidth(maxW < 100 ? 100 : maxW);
         }
     },
 

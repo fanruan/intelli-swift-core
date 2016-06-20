@@ -16,19 +16,47 @@ BI.TargetFilter = BI.inherit(BI.Widget, {
         BI.TargetFilter.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.filter = BI.createWidget({
-            type: "bi.common_filter",
-            element: this.element,
-            field_id: BI.Utils.getFieldIDByDimensionID(o.dId)
+            type: "bi.filter",
+            itemCreator: function (item) {
+                var t = BI.TargetFilterItemFactory.createFilterItemByFilterType(item.value);
+                item.type = t.type;
+                item.field_id = BI.Utils.getFieldIDByDimensionID(o.dId);
+                item.afterValueChange = function () {
+                    self.fireEvent(BI.TargetFilter.EVENT_CHANGE);
+                };
+            },
+            expander: {
+                type: "bi.andor_filter_expander"
+            },
+            element: this.element
         });
 
-        this.filter.on(BI.CommonFilter.EVENT_CHANGE, function(){
+        this.filter.on(BI.Filter.EVENT_CHANGE, function () {
             self.fireEvent(BI.TargetFilter.EVENT_CHANGE);
         });
     },
 
+    transformConditions2Tree: function (conditions) {
+        var self = this;
+        BI.each(conditions, function (i, condition) {
+            condition.id || (condition.id = BI.UUID());
+            condition.value = condition.filter_type;
+            if (condition.filter_type === BICst.FILTER_TYPE.AND || condition.filter_type === BICst.FILTER_TYPE.OR) {
+                condition.children = condition.filter_value;
+                self.transformConditions2Tree(condition.children);
+            }
+        })
+    },
+
     populate: function () {
         var o = this.options;
-        var conditions = BI.Utils.getDimensionFilterValueByID(o.dId) || [];
+        var conditions = BI.Utils.getDimensionFilterValueByID(o.dId);
+        if (BI.isNotEmptyObject(conditions)) {
+            conditions = [conditions];
+        } else {
+            conditions = [];
+        }
+        this.transformConditions2Tree(conditions);
         this.filter.populate(conditions);
     },
 

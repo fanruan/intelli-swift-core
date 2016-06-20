@@ -23,6 +23,8 @@ BI.SingleSelectIconTextItem = BI.inherit(BI.Single, {
             once: o.once,
             selected: o.selected,
             height: o.height,
+            iconHeight: o.iconHeight,
+            iconWidth: o.iconWidth,
             text: o.text,
             keyword: o.keyword,
             value: o.value,

@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.group;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.ICubeResourceLocation;
 
 import java.util.Comparator;
@@ -11,8 +12,8 @@ import java.util.Comparator;
  * @since 4.0
  */
 public class BICubeByteGroupData extends BICubeGroupData<Byte> {
-    public BICubeByteGroupData(ICubeResourceLocation superLocation) {
-        super(superLocation);
+    public BICubeByteGroupData(ICubeResourceDiscovery resourceDiscovery, ICubeResourceLocation superLocation) {
+        super(resourceDiscovery, superLocation);
     }
 
     @Override

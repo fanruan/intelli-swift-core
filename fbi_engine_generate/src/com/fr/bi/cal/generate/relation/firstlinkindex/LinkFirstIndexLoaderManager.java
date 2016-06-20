@@ -7,7 +7,7 @@ import com.fr.bi.cal.stable.index.utils.BIVersionUtils;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 

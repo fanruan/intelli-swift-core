@@ -42,7 +42,8 @@ public class NumberIndexCreater {
 		gvi.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int data) {
-				if(op.Compare(((Number)ti.getRow(key, data)).doubleValue(), avg)){
+                Object v = ti.getRow(key, data);
+				if(v != null && op.Compare(((Number)v).doubleValue(), avg)){
 					index.addValueByIndex(data);
 				}
 			}

@@ -1,12 +1,13 @@
 package com.fr.bi.web.conf.services.packs;
 
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -36,12 +37,12 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
 
         if (mgr.containPackageID(userId, new BIPackageID(packageId))) {
-            BIBusinessPackage pack = (BIBusinessPackage)mgr.getPackage(userId, new BIPackageID(packageId));
+            BIBusinessPackage pack = (BIBusinessPackage) mgr.getPackage(userId, new BIPackageID(packageId));
             JSONObject packJSON = pack.createJSON();
             JSONArray tables = packJSON.getJSONArray("tables");
             for (int i = 0; i < tables.length(); i++) {
                 String tableId = tables.getJSONObject(i).getString("id");
-                ITableSource source = BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(tableId), new BIUser(userId));
+                CubeTableSource source = BusinessTableHelper.getTableDataSource(new BITableID(tableId));
                 JSONObject data = source.createJSON();
                 formatTableDataFields(tableId, data);
                 tableData.put(tableId, data);
@@ -58,16 +59,18 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
      * @param tableData
      * @throws Exception
      */
-    private void formatTableDataFields(String tableId, JSONObject tableData) throws Exception{
+    private void formatTableDataFields(String tableId, JSONObject tableData) throws Exception {
         JSONArray fields = tableData.getJSONArray("fields");
         JSONArray newFields = new JSONArray();
-        for(int i = 0; i < fields.length(); i++){
+        for (int i = 0; i < fields.length(); i++) {
             JSONArray fs = fields.getJSONArray(i);
             JSONArray nFields = new JSONArray();
-            for(int j = 0; j < fs.length(); j++){
+            for (int j = 0; j < fs.length(); j++) {
                 JSONObject field = fs.getJSONObject(j);
-                field.put("id", tableId + field.getString("field_name"));
+                BusinessTable table = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
+                field.put("id", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).getFieldID().getIdentityValue());
                 field.put("table_id", tableId);
+                field.put("is_usable", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).isUsable());
                 nFields.put(field);
             }
             newFields.put(nFields);

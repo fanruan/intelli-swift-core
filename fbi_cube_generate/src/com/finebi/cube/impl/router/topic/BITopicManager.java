@@ -27,6 +27,7 @@ import com.fr.bi.stable.utils.code.BILogger;
         , implement = ITopicRouterService.class)
 public class BITopicManager implements ITopicRouterService {
     private ITopicContainer topicContainer;
+    private boolean verbose = true;
 
     public BITopicManager() {
         topicContainer = BIFactoryHelper.getObject(ITopicContainer.class);
@@ -55,6 +56,10 @@ public class BITopicManager implements ITopicRouterService {
     @Override
     public IFragment subscribe(ISubscribe subscribe, ITopicTag topicTag, IFragmentTag fragmentTag) throws BITopicAbsentException
             , BIFragmentAbsentException, BISubscribeDuplicateException {
+        if (verbose) {
+            System.out.println("Sub:" + subscribe.getSubscribeID().getIdentityValue() + "\nsubscribe mess: " + "T:" + topicTag + ",F:" + fragmentTag);
+            System.out.println("");
+        }
         IFragment fragment = getSpecificTopic(topicTag).getSpecificFragment(fragmentTag);
         fragment.addSubscribe(subscribe);
         return fragment;
@@ -63,6 +68,10 @@ public class BITopicManager implements ITopicRouterService {
     @Override
     public IStatus subscribe(ISubscribe subscribe, ITopicTag topicTag, IFragmentTag fragmentTag, IStatusTag statusTag) throws BITopicAbsentException
             , BIFragmentAbsentException, BIStatusAbsentException, BISubscribeDuplicateException {
+        if (verbose) {
+            System.out.println("Sub:" + subscribe.getSubscribeID().getIdentityValue() + "\nsubscribe mess: " + "T:" + topicTag + ",F:" + fragmentTag + ",S:" + statusTag);
+            System.out.println("");
+        }
         IStatus status = getSpecificTopic(topicTag).getSpecificFragment(fragmentTag).getSpecificStatus(statusTag);
         status.addStatusSubscribe(subscribe);
         return status;
@@ -70,6 +79,10 @@ public class BITopicManager implements ITopicRouterService {
 
     @Override
     public ITopic subscribe(ISubscribe subscribe, ITopicTag topicTag) throws BITopicAbsentException, BISubscribeDuplicateException {
+        if (verbose) {
+            System.out.println("Sub:" + subscribe.getSubscribeID().getIdentityValue() + "\nsubscribe mess: " + "T:" + topicTag);
+            System.out.println("");
+        }
         ITopic topic = getSpecificTopic(topicTag);
         topic.addTopicSubscribe(subscribe);
         return topic;
@@ -87,8 +100,7 @@ public class BITopicManager implements ITopicRouterService {
         ITopic topic = getSpecificTopic(topicTag);
         IFragment fragment = topic.getSpecificFragment(fragmentTag);
         IStatus status = fragment.getSpecificStatus(statusTag);
-        status.isSubscribed(subscribe);
-        return false;
+        return status.isSubscribed(subscribe);
     }
 
     @Override
@@ -138,5 +150,10 @@ public class BITopicManager implements ITopicRouterService {
     @Override
     public void reset() {
         topicContainer.clear();
+    }
+
+    @Override
+    public void closeVerbose() {
+        this.verbose = false;
     }
 }

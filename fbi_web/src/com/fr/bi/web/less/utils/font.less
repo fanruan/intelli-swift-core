@@ -109,6 +109,9 @@
 .font-hover(column-pre-page-h-font, @font-solid-top, @color-bi-text-black, @color-bi-text-black);
 .font-hover(column-next-page-h-font, @font-solid-bottom, @color-bi-text-black, @color-bi-text-black);
 
+//下拉框小小三角
+.font-hover-active(trigger-triangle-font, @font-no-sort-no-filter, @color-bi-text-gray, @color-bi-text-gray, @color-bi-text-highlight);
+
 //日期控件字体图标
 .font-hover(widget-date-next-h-font, @font-right);
 .font-hover(widget-date-pre-h-font, @font-left);
@@ -126,62 +129,48 @@
 .font-hover(delete-field-h-font, @font-delete);
 .font-hover-active(delete-field-ha-font, @font-delete);
 
-//移动到分组
-//TODO 新建分组图标(一个蓝色的“+”)
-
 //dashboard
 .font-hover(toolbar-save-font, @font-save);
 .font-hover(toolbar-undo-font, @font-undo);
 .font-hover(toolbar-redo-font, @font-redo);
+.font-hover(toolbar-edit-font, @font-edit);
+.font-hover(toolbar-preview-font, @font-preview);
 
-.font(chart-table-font, @font-summary, @color-bi-text-highlight);
-.font(chart-axis-font, @font-axis, @color-bi-text-highlight);
-.font(chart-bar-font, @font-bar, @color-bi-text-highlight);
-.font(chart-accumulate-bar-font, @font-accumulate-bar, @color-bi-text-highlight);
-.font(chart-pie-font, @font-pie, @color-bi-text-highlight);
-.font(chart-map-font, @font-map, @color-bi-text-highlight);
-.font(chart-dashboard-font, @font-dashboard, @color-bi-text-highlight);
-.font(chart-doughnut-font, @font-doughnut, @color-bi-text-highlight);
-.font(chart-detail-font, @font-detail, @color-bi-text-highlight);
-.font(chart-more-font, @font-more-cn, @color-bi-text-highlight);
-.font(chart-bubble-font, @font-bubble, @color-bi-text-highlight);
-.font(chart-scatter-font, @font-scatter, @color-bi-text-highlight);
-.font(chart-radar-font, @font-radar, @color-bi-text-highlight);
-.font(chart-content-font, @font-content, @color-bi-text-highlight);
-.font(chart-image-font, @font-image, @color-bi-text-highlight);
-.font(chart-web-font, @font-web, @color-bi-text-highlight);
+.font-hover-active(chart-table-font, @font-summary);
+.font-hover-active(chart-axis-font, @font-axis);
+.font-hover-active(chart-bar-font, @font-bar);
+.font-hover-active(chart-accumulate-bar-font, @font-accumulate-bar);
+.font-hover-active(chart-pie-font, @font-pie);
+.font-hover-active(chart-map-font, @font-map);
+.font-hover-active(chart-dashboard-font, @font-dashboard);
+.font-hover-active(chart-doughnut-font, @font-doughnut);
+.font-hover-active(chart-detail-font, @font-detail);
+.font-hover-active(chart-more-font, @font-more-cn);
+.font-hover-active(chart-bubble-font, @font-bubble);
+.font-hover-active(chart-scatter-font, @font-scatter);
+.font-hover-active(chart-radar-font, @font-radar);
+.font-hover-active(chart-content-font, @font-content);
+.font-hover-active(chart-image-font, @font-image);
+.font-hover-active(chart-web-font, @font-web);
 
-.font(chart-string-font, @font-text, @color-bi-text-highlight);
-.font(chart-number-font, @font-number, @color-bi-text-highlight);
-.font(chart-tree-font, @font-tree, @color-bi-text-highlight);
-.font(chart-date-font, @font-date, @color-bi-text-highlight);
-.font(chart-year-font, @font-year, @color-bi-text-highlight);
-.font(chart-month-font, @font-year-month, @color-bi-text-highlight);
-.font(chart-quarter-font, @font-quarter, @color-bi-text-highlight);
-.font(chart-ymd-font, @font-YMD, @color-bi-text-highlight);
-.font(chart-date-range-font, @font-date-range, @color-bi-text-highlight);
-.font(chart-query-font, @font-query-cn, @color-bi-text-highlight);
-.font(chart-reset-font, @font-reset-cn, @color-bi-text-highlight);
-.font(chart-textarea-font, @font-text-area, @color-bi-text-highlight);
-.font(chart-reuse-font, @font-reuse, @color-bi-text-highlight);
-
-.font-hover-active(detail-chart-summary-table-font, @font-summary);
-.font-hover-active(detail-chart-axis-font, @font-axis);
-.font-hover-active(detail-chart-bar-font, @font-bar);
-.font-hover-active(detail-char-accumulate-bar-font, @font-accumulate-bar);
-.font-hover-active(detail-chart-pie-font, @font-pie);
-.font-hover-active(detail-chart-map-font, @font-map);
-.font-hover-active(detail-chart-dashboard-font, @font-dashboard);
-.font-hover-active(detail-chart-doughnut-font, @font-doughnut);
-.font-hover-active(detail-chart-bubble-font, @font-bubble);
-.font-hover-active(detail-chart-scatter-font, @font-scatter);
-.font-hover-active(detail-chart-radar-font, @font-radar);
+.font-hover-active(chart-string-font, @font-text);
+.font-hover-active(chart-number-font, @font-number);
+.font-hover-active(chart-tree-font, @font-tree);
+.font-hover-active(chart-date-font, @font-date);
+.font-hover-active(chart-year-font, @font-year);
+.font-hover-active(chart-month-font, @font-year-month);
+.font-hover-active(chart-quarter-font, @font-quarter);
+.font-hover-active(chart-ymd-font, @font-YMD);
+.font-hover-active(chart-date-range-font, @font-date-range);
+.font-hover-active(chart-general-query-font, @font-and-or);
+.font-hover-active(chart-query-font, @font-query-cn);
+.font-hover-active(chart-reset-font, @font-reset-cn);
+.font-hover-active(chart-textarea-font, @font-text-area);
+.font-hover-active(chart-reuse-font, @font-reuse);
 
 //数值区间
-.font-hover-active(less-font, @font-less, @color-bi-text-black, @color-bi-text-black, @color-bi-text-highlight);
-.font-hover-active(less-equal-font, @font-less-equal, @color-bi-text-black, @color-bi-text-black, @color-bi-text-highlight);
-.font(less-arrow-font, @font-less-arrow, @color-bi-text-highlight);
-.font(less-equal-arrow-font, @font-less-equal-arrow, @color-bi-text-highlight);
+.font-hover-active(less-font, @font-less);
+.font-hover-active(less-equal-font, @font-less-equal);
 
 .font(check-font, @font-check-mark, @color-bi-text-highlight);
 
@@ -204,22 +193,13 @@
 .font-hover-active(select-group-field-number-font, @font-field-number, @font-color-highlight, @font-color-highlight, @font-color-highlight);
 .font-hover-active(select-group-field-date-font, @font-field-date, @font-color-highlight, @font-color-highlight, @font-color-highlight);
 
-//联动
-.font-hover(dashboard-widget-combo-linkage-font, @font-linkage);
-
 //详细设置
 .font-hover(dashboard-widget-combo-detail-set-font, @font-detail-set);
-
-//导出为excel
-.font-hover(dashboard-widget-combo-export-excel-font, @font-export-excel);
 
 .font(group-add-font, @font-add, @icon-color-normal);
 
 //自定义排序
 .font(sortable-font, @font-sortable);
-
-//清空
-.font-hover(dashboard-widget-combo-clear-font, @font-clear);
 
 //文本控件
 .font(text-bold-font, @font-bold, @font-color-normal);
@@ -244,8 +224,8 @@
 .font(new-file-font, @font-new-folder);
 .font(file-font, @font-file, @color-create-file-text);
 .font(folder-font, @font-folder, @color-bi-text-highlight);
-.font(letter-font, @font-letter);
-.font(time-font, @font-time);
+.font-hover-active(letter-font, @font-letter);
+.font-hover-active(time-font, @font-time);
 .font(rename-font, @font-rename);
 .font(delete-template-font, @font-delete, @color-bi-text-gray);
 
@@ -278,13 +258,13 @@
 .font-hover-active(item-check-font, @font-check-mark, @color-bi-text, @color-bi-background-gray, @color-bi-font-active);
 
 //表格上面的相关操作——升序、降序、不排序、过滤
-.font-hover(table-no-sort-no-filter-font, @font-no-sort-no-filter, @color-bi-font-native, @color-bi-font-hover);
-.font-hover(table-no-sort-filter-font, @font-no-sort-filter, @color-bi-font-native, @color-bi-font-hover);
-.font-hover(table-descending-filter-font, @font-descending-filter, @color-bi-font-native, @color-bi-font-hover);
-.font-hover(table-ascending-filter-font, @font-ascending-filter, @color-bi-font-native, @color-bi-font-hover);
-.font-hover(table-descending-no-filter-font, @font-descending-no-filter, @color-bi-font-native, @color-bi-font-hover);
-.font-hover(table-ascending-no-filter-font, @font-ascending-no-filter, @color-bi-font-native, @color-bi-font-hover);
-.font-hover(table-no-sort-font, @font-no-sort, @color-bi-font-native, @color-bi-font-hover);
+.font-hover(table-no-sort-no-filter-font, @font-no-sort-no-filter, "", "");
+.font-hover(table-no-sort-filter-font, @font-no-sort-filter, "", "");
+.font-hover(table-descending-filter-font, @font-descending-filter, "", "");
+.font-hover(table-ascending-filter-font, @font-ascending-filter, "", "");
+.font-hover(table-descending-no-filter-font, @font-descending-no-filter, "", "");
+.font-hover(table-ascending-no-filter-font, @font-ascending-no-filter, "", "");
+.font-hover(table-no-sort-font, @font-no-sort, "", "");
 
 .font-hover(primary-key-font, @font-key, @color-bi-font-native, @color-bi-font-hover);
 
@@ -320,3 +300,41 @@
 .font(calculate-target-font, @font-field-calc, @color-bi-text-black);
 
 .font(task-list-font, @font-classify, @color-bi-text-highlight);
+
+.font(widget-combo-detail-font, @font-edit, @color-bi-text-highlight);
+.font(widget-combo-pull-down-font, @font-pull-down, @color-bi-text-highlight);
+.font(widget-tools-filter-font, @font-filter, @color-bi-text-highlight);
+.font(widget-tools-clear-font, @font-clear, @color-bi-text-highlight);
+
+.font(widget-combo-linkage-font, @font-linkage);
+.font(widget-combo-rename-edit-font, @font-rename-edit);
+.font(widget-combo-show-title-font, @font-check);
+.font(widget-combo-title-left-font, @font-align-left);
+.font(widget-combo-title-center-font, @font-align-center);
+.font(widget-combo-show-filter-font, @font-filter);
+.font(widget-combo-export-excel-font, @font-export-excel);
+.font(widget-combo-copy, @font-copy);
+.font(widget-combo-delete, @font-delete);
+
+.font(widget-combo-asc-font, @font-asc);
+.font(widget-combo-des-font, @font-des);
+.font(widget-combo-clear-font, @font-clear);
+
+.font-hover(detail-table-popup-font, @font-hellip, @color-bi-font-native, @color-bi-font-active);
+
+.font(chart-drill-up, @font-top-triangle, "");
+.font(chart-drill-down, @font-down-triangle, "");
+
+.font(report-filter-open-font, @font-report-filter-open, @color-bi-font-native);
+.font(report-filter-close-font, @font-report-filter-close, @color-bi-font-native);
+
+.font(report-apply-hangout-normal-font, @font-apply-hangout, @color-bi-text-gray);
+.font(report-apply-hangout-ing-font, @font-apply-hangout, @color-bi-text-highlight);
+.font(report-hangout-font, @font-hangout, @color-bi-background-success);
+.font(report-cancel-hangout-font, @font-hangout, @color-bi-text-gray);
+
+//业务包管理
+.font(delete-font-package, @font-delete, @color-bi-text-warning);
+.font(delete-h-font-package,@font-delete,@color-bi-text-warning);
+.font(rename-font-package, @font-rename,@color-bi-text-highlight);
+

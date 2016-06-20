@@ -15,41 +15,42 @@ BIShow.FloatBoxes = new (BI.inherit(BI.FloatBoxRouter, {
     },
     getDetail: function (id, type) {
         switch (BI.parseInt(type)) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.CROSS_TABLE:
-            case BICst.Widget.COMPLEX_TABLE:
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.AXIS:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE:
-            case BICst.Widget.SCATTER:
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
                 return "BIShow.DetailView";
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return "BIShow.DetailTableDetailView";
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return "BIShow.StringDetailView";
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 return "BIShow.DateRangeDetailView";
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 return "BIShow.NumberDetailView";
-            case BICst.Widget.QUERY:
+            case BICst.WIDGET.QUERY:
                 break;
-            case BICst.Widget.YEAR:
+            case BICst.WIDGET.YEAR:
                 return "BIShow.YearDetailView";
-            case BICst.Widget.QUARTER:
+            case BICst.WIDGET.QUARTER:
                 return "BIShow.YearQuarterDetailView";
-            case BICst.Widget.MONTH:
+            case BICst.WIDGET.MONTH:
                 return "BIShow.YearMonthDetailView";
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YMD:
                 return "BIShow.DateDetailView";
-            case BICst.Widget.TREE:
+            case BICst.WIDGET.TREE:
                 return "BIShow.TreeDetailView";
-            case BICst.Widget.RESET:
+            case BICst.WIDGET.RESET:
+                break;
         }
     }
 }));

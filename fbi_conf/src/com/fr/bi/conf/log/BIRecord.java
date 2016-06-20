@@ -1,8 +1,10 @@
 package com.fr.bi.conf.log;
 
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.json.JSONCreator;
 
@@ -17,91 +19,95 @@ public interface BIRecord extends JSONCreator {
     /**
      * 开始执行日志
      */
-    public void recordStart();
+     void recordStart();
 
     /**
      * 关联日志开始
      */
-    public void recordRelationStart();
+     void recordRelationStart();
 
     /**
      * 日志结束
      */
-    public void recordEnd();
+     void recordEnd();
+
+    /**
+     * 数据版本变化
+     */
+    void recordVersion();
 
     /**
      * 日志开始
      */
-    public void recordIndexStart();
+     void recordIndexStart();
 
     /**
      * 表错误日志
-     *
-     * @param table 表
+     *  @param table 表
      * @param text  内容
      */
-    public void recordToErrorTable(Table table, String text);
+     void recordToErrorTable(IPersistentTable table, String text);
 
     /**
      * 表日志
-     *  @param table   表
+     * @param table   表
      * @param seconds       参数
      * @param percent 百分比
      */
-    public void recordToInfoTable(Table table, long seconds, int percent);
+     void recordToInfoTable(IPersistentTable table, long seconds, int percent);
 
     /**
      * 表日志
-     *  @param table   表
+     * @param table   表
      * @param seconds       参数
      * @param percent 百分比
      */
-    public void readingInfoTable(Table table, long seconds, int percent);
+     void readingInfoTable(IPersistentTable table, long seconds, int percent);
 
     /**
      * 表读日志
-     *  @param table 表
+     * @param table 表
      * @param seconds     参数
      */
-    public void readingInfoTable(Table table, long seconds);
+     void readingInfoTable(IPersistentTable table, long seconds);
 
     /**
      * 表日志
-     *  @param table 表
+     * @param table 表
      * @param seconds     参数
      */
-    public void recordToInfoTable(Table table, long seconds);
+     void recordToInfoTable(IPersistentTable table, long seconds);
 
     /**
      * 表日志
-     *  @param table 表
+     * @param table 表
      * @param seconds     参数
      */
-    public void recordIndexToInfoTable(Table table, long seconds);
+     void recordIndexToInfoTable(IPersistentTable table, long seconds);
 
     /**
      * 表日志
-     *  @param table      表
+     * @param table      表
      * @param columnName 列名
      * @param seconds          参数
      * @param percent    百分比
      */
-    public void recordColumnToInfoTable(Table table, String columnName, long seconds, int percent);
+     void recordColumnToInfoTable(IPersistentTable table, String columnName, long seconds, int percent);
 
     /**
      * 表日志
-     *  @param table      表
+     * @param table      表
      * @param columnName 列名
      * @param seconds          参数
      */
-    public void recordColumnToInfoTable(Table table, String columnName, long seconds);
+     void recordColumnToInfoTable(IPersistentTable table, String columnName, long seconds);
 
     /**
      * 错误日志
      *  @param ck   列关键字
      * @param text 内容
      */
-    public void errorRelation(RelationColumnKey ck, String text);
+     void errorRelation(RelationColumnKey ck, String text);
 
     /**
      * 错误日志
@@ -109,18 +115,29 @@ public interface BIRecord extends JSONCreator {
      * @param seconds       参数
      * @param percent 百分比
      */
-    public void infoRelation(RelationColumnKey ck, long seconds, int percent);
+     void infoRelation(RelationColumnKey ck, long seconds, int percent);
 
     /**
      * 错误日志
      *  @param ck 列关键字
      * @param seconds  参数*/
-    public void infoRelation(RelationColumnKey ck, long seconds);
+     void infoRelation(RelationColumnKey ck, long seconds);
 
     /**
      * 死循环错误日志
      */
-    public void loopRelation(Set<ArrayKey<BITableSourceRelation>> set);
+     void loopRelation(Set<ArrayKey<BITableSourceRelation>> set);
 
-    public Date getEnd();
+     Date getConfigVersion();
+
+    /**
+     * 获取所有需要更新的relation信息
+     * @param biTableSourceRelationHashSet
+     */
+    void reLationSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet);
+
+    /**
+     * 获取所有需要更新的tableSource信息
+     */
+    void cubeTableSourceSet(Set<CubeTableSource> cubeTableSources);
 }

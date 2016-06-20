@@ -4,7 +4,11 @@
  */
 BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
 
-    _defaultConfig: function(){
+    constants: {
+        FROM_POSITION: 1
+    },
+
+    _defaultConfig: function () {
         return BI.extend(BI.ControlDimensionCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-control-combo"
         })
@@ -14,38 +18,46 @@ BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
         return [
             [{
                 text: BI.i18nText("BI-Remove"),
-                value: BICst.CONTROL_COMBO.DELETE
+                value: BICst.CONTROL_COMBO.DELETE,
+                cls: "delete-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Dimension_From"),
                 value: BICst.CONTROL_COMBO.INFO,
+                cls: "dimension-from-font",
                 disabled: true
             }]
         ]
     },
 
-    _init: function(){
+    _init: function () {
         BI.ControlDimensionCombo.superclass._init.apply(this, arguments);
-        var self = this,o = this.options;
+        var self = this, o = this.options;
+
+        var items = this.defaultItems();
+        var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIDByDimensionID(o.dId));
+        var fieldName = BI.Utils.getFieldNameByID(BI.Utils.getFieldIDByDimensionID(o.dId));
+
+        items[this.constants.FROM_POSITION][0].text = items[this.constants.FROM_POSITION][0].text + tableName + "." + fieldName;
 
         this.combo = BI.createWidget({
             type: "bi.down_list_combo",
             element: this.element,
             height: 25,
             iconCls: "detail-dimension-set-font",
-            items: this.defaultItems()
+            items: items
         });
 
-        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function(v){
+        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.ControlDimensionCombo.EVENT_CHANGE, v);
         });
     },
 
-    setValue:function(v){
+    setValue: function (v) {
         this.combo.setValue(v);
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.combo.getValue();
     }
 });

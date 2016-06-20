@@ -1,10 +1,10 @@
 package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BIBasicField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -67,7 +67,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
         int rowCount = ti.getRowCount();
         int columnLength = fields.size();
-        BIBasicField column = ti.getColumns().get(new IndexKey(idFieldName));
+        ICubeFieldSource column = ti.getColumns().get(new IndexKey(idFieldName));
         if (column != null) {
             if (column.getFieldType() == DBConstant.COLUMN.STRING) {
                 int[] groupLength = new int[columnLength];
@@ -78,8 +78,8 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     k++;
                 }
 
-                for (long i = 0; i < rowCount; i++) {
-                    String v = ti.getRow(new IndexKey(idFieldName), (int) i).toString();
+                for (int i = 0; i < rowCount; i++) {
+                    String v = ti.getRow(new IndexKey(idFieldName), i).toString();
                     v = dealWithLayerValue(v, groupLength);
                     String[] res = new String[columnLength];
                     if (v != null) {

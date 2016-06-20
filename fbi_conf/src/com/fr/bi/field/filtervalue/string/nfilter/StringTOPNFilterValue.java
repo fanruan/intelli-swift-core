@@ -22,8 +22,20 @@ public class StringTOPNFilterValue extends StringNFilterValue implements NFilter
     @Override
     public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         LightNode parentNode = node.getParent();
-        Comparable nline = parentNode.getChildTOPNValueLine(N);
-        return nline != null && node.getComparator().compare(nline, node.getData()) >= 0;
+        int count = parentNode.getChildLength();
+        if (N < 1){
+            return false;
+        }
+        if (N >= count){
+            return true;
+        }
+        Comparable nline;
+        if (N < count * 2){
+            nline = parentNode.getChildTOPNValueLine(N);
+        } else {
+            nline = parentNode.getChildBottomNValueLine(count + 1 - N);
+        }
+        return nline != null && node.getComparator().compare(node.getData(), nline) <= 0;
     }
 
 }

@@ -1,7 +1,6 @@
 package com.fr.bi.web.base.services;
 
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.base.AbstractBIBaseAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -25,7 +24,6 @@ public class BIGetTableAction extends AbstractBIBaseAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         String id = WebUtils.getHTTPRequestParameter(req, "id");
-
-        WebUtils.printAsJSON(res, BIConfigureManagerCenter.getDataSourceManager().getTableSourceByID(new BITableID(id), new BIUser(userId)).createJSON());
+        WebUtils.printAsJSON(res, BusinessTableHelper.getBusinessTable(new BITableID(id)).getTableSource().createJSON());
     }
 }

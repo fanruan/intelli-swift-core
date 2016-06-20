@@ -46,5 +46,7 @@ public class BIOperationFirstStep extends BIOperationBase {
         return BITopicTagTestTool.getTopicTagFirst();
     }
 
+    public void testVoid() {
 
+    }
 }

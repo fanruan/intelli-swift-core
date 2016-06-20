@@ -16,11 +16,11 @@ public abstract class BIConfiguratedCalculatorTargetKey extends BICalculatorTarg
      * 哪个分组的排名， 默认是全部值
      */
     protected int start_group = BIReportConstant.TARGET_TYPE.CAL_POSITION.ALL;
-    private String cal_target_name;
+    private String target_id;
 
-    public BIConfiguratedCalculatorTargetKey(String targetName, String cal_target_name, Map targetMap, int start_group) {
+    public BIConfiguratedCalculatorTargetKey(String targetName, String target_id, Map targetMap, int start_group) {
         super(targetName, targetMap);
-        this.cal_target_name = cal_target_name;
+        this.target_id = target_id;
         this.start_group = start_group;
     }
 
@@ -29,7 +29,7 @@ public abstract class BIConfiguratedCalculatorTargetKey extends BICalculatorTarg
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((cal_target_name == null) ? 0 : cal_target_name.hashCode());
+        result = prime * result + ((target_id == null) ? 0 : target_id.hashCode());
         result = prime * result + start_group;
         return result;
     }
@@ -46,11 +46,11 @@ public abstract class BIConfiguratedCalculatorTargetKey extends BICalculatorTarg
             return false;
         }
         BIConfiguratedCalculatorTargetKey other = (BIConfiguratedCalculatorTargetKey) obj;
-        if (cal_target_name == null) {
-            if (other.cal_target_name != null) {
+        if (target_id == null) {
+            if (other.target_id != null) {
                 return false;
             }
-        } else if (!ComparatorUtils.equals(cal_target_name, other.cal_target_name)) {
+        } else if (!ComparatorUtils.equals(target_id, other.target_id)) {
             return false;
         }
         if (start_group != other.start_group) {

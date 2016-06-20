@@ -8,7 +8,7 @@ import com.fr.bi.stable.data.db.BIRowValue;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.CollectionKey;
 import com.fr.bi.util.BIConfUtils;
 
@@ -37,7 +37,7 @@ public class DetailAllGVIRunner extends AbstractGVIRunner {
                     while (itT.hasNext()) {
                         BIDetailTarget dimension = itT.next();
 
-                        List<BITableSourceRelation> relations = BIConfUtils.convertToMD5RelationFromSimpleRelation(dimension.getRelationList(target, biUser.getUserId()), biUser);
+                        List<BITableSourceRelation> relations = BIConfUtils.convert2TableSourceRelation(dimension.getRelationList(target, biUser.getUserId()));
 
                         long row = ((ConnectionRowGetter) (paras.getRowMap().get(new CollectionKey<BITableSourceRelation>(relations))))
                                 .getConnectedRow(rowIndex);
@@ -49,7 +49,7 @@ public class DetailAllGVIRunner extends AbstractGVIRunner {
                     executeUntilCallOver(paras, values, calledTargets);
                     Object[] ob = new Object[viewDimension.length];
                     for (int i = 0; i < viewDimension.length; i++) {
-                        ob[i] = viewDimension[i].createShowValue(values.get(viewDimension[i].getValue()));
+                        ob[i] = values.get(viewDimension[i].getValue());
                     }
                     set.add(new BIRowValue(rowIndex, ob));
                 }

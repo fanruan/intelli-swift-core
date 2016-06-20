@@ -23,8 +23,12 @@ BI.Widget = BI.inherit(FR.Widget, {
         })
     },
 
+    _initOpts : function () {
+    },
+
     _init: function () {
         var o = this.options;
+        this._initOpts()
         BI.isWidget(o.element) && (o.element = o.element.element);
         BI.isString(o.element) && (o.element = $(o.element));
         o.renderEl || (o.renderEl = o.element);
@@ -71,7 +75,7 @@ BI.Widget = BI.inherit(FR.Widget, {
     },
 
     _initVisualEffects: function () {
-        BI.defer(BI.bind(function () {
+        BI.nextTick(BI.bind(function () {
             if (this.options.disabled) {
                 this.setEnable(false);
             }
