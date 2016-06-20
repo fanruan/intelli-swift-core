@@ -24,6 +24,6 @@ public class BICubeYearMonthDayColumn extends BICubeDateSubColumn<Long> {
 
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
-        columnEntity = new BICubeLongColumn(discovery, currentLocation);
+        selfColumnEntity = new BICubeLongColumn(discovery, currentLocation);
     }
 }
