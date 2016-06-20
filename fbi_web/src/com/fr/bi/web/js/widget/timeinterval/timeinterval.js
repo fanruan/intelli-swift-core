@@ -71,6 +71,7 @@ BI.TimeInterval = BI.inherit(BI.Single, {
         combo.on(BI.MultiDateCombo.EVENT_ERROR, function () {
             self._clearTitle();
             self.element.removeClass(self.constants.timeErrorCls);
+            BI.Bubbles.hide("error");
             self.fireEvent(BI.TimeInterval.EVENT_ERROR);
         });
         combo.on(BI.MultiDateCombo.EVENT_BEFORE_POPUPVIEW, function () {
@@ -92,6 +93,10 @@ BI.TimeInterval = BI.inherit(BI.Single, {
                 self.element.removeClass(self.constants.timeErrorCls);
                 self.fireEvent(BI.TimeInterval.EVENT_CHANGE);
             }
+        });
+
+        combo.on(BI.MultiDateCombo.EVENT_CONFIRM, function(){
+            BI.Bubbles.hide("error");
         });
 
         combo.on(BI.MultiDateCombo.EVENT_VALID, function () {
