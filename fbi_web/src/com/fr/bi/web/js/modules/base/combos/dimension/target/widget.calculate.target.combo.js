@@ -11,21 +11,12 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     defaultItems: function () {
         return [
             [{
+                text: BI.i18nText("BI-Style_Setting"),
+                value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING
+            }],
+            [{
                 text: BI.i18nText("BI-Modify_Cal_Target"),
                 value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
-            }],
-            //[{
-            //    text: BI.i18nText("BI-Display"),
-            //    value: BICst.CALCULATE_TARGET_COMBO.DISPLAY,
-            //    cls: "dot-ha-font"
-            //}, {
-            //    text: BI.i18nText("BI-Hidden"),
-            //    value: BICst.CALCULATE_TARGET_COMBO.HIDDEN,
-            //    cls: "dot-ha-font"
-            //}],
-            [{
-                text: BI.i18nText("BI-Rename"),
-                value: BICst.CALCULATE_TARGET_COMBO.RENAME
             }],
             [{
                 text: BI.i18nText("BI-Copy"),
@@ -51,6 +42,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     _rebuildItems: function () {
         return this.defaultItems();
     },
+
     _createValue: function () {
         var o = this.options;
         var used = BI.Utils.isDimensionUsable(o.dId);

@@ -26,7 +26,6 @@ public interface CubeBuildStuff {
 
     ICubeConfiguration getCubeConfiguration();
 
-
     Set<BITableRelation> getTableRelationSet();
 
     Map<CubeTableSource, Long> getVersions();
@@ -34,4 +33,6 @@ public interface CubeBuildStuff {
     Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet();
 
     Set<BICubeGenerateRelation> getCubeGenerateRelationSet();
+
+    boolean preConditionsCheck();
 }
