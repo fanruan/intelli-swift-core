@@ -46,12 +46,18 @@ BI.CalculateTargetPopupDetail = BI.inherit(BI.BarPopoverSection, {
 
         this.targetEditor = BI.createWidget({
             type: "bi.text_editor",
-            allowBlank: true,
             validationChecker: function (v) {
                 return !self.model.isDuplicated(v)
             },
-            errorText: BI.i18nText("BI-Cannot_Have_Repeated_Field_Name")
+            errorText: function (v) {
+                if (v === "") {
+                    return BI.i18nText("BI-Field_Name_Cannot_Be_Null");
+                } else {
+                    return BI.i18nText("BI-Cannot_Have_Repeated_Field_Name");
+                }
+            }
         });
+
 
         this.targetEditor.on(BI.TextEditor.EVENT_CHANGE, function () {
             self.model.setTargetName(self.targetEditor.getValue());

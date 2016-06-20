@@ -30,16 +30,6 @@ BI.DetailFormulaDimensionCombo = BI.inherit(BI.Widget, {
                 [{
                     text: BI.i18nText("BI-Hyperlink"),
                     value: BICst.DETAIL_FORMULA_COMBO.HYPERLINK
-                }], [{
-                    text: BI.i18nText("BI-Display"),
-                    value: BICst.DETAIL_FORMULA_COMBO.DISPLAY
-                }, {
-                    text: BI.i18nText("BI-Hidden"),
-                    value: BICst.DETAIL_FORMULA_COMBO.HIDDEN
-                }],
-                [{
-                    text: BI.i18nText("BI-Rename"),
-                    value: BICst.DETAIL_FORMULA_COMBO.RENAME
                 }],
                 [{
                     text: BI.i18nText("BI-Remove"),
@@ -49,13 +39,19 @@ BI.DetailFormulaDimensionCombo = BI.inherit(BI.Widget, {
         });
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.DetailFormulaDimensionCombo.EVENT_CHANGE, v);
-        })
+        });
+    },
+
+
+    setValue: function (v) {
+        this.combo.setValue(v);
     },
 
     getValue: function () {
         return this.combo.getValue();
     }
 
-});
+})
+;
 BI.DetailFormulaDimensionCombo.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.detail_formula_dimension_combo", BI.DetailFormulaDimensionCombo);
