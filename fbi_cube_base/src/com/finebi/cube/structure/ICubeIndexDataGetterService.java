@@ -1,6 +1,7 @@
 package com.finebi.cube.structure;
 
 import com.finebi.cube.exception.BICubeIndexException;
+import com.finebi.cube.location.CubeResource;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
@@ -11,7 +12,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeIndexDataGetterService extends Release {
+public interface ICubeIndexDataGetterService extends Release, CubeResource {
 
     /**
      * 获取对应位置的索引值
