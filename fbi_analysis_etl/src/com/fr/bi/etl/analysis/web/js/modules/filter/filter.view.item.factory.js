@@ -81,7 +81,7 @@ BI.ETLFilterViewItemFactory = {
                 if(item === "") {
                     v.push(item)
                 } else {
-                    var d = FR.str2Date(item);
+                    var d = FR.str2Date(item, 'yyyy-mm-dd');
                     v.push(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
                 }
             });

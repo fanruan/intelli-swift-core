@@ -142,8 +142,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         searchResult.push(BI.extend({
                             id: finded.pId,
                             wId: o.wId,
-                            text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
-                            title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId),
+                            text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
+                            title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                             value: finded.pId,
                             type: "bi.detail_select_data_level0_node"
                         }, field2TableMap[finded.id || finded.value], {
@@ -194,8 +194,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 id: table.id,
                 wId: o.wId,
                 type: "bi.detail_select_data_level0_node",
-                text: BI.Utils.getTableNameByID(table.id),
-                title: BI.Utils.getTableNameByID(table.id),
+                text: BI.Utils.getTableNameByID(table.id) || "",
+                title: BI.Utils.getTableNameByID(table.id) || "",
                 value: table.id,
                 isParent: true,
                 open: false
@@ -227,8 +227,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         el: BI.extend({
                             type: "bi.detail_select_data_level1_node",
                             wId: o.wId,
-                            text: BI.Utils.getTableNameByID(table.id),
-                            title: BI.Utils.getTableNameByID(table.id),
+                            text: BI.Utils.getTableNameByID(table.id) || "",
+                            title: BI.Utils.getTableNameByID(table.id) || "",
                             value: table.id
                         }, table, {
                             isParent: true,
@@ -268,8 +268,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         var map = {};
         BI.each(fields, function (i, field) {
             var fid = field.id;
-            var fieldName = BI.Utils.getFieldNameByID(fid);
-            var title = BI.Utils.getTableNameByID(tableId) + "." + fieldName;
+            var fieldName = BI.Utils.getFieldNameByID(fid) || "";
+            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
                 var _type = "bi.detail_select_data_level1_item";
@@ -359,8 +359,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             if (viewFields.contains(fid)) {
                 return;
             }
-            var fieldName = BI.Utils.getFieldNameByID(fid);
-            var title = BI.Utils.getTableNameByID(tableId) + "." + fieldName;
+            var fieldName = BI.Utils.getFieldNameByID(fid) || "";
+            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
                 var _type = isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item";
@@ -507,9 +507,9 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     _buildDateChildren: function (tableId, field, isRelation) {
         var o = this.options;
         var fieldId = field.id || field.value;
-        var fieldName = field.text || BI.Utils.getFieldNameByID(fieldId);
+        var fieldName = field.text || BI.Utils.getFieldNameByID(fieldId) || "";
         var drag = this._createDrag(fieldName);
-        var prefix = BI.Utils.getTableNameByID(tableId) + "." + fieldName + ".";
+        var prefix = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName + ".";
         return [BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",

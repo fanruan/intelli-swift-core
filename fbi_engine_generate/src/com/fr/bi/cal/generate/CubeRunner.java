@@ -57,7 +57,7 @@ public class CubeRunner {
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
-                        start();
+                backup();
                         try {
                             cubeTask.start();
                             cubeTask.run();
@@ -137,10 +137,6 @@ public class CubeRunner {
         setStatue(Status.LOADED);
         CubeBuildStuff cubeBuildStuff= new CubeBuildStuffManager(new BIUser((biUser.getUserId())));
         CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser,cubeBuildStuff),biUser.getUserId());
-    }
-
-    private void start() {
-        backup();
     }
 
     private void backup() {
