@@ -281,8 +281,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _formatDataForFallAxis: function(data){
+        var o = this.options;
         var items = this._formatDataForCommon(data);
         var tables = [], sum = 0;
+        var colors = BI.Utils.getWSChartColorByID(o.wId) || [];
+        if(BI.isEmptyArray(colors)){
+            colors = ["rgb(152, 118, 170)", "rgb(0, 157, 227)"];
+        }
         BI.each(items, function(idx, item){
             BI.each(item.data, function(i, t){
                 if(t.y < 0){
@@ -302,7 +307,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         y: Math.abs(cell[2 - idx])
                     });
                     if(idx === 1){
-                        axis.color = cell[2 - idx] < 0 ? "rgb(152, 118, 170)" : "rgb(0, 157, 227)";
+                        axis.color = cell[2 - idx] < 0 ? colors[1] : colors[0];
                     }else{
                         axis.color = "rgba(0,0,0,0)";
                         axis.borderColor = "rgba(0,0,0,0)";
@@ -322,6 +327,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _formatDataForRangeArea: function(data){
+        var o = this.options;
         var items = this._formatDataForCommon(data);
         if(BI.isEmptyArray(items)){
             return [];
@@ -329,60 +335,33 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if(items.length === 1){
             return [items];
         }
-        var seriesPositive = [], seriesNegative =[];
+        var colors = BI.Utils.getWSChartColorByID(o.wId) || [];
+        if(BI.isEmptyArray(colors)){
+            colors = ["#5caae4"];
+        }
+        var seriesMinus = [];
         BI.each(items[0].data, function(idx, item){
             var res = items[1].data[idx].y - item.y;
-            if(res >= 0){
-                seriesPositive.push({
-                    x: items[1].data[idx].x,
-                    y: res,
-                    targetIds: items[1].data[idx].targetIds
-                });
-                seriesNegative.push({
-                    x: items[0].data[idx].x,
-                    y: 0,
-                    targetIds: items[0].data[idx].targetIds
-                })
-            }else{
-                seriesPositive.push({
-                    x: items[1].data[idx].x,
-                    y: 0,
-                    targetIds: items[1].data[idx].targetIds
-                });
-                seriesNegative.push({
-                    x: items[0].data[idx].x,
-                    y: -res,
-                    targetIds: items[0].data[idx].targetIds
-                })
-            }
+            seriesMinus.push({
+                x: items[1].data[idx].x,
+                y: res,
+                targetIds: items[1].data[idx].targetIds
+            });
         });
-        items.push({
-            data: seriesPositive,
+        items[1] = {
+            data: seriesMinus,
             name: items[1].name,
-            stack: "positiveStackedArea"
-        });
-        items.push({
-            data: seriesNegative,
-            name: items[0].name,
-            stack: "negativeStackedArea"
-        });
+            stack: "stackedArea",
+            fillColor: colors[0]
+        };
         BI.each(items, function(idx, item){
             if(idx === 0){
                 BI.extend(item, {
-                    name: "456",
+                    name: items[0].name,
                     fillColorOpacity: 0,
-                    stack: "negativeStackedArea",
-                    fillColor: "rgb(99,178,238)",
-                    lineWidth: 0
-                });
-            }
-            if(idx === 1){
-                BI.extend(item, {
-                    name: "123",
-                    fillColorOpacity: 0,
-                    stack: "positiveStackedArea",
-                    fillColor: "rgb(99,178,238)",
-                    lineWidth: 0
+                    stack: "stackedArea",
+                    marker: {enabled: false},
+                    fillColor: false
                 });
             }
         });

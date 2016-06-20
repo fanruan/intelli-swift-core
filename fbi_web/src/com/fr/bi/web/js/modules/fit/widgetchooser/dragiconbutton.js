@@ -53,6 +53,12 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
                 return BI.i18nText("BI-Reset_Button");
             case BICst.WIDGET.GENERAL_QUERY:
                 return BI.i18nText("BI-General_Query");
+            case BICst.WIDGET.WEB:
+                return BI.i18nText("BI-Web_Widget");
+            case BICst.WIDGET.CONTENT:
+                return BI.i18nText("BI-Text_Widget");
+            case BICst.WIDGET.IMAGE:
+                return BI.i18nText("BI-Image_Widget");
             default:
                 return BI.i18nText("BI-Statistical_Component");
         }
