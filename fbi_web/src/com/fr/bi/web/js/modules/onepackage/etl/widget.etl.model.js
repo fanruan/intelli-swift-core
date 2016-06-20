@@ -215,6 +215,25 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return BI.deepClone(this.excelView);
     },
 
+    getFieldNamesByTableId: function (tId) {
+        var table = this.getTableById(tId);
+        var fieldNames = [];
+        if (BI.isNotNull(table)) {
+            BI.each(table.fields, function (i, fs) {
+                BI.each(fs, function (j, field) {
+                    fieldNames.push(field.field_name);
+                });
+            });
+        }
+        return fieldNames;
+    },
+
+    modifyExcelData: function(tId, fullFileName){
+        var table = this.getTableById(tId);
+        table.full_file_name = fullFileName;
+        this.saveTableById(tId, table);
+    },
+
     isValidTableTranName: function (name) {
         var self = this;
         var currentPackTables = BI.Utils.getCurrentPackageTables4Conf();
