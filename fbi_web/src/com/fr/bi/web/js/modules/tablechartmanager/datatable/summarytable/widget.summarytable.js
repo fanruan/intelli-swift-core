@@ -333,8 +333,13 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             });
             popup.on(BI.TargetSummaryFilterPopup.EVENT_CHANGE, function (v) {
                 var targetFilter = BI.Utils.getWidgetFilterValueByID(self.options.wId);
-                BI.isNotNull(v) && formatTargetFilter(v, dId);
-                targetFilter[dId] = v;
+                if (BI.isNotNull(v)) {
+                    formatTargetFilter(v, dId);
+                    targetFilter[dId] = v;
+                } else {
+                    delete targetFilter[dId];
+                }
+
                 self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {filter_value: targetFilter});
             });
         }

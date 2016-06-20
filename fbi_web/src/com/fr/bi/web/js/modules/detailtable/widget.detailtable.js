@@ -190,7 +190,11 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         });
         popup.on(BI.DetailTableFilterPopup.EVENT_CHANGE, function (v) {
             var filterValue = BI.Utils.getWidgetFilterValueByID(self.options.wId);
-            filterValue[dId] = v;
+            if (BI.isNotNull(v)) {
+                filterValue[dId] = v;
+            } else {
+                delete filterValue[dId];
+            }
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {filter_value: filterValue});
         });
         BI.Popovers.create(dId, popup).open(dId);
