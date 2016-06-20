@@ -9,6 +9,7 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
         SINGLE_LINE_HEIGHT: 60,
         SIMPLE_H_GAP: 10,
         SIMPLE_L_GAP: 2,
+        SIMPLE_H_LGAP: 5,
         CHECKBOX_WIDTH: 16,
         EDITOR_WIDTH: 80,
         EDITOR_HEIGHT: 26,
@@ -42,12 +43,14 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
         });
 
         var tableStyle = BI.createWidget({
-            type: "bi.horizontal",
+            type: "bi.horizontal_adapt",
+            columnSize: [100],
             cls: "single-line-settings",
-            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
+                textAlign: "left",
+                lgap: this.constant.SIMPLE_H_LGAP,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -217,11 +220,13 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
         });
 
         var showElement = BI.createWidget({
-            type: "bi.horizontal",
+            type: "bi.horizontal_adapt",
+            columnSize: [80],
             cls: "single-line-settings",
-            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
+                textAlign: "left",
+                lgap: this.constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-Element_Show"),
                 textHeight: 60,
                 cls: "line-title"
@@ -231,7 +236,6 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                 items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Legend_Normal"),
-                    lgap: this.constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -250,13 +254,14 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
         });
 
         var lYAxis = BI.createWidget({
-            type: "bi.horizontal",
+            type: "bi.horizontal_adapt",
+            columnSize: [80],
             cls: "single-line-settings",
-            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
-                height: "100%",
                 textHeight: 60,
+                textAlign: "left",
+                lgap: this.constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-Y_Axis"),
                 cls: "line-title"
             }, {
@@ -296,13 +301,14 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
         });
 
         var xAxis = BI.createWidget({
-            type: "bi.horizontal",
+            type: "bi.horizontal_adapt",
+            columnSize: [80],
             cls: "single-line-settings",
-            lgap: this.constant.SIMPLE_H_GAP,
             items: [{
                 type: "bi.label",
-                height: "100%",
                 textHeight: 60,
+                textAlign: "left",
+                lgap: this.constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-X_Axis"),
                 cls: "line-title"
             }, {

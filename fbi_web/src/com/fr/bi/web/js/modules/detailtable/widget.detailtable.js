@@ -190,7 +190,11 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         });
         popup.on(BI.DetailTableFilterPopup.EVENT_CHANGE, function (v) {
             var filterValue = BI.Utils.getWidgetFilterValueByID(self.options.wId);
-            filterValue[dId] = v;
+            if (BI.isNotNull(v)) {
+                filterValue[dId] = v;
+            } else {
+                delete filterValue[dId];
+            }
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {filter_value: filterValue});
         });
         BI.Popovers.create(dId, popup).open(dId);
@@ -210,7 +214,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
         return BI.map(rowValues, function (i, rowValue) {
             return {
-                text: rowValue,
+                text: BI.isNull(rowValue) ? "" : rowValue,
                 type: "bi.detail_table_cell",
                 dId: dimensionIds[i]
             };

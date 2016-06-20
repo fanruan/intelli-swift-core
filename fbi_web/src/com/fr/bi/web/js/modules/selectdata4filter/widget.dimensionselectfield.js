@@ -51,6 +51,7 @@ BI.DimensionFilterSelectField = BI.inherit(BI.Widget, {
                         type: "bi.select_data_level0_item",
                         fieldType: BI.Utils.getFieldTypeByID(fieldId),
                         text: BI.Utils.getFieldNameByID(fieldId),
+                        title: BI.Utils.getFieldNameByID(fieldId),
                         value: o.dId
                     }]
                 } else {
@@ -58,15 +59,18 @@ BI.DimensionFilterSelectField = BI.inherit(BI.Widget, {
                     var allTargets = BI.Utils.getAllTargetDimensionIDs(widgetId);
                     var result = [];
                     BI.each(allTargets, function (i, tId) {
-                        var field_id = BI.Utils.getFieldIDByDimensionID(tId);
-                        result.push({
-                            id: tId,
-                            pId: self._constant.TARGET_FIELD,
-                            type: "bi.select_data_level0_item",
-                            fieldType: BI.Utils.getFieldTypeByID(field_id),
-                            text: BI.Utils.getDimensionNameByID(tId),
-                            value: tId
-                        });
+                        if (BI.Utils.isTargetByDimensionID(tId)) {
+                            var field_id = BI.Utils.getFieldIDByDimensionID(tId);
+                            result.push({
+                                id: tId,
+                                pId: self._constant.TARGET_FIELD,
+                                type: "bi.select_data_level0_item",
+                                fieldType: BI.Utils.getFieldTypeByID(field_id),
+                                text: BI.Utils.getDimensionNameByID(tId),
+                                title: BI.Utils.getDimensionNameByID(tId),
+                                value: tId
+                            });
+                        }
                     });
                     return result;
                 }

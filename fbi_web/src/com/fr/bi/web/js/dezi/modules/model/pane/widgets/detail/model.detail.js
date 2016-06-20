@@ -204,8 +204,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     }
                     //对比柱状/面积/条形图,范围面积,多值轴组合,瀑布,气泡,力学,散点,漏斗
                     if(type === BICst.WIDGET.COMPARE_AXIS || type === BICst.WIDGET.COMPARE_AREA ||
-                        type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART||
-                        type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_AXIS||
+                        type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_AXIS||
                         type === BICst.WIDGET.BUBBLE || type === BICst.WIDGET.FORCE_BUBBLE ||
                         type === BICst.WIDGET.SCATTER){
                         var preTar1Select = [], preTar2Select = [], preTar3Select = [];
@@ -306,8 +305,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     }
                 });
                 if(wType === BICst.WIDGET.COMPARE_AXIS || wType === BICst.WIDGET.COMPARE_AREA ||
-                    wType === BICst.WIDGET.COMPARE_BAR || wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART||
-                    wType === BICst.WIDGET.RANGE_AREA || wType === BICst.WIDGET.FALL_AXIS||
+                    wType === BICst.WIDGET.COMPARE_BAR || wType === BICst.WIDGET.RANGE_AREA || wType === BICst.WIDGET.FALL_AXIS||
                     wType === BICst.WIDGET.BUBBLE || wType === BICst.WIDGET.FORCE_BUBBLE ||
                     wType === BICst.WIDGET.SCATTER){
                     BI.each(view, function (region, dims) {

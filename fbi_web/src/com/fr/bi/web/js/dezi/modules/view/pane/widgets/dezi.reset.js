@@ -17,8 +17,7 @@ BIDezi.ResetView = BI.inherit(BI.View, {
         var resetButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Reset"),
-            width: "100%",
-            height: 30
+            forceCenter: true
         });
         resetButton.on(BI.Button.EVENT_CHANGE, function () {
             self._resetAllControlValues();
@@ -44,7 +43,8 @@ BIDezi.ResetView = BI.inherit(BI.View, {
                 el: resetButton,
                 left: 0,
                 right: 0,
-                top: 8
+                top: 0,
+                bottom: 0
             }, {
                 el: deleteButton,
                 right: 5,
