@@ -206,7 +206,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
                 return same;
             })
 
-            newFields.field_name = BI.Utils.createDistinctName(getNameArray(columns), oldColumn.field_name || newFields.field_name)
+            newFields.field_name = BI.Utils.createDistinctName(getNameArray(columns), BI.isNotNull(oldColumn) ? oldColumn.field_name : newFields.field_name)
             columns.push(newFields)
         })
         this.set("columns", columns);
