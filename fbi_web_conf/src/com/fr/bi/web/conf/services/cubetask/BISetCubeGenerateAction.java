@@ -1,8 +1,5 @@
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.services.cubetask.utils.CubeTaskGenerate;
@@ -27,14 +24,10 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
 
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
-//        todo kary 优化ETL的更新方式,可能要单独实现ETL更新方法
         if (StringUtils.isEmpty(tableId)){
-//            CubeBuildStuff cubeBuildStuff= new CubeBuildStuffManager(new BIUser(userId));
-//            CubeTaskGenerate.CubeBuild(userId, cubeBuildStuff);
             CubeTaskGenerate.CubeBuild(userId);
         }else{
-            CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable( new BIBusinessTable(new BITableID(tableId)),userId);
-            CubeTaskGenerate.CubeBuild(userId, cubeBuildStuff);
+            CubeTaskGenerate.CubeBuild(userId, new BITableID(tableId));
         }
     }
 

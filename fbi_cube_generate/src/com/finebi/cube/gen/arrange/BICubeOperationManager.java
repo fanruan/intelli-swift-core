@@ -355,7 +355,7 @@ public class BICubeOperationManager {
                             getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getBiTableSourceRelationPathSet()) {
+                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
                         operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));

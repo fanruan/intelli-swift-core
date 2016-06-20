@@ -102,7 +102,7 @@ public class BuildCubeTask implements CubeTask {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
         operationManager.initialWatcher();
-        operationManager.subscribeStartMessage();
+//        operationManager.subscribeStartMessage();
         manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
         manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getBiTableSourceRelationPathSet());

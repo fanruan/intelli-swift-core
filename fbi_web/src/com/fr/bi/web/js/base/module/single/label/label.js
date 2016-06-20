@@ -146,7 +146,7 @@ BI.Label = BI.inherit(BI.Single, {
             return;
         }
         if (o.whiteSpace == "normal") {
-            this.text = BI.createWidget(json)
+            this.text = BI.createWidget(json);
             this.text = BI.createWidget({
                 type: "bi.center_adapt",
                 hgap: o.hgap,

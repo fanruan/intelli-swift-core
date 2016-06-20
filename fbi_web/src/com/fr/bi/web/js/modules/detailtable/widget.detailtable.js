@@ -133,6 +133,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 self.table.hideSequence();
             }
 
+
             //设置样式和颜色
             self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(widgetId), BI.Utils.getWSThemeColorByID(widgetId));
         }, ob);
@@ -190,7 +191,11 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         });
         popup.on(BI.DetailTableFilterPopup.EVENT_CHANGE, function (v) {
             var filterValue = BI.Utils.getWidgetFilterValueByID(self.options.wId);
-            filterValue[dId] = v;
+            if (BI.isNotNull(v)) {
+                filterValue[dId] = v;
+            } else {
+                delete filterValue[dId];
+            }
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {filter_value: filterValue});
         });
         BI.Popovers.create(dId, popup).open(dId);
@@ -216,11 +221,24 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             };
         });
     },
+    _getFreezeCols: function () {
+        var wId = this.options.wId;
+        return BI.Utils.getWSFreezeFirstColumnById(wId) ? [0] : [];
+
+    },
+
+    _isNeedFreeze: function () {
+        var wId = this.options.wId;
+        return BI.Utils.getWSFreezeFirstColumnById(wId);
+    },
+
 
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
             self.table.attr("columnSize", self._getColumnSize(header));
+            self.table.attr("isNeedFreeze", self._isNeedFreeze());
+            self.table.attr("freezeCols", self._getFreezeCols());
             self.table.populate(items, header);
         });
     },

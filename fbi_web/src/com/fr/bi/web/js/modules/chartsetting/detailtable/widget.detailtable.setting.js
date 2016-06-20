@@ -110,27 +110,63 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
             lhgap: this.constant.SIMPLE_H_GAP
         });
 
+        //冻结维度
+        this.freezeFirstColumn = BI.createWidget({
+            type: "bi.checkbox"
+        });
+        this.freezeFirstColumn.on(BI.Checkbox.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DetailTableSetting.EVENT_CHANGE);
+        });
+
+        var otherAttr = BI.createWidget({
+            type: "bi.left",
+            cls: "single-line-settings",
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Interactive_Attr"),
+                cls: "line-title",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, {
+                type: "bi.vertical_adapt",
+                items: [{
+                    type: "bi.center_adapt",
+                    items: [this.freezeFirstColumn],
+                    width: this.constant.CHECKBOX_WIDTH,
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Freeze_FIRST_COLUMN"),
+                    cls: "attr-names",
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }],
+                lgap: this.constant.SIMPLE_L_GAP
+            }],
+            hgap: this.constant.SIMPLE_H_GAP
+        });
+
 
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, show],
+            items: [tableStyle, show, otherAttr],
             hgap: 10
         })
     },
-    
-    populate: function(){
+
+    populate: function () {
         var wId = this.options.wId;
         this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
         this.showNumber.setSelected(BI.Utils.getWSShowNumberByID(wId));
+        this.freezeFirstColumn.setSelected(BI.Utils.getWSFreezeFirstColumnById(wId));
     },
 
     getValue: function () {
         return {
             theme_color: this.colorSelector.getValue(),
             table_style: this.tableSyleGroup.getValue()[0],
-            show_number: this.showNumber.isSelected()
+            show_number: this.showNumber.isSelected(),
+            freeze_first_column: this.freezeFirstColumn.isSelected()
         }
     },
 
@@ -138,6 +174,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
         this.colorSelector.setValue(v.theme_color);
         this.tableSyleGroup.setValue(v.table_style);
         this.showNumber.setSelected(v.show_number);
+        this.freezeFirstColumn.setSelected(v.freeze_first_column);
     }
 });
 BI.DetailTableSetting.EVENT_CHANGE = "EVENT_CHANGE";

@@ -157,4 +157,9 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
     public void addVersion(long version) {
 
     }
+
+    @Override
+    public void setTableOwner(ITableKey owner) {
+
+    }
 }

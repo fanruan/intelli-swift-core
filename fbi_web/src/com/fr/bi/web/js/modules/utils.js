@@ -173,7 +173,6 @@
                     filterFiledIds.push(fId);
                 }
             });
-            var countIds = this.getCountFieldIDsOfTableID(tableId) || [];
             var tNum = [], tString = [], tDate = [], fNum = [], fString = [], fDate = [];
             BI.each(transIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
@@ -184,9 +183,6 @@
                         tString.push(id);
                         break;
                     case BICst.COLUMN.DATE:
-                        tDate.push(id);
-                        break;
-                    case BICst.COLUMN.COUNTER:
                         tDate.push(id);
                         break;
                 }
@@ -204,7 +200,7 @@
                         break;
                 }
             });
-            return countIds.concat(tNum).concat(tString).concat(tDate).concat(fNum).concat(fString).concat(fDate);
+            return tNum.concat(tString).concat(tDate).concat(fNum).concat(fString).concat(fDate);
         },
 
         getExcelViewByTableId: function (tableId) {
@@ -555,6 +551,12 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.freeze_dim) ? ws.freeze_dim :
                 BICst.DEFAULT_CHART_SETTING.freeze_dim;
+        },
+
+        getWSFreezeFirstColumnById: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.freeze_first_column) ? ws.freeze_first_column :
+                BICst.DEFAULT_CHART_SETTING.freeze_first_column;
         },
 
         getWSTransferFilterByID: function (wid) {
@@ -2092,9 +2094,9 @@
             }
         }
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
-            if(BI.isNull(filterValue)){
+            if (BI.isNull(filterValue)) {
                 filterValue = {};
-            }else{
+            } else {
                 filterValue.values = parseComplexDate(filterValue);
                 filterValue.type = BICst.GROUP.YMD;
             }
