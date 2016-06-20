@@ -92,7 +92,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         driverCombo.setValue(driver);
         this.model.setDriver(driver);
         driverCombo.on(BI.EditorIconCheckCombo.EVENT_CHANGE, function () {
-            schemaCombo.setEnable(false);
+            self._toggleSchemaStatus(false);
             urlInput.setValue(BICst.DATA_LINK_MANAGE.URLS[this.getValue()[0]]);
             self.model.setDriver(this.getValue());
             self.model.setURL(BICst.DATA_LINK_MANAGE.URLS[this.getValue()[0]]);
@@ -114,7 +114,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         this.model.setURL(url);
         urlInput.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.model.setURL(this.getValue());
-            schemaCombo.setEnable(false);
+            self._toggleSchemaStatus(false);
         });
         var urlInputWrapper = this._createItemsWrapper("", "URL", urlInput);
 
@@ -130,7 +130,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         });
         userName.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.model.setUser(this.getValue());
-            schemaCombo.setEnable(false);
+            self._toggleSchemaStatus(false);
         });
         var userNameWrapper = this._createItemsWrapper("", BI.i18nText("BI-Username"), userName);
 
@@ -147,7 +147,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         });
         password.on(BI.Editor.EVENT_CHANGE, function () {
             self.model.setPassword(this.getValue());
-            schemaCombo.setEnable(false);
+            self._toggleSchemaStatus(false);
         });
         var passwordWrapper = this._createItemsWrapper("", BI.i18nText("BI-Password"), password);
 
@@ -174,7 +174,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         });
         oldCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             self.model.setOriginalCharsetName(this.getValue());
-            schemaCombo.setEnable(false);
+            self._toggleSchemaStatus(false);
         });
         var oldCode = this._createItemsWrapper("", BI.i18nText("BI-Original_Code"), oldCodeCombo);
 
@@ -187,7 +187,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         });
         newCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             self.model.setNewCharsetName(this.getValue());
-            schemaCombo.setEnable(false);
+            self._toggleSchemaStatus(false);
         });
         var newCode = this._createItemsWrapper("", BI.i18nText("BI-New_Code"), newCodeCombo);
 
@@ -208,8 +208,8 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
                     BI.each(schemas, function (i, schema) {
                         items.push({text: schema, value: schema});
                     });
-                    schemaCombo.setEnable(true);
-                    schemaCombo.populate(items);
+                    self._toggleSchemaStatus(true);
+                    self.schemaCombo.populate(items);
                 })
             }
         });
@@ -227,31 +227,29 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             vgap: 5
         });
 
-        var schemaCombo = BI.createWidget({
+        this.schemaCombo = BI.createWidget({
             type: "bi.text_value_check_combo",
             items: [],
             width: this.constants.INPUT_WIDTH,
             height: this.constants.INPUT_HEIGHT
         });
-        schemaCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
+        this.schemaCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             self.model.setSchema(this.getValue()[0]);
         });
         if (BI.isNotEmptyString(this.model.getSchema())) {
-            schemaCombo.setEnable(true);
-            schemaCombo.setTitle("");
+            this._toggleSchemaStatus(true);
             BI.Utils.getSchemasByLink(self.model.getValue(), function (data) {
                 var items = [];
                 BI.each(data, function (i, s) {
                     items.push({text: s, value: s});
                 });
-                schemaCombo.populate(items);
-                schemaCombo.setValue(self.model.getSchema());
+                self.schemaCombo.populate(items);
+                self.schemaCombo.setValue(self.model.getSchema());
             });
         } else {
-            schemaCombo.setEnable(true);
-            schemaCombo.setTitle("");
+            this._toggleSchemaStatus(true);
         }
-        var schemaWrapper = this._createItemsWrapper(BI.i18nText("BI-Third_Step"), BI.i18nText("BI-Mode"), schemaCombo);
+        var schemaWrapper = this._createItemsWrapper(BI.i18nText("BI-Third_Step"), BI.i18nText("BI-Mode"), this.schemaCombo);
 
         BI.createWidget({
             type: "bi.vertical",
@@ -271,6 +269,18 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             ],
             hgap: 10
         });
+    },
+
+    _toggleSchemaStatus: function(enable){
+        if(enable === true) {
+            this.schemaCombo.setEnable(true);
+            this.schemaCombo.setTitle("");
+            return;
+        }
+        this.schemaCombo.setValue();
+        this.model.setSchema("");
+        this.schemaCombo.populate([]);
+        this.schemaCombo.setTitle(BI.i18nText("BI-Test_Link_First"));
     },
 
     _createItemsWrapper: function (name1, name2, widget) {

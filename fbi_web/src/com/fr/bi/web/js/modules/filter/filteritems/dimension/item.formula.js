@@ -88,10 +88,33 @@ BI.DimensionFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         var wId = BI.Utils.getWidgetIDByDimensionID(dId);
         var tIds = BI.Utils.getAllTargetDimensionIDs(wId);
         BI.each(tIds, function (i, tId) {
+            var fieldType = BICst.COLUMN.STRING;
+            switch (BI.Utils.getDimensionTypeByID(tId)){
+                case BICst.TARGET_TYPE.STRING:
+                    fieldType = BICst.COLUMN.STRING;
+                    break;
+                case BICst.TARGET_TYPE.DATE:
+                    fieldType = BICst.COLUMN.DATE;
+                    break;
+                case BICst.TARGET_TYPE.NUMBER:
+                case BICst.TARGET_TYPE.FORMULA:
+                case BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE:
+                case BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE:
+                case BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE:
+                case BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE:
+                case BICst.TARGET_TYPE.SUM_OF_ABOVE:
+                case BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP:
+                case BICst.TARGET_TYPE.SUM_OF_ALL:
+                case BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP:
+                case BICst.TARGET_TYPE.RANK:
+                case BICst.TARGET_TYPE.RANK_IN_GROUP:
+                    fieldType = BICst.COLUMN.NUMBER;
+                    break;
+            }
             fieldItems.push({
                 text: BI.Utils.getDimensionNameByID(tId),
                 value: tId,
-                fieldType: BI.Utils.getFieldTypeByID(BI.Utils.getFieldIDByDimensionID(tId))
+                fieldType: fieldType
             });
         });
         return fieldItems;
