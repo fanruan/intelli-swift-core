@@ -40,6 +40,7 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
             },
             fieldsCreator: function (tableId, isRelation) {
                 var ids = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
+                ids = BI.Utils.getCountFieldIDsOfTableID(tableId).concat(ids);
                 var result = [];
                 BI.each(ids, function (i, fid) {
                     //暂时去除记录数

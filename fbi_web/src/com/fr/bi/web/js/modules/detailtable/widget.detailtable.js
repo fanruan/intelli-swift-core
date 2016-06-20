@@ -209,7 +209,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         var dimensionIds = BI.Utils.getWidgetViewByID(this.options.wId)[BICst.REGION.DIMENSION1];
 
         return BI.map(rowValues, function (i, rowValue) {
-            return {
+            return {    
                 text: BI.isNull(rowValue) ? "" : rowValue,
                 type: "bi.detail_table_cell",
                 dId: dimensionIds[i]
