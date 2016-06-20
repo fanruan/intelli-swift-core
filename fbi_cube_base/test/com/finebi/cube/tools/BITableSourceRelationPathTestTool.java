@@ -78,6 +78,7 @@ public class BITableSourceRelationPathTestTool {
             throw BINonValueUtils.beyondControl(e);
         }
     }
+
     public static BITableSourceRelationPath getABCPath() {
         try {
             BITableSourceRelationPath path = new BITableSourceRelationPath();
@@ -88,9 +89,22 @@ public class BITableSourceRelationPathTestTool {
             throw BINonValueUtils.beyondControl(e);
         }
     }
-    public static Set<BITableSourceRelationPath> getRelationPathSetABC(){
+
+    public static Set<BITableSourceRelationPath> getRelationPathSetABC() {
         Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
         pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
         return pathSet;
+    }
+
+    public static BITableSourceRelationPath getABCDPath() {
+        try {
+            BITableSourceRelationPath path = new BITableSourceRelationPath();
+            path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryAB());
+            path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryBC());
+            path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryCD());
+            return path;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 }
