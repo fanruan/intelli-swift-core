@@ -6,6 +6,6 @@ package com.finebi.cube.location;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeResource {
+public interface CubeResource {
     ICubeResourceLocation getResourceLocation();
 }
