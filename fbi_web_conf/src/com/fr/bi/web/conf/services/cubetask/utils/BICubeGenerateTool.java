@@ -28,7 +28,7 @@ import java.util.Set;
  */
 public class BICubeGenerateTool {
 
-    /* 新增业务包后更新，获取所有新增的table*/
+    /* 获取所有新增的table*/
     public static Set<BIBusinessTable> getTables4CubeGenerate(long userId) {
         Set<BIBusinessTable> sources = new HashSet<BIBusinessTable>();
         for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
@@ -39,6 +39,7 @@ public class BICubeGenerateTool {
         return sources;
     }
 
+    /* 获取所有新增业务包里面的table*/
     public static Set<BIBusinessTable> getPackages4Generate(long userId) {
         Set<BIBusinessPackage> packages4CubeGenerate = BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
         Set<IBusinessPackageGetterService> iBusinessPackageGetterServiceSet = new HashSet<IBusinessPackageGetterService>();
