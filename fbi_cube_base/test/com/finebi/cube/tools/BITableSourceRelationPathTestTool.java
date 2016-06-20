@@ -66,16 +66,7 @@ public class BITableSourceRelationPathTestTool {
             path.add(b2c);
             return path;
         } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
-    }
-
-    public static BITableSourceRelationPath getABPath() {
-        try {
-            BITableSourceRelationPath path = new BITableSourceRelationPath();
-            path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryAB());
-            return path;
-        } catch (Exception e) {
+            e.printStackTrace();
             throw BINonValueUtils.beyondControl(e);
         }
     }
@@ -87,14 +78,9 @@ public class BITableSourceRelationPathTestTool {
             path.addRelationAtTail(BITableSourceRelationTestTool.getMemoryBC());
             return path;
         } catch (Exception e) {
+            e.printStackTrace();
             throw BINonValueUtils.beyondControl(e);
         }
-    }
-
-    public static Set<BITableSourceRelationPath> getRelationPathSetABC() {
-        Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
-        pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
-        return pathSet;
     }
 
     public static BITableSourceRelationPath getABCDPath() {
@@ -108,4 +94,5 @@ public class BITableSourceRelationPathTestTool {
             throw BINonValueUtils.beyondControl(e);
         }
     }
+
 }

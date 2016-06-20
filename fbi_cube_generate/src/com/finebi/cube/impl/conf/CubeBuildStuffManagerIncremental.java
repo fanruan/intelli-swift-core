@@ -93,10 +93,10 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
         for (BIBusinessTable biBusinessTable : newBiBusinessTableSet) {
             sources.add(biBusinessTable.getTableSource());
             cubeTableSourceHashSet.add(biBusinessTable.getTableSource());
-            Set<BITableRelation> primaryRelaitons = getTableRelationManager().getPrimaryRelation(biUser.getUserId(), biBusinessTable).getContainer();
-            Set<BITableRelation> foreignRelaitons = getTableRelationManager().getForeignRelation(biUser.getUserId(), biBusinessTable).getContainer();
-            tableRelationSet.addAll(primaryRelaitons);
-            tableRelationSet.addAll(foreignRelaitons);
+            Set<BITableRelation> primaryRelations = getTableRelationManager().getPrimaryRelation(biUser.getUserId(), biBusinessTable).getContainer();
+            Set<BITableRelation> foreignRelations = getTableRelationManager().getForeignRelation(biUser.getUserId(), biBusinessTable).getContainer();
+            tableRelationSet.addAll(primaryRelations);
+            tableRelationSet.addAll(foreignRelations);
         }
         Set<List<Set<CubeTableSource>>> depends = calculateTableSource(cubeTableSourceHashSet);
         this.dependTableResource = depends;
