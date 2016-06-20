@@ -57,7 +57,7 @@ public class CubeRunner {
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
-                        start();
+                backup();
                         try {
                             cubeTask.start();
                             cubeTask.run();
@@ -140,7 +140,6 @@ public class CubeRunner {
     }
 
     private void start() {
-        backup();
     }
 
     private void backup() {

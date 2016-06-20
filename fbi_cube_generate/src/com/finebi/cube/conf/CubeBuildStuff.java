@@ -33,4 +33,6 @@ public interface CubeBuildStuff {
     Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet();
 
     Set<BICubeGenerateRelation> getCubeGenerateRelationSet();
+
+    boolean preConditionsCheck();
 }

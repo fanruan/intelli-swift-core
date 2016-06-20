@@ -136,6 +136,11 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
         return new HashSet<BICubeGenerateRelation>();
     }
 
+    @Override
+    public boolean preConditionsCheck() {
+        return true;
+    }
+
     public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {
         this.dependTableResource = dependTableResource;
     }
