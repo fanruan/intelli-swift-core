@@ -1956,6 +1956,9 @@
             var wWid = value.wId, se = value.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
+                if(BI.isNull(wWValue)){
+                    return;
+                }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
                     return parseComplexDateCommon(wWValue.start);
                 } else {
