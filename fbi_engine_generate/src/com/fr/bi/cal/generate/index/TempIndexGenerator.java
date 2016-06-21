@@ -24,5 +24,6 @@ public class TempIndexGenerator extends IndexGenerator {
     @Override
     protected void createTableCube() {
         this.cube = new TableCubeFile(BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()) + File.separator + pathSuffix);
+
     }
 }

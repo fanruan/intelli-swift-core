@@ -7,7 +7,7 @@ import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.structure.ICubeRelationManagerService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BICubeColumnEntity;
@@ -109,7 +109,7 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
-    public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException {
+    public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException {
         return hostDataColumn.getRelationIndexGetter(path);
     }
 

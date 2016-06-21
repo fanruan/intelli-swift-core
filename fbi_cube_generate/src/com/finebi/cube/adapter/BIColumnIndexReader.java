@@ -5,7 +5,7 @@ import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICubeIndexDataGetterService;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -22,13 +22,13 @@ import java.util.*;
  * @since 4.0
  */
 public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
-    protected ICubeColumnReaderService<T> columnReaderService;
+    protected CubeColumnReaderService<T> columnReaderService;
     private BICubeTablePath path;
     private ICubeIndexDataGetterService indexDataGetterService;
     private CSet<Map.Entry<T, GroupValueIndex>> ascSet = new CSet<Map.Entry<T, GroupValueIndex>>(true);
     private CSet<Map.Entry<T, GroupValueIndex>> descSet = new CSet<Map.Entry<T, GroupValueIndex>>(false);
 
-    public BIColumnIndexReader(ICubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
+    public BIColumnIndexReader(CubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
         this.columnReaderService = columnReaderService;
         if (isRelationIndex(relationList)) {
             path = BICubePathUtils.convert(relationList);
