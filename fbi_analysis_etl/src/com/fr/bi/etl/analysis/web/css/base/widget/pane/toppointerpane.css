@@ -27,14 +27,17 @@
   animation: position-left-0-300 0.5s ease;
 }
 @keyframes position-left-0-300 {
-  from  {height:0} to {height:310px}  /**to{1: 1;}**/;
+  from  {height:0} to {height:310px}  /**: ;
 }
-@-webkit-keyframes position-left-0-300 {
-  from  {height:0} to {height:310px}  /**to{1: 1;}**/;
+**/ } @-webkit-keyframes position-left-0-300 {
+  from  {height:0} to {height:310px}  /**: ;
 }
-@-moz-keyframes position-left-0-300 {
-  from  {height:0} to {height:310px}  /**to{1: 1;}**/;
+**/ } @-moz-keyframes position-left-0-300 {
+  from  {height:0} to {height:310px}  /**: ;
 }
-@-o-keyframes position-left-0-300 {
-  from  {height:0} to {height:310px}  /**to{1: 1;}**/;
+**/ } @-o-keyframes position-left-0-300 {
+  from  {height:0} to {height:310px}  /**: ;
+}
+**/ } .useless-css-name-abcdefg-123456-just-comment {
+  transition: all 0.5s;
 }

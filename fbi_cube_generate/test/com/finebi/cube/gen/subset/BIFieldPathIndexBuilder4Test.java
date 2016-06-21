@@ -3,7 +3,7 @@ package com.finebi.cube.gen.subset;
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ICube;
+import com.finebi.cube.structure.Cube;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 
 /**
@@ -13,7 +13,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
  * @since 4.0
  */
 public class BIFieldPathIndexBuilder4Test extends BIFieldPathIndexBuilder {
-    public BIFieldPathIndexBuilder4Test(ICube cube, ICubeFieldSource field, BICubeTablePath relationPath) {
+    public BIFieldPathIndexBuilder4Test(Cube cube, ICubeFieldSource field, BICubeTablePath relationPath) {
         super(cube, field, relationPath);
     }
 
