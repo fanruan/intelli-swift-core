@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import java.util.*;
 
 /**
- * Created by 49597 on 2016/6/21.
+ * Created by kary on 2016/6/21.
  */
 public class TimerRunnerTest extends TestCase {
     protected int executedTimes = 0;
