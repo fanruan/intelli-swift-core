@@ -19,10 +19,11 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
     },
 
     rebuildNorth: function (north) {
+        var text = BI.isNotNull(this.options.report) ? BI.i18nText("BI-Modify") : BI.i18nText("BI-Add") + "BI"
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text: BI.i18nText("BI-Add") + "BI",
+            text: text,
             height: 50,
             textAlign: "left",
             hgap: 10
