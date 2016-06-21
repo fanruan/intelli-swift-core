@@ -56,7 +56,8 @@ BI.DimensionsManagerShow = BI.inherit(BI.Widget, {
     _createChartType: function () {
         var self = this;
         this.chartType = BI.createWidget({
-            type: "bi.chart_type_show"
+            type: "bi.chart_type_show",
+            wId: this.options.wId
         });
         this.chartType.on(BI.ChartTypeShow.EVENT_CHANGE, function () {
             self.tab.setSelect(this.getValue());
