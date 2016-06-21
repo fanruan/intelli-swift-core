@@ -8,7 +8,7 @@ BI.TargetFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 40,
-        BUTTON_HEIGHT: 30,
+        BUTTON_HEIGHT: 28,
         FIELD_NAME_BUTTON_WIDTH: 120,
         ICON_BUTTON_WIDTH: 22,
         TEXT_BUTTON_H_GAP: 15

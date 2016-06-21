@@ -1479,7 +1479,7 @@ public class ResourceHelper {
 
 
                 //切面
-                "com/fr/bi/web/js/aspects/aspects.js",
+                "com/fr/bi/web/js/aspects/config.js",
         };
     }
 
