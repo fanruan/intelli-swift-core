@@ -25,6 +25,7 @@ public class CubeTableCache {
         cache = CacheBuilder.newBuilder()
                 .maximumSize(1000)
                 .expireAfterWrite(10, TimeUnit.MINUTES)
+                .expireAfterAccess(1, TimeUnit.MINUTES)
                 .build(new CacheLoader<CubeTableSource, ICubeTableService>() {
                     @Override
                     public ICubeTableService load(CubeTableSource tableSource) throws Exception {

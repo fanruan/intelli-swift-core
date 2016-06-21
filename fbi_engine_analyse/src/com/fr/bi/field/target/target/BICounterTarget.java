@@ -39,7 +39,7 @@ public class BICounterTarget extends BISummaryTarget {
             if (field == null) {
                 String tableId = obj.getString("table_id");
                 BusinessField column = new BIBusinessField(new BIFieldID(distinct_field_id));
-                BusinessTable tableBelongTo = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
+                BusinessTable tableBelongTo = BIModuleUtils.getBusinessTableById(new BITableID(tableId));
                 column.setTableBelongTo(tableBelongTo);
                 this.column = column;
                 this.distinct_field_name = StringUtils.EMPTY;
