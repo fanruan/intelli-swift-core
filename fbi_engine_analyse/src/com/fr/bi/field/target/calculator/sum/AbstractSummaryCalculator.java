@@ -1,7 +1,7 @@
 package com.fr.bi.field.target.calculator.sum;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.data.BITable;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -36,7 +36,7 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
     }
 
     @Override
-    public BITable createTableKey() {
+    public BusinessTable createTableKey() {
         return target.createTableKey();
     }
 

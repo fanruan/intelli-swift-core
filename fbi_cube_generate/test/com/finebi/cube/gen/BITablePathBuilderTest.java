@@ -44,13 +44,18 @@ public class BITablePathBuilderTest extends BICubeTestBase {
         BIRelationIndexBuilderTest relationIndexBuilder = new BIRelationIndexBuilderTest();
         relationIndexBuilder.setTableA(BIMemoryDataSourceFactory.generateTableA());
         relationIndexBuilder.setTableB(BIMemoryDataSourceFactory.generateTableB());
-        relationIndexBuilder.generateRelationIndex(BICubeRelationTestTool.getTaTb(), 1, 2);
+        relationIndexBuilder.generateRelationIndex(BICubeRelationTestTool.getTaTb(),
+                BIMemoryDataSourceFactory.generateTableA(),
+                BIMemoryDataSourceFactory.generateTableB(), 1, 2);
 
         relationIndexBuilder.setTableA(BIMemoryDataSourceFactory.generateTableB());
         relationIndexBuilder.setTableB(BIMemoryDataSourceFactory.generateTableC());
-        relationIndexBuilder.generateRelationIndex(BICubeRelationTestTool.getTbTc(), 1, 2);
-        tablePathIndexBuilder.mainTask();
+        relationIndexBuilder.generateRelationIndex(BICubeRelationTestTool.getTbTc(), BIMemoryDataSourceFactory.generateTableB(),
+                BIMemoryDataSourceFactory.generateTableC(), 1, 2);
+        tablePathIndexBuilder.mainTask(null);
     }
+
+
 
     public void testPathIndex() {
         try {

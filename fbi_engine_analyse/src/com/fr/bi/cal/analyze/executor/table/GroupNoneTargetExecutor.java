@@ -8,6 +8,7 @@ import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
@@ -208,7 +209,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
         CBCell[][] cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
 
         for (int i = 0; i < rowLength; i++) {
-            CBCell cell = new CBCell(usedDimensions[i].getValue());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)usedDimensions[i]).getText());
             cell.setColumn(i + widget.isOrder());
             cell.setRow(0);
             cell.setRowSpan(1);

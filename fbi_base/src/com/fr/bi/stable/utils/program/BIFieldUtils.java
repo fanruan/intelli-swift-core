@@ -31,7 +31,7 @@ public class BIFieldUtils {
     public static Boolean isIterableType(Class fieldClass) {
         return BITypeUtils.isAssignable(Iterable.class, fieldClass);
     }
-
+  
     public static Boolean isCollectionType(Class fieldClass) {
         return BITypeUtils.isAssignable(Collection.class, fieldClass);
     }

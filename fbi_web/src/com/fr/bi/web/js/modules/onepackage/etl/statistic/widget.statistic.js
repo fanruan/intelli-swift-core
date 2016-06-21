@@ -367,15 +367,24 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
                                     text: field
                                 });
                             });
+
+                            var fieldTypes = [];
+                            BI.each(self.model.getAllFields(), function (i, fs) {
+                                BI.each(fs, function (j, field) {
+                                    fieldTypes.push(field.field_type);
+                                });
+                            });
+                            
                             BI.each(values, function(i, value){
+                                var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
                                 BI.each(value, function(j, v){
                                     if(BI.isNotNull(items[j])){
                                         items[j].push({
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         });
                                     } else {
                                         items.push([{
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         }]);
                                     }
                                 });
@@ -498,6 +507,14 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
             });
             currentRegion.addDimension(this.dimensions[id]);
         }
+    },
+
+    _formatDate: function (d) {
+        if (BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
+        var date = new Date(BI.parseInt(d));
+        return date.print("%Y/%X/%d %H:%M:%S")
     },
 
     populate: function(info){

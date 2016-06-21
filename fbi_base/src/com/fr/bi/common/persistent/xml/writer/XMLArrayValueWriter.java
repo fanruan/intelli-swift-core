@@ -22,7 +22,7 @@ public class XMLArrayValueWriter extends XMLValueWriter {
     @Override
     void writeContent(XMLPrintWriter writer) throws IllegalAccessException, InvocationTargetException, IntrospectionException {
         Object[] array = checkObjectArray(beanWrapper.getBean());
-        if (array != null && array.length > 0) {
+        if (array != null && array.length >= 0) {
             if (!beanWrapper.getProperty()) {
                 writer.startTAG("array");
             }
@@ -64,17 +64,19 @@ public class XMLArrayValueWriter extends XMLValueWriter {
     private void iteration(XMLPrintWriter writer, Object[] array) {
         for (int i = 0; i < array.length; i++) {
             try {
-                writer.startTAG("item");
-                BIBeanXMLWriterWrapper wrapper = new BIBeanXMLWriterWrapper(array[i]);
-                wrapper.setProperty(false);
-                if (isSampleObject(array[i])) {
-                    writer.attr("sample", "yes");
-                } else {
-                    writer.attr("sample", "no");
+                if (array[i] != null) {
+                    writer.startTAG("item");
+                    BIBeanXMLWriterWrapper wrapper = new BIBeanXMLWriterWrapper(array[i]);
+                    wrapper.setProperty(false);
+                    if (isSampleObject(array[i])) {
+                        writer.attr("sample", "yes");
+                    } else {
+                        writer.attr("sample", "no");
+                    }
+                    writer.attr("index", i);
+                    wrapper.generateWriter(disposedBeans).writeValue(writer);
+                    writer.end();
                 }
-                writer.attr("index", i);
-                wrapper.generateWriter(disposedBeans).writeValue(writer);
-                writer.end();
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
                 continue;

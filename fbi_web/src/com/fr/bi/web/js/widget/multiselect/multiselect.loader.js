@@ -12,6 +12,10 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
             logic: {
                 dynamic: true
             },
+            el: {
+                height: 400
+            },
+            valueFormatter: BI.emptyFn,
             itemsCreator: BI.emptyFn,
             onLoaded: BI.emptyFn
         });
@@ -27,7 +31,7 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
             type: "bi.select_list",
             element: this.element,
             logic: opts.logic,
-            el: {
+            el: BI.extend({
                 onLoaded: opts.onLoaded,
                 el: {
                     type: "bi.loader",
@@ -48,7 +52,7 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
                         }]
                     }
                 }
-            },
+            }, opts.el),
             itemsCreator: function (op, callback) {
                 var startValue = self._startValue;
                 self.storeValue && (op = BI.extend(op || {}, {
@@ -59,18 +63,20 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
                     var firstItems = [];
                     if (op.times === 1 && self.storeValue) {
                         var json = BI.map(self.storeValue.value, function (i, v) {
+                            var txt = opts.valueFormatter(v) || v;
                             return {
-                                text: v,
+                                text: txt,
                                 value: v,
-                                title: v,
+                                title: txt,
                                 selected: self.storeValue.type === BI.ButtonGroup.CHOOSE_TYPE_MULTI
                             }
                         });
                         if (BI.isKey(self._startValue) && !self.storeValue.value.contains(self._startValue)) {
+                            var txt = opts.valueFormatter(startValue) || startValue;
                             json.unshift({
-                                text: startValue,
+                                text: txt,
                                 value: startValue,
-                                title: startValue,
+                                title: txt,
                                 selected: true
                             })
                         }

@@ -1,22 +1,25 @@
 package com.fr.bi.cal.analyze.executor.detail.execute;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.field.target.detailtarget.field.BIEmptyDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
-import com.fr.bi.base.BIUser;
+import com.fr.bi.field.target.detailtarget.field.BIEmptyDetailTarget;
 import com.fr.bi.stable.connection.DirectTableConnectionFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.CollectionKey;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.util.BIConfUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by GUY on 2015/4/21.
@@ -24,7 +27,7 @@ import java.util.*;
 public class DetailParas {
 
     private ICubeDataLoader loader;
-    private transient Table target;
+    private transient BusinessTable target;
     private transient BIDetailTarget[] viewDimension;
     private transient String[] sortTargets;
     protected BIUser biUser;
@@ -36,6 +39,7 @@ public class DetailParas {
     private Map rowMap = new HashMap();
     private boolean[] asc;
     private GroupValueIndex gvi;
+
     public DetailParas(BIDetailWidget widget, GroupValueIndex gvi, ICubeDataLoader loader) {
         this.loader = loader;
 
@@ -46,6 +50,7 @@ public class DetailParas {
         biUser = new BIUser(loader.getUserId());
         init();
     }
+
     public ArrayList<BIDetailTarget> getNoneCalculateList() {
         return noneCalculateList;
     }
@@ -89,7 +94,7 @@ public class DetailParas {
         initCalList();
         for (int i = 0; i < noneCalculateList.size(); i++) {
 
-            List<BITableSourceRelation> relations = BIConfUtils.convertToMD5RelationFromSimpleRelation(noneCalculateList.get(i).getRelationList(target, biUser.getUserId()),biUser);
+            List<BITableSourceRelation> relations = BIConfUtils.convert2TableSourceRelation(noneCalculateList.get(i).getRelationList(target, biUser.getUserId()));
             CollectionKey<BITableSourceRelation> reKey = new CollectionKey<BITableSourceRelation>(relations);
             if (rowMap.get(reKey) == null) {
                 rowMap.put(reKey, DirectTableConnectionFactory.createConnectionRow(relations, loader));
@@ -99,7 +104,7 @@ public class DetailParas {
         sortKey = new DetailSortKey(gvi, target, sortList);
         asc = new boolean[sortList.size()];
         getters = new ICubeColumnIndexReader[sortList.size()];
-        for (int i = 0; i < sortList.size(); i ++){
+        for (int i = 0; i < sortList.size(); i++) {
             getters[i] = sortList.get(i).createGroupValueMapGetter(target, loader, biUser.getUserId());
             asc[i] = sortList.get(i).getSort().getSortType() == BIReportConstant.SORT.ASC ? true : false;
             i++;

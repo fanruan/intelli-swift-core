@@ -7,7 +7,7 @@ import com.fr.bi.conf.data.source.operator.add.selfrelation.OneFieldIsometricUni
 import com.fr.bi.conf.data.source.operator.add.selfrelation.OneFieldUnionRelationOperator;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.RecursionDataModel;
@@ -36,7 +36,7 @@ public class BICreateFieldsUnionAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        ITableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, BIJSONConstant.JSON_KEYS.TABLE)), userId);
+        CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, BIJSONConstant.JSON_KEYS.TABLE)), userId);
         String idFieldName = WebUtils.getHTTPRequestParameter(req, "id_field_name");
         String parentIdFieldName = WebUtils.getHTTPRequestParameter(req, "parentid_field_name");
         String divideLength = WebUtils.getHTTPRequestParameter(req, "divide_length");
@@ -54,7 +54,7 @@ public class BICreateFieldsUnionAction extends AbstractBIConfigureAction {
         }
     }
 
-    private JSONObject createIDJSON(ITableSource source, String idFieldName, String divideLength, boolean isFetchUnionLength, long userId) throws Exception{
+    private JSONObject createIDJSON(CubeTableSource source, String idFieldName, String divideLength, boolean isFetchUnionLength, long userId) throws Exception{
         JSONObject jo = new JSONObject();
         Set ids = source.getFieldDistinctNewestValues(idFieldName, BICubeManager.getInstance().fetchCubeLoader(userId), userId);
         Set lengthSet = getLengthSetFromID(ids);
@@ -110,11 +110,13 @@ public class BICreateFieldsUnionAction extends AbstractBIConfigureAction {
     private Set<Integer> getLengthSetFromID(Set set){
         Set<Integer> intSet = new TreeSet<Integer>();
         for (Object ob : set){
-            String v = ob.toString();
-            int len = v.length();
-            Integer key = new Integer(len);
-            if(!intSet.contains(key)){
-                intSet.add(key);
+            if(ob != null){
+                String v = ob.toString();
+                int len = v.length();
+                Integer key = new Integer(len);
+                if(!intSet.contains(key)){
+                    intSet.add(key);
+                }
             }
         }
 
@@ -150,7 +152,7 @@ public class BICreateFieldsUnionAction extends AbstractBIConfigureAction {
         return ja;
     }
 
-    private JSONObject createIDPIDJSON(ITableSource source, String idFieldName, String pidName, long userId) throws Exception{
+    private JSONObject createIDPIDJSON(CubeTableSource source, String idFieldName, String pidName, long userId) throws Exception{
         JSONObject jo = new JSONObject();
         List<String> fields = new ArrayList<String>();
         fields.add(idFieldName);

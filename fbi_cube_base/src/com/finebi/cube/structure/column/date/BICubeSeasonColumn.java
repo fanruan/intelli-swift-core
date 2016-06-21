@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.column.date;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.column.BICubeIntegerColumn;
 import com.fr.bi.base.ValueConverterFactory;
@@ -12,8 +13,8 @@ import com.fr.bi.stable.constant.DateConstant;
  * @since 4.0
  */
 public class BICubeSeasonColumn extends BICubeDateSubColumn<Integer> {
-    public BICubeSeasonColumn(ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
-        super(currentLocation, hostDataColumn);
+    public BICubeSeasonColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
+        super(discovery, currentLocation, hostDataColumn);
     }
 
     @Override
@@ -23,7 +24,7 @@ public class BICubeSeasonColumn extends BICubeDateSubColumn<Integer> {
 
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
-        columnEntity = new BICubeIntegerColumn(currentLocation);
+        selfColumnEntity = new BICubeIntegerColumn(discovery, currentLocation);
 
     }
 }

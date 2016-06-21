@@ -3,28 +3,66 @@
  *
  * Created by GameJian on 2016/1/24.
  */
-BI.TextAreaEditor = BI.inherit(BI.Widget, {
+BI.TextArea = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.TextAreaEditor.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-text-area-editor",
-            height: 20
+        return BI.extend(BI.TextArea.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-text-area"
         });
     },
 
     _init: function () {
-        BI.TextAreaEditor.superclass._init.apply(this, arguments);
+        BI.TextArea.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.textarea = BI.createWidget({
-            type: "bi.text_area_trigger",
-            height: o.height
+            type: "bi.textarea_editor",
+            width: "100%",
+            height: "100%"
         });
 
-        this.textarea.on(BI.TextAreaTrigger.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TextAreaEditor.EVENT_DESTROY)
+        this.textarea.on(BI.TextAreaEditor.EVENT_FOCUS, function () {
+            self.combo.showView();
+        });
+
+        this.textarea.on(BI.TextAreaEditor.EVENT_BLUR, function () {
+            if (BI.isEmptyString(this.getValue()) && !self.combo.isViewVisible()) {
+                self._showLabel();
+            } else {
+                self._showInput();
+            }
+            self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments)
         });
 
         this.toolbar = BI.createWidget({
             type: "bi.text_toolbar"
+        });
+
+        this.toolbar.on(BI.TextToolbar.EVENT_CHANGE, function () {
+            self.textarea.setStyle(this.getValue());
+            self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments);
+        });
+
+        this.combo = BI.createWidget({
+            type: "bi.combo",
+            toggle: false,
+            direction: "top",
+            isNeedAdjustWidth: false,
+            isNeedAdjustHeight: false,
+            adjustLength: 1,
+            el: this.textarea,
+            popup: {
+                el: this.toolbar,
+                width: 253,
+                height: 30,
+                stopPropagation: false
+            }
+        });
+
+        this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
+            if (BI.isNotEmptyString(self.textarea.getValue())) {
+                self._showInput();
+            } else {
+                self._showLabel();
+            }
         });
 
         this.label = BI.createWidget({
@@ -39,58 +77,33 @@ BI.TextAreaEditor = BI.inherit(BI.Widget, {
             self.textarea.focus();
         });
 
-        this.combo = BI.createWidget({
-            type: "bi.combo",
-            toggle: false,
-            direction: "top",
-            adjustLength: 1,
-            element: this.element,
-            el: this.textarea,
-            hideChecker: function (e) {
-                if (self.toolbar.isColorChooserVisible() || self.toolbar.isBackgroundChooserVisible()) {
-                    return false;
-                }
-            },
-            popup: {
-                el: this.toolbar,
-                minWidth: 253,
-                height: 30,
-                stopPropagation: false
-            }
-        });
-
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
             items: [{
-                el: this.label,
+                el: this.combo,
                 left: 10,
                 right: 10,
                 top: 10,
                 bottom: 10
+            }, {
+                el: this.label,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
             }]
-        });
-
-        this.toolbar.on(BI.TextToolbar.EVENT_CHANGE, function () {
-            self.setValue(self.getValue());
-            self.fireEvent(BI.TextAreaEditor.EVENT_VALUE_CHANGE, arguments);
-        });
-
-        this.textarea.on(BI.TextAreaTrigger.EVENT_BLUR, function () {
-            self._showLabel();
-            if (BI.isNotEmptyString(this.getValue())) {
-                self._showInput()
-            }
-            self.fireEvent(BI.TextAreaEditor.EVENT_VALUE_CHANGE, arguments)
         });
     },
 
     _showInput: function () {
-        this.label.invisible();
+        this.combo.setVisible(true);
+        this.label.setVisible(false);
     },
 
     _showLabel: function () {
-        this.label.visible();
+        this.combo.setVisible(false);
+        this.label.setVisible(true);
     },
 
     setValue: function (v) {
@@ -107,6 +120,5 @@ BI.TextAreaEditor = BI.inherit(BI.Widget, {
         return {style: this.toolbar.getValue(), content: this.textarea.getValue()};
     }
 });
-BI.TextAreaEditor.EVENT_VALUE_CHANGE = "EVENT_VALUE_CHANGE";
-BI.TextAreaEditor.EVENT_DESTROY = "EVENT_DESTROY";
-$.shortcut("bi.text_area_editor", BI.TextAreaEditor);
+BI.TextArea.EVENT_VALUE_CHANGE = "EVENT_VALUE_CHANGE";
+$.shortcut("bi.text_area", BI.TextArea);

@@ -11,7 +11,6 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
-import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -43,7 +42,9 @@ public class SumByGroupDimension implements JSONTransform, BICoreService {
         }
         if(jsonObject.has("_src")){
             JSONObject jo = jsonObject.optJSONObject("_src");
-            this.name = BIIDUtils.getFieldNameFromFieldID(jo.getString("field_id"));
+            if (jo.has("field_name")){
+                this.name = jo.getString("field_name");
+            }
         }
     }
 
@@ -75,13 +76,13 @@ public class SumByGroupDimension implements JSONTransform, BICoreService {
         Object obj;
         switch (group.getType()){
             case BIReportConstant.GROUP.M:
-                obj = ((Integer) value).longValue() + 1;
+                obj = ((Number) value).longValue() + 1;
                 break;
             case BIReportConstant.GROUP.Y:
             case BIReportConstant.GROUP.S:
             case BIReportConstant.GROUP.W:
             case BIReportConstant.GROUP.MD:
-                obj = ((Integer) value).longValue();
+                obj = ((Number) value).longValue();
                 break;
             default:
                 obj = value;

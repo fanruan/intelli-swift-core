@@ -38,8 +38,7 @@ BI.ButtonGroup = BI.inherit(BI.Widget, {
     _createBtns: function (items) {
         var o = this.options;
         return BI.createWidgets(BI.createItems(items, {
-            type: "bi.text_button",
-            once: o.chooseType === BI.Selection.Single
+            type: "bi.text_button"
         }));
     },
 

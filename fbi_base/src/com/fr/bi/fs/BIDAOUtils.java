@@ -7,6 +7,7 @@ import com.fr.function.DATE;
 import com.fr.stable.CodeUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +36,14 @@ public class BIDAOUtils {
             new TableDataDAOControl.ColumnColumn("modifyTime", DATE.class),
             new TableDataDAOControl.ColumnColumn("type", Integer.class),
             new TableDataDAOControl.ColumnColumn("description", String.class),
-            new TableDataDAOControl.ColumnColumn("state", Integer.class),
+            new TableDataDAOControl.ColumnColumn("status", Integer.class),
+            new TableDataDAOControl.ColumnColumn("userid", String.class),
     };
     private final static TableDataDAOControl.ColumnColumn[] TABLEDATA_SHARED_COLUMNS = {
             new TableDataDAOControl.ColumnColumn("id", String.class),
-            new TableDataDAOControl.ColumnColumn("bid", String.class),
-            new TableDataDAOControl.ColumnColumn("userId", String.class)
+            new TableDataDAOControl.ColumnColumn("reportId", String.class),
+            new TableDataDAOControl.ColumnColumn("createBy", String.class),
+            new TableDataDAOControl.ColumnColumn("shareTo", String.class)
     };
 
     private static BIReportDAO getReportDao(long userId) {
@@ -84,23 +87,20 @@ public class BIDAOUtils {
         }
     }
 
-    public static List<BIReportNode> getBIReportNodesShared2UserId(long userId) throws Exception {
+    public static List<BIReportNode> getBIReportNodesByShare2User(long userId) throws Exception {
         if (userId == UserControl.getInstance().getSuperManagerID()) {
             return java.util.Collections.EMPTY_LIST;
         }
         if (userId < 0) {
             return null;
         }
-        long[] templateIds = UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).findTemplateIdsByUserId(userId);
-        java.util.List templateNodeList = new java.util.ArrayList();
-        for (int i = 0; i < templateIds.length; i++) {
-            BIReportNode node = UserControl.getInstance().getOpenDAO(BIReportDAO.class).findByID(templateIds[i]);
-            if (node != null) {
-                templateNodeList.add(node);
-            }
+        List<BISharedReportNode> sharedReports = UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).findReportsByShare2User(userId);
+        List<BIReportNode> nodes = new ArrayList<BIReportNode>();
+        for(int i = 0; i < sharedReports.size(); i++) {
+            BISharedReportNode sNode = sharedReports.get(i);
+            nodes.add(BIDAOUtils.findByID(sNode.getReportId(), sNode.getCreateBy()));
         }
-
-        return templateNodeList;
+        return nodes;
     }
 
     public static boolean deleteBIReportById(long userId, long id) throws Exception {

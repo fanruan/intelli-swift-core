@@ -4,8 +4,9 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BIExcelDataModel;
 import com.fr.bi.stable.data.db.BIExcelTableData;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 
 /**
@@ -13,7 +14,7 @@ import com.fr.general.DateUtils;
  */
 public class BIExcelUtils {
 
-    public static long runExcel(BIExcelTableData excel, DBField[] columns, Traversal<BIDataValue> back) {
+    public static long runExcel(BIExcelTableData excel, ICubeFieldSource[] columns, Traversal<BIDataValue> back) {
         BIExcelDataModel dataModel = null;
         long res = 0;
         BILogger.getLogger().info("start extracting data from the excel file");
@@ -21,14 +22,19 @@ public class BIExcelUtils {
 
         try {
             dataModel = excel.createDataModel();
+            String[] columnNames = dataModel.onlyGetColumnNames();
             for (int i = 0; i < dataModel.getRowCount(); i++) {
                 for (int j = 0; j < columns.length; j++) {
-                    if (!columns[j].isUsable()) {
-                        continue;
-                    }
-                    Object value = dataModel.getValueAt(i, j);
-                    if (back != null) {
-                        back.actionPerformed(new BIDataValue(i, j, value));
+                    ICubeFieldSource field = columns[j];
+                    int index = findIndex(columnNames, field.getFieldName());
+                    if (index >= 0) {
+                        if (!columns[j].isUsable()) {
+                            continue;
+                        }
+                        Object value = dataModel.getValueAt(i, index);
+                        if (back != null) {
+                            back.actionPerformed(new BIDataValue(i, j, value));
+                        }
                     }
                 }
             }
@@ -47,5 +53,14 @@ public class BIExcelUtils {
             }
         }
         return res;
+    }
+
+    private static int findIndex(String[] names, String target) {
+        for (int i = 0; i < names.length; i++) {
+            if (ComparatorUtils.equals(names[i], target)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

@@ -42,6 +42,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
             self.fireEvent(BI.MultiDateParamPane.EVENT_CHANGE, self.tree.getValue());
         });
 
+        this.tree.populate();
+
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
@@ -50,7 +52,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
     },
 
     _getDateWidgetStructure: function(){
-        var targetWidgetType = [BICst.Widget.DATE, BICst.Widget.YMD];
+        var targetWidgetType = [BICst.WIDGET.DATE, BICst.WIDGET.YMD];
         var targetWidgetIds = BI.filter(BI.Utils.getAllWidgetIDs(), function(i, id){
             return BI.contains(targetWidgetType, BI.Utils.getWidgetTypeByID(id));
         });
@@ -58,11 +60,11 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
             var wType = BI.Utils.getWidgetTypeByID(w);
             return {
                 id: w,
-                type: wType === BICst.Widget.DATE ? "bi.triangle_group_node" : "bi.select_date_widget_level0_item",
+                type: wType === BICst.WIDGET.DATE ? "bi.triangle_group_node" : "bi.select_date_widget_level0_item",
                 text: BI.Utils.getWidgetNameByID(w),
                 title: BI.Utils.getWidgetNameByID(w),
                 value: w,
-                isParent: wType === BICst.Widget.DATE,
+                isParent: wType === BICst.WIDGET.DATE,
                 open: false
             }
         });

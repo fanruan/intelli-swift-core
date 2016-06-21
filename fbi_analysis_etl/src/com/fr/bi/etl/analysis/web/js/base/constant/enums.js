@@ -22,20 +22,8 @@ BI.ANALYSIS_ETL_HEADER = {
     NORMAL:"normal"
 }
 
-BI.ANALYSIS_ETL_ADD_COLUMN_TYPE = {
-    FORMULA:"formula",
-    DATE_DIFF:"date_diff",
-    DATE_YEAR:"date_year",
-    DATE_SEASON:"date_season",
-    DATE_MONTH:"date_month",
-    EXPR_CPP:"expr_same_period",
-    EXPR_LP:"expr_last_period",
-    EXPR_CPP_PERCENT:"expr_same_period_percent",
-    EXPR_LP_PERCENT:"expr_last_period_percent",
-    EXPR_SUM:"expr_sum",
-    EXPR_ACC:"expr_acc",
-    EXPR_RANK:"expr_rank",
-    GROUP:"group_value",
-    SINGLE_VALUE:"single_value",
-    VALUE_CONVERT:"value_convert"
+ETLCst.PREVIEW = {
+    NORMAL:1,
+    MERGE:2,
+    SELECT:3
 }

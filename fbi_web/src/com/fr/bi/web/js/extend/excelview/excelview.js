@@ -38,6 +38,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
         this.combo = BI.createWidget({
             type: "bi.combo",
             isDefaultInit: false,
+            isNeedAdjustWidth: false,
             element: this.element,
             el: {
                 type: "bi.horizontal_adapt",
@@ -50,9 +51,28 @@ BI.ExcelView = BI.inherit(BI.Single, {
                 logic: {
                     dynamic: false
                 },
-                maxWidth: BI.MAX,
-                maxHeight: BI.MAX,
-                el: this.table
+                el: {
+                    type: "bi.vtape",
+                    items: [{
+                        el: {
+                            type: "bi.right",
+                            items: [{
+                                type: "bi.button",
+                                text: BI.i18nText("BI-Close"),
+                                height: 28,
+                                handler: function(){
+                                    self.combo.hideView();
+                                }
+                            }],
+                            vgap: 6,
+                            rgap: 10
+                        },
+                        height: 40
+                    }, {
+                        el: this.table,
+                        height: "fill"
+                    }]
+                }
             },
             direction: "left,custom"
         });
@@ -101,7 +121,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
                             targetType = BICst.TARGET_TYPE.DATE;
                             break;
                     }
-                    return {
+                    var data = {
                         id: fId,
                         name: BI.Utils.getFieldNameByID(fId),
                         _src: {
@@ -110,6 +130,11 @@ BI.ExcelView = BI.inherit(BI.Single, {
                         },
                         type: targetType
                     };
+                    if(targetType === BICst.TARGET_TYPE.DATE) {
+                        data.group = {type: BICst.GROUP.M};
+                        data.name = BI.i18nText("BI-Month_Fen") + "(" + BI.Utils.getFieldNameByID(fId) + ")";
+                    }
+                    return data;
                 });
                 var help = BI.createWidget({
                     type: "bi.helper",

@@ -39,13 +39,17 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
             }
         });
 
-        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function (value, ob) {
-            BI.Broadcasts.send(BICst.BROADCAST.TABLE_USABLE);
+        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, function () {
+            var pId = this.getPackageId();
+            BI.Utils.setCurrentSelectPackageID(pId);
         });
 
-        //TODO 暂时先选中第一个业务包
-        var ids = BI.Utils.getAllPackageIDs();
-        this.searcher.setPackage(ids[0]);
+        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function (value, ob) {
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
+        });
+
+        var id = BI.Utils.getCurrentSelectPackageID();
+        this.searcher.setPackage(id);
     },
 
     /**
@@ -179,12 +183,14 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
                 viewFields.push(id);
                 items[position.row][position.col].value = id;
             });
-            fieldStructure.push({
-                id: BI.UUID(),
-                pId: tableId,
-                type: "bi.excel_view",
-                items: items
-            });
+            if(viewFields.length > 0) {
+                fieldStructure.push({
+                    id: BI.UUID(),
+                    pId: tableId,
+                    type: "bi.excel_view",
+                    items: items
+                });
+            }
         }
 
         //count, string, number

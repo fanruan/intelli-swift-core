@@ -4,17 +4,17 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -97,51 +97,70 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
 //        }
 //        return md5;
 //    }
-
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable DBTable = getBITable();
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable persistentTable = getBITable();
         for (int k = 0; k < tables.length; k++) {
-            DBTable parent = tables[k];
-            for (int i = 0; i < dimensions.length; i++) {
-                if (parent.getBIColumn(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.DATE) {
-                    DBTable.addColumn(new BIColumn(dimensions[i].getNameText(), dimensions[i].getGroup().getType() ==  BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
-                } else if (parent.getBIColumn(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.NUMBER) {
-                    DBTable.addColumn(new BIColumn(dimensions[i].getNameText(), BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING), 30));
+            IPersistentTable parent = tables[k];
+            for (int i = 0; i < getDimensions().length; i++) {
+                if (parent.getField(getDimensions()[i].getName()).getBIType() == DBConstant.COLUMN.DATE) {
+                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), getDimensions()[i].getGroup().getType() == BIReportConstant.GROUP.YMD ? Types.DATE : Types.INTEGER, 30));
+                } else if (parent.getField(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.NUMBER) {
+                    PersistentField pfield = parent.getField(getDimensions()[i].getName());
+                    /**
+                     * 数值类型自定义分组，类型要为String类型
+                     */
+                    persistentTable.addColumn(generateSumNumberGroup(getDimensions()[i], pfield));
                 } else {
-                    DBTable.addColumn(new BIColumn(dimensions[i].getNameText(), parent.getBIColumn(dimensions[i].getName()).getType(), parent.getBIColumn(dimensions[i].getName()).getColumnSize()));
+                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), parent.getField(dimensions[i].getName()).getSqlType(), parent.getField(dimensions[i].getName()).getColumnSize()));
                 }
             }
-            for (int i = 0; i < targets.length; i++) {
-                DBTable.addColumn(new BIColumn(targets[i].getNameText(),BIDBUtils.biTypeToSql(targets[i].getColumnType()), parent.getBIColumn(targets[i].getName()).getColumnSize()));
+            for (int i = 0; i < getTargets().length; i++) {
+                persistentTable.addColumn(new PersistentField(getTargets()[i].getNameText(), BIDBUtils.biTypeToSql(targets[i].getColumnType()), parent.getField(targets[i].getName()).getColumnSize()));
             }
         }
-        return DBTable;
+        return persistentTable;
+    }
+
+    private PersistentField generateSumNumberGroup(SumByGroupDimension sum, PersistentField parentField) {
+        int type = BIDBUtils.biTypeToSql(DBConstant.COLUMN.STRING);
+        if (sum.getGroup().getType() == BIReportConstant.GROUP.ID_GROUP || sum.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
+            type = parentField.getSqlType();
+        }
+        return new PersistentField(sum.getNameText(), type, 30);
     }
 
     @Override
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
         return write(travel, ti);
     }
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
-        return  write(travel, loader.getTableIndex(getSingleParentMD5(parents), start, end));
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+        if (start == 0) {
+            end = Integer.MAX_VALUE;
+            return write(travel, loader.getTableIndex(getSingleParentMD5(parents), start, end));
+        } else {
+            return 0;
+        }
     }
 
     private int write(Traversal<BIDataValue> travel, ICubeTableService ti) {
-        if (dimensions == null || dimensions.length == 0) {
+        if (getDimensions().length == 0) {
             return writeNoDimensionIndex(travel, ti);
         }
         GroupLine line = new GroupLine(ti, travel);
         ICubeColumnIndexReader[] getters = new ICubeColumnIndexReader[dimensions.length];
         for (int i = 0; i < getters.length; i++) {
-            getters[i] = dimensions[i].getGroup().createGroupedMap(ti.loadGroup(dimensions[i].createKey(), new ArrayList<BITableSourceRelation>()));
+            getters[i] = getDimensions()[i].getGroup().createGroupedMap(ti.loadGroup(getDimensions()[i].createKey(), new ArrayList<BITableSourceRelation>()));
         }
         Iterator<Entry<Object, GroupValueIndex>> iter = getters[0].iterator();
         while (iter.hasNext()) {
             Entry<Object, GroupValueIndex> entry = iter.next();
+//            if(entry.getKey() == null) {
+//                continue;
+//            }
             line.fill(0, entry.getKey());
             writeIndexLineByLine(ti, entry.getValue(), getters, 1, line);
         }
@@ -149,8 +168,8 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
     }
 
     private int writeNoDimensionIndex(Traversal<BIDataValue> travel, ICubeTableService ti) {
-        for (int i = 0; i < targets.length; i++) {
-            travel.actionPerformed(new BIDataValue(0, i, targets[i].getSumValue(ti, ti.getAllShowIndex())));
+        for (int i = 0; i < getTargets().length; i++) {
+            travel.actionPerformed(new BIDataValue(0, i, getTargets()[i].getSumValue(ti, ti.getAllShowIndex())));
         }
         return 1;
     }
@@ -159,7 +178,7 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         if (pgvi == null || pgvi.getRowsCountWithData() == 0) {
             return;
         }
-        if (colIndex == dimensions.length) {
+        if (colIndex == getDimensions().length) {
             line.cal(pgvi);
             return;
         }
@@ -224,13 +243,13 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
             if (view.has(BIReportConstant.REGION.TARGET1)) {
                 targetTypeArray = view.getJSONArray(BIReportConstant.REGION.TARGET1);
             }
-            for(int i = 0; i < dimensionTypeArray.length(); ++i){
+            for (int i = 0; i < dimensionTypeArray.length(); ++i) {
                 JSONObject dimension = dimensionsAndTargets.optJSONObject(dimensionTypeArray.getString(i));
                 SumByGroupDimension dim = new SumByGroupDimension();
                 dim.parseJSON(dimension);
                 dims.add(dim);
             }
-            for(int i = 0; i < targetTypeArray.length(); ++i){
+            for (int i = 0; i < targetTypeArray.length(); ++i) {
                 JSONObject tar = dimensionsAndTargets.optJSONObject(targetTypeArray.getString(i));
                 SumByGroupTarget target = new SumByGroupTarget();
                 target.parseJSON(tar);
@@ -239,6 +258,20 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         }
         this.dimensions = dims.toArray(new SumByGroupDimension[dims.size()]);
         this.targets = tars.toArray(new SumByGroupTarget[tars.size()]);
+    }
+
+    private SumByGroupTarget[] getTargets() {
+        if (this.targets == null) {
+            return new SumByGroupTarget[0];
+        }
+        return this.targets;
+    }
+
+    private SumByGroupDimension[] getDimensions() {
+        if (this.dimensions == null) {
+            return new SumByGroupDimension[0];
+        }
+        return this.dimensions;
     }
 
     /**
@@ -292,16 +325,16 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         private GroupLine(ICubeTableService ti, Traversal<BIDataValue> travel) {
             this.ti = ti;
             this.travel = travel;
-            values = new Object[dimensions.length + targets.length];
+            values = new Object[getDimensions().length + getTargets().length];
         }
 
         private void fill(int index, Object value) {
-            values[index] = dimensions[index].getKeyValue(value);
+            values[index] = getDimensions()[index].getKeyValue(value);
         }
 
         private void cal(GroupValueIndex gvi) {
-            for (int i = 0; i < targets.length; i++) {
-                values[i + dimensions.length] = targets[i].getSumValue(ti, gvi);
+            for (int i = 0; i < getTargets().length; i++) {
+                values[i + getDimensions().length] = getTargets()[i].getSumValue(ti, gvi);
             }
             write();
         }

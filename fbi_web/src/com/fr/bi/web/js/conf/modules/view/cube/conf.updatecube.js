@@ -39,59 +39,43 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             handler: function(){
                 self.model.set("immediateUpdate", true);
                 self.immediateButton.setEnable(false);
-                self.immediateButton.setText(BI.i18nText("BI-Cube_is_genarating"));
-                self.notifyLabel.setVisible(false);
-                var cubeStatus = setInterval(function(){
-                    self.update({
-                        noset: true,
-                        success: function(data){
-                            self._updateComplete(cubeStatus, data);
-                        }
-                    });
-                }, 5000);
+                self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                self.cubeLog.refreshLog(true);
             }
-        });
-        this.notifyLabel = BI.createWidget({
-            type: "bi.label",
-            text: BI.i18nText("BI-Table_Self_Update"),
-            cls: "notify-immediate",
-            height: 30,
-            textAlign: "left"
         });
 
         return BI.createWidget({
             type: "bi.left",
-            items: [ this.immediateButton, this.notifyLabel],
+            items: [ this.immediateButton],
             height: 30
         })
     },
 
-    _updateComplete: function(cubeStatus, data){
+    _checkCubeStatus: function(){
         var self = this;
-        var needCheck = data['hasCheck'];
-        var isAlling = data['isAlling'];
-        var isChecking = data['isChecking'];
-        var isSingleing = data['isSingleing'];
-        if( BI.isNotNull(needCheck) ){
-            self.notifyLabel.setText( BI.i18nText("BI-Table_Check_update") );
-            if( !isAlling && !isChecking && !isSingleing ){
-                clearInterval(cubeStatus);
-                self.immediateButton.setEnable(true);
-                self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
-                self.notifyLabel.setVisible(true);
+        this.update({
+            noset: true,
+            success: function(data) {
+                var needCheck = data.hasCheck;
+                var isAlling = data.isAlling;
+                var isChecking = data.isChecking;
+                var isSingleing = data.isSingleing;
+                if(isAlling === true || isChecking === true || isSingleing === true) {
+                    self.immediateButton.setEnable( false );
+                    self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                } else {
+                    self.immediateButton.setEnable(true);
+                    self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
+                }
             }
-        } else {
-            if( BI.isNotNull(isAlling) || BI.isNotNull(isChecking) || BI.isNotNull(isSingleing) ){
-                self.immediateButton.setEnable( false );
-                self.notifyLabel.setVisible(false);
-            } else {
-                self.notifyLabel.setText(BI.i18nText("BI-Table_Self_Update"));
-                self.immediateButton.setEnable( true );
-                self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
-                self.notifyLabel.setVisible( true );
-                clearInterval(cubeStatus);
-            }
-        }
+        });
+    },
+
+    _createCheckInterval: function(){
+        var self = this;
+        this.interval = setInterval(function(){
+            self._checkCubeStatus();
+        }, 5000)
     },
 
     _buildTimeSetting: function(){
@@ -101,9 +85,15 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
     },
 
     _buildLog: function(){
-        return BI.createWidget({
+        return this.cubeLog = BI.createWidget({
             type: "bi.cube_log"
         })
+        
+    },
+
+    refresh: function(){
+        this._checkCubeStatus();
+        this._createCheckInterval();
     },
 
     local: function(){

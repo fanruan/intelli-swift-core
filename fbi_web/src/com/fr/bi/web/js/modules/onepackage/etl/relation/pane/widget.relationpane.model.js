@@ -19,6 +19,10 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
         return BI.deepClone(this.relations);
     },
 
+    setRelations: function(relations) {
+        this.relations = relations;
+    },
+
     getTranslations: function(){
         return this.translations;
     },
@@ -128,147 +132,40 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
         }
     },
 
-    //一个比较长的方法，添加或修改关联关系的
+    //找到所有的关联表，删掉所有原来的关联，添加上现在的
     getParsedRelation: function(currentValue){
         var self = this;
-        var oldValue = this.oldRelationValue;
         var relations = this.getRelations();
         var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
         var connectionSet = relations.connectionSet;
-        var added = [], removed = [];
-        BI.each(oldValue, function(i, v){
-            var isRemoved = true;
-            BI.each(currentValue, function(j, c){
-                if(c.fieldId === v.fieldId &&
-                    c.relationType === v.relationType){
-                    isRemoved = false;
-                }
-            });
-            isRemoved && removed.push(v);
-        });
-        BI.each(currentValue, function(i, v){
-            var isAdded = true;
-            BI.each(oldValue, function(j, c){
-                if(c.fieldId === v.fieldId &&
-                    c.relationType === v.relationType){
-                    isAdded = false;
-                }
-            });
-            isAdded && added.push(v);
-        });
-        //删除
-        BI.each(removed, function(i, r){
-            var rFieldId = r.fieldId, relationType = r.relationType;
-            switch (relationType){
-                case BICst.RELATION_TYPE.ONE_TO_ONE:
-                    //1:1，connectionSet里删除2个，primKeyMap里删除2个，foreignKeyMap里也删除两个
-                    BI.each(connectionSet, function(j, c){
-                        if(BI.isNull(c)){
-                            return;
-                        }
-                        if(c.primaryKey.field_id === self.fieldId || c.primaryKey.field_id === rFieldId){
-                            connectionSet.splice(j, 1);
-                        }
-                    });
-                    BI.each(primKeyMap[self.fieldId], function(j, map){
-                        if(BI.isNull(map)){
-                            return;
-                        }
-                        if(map.primaryKey.field_id === self.fieldId){
-                            primKeyMap[self.fieldId].splice(j, 1);
-                            BI.isEmptyArray(primKeyMap[self.fieldId]) && (delete primKeyMap[self.fieldId]);
-                        }
-                    });
-                    BI.each(primKeyMap[rFieldId], function(j, map){
-                        if(BI.isNull(map)){
-                            return;
-                        }
-                        if(map.primaryKey.field_id === rFieldId ){
-                            primKeyMap[rFieldId].splice(j, 1);
-                            BI.isEmptyArray(primKeyMap[rFieldId]) && (delete primKeyMap[rFieldId]);
-                        }
-                    });
-                    BI.each(foreignKeyMap[self.fieldId], function(j, map){
-                        if(BI.isNull(map)){
-                            return;
-                        }
-                        if(map.foreignKey.field_id === self.fieldId){
-                            foreignKeyMap[self.fieldId].splice(j, 1);
-                            BI.isEmptyArray(foreignKeyMap[self.fieldId]) && (delete foreignKeyMap[self.fieldId]);
-                        }
-                    });
-                    BI.each(foreignKeyMap[rFieldId], function(j, map){
-                        if(BI.isNull(map)){
-                            return;
-                        }
-                        if(map.foreignKey.field_id === rFieldId ){
-                            foreignKeyMap[rFieldId].splice(j, 1);
-                            BI.isEmptyArray(foreignKeyMap[rFieldId]) && (delete foreignKeyMap[rFieldId]);
-                        }
-                    });
-                    break;
-                case BICst.RELATION_TYPE.ONE_TO_N:
-                    //1:N，connectionSet里删除1个，primKeyMap删除1个，foreignKeyMap删除1个
-                    BI.each(connectionSet, function(j, c){
-                        if(BI.isNull(c)){
-                            return;
-                        }
-                        if(c.primaryKey.field_id === self.fieldId && c.foreignKey.field_id === rFieldId){
-                            connectionSet.splice(j, 1);
-                        }
-                    });
-                    BI.each(primKeyMap[self.fieldId], function(j, map){
-                        if(BI.isNull(map)){
-                            return;
-                        }
-                        if(map.primaryKey.field_id === self.fieldId && map.foreignKey.field_id === rFieldId ){
-                            primKeyMap[self.fieldId].splice(j, 1);
-                            BI.isEmptyArray(primKeyMap[self.fieldId]) && (delete primKeyMap[self.fieldId]);
-                        }
-                    });
-                    BI.each(foreignKeyMap[rFieldId], function(j, map){
-                        if(BI.isNull(map)){
-                            return;
-                        }
-                        if(map.foreignKey.field_id === rFieldId && map.primaryKey.field_id === self.fieldId){
-                            foreignKeyMap[rFieldId].splice(j, 1);
-                            BI.isEmptyArray(foreignKeyMap[self.fieldId]) && (delete foreignKeyMap[self.fieldId]);
-                        }
-                    });
-                    break;
-                case BICst.RELATION_TYPE.N_TO_ONE:
-                    //同上
-                    BI.each(connectionSet, function(j, c){
-                        if(BI.isNull(c)){
-                            return;
-                        }
-                        if(c.primaryKey.field_id === rFieldId && c.foreignKey.field_id === self.fieldId){
-                            connectionSet.splice(j, 1);
-                        }
-                    });
-                    BI.each(primKeyMap[rFieldId], function(j, map){
-                        if(BI.isNull(map)){
-                            return;
-                        }
-                        if(map.primaryKey.field_id === rFieldId && map.foreignKey.field_id === self.fieldId ){
-                            primKeyMap[rFieldId].splice(j, 1);
-                            BI.isEmptyArray(primKeyMap[self.fieldId]) && (delete primKeyMap[self.fieldId]);
-                        }
-                    });
-                    BI.each(foreignKeyMap[self.fieldId], function(j, map){
-                        if(BI.isNull(map)){
-                            return;
-                        }
-                        if(map.primaryKey.field_id === rFieldId && map.foreignKey.field_id === self.fieldId ){
-                            foreignKeyMap[self.fieldId].splice(j, 1);
-                            BI.isEmptyArray(foreignKeyMap[self.fieldId]) && (delete foreignKeyMap[self.fieldId]);
-                        }
-                    });
-                    break;
+
+        //删掉所有当前表的关联
+        BI.each(connectionSet, function(i, c) {
+            if(BI.isNotNull(c) && (c.primaryKey.field_id === self.fieldId || c.foreignKey.field_id === self.fieldId)) {
+                connectionSet.splice(i, 1);
             }
         });
-        //添加
-        BI.each(added, function(i, r){
+        delete primKeyMap[this.fieldId];
+        delete foreignKeyMap[this.fieldId];
+        BI.each(primKeyMap, function(id, mapArray) {
+            BI.each(mapArray, function(i, map){
+                if(BI.isNotNull(map) && (map.primaryKey.field_id === self.fieldId || map.foreignKey.field_id === self.fieldId)) {
+                    mapArray.splice(i, 1);
+                }
+            });
+            mapArray.length === 0 && (delete primKeyMap[id]);
+        });
+        BI.each(foreignKeyMap, function(id, mapArray) {
+            BI.each(mapArray, function(i, map){
+                if(BI.isNotNull(map) && (map.primaryKey.field_id === self.fieldId || map.foreignKey.field_id === self.fieldId)) {
+                    mapArray.splice(i, 1);
+                }
+            });
+            mapArray.length === 0 && (delete foreignKeyMap[id]);
+        });
+
+        //添加现在的关联
+        BI.each(currentValue, function(i, r){
             var rFieldId = r.fieldId, relationType = r.relationType;
             if(BI.isNull(relationType)){
                 return;

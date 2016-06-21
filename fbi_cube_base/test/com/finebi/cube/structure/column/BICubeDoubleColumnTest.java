@@ -1,6 +1,8 @@
 package com.finebi.cube.structure.column;
 
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.tools.BICubeResourceLocationTestTool;
+import com.fr.bi.common.factory.BIFactoryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
 public class BICubeDoubleColumnTest extends BICubeColumnBasicTest<Double> {
     @Override
     public ICubeColumnEntityService<Double> getTestTarget() {
-        return new BICubeDoubleColumn(BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
+        return new BICubeDoubleColumn(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),BICubeResourceLocationTestTool.getBasic("testDoubleCubeColumn"));
     }
 
     @Override

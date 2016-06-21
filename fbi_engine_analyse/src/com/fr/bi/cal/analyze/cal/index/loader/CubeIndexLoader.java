@@ -1,5 +1,8 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
 
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.result.operator.*;
@@ -12,7 +15,6 @@ import com.fr.bi.cal.analyze.exception.NoneRegisterationException;
 import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -25,10 +27,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -318,8 +317,8 @@ public class CubeIndexLoader {
             @Override
             public void envChanged() {
                 //FIXME 释放所有的
-                CubeReadingTableIndexLoader.envChanged();
-                ;
+//                CubeReadingTableIndexLoader.envChanged();
+
             }
         });
     }
@@ -328,10 +327,10 @@ public class CubeIndexLoader {
      * 释放
      */
     public void releaseIndexs() {
-        CubeReadingTableIndexLoader.envChanged();
+//        CubeReadingTableIndexLoader.envChanged();
     }
 
-    public DimensionCalculator[] getClonedAndRelationColumnKeys(DimensionCalculator[] ck, Table tableKey, long userId) throws CloneNotSupportedException {
+    public DimensionCalculator[] getClonedAndRelationColumnKeys(DimensionCalculator[] ck, BusinessTable tableKey, long userId) throws CloneNotSupportedException {
         DimensionCalculator[] res = new DimensionCalculator[ck.length];
         for (int i = 0; i < ck.length; i++) {
             res[i] = (DimensionCalculator) (ck[i].clone());
@@ -343,7 +342,7 @@ public class CubeIndexLoader {
     private GroupKey getGroupKey(DimensionCalculator[] cks,
                                  TargetCalculator summaryKey,
                                  GroupValueIndex gvi, long userId) throws CloneNotSupportedException {
-        Table tableKey = summaryKey.createTableKey();
+        BusinessTable tableKey = summaryKey.createTableKey();
         DimensionCalculator[] columnKeys = getClonedAndRelationColumnKeys(cks, tableKey, userId);
         DimensionCalculator[] groupKey = new DimensionCalculator[columnKeys.length + 1];
         groupKey[0] = new UserRightColumnKey(gvi, summaryKey.createTableKey());
@@ -356,11 +355,11 @@ public class CubeIndexLoader {
             return;
         }
         if (!VT4FBI.supportDatabaseUnion()) {
-            Table modelKey = null;
+            BusinessTable modelKey = null;
             boolean isException = false;
             for (int i = 0; i < allTargets.length; i++) {
                 BISummaryTarget target = allTargets[i];
-                Table iteratorKey = target.createSummaryCalculator().createTableKey();
+                BusinessTable iteratorKey = target.createSummaryCalculator().createTableKey();
                 if (modelKey == null) {
                     modelKey = iteratorKey;
                 } else {
@@ -374,7 +373,7 @@ public class CubeIndexLoader {
             if (!isException) {
                 for (int i = 0; i < allDimensions.length; i++) {
                     BIDimension dimension = allDimensions[i];
-                    Table iteratorKey = dimension.createTableKey();
+                    BusinessTable iteratorKey = dimension.createTableKey();
                     if (modelKey == null) {
                         modelKey = iteratorKey;
                     } else {
@@ -556,7 +555,7 @@ public class CubeIndexLoader {
             } else {
                 noneCalculateTargets.add(new TargetGettingKey(key.createTargetKey(), target.getValue()));
             }
-            Table[] summarys = getTableDefines(key);
+            BusinessTable[] summarys = getTableDefines(key);
             if (summarys == null || summarys.length == 0) {
                 continue;
             }
@@ -564,9 +563,9 @@ public class CubeIndexLoader {
         }
     }
 
-    private Table[] getTableDefines(TargetCalculator key) {
+    private BusinessTable[] getTableDefines(TargetCalculator key) {
         TargetCalculator[] calcualteTargets = key.createTargetCalculators();
-        Table[] summarys = new Table[calcualteTargets.length];
+        BusinessTable[] summarys = new BusinessTable[calcualteTargets.length];
         for (int j = 0; j < calcualteTargets.length; j++) {
             summarys[j] = calcualteTargets[j].createTableKey();
         }
@@ -856,7 +855,7 @@ public class CubeIndexLoader {
                 LoaderUtils.fillRowDimension(widget, row, rowDimension, rowLength, bdt);
                 DimensionCalculator[] filterRow = new DimensionCalculator[allDimension.length];
                 LoaderUtils.fillRowDimension(widget, filterRow, allDimension, allDimension.length, bdt);
-                BITable targetKey = summary.createTableKey();
+                BusinessTable targetKey = summary.createTableKey();
                 GroupValueIndex gvi = widget.createFilterGVI(row, targetKey, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(targetKey));
                 TargetGettingKey tkey = new TargetGettingKey(summary.createTargetKey(), target.getValue());
                 NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(summary.createTableKey(), gvi, session.getLoader());
@@ -882,8 +881,9 @@ public class CubeIndexLoader {
             row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), new ArrayList<BITableSourceRelation>());
         }
         TargetCalculator summary = CountCalculator.NONE_TARGET_COUNT_CAL;
-        GroupValueIndex gvi = widget.createFilterGVI(row, row[0].getField().getTableBelongTo(), session.getLoader(), session.getUserId()).AND(session.createFilterGvi(row[0].getField().getTableBelongTo()));
-        NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(BITable.BI_EMPTY_TABLE(), gvi, session.getLoader());
+        BusinessTable tableBelongTo =row[0].getField().getTableBelongTo();
+        GroupValueIndex gvi = widget.createFilterGVI(row, tableBelongTo, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(tableBelongTo));
+        NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(BIBusinessTable.createEmptyTable(), gvi, session.getLoader());
         RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, rowDimension, expander, session, summary, widget, useRealData);
         MergerInfo mergerInfo = new MergerInfo(null, gvi, rootDimensionGroup, root, summary, summary.createTargetGettingKey(), session, rowDimension, expander, null, widget);
         List<MergerInfo> mergerInfoList = new ArrayList<MergerInfo>();

@@ -1,12 +1,13 @@
 package com.fr.bi.stable.connection;
 
-import com.fr.bi.base.BIBasicCore;
-import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,8 +29,13 @@ public class DirectTableConnectionFactory {
      */
     private static DirectTableConnection createDirectTableConnection(List<BITableSourceRelation> relationList, ICubeDataLoader loader) {
         DirectTableConnection temp = null;
+        //计算时关联反转
+        List<BITableSourceRelation> relationListRev = new ArrayList<BITableSourceRelation>();
+        relationListRev.addAll(relationList);
+        Collections.reverse(relationListRev);
 
-        Iterator<BITableSourceRelation> it = relationList.iterator();
+
+        Iterator<BITableSourceRelation> it = relationListRev.iterator();
         while (it.hasNext()) {
             DirectTableConnection c = createConnection(it.next(), loader);
             if (temp != null) {
@@ -45,8 +51,8 @@ public class DirectTableConnectionFactory {
 
 
     private static DirectTableConnection createConnection(BITableSourceRelation relation, ICubeDataLoader loader) {
-        BIField primaryKey = relation.getPrimaryKey();
-        BIField foreignKey = relation.getForeignKey();
+        ICubeFieldSource primaryKey = relation.getPrimaryKey();
+        ICubeFieldSource foreignKey = relation.getForeignKey();
         BIKey primaryIndex = getFieldIndex(loader, primaryKey);
         BIKey foreignIndex = getFieldIndex(loader, foreignKey);
         if (primaryIndex != null && foreignIndex != null) {
@@ -61,8 +67,8 @@ public class DirectTableConnectionFactory {
         }
     }
 
-    private static BIKey getFieldIndex(ICubeDataLoader loader, BIField foreignKey) {
-        ICubeTableService ti = loader.getTableIndex(BIBasicCore.generateValueCore(foreignKey.getTableBelongTo().getID().getIdentityValue()));
+    private static BIKey getFieldIndex(ICubeDataLoader loader, ICubeFieldSource foreignKey) {
+        ICubeTableService ti = loader.getTableIndex(foreignKey.getTableBelongTo());
         if (ti != null) {
             return ti.getColumnIndex(foreignKey.getFieldName());
         } else {

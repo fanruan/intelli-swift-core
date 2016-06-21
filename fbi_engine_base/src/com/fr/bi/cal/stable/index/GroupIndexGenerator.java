@@ -3,9 +3,9 @@ package com.fr.bi.cal.stable.index;
 
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.log.BIRecord;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.constant.CubeConstant;
-import com.fr.bi.stable.data.source.ITableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
@@ -24,7 +24,7 @@ public class GroupIndexGenerator extends AbstractSourceGenerator {
 
     private ICubeDataLoader loader;
 
-    public GroupIndexGenerator(TableCubeFile cube, ITableSource dataSource, ICubeDataLoader loader, BIRecord log) {
+    public GroupIndexGenerator(TableCubeFile cube, CubeTableSource dataSource, ICubeDataLoader loader, BIRecord log) {
         super(cube, dataSource, log);
         this.loader = loader;
     }
@@ -42,7 +42,7 @@ public class GroupIndexGenerator extends AbstractSourceGenerator {
             multiThreadGenerate(threadCount, gics);
         } else {
             for (int i = 0, len = gics.length; i < len; i++) {
-                gics[i].setLog(log, dataSource.getDbTable());
+//                gics[i].setLog(log, dataSource.getDbTable());
                 gics[i].generateCube();
                 BILogger.getLogger().info("table: " + dataSource.toString() + "finish:" + Math.round(i / len * 100) + "%");
             }
@@ -59,7 +59,7 @@ public class GroupIndexGenerator extends AbstractSourceGenerator {
             threadList.add(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    gics[index].setLog(log, dataSource.getDbTable());
+                    gics[index].setLog(log, dataSource.getPersistentTable());
                     gics[index].generateCube();
                     return null;
                 }

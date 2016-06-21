@@ -1,5 +1,6 @@
 package com.fr.bi.cal.stable.cube.memory;
 
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -12,4 +13,11 @@ public class MemoryIntegerColumn extends AbstractSingleMemoryColumn<Integer> {
     public DetailGetter<Integer> createDetailGetter(SingleUserNIOReadManager manager) {
         return new MemoryDetailGetter<Integer>(detail);
     }
+
+
+    @Override
+    protected void initDetail() {
+        detail = new AnyIndexArray<Integer>();
+    }
+
 }

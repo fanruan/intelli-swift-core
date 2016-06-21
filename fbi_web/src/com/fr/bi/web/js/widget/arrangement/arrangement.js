@@ -14,7 +14,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.Arrangement.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-arrangement",
-            layoutType: BI.Arrangement.LAYOUT_TYPE.ADAPTIVE,
+            layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             items: []
         });
     },
@@ -61,7 +61,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         this.drops = {};
         this.storeDrops = {};
         if (o.items.length > 0) {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.populate(o.items);
             });
         }
@@ -1376,12 +1376,12 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 }
             }
         }
-        if (tops.length === 1) {
+        if (tops.length >= 1) {
             result.push({
                 type: "top-gap"
             });
         }
-        if (bottoms.length === 1) {
+        if (bottoms.length >= 1) {
             result.push({
                 type: "bottom-gap"
             });
@@ -1947,8 +1947,8 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     getHelper: function () {
         var helper = BI.createWidget({
             type: "bi.layout",
-            width: 8,
-            height: 8,
+            width: 18,
+            height: 18,
             cls: "arrangement-helper"
         });
         BI.createWidget({
@@ -1959,9 +1959,17 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         return helper;
     },
 
-    _start: function () {
+    _start: function (cur) {
         this.arrangement.setVisible(true);
         this.droppable.setVisible(true);
+        if (cur) {
+            BI.each(this.drops, function (i, drop) {
+                drop.el.setVisible(false);
+            });
+            if (this.drops[cur]) {
+                this.drops[cur].el.setVisible(true);
+            }
+        }
     },
 
     _stop: function () {
@@ -2125,7 +2133,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             return null;
         }
         var self = this, o = this.options;
-        var insert, regions = [];
+        var insert, regions = [], cur;
         var offset = this._getScrollOffset();
         position = {
             left: position.left + offset.left,
@@ -2157,6 +2165,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                                     insert = at.insert;
                                     regions = at.regions;
                                 }
+                                cur = id;
                                 return true;
                             }
                         })) {
@@ -2177,7 +2186,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     regions: regions
                 };
                 this._setArrangeSize(insert);
-                this._start();
+                this._start(cur);
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 var insert = {
@@ -2323,6 +2332,13 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
+        var self = this;
+        BI.each(this.regions, function (name, region) {
+            self.regions[name].el.setVisible(false);
+            self.drops[name].el.setVisible(false);
+            delete self.regions[name];
+            delete self.drops[name];
+        });
         this._populate(items);
         this._renderRegion();
     }

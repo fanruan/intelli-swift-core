@@ -1,9 +1,12 @@
 package com.fr.bi.module;
 
-import com.fr.bi.conf.provider.BISystemPackageConfigurationProvider;
-import com.fr.bi.conf.provider.BIDataSourceManagerProvider;
-import com.fr.bi.stable.engine.index.AbstractTIPathLoader;
+import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.conf.BIAliasManagerProvider;
+import com.finebi.cube.conf.BIDataSourceManagerProvider;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.fr.stable.fun.Service;
+
+import java.util.Locale;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
@@ -17,10 +20,15 @@ public interface BIModule {
     boolean isAllAdmin();
 
     BIDataSourceManagerProvider getDataSourceManagerProvider();
+    //TODO Connery Analysis 这种大模块间的就别继承了。改动代价远大于写几行代码
 
     BISystemPackageConfigurationProvider getBusiPackManagerProvider();
 
-    Class<? extends AbstractTIPathLoader> getTIPathLoaderClass();
+    BIAliasManagerProvider getAliasManagerProvider();
 
-    public Service[] service4Register();
+    ICubeDataLoaderCreator getCubeDataLoaderCreator();
+
+    Service[] service4Register();
+
+    void loadResources(Locale[] locale);
 }

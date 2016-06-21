@@ -11,11 +11,11 @@ import com.fr.bi.stable.constant.FunctionConstant;
 public class BIConstantWriter {
     private static final Class[] CLS = {BIReportConstant.class, BIJSONConstant.class, DBConstant.class, FunctionConstant.class};
 
-//    private static final Class[] EYLCLS = {com.fr.bi.etl.analysis.Constants.class};
+    private static final Class[] EYLCLS = {com.fr.bi.etl.analysis.Constants.class};
 
     public static void main(String[] args) throws Exception{
         new JSWriter().write("fbi_web/src/com/fr/bi/web/js/data/constant/biconst.js", "BICst", CLS);
         new IOSWriter().write("fbi/src/com/fr/bi/cstwriter/biconst.h", "# define BI", CLS);
-//        new JSWriter().write("fbi_analysis_etl/src/com/fr/bi/etl/analysis/web/js/base/constant/etlconst.js", "ETLCst", EYLCLS);
+        new JSWriter().write("fbi_analysis_etl/src/com/fr/bi/etl/analysis/web/js/base/constant/etlconst.js", "ETLCst", EYLCLS);
     }
 }

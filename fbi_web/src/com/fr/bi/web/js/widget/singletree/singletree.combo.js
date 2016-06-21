@@ -8,6 +8,7 @@ BI.SingleTreeCombo = BI.inherit(BI.Widget, {
         return BI.extend(BI.SingleTreeCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-single-tree-combo",
             height: 30,
+            text: "",
             items: []
         });
     },
@@ -18,6 +19,7 @@ BI.SingleTreeCombo = BI.inherit(BI.Widget, {
 
         this.trigger = BI.createWidget({
             type: "bi.single_tree_trigger",
+            text: o.text,
             height: o.height,
             items: o.items
         });
@@ -39,6 +41,9 @@ BI.SingleTreeCombo = BI.inherit(BI.Widget, {
 
         this.combo.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+        });
+        this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function(){
+            self.fireEvent(BI.SingleTreeCombo.EVENT_BEFORE_POPUPVIEW, arguments); 
         });
 
         this.popup.on(BI.SingleTreePopup.EVENT_CHANGE, function () {
@@ -64,4 +69,5 @@ BI.SingleTreeCombo = BI.inherit(BI.Widget, {
 });
 
 BI.SingleTreeCombo.EVENT_CHANGE = "SingleTreeCombo.EVENT_CHANGE";
+BI.SingleTreeCombo.EVENT_BEFORE_POPUPVIEW = "EVENT_BEFORE_POPUPVIEW";
 $.shortcut("bi.single_tree_combo", BI.SingleTreeCombo);

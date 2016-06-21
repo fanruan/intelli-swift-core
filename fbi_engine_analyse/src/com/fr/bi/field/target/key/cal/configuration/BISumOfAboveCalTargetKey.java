@@ -11,9 +11,9 @@ public class BISumOfAboveCalTargetKey extends BIConfiguratedCalculatorTargetKey 
      */
     private static final long serialVersionUID = 5169050385302976329L;
 
-    public BISumOfAboveCalTargetKey(String targetName, String cal_target_name,
+    public BISumOfAboveCalTargetKey(String targetName, String target_id,
                                     Map targetMap, int start_group) {
-        super(targetName, cal_target_name, targetMap, start_group);
+        super(targetName, target_id, targetMap, start_group);
     }
 
     @Override

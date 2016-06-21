@@ -30,15 +30,13 @@ SelectDataSearcherView = BI.inherit(BI.View, {
                             type: "bi.select_data_level0_node",
                             text: "合同回款信息--" + packageName,
                             value: 1,
-                            isParent: true,
-                            open: true
+                            isParent: true
                         }, {
                             id: 2,
                             type: "bi.select_data_level0_node",
                             text: "合同信息--" + packageName,
                             value: 2,
-                            isParent: true,
-                            open: true
+                            isParent: true
                         }
                     ]);
                     return;
@@ -161,7 +159,8 @@ SelectDataSearcherView = BI.inherit(BI.View, {
             }]
         });
         var ids = BI.Utils.getAllPackageIDs();
-        this.searcher.setPackageName(ids[0]);
+        this.searcher.setPackage(ids[0]);
+        this.searcher.populate();
     }
 });
 

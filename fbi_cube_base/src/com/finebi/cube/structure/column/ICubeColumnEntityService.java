@@ -3,6 +3,7 @@ package com.finebi.cube.structure.column;
 import com.finebi.cube.structure.ICubeDetailDataService;
 import com.finebi.cube.structure.ICubeIndexDataService;
 import com.finebi.cube.structure.ICubeRelationManagerService;
+import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.group.ICubeGroupDataService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
@@ -68,9 +69,9 @@ public interface ICubeColumnEntityService<T> extends ICubeColumnReaderService<T>
 
     void recordSizeOfGroup(int size);
 
-    int getVersion();
 
-    void addVersion(int version);
+
+
 
     /**
      * 在对应位置添加空值
@@ -81,4 +82,6 @@ public interface ICubeColumnEntityService<T> extends ICubeColumnReaderService<T>
     void addNULLIndex(int position, GroupValueIndex groupValueIndex);
 
     void copyDetailValue(ICubeColumnEntityService columnEntityService, long rowCount);
+
+    void setOwner(ITableKey owner);
 }

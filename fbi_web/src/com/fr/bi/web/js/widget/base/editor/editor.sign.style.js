@@ -13,8 +13,7 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
         var conf = BI.SignStyleEditor.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
             baseCls: (conf.baseCls || "") + " bi-sign-style-editor",
-            tipText: "",
-            tipTextCls: "",
+            text: "",
             hgap: 4,
             vgap: 2,
             lgap: 0,
@@ -66,11 +65,11 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
 
         this.tipText = BI.createWidget({
             type: "bi.text_button",
-            cls: "sign-style-editor-text " + o.tipTextCls,
+            cls: "sign-style-editor-tip",
             textAlign: "left",
             rgap: 4,
             height: o.height,
-            text: o.tipText,
+            text: o.text,
             handler: function () {
                 self._showInput();
                 self.editor.focus();
@@ -79,13 +78,13 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
         });
 
         this.text.on(BI.TextButton.EVENT_CHANGE, function () {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.fireEvent(BI.SignStyleEditor.EVENT_CLICK_LABEL)
             });
         });
 
-        this.tipText.on(BI.TextButton.EVENT_CHANGE, function(){
-            BI.defer(function () {
+        this.tipText.on(BI.TextButton.EVENT_CHANGE, function () {
+            BI.nextTick(function () {
                 self.fireEvent(BI.SignStyleEditor.EVENT_CLICK_LABEL)
             });
         });
@@ -154,7 +153,7 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
         this._showHint();
         this._checkText();
 
-        BI.defer(function(){
+        BI.nextTick(function () {
             var tipTextSize = self.text.element.getStyle("font-size");
             self.tipTextSize = tipTextSize.substring(0, tipTextSize.length - 2);
             self._resizeLayout();
@@ -168,7 +167,7 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
             this.text.element.addClass("bi-water-mark");
         } else {
             this.text.setValue(this.editor.getValue());
-            this.tipText.setValue("(" + o.tipText + ")");
+            this.tipText.setValue("(" + o.text + ")");
             this.text.element.removeClass("bi-water-mark");
         }
         this.setTitle(this.text.getValue() + this.tipText.getValue());
@@ -186,8 +185,8 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
         this.tipText.setVisible(true);
     },
 
-    _resizeLayout: function(){
-        this.wrap.attr("items")[0].width = BI.DOM.getTextSizeWidth(this.text.getValue() ,this.tipTextSize) + 2 * this.constants.tipTextGap;
+    _resizeLayout: function () {
+        this.wrap.attr("items")[0].width = BI.DOM.getTextSizeWidth(this.text.getValue(), this.tipTextSize) + 2 * this.constants.tipTextGap;
         this.wrap.resize();
     },
 
@@ -226,12 +225,12 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
     },
 
     getState: function () {
-        return this.options.tipText;
+        return this.options.text;
     },
 
     setState: function (v) {
         var o = this.options;
-        o.tipText = v;
+        o.text = v;
         this._showHint();
         this.tipText.setValue("(" + v + ")");
         this._checkText();

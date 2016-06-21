@@ -3,17 +3,19 @@
  */
 package com.fr.bi.field.target.filter.tree;
 
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.field.target.filter.AbstractTargetFilter;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelationPath;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.relation.BITableRelation;
-import com.fr.bi.stable.relation.BITableRelationPath;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BIConfUtils;
@@ -32,10 +34,14 @@ import java.util.Set;
 
 public class TreeColumnFieldsFilter extends AbstractTargetFilter {
     private static String XML_TAG = "TreeColumnFieldsFilter";
-    private BIField[] keys;
+    @BICoreField
+    private BusinessField[] keys;
+    @BICoreField
     private TreeFilterValue[] values;
     private JSONObject valueJo;
-    private Table foreignTable;
+    @BICoreField
+    private BusinessTable foreignTable;
+    @BICoreField
     private BITableRelation[][] relations;
 
     /**
@@ -98,16 +104,16 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
             JSONArray ja = jo.getJSONArray("statistics_elements");
 
             int len = ja.length();
-            this.keys = new BIField[len];
+            this.keys = new BusinessField[len];
             for (int i = 0; i < len; i++) {
-                BIField column = new BIField();
+                BusinessField column = new BIBusinessField();
                 column.parseJSON(ja.getJSONObject(i));
                 this.keys[i] = column;
             }
         }
         if (jo.has("foreignTable")) {
             JSONObject fTable = jo.getJSONObject("foreignTable");
-            BIField c = new BIField();
+            BusinessField c = new BIBusinessField();
             c.parseJSON(fTable);
             this.foreignTable = c.getTableBelongTo();
             if (fTable.has("relationmap")) {
@@ -120,9 +126,10 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
                     JSONArray r = rmap.getJSONArray(i);
                     BITableRelation[] relation = new BITableRelation[r.length()];
                     for (int j = 0; j < r.length(); j++) {
-                        BITableRelation rela = new BITableRelation();
-                        rela.parseJSON(r.getJSONObject(j));
-                        relation[j] = rela;
+//                        BITableRelation rela = new BITableRelation();
+//                        rela.parseJSON(r.getJSONObject(j));
+//                        relation[j] = rela;
+                        relation[j] = BITableRelationHelper.getRelation(r.getJSONObject(j));
                     }
                     relations[i] = relation;
                 }
@@ -181,7 +188,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
      * @return 分组索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         GroupValueIndex resgvi = null;
         if (values == null || values.length == 0) {
             return resgvi;
@@ -189,7 +196,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
 //        List<List<BITableRelation>> relationLists = BIRelationManager.getInstance(userId).getRelations(foreignTable, target);
         Set<BITableRelationPath> allPath = null;
         try {
-            allPath = BIConfigureManagerCenter.getTableRelationManager().getAllPath(userId, target, foreignTable);
+            allPath = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, target, foreignTable);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
@@ -208,9 +215,9 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
             GroupValueIndex gvi = null;
             Iterator<BITableRelationPath> it = allPath.iterator();
             while (it.hasNext()) {
-                ICubeTableService ti = loader.getTableIndex(foreignTable);
+                ICubeTableService ti = loader.getTableIndex(foreignTable.getTableSource());
                 BITableRelationPath onePath = it.next();
-                GroupValueIndex groupValueIndex = GVIUtils.getTableLinkedOrGVI(resgvi, ti.ensureBasicIndex(BIConfUtils.convert2TableSourceRelation(onePath.getAllRelations(), new BIUser(userId))));
+                GroupValueIndex groupValueIndex = GVIUtils.getTableLinkedOrGVI(resgvi, ti.ensureBasicIndex(BIConfUtils.convert2TableSourceRelation(onePath.getAllRelations())));
                 if (gvi == null) {
                     gvi = groupValueIndex;
                 } else {
@@ -231,7 +238,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
      * @return
      */
     @Override
-    public GroupValueIndex createFilterIndex(Table target, ICubeDataLoader loader, long userID) {
+    public GroupValueIndex createFilterIndex(BusinessTable target, ICubeDataLoader loader, long userID) {
         return null;
     }
 

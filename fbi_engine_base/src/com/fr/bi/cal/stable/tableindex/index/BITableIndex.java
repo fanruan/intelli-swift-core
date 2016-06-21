@@ -4,7 +4,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 

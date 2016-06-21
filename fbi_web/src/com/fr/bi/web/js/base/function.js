@@ -14,6 +14,7 @@ $(function () {
          */
         createDistinctName: function (array, name) {
             var src = name, idx = 1;
+            name = name || "";
             while (true) {
                 if (!ArrayUtils.getItemByName(array, name)) {
                     break;
@@ -182,8 +183,22 @@ $(function () {
             };
         },
 
+        rgba2json: function (rgbColour) {
+            var rgbValues = rgbColour.match(/\d+(\.\d+)?/g);
+            return {
+                r: BI.parseInt(rgbValues[0]),
+                g: BI.parseInt(rgbValues[1]),
+                b: BI.parseInt(rgbValues[2]),
+                a: BI.parseFloat(rgbValues[3])
+            };
+        },
+
         json2rgb: function (rgb) {
             return "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
+        },
+
+        json2rgba: function (rgba) {
+            return "rgba(" + rgba.r + "," + rgba.g + "," + rgba.b + "," + rgba.a + ")";
         },
 
         int2hex: function (strNum) {
@@ -212,8 +227,29 @@ $(function () {
             return tempValue;
         },
 
+        rgba2rgb: function (rgbColour, BGcolur) {
+            if (BI.isNull(BGcolur)) {
+                BGcolur = 1;
+            }
+            if (rgbColour.substr(0, 4) != "rgba") {
+                return "";
+            }
+            var rgbValues = rgbColour.match(/\d+(\.\d+)?/g);
+            if (rgbValues.length < 4) {
+                return "";
+            }
+            var R = BI.parseFloat(rgbValues[0]);
+            var G = BI.parseFloat(rgbValues[1]);
+            var B = BI.parseFloat(rgbValues[2]);
+            var A = BI.parseFloat(rgbValues[3]);
+
+            return "rgb(" + Math.floor(255 * (BGcolur * (1 - A )) + R * A) + "," +
+                Math.floor(255 * (BGcolur * (1 - A )) + G * A) + "," +
+                Math.floor(255 * (BGcolur * (1 - A )) + B * A) + ")";
+        },
+
         getTextSizeWidth: function (text, fontSize) {
-            var span = $("<span></span>").addClass("text-width-span").appendTo($("body"));
+            var span = $("<span></span>").addClass("text-width-span").appendTo($("#container"));
 
             if (fontSize == null) {
                 fontSize = 12;
@@ -231,7 +267,7 @@ $(function () {
         //获取滚动条的宽度
         getScrollWidth: function () {
             if (!this._scrollWidth) {
-                var ul = $("<ul>").width(20).addClass("y-overflow-scroll").appendTo("body");
+                var ul = $("<ul>").width(20).addClass("y-overflow-scroll").appendTo($("#container"));
                 this._scrollWidth = ul[0].offsetWidth - ul[0].clientWidth;
                 ul.destroy();
             }

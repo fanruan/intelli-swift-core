@@ -1,28 +1,27 @@
 package com.fr.bi.cal.stable.index;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.singletable.TableUpdate;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BIRecord;
-import com.fr.bi.conf.manager.singletable.data.SingleTableUpdateAction;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.data.db.SqlSettedStatement;
-import com.fr.bi.stable.data.source.ITableSource;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.finebi.cube.api.ICubeColumnIndexReader;
-import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -42,15 +41,15 @@ import java.util.TreeSet;
 public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
     private transient ICubeTableService oldTi;
 
-    public SimpleIndexIncreaseGenerator(TableCubeFile cube, ITableSource dataSource, Set<ITableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
+    public SimpleIndexIncreaseGenerator(TableCubeFile cube, CubeTableSource dataSource, Set<CubeTableSource> derivedDataSources, int version, BIRecord log, ICubeDataLoader loader) {
         super(cube, dataSource, derivedDataSources, version, log, loader);
-        oldTi = loader.getTableIndex( dataSource.fetchObjectCore());
+        oldTi = loader.getTableIndex(dataSource);
     }
 
 
     @Override
     protected long writeSimpleIndex() {
-        long oldCount = loadOldValue();
+        int oldCount = loadOldValue();
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         for (int i = 0; i < oldTi.getRemovedList().size(); i++) {
             sortRemovedList.add(oldTi.getRemovedList().get(i));
@@ -60,15 +59,15 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
     }
 
 
-    private long writeData(TreeSet<Integer> sortRemovedList, long oldCount) {
-        SingleTableUpdateAction action = BIConfigureManagerCenter.getPackageManager().getSingleTableUpdateManager(loader.getUserId()).getSingleTableUpdateAction(dataSource.getDbTable());
+    private int writeData(TreeSet<Integer> sortRemovedList, int oldCount) {
+        TableUpdate action = BICubeConfigureCenter.getTableUpdateManager().getSingleTableUpdateAction(dataSource.getPersistentTable());
         oldCount = dealWithInsert(action, oldCount);
         oldCount = dealWithModify(action, oldCount, sortRemovedList);
         dealWithRemove(action, sortRemovedList);
         return oldCount;
     }
 
-    private long dealWithInsert(SingleTableUpdateAction action, long rowCount) {
+    private int dealWithInsert(TableUpdate action, int rowCount) {
         String iSql = action.getInsert(loader);
         if (StringUtils.isEmpty(iSql)) {
             return rowCount;
@@ -77,7 +76,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(source.getDbName());
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(iSql);
-        return BIDBUtils.runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {
+        return BICubeDBUtils.runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 cube.addDataValue(data);
@@ -85,7 +84,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }, rowCount);
     }
 
-    private long dealWithModify(SingleTableUpdateAction action, long rowCount, final TreeSet<Integer> sortRemovedList) {
+    private int dealWithModify(TableUpdate action, int rowCount, final TreeSet<Integer> sortRemovedList) {
         String mSql = action.getModify(loader);
         if (StringUtils.isEmpty(mSql)) {
             return rowCount;
@@ -104,7 +103,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             return rowCount;
         }
         int index = -1;
-        BIField[] fields = cube.getBIField();
+        ICubeFieldSource[] fields = cube.getBIField();
         for (int i = 0; i < fields.length; i++) {
             if (ComparatorUtils.equals(fields[i].getFieldName(), columnName)) {
                 index = i;
@@ -118,7 +117,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         BIKey key = new IndexKey(columnName);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
         final int fIndex = index;
-        return BIDBUtils.runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {
+        return BICubeDBUtils.runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 cube.addDataValue(data);
@@ -136,7 +135,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }, rowCount);
     }
 
-    private void dealWithRemove(SingleTableUpdateAction action, final TreeSet<Integer> sortRemovedList) {
+    private void dealWithRemove(TableUpdate action, final TreeSet<Integer> sortRemovedList) {
         String rSql = action.getRemove(loader);
         if (StringUtils.isEmpty(rSql)) {
             return;
@@ -146,8 +145,8 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(rSql);
         String columnName = getColumnName(connection, sqlStatement, rSql);
-        DBField f = null;
-        for (DBField field : cube.getBIField()) {
+        ICubeFieldSource f = null;
+        for (ICubeFieldSource field : cube.getBIField()) {
             if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
                 f = field;
                 break;
@@ -159,7 +158,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }
         BIKey key = new IndexKey(columnName);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
-        BIDBUtils.runSQL(sqlStatement, new DBField[]{f}, new Traversal<BIDataValue>() {
+        BICubeDBUtils.runSQL(sqlStatement, new ICubeFieldSource[]{f}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 Object[] key = getter.createKey(1);
@@ -187,7 +186,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         return StringUtils.EMPTY;
     }
 
-    protected long loadOldValue() {
+    protected int loadOldValue() {
         BILogger.getLogger().info("now loading：" + dataSource.fetchObjectCore() + " old cube");
         new TableCubeFile(BIPathUtils.createTableTempPath(dataSource.fetchObjectCore().getID().getIdentityValue(), loader.getUserId())).copyDetailValue(cube, loader.getNIOReaderManager(), oldTi.getRowCount());
         BILogger.getLogger().info("loading：" + dataSource.fetchObjectCore() + " old cube finished");

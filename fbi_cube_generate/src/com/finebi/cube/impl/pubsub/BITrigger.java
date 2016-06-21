@@ -12,6 +12,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
+import com.fr.bi.stable.utils.code.BILogger;
 
 /**
  * This class created on 2016/3/24.
@@ -24,15 +25,39 @@ import com.fr.bi.common.factory.annotation.BIMandatedObject;
 public class BITrigger implements ITrigger {
     private ITriggerThreshold threshold;
     private IProcessor processor;
+    private int triggerCount;
 
     public BITrigger(IProcessor processor) {
         this.processor = processor;
         threshold = BIFactoryHelper.getObject(ITriggerThreshold.class);
+        triggerCount = 1;
     }
 
     @Override
     public ITriggerThreshold getThreshold() {
         return threshold;
+    }
+
+    @Override
+    public void setTriggerCount(int count) {
+        synchronized (this) {
+            if (count > 0) {
+                this.triggerCount = count;
+            }
+        }
+    }
+
+    @Override
+    public boolean keepTriggerOn() {
+        return triggerCount > 0;
+    }
+
+    private void triggerOne() {
+        synchronized (this) {
+            if (triggerCount != Integer.MAX_VALUE) {
+                triggerCount--;
+            }
+        }
     }
 
     @Override
@@ -51,10 +76,32 @@ public class BITrigger implements ITrigger {
     }
 
     @Override
+    public void addOrTopic(ITopicTag topicTag) throws BITopicDuplicateException, BIRegisterIsForbiddenException {
+        threshold.addOrTopic(topicTag);
+    }
+
+    @Override
+    public void addOrFragment(IFragmentTag fragmentTag) throws BIFragmentDuplicateException, BIRegisterIsForbiddenException {
+        threshold.addAndFragment(fragmentTag);
+    }
+
+    @Override
+    public void addOrStatus(IStatusTag statusTag) throws BIStatusDuplicateException, BIRegisterIsForbiddenException {
+        threshold.addOrStatus(statusTag);
+    }
+
+    @Override
     public void handleMessage(IMessage message) throws BIThresholdIsOffException {
         threshold.handleMessage(message);
         if (threshold.isMeetThreshold()) {
-            processor.process();
+            BILogger.getLogger().debug("Trigger invoke process,get :" + message);
+            processor.process(message);
+            triggerOne();
         }
+    }
+
+    @Override
+    public String leftCondition() {
+        return threshold.leftCondition();
     }
 }

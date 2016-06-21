@@ -16,7 +16,7 @@ BI.TimeSettingItem = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.id = BI.UUID();
         this.frequency = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: [{
                 text: BI.i18nText("BI-Ev_Month"),
                 value: BICst.UPDATE_FREQUENCY.EVER_MONTH
@@ -48,7 +48,7 @@ BI.TimeSettingItem = BI.inherit(BI.Widget, {
             width: 160,
             height: 28
         });
-        this.frequency.on(BI.TextIconCheckCombo.EVENT_CHANGE, function(v){
+        this.frequency.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(v){
             var v = this.getValue()[0];
             self.day.setVisible(v === BICst.UPDATE_FREQUENCY.EVER_MONTH);
             self.hour.setVisible(v !== BICst.UPDATE_FREQUENCY.EVER_MONTH);
@@ -60,13 +60,13 @@ BI.TimeSettingItem = BI.inherit(BI.Widget, {
             type: "bi.day_time_setting"
         });
         this.day.on(BI.DayTimeSetting.EVENT_CHANGE, function(){
-            self.options.onSettingChange();
+           self.options.onSettingChange();
         });
         this.hour = BI.createWidget({
             type: "bi.hour_time_setting"
         });
         this.hour.on(BI.HourTimeSetting.EVENT_CHANGE, function(){
-            self.options.onSettingChange();
+           self.options.onSettingChange();
         });
         if(o.frequency === BICst.UPDATE_FREQUENCY.EVER_MONTH) {
             this.day.setVisible(true);

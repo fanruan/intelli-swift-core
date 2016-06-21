@@ -33,7 +33,6 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
         this.nameEditor = BI.createWidget({
             type: "bi.sign_style_editor",
             cls: "etl-dimension-name",
-            tipTextCls: "group-editor-tip",
             height:25,
             validationChecker:function(){
                 return self._checkDimensionName(self.nameEditor.getValue());

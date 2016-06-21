@@ -1,6 +1,7 @@
 package com.finebi.cube.data.input.primitive;
 
-import com.fr.bi.common.inter.Release;
+import com.finebi.cube.CubeResourceRelease;
+import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.finebi.cube.exception.BIResourceInvalidException;
 
 /**
@@ -9,7 +10,7 @@ import com.finebi.cube.exception.BIResourceInvalidException;
  * @author Connery
  * @since 4.0
  */
-public interface ICubePrimitiveReader<T> extends Release {
+public interface ICubePrimitiveReader<T> extends CubeResourceRelease {
     /**
      * 获得指点位置的值
      *
@@ -20,4 +21,10 @@ public interface ICubePrimitiveReader<T> extends Release {
     T getSpecificValue(long valuePosition) throws BIResourceInvalidException;
 
     boolean canReader();
+
+    void setReleaseHelper(ICubeSourceReleaseManager releaseHelper);
+
+    void releaseSource();
+
+    String getReaderHandler();
 }

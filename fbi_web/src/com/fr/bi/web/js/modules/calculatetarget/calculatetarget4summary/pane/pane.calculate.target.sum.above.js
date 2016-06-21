@@ -13,11 +13,11 @@ BI.CalculateTargetSumAbovePane = BI.inherit(BI.Widget, {
         BI.CalculateTargetSumAbovePane.superclass._init.apply(this, arguments);
         var self = this;
         this.valueCombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height: 30
         });
 
-        this.valueCombo.on(BI.TextIconCombo.EVENT_CHANGE, function () {
+        this.valueCombo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
             self._refreshLabel();
             self.fireEvent(BI.CalculateTargetSumAbovePane.EVENT_CHANGE);
 
@@ -87,13 +87,13 @@ BI.CalculateTargetSumAbovePane = BI.inherit(BI.Widget, {
     },
 
     setValue: function (expression) {
-        this.valueCombo.setValue(expression.cal_target_name);
+        this.valueCombo.setValue(expression.ids);
         this._refreshLabel();
     },
 
     getValue: function () {
         var result = {};
-        result.cal_target_name = this.valueCombo.getValue()[0];
+        result.ids = this.valueCombo.getValue();
         return result;
     },
 

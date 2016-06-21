@@ -1,14 +1,14 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.db.DBField;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
@@ -26,7 +26,7 @@ public class BIMultiTableIndex implements ICubeTableService {
 
     private Map<BIKey, ICubeTableService> childs = new ConcurrentHashMap<BIKey, ICubeTableService>();
 
-    private Map<BIKey, DBField> columns = new ConcurrentHashMap<BIKey, DBField>();
+    private Map<BIKey, ICubeFieldSource> columns = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
 
     public BIMultiTableIndex(ICubeTableService[] childs) {
         cs = childs;
@@ -35,7 +35,7 @@ public class BIMultiTableIndex implements ICubeTableService {
 
     private void init(ICubeTableService[] childs) {
         for (ICubeTableService ti : childs) {
-            Map<BIKey, DBField> c = ti.getColumns();
+            Map<BIKey, ICubeFieldSource> c = ti.getColumns();
             for (BIKey key : c.keySet()) {
                 this.childs.put(key, ti);
             }
@@ -147,7 +147,7 @@ public class BIMultiTableIndex implements ICubeTableService {
     }
 
     @Override
-    public Map<BIKey, DBField> getColumns() {
+    public Map<BIKey, ICubeFieldSource> getColumns() {
         return columns;
     }
 
@@ -162,12 +162,12 @@ public class BIMultiTableIndex implements ICubeTableService {
     }
 
     @Override
-    public BIKey getColumnIndex(BIField field) {
+    public BIKey getColumnIndex(BusinessField field) {
         return new IndexKey(field.getFieldName());
     }
 
     @Override
-    public int getTableVersion(BIKey key) {
+    public long getTableVersion(BIKey key) {
         return childs.get(key).getTableVersion(key);
     }
 

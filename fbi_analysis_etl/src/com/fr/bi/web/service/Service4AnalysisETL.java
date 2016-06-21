@@ -1,8 +1,7 @@
 package com.fr.bi.web.service;
 
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.web.service.action.BIAnalysisETLGetFieldValueAction;
-import com.fr.bi.web.service.action.BISaveAnalysisETLTableAction;
+import com.fr.bi.web.service.action.*;
 import com.fr.fs.base.FSManager;
 import com.fr.fs.privilege.auth.FSAuthentication;
 import com.fr.fs.privilege.auth.FSAuthenticationManager;
@@ -24,7 +23,13 @@ public class Service4AnalysisETL implements Service {
 
     private static ActionCMD[] actions = {
         new BISaveAnalysisETLTableAction(),
-        new BIAnalysisETLGetFieldValueAction()
+        new BIAnalysisETLGetFieldValueAction(),
+        new BIDeleteAnalysisETLTableAction(),
+        new BIEditAnalysisETLTableAction(),
+        new BIRenameAnalysisETLTableAction(),
+        new BIPreviewAnalysisETLTableAction(),
+        new BIAnalysisETLGetFieldMinMaxValueAction(),
+        new BIAnalysisETLGetGeneratingStatusAction()
     };
 
     @Override

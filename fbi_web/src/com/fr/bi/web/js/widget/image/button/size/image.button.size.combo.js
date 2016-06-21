@@ -31,6 +31,7 @@ BI.ImageButtonSizeCombo = BI.inherit(BI.Widget, {
         this.combo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
+            isNeedAdjustWidth: false,
             direction: "top",
             adjustYOffset: 3,
             offsetStyle: "right",

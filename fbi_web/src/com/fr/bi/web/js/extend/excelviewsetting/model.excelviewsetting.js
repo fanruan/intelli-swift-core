@@ -171,6 +171,12 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
     },
 
     clearRowCol: function () {
+        this.excelName = "";
+        this.excel = [];
         this.positions = {};
+    },
+    
+    clearOneCell: function(fieldId){
+        delete  this.positions[fieldId];
     }
 });

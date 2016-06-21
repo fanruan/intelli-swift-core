@@ -6,7 +6,7 @@ BIDezi.TreeDetailModel = BI.inherit(BI.Model, {
             },
             dimensions: {},
             name: "",
-            type: BICst.Widget.DETAIL,
+            type: BICst.WIDGET.DETAIL,
             settings: {},
             target_relation: {}
         })
@@ -34,7 +34,13 @@ BIDezi.TreeDetailModel = BI.inherit(BI.Model, {
             });
         }
         if (key1 === "dimensions") {
-            BI.Broadcasts.send(this.get("id") + "usable");
+            BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + old._src.id);
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+            //全局维度增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
+        }
+        if (key1 === "dimensions") {
+            this.set("value", {});
         }
     },
 
@@ -42,8 +48,19 @@ BIDezi.TreeDetailModel = BI.inherit(BI.Model, {
         var self = this;
         if (BI.has(changed, "dimensions")) {
             if (BI.size(changed.dimensions) !== BI.size(prev.dimensions)) {
-                BI.Broadcasts.send(self.get("id") + "usable");
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
+                //全局维度增删事件
+                BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
             }
+            if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
+                var result = BI.find(changed.dimensions, function (did, dimension) {
+                    return !BI.has(prev.dimensions, did);
+                });
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+            }
+        }
+        if (BI.has(changed, "dimensions")) {
+            this.set("value", {});
         }
     },
 
@@ -52,7 +69,6 @@ BIDezi.TreeDetailModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
-        var self = this;
         if (this.has("addDimension")) {
             var dimension = this.get("addDimension");
             var view = this.get("view");

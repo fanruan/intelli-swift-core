@@ -12,6 +12,7 @@ IconComboView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var combo = BI.createWidget({
             type: "bi.icon_combo",
+            iconClass: "rename-font",
             items: [{
                 value: "第一项",
                 iconClass: "delete-font"
@@ -23,7 +24,7 @@ IconComboView = BI.inherit(BI.View, {
                 iconClass: "move-font"
             }]
         });
-        BI.defer(function () {
+        BI.nextTick(function () {
             combo.showView();
         });
         BI.createWidget({

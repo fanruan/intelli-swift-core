@@ -1,24 +1,22 @@
 package com.fr.bi.field.target.filter.field;
 
-import com.fr.bi.base.BIUser;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.common.inter.ValueCreator;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.key.NumberSummaryFilterKey;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BITable;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.fr.bi.stable.relation.BITableRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.lru.LRUWithKHashMap;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -114,11 +112,11 @@ public class SummaryNumberFilter extends ColumnFieldFilter {
      * @return 分组索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         return createFilterIndex(target, loader, userId);
     }
 
-    private GroupValueIndex getSummaryNumberFilterGVI(final List<BITableSourceRelation> relation, final Table target, final ICubeDataLoader loader, final long userID) {
+    private GroupValueIndex getSummaryNumberFilterGVI(final List<BITableSourceRelation> relation, final BusinessTable target, final ICubeDataLoader loader, final long userID) {
         NumberSummaryFilterKey key = new NumberSummaryFilterKey(dataColumn.getFieldName(), relation, filter);
         GroupValueIndex res = numberSummaryIndexMap.get(key, new ValueCreator<GroupValueIndex>() {
 
@@ -131,9 +129,9 @@ public class SummaryNumberFilter extends ColumnFieldFilter {
     }
 
 
-    private GroupValueIndex createNumberSummaryFilterIndex(final List<BITableSourceRelation> relation, final Table target, final ICubeDataLoader loader, final long userID) {
-        final ICubeTableService ti = loader.getTableIndex(target);
-        final ICubeTableService si = loader.getTableIndex(dataColumn);
+    private GroupValueIndex createNumberSummaryFilterIndex(final List<BITableSourceRelation> relation, final BusinessTable target, final ICubeDataLoader loader, final long userID) {
+        final ICubeTableService ti = loader.getTableIndex(target.getTableSource());
+        final ICubeTableService si = loader.getTableIndex(dataColumn.getTableBelongTo().getTableSource());
         final ICubeTableIndexReader reader = ti.ensureBasicIndex(relation);
         final GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
         ti.getAllShowIndex().Traversal(new SingleRowTraversalAction() {
@@ -190,11 +188,11 @@ public class SummaryNumberFilter extends ColumnFieldFilter {
      * @return
      */
     @Override
-    public GroupValueIndex createFilterIndex(Table target, ICubeDataLoader loader, long userID) {
+    public GroupValueIndex createFilterIndex(BusinessTable target, ICubeDataLoader loader, long userID) {
         if (filterValue != null) {
             try {
-                List<BITableRelation> relation = BIConfigureManagerCenter.getTableRelationManager().getFirstPath(userID, new BITable(dataColumn.getTableBelongTo()), target).getAllRelations();
-                return getSummaryNumberFilterGVI(BIConfUtils.convert2TableSourceRelation(relation, new BIUser(userID)), target, loader, userID);
+                List<BITableRelation> relation = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userID, dataColumn.getTableBelongTo(), target).getAllRelations();
+                return getSummaryNumberFilterGVI(BIConfUtils.convert2TableSourceRelation(relation), target, loader, userID);
             } catch (Exception e) {
                 BILogger.getLogger().info("sum filter failed");
                 return null;

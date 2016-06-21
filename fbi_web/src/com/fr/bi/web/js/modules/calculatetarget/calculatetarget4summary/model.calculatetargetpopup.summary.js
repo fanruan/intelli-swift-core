@@ -36,7 +36,10 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
     _createNewTargetData: function () {
         return {
             _src: {
-                expression: ""
+                expression: {
+                    formula_value: "",
+                    ids: []
+                }
             },
             name: "",
             dimension_map: {},

@@ -91,15 +91,18 @@ TableTreeView = BI.inherit(BI.View, {
                     text: "子节点1"
                 }, {
                     text: "子节点2"
-                }]
+                }],
+                values: [0]
             }, {
                 text: "节点2",
                 children: [{
                     text: "子节点3"
                 }, {
                     text: "子节点4"
-                }]
-            }]
+                }],
+                values: [0]
+            }],
+            values: [0]
         }];
 
         BI.createWidget({

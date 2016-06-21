@@ -68,6 +68,7 @@ BI.TargetNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         var self = this, o = this.options;
         var selectFieldPane = BI.createWidget({
             type: "bi.target_filter_select_field",
+            height: this._constant.MAX_HEIGHT,
             field_id: o.field_id
         });
 
@@ -83,13 +84,12 @@ BI.TargetNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             },
             popup: {
                 el: selectFieldPane,
-                minHeight: 300,
                 minWidth: 228,
                 maxHeight: this._constant.MAX_HEIGHT
             }
         });
 
-        selectFieldPane.on(BI.SelectSingleField.EVENT_CLICK_ITEM, function (v) {
+        selectFieldPane.on(BI.TargetFilterSelectField.EVENT_CLICK_ITEM, function (v) {
             self._onTypeSelected(v);
 
         });

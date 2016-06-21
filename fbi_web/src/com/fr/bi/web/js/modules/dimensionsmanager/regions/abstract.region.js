@@ -19,7 +19,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         return BI.extend(conf, {
             baseCls: 'bi-region',
             titleName: "",
-            wid: ""
+            wId: ""
         })
     },
 
@@ -41,7 +41,11 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         var north = BI.createWidget({
             type: "bi.border",
             items: {
-                center: {el: this.titleName}
+                west: {
+                    el: this.titleName,
+                    height: this.constants.REGION_HEIGHT_NORMAL,
+                    left: this.constants.REGION_DIMENSION_GAP
+                }
             },
             cls: "region-north"
         });
@@ -137,7 +141,8 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
 
     populate: function (dimensions) {
         var self = this, o = this.options;
-        BI.DOM.hang(self.store);
+        BI.DOM.hang(this.store);
+        var store = this.store;
         this.store = {};
         BI.each(dimensions, function (i, did) {
             self.store[did] = self._createDimension(did);

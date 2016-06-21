@@ -1,7 +1,9 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.bi.field.target.key.cal.configuration.summary.BISumOfAllKey;
+import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.bi.stable.report.result.LightNode;
@@ -15,8 +17,8 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
 
     private static final long serialVersionUID = 1511004295587426830L;
 
-    public SumOfAllCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group) {
-        super(target, cal_target_name, start_group);
+    public SumOfAllCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
+        super(target, target_id, start_group);
     }
 
 
@@ -27,7 +29,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
 
     @Override
     public BITargetKey createTargetKey() {
-        return new BISumOfAllKey(targetName, cal_target_name, targetMap, start_group);
+        return new BISumOfAllKey(targetName, target_id, targetMap, start_group);
     }
 
     @Override
@@ -46,16 +48,25 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
         @Override
         public Object call() throws Exception {
             Object key = getCalKey();
-            int deep = getCalDeep();
-            LightNode temp_node = getFirstCalNode(rank_node);
+            String targetName = ((TargetGettingKey) key).getTargetName();
+            BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
+            int deep = getCalDeep(rank_node);
+            LightNode temp_node = getDeepCalNode(rank_node);
             LightNode cursor_node = temp_node;
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(key);
+                Number value;
+                if (targetKey instanceof AvgKey) {
+                    value = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
+                } else {
+                    value = cursor_node.getSummaryValue(key);
+                }
                 if (value != null) {
                     sum += value.doubleValue();
                 }
                 cursor_node = cursor_node.getSibling();
+
+
             }
             cursor_node = temp_node;
             Object value = new Double(sum);
@@ -79,6 +90,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
 
     }
 
+
     private class RankDealWithCrossNode implements Callable {
         private BICrossNode rank_node;
 
@@ -90,7 +102,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
         @Override
         public Object call() throws Exception {
             Object key = getCalKey();
-            int deep = getCalDeep();
+            int deep = getCalDeep(rank_node);
             BICrossNode temp_node = getFirstCalCrossNode(rank_node);
             BICrossNode cursor_node = temp_node;
             double sum = 0;

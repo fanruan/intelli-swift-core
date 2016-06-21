@@ -356,7 +356,7 @@ if (!window.BI) {
         BI[name] = _applyFunc(name)
     });
     _.extend(BI, {
-        //构�?�一个长度为length的数�?
+        //构建一个长度为length的数组
         makeArray: function (length, value) {
             var res = [];
             for (var i = 0; i < length; i++) {
@@ -484,7 +484,7 @@ if (!window.BI) {
         },
 
         isNotEmptyObject: function (obj) {
-            return BI.isObject(obj) && !BI.isEmptyObject(obj);
+            return BI.isPlainObject(obj) && !BI.isEmptyObject(obj);
         },
 
         isEmptyString: function (obj) {
@@ -512,7 +512,7 @@ if (!window.BI) {
                 return obj;
             }
 
-            var type = toString.call(obj);
+            var type = Object.prototype.toString.call(obj);
 
             // Date
             if (type === '[object Date]') {
@@ -535,8 +535,10 @@ if (!window.BI) {
             else if (type === '[object Object]' && obj.constructor === Object) {
                 clone = {};
 
-                for (key in obj) {
-                    clone[key] = BI.deepClone(obj[key]);
+                for (var i in obj) {
+                    if (_.has(obj, i)) {
+                        clone[i] = BI.deepClone(obj[i]);
+                    }
                 }
             }
 
@@ -613,6 +615,28 @@ if (!window.BI) {
 
         deepUniq: function () {
 
+        },
+
+        //比较两个对象得出不一样的key值
+        deepDiff: function (object, other) {
+            object || (object = {});
+            other || (other = {});
+            var result = [];
+            var used = [];
+            for (var b in object) {
+                if (this.has(object, b)) {
+                    if (!this.isEqual(object[b], other[b])) {
+                        result.push(b);
+                    }
+                    used.push(b);
+                }
+            }
+            for (var b in other) {
+                if (this.has(other, b) && !used.contains(b)) {
+                    result.push(b);
+                }
+            }
+            return result;
         }
     });
 
@@ -630,11 +654,67 @@ if (!window.BI) {
         }
     });
 
+    _.extend(BI, {
+        nextTick: (function () {
+            var callbacks = [];
+            var pending = false;
+            var timerFunc;
+
+            function nextTickHandler() {
+                pending = false;
+                var copies = callbacks.slice(0);
+                callbacks = [];
+                for (var i = 0; i < copies.length; i++) {
+                    copies[i].func.apply(null, copies[i].args);
+                }
+            }
+
+            /* istanbul ignore if */
+            if (typeof MutationObserver !== 'undefined') {
+                var counter = 1;
+                var observer = new MutationObserver(nextTickHandler);
+                var textNode = document.createTextNode(counter);
+                observer.observe(textNode, {
+                    characterData: true
+                });
+                timerFunc = function () {
+                    counter = (counter + 1) % 2;
+                    textNode.data = counter;
+                }
+            } else {
+                timerFunc = setTimeout
+            }
+            return function (cb) {
+                var args = [].slice.call(arguments, 1);
+                callbacks.push({func: cb, args: args});
+                if (pending) return;
+                pending = true;
+                timerFunc(nextTickHandler, 0);
+            }
+        })()
+    });
+
     //数字相关方法
     _.each(["random"], function (name) {
         BI[name] = _apply(name)
     });
     _.extend(BI, {
+        getTime: function () {
+            if (window.performance && window.performance.now) {
+                return window.performance.now();
+            } else {
+                if (window.performance && window.performance.webkitNow) {
+                    return window.performance.webkitNow();
+                } else {
+                    if (Date.now) {
+                        return Date.now();
+                    } else {
+                        return new Date().getTime();
+                    }
+                }
+            }
+        },
+
         parseInt: function (number) {
             var radix = 10;
             if (/^0x/g.test(number)) {
@@ -658,15 +738,28 @@ if (!window.BI) {
         },
 
         isNaturalNumber: function (number) {
-            return BI.isInteger(number) && number >= 0;
+            if (/^\d+$/.test(number)) {
+                return true;
+            }
+            return false;
         },
 
         isPositiveInteger: function (number) {
-            return BI.isInteger(number) && number > 0;
+            if (/^\+?[1-9][0-9]*$/.test(number)) {
+                return true;
+            }
+            return false;
+        },
+
+        isNegativeInteger: function (number) {
+            if (/^\-[1-9][0-9]*$/.test(number)) {
+                return true;
+            }
+            return false;
         },
 
         isInteger: function (number) {
-            if (/^[0-9]*$/.test(number)) {
+            if (/^\-?\d+$/.test(number)) {
                 return true;
             }
             return false;
@@ -847,14 +940,14 @@ if (!window.BI) {
         }
     });
 
-    //浏览器相关方�?
+    //浏览器相关方法
     _.extend(BI, {
         isIE: function () {
-            return ( /msie/i.test(navigator.userAgent) && !/opera/i.test(navigator.userAgent) );
+            return $.browser.msie;
         },
 
         isChrome: function () {
-            return navigator.userAgent.toLowerCase().match(/chrome/) != null;
+            return $.browser.chrome;
         },
 
         isFireFox: function () {
@@ -862,23 +955,39 @@ if (!window.BI) {
         },
 
         isOpera: function () {
-            return /opera/i.test(navigator.userAgent);
+            return $.browser.opera;
+        },
+
+        isSafari: function () {
+            return $.browser.safari;
         },
 
         isKhtml: function () {
             return /Konqueror|Safari|KHTML/i.test(navigator.userAgent);
         },
 
-        isClassicIE: function () {
-            return $.browser.msie && parseInt($.browser.version) < 8;
-        },
+        isSupportCss3: function (style) {
+            var prefix = ['webkit', 'Moz', 'ms', 'o'],
+                i, len,
+                humpString = [],
+                htmlStyle = document.documentElement.style,
+                _toHumb = function (string) {
+                    return string.replace(/-(\w)/g, function ($0, $1) {
+                        return $1.toUpperCase();
+                    });
+                };
 
-        isNoneCanvasIE: function () {
-            return $.browser.msie && parseInt($.browser.version) < 9;
-        },
+            for (i in prefix) {
+                humpString.push(_toHumb(prefix[i] + '-' + style));
+            }
+            humpString.push(_toHumb(style));
 
-        isIE8: function () {
-            return !!window.ActiveXObject && !!document.documentMode;
+            for (i = 0, len = humpString.length; i < len; i++) {
+                if (humpString[i] in htmlStyle) {
+                    return true;
+                }
+            }
+            return false;
         }
     });
     //BI请求
@@ -906,7 +1015,7 @@ if (!window.BI) {
                 type: 'POST',
                 data: data,
                 error: function () {
-                    BI.Msg.toast("Ajax Error!");
+                    BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
                 },
                 complete: function (res, status) {
                     if (BI.isFunction(callback) && status === 'success') {
@@ -939,7 +1048,7 @@ if (!window.BI) {
                 async: false,
                 data: data,
                 error: function () {
-                    BI.Msg.toast("Ajax Error!");
+                    BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
                 },
                 complete: function (res, status) {
                     if (status === 'success') {

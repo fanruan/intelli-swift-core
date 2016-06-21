@@ -2,8 +2,10 @@
 
 .bi-adaptive-table {
   & > div > div > table, & > div > div > div > table {
-    &, & > * > * > th, & > * > * > td {
-
+    & > * > * > th, & > * > * > td {
+      &.last-col{
+        min-width: 80px;
+      }
     }
   }
 }

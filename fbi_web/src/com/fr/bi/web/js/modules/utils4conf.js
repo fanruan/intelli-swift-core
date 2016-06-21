@@ -77,18 +77,21 @@ BI.extend(BI.Utils, {
         }
         return packStructure;
     },
+
     /**
      * 获取所有业务包分组信息树结构
      * 用于业务包权限管理功能
      * @returns {Array}
      */
-    getAllGroupedPackagesTreeJSON4PrermissionManage: function () {
+    getAllGroupedPackagesTree: function () {
         var groups = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
         var packStructure = [], groupedPacks = [];
         BI.each(groups, function (id, group) {
             packStructure.push({
                 id: id,
                 text: group.name,
+                value: group.name,
+                open: true,
                 isParent: true
             });
             BI.each(group.children, function (i, item) {
@@ -96,7 +99,8 @@ BI.extend(BI.Utils, {
                     id: item.id,
                     text: packages[item.id].name,
                     value: item.id,
-                    pId: id
+                    pId: id,
+                    open: true
                 });
                 groupedPacks.push(item.id);
             })
@@ -112,28 +116,55 @@ BI.extend(BI.Utils, {
                 }
             });
             //未分组
-
             if (!isGrouped) {
                 isGroupedExisted = true;
                 packStructure.push({
                     text: pack.name,
                     value: pack.id,
-                    pId: -1,
-                    id: id
+                    pId: 1,
+                    id: id,
+                    open: true
                 })
             }
         });
-        // if (isGroupedExisted) {
-        //     packStructure.push({
-        //         text: 'undefined',
-        //         value: 'undefined',
-        //         id: -1,
-        //         isParent: true
-        //     });
-        // };
+        if (isGroupedExisted === true) {
+            packStructure.push({
+                text: BI.i18nText('BI-Ungrouped'),
+                value: BI.i18nText('BI-Ungrouped'),
+                id: 1,
+                open: true,
+                isParent: true
+            });
+        }
         return packStructure;
-    },
 
+    },
+    
+    getUpdatePreviewSqlResult: function (data, callback) {
+        Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
+            callback(res);
+        })
+    },
+    
+    getConfDataByField: function (table, fieldName, filterConfig, callback) {
+        Data.Req.reqFieldsDataByData({
+            table: table,
+            field: fieldName,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        });
+    },
+    
+    getConfDataByFieldId: function(fieldId, filterConfig, callback){
+        Data.Req.reqFieldsDataByFieldId({
+            field_id: fieldId,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        });
+    },
+    
     getAllPackageIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("packages"));
     },
@@ -175,6 +206,14 @@ BI.extend(BI.Utils, {
         return [];
     },
 
+    getConfGroupInitTimeByGroupId: function (gid) {
+        var groups = Data.SharingPool.get("groups");
+        if (BI.isNotNull(groups[gid])) {
+            return groups[gid].init_time;
+        }
+        return "";
+    },
+
     getConfPackageTablesByID: function (pid) {
         return Data.SharingPool.get("packages", pid, "tables");
     },
@@ -187,18 +226,25 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("packages", pid, "name");
     },
 
-    getUpdateSettingByID: function(id) {
+    getUpdateSettingByID: function (id) {
         return Data.SharingPool.get("update_settings", id);
     },
 
-    //fuck you
-    getConfDataByField: function (table, fieldName, filterConfig, callback) {
-        Data.Req.reqFieldsDataByData({
-            table: table,
-            field: fieldName,
-            filterConfig: filterConfig
-        }, function (data) {
-            callback(data.value, data.hasNext);
+    getAuthorityLoginField: function(){
+        return Data.SharingPool.get("authority_settings", "login_field");
+    },
+
+    getAuthorityRoles: function(){
+        return Data.SharingPool.get("authority_settings", "all_roles");
+    },
+    
+    getPackageAuthorityByID: function(pid) {
+        return Data.SharingPool.get("authority_settings", "packages_auth", pid);  
+    },
+    
+    savePackageAuthority: function (data, callback) {
+        Data.Req.reqSavePackageAuthority(data, function (res) {
+            callback(res);
         });
     },
 
@@ -258,6 +304,12 @@ BI.extend(BI.Utils, {
         Data.Req.reqCheckCubePath(path, function (res) {
             callback(res);
         });
+    },
+    
+    saveLoginField: function(data, callback){
+        Data.Req.reqSaveLoginField(data, function(res){
+            callback(res);
+        })
     },
 
     getConnectionNames: function (callback) {
@@ -360,27 +412,50 @@ BI.extend(BI.Utils, {
         });
     },
 
-    getUpdatePreviewSqlResult: function(data, callback){
+    getUpdatePreviewSqlResult: function (data, callback) {
         Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
             callback(res);
         })
     },
 
-    modifyGlobalUpdateSetting: function(data, callback){
-        Data.Req.reqModifyGlobalUpdateSetting(data, function(res) {
+    modifyGlobalUpdateSetting: function (data, callback) {
+        Data.Req.reqModifyGlobalUpdateSetting(data, function (res) {
             callback(res);
         })
     },
 
-    getCubeLog: function(callback) {
-        Data.Req.reqCubeLog(function(res){
+    getCubeLog: function (callback) {
+        Data.Req.reqCubeLog(function (res) {
             callback(res);
         });
     },
-
-    getAllPackages: function(callback) {
-        Data.Req.reqAllBusinessPackages(function(res) {
+    
+    getAllPackages: function (callback) {
+        Data.Req.reqAllBusinessPackages(function (res) {
             callback(res);
         })
+    },
+
+    getTableNamesOfAllPackages: function(callback){
+        Data.Req.getTableNamesOfAllPackages(function(res) {
+            callback(res);
+        })
+    },
+
+    updateCubeByTable: function (data, callback) {
+        Data.Req.updateCubeByTable(data, function () {
+            callback();
+        });
+    },
+    generateCubeByTable: function (data, callback) {
+        Data.Req.reqGenerateCubeByTable(data, function () {
+            callback();
+        });
+    },
+
+    getPrimaryTablesByTable4Conf: function(table, callback) {
+        Data.Req.reqPrimaryTablesByTable(table, function (res) {
+            callback(res);
+        });
     }
 });

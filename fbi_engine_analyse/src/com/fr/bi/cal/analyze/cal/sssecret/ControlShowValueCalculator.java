@@ -1,35 +1,30 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
-
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.FinalLong;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.stable.io.NIOReadGroupMap;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.manager.PlugManager;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.base.FinalLong;
-import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.connection.DirectTableConnection;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.pinyin.PinyinHelper;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 控件取值计算
@@ -41,12 +36,12 @@ public class ControlShowValueCalculator {
     private final static int MAX_STRING_ROW = 100;
 
 
-    private static boolean isValueValid(String value, boolean isBlank, String kw) {
+    private static boolean isValueValid(String value, boolean isBlank, String kw, boolean isSmallGroup) {
         if (value == null) {
             return false;
         }
         boolean valueValid = isBlank || value.toUpperCase().indexOf(kw) > -1;
-        if (!valueValid && PlugManager.getPerformancePlugManager().isSearchPinYin()) {
+        if (!valueValid && PlugManager.getPerformancePlugManager().isSearchPinYin() && isSmallGroup) {
             String py = PinyinHelper.getShortPinyin(value);
             valueValid = py.toUpperCase().indexOf(kw) > -1;
         }
@@ -54,11 +49,11 @@ public class ControlShowValueCalculator {
     }
 
     public static List<String> getControlShowValueBySearch(DimensionCalculator calculator, BISession session, String keyword, int page, final List selectValues, TargetFilter filter) {
-        Table key = calculator.getField().getTableBelongTo();
+        BusinessTable key = calculator.getField().getTableBelongTo();
         if (!session.hasPackageAccessiblePrivilege(key)) {
             throw new NoneAccessablePrivilegeException();
         }
-        int rowCount = (int) session.getLoader().getTableIndex(key).getRowCount();
+        int rowCount = (int) session.getLoader().getTableIndex(key.getTableSource()).getRowCount();
         GroupValueIndex parentIndex = session.createFilterGvi(key).AND(filter.createFilterIndex(key, session.getLoader(), session.getUserId()));
         final int start = page * MAX_STRING_ROW;
         final String keyWord = keyword == null ? StringUtils.EMPTY : keyword.toUpperCase();
@@ -67,7 +62,7 @@ public class ControlShowValueCalculator {
         }
         boolean isAllShow = parentIndex.getRowsCountWithData() == rowCount;
         if (isAllShow) {
-            return getWhenAllShow(session, selectValues, calculator, start, keyWord);
+            return getWhenAllShow(session, selectValues, calculator, start, keyWord, !calculator.isSupperLargeGroup(session.getLoader()));
         } else if (calculator.isSupperLargeGroup(session.getLoader())) {
             return getWhenSupperLargeGroup(session, selectValues, calculator, parentIndex, start, keyWord);
         } else {
@@ -83,7 +78,7 @@ public class ControlShowValueCalculator {
         while (iter.hasNext()) {
             Entry<String, GroupValueIndex> entry = iter.next();
             String rowValue = entry.getKey();
-            if (isValueValid(rowValue, isBlank, keyWord)) {
+            if (isValueValid(rowValue, isBlank, keyWord, true)) {
                 GroupValueIndex v = entry.getValue();
                 if (v != null && v.hasSameValue(parentIndex)) {
                     if (selectValues.contains(rowValue) || start > count++) {
@@ -102,7 +97,7 @@ public class ControlShowValueCalculator {
     private static List<String> getWhenSupperLargeGroup(BISession session, final List selectValues, DimensionCalculator calculator, GroupValueIndex parentIndex, final int start, final String keyWord) {
         //大分组考虑顺序意义不大 不如显示的排序
         final Set<String> set = new TreeSet<String>(BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC);
-        final ICubeTableService ti = session.getLoader().getTableIndex(calculator.getField());
+        final ICubeTableService ti = session.getLoader().getTableIndex(calculator.getField().getTableBelongTo().getTableSource());
         final BIKey index = calculator.createKey();
         final boolean isBlank = StringUtils.isBlank(keyWord);
         final FinalLong count = new FinalLong();
@@ -111,8 +106,8 @@ public class ControlShowValueCalculator {
             @Override
             public boolean actionPerformed(int rowIndex) {
                 String rowValue = (String) ti.getRow(index, rowIndex);
-                if (isValueValid(rowValue, isBlank, keyWord)) {
-                    if (selectValues.contains(rowValue) || start > count.i++) {
+                if (isValueValid(rowValue, isBlank, keyWord, false)) {
+                    if (selectValues.contains(rowValue) || start > count.value++) {
                         return false;
                     }
                     set.add(rowValue);
@@ -124,14 +119,14 @@ public class ControlShowValueCalculator {
         return resultList;
     }
 
-    private static List<String> getWhenAllShow(BISession session, List selectValues, DimensionCalculator calculator, int start, String keyWord) {
+    private static List<String> getWhenAllShow(BISession session, List selectValues, DimensionCalculator calculator, int start, String keyWord, boolean isSmallGroup) {
         List<String> resultList = new ArrayList<String>();
         boolean isBlank = StringUtils.isBlank(keyWord);
         int count = 0;
         Iterator<Entry<String, GroupValueIndex>> iter = calculator.createValueMapIterator(calculator.getField().getTableBelongTo(), session.getLoader());
         while (iter.hasNext()) {
             String rowValue = iter.next().getKey();
-            if (isValueValid(rowValue, isBlank, keyWord)) {
+            if (isValueValid(rowValue, isBlank, keyWord, isSmallGroup)) {
                 if (selectValues.contains(rowValue) || start > count++) {
                     continue;
                 }
@@ -156,11 +151,11 @@ public class ControlShowValueCalculator {
     private static void treeControlShowValue(BITableSourceRelation[] relation, DimensionCalculator currentKey, GroupValueIndex parentIndex, int rank, int times, final List<String> resultList, BISession sessionIDInfo) {
         final int start = (times - 1) * MAX_STRING_ROW;
         final FinalLong t = new FinalLong();
-        t.i = 0L;
+        t.value = 0L;
         if (currentKey.isSupperLargeGroup(sessionIDInfo.getLoader())) {
             treeControlShowValuWhenSupperLargeGroup(relation, currentKey, parentIndex, rank, resultList, sessionIDInfo, start, t);
         } else {
-            ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField());
+            ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField().getTableBelongTo().getTableSource());
             NIOReadGroupMap<String> getter = (NIOReadGroupMap<String>) ti.loadGroup(currentKey.createKey(), Arrays.asList(relation));
             Iterator<Entry<String, GroupValueIndex>> iter = rank == BIReportConstant.SORT.ASC ? getter.iterator() : getter.previousIterator();
             while (iter.hasNext()) {
@@ -170,7 +165,7 @@ public class ControlShowValueCalculator {
                     GroupValueIndex v = entry.getValue();
                     try {
                         if (v != null && v.hasSameValue(parentIndex)) {
-                            if (start > t.i++) {
+                            if (start > t.value++) {
                                 continue;
                             }
                             resultList.add(rowValue);
@@ -189,17 +184,17 @@ public class ControlShowValueCalculator {
     private static void treeControlShowValuWhenSupperLargeGroup(BITableSourceRelation[] relation, DimensionCalculator currentKey, GroupValueIndex parentIndex, int rank, List<String> resultList, BISession sessionIDInfo, final int start, final FinalLong t) {
         final Set<String> set = new TreeSet<String>(rank == BIReportConstant.SORT.ASC
                 ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC);
-        final ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField());
-        DirectTableConnection c = BIConfUtils.creatDirectTableConnection(relation, sessionIDInfo.getLoader());
+        final ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField().getTableBelongTo().getTableSource());
+        DirectTableConnection c = BIConfUtils.createDirectTableConnection(relation, sessionIDInfo.getLoader());
         final ConnectionRowGetter getter = new ConnectionRowGetter(c);
         final BIKey index = currentKey.createKey();
         parentIndex.BrokenableTraversal(new BrokenTraversalAction() {
             @Override
             public boolean actionPerformed(int rowIndex) {
-            	int currentRow = getter.getConnectedRow(rowIndex);
+                int currentRow = getter.getConnectedRow(rowIndex);
                 String rowValue = (String) ti.getRow(index, currentRow);
                 if (rowValue != null) {
-                    if (start > t.i++) {
+                    if (start > t.value++) {
                         return false;
                     }
                     set.add(rowValue);
@@ -231,14 +226,14 @@ public class ControlShowValueCalculator {
         if (currentKey.isSupperLargeGroup(sessionIDInfo.getLoader())) {
             final Set<String> set = new TreeSet<String>(rank == BIReportConstant.SORT.ASC
                     ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC);
-            final ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField());
-            DirectTableConnection c = BIConfUtils.creatDirectTableConnection(currentKey.getRelationList(), sessionIDInfo.getLoader());
+            final ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField().getTableBelongTo().getTableSource());
+            DirectTableConnection c = BIConfUtils.createDirectTableConnection(currentKey.getRelationList(), sessionIDInfo.getLoader());
             final ConnectionRowGetter getter = new ConnectionRowGetter(c);
             final BIKey index = currentKey.createKey();
             parentIndex.BrokenableTraversal(new BrokenTraversalAction() {
                 @Override
                 public boolean actionPerformed(int rowIndex) {
-                	int currentRow = getter.getConnectedRow(rowIndex);
+                    int currentRow = getter.getConnectedRow(rowIndex);
                     String rowValue = (String) ti.getRow(index, currentRow);
                     if (rowValue != null) {
                         set.add(rowValue);
@@ -280,7 +275,7 @@ public class ControlShowValueCalculator {
                                                              String[] value,
                                                              String control_name,
                                                              BISession session, int rank, int times,
-                                                             BITableSourceRelation[][] relations, Table target) {
+                                                             BITableSourceRelation[][] relations, BusinessTable target) {
         int start = (times - 1) * MAX_STRING_ROW;
         int cnt = 0;
         final List<String> resultList = new ArrayList<String>();
@@ -295,11 +290,11 @@ public class ControlShowValueCalculator {
         DimensionCalculator currentKey = columns[value.length];
         GroupValueIndex parentIndex = session.createFilterGvi(target);
         if (parentIndex == null) {
-            parentIndex = session.getLoader().getTableIndex(target).getAllShowIndex();
+            parentIndex = session.getLoader().getTableIndex(target.getTableSource()).getAllShowIndex();
         }
         for (int i = 0; i < value.length; i++) {
             DimensionCalculator ck = columns[i];
-            ICubeTableService ti = session.getLoader().getTableIndex(ck.getField());
+            ICubeTableService ti = session.getLoader().getTableIndex(ck.getField().getTableBelongTo().getTableSource());
             NIOReadGroupMap<String> getter = (NIOReadGroupMap<String>) ti.loadGroup(ck.createKey(), Arrays.asList(relations[i]));
             GroupValueIndex gvi = getter.getGroupIndex(new String[]{value[i]})[0];
             parentIndex = parentIndex.AND(gvi);
@@ -307,7 +302,7 @@ public class ControlShowValueCalculator {
         if (parentIndex.isAllEmpty()) {
             return resultList;
         }
-        int rowCount = (int) session.getLoader().getTableIndex(target).getRowCount();
+        int rowCount = (int) session.getLoader().getTableIndex(target.getTableSource()).getRowCount();
         boolean isAllShow = parentIndex.getRowsCountWithData() == rowCount;
         if (isAllShow) {
             dealWhenAllShow(value, session, rank, relations, start, cnt, resultList, currentKey);
@@ -318,7 +313,7 @@ public class ControlShowValueCalculator {
     }
 
     private static void dealWhenAllShow(String[] value, BISession session, int rank, BITableSourceRelation[][] relations, int start, int cnt, List<String> resultList, DimensionCalculator currentKey) {
-        ICubeTableService ti = session.getLoader().getTableIndex(currentKey.getField());
+        ICubeTableService ti = session.getLoader().getTableIndex(currentKey.getField().getTableBelongTo().getTableSource());
         NIOReadGroupMap<String> getter = (NIOReadGroupMap<String>) ti.loadGroup(currentKey.createKey(), Arrays.asList(relations[value.length]));
         Iterator<Entry<String, GroupValueIndex>> iter = rank == BIReportConstant.SORT.ASC ? getter.iterator() : getter.previousIterator();
         while (iter.hasNext()) {
@@ -338,11 +333,10 @@ public class ControlShowValueCalculator {
     }
 
     /**
-     * @param columns      tree的所有字段数组
-     * @param value        当前元素的父value数组
-     * @param control_name 控件名字
-     * @param session      session
-     * @param rank         排序
+     * @param columns tree的所有字段数组
+     * @param value   当前元素的父value数组
+     * @param session session
+     * @param rank    排序
      * @return 数据
      */
     public static List<String> getStringTreeControlShowValue(DimensionCalculator[] columns,
@@ -362,7 +356,7 @@ public class ControlShowValueCalculator {
         DimensionCalculator currentKey = columns[value.length];
         GroupValueIndex parentIndex = session.createFilterGvi(targetKey.getField().getTableBelongTo());
         if (parentIndex == null) {
-            parentIndex = session.getLoader().getTableIndex(targetKey.getField()).getAllShowIndex();
+            parentIndex = session.getLoader().getTableIndex(targetKey.getField().getTableBelongTo().getTableSource()).getAllShowIndex();
         }
         for (int i = 0; i < value.length; i++) {
             DimensionCalculator ck = columns[i];
@@ -373,7 +367,7 @@ public class ControlShowValueCalculator {
         if (parentIndex.isAllEmpty()) {
             return resultList;
         }
-        int rowCount = (int) session.getLoader().getTableIndex(targetKey.getField().getTableBelongTo()).getRowCount();
+        int rowCount = (int) session.getLoader().getTableIndex(targetKey.getField().getTableBelongTo().getTableSource()).getRowCount();
         boolean isAllShow = parentIndex.getRowsCountWithData() == rowCount;
         if (isAllShow) {
             NIOReadGroupMap<String> getter = (NIOReadGroupMap<String>) currentKey.createValueMap(targetKey.getField().getTableBelongTo(), session.getLoader());

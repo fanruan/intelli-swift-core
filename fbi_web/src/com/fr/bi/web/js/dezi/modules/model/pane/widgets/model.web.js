@@ -17,10 +17,10 @@ BIDezi.WebWidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function(){
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         return false;
-    },
-
-    updateURL: function(){
-        return this.cmd("widget_setting");
     }
 });

@@ -47,7 +47,7 @@ BI.Param0DateItem = BI.inherit(BI.Single, {
         });
 
         this.firstCombo = BI.createWidget({
-            type: "bi.small_text_icon_combo",
+            type: "bi.small_text_value_combo",
             width: this.constants.comboWidth,
             height: this.constants.itemHeight,
             items: BICst.BEFORE_AFTER_COMBO

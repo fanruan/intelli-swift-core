@@ -2,7 +2,7 @@ BIDezi = FR.BIDezi = BI.Dezi = {};
 BI.extend(BIDezi, {
     _init: function (options) {
         options["popConfig"] || (options["popConfig"] = {});
-        BI.Cache.setUsername(options["_createby"]);
+        BI.Cache.setUsername(options["createBy"]);
 
         var AppRouter = BI.Router.extend({
             routes: {
@@ -10,7 +10,7 @@ BI.extend(BIDezi, {
             },
             index: function () {
                 BI.Factory.createView("", BIDezi.Views.get("/"), BI.extend({}, options, BIDezi.Models.get("")), {
-                    element: "body"
+                    element: "#wrapper"
                 }, null);
             }
         });

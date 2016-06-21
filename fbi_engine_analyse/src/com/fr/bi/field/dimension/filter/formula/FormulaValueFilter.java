@@ -3,24 +3,29 @@
  */
 package com.fr.bi.field.dimension.filter.formula;
 
-import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.report.result.SummaryValue;
 import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.BIFormularUtils;
-import com.fr.bi.stable.utils.BIMapUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class FormulaValueFilter extends AbstractDimensionFilter {
-
+    @BIIgnoreField
     private static Calculator c = Calculator.createCalculator();
+    @BICoreField
     private String expression = StringUtils.EMPTY;
 
     /* (non-Javadoc)
@@ -58,7 +63,7 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
 
     public Object calCalculateTarget(SummaryValue node, Map<String, TargetCalculator> targetsMap) {
         String formula = "=" + expression;
-        return BIFormularUtils.getCalculatorValue(c, formula, BIMapUtils.mergeMapByKeyMapValue(targetsMap, node.getSummaryValueMap()));
+        return BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetsMap, node.getSummaryValueMap()));
     }
 
     @Override
@@ -83,4 +88,6 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
     public int hashCode() {
         return expression != null ? expression.hashCode() : 0;
     }
+
+
 }

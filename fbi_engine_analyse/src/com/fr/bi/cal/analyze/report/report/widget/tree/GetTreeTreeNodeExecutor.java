@@ -1,5 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
+import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -18,9 +21,13 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
     private String checkStateString;
     private String parentValuesString;
 
+    public GetTreeTreeNodeExecutor(TreeWidget widget, Paging paging, BISession session) {
+        super(widget, paging, session);
+    }
 
-    public void parseJSON(JSONObject jo, List<List<String>> dataList) throws JSONException {
-        super.parseJSON(jo, dataList);
+
+    public void parseJSON(JSONObject jo) throws JSONException {
+        super.parseJSON(jo);
         if (jo.has("id")) {
             id = jo.getString("id");
         }
@@ -231,9 +238,7 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
     }
 
     private int getChildCount(String[] values) throws JSONException {
-//        List<String> targetDataList = getTargetDataList().get(values.length);
-        List<String> targetDataList = valueList.get(values.length);
-        return targetDataList.size();
+        return createData(values,-1).size();
     }
 
 

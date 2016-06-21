@@ -2,6 +2,7 @@ package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
 import com.fr.bi.field.target.key.cal.configuration.BIPeriodCalTargetKey;
+import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -20,8 +21,8 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
     private static final long serialVersionUID = 550160604753618347L;
     private int type = BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.VALUE;
 
-    public PeriodConfigureCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group, int period_type) {
-        super(target, cal_target_name, start_group);
+    public PeriodConfigureCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group, int period_type) {
+        super(target, target_id, start_group);
         this.type = period_type;
     }
     //TODO 待测试
@@ -34,11 +35,14 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
     @Override
     public void calCalculateTarget(LightNode node) {
         Object key = getCalKey();
+        int deep = getCalDeep(node);
         if (key == null) {
             return;
         }
         LightNode tempNode = node;
-        for (int i = 0; i < start_group + 1; i++) {
+        //从第几个纬度开始计算
+        int calDeep = start_group == 0 ? deep - 1 : deep;
+        for (int i = 0; i < calDeep; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
@@ -51,21 +55,21 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
             nodeList.add(new RankDealWith(last_node, cursor_node));
             last_node = cursor_node;
             cursor_node = cursor_node.getSibling();
-        }
-        for (int i = 0; i < nodeList.size(); i++) {
+            if (cursor_node != null && start_group == 0 && !ComparatorUtils.equals(last_node.getParent(), cursor_node.getParent())) {
+                last_node = null;
+            }
             try {
-                nodeList.get(nodeList.size() - i - 1).call();
-            } catch (Exception e) {
+                CubeBaseUtils.invokeCalculatorThreads(nodeList);
+            } catch (InterruptedException e) {
                 FRContext.getLogger().error(e.getMessage(), e);
             }
         }
-
 
     }
 
     @Override
     public BITargetKey createTargetKey() {
-        return new BIPeriodCalTargetKey(targetName, cal_target_name, targetMap, start_group);
+        return new BIPeriodCalTargetKey(targetName, target_id, targetMap, start_group);
     }
 
     /**
@@ -130,20 +134,23 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 }
                 Object value = getValueFromLast(way);
                 if (value != null) {
-                    cursor_node.setSummaryValue(createTargetGettingKey(), value);
-                }
-                Number siblingValue = cursor_node.getSummaryValue(getCalKey());
-                cursor_node = cursor_node.getSibling();
-                Number currentValue = cursor_node.getSummaryValue(getCalKey());
-                if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                    Iterator<Map.Entry> it = cursor_node.getSummaryValueMap().entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry entry = it.next();
-                        if (!ComparatorUtils.equals(entry.getKey(), getCalKey())) {
-                            cursor_node.setSummaryValue(entry.getKey(), currentValue.doubleValue() / siblingValue.doubleValue());
+                    if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
+                        Object key = getCalKey();
+                        String targetName = ((TargetGettingKey) key).getTargetName();
+                        BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
+                        double currentValue;
+                        if (targetKey instanceof AvgKey) {
+                            currentValue = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
+                        } else {
+                            currentValue = cursor_node.getSummaryValue(key).doubleValue();
                         }
+                        cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
+                    } else {
+                        cursor_node.setSummaryValue(createTargetGettingKey(), value);
                     }
+
                 }
+                cursor_node = cursor_node.getSibling();
             }
             return null;
         }
@@ -164,7 +171,15 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 return null;
             } else {
                 Object key = getCalKey();
-                return n.getSummaryValue(key);
+                String targetName = ((TargetGettingKey) key).getTargetName();
+                BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
+                Number value;
+                if (targetKey instanceof AvgKey) {
+                    value = getAvgValue(targetName, (AvgKey) targetKey, n);
+                } else {
+                    value = n.getSummaryValue(key);
+                }
+                return value;
             }
         }
 
@@ -248,6 +263,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
             }
             return temp == current_node;
         }
+
 
     }
 }

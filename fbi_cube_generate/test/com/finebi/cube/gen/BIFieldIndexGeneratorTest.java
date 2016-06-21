@@ -2,18 +2,18 @@ package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
-import com.finebi.cube.structure.BICubeTableEntity;
+import com.finebi.cube.structure.ICubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnReaderService;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;
-import com.finebi.cube.structure.group.BICubeStringGroupData;
-import com.finebi.cube.tools.BIMemDataSourceTestTool;
+import com.finebi.cube.structure.table.BICubeTableEntity;
+import com.finebi.cube.tools.BIMemDataSourceTestToolCube;
 import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
 import com.finebi.cube.utils.BITableKeyUtils;
-import com.fr.bi.stable.data.db.DBField;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
@@ -29,26 +29,38 @@ import java.util.*;
 public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 
     private BIFieldIndexGenerator fieldIndexGenerator;
-    private BIMemDataSourceTestTool tableSource;
+    private BIMemDataSourceTestToolCube tableSource;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        tableSource = new BIMemDataSourceTestTool();
-        tableEntity = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableSource));
+        tableSource = new BIMemDataSourceTestToolCube();
+        tableEntity = (BICubeTableEntity) cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
     }
 
-    public void fieldIndexGenerator(ITableSource tableSource, int columnIndex) {
+    public static void buildFieldIndex(BIMemoryDataSource... tables) {
+        BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
+
+        BIFieldIndexGeneratorTest fieldIndexGenerator = new BIFieldIndexGeneratorTest();
+        for (BIMemoryDataSource source : tables) {
+            transportTest.transport(source);
+            for (int i = 0; i < source.contents.size(); i++) {
+                fieldIndexGenerator.fieldIndexGenerator(source, i);
+            }
+        }
+    }
+
+    public void fieldIndexGenerator(CubeTableSource tableSource, int columnIndex) {
         try {
             setUp();
             BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
             transportTest.transport(tableSource);
-            DBField field = tableSource.getFieldsArray(null)[columnIndex];
+            ICubeFieldSource field = tableSource.getFieldsArray(null)[columnIndex];
             Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
             while (columnKeyIterator.hasNext()) {
                 BIColumnKey columnKey = columnKeyIterator.next();
                 BIFieldIndexGenerator fieldIndexGenerator = new BIFieldIndexGenerator(cube, tableSource, tableSource.getFieldsArray(null)[columnIndex], columnKey);
-                fieldIndexGenerator.mainTask();
+                fieldIndexGenerator.mainTask(null);
             }
 
         } catch (Exception e) {
@@ -62,7 +74,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             fieldIndexGenerator(tableSource, 1);
             ICubeColumnReaderService columnReaderService = tableEntity.getColumnDataGetter(BIColumnKey.covertColumnKey(tableSource.getFieldsArray(null)[1]));
             List<String> content = duplicateRemove(tableSource.stringData);
-            Collections.sort(content, new BICubeStringGroupData(null).getGroupComparator());
+            Collections.sort(content, ComparatorFacotry.CHINESE_ASC);
             for (int i = 0; i < content.size(); i++) {
                 assertEquals(content.get(i), columnReaderService.getGroupValue(i));
                 String one = content.get(i);
@@ -78,8 +90,8 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
     public void testFieldIndexDate() {
         try {
             BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
             fieldIndexGenerator(tableData, 0);
+            ICubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
             ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIColumnKey.covertColumnKey(tableData.getFieldsArray(null)[0]));
             List<Long> content = duplicateLongRemove(tableData.contents.get(0));
             Collections.sort(content, ComparatorFacotry.LONG_ASC);
@@ -98,9 +110,9 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
     public void testFieldIndexDateYear() {
         try {
             BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
             fieldIndexGenerator(tableData, 0);
-            DBField field = tableData.getFieldsArray(null)[0];
+            ICubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
+            ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateYear(field));
             assertEquals(1991, columnReaderService.getGroupValue(0));
             assertEquals(1992, columnReaderService.getGroupValue(1));
@@ -114,9 +126,9 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
     public void testFieldIndexDateYearIndex() {
         try {
             BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
             fieldIndexGenerator(tableData, 0);
-            DBField field = tableData.getFieldsArray(null)[0];
+            ICubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
+            ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateYear(field));
             assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{5}), columnReaderService.getBitmapIndex(0));
             assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0, 1, 2, 3, 4}), columnReaderService.getBitmapIndex(1));
@@ -131,9 +143,10 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
     public void testFieldIndexDateMonth() {
         try {
             BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
             fieldIndexGenerator(tableData, 0);
-            DBField field = tableData.getFieldsArray(null)[0];
+            ICubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
+
+            ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateMonth(field));
             assertEquals(6, columnReaderService.getGroupValue(0));
             assertEquals(7, columnReaderService.getGroupValue(1));
@@ -147,9 +160,10 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
     public void testFieldIndexDateMonthIndex() {
         try {
             BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
             fieldIndexGenerator(tableData, 0);
-            DBField field = tableData.getFieldsArray(null)[0];
+            ICubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
+
+            ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateMonth(field));
             assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{5}), columnReaderService.getBitmapIndex(0));
             assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0, 1, 2, 3, 4}), columnReaderService.getBitmapIndex(1));
@@ -164,9 +178,10 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
     public void testFieldIndexDateDay() {
         try {
             BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
             fieldIndexGenerator(tableData, 0);
-            DBField field = tableData.getFieldsArray(null)[0];
+            ICubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
+
+            ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateDay(field));
             assertEquals(6, columnReaderService.getGroupValue(0));
             assertEquals(9, columnReaderService.getGroupValue(1));
@@ -182,9 +197,10 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
     public void testFieldIndexDateDayIndex() {
         try {
             BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
             fieldIndexGenerator(tableData, 0);
-            DBField field = tableData.getFieldsArray(null)[0];
+            ICubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
+
+            ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateDay(field));
             assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0}), columnReaderService.getBitmapIndex(0));
             assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1}), columnReaderService.getBitmapIndex(1));
@@ -200,9 +216,10 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
     public void testFieldIndexDateWeek() {
         try {
             BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
             fieldIndexGenerator(tableData, 0);
-            DBField field = tableData.getFieldsArray(null)[0];
+            ICubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
+
+            ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateWeek(field));
             assertEquals(1, columnReaderService.getGroupValue(0));
             assertEquals(2, columnReaderService.getGroupValue(1));
@@ -218,9 +235,10 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
     public void testFieldIndexDateSeason() {
         try {
             BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
             fieldIndexGenerator(tableData, 0);
-            DBField field = tableData.getFieldsArray(null)[0];
+            ICubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
+
+            ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateSeason(field));
             assertEquals(3, columnReaderService.getGroupValue(0));
         } catch (Exception e) {
@@ -232,7 +250,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 //    public void testFieldIndexDateYearMonthDay() {
 //        try {
 //            BIMemoryDataSource tableData = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableDate();
-//            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convert(tableData));
+//            BICubeTableEntity dataTable = (BICubeTableEntity) cube.getCubeTable(BITableKeyUtils.convetTableRealtionToTableSourceRealtion(tableData));
 //            fieldIndexGenerator(tableData, 0);
 //            DBField field = tableData.getFieldsArray(null)[0];
 //            ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(field));
@@ -250,7 +268,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             fieldIndexGenerator(tableSource, 1);
             ICubeColumnReaderService columnReaderService = tableEntity.getColumnDataGetter(BIColumnKey.covertColumnKey(tableSource.getFieldsArray(null)[1]));
             List<String> content = duplicateRemove(tableSource.stringData);
-            Collections.sort(content, new BICubeStringGroupData(null).getGroupComparator());
+            Collections.sort(content, ComparatorFacotry.CHINESE_ASC);
 
             for (int i = 0; i < tableSource.stringData.size(); i++) {
                 String one = (String) columnReaderService.getOriginalValueByRow(i);

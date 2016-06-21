@@ -1,7 +1,5 @@
 package com.finebi.cube.structure;
 
-import com.fr.bi.stable.data.source.ITableSource;
-
 /**
  * This class created on 2016/4/6.
  *

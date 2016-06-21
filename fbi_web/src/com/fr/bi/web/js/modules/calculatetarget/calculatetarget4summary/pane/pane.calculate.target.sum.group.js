@@ -15,7 +15,9 @@ BI.CalculateTargetSumGroupPane = BI.inherit(BI.CalculateTargetAbstractGroupPane,
     _refreshLabel: function () {
         var self = this, o = this.options;
         this.logicPane.empty();
-        BI.each(o.model.getDimDimensionIDs(), function (i, dId) {
+        var dimDimensionIDs = o.model.getDimDimensionIDs();
+        var lastDimensionId = dimDimensionIDs.pop();
+        BI.each(dimDimensionIDs, function (i, dId) {
             var dimensionName = BI.Utils.getDimensionNameByID(dId);
             var label = BI.createWidget({
                 type: "bi.label",
@@ -25,6 +27,13 @@ BI.CalculateTargetSumGroupPane = BI.inherit(BI.CalculateTargetAbstractGroupPane,
             label.setValue(BI.i18nText("BI-Calculate_Target_Include_In_Same", dimensionName));
             self.logicPane.addItem(label);
         });
+        var lastDimensionLabel = BI.createWidget({
+            type: "bi.label",
+            textAlign: "left",
+            textHeight: 30
+        });
+        lastDimensionLabel.setValue(BI.i18nText("BI-Calculate_Target_Sum", BI.Utils.getDimensionNameByID(lastDimensionId)));
+        this.logicPane.addItem(lastDimensionLabel);
         var lastLabel = BI.createWidget({
             type: "bi.label",
             textAlign: "left",
@@ -50,14 +59,14 @@ BI.CalculateTargetSumGroupPane = BI.inherit(BI.CalculateTargetAbstractGroupPane,
 
     setValue: function (expression) {
         this.principleCombo.setValue(expression.summary_type);
-        this.valueCombo.setValue(expression.cal_target_name);
+        this.valueCombo.setValue(expression.ids);
         this._refreshLabel();
     },
 
     getValue: function () {
         var result = {};
         result.summary_type = this.principleCombo.getValue()[0];
-        result.cal_target_name = this.valueCombo.getValue()[0];
+        result.ids = this.valueCombo.getValue();
         return result;
     }
 

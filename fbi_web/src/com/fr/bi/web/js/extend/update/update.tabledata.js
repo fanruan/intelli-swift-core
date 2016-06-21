@@ -38,13 +38,17 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.update_single_table_setting",
                 element: center,
                 table: this.model.getTableBySourceTableId(tableId),
-                update_setting: this.model.getUpdateSettingBySourceTableId(tableId),
+                currentTable:self.model.table,
+                update_setting: this.model.getUpdateSettingBySourceTableId(tableId)
             });
             setting.on(BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW, function(){
                 BI.Popovers.close(self.model.getId());
             });
             setting.on(BI.UpdateSingleTableSetting.EVENT_CLOSE_PREVIEW, function(){
                 BI.Popovers.open(self.model.getId());
+            });
+            setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function(obj){
+                self.fireEvent(BI.UpdateTableData.EVENT_CUBE_SAVE,obj);
             });
             this.settings[tableIds[0]] = setting;
         } else {
@@ -82,10 +86,8 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                         var setting = BI.createWidget({
                             type: "bi.update_single_table_setting",
                             table: self.model.getTableBySourceTableId(id),
+                            currentTable:self.model.table,
                             update_setting: self.model.getUpdateSettingBySourceTableId(id)
-                        });
-                        setting.on(BI.UpdateSingleTableSetting.EVENT_CHANGE, function(){
-                             
                         });
                         self.settings[id] = setting;
                         return BI.createWidget({
@@ -129,5 +131,7 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
         return settings;
     }
 });
+
 BI.UpdateTableData.EVENT_SAVE = "EVENT_SAVE";
+BI.UpdateTableData.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 $.shortcut("bi.update_table_data", BI.UpdateTableData);

@@ -1,0 +1,15 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****添加计算宽度的--运算符直接需要space****/
+.bi-plate-hangout-report {
+  color: #808080;
+}
+.bi-plate-hangout-report .config-name {
+  font-size: 14px;
+}
+.bi-plate-hangout-report .report-name {
+  border: 1px solid #d4dadd;
+}
+.bi-plate-hangout-report .report-description {
+  border: 1px solid #d4dadd;
+}

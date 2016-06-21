@@ -133,13 +133,12 @@ ExcelTableView = BI.inherit(BI.View, {
                 dynamic: false
             },
             stopPropagation: true,
-            maxWidth: BI.MAX,
-            maxHeight: BI.MAX,
             el: table1
         });
         popup.element.css({"top": "50px", left: "50px", bottom: "50px", right: "50px"});
         var combo = BI.createWidget({
             type: "bi.combo",
+            isNeedAdjustWidth: false,
             adjustLength: 20,
             el: {
                 type: "bi.button",

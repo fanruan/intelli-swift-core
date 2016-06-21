@@ -1,10 +1,12 @@
 package com.fr.bi.cal.stable.cube.memory;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.AbstractCubeFile;
 import com.fr.bi.cal.stable.cube.ColumnFiles;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.DBField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.file.IndexFile;
@@ -12,8 +14,6 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.*;
@@ -22,12 +22,13 @@ import java.util.*;
  * Created by 小灰灰 on 2016/1/13.
  */
 public class MemoryCubeFile extends AbstractCubeFile {
-    private DBField[] dbFields;
+    private ICubeFieldSource[] BICubeFieldSources;
     private int rowCount;
     private static final String UNSUPPORT = "Memory Cube Not Support Link";
 
-    public MemoryCubeFile(DBField[] dbFields) {
-        this.dbFields = dbFields;
+    public MemoryCubeFile(ICubeFieldSource[] BICubeFieldSources) {
+        this.BICubeFieldSources = BICubeFieldSources;
+        initColumns();
     }
 
 
@@ -73,8 +74,8 @@ public class MemoryCubeFile extends AbstractCubeFile {
     }
 
     @Override
-    public DBField[] getBIField() {
-        return dbFields;
+    public ICubeFieldSource[] getBIField() {
+        return BICubeFieldSources;
     }
 
     @Override
@@ -114,7 +115,7 @@ public class MemoryCubeFile extends AbstractCubeFile {
 
     @Override
     public Date getCubeLastTime() {
-        throw new UnsupportedOperationException(UNSUPPORT);
+        return new Date();
     }
 
     @Override
@@ -174,11 +175,11 @@ public class MemoryCubeFile extends AbstractCubeFile {
         }
         synchronized (this) {
             if (columns == null) {
-                DBField[] fields = getBIField();
+                ICubeFieldSource[] fields = getBIField();
                 ColumnFile<?>[] columns = new ColumnFile[fields.length];
                 Map<String, Integer> colIndexMap = new HashMap<String, Integer>(fields.length);
                 for (int i = 0, ilen = fields.length; i < ilen; i++) {
-                    DBField field = fields[i];
+                    ICubeFieldSource field = fields[i];
                     colIndexMap.put(field.getFieldName(), i);
                     switch (field.getFieldType()) {
                         case DBConstant.COLUMN.DATE:
@@ -187,12 +188,13 @@ public class MemoryCubeFile extends AbstractCubeFile {
                         case DBConstant.COLUMN.NUMBER:
                             switch (field.getClassType()) {
                                 case DBConstant.CLASS.INTEGER:
+                                    columns[i] = new MemoryIntegerColumn();
                                 case DBConstant.CLASS.LONG: {
                                     columns[i] = new MemoryLongColumn();
                                     break;
                                 }
                                 default: {
-                                    columns[i] = new MemoryDoubleColum();
+                                    columns[i] = new MemoryDoubleColumn();
                                     break;
                                 }
                             }

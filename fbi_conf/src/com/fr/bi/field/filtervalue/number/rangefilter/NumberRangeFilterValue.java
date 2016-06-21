@@ -2,9 +2,11 @@ package com.fr.bi.field.filtervalue.number.rangefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.filter.NullFilterDealer;
+import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.data.number.NumberGroupInfo;
@@ -21,19 +23,26 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.Iterator;
 import java.util.Map;
 
-public abstract class NumberRangeFilterValue implements NumberFilterValue, NullFilterDealer {
+public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number> implements NumberFilterValue, NullFilterDealer {
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 2172074040987661868L;
+     *
+     */
+    private static final long serialVersionUID = 2172074040987661868L;
 
-	private static String XML_TAG = "NumberRangeFilterValue";
+    private static String XML_TAG = "NumberRangeFilterValue";
 
+    @BICoreField
     protected double min;
+    @BICoreField
     protected boolean closemin;
-
+    @BICoreField
     protected double max;
+    @BICoreField
     protected boolean closemax;
+    @Override
+    public boolean isAllCalculatorFilter() {
+        return false;
+    }
 
     /**
      * 解析json
@@ -94,8 +103,9 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
             jo.put("max", this.max);
             jo.put("closemax", this.closemax);
         }
-
-        return jo;
+        JSONObject resjo = new JSONObject();
+        resjo.put("filter_value", jo);
+        return resjo;
     }
 
     /**
@@ -136,12 +146,12 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
      * @return 过滤索引
      */
     @Override
-    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, Table target, ICubeDataLoader loader, long userId) {
+    public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         if (min > max) {
             return GVIFactory.createAllEmptyIndexGVI();
         }
         NumberGroupInfo gi = NumberGroupInfo.createGroupInfo(min, closemin, max, closemax);
-        ICubeTableService ti = loader.getTableIndex(dimension.getField());
+        ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource());
         if (dimension.getRelationList() == null) {
             return ti.getAllShowIndex();
         }
@@ -151,7 +161,7 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
             Map.Entry entry = (Map.Entry) it.next();
             Number v = (Number) entry.getKey();
             GroupValueIndex g = (GroupValueIndex) entry.getValue();
-            if (gi.contains(v.doubleValue())) {
+            if (v != null && gi.contains(v.doubleValue())) {
                 if (gvi == null) {
                     gvi = g;
                 } else {
@@ -159,20 +169,20 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
                 }
             }
         }
-        if(gvi == null){
+        if (gvi == null) {
             return GVIFactory.createAllEmptyIndexGVI();
         }
         return gvi;
     }
 
-    
-	@Override
-	public boolean isMatchValue(Number value) {
-		if(value == null){
-			return dealWithNullValue();
-		}
-		return matchValue(value.doubleValue());
-	}
+
+    @Override
+    public boolean isMatchValue(Number value) {
+        if (value == null) {
+            return dealWithNullValue();
+        }
+        return matchValue(value.doubleValue());
+    }
 //    /**
 //     * 是否符合条件
 //     *
@@ -195,6 +205,7 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
 //        return flag1 && flag2;
 //    }
 //    
+
     /**
      * 是否显示记录
      *
@@ -211,7 +222,7 @@ public abstract class NumberRangeFilterValue implements NumberFilterValue, NullF
         return matchValue(targetValue.doubleValue());
     }
 
-    
+
     protected abstract boolean matchValue(double v);
 
     /**

@@ -1,8 +1,8 @@
 package com.fr.bi.conf.base.login;
 
+import com.finebi.cube.conf.pack.XMLConfigureGenerator;
 import com.fr.bi.common.container.BIStableMapContainer;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.conf.base.pack.XMLConfigureGenerator;
 import com.fr.bi.conf.manager.userInfo.manager.LoginUserInfoManager;
 import com.fr.bi.conf.provider.BIUserLoginInformationProvider;
 import com.fr.bi.exception.BIKeyAbsentException;

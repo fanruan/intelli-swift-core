@@ -17,18 +17,22 @@ import java.util.concurrent.Callable;
 public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator {
     private static final long serialVersionUID = 4448457069572400146L;
 
-    public SummaryOfAllCalculator(BIConfiguredCalculateTarget target, String cal_target_name, int start_group) {
-        super(target, cal_target_name, start_group);
+    public SummaryOfAllCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
+        super(target, target_id, start_group);
     }
 
     @Override
     public void calCalculateTarget(LightNode node) {
         Object key = getCalKey();
+        //获得当前node的纬度数
+        int deep = getCalDeep(node);
         if (key == null) {
             return;
         }
         LightNode tempNode = node;
-        for (int i = 0; i < start_group; i++) {
+        //从第几个纬度开始计算
+        int calDeep = start_group == 0 ? 0 : deep - start_group;
+        for (int i = 0; i < calDeep; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
@@ -77,14 +81,6 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
 
     public abstract Callable createNodeDealWith(BICrossNode node);
 
-    /**
-     * 在第几个维度上汇总，暂时写死为1
-     *
-     * @return
-     */
-    protected int getCalDeep() {
-        return 1;
-    }
 
     protected LightNode getFirstCalNode(LightNode rank_node) {
         LightNode temp_node = rank_node;
@@ -101,4 +97,17 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
         }
         return temp_node;
     }
+
+    protected LightNode getDeepCalNode(LightNode rank_node) {
+        LightNode temp_node = rank_node;
+        for (int i = 0; i < getCalDeep(rank_node); i++) {
+            if (temp_node.getFirstChild() != null) {
+                temp_node = temp_node.getFirstChild();
+            }
+        }
+        return temp_node;
+    }
+
+
+
 }

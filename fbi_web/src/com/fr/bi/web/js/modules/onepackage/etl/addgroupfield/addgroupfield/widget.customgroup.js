@@ -400,9 +400,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
                                 textHeight: 30
                             }
                         ],
-                        element: BI.Maskers.create(self.getName(), self, {
-                            container: self
-                        })
+                        element: BI.Maskers.make(self.getName(), self)
                     });
                 }
                 BI.Maskers.show(self.getName());

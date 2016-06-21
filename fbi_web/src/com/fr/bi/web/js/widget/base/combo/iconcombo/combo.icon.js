@@ -10,6 +10,17 @@ BI.IconCombo = BI.inherit(BI.Widget, {
             baseCls: "bi-icon-combo",
             width: 25,
             height: 25,
+            iconClass: "",
+            el: {},
+            popup: {},
+            minWidth: 100,
+            maxWidth: 'auto',
+            maxHeight: 300,
+            direction: "bottom",
+            adjustLength: 3,//调整的距离
+            adjustXOffset: 0,
+            adjustYOffset: 0,
+            offsetStyle: "left",
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
         })
     },
@@ -17,13 +28,17 @@ BI.IconCombo = BI.inherit(BI.Widget, {
     _init: function () {
         BI.IconCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.trigger = BI.createWidget({
+        this.trigger = BI.createWidget(o.el, {
             type: "bi.icon_combo_trigger",
+            iconClass: o.iconClass,
+            title: o.title,
             items: o.items,
             width: o.width,
-            height: o.height
+            height: o.height,
+            iconWidth: o.iconWidth,
+            iconHeight: o.iconHeight
         });
-        this.popup = BI.createWidget({
+        this.popup = BI.createWidget(o.popup, {
             type: "bi.icon_combo_popup",
             chooseType: o.chooseType,
             items: o.items
@@ -39,12 +54,17 @@ BI.IconCombo = BI.inherit(BI.Widget, {
         this.iconCombo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
-            adjustLength: 3,
+            direction: o.direction,
+            adjustLength: o.adjustLength,
+            adjustXOffset: o.adjustXOffset,
+            adjustYOffset: o.adjustYOffset,
+            offsetStyle: o.offsetStyle,
             el: this.trigger,
             popup: {
                 el: this.popup,
-                maxWidth: "",
-                maxHeight: 300
+                maxWidth: o.maxWidth,
+                maxHeight: o.maxHeight,
+                minWidth: o.minWidth
             }
         });
     },

@@ -89,10 +89,10 @@ BI.SwitchTree = BI.inherit(BI.Widget, {
     populate: function (items) {
         this.options.items = items;
         if (BI.isNotNull(this.levelTree)) {
-            this.levelTree.populate(items);
+            this.levelTree.populate(BI.deepClone(items));
         }
         if (BI.isNotNull(this.tree)) {
-            this.tree.populate(items);
+            this.tree.populate(BI.deepClone(items));
         }
     }
 });

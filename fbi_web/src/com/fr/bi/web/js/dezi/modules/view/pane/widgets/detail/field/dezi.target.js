@@ -2,7 +2,6 @@
  * Created by GUY on 2015/7/3.
  */
 BIDezi.TargetView = BI.inherit(BI.View, {
-
     constants: {
         TARGET_BUTTON_HEIGHT: 25,
         COMBO_WIDTH: 25,
@@ -113,16 +112,20 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             type: "bi.target_combo",
             dId: this.model.get("id")
         });
-        this.combo.on(BI.TargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.TARGET_COMBO.SUMMERY_TYPE:
-                    self.model.set("group", {type: v});
+                    self.model.set("group", {type: s});
                     break;
                 case BICst.TARGET_COMBO.CHART_TYPE:
                     self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:
-                    self._buildStyleSettingPane();
+                    if(s === BICst.TARGET_COMBO.CORDON){
+                        self._buildCordonPane();
+                    }else{
+                        self._buildStyleSettingPane();
+                    }
                     break;
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
@@ -145,16 +148,26 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             type: "bi.count_target_combo",
             dId: this.model.get("id")
         });
-        this.combo.on(BI.CountTargetCombo.EVENT_CHANGE, function (v, s) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.TARGET_COMBO.DEPEND_TYPE:
                     self.model.set("_src", {
-                        field_id: s
-                    });
+                            field_id: s,
+                            table_id: BI.Utils.getTableIdByFieldID(s)
+                        }
+                    )
+                    ;
                     break;
-                case BICst.TARGET_COMBO.CHART_TYPE:
+                case
+                BICst.TARGET_COMBO.CHART_TYPE:
+                    self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:
+                    if(s === BICst.TARGET_COMBO.CORDON){
+                        self._buildCordonPane();
+                    }else{
+                        self._buildStyleSettingPane();
+                    }
                     break;
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
@@ -173,26 +186,39 @@ BIDezi.TargetView = BI.inherit(BI.View, {
     createCalculateCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.calculate_target_combo"
+            type: "bi.calculate_target_combo",
+            dId: this.model.get("id")
         });
-        this.combo.on(BI.CalculateTargetCombo.EVENT_CHANGE, function (v) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.CALCULATE_TARGET_COMBO.FORM_SETTING:
+                    self._buildStyleSettingPane();
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET:
                     self._updateTarget();
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.HIDDEN:
+                    self.model.set("used", false);
+                    break;
+                case BICst.CALCULATE_TARGET_COMBO.DISPLAY:
+                    self.model.set("used", true);
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.DELETE:
                     self._deleteTarget();
                     break;
+                case BICst.CALCULATE_TARGET_COMBO.RENAME:
+                    self.editor.focus();
+                    break;
+                case BICst.CALCULATE_TARGET_COMBO.COPY:
+                    self._copyTarget();
+                    break;
+
             }
         });
 
         this.calculateTargetButton = BI.createWidget({
             type: "bi.icon_button",
-            cls:"calculate-target-font",
+            cls: "calculate-target-font",
             height: this.constants.DIMENSION_BUTTON_HEIGHT
 
         });
@@ -247,6 +273,20 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         });
         popup.on(BI.TargetFilterPopup.EVENT_CHANGE, function (v) {
             self.model.set("filter_value", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
+    },
+
+    _buildCordonPane: function(){
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.cordon_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.CordonPopup.EVENT_CHANGE, function (v) {
+            self.model.set("cordon", v);
         });
         BI.Popovers.create(id, popup).open(id);
         popup.populate();

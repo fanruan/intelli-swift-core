@@ -10,10 +10,6 @@
  */
 BI.Table = BI.inherit(BI.Widget, {
 
-    _const: {
-        delta: 120
-    },
-
     _defaultConfig: function () {
         return BI.extend(BI.Table.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-table",
@@ -51,6 +47,9 @@ BI.Table = BI.inherit(BI.Widget, {
             return "";
         }
         width = BI.parseFloat(width);
+        if (width < 0) {
+            width = 0;
+        }
         return width > 1.01 ? width : (width * 100 + "%");
     },
 
@@ -289,15 +288,64 @@ BI.Table = BI.inherit(BI.Widget, {
         });
 
         if (o.isNeedResize) {
+            var resizer;
+            var createResizer = function (size, position) {
+                var rowSize = self.getCalculateRegionRowSize();
+                resizer = BI.createWidget({
+                    type: "bi.layout",
+                    cls: "bi-resizer",
+                    width: size.width,
+                    height: rowSize[0] + rowSize[1]
+                });
+                BI.createWidget({
+                    type: "bi.absolute",
+                    element: "body",
+                    items: [{
+                        el: resizer,
+                        left: position.left,
+                        top: position.top - rowSize[0]
+                    }]
+                });
+            };
+            var resizeResizer = function (size, position) {
+                var rowSize = self.getCalculateRegionRowSize();
+                var columnSize = self.getCalculateRegionColumnSize();
+                var height = rowSize[0] + rowSize[1];
+                var sumSize = columnSize[0] + columnSize[1];
+                if (size.width > sumSize / 5 * 4) {
+                    size.width = sumSize / 5 * 4;
+                }
+                if (size.width < sumSize / 5) {
+                    size.width = sumSize / 5;
+                }
+                resizer.element.css({
+                    "left": position.left + "px",
+                    "width": size.width + "px",
+                    "height": height + "px"
+                });
+            };
+            var stopResizer = function () {
+                resizer && resizer.destroy();
+                resizer = null;
+            };
             var handle;
             if (isRight) {
                 var options = {
                     handles: "w",
                     minWidth: 15,
+                    helper: "clone",
                     start: function (event, ui) {
+                        createResizer(ui.size, ui.position);
                         self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
                     },
                     resize: function (e, ui) {
+                        resizeResizer(ui.size, ui.position);
+                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
+                        e.stopPropagation();
+                        //return false;
+                    },
+                    stop: function (e, ui) {
+                        stopResizer();
                         if (o.isResizeAdapt) {
                             var increment = ui.size.width - (BI.sum(self.columnRight) + self.columnRight.length);
                             o.columnSize[self.columnLeft.length] += increment;
@@ -306,11 +354,6 @@ BI.Table = BI.inherit(BI.Widget, {
                         }
                         self._resize();
                         ui.element.css("left", "");
-                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
-                        e.stopPropagation();
-                        return false;
-                    },
-                    stop: function (e, ui) {
                         self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                     }
                 };
@@ -320,10 +363,19 @@ BI.Table = BI.inherit(BI.Widget, {
                 var options = {
                     handles: "e",
                     minWidth: 15,
+                    helper: "clone",
                     start: function (event, ui) {
+                        createResizer(ui.size, ui.position);
                         self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
                     },
                     resize: function (e, ui) {
+                        resizeResizer(ui.size, ui.position);
+                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
+                        e.stopPropagation();
+                        //return false;
+                    },
+                    stop: function (e, ui) {
+                        stopResizer();
                         if (o.isResizeAdapt) {
                             var increment = ui.size.width - (BI.sum(self.columnLeft) + self.columnLeft.length);
                             o.columnSize[self.columnLeft.length - 1] += increment;
@@ -331,11 +383,6 @@ BI.Table = BI.inherit(BI.Widget, {
                             self.setRegionColumnSize([ui.size.width, "fill"]);
                         }
                         self._resize();
-                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
-                        e.stopPropagation();
-                        return false;
-                    },
-                    stop: function (e, ui) {
                         self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                     }
                 };
@@ -368,15 +415,41 @@ BI.Table = BI.inherit(BI.Widget, {
 
         scroll(this.scrollBottomRight.element, this.scrollTopRight.element, this.scrollBottomLeft.element);
         scroll(this.scrollBottomLeft.element, this.scrollTopLeft.element, this.scrollBottomRight.element);
+
         function scroll(scrollElement, scrollTopElement, otherElement) {
+            var scrolling;
             var fn = function (event, delta, deltaX, deltaY) {
-                if (deltaY === -1 || deltaY === 1) {
-                    var old = scrollElement[0].scrollTop;
-                    var scrollTop = otherElement[0].scrollTop - delta * self._const.delta;
-                    otherElement[0].scrollTop = scrollTop;
-                    scrollElement[0].scrollTop = scrollTop;
-                    self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
-                    if (Math.abs(old - scrollElement[0].scrollTop) > 0.1) {
+                var inf = self._getScrollOffsetAndDur(event);
+                if (deltaY < 0 || deltaY > 0) {
+                    if (scrolling) {
+                        otherElement[0].scrollTop = scrolling;
+                    }
+                    scrolling = otherElement[0].scrollTop - delta * inf.offset;
+                    var stopPropagation = false;
+                    var st = otherElement[0].scrollTop;
+                    otherElement[0].scrollTop = scrolling;
+                    if (otherElement[0].scrollTop !== scrollTop) {
+                        stopPropagation = true;
+                    }
+                    otherElement[0].scrollTop = st;
+                    self._animateScrollTopTo(otherElement, otherElement[0].scrollTop, scrolling, inf.dur, "linear", {
+                        onStart: function () {
+                        },
+                        onUpdate: function (top) {
+                            scrollElement[0].scrollTop = top;
+                            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, top);
+                        },
+                        onComplete: function () {
+                            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrolling);
+                            scrolling = null;
+                        }
+                    });
+
+
+                    //otherElement[0].scrollTop = scrollTop;
+                    //scrollElement[0].scrollTop = scrollTop;
+                    //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                    if (stopPropagation === true) {
                         event.stopPropagation();
                         return false;
                     }
@@ -407,7 +480,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
                 if (change === true) {
                     e.stopPropagation();
-                    return false;
+                    //return false;
                 }
             });
         }
@@ -436,6 +509,9 @@ BI.Table = BI.inherit(BI.Widget, {
                 } else {
                     self.scrollTopLeft.element.css("overflow-y", "hidden");
                 }
+                self.scrollTopLeft.element[0].scrollLeft = self.scrollBottomLeft.element[0].scrollLeft;
+                self.scrollTopRight.element[0].scrollLeft = self.scrollBottomRight.element[0].scrollLeft;
+                self.scrollBottomLeft.element[0].scrollTop = self.scrollBottomRight.element[0].scrollTop;
                 //调整拖拽handle的高度
                 if (o.isNeedResize) {
                     handle && handle.css("height", self.bottomLeft.element.height() + headerHeight);
@@ -443,7 +519,7 @@ BI.Table = BI.inherit(BI.Widget, {
             }
         };
 
-        BI.defer(function () {
+        BI.nextTick(function () {
             if (self.element.is(":visible")) {
                 self._resize();
                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
@@ -457,21 +533,167 @@ BI.Table = BI.inherit(BI.Widget, {
         });
     },
 
+    _animateScrollTopTo: function (el, from, to, duration, easing, op) {
+        var self = this;
+        var onStart = op.onStart, onComplete = op.onComplete, onUpdate = op.onUpdate;
+        var startTime = BI.getTime(), _delay, progress = 0, _request;
+        _cancelTween();
+        _startTween();
+        var diff = to - from;
+        el._stop = 0;
+        function _step() {
+            if (el._stop) {
+                return;
+            }
+            if (!progress) {
+                onStart.call();
+            }
+            progress = BI.getTime() - startTime;
+            _tween();
+            if (progress >= el.time) {
+                el.time = (progress > el.time) ? progress + _delay - (progress - el.time) : progress + _delay - 1;
+                if (el.time < progress + 1) {
+                    el.time = progress + 1;
+                }
+            }
+            if (el.time < duration) {
+                el._id = _request(_step);
+            } else {
+                el.scrollTop(to);
+                onComplete.call();
+            }
+        }
+
+        function _tween() {
+            var top = to;
+            if (duration > 0) {
+                el.currVal = _ease(el.time, from, diff, duration, easing);
+                el.scrollTop(top = Math.round(el.currVal));
+            } else {
+                el.scrollTop(to);
+            }
+            onUpdate(top);
+        }
+
+        function _startTween() {
+            _delay = 1000 / 60;
+            el.time = progress + _delay;
+            _request = (!requestAnimationFrame()) ? function (f) {
+                _tween();
+                return setTimeout(f, 0.01);
+            } : requestAnimationFrame();
+            el._id = _request(_step);
+        }
+
+        function requestAnimationFrame() {
+            return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                window.oRequestAnimationFrame;
+        }
+
+        function cancelAnimationFrame() {
+            return window.cancelAnimationFrame ||
+                window.webkitCancelAnimationFrame ||
+                window.mozCancelAnimationFrame ||
+                window.msCancelAnimationFrame ||
+                window.oCancelAnimationFrame ||
+                window.cancelRequestAnimationFrame ||
+                window.webkitCancelRequestAnimationFrame ||
+                window.mozCancelRequestAnimationFrame ||
+                window.msCancelRequestAnimationFrame ||
+                window.oCancelRequestAnimationFrame
+        }
+
+        function _cancelTween() {
+            if (el._id == null) {
+                return;
+            }
+            if (!cancelAnimationFrame()) {
+                clearTimeout(el._id);
+            } else {
+                cancelAnimationFrame()(el._id);
+            }
+            el._id = null;
+        }
+
+        function _ease(t, b, c, d, type) {
+            switch (type) {
+                case "linear":
+                    return c * t / d + b;
+                    break;
+                case "mcsLinearOut":
+                    t /= d;
+                    t--;
+                    return c * Math.sqrt(1 - t * t) + b;
+                    break;
+                case "easeInOutSmooth":
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t + b;
+                    t--;
+                    return -c / 2 * (t * (t - 2) - 1) + b;
+                    break;
+                case "easeInOutStrong":
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+                    t--;
+                    return c / 2 * ( -Math.pow(2, -10 * t) + 2 ) + b;
+                    break;
+                case "easeInOut":
+                case "mcsEaseInOut":
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t * t + b;
+                    t -= 2;
+                    return c / 2 * (t * t * t + 2) + b;
+                    break;
+                case "easeOutSmooth":
+                    t /= d;
+                    t--;
+                    return -c * (t * t * t * t - 1) + b;
+                    break;
+                case "easeOutStrong":
+                    return c * ( -Math.pow(2, -10 * t / d) + 1 ) + b;
+                    break;
+                case "easeOut":
+                case "mcsEaseOut":
+                default:
+                    var ts = (t /= d) * t, tc = ts * t;
+                    return b + c * (0.499999999999997 * tc * ts + -2.5 * ts * ts + 5.5 * tc + -6.5 * ts + 4 * t);
+            }
+        }
+    },
+
+    _getScrollOffsetAndDur: function (event) {
+        var offset = 40, dur = 200;
+        if (event.originalEvent.wheelDelta) {
+            offset = Math.abs(event.originalEvent.wheelDelta);
+        }
+        if (event.deltaFactor < 2) {
+            offset = 3;
+            dur = 17;
+        }
+        return {
+            offset: offset,
+            dur: dur
+        };
+    },
+
     resize: function () {
         this._resize();
     },
 
-    _createCells: function (items, columnSize, mergeCols, TDs, Ws, start) {
+    _createCells: function (items, columnSize, mergeCols, TDs, Ws, start, rowSize) {
         var self = this, o = this.options, preCol = {}, preRow = {}, preRW = {}, preCW = {}, map = {};
         columnSize = columnSize || o.columnSize;
         mergeCols = mergeCols || o.mergeCols;
         TDs = TDs || {};
         Ws = Ws || {};
         start = start || 0;
+        rowSize || (rowSize = o.rowSize);
         var frag = document.createDocumentFragment();
         BI.each(items, function (i, rows) {
             var tr = $("<tr>").addClass((i & 1) === 0 ? "odd" : "even");
-            var can = false;
             BI.each(rows, function (j, row) {
                 if (!map[i]) {
                     map[i] = {};
@@ -526,9 +748,9 @@ BI.Table = BI.inherit(BI.Widget, {
                 }
             });
             function mergeRow(i, j) {
-                var height = (preCol[j].attr("height") | 0) + o.rowSize + 1;
+                var height = (preCol[j].attr("height") | 0) + rowSize + 1;
                 preCol[j].attr("height", height).css("height", height);
-                preCW[j].element.css("height", height);
+                //preCW[j].element.css("height", height);
                 var rowspan = ((preCol[j].attr("rowspan") || 1) | 0) + 1;
                 preCol[j].attr("rowspan", rowspan);
                 preCol[j].__mergeRows.pushDistinct(i);
@@ -557,10 +779,13 @@ BI.Table = BI.inherit(BI.Widget, {
 
             function createOneEl(r, c) {
                 var width = self._calculateWidth(columnSize[c]);
-                var height = self._calculateHeight(o.rowSize);
+                var height = self._calculateHeight(rowSize);
                 var td = $("<td>").attr("height", height)
                     .attr("width", width).css({"width": width, "height": height, "position": "relative"})
-                    .addClass((c & 1) === 0 ? "odd" : "even");
+                    .addClass((c & 1) === 0 ? "odd-col" : "even-col")
+                    .addClass(r === 0 ? "first-row" : "")
+                    .addClass(c === 0 ? "first-col" : "")
+                    .addClass(c === rows.length - 1 ? "last-col" : "");
                 var w = BI.createWidget(map[r][c], {
                     type: "bi.table_cell",
                     width: BI.isNumeric(width) ? width : "",
@@ -568,6 +793,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     _row: r,
                     _col: c + start
                 });
+                w.element.css("position", "relative");
                 td.append(w.element);
                 tr.append(td);
                 preCol[c] = td;
@@ -578,10 +804,9 @@ BI.Table = BI.inherit(BI.Widget, {
                 preRW[r] = w;
                 TDs[r][c] = td;
                 Ws[r][c] = w;
-                can = true;
             }
 
-            can && frag.appendChild(tr[0]);
+            frag.appendChild(tr[0]);
         });
         return frag;
     },
@@ -603,27 +828,66 @@ BI.Table = BI.inherit(BI.Widget, {
     _createHeaderCells: function (items, columnSize, mergeCols, TDs, Ws, start) {
         var self = this, o = this.options;
         start || (start = 0);
-        var frag = this._createCells(items, columnSize, mergeCols, TDs, Ws, start);
+        var frag = this._createCells(items, columnSize, BI.range(o.columnSize.length), TDs, Ws, start, o.headerRowSize || o.rowSize);
 
         if (o.isNeedResize === true) {
             var tds = TDs[BI.size(TDs) - 1];
             BI.each(tds, function (j, td) {
                 j = j | 0;
+                var resizer;
+                var getHeight = function (size, position) {
+                    var rowSize = self.getCalculateRegionRowSize();
+                    if (o.isNeedFreeze === true) {
+                        var tableHeight = self.bottomRightContainer.element.outerHeight();
+                        return size.height + Math.min(rowSize[1], tableHeight);
+                    } else {
+                        var tableHeight = self.tableContainer.element.outerHeight();
+                        var offset = self.tableContainer.element.offset();
+                        var offsetTop = position.top - offset.top;
+                        var height = tableHeight - offsetTop;
+                        height = Math.min(height, rowSize[0] - offsetTop);
+                        return height;
+                    }
+                };
                 if (j < BI.size(tds) - 1) {
                     td.resizable({
                         handles: "e",
                         minWidth: 15,
+                        helper: "clone",
                         start: function (event, ui) {
+                            var height = getHeight(ui.size, ui.position);
+                            resizer = BI.createWidget({
+                                type: "bi.layout",
+                                cls: "bi-resizer",
+                                width: ui.size.width,
+                                height: height
+                            });
+
+                            BI.createWidget({
+                                type: "bi.absolute",
+                                element: "body",
+                                items: [{
+                                    el: resizer,
+                                    left: ui.position.left,
+                                    top: ui.position.top
+                                }]
+                            });
                             self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE);
                         },
                         resize: function (e, ui) {
-                            o.columnSize[start + j] = ui.size.width;
-                            self.setColumnSize(o.columnSize);
+                            var height = getHeight(ui.size, ui.position);
+                            resizer.element.css({"width": ui.size.width + "px", "height": height + "px"});
+                            //o.columnSize[start + j] = ui.size.width;
+                            //self.setColumnSize(o.columnSize);
                             self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE);
                             e.stopPropagation();
-                            return false;
+                            //return false;
                         },
                         stop: function (e, ui) {
+                            resizer.destroy();
+                            resizer = null;
+                            o.columnSize[start + j] = ui.size.width - 1;
+                            self.setColumnSize(o.columnSize);
                             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
                         }
                     })
@@ -709,29 +973,55 @@ BI.Table = BI.inherit(BI.Widget, {
             type: "bi.adaptive",
             width: "100%",
             height: "100%",
-            cls: "scroll-table",
+            cls: "scroll-bottom-right",
             scrollable: true,
             items: [this.tableContainer]
         });
 
         BI.createWidget({
             type: "bi.adaptive",
+            cls: "bottom-right",
             element: this.element,
             scrollable: false,
             items: [this.scrollContainer]
         });
+        var scrollTop;
         this.scrollContainer.element.mousewheel(function (event, delta, deltaX, deltaY) {
-            if (deltaY === -1 || deltaY === 1) {
-                var old = self.scrollContainer.element[0].scrollTop;
-                self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * self._const.delta;
-                self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
-                if (Math.abs(old - self.scrollContainer.element[0].scrollTop) > 0.1) {
+            var inf = self._getScrollOffsetAndDur(event);
+            if (deltaY < 0 || deltaY > 0) {
+                var ele = self.scrollContainer.element;
+                if (scrollTop) {
+                    ele[0].scrollTop = scrollTop;
+                }
+                scrollTop = ele[0].scrollTop - delta * inf.offset;
+                var stopPropagation = false;
+                var st = ele[0].scrollTop;
+                ele[0].scrollTop = scrollTop;
+                if (ele[0].scrollTop !== scrollTop) {
+                    stopPropagation = true;
+                }
+                ele[0].scrollTop = st;
+                self._animateScrollTopTo(ele, ele[0].scrollTop, scrollTop, inf.dur, "linear", {
+                    onStart: function () {
+                    },
+                    onUpdate: function (top) {
+                        self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, top);
+                    },
+                    onComplete: function () {
+                        self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                        scrollTop = null;
+                    }
+                });
+                //var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
+                //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                if (stopPropagation === true) {
                     event.stopPropagation();
-                    return false;
+                    //return false;
                 }
             }
         });
         this.scrollContainer.element.scroll(function () {
+            // scrollTop = self.scrollContainer.element[0].scrollTop;
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
         });
         this._resize = function () {
@@ -745,7 +1035,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
             }
         });
-        BI.defer(function () {
+        BI.nextTick(function () {
             if (self.element.is(":visible")) {
                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
             }
@@ -948,6 +1238,8 @@ BI.Table = BI.inherit(BI.Widget, {
             this.bottomLeftContainer.element.width(isRight ? rw : lw);
             this.topRightContainer.element.width(isRight ? lw : rw);
             this.bottomRightContainer.element.width(isRight ? lw : rw);
+            this.scrollTopLeft.element[0].scrollLeft = this.scrollBottomLeft.element[0].scrollLeft;
+            this.scrollTopRight.element[0].scrollLeft = this.scrollBottomRight.element[0].scrollLeft;
             if (o.isNeedResize && o.isResizeAdapt) {
                 var leftWidth = BI.sum(o.freezeCols, function (i, col) {
                     return o.columnSize[col] > 1 ? o.columnSize[col] + 1 : o.columnSize[col];
@@ -1280,6 +1572,8 @@ BI.Table = BI.inherit(BI.Widget, {
             }
             this.topLeftContainer.element.width(isRight ? rw : lw);
             this.topRightContainer.element.width(isRight ? lw : rw);
+            this.scrollTopLeft.element[0].scrollLeft = this.scrollBottomLeft.element[0].scrollLeft;
+            this.scrollTopRight.element[0].scrollLeft = this.scrollBottomRight.element[0].scrollLeft;
             if (o.isNeedResize && o.isResizeAdapt) {
                 var leftWidth = BI.sum(o.freezeCols, function (i, col) {
                     return o.columnSize[col] > 1 ? o.columnSize[col] + 1 : o.columnSize[col];
@@ -1423,6 +1717,9 @@ BI.Table = BI.inherit(BI.Widget, {
             if (this.scrollBottomRight.element[0].scrollTop !== scrollTop) {
                 this.scrollBottomRight.element[0].scrollTop = scrollTop;
             }
+            if (this.scrollBottomLeft.element[0].scrollTop !== scrollTop) {
+                this.scrollBottomLeft.element[0].scrollTop = scrollTop;
+            }
         } else {
             if (this.scrollContainer.element[0].scrollTop !== scrollTop) {
                 this.scrollContainer.element[0].scrollTop = scrollTop;
@@ -1511,8 +1808,12 @@ BI.Table = BI.inherit(BI.Widget, {
         }
     },
 
-    destroy: function () {
+    empty: function () {
         BI.Resizers.remove(this.getName());
+        BI.Table.superclass.empty.apply(this, arguments);
+    },
+
+    destroy: function () {
         BI.Table.superclass.destroy.apply(this, arguments);
     }
 })

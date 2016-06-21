@@ -5,7 +5,9 @@
 .bi-multi-relation-table-filed-item .multi-relation-field {
   font-size: 12px;
   color: #808080;
+  max-width: 280px;
 }
 .bi-multi-relation-table-filed-item .multi-relation-table {
   font-size: 14px;
+  max-width: 280px;
 }

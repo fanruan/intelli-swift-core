@@ -13,19 +13,20 @@
     <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=dezi.css"/>
 
     <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
-    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.chart.js"></script>
+    <!--<script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.chart.js"></script>-->
     <script type="text/javascript" src="${Baidu}"></script>
     <script type="text/javascript" src="${Google}"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js"></script>
 
     <script type="text/javascript"
             src="${servletURL}?op=emb&resource=data.js&version=${__version__}&__pre__=true"></script>
     <script type="text/javascript"
-            src="${servletURL}?op=emb&resource=formula.js&version=${__version__}&__pre__=true"></script>
+            src="${servletURL}?op=emb&resource=formula.js&__pre__=true"></script>
 
-    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&cmd=refresh"></script>
 
-    <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js&cmd=refresh"></script>
-    <script type="text/javascript" src="${servletURL}?op=emb&resource=dezi.js&cmd=refresh"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=dezi.js"></script>
 
 
     <script type="text/javascript">
@@ -40,7 +41,7 @@
                 edit: '${edit}',
                 description: '${description}',
                 createBy: '${createBy}',
-                reportName: '${reportName}',
+                reportName: "${reportName}",
                 userId: '${userId}',
                 onlyViewAuth: ${onlyViewAuth},
                 reg: ${reg}
@@ -49,5 +50,7 @@
     </script>
 </head>
 <body>
+    <div id = "wrapper"></div>
+    <div id = "container"></div>
 </body>
 </html>

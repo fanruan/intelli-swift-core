@@ -129,9 +129,11 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
 
     _refreshActive: function(){
         if(this.checkbox.isSelected()){
-            this.element.addClass("active")
+            this.element.addClass("active");
+            this.checkbox.setVisible(true);
         } else {
             this.element.removeClass("active");
+            this.checkbox.setVisible(false);
         }
     },
 
@@ -141,7 +143,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
 
     setSelected: function (v) {
         this.checkbox.setSelected(v);
-        this._refreshActive;
+        this._refreshActive();
     },
 
     getText: function () {

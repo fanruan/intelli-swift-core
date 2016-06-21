@@ -8,10 +8,10 @@ BI.MultiSelectPopupView = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.MultiSelectPopupView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-multi-select-popup-view',
-            maxWidth: 230,
+            maxWidth: 'auto',
             minWidth: 135,
-            maxHeight: 200,
-
+            maxHeight: 400,
+            valueFormatter: BI.emptyFn,
             itemsCreator: BI.emptyFn,
             onLoaded: BI.emptyFn
         });
@@ -24,6 +24,7 @@ BI.MultiSelectPopupView = BI.inherit(BI.Widget, {
         this.loader = BI.createWidget({
             type: "bi.multi_select_loader",
             itemsCreator: opts.itemsCreator,
+            valueFormatter: opts.valueFormatter,
             onLoaded: opts.onLoaded
         });
 

@@ -1104,6 +1104,26 @@
   content: "\e696";
   color: #1a1a1a;
 }
+.trigger-triangle-font .b-font:before {
+  content: "\e66a";
+  color: #808080;
+}
+.trigger-triangle-font:hover .b-font:before,
+.trigger-triangle-font:focus .b-font:before,
+.trigger-triangle-font.hover .b-font:before {
+  content: "\e66a";
+  color: #808080;
+}
+.trigger-triangle-font:active .b-font:before,
+.trigger-triangle-font.active .b-font:before {
+  content: "\e66a";
+  color: #009de3;
+}
+.trigger-triangle-font.native .b-font:before,
+.trigger-triangle-font.disabled .b-font:before {
+  content: "\e66a";
+  color: #808080;
+}
 .widget-date-next-h-font .b-font:before {
   content: "\e62f";
   color: #808080;
@@ -1282,496 +1302,645 @@
   content: "\e625";
   color: #808080;
 }
+.toolbar-edit-font .b-font:before {
+  content: "\e631";
+  color: #808080;
+}
+.toolbar-edit-font:hover .b-font:before,
+.toolbar-edit-font:focus .b-font:before,
+.toolbar-edit-font.hover .b-font:before {
+  content: "\e631";
+  color: #808080;
+}
+.toolbar-edit-font.native .b-font:before,
+.toolbar-edit-font.disabled .b-font:before {
+  content: "\e631";
+  color: #808080;
+}
+.toolbar-preview-font .b-font:before {
+  content: "\e65f";
+  color: #808080;
+}
+.toolbar-preview-font:hover .b-font:before,
+.toolbar-preview-font:focus .b-font:before,
+.toolbar-preview-font.hover .b-font:before {
+  content: "\e65f";
+  color: #808080;
+}
+.toolbar-preview-font.native .b-font:before,
+.toolbar-preview-font.disabled .b-font:before {
+  content: "\e65f";
+  color: #808080;
+}
 .chart-table-font .b-font:before {
+  content: "\e60e";
+  color: #808080;
+}
+.chart-table-font:hover .b-font:before,
+.chart-table-font:focus .b-font:before,
+.chart-table-font.hover .b-font:before {
+  content: "\e60e";
+  color: #808080;
+}
+.chart-table-font:active .b-font:before,
+.chart-table-font.active .b-font:before {
   content: "\e60e";
   color: #009de3;
 }
 .chart-table-font.native .b-font:before,
 .chart-table-font.disabled .b-font:before {
   content: "\e60e";
-  color: #009de3;
+  color: #808080;
 }
 .chart-axis-font .b-font:before {
+  content: "\e626";
+  color: #808080;
+}
+.chart-axis-font:hover .b-font:before,
+.chart-axis-font:focus .b-font:before,
+.chart-axis-font.hover .b-font:before {
+  content: "\e626";
+  color: #808080;
+}
+.chart-axis-font:active .b-font:before,
+.chart-axis-font.active .b-font:before {
   content: "\e626";
   color: #009de3;
 }
 .chart-axis-font.native .b-font:before,
 .chart-axis-font.disabled .b-font:before {
   content: "\e626";
-  color: #009de3;
+  color: #808080;
 }
 .chart-bar-font .b-font:before {
+  content: "\e620";
+  color: #808080;
+}
+.chart-bar-font:hover .b-font:before,
+.chart-bar-font:focus .b-font:before,
+.chart-bar-font.hover .b-font:before {
+  content: "\e620";
+  color: #808080;
+}
+.chart-bar-font:active .b-font:before,
+.chart-bar-font.active .b-font:before {
   content: "\e620";
   color: #009de3;
 }
 .chart-bar-font.native .b-font:before,
 .chart-bar-font.disabled .b-font:before {
   content: "\e620";
-  color: #009de3;
+  color: #808080;
 }
 .chart-accumulate-bar-font .b-font:before {
+  content: "\e60a";
+  color: #808080;
+}
+.chart-accumulate-bar-font:hover .b-font:before,
+.chart-accumulate-bar-font:focus .b-font:before,
+.chart-accumulate-bar-font.hover .b-font:before {
+  content: "\e60a";
+  color: #808080;
+}
+.chart-accumulate-bar-font:active .b-font:before,
+.chart-accumulate-bar-font.active .b-font:before {
   content: "\e60a";
   color: #009de3;
 }
 .chart-accumulate-bar-font.native .b-font:before,
 .chart-accumulate-bar-font.disabled .b-font:before {
   content: "\e60a";
-  color: #009de3;
+  color: #808080;
 }
 .chart-pie-font .b-font:before {
+  content: "\e618";
+  color: #808080;
+}
+.chart-pie-font:hover .b-font:before,
+.chart-pie-font:focus .b-font:before,
+.chart-pie-font.hover .b-font:before {
+  content: "\e618";
+  color: #808080;
+}
+.chart-pie-font:active .b-font:before,
+.chart-pie-font.active .b-font:before {
   content: "\e618";
   color: #009de3;
 }
 .chart-pie-font.native .b-font:before,
 .chart-pie-font.disabled .b-font:before {
   content: "\e618";
-  color: #009de3;
+  color: #808080;
 }
 .chart-map-font .b-font:before {
+  content: "\e62c";
+  color: #808080;
+}
+.chart-map-font:hover .b-font:before,
+.chart-map-font:focus .b-font:before,
+.chart-map-font.hover .b-font:before {
+  content: "\e62c";
+  color: #808080;
+}
+.chart-map-font:active .b-font:before,
+.chart-map-font.active .b-font:before {
   content: "\e62c";
   color: #009de3;
 }
 .chart-map-font.native .b-font:before,
 .chart-map-font.disabled .b-font:before {
   content: "\e62c";
-  color: #009de3;
+  color: #808080;
 }
 .chart-dashboard-font .b-font:before {
+  content: "\e623";
+  color: #808080;
+}
+.chart-dashboard-font:hover .b-font:before,
+.chart-dashboard-font:focus .b-font:before,
+.chart-dashboard-font.hover .b-font:before {
+  content: "\e623";
+  color: #808080;
+}
+.chart-dashboard-font:active .b-font:before,
+.chart-dashboard-font.active .b-font:before {
   content: "\e623";
   color: #009de3;
 }
 .chart-dashboard-font.native .b-font:before,
 .chart-dashboard-font.disabled .b-font:before {
   content: "\e623";
-  color: #009de3;
+  color: #808080;
 }
 .chart-doughnut-font .b-font:before {
+  content: "\e624";
+  color: #808080;
+}
+.chart-doughnut-font:hover .b-font:before,
+.chart-doughnut-font:focus .b-font:before,
+.chart-doughnut-font.hover .b-font:before {
+  content: "\e624";
+  color: #808080;
+}
+.chart-doughnut-font:active .b-font:before,
+.chart-doughnut-font.active .b-font:before {
   content: "\e624";
   color: #009de3;
 }
 .chart-doughnut-font.native .b-font:before,
 .chart-doughnut-font.disabled .b-font:before {
   content: "\e624";
-  color: #009de3;
+  color: #808080;
 }
 .chart-detail-font .b-font:before {
+  content: "\e615";
+  color: #808080;
+}
+.chart-detail-font:hover .b-font:before,
+.chart-detail-font:focus .b-font:before,
+.chart-detail-font.hover .b-font:before {
+  content: "\e615";
+  color: #808080;
+}
+.chart-detail-font:active .b-font:before,
+.chart-detail-font.active .b-font:before {
   content: "\e615";
   color: #009de3;
 }
 .chart-detail-font.native .b-font:before,
 .chart-detail-font.disabled .b-font:before {
   content: "\e615";
-  color: #009de3;
+  color: #808080;
 }
 .chart-more-font .b-font:before {
+  content: "\e60d";
+  color: #808080;
+}
+.chart-more-font:hover .b-font:before,
+.chart-more-font:focus .b-font:before,
+.chart-more-font.hover .b-font:before {
+  content: "\e60d";
+  color: #808080;
+}
+.chart-more-font:active .b-font:before,
+.chart-more-font.active .b-font:before {
   content: "\e60d";
   color: #009de3;
 }
 .chart-more-font.native .b-font:before,
 .chart-more-font.disabled .b-font:before {
   content: "\e60d";
-  color: #009de3;
+  color: #808080;
 }
 .chart-bubble-font .b-font:before {
+  content: "\e62a";
+  color: #808080;
+}
+.chart-bubble-font:hover .b-font:before,
+.chart-bubble-font:focus .b-font:before,
+.chart-bubble-font.hover .b-font:before {
+  content: "\e62a";
+  color: #808080;
+}
+.chart-bubble-font:active .b-font:before,
+.chart-bubble-font.active .b-font:before {
   content: "\e62a";
   color: #009de3;
 }
 .chart-bubble-font.native .b-font:before,
 .chart-bubble-font.disabled .b-font:before {
   content: "\e62a";
-  color: #009de3;
+  color: #808080;
 }
 .chart-scatter-font .b-font:before {
+  content: "\e61d";
+  color: #808080;
+}
+.chart-scatter-font:hover .b-font:before,
+.chart-scatter-font:focus .b-font:before,
+.chart-scatter-font.hover .b-font:before {
+  content: "\e61d";
+  color: #808080;
+}
+.chart-scatter-font:active .b-font:before,
+.chart-scatter-font.active .b-font:before {
   content: "\e61d";
   color: #009de3;
 }
 .chart-scatter-font.native .b-font:before,
 .chart-scatter-font.disabled .b-font:before {
   content: "\e61d";
-  color: #009de3;
+  color: #808080;
 }
 .chart-radar-font .b-font:before {
+  content: "\e614";
+  color: #808080;
+}
+.chart-radar-font:hover .b-font:before,
+.chart-radar-font:focus .b-font:before,
+.chart-radar-font.hover .b-font:before {
+  content: "\e614";
+  color: #808080;
+}
+.chart-radar-font:active .b-font:before,
+.chart-radar-font.active .b-font:before {
   content: "\e614";
   color: #009de3;
 }
 .chart-radar-font.native .b-font:before,
 .chart-radar-font.disabled .b-font:before {
   content: "\e614";
-  color: #009de3;
+  color: #808080;
 }
 .chart-content-font .b-font:before {
+  content: "\e621";
+  color: #808080;
+}
+.chart-content-font:hover .b-font:before,
+.chart-content-font:focus .b-font:before,
+.chart-content-font.hover .b-font:before {
+  content: "\e621";
+  color: #808080;
+}
+.chart-content-font:active .b-font:before,
+.chart-content-font.active .b-font:before {
   content: "\e621";
   color: #009de3;
 }
 .chart-content-font.native .b-font:before,
 .chart-content-font.disabled .b-font:before {
   content: "\e621";
-  color: #009de3;
+  color: #808080;
 }
 .chart-image-font .b-font:before {
+  content: "\e68d";
+  color: #808080;
+}
+.chart-image-font:hover .b-font:before,
+.chart-image-font:focus .b-font:before,
+.chart-image-font.hover .b-font:before {
+  content: "\e68d";
+  color: #808080;
+}
+.chart-image-font:active .b-font:before,
+.chart-image-font.active .b-font:before {
   content: "\e68d";
   color: #009de3;
 }
 .chart-image-font.native .b-font:before,
 .chart-image-font.disabled .b-font:before {
   content: "\e68d";
-  color: #009de3;
+  color: #808080;
 }
 .chart-web-font .b-font:before {
+  content: "\e68c";
+  color: #808080;
+}
+.chart-web-font:hover .b-font:before,
+.chart-web-font:focus .b-font:before,
+.chart-web-font.hover .b-font:before {
+  content: "\e68c";
+  color: #808080;
+}
+.chart-web-font:active .b-font:before,
+.chart-web-font.active .b-font:before {
   content: "\e68c";
   color: #009de3;
 }
 .chart-web-font.native .b-font:before,
 .chart-web-font.disabled .b-font:before {
   content: "\e68c";
-  color: #009de3;
+  color: #808080;
 }
 .chart-string-font .b-font:before {
+  content: "\e622";
+  color: #808080;
+}
+.chart-string-font:hover .b-font:before,
+.chart-string-font:focus .b-font:before,
+.chart-string-font.hover .b-font:before {
+  content: "\e622";
+  color: #808080;
+}
+.chart-string-font:active .b-font:before,
+.chart-string-font.active .b-font:before {
   content: "\e622";
   color: #009de3;
 }
 .chart-string-font.native .b-font:before,
 .chart-string-font.disabled .b-font:before {
   content: "\e622";
-  color: #009de3;
+  color: #808080;
 }
 .chart-number-font .b-font:before {
+  content: "\e61f";
+  color: #808080;
+}
+.chart-number-font:hover .b-font:before,
+.chart-number-font:focus .b-font:before,
+.chart-number-font.hover .b-font:before {
+  content: "\e61f";
+  color: #808080;
+}
+.chart-number-font:active .b-font:before,
+.chart-number-font.active .b-font:before {
   content: "\e61f";
   color: #009de3;
 }
 .chart-number-font.native .b-font:before,
 .chart-number-font.disabled .b-font:before {
   content: "\e61f";
-  color: #009de3;
+  color: #808080;
 }
 .chart-tree-font .b-font:before {
+  content: "\e61e";
+  color: #808080;
+}
+.chart-tree-font:hover .b-font:before,
+.chart-tree-font:focus .b-font:before,
+.chart-tree-font.hover .b-font:before {
+  content: "\e61e";
+  color: #808080;
+}
+.chart-tree-font:active .b-font:before,
+.chart-tree-font.active .b-font:before {
   content: "\e61e";
   color: #009de3;
 }
 .chart-tree-font.native .b-font:before,
 .chart-tree-font.disabled .b-font:before {
   content: "\e61e";
-  color: #009de3;
+  color: #808080;
 }
 .chart-date-font .b-font:before {
+  content: "\e61b";
+  color: #808080;
+}
+.chart-date-font:hover .b-font:before,
+.chart-date-font:focus .b-font:before,
+.chart-date-font.hover .b-font:before {
+  content: "\e61b";
+  color: #808080;
+}
+.chart-date-font:active .b-font:before,
+.chart-date-font.active .b-font:before {
   content: "\e61b";
   color: #009de3;
 }
 .chart-date-font.native .b-font:before,
 .chart-date-font.disabled .b-font:before {
   content: "\e61b";
-  color: #009de3;
+  color: #808080;
 }
 .chart-year-font .b-font:before {
+  content: "\e628";
+  color: #808080;
+}
+.chart-year-font:hover .b-font:before,
+.chart-year-font:focus .b-font:before,
+.chart-year-font.hover .b-font:before {
+  content: "\e628";
+  color: #808080;
+}
+.chart-year-font:active .b-font:before,
+.chart-year-font.active .b-font:before {
   content: "\e628";
   color: #009de3;
 }
 .chart-year-font.native .b-font:before,
 .chart-year-font.disabled .b-font:before {
   content: "\e628";
-  color: #009de3;
+  color: #808080;
 }
 .chart-month-font .b-font:before {
+  content: "\e627";
+  color: #808080;
+}
+.chart-month-font:hover .b-font:before,
+.chart-month-font:focus .b-font:before,
+.chart-month-font.hover .b-font:before {
+  content: "\e627";
+  color: #808080;
+}
+.chart-month-font:active .b-font:before,
+.chart-month-font.active .b-font:before {
   content: "\e627";
   color: #009de3;
 }
 .chart-month-font.native .b-font:before,
 .chart-month-font.disabled .b-font:before {
   content: "\e627";
-  color: #009de3;
+  color: #808080;
 }
 .chart-quarter-font .b-font:before {
+  content: "\e629";
+  color: #808080;
+}
+.chart-quarter-font:hover .b-font:before,
+.chart-quarter-font:focus .b-font:before,
+.chart-quarter-font.hover .b-font:before {
+  content: "\e629";
+  color: #808080;
+}
+.chart-quarter-font:active .b-font:before,
+.chart-quarter-font.active .b-font:before {
   content: "\e629";
   color: #009de3;
 }
 .chart-quarter-font.native .b-font:before,
 .chart-quarter-font.disabled .b-font:before {
   content: "\e629";
-  color: #009de3;
+  color: #808080;
 }
 .chart-ymd-font .b-font:before {
+  content: "\e61c";
+  color: #808080;
+}
+.chart-ymd-font:hover .b-font:before,
+.chart-ymd-font:focus .b-font:before,
+.chart-ymd-font.hover .b-font:before {
+  content: "\e61c";
+  color: #808080;
+}
+.chart-ymd-font:active .b-font:before,
+.chart-ymd-font.active .b-font:before {
   content: "\e61c";
   color: #009de3;
 }
 .chart-ymd-font.native .b-font:before,
 .chart-ymd-font.disabled .b-font:before {
   content: "\e61c";
-  color: #009de3;
+  color: #808080;
 }
 .chart-date-range-font .b-font:before {
+  content: "\e616";
+  color: #808080;
+}
+.chart-date-range-font:hover .b-font:before,
+.chart-date-range-font:focus .b-font:before,
+.chart-date-range-font.hover .b-font:before {
+  content: "\e616";
+  color: #808080;
+}
+.chart-date-range-font:active .b-font:before,
+.chart-date-range-font.active .b-font:before {
   content: "\e616";
   color: #009de3;
 }
 .chart-date-range-font.native .b-font:before,
 .chart-date-range-font.disabled .b-font:before {
   content: "\e616";
+  color: #808080;
+}
+.chart-general-query-font .b-font:before {
+  content: "\e62b";
+  color: #808080;
+}
+.chart-general-query-font:hover .b-font:before,
+.chart-general-query-font:focus .b-font:before,
+.chart-general-query-font.hover .b-font:before {
+  content: "\e62b";
+  color: #808080;
+}
+.chart-general-query-font:active .b-font:before,
+.chart-general-query-font.active .b-font:before {
+  content: "\e62b";
   color: #009de3;
 }
+.chart-general-query-font.native .b-font:before,
+.chart-general-query-font.disabled .b-font:before {
+  content: "\e62b";
+  color: #808080;
+}
 .chart-query-font .b-font:before {
+  content: "\e609";
+  color: #808080;
+}
+.chart-query-font:hover .b-font:before,
+.chart-query-font:focus .b-font:before,
+.chart-query-font.hover .b-font:before {
+  content: "\e609";
+  color: #808080;
+}
+.chart-query-font:active .b-font:before,
+.chart-query-font.active .b-font:before {
   content: "\e609";
   color: #009de3;
 }
 .chart-query-font.native .b-font:before,
 .chart-query-font.disabled .b-font:before {
   content: "\e609";
-  color: #009de3;
+  color: #808080;
 }
 .chart-reset-font .b-font:before {
+  content: "\e61a";
+  color: #808080;
+}
+.chart-reset-font:hover .b-font:before,
+.chart-reset-font:focus .b-font:before,
+.chart-reset-font.hover .b-font:before {
+  content: "\e61a";
+  color: #808080;
+}
+.chart-reset-font:active .b-font:before,
+.chart-reset-font.active .b-font:before {
   content: "\e61a";
   color: #009de3;
 }
 .chart-reset-font.native .b-font:before,
 .chart-reset-font.disabled .b-font:before {
   content: "\e61a";
-  color: #009de3;
+  color: #808080;
 }
 .chart-textarea-font .b-font:before {
+  content: "\e622";
+  color: #808080;
+}
+.chart-textarea-font:hover .b-font:before,
+.chart-textarea-font:focus .b-font:before,
+.chart-textarea-font.hover .b-font:before {
+  content: "\e622";
+  color: #808080;
+}
+.chart-textarea-font:active .b-font:before,
+.chart-textarea-font.active .b-font:before {
   content: "\e622";
   color: #009de3;
 }
 .chart-textarea-font.native .b-font:before,
 .chart-textarea-font.disabled .b-font:before {
   content: "\e622";
-  color: #009de3;
+  color: #808080;
 }
 .chart-reuse-font .b-font:before {
+  content: "\e60b";
+  color: #808080;
+}
+.chart-reuse-font:hover .b-font:before,
+.chart-reuse-font:focus .b-font:before,
+.chart-reuse-font.hover .b-font:before {
+  content: "\e60b";
+  color: #808080;
+}
+.chart-reuse-font:active .b-font:before,
+.chart-reuse-font.active .b-font:before {
   content: "\e60b";
   color: #009de3;
 }
 .chart-reuse-font.native .b-font:before,
 .chart-reuse-font.disabled .b-font:before {
   content: "\e60b";
-  color: #009de3;
-}
-.detail-chart-summary-table-font .b-font:before {
-  content: "\e60e";
-  color: #808080;
-}
-.detail-chart-summary-table-font:hover .b-font:before,
-.detail-chart-summary-table-font:focus .b-font:before,
-.detail-chart-summary-table-font.hover .b-font:before {
-  content: "\e60e";
-  color: #808080;
-}
-.detail-chart-summary-table-font:active .b-font:before,
-.detail-chart-summary-table-font.active .b-font:before {
-  content: "\e60e";
-  color: #009de3;
-}
-.detail-chart-summary-table-font.native .b-font:before,
-.detail-chart-summary-table-font.disabled .b-font:before {
-  content: "\e60e";
-  color: #808080;
-}
-.detail-chart-axis-font .b-font:before {
-  content: "\e626";
-  color: #808080;
-}
-.detail-chart-axis-font:hover .b-font:before,
-.detail-chart-axis-font:focus .b-font:before,
-.detail-chart-axis-font.hover .b-font:before {
-  content: "\e626";
-  color: #808080;
-}
-.detail-chart-axis-font:active .b-font:before,
-.detail-chart-axis-font.active .b-font:before {
-  content: "\e626";
-  color: #009de3;
-}
-.detail-chart-axis-font.native .b-font:before,
-.detail-chart-axis-font.disabled .b-font:before {
-  content: "\e626";
-  color: #808080;
-}
-.detail-chart-bar-font .b-font:before {
-  content: "\e620";
-  color: #808080;
-}
-.detail-chart-bar-font:hover .b-font:before,
-.detail-chart-bar-font:focus .b-font:before,
-.detail-chart-bar-font.hover .b-font:before {
-  content: "\e620";
-  color: #808080;
-}
-.detail-chart-bar-font:active .b-font:before,
-.detail-chart-bar-font.active .b-font:before {
-  content: "\e620";
-  color: #009de3;
-}
-.detail-chart-bar-font.native .b-font:before,
-.detail-chart-bar-font.disabled .b-font:before {
-  content: "\e620";
-  color: #808080;
-}
-.detail-char-accumulate-bar-font .b-font:before {
-  content: "\e60a";
-  color: #808080;
-}
-.detail-char-accumulate-bar-font:hover .b-font:before,
-.detail-char-accumulate-bar-font:focus .b-font:before,
-.detail-char-accumulate-bar-font.hover .b-font:before {
-  content: "\e60a";
-  color: #808080;
-}
-.detail-char-accumulate-bar-font:active .b-font:before,
-.detail-char-accumulate-bar-font.active .b-font:before {
-  content: "\e60a";
-  color: #009de3;
-}
-.detail-char-accumulate-bar-font.native .b-font:before,
-.detail-char-accumulate-bar-font.disabled .b-font:before {
-  content: "\e60a";
-  color: #808080;
-}
-.detail-chart-pie-font .b-font:before {
-  content: "\e618";
-  color: #808080;
-}
-.detail-chart-pie-font:hover .b-font:before,
-.detail-chart-pie-font:focus .b-font:before,
-.detail-chart-pie-font.hover .b-font:before {
-  content: "\e618";
-  color: #808080;
-}
-.detail-chart-pie-font:active .b-font:before,
-.detail-chart-pie-font.active .b-font:before {
-  content: "\e618";
-  color: #009de3;
-}
-.detail-chart-pie-font.native .b-font:before,
-.detail-chart-pie-font.disabled .b-font:before {
-  content: "\e618";
-  color: #808080;
-}
-.detail-chart-map-font .b-font:before {
-  content: "\e62c";
-  color: #808080;
-}
-.detail-chart-map-font:hover .b-font:before,
-.detail-chart-map-font:focus .b-font:before,
-.detail-chart-map-font.hover .b-font:before {
-  content: "\e62c";
-  color: #808080;
-}
-.detail-chart-map-font:active .b-font:before,
-.detail-chart-map-font.active .b-font:before {
-  content: "\e62c";
-  color: #009de3;
-}
-.detail-chart-map-font.native .b-font:before,
-.detail-chart-map-font.disabled .b-font:before {
-  content: "\e62c";
-  color: #808080;
-}
-.detail-chart-dashboard-font .b-font:before {
-  content: "\e623";
-  color: #808080;
-}
-.detail-chart-dashboard-font:hover .b-font:before,
-.detail-chart-dashboard-font:focus .b-font:before,
-.detail-chart-dashboard-font.hover .b-font:before {
-  content: "\e623";
-  color: #808080;
-}
-.detail-chart-dashboard-font:active .b-font:before,
-.detail-chart-dashboard-font.active .b-font:before {
-  content: "\e623";
-  color: #009de3;
-}
-.detail-chart-dashboard-font.native .b-font:before,
-.detail-chart-dashboard-font.disabled .b-font:before {
-  content: "\e623";
-  color: #808080;
-}
-.detail-chart-doughnut-font .b-font:before {
-  content: "\e624";
-  color: #808080;
-}
-.detail-chart-doughnut-font:hover .b-font:before,
-.detail-chart-doughnut-font:focus .b-font:before,
-.detail-chart-doughnut-font.hover .b-font:before {
-  content: "\e624";
-  color: #808080;
-}
-.detail-chart-doughnut-font:active .b-font:before,
-.detail-chart-doughnut-font.active .b-font:before {
-  content: "\e624";
-  color: #009de3;
-}
-.detail-chart-doughnut-font.native .b-font:before,
-.detail-chart-doughnut-font.disabled .b-font:before {
-  content: "\e624";
-  color: #808080;
-}
-.detail-chart-bubble-font .b-font:before {
-  content: "\e62a";
-  color: #808080;
-}
-.detail-chart-bubble-font:hover .b-font:before,
-.detail-chart-bubble-font:focus .b-font:before,
-.detail-chart-bubble-font.hover .b-font:before {
-  content: "\e62a";
-  color: #808080;
-}
-.detail-chart-bubble-font:active .b-font:before,
-.detail-chart-bubble-font.active .b-font:before {
-  content: "\e62a";
-  color: #009de3;
-}
-.detail-chart-bubble-font.native .b-font:before,
-.detail-chart-bubble-font.disabled .b-font:before {
-  content: "\e62a";
-  color: #808080;
-}
-.detail-chart-scatter-font .b-font:before {
-  content: "\e61d";
-  color: #808080;
-}
-.detail-chart-scatter-font:hover .b-font:before,
-.detail-chart-scatter-font:focus .b-font:before,
-.detail-chart-scatter-font.hover .b-font:before {
-  content: "\e61d";
-  color: #808080;
-}
-.detail-chart-scatter-font:active .b-font:before,
-.detail-chart-scatter-font.active .b-font:before {
-  content: "\e61d";
-  color: #009de3;
-}
-.detail-chart-scatter-font.native .b-font:before,
-.detail-chart-scatter-font.disabled .b-font:before {
-  content: "\e61d";
-  color: #808080;
-}
-.detail-chart-radar-font .b-font:before {
-  content: "\e614";
-  color: #808080;
-}
-.detail-chart-radar-font:hover .b-font:before,
-.detail-chart-radar-font:focus .b-font:before,
-.detail-chart-radar-font.hover .b-font:before {
-  content: "\e614";
-  color: #808080;
-}
-.detail-chart-radar-font:active .b-font:before,
-.detail-chart-radar-font.active .b-font:before {
-  content: "\e614";
-  color: #009de3;
-}
-.detail-chart-radar-font.native .b-font:before,
-.detail-chart-radar-font.disabled .b-font:before {
-  content: "\e614";
   color: #808080;
 }
 .less-font .b-font:before {
   content: "\e633";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-font:hover .b-font:before,
 .less-font:focus .b-font:before,
 .less-font.hover .b-font:before {
   content: "\e633";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-font:active .b-font:before,
 .less-font.active .b-font:before {
@@ -1781,17 +1950,17 @@
 .less-font.native .b-font:before,
 .less-font.disabled .b-font:before {
   content: "\e633";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-equal-font .b-font:before {
   content: "\e636";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-equal-font:hover .b-font:before,
 .less-equal-font:focus .b-font:before,
 .less-equal-font.hover .b-font:before {
   content: "\e636";
-  color: #1a1a1a;
+  color: #808080;
 }
 .less-equal-font:active .b-font:before,
 .less-equal-font.active .b-font:before {
@@ -1801,25 +1970,7 @@
 .less-equal-font.native .b-font:before,
 .less-equal-font.disabled .b-font:before {
   content: "\e636";
-  color: #1a1a1a;
-}
-.less-arrow-font .b-font:before {
-  content: "\e637";
-  color: #009de3;
-}
-.less-arrow-font.native .b-font:before,
-.less-arrow-font.disabled .b-font:before {
-  content: "\e637";
-  color: #009de3;
-}
-.less-equal-arrow-font .b-font:before {
-  content: "\e638";
-  color: #009de3;
-}
-.less-equal-arrow-font.native .b-font:before,
-.less-equal-arrow-font.disabled .b-font:before {
-  content: "\e638";
-  color: #009de3;
+  color: #808080;
 }
 .check-font .b-font:before {
   content: "\e611";
@@ -2038,21 +2189,6 @@
   content: "\e640";
   color: #009de3;
 }
-.dashboard-widget-combo-linkage-font .b-font:before {
-  content: "\e63c";
-  color: #808080;
-}
-.dashboard-widget-combo-linkage-font:hover .b-font:before,
-.dashboard-widget-combo-linkage-font:focus .b-font:before,
-.dashboard-widget-combo-linkage-font.hover .b-font:before {
-  content: "\e63c";
-  color: #808080;
-}
-.dashboard-widget-combo-linkage-font.native .b-font:before,
-.dashboard-widget-combo-linkage-font.disabled .b-font:before {
-  content: "\e63c";
-  color: #808080;
-}
 .dashboard-widget-combo-detail-set-font .b-font:before {
   content: "\e634";
   color: #808080;
@@ -2066,21 +2202,6 @@
 .dashboard-widget-combo-detail-set-font.native .b-font:before,
 .dashboard-widget-combo-detail-set-font.disabled .b-font:before {
   content: "\e634";
-  color: #808080;
-}
-.dashboard-widget-combo-export-excel-font .b-font:before {
-  content: "\e635";
-  color: #808080;
-}
-.dashboard-widget-combo-export-excel-font:hover .b-font:before,
-.dashboard-widget-combo-export-excel-font:focus .b-font:before,
-.dashboard-widget-combo-export-excel-font.hover .b-font:before {
-  content: "\e635";
-  color: #808080;
-}
-.dashboard-widget-combo-export-excel-font.native .b-font:before,
-.dashboard-widget-combo-export-excel-font.disabled .b-font:before {
-  content: "\e635";
   color: #808080;
 }
 .group-add-font .b-font:before {
@@ -2099,21 +2220,6 @@
 .sortable-font.native .b-font:before,
 .sortable-font.disabled .b-font:before {
   content: "\e63b";
-  color: #808080;
-}
-.dashboard-widget-combo-clear-font .b-font:before {
-  content: "\e63d";
-  color: #808080;
-}
-.dashboard-widget-combo-clear-font:hover .b-font:before,
-.dashboard-widget-combo-clear-font:focus .b-font:before,
-.dashboard-widget-combo-clear-font.hover .b-font:before {
-  content: "\e63d";
-  color: #808080;
-}
-.dashboard-widget-combo-clear-font.native .b-font:before,
-.dashboard-widget-combo-clear-font.disabled .b-font:before {
-  content: "\e63d";
   color: #808080;
 }
 .text-bold-font .b-font:before {
@@ -2282,6 +2388,17 @@
   content: "\e659";
   color: #808080;
 }
+.letter-font:hover .b-font:before,
+.letter-font:focus .b-font:before,
+.letter-font.hover .b-font:before {
+  content: "\e659";
+  color: #808080;
+}
+.letter-font:active .b-font:before,
+.letter-font.active .b-font:before {
+  content: "\e659";
+  color: #009de3;
+}
 .letter-font.native .b-font:before,
 .letter-font.disabled .b-font:before {
   content: "\e659";
@@ -2290,6 +2407,17 @@
 .time-font .b-font:before {
   content: "\e658";
   color: #808080;
+}
+.time-font:hover .b-font:before,
+.time-font:focus .b-font:before,
+.time-font.hover .b-font:before {
+  content: "\e658";
+  color: #808080;
+}
+.time-font:active .b-font:before,
+.time-font.active .b-font:before {
+  content: "\e658";
+  color: #009de3;
 }
 .time-font.native .b-font:before,
 .time-font.disabled .b-font:before {
@@ -2579,108 +2707,108 @@
 }
 .table-no-sort-no-filter-font .b-font:before {
   content: "\e66a";
-  color: #808080;
+  color: "";
 }
 .table-no-sort-no-filter-font:hover .b-font:before,
 .table-no-sort-no-filter-font:focus .b-font:before,
 .table-no-sort-no-filter-font.hover .b-font:before {
   content: "\e66a";
-  color: #808080;
+  color: "";
 }
 .table-no-sort-no-filter-font.native .b-font:before,
 .table-no-sort-no-filter-font.disabled .b-font:before {
   content: "\e66a";
-  color: #808080;
+  color: "";
 }
 .table-no-sort-filter-font .b-font:before {
   content: "\e66b";
-  color: #808080;
+  color: "";
 }
 .table-no-sort-filter-font:hover .b-font:before,
 .table-no-sort-filter-font:focus .b-font:before,
 .table-no-sort-filter-font.hover .b-font:before {
   content: "\e66b";
-  color: #808080;
+  color: "";
 }
 .table-no-sort-filter-font.native .b-font:before,
 .table-no-sort-filter-font.disabled .b-font:before {
   content: "\e66b";
-  color: #808080;
+  color: "";
 }
 .table-descending-filter-font .b-font:before {
   content: "\e667";
-  color: #808080;
+  color: "";
 }
 .table-descending-filter-font:hover .b-font:before,
 .table-descending-filter-font:focus .b-font:before,
 .table-descending-filter-font.hover .b-font:before {
   content: "\e667";
-  color: #808080;
+  color: "";
 }
 .table-descending-filter-font.native .b-font:before,
 .table-descending-filter-font.disabled .b-font:before {
   content: "\e667";
-  color: #808080;
+  color: "";
 }
 .table-ascending-filter-font .b-font:before {
   content: "\e669";
-  color: #808080;
+  color: "";
 }
 .table-ascending-filter-font:hover .b-font:before,
 .table-ascending-filter-font:focus .b-font:before,
 .table-ascending-filter-font.hover .b-font:before {
   content: "\e669";
-  color: #808080;
+  color: "";
 }
 .table-ascending-filter-font.native .b-font:before,
 .table-ascending-filter-font.disabled .b-font:before {
   content: "\e669";
-  color: #808080;
+  color: "";
 }
 .table-descending-no-filter-font .b-font:before {
   content: "\e666";
-  color: #808080;
+  color: "";
 }
 .table-descending-no-filter-font:hover .b-font:before,
 .table-descending-no-filter-font:focus .b-font:before,
 .table-descending-no-filter-font.hover .b-font:before {
   content: "\e666";
-  color: #808080;
+  color: "";
 }
 .table-descending-no-filter-font.native .b-font:before,
 .table-descending-no-filter-font.disabled .b-font:before {
   content: "\e666";
-  color: #808080;
+  color: "";
 }
 .table-ascending-no-filter-font .b-font:before {
   content: "\e668";
-  color: #808080;
+  color: "";
 }
 .table-ascending-no-filter-font:hover .b-font:before,
 .table-ascending-no-filter-font:focus .b-font:before,
 .table-ascending-no-filter-font.hover .b-font:before {
   content: "\e668";
-  color: #808080;
+  color: "";
 }
 .table-ascending-no-filter-font.native .b-font:before,
 .table-ascending-no-filter-font.disabled .b-font:before {
   content: "\e668";
-  color: #808080;
+  color: "";
 }
 .table-no-sort-font .b-font:before {
   content: "\e66c";
-  color: #808080;
+  color: "";
 }
 .table-no-sort-font:hover .b-font:before,
 .table-no-sort-font:focus .b-font:before,
 .table-no-sort-font.hover .b-font:before {
   content: "\e66c";
-  color: #808080;
+  color: "";
 }
 .table-no-sort-font.native .b-font:before,
 .table-no-sort-font.disabled .b-font:before {
   content: "\e66c";
-  color: #808080;
+  color: "";
 }
 .primary-key-font .b-font:before {
   content: "\e67d;";
@@ -2924,5 +3052,263 @@
 .task-list-font.native .b-font:before,
 .task-list-font.disabled .b-font:before {
   content: "\e694";
+  color: #009de3;
+}
+.widget-combo-detail-font .b-font:before {
+  content: "\e631";
+  color: #009de3;
+}
+.widget-combo-detail-font.native .b-font:before,
+.widget-combo-detail-font.disabled .b-font:before {
+  content: "\e631";
+  color: #009de3;
+}
+.widget-combo-pull-down-font .b-font:before {
+  content: "\e6ab";
+  color: #009de3;
+}
+.widget-combo-pull-down-font.native .b-font:before,
+.widget-combo-pull-down-font.disabled .b-font:before {
+  content: "\e6ab";
+  color: #009de3;
+}
+.widget-tools-filter-font .b-font:before {
+  content: "\e60f";
+  color: #009de3;
+}
+.widget-tools-filter-font.native .b-font:before,
+.widget-tools-filter-font.disabled .b-font:before {
+  content: "\e60f";
+  color: #009de3;
+}
+.widget-tools-clear-font .b-font:before {
+  content: "\e63d";
+  color: #009de3;
+}
+.widget-tools-clear-font.native .b-font:before,
+.widget-tools-clear-font.disabled .b-font:before {
+  content: "\e63d";
+  color: #009de3;
+}
+.widget-combo-linkage-font .b-font:before {
+  content: "\e63c";
+  color: #808080;
+}
+.widget-combo-linkage-font.native .b-font:before,
+.widget-combo-linkage-font.disabled .b-font:before {
+  content: "\e63c";
+  color: #808080;
+}
+.widget-combo-rename-edit-font .b-font:before {
+  content: "\e670";
+  color: #808080;
+}
+.widget-combo-rename-edit-font.native .b-font:before,
+.widget-combo-rename-edit-font.disabled .b-font:before {
+  content: "\e670";
+  color: #808080;
+}
+.widget-combo-show-title-font .b-font:before {
+  content: "\e64c";
+  color: #808080;
+}
+.widget-combo-show-title-font.native .b-font:before,
+.widget-combo-show-title-font.disabled .b-font:before {
+  content: "\e64c";
+  color: #808080;
+}
+.widget-combo-title-left-font .b-font:before {
+  content: "\e654";
+  color: #808080;
+}
+.widget-combo-title-left-font.native .b-font:before,
+.widget-combo-title-left-font.disabled .b-font:before {
+  content: "\e654";
+  color: #808080;
+}
+.widget-combo-title-center-font .b-font:before {
+  content: "\e64f";
+  color: #808080;
+}
+.widget-combo-title-center-font.native .b-font:before,
+.widget-combo-title-center-font.disabled .b-font:before {
+  content: "\e64f";
+  color: #808080;
+}
+.widget-combo-show-filter-font .b-font:before {
+  content: "\e60f";
+  color: #808080;
+}
+.widget-combo-show-filter-font.native .b-font:before,
+.widget-combo-show-filter-font.disabled .b-font:before {
+  content: "\e60f";
+  color: #808080;
+}
+.widget-combo-export-excel-font .b-font:before {
+  content: "\e635";
+  color: #808080;
+}
+.widget-combo-export-excel-font.native .b-font:before,
+.widget-combo-export-excel-font.disabled .b-font:before {
+  content: "\e635";
+  color: #808080;
+}
+.widget-combo-copy .b-font:before {
+  content: "\e610";
+  color: #808080;
+}
+.widget-combo-copy.native .b-font:before,
+.widget-combo-copy.disabled .b-font:before {
+  content: "\e610";
+  color: #808080;
+}
+.widget-combo-delete .b-font:before {
+  content: "\e605";
+  color: #808080;
+}
+.widget-combo-delete.native .b-font:before,
+.widget-combo-delete.disabled .b-font:before {
+  content: "\e605";
+  color: #808080;
+}
+.widget-combo-asc-font .b-font:before {
+  content: "\e63f";
+  color: #808080;
+}
+.widget-combo-asc-font.native .b-font:before,
+.widget-combo-asc-font.disabled .b-font:before {
+  content: "\e63f";
+  color: #808080;
+}
+.widget-combo-des-font .b-font:before {
+  content: "\e63a";
+  color: #808080;
+}
+.widget-combo-des-font.native .b-font:before,
+.widget-combo-des-font.disabled .b-font:before {
+  content: "\e63a";
+  color: #808080;
+}
+.widget-combo-clear-font .b-font:before {
+  content: "\e63d";
+  color: #808080;
+}
+.widget-combo-clear-font.native .b-font:before,
+.widget-combo-clear-font.disabled .b-font:before {
+  content: "\e63d";
+  color: #808080;
+}
+.detail-table-popup-font .b-font:before {
+  content: "\e6ac";
+  color: #808080;
+}
+.detail-table-popup-font:hover .b-font:before,
+.detail-table-popup-font:focus .b-font:before,
+.detail-table-popup-font.hover .b-font:before {
+  content: "\e6ac";
+  color: #009de3;
+}
+.detail-table-popup-font.native .b-font:before,
+.detail-table-popup-font.disabled .b-font:before {
+  content: "\e6ac";
+  color: #808080;
+}
+.chart-drill-up .b-font:before {
+  content: "\e6ad";
+  color: "";
+}
+.chart-drill-up.native .b-font:before,
+.chart-drill-up.disabled .b-font:before {
+  content: "\e6ad";
+  color: "";
+}
+.chart-drill-down .b-font:before {
+  content: "\e608";
+  color: "";
+}
+.chart-drill-down.native .b-font:before,
+.chart-drill-down.disabled .b-font:before {
+  content: "\e608";
+  color: "";
+}
+.report-filter-open-font .b-font:before {
+  content: "\e648";
+  color: #808080;
+}
+.report-filter-open-font.native .b-font:before,
+.report-filter-open-font.disabled .b-font:before {
+  content: "\e648";
+  color: #808080;
+}
+.report-filter-close-font .b-font:before {
+  content: "\e645";
+  color: #808080;
+}
+.report-filter-close-font.native .b-font:before,
+.report-filter-close-font.disabled .b-font:before {
+  content: "\e645";
+  color: #808080;
+}
+.report-apply-hangout-normal-font .b-font:before {
+  content: "\e66d";
+  color: #808080;
+}
+.report-apply-hangout-normal-font.native .b-font:before,
+.report-apply-hangout-normal-font.disabled .b-font:before {
+  content: "\e66d";
+  color: #808080;
+}
+.report-apply-hangout-ing-font .b-font:before {
+  content: "\e66d";
+  color: #009de3;
+}
+.report-apply-hangout-ing-font.native .b-font:before,
+.report-apply-hangout-ing-font.disabled .b-font:before {
+  content: "\e66d";
+  color: #009de3;
+}
+.report-hangout-font .b-font:before {
+  content: "\e64b";
+  color: #58cc7d;
+}
+.report-hangout-font.native .b-font:before,
+.report-hangout-font.disabled .b-font:before {
+  content: "\e64b";
+  color: #58cc7d;
+}
+.report-cancel-hangout-font .b-font:before {
+  content: "\e64b";
+  color: #808080;
+}
+.report-cancel-hangout-font.native .b-font:before,
+.report-cancel-hangout-font.disabled .b-font:before {
+  content: "\e64b";
+  color: #808080;
+}
+.delete-font-package .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
+.delete-font-package.native .b-font:before,
+.delete-font-package.disabled .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
+.delete-h-font-package .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
+.delete-h-font-package.native .b-font:before,
+.delete-h-font-package.disabled .b-font:before {
+  content: "\e605";
+  color: #e85050;
+}
+.rename-font-package .b-font:before {
+  content: "\e687";
+  color: #009de3;
+}
+.rename-font-package.native .b-font:before,
+.rename-font-package.disabled .b-font:before {
+  content: "\e687";
   color: #009de3;
 }

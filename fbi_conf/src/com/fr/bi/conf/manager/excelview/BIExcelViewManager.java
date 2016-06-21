@@ -1,6 +1,6 @@
 package com.fr.bi.conf.manager.excelview;
 
-import com.fr.bi.conf.base.BISystemDataManager;
+import com.finebi.cube.conf.BISystemDataManager;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.provider.BIExcelViewManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
@@ -58,6 +58,11 @@ public class BIExcelViewManager extends BISystemDataManager<SingleUserBIExcelVie
     @Override
     public String managerTag() {
         return "ExcelView";
+    }
+
+    @Override
+    public String persistUserDataName(long key) {
+        return managerTag();
     }
 
     @Override

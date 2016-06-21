@@ -52,6 +52,10 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
         return tableNameString;
     },
 
+    getAllFields: function () {
+        return BI.deepClone(this.old_tables.fields);
+    },
+
     getPreTableStructure: function () {
         return this.old_tables;
     },
@@ -132,7 +136,6 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
             dimensions[id] = {
                 name: BI.Func.createDistinctName(dimensions, field["field_name"]),
                 _src: {
-                    field_id: field.id,
                     field_name: field["field_name"]
                 },
                 type: getDimensionTypeByFieldType(type),
@@ -251,10 +254,10 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
         this.dimensions[id].used = used;
     },
 
-    getTextByType: function(id, groupOrSummary, fieldtype){
+    getTextByType: function (id, groupOrSummary, fieldtype) {
         var list = [];
         var obj = this.dimensions[id].group;
-        if(groupOrSummary ===  1){
+        if (groupOrSummary === 1) {
             switch (fieldtype) {
                 case BICst.COLUMN.STRING:
                     list = BICst.CONF_STATISTIC_STRING;
@@ -263,10 +266,10 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
                     list = BICst.CONF_STATISTIC_NUMBER;
                     break;
                 case BICst.COLUMN.DATE:
-                    return BI.i18nText("BI-No_Repeat_Count");
+                    list = BICst.CONF_STATISTIC_DATE;
             }
         }
-        if(groupOrSummary ===  0){
+        if (groupOrSummary === 0) {
             switch (fieldtype) {
                 case BICst.COLUMN.STRING:
                     list = BICst.CONF_GROUP_STRING;
@@ -279,10 +282,22 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
                     break;
             }
         }
-        var result = BI.find(list, function(idx, item){
+        var result = BI.find(list, function (idx, item) {
             return item.value === obj.type || (item.value === BICst.GROUP.CUSTOM_NUMBER_GROUP && obj.type === BICst.GROUP.AUTO_GROUP);
         });
         result = result || {};
         return result.text;
+    },
+
+    getValuesForCustomGroup: function (id, callback) {
+        BI.Utils.getConfDataByField(this.getTableStructure(), this.getDimension(id)._src.field_name, {}, function (unGroupedFields) {
+            callback(unGroupedFields)
+        });
+    },
+
+    getMinMaxValueForNumberCustomGroup: function (id, callback) {
+        BI.Utils.getConfNumberFieldMaxMinValue(this.getTableStructure(), this.getDimension(id)._src.field_name, function (res) {
+            callback(res);
+        })
     }
 });

@@ -1,7 +1,7 @@
 package com.fr.bi.field.target.key.sum;
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.general.ComparatorUtils;
 
@@ -13,12 +13,20 @@ public class AvgKey extends SummaryKey {
     private BITargetKey sum;
     private BITargetKey count;
 
-    public AvgKey(BIField ck, TargetFilter filter) {
+    public AvgKey(BusinessField ck, TargetFilter filter) {
         super(ck, filter);
         this.sum = new SumKey(ck, filter);
         this.count = new CountKey(ck, filter);
     }
 
+
+    public BITargetKey getSumKey() {
+        return this.sum;
+    }
+
+    public BITargetKey getCountKey() {
+        return this.count;
+    }
 
     @Override
     public int getSummaryType() {

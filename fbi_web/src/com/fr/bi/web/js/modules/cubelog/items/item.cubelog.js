@@ -10,7 +10,8 @@ BI.CubeLogItem = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CubeLogItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-cube-log-item",
-            text: ""
+            text: "",
+            level: 0
         });
     },
 
@@ -27,10 +28,17 @@ BI.CubeLogItem = BI.inherit(BI.Widget, {
             value: o.value
         });
         BI.createWidget({
-            type: "bi.vertical",
+            type: "bi.htape",
             element: this.element,
-            vgap: 5,
-            items: [this.text]
+            items: [{
+                el: BI.createWidget(),
+                width: o.level * 10
+            }, {
+                type: "bi.vertical",
+                vgap: 5,
+                items: [this.text]
+            }],
+            height: 40
         });
     }
 });

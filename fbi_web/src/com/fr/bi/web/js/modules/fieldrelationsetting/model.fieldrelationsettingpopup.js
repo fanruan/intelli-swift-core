@@ -113,6 +113,11 @@ BI.FieldRelationSettingPopupModel = BI.inherit(FR.OB, {
         this.selectedForeignTable = tableId;
     },
 
+    setChoosePath: function (did, relations) {
+        var self = this;
+        self.choosePathMap[did] = relations;
+    },
+
     refreshChoosePathMap: function () {
         var self = this;
         BI.each(this.dimensionIds, function (i, did) {

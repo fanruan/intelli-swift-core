@@ -64,14 +64,15 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
     _createFilterTypeCombo: function () {
         var self = this, o = this.options;
         this.filterType = BI.createWidget({
-            type: "bi.text_icon_down_list_combo",
+            type: "bi.text_value_down_list_combo",
             width: this._constant.COMBO_WIDTH,
             height: this._constant.LINE_SIZE,
             items: o.filterTypes
         });
-        this.filterType.on(BI.TextIconDownListCombo.EVENT_CHANGE, function () {
+        this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self.filter_type = self.filterType.getValue()[0];
             self._refreshFilterWidget();
+            self.fireEvent(BI.AbstractETLFilterItem.EVENT_VALUE_CHANGED);
         });
         this.filterType.setValue(BI.isNotNull(o.value.filter_type) ? o.value.filter_type : o.defaultType);
         return this.filterType;
@@ -79,10 +80,12 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
 
     _createFormular: function(){
         var self = this;
-        this.filterWidget = BI.createWidget({
-            type : 'bi.filter_etl_formula_setting',
-            fields : this.options.fields
-        });
+        var o = this.options;
+        var op ={
+            type : 'bi.filter_etl_formula_setting'
+        }
+        op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
+        this.filterWidget = BI.createWidget(op);
         this.filterWidget.on(BI.ETLFormulaSettingPane.EVENT_CONFIRM, function () {
             self.fireEvent(BI.AbstractETLFilterItem.EVENT_VALUE_CHANGED);
         })
@@ -103,6 +106,7 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
+            field_name : this.options.field_name,
             filter_type : this.filter_type,
             filter_value : this.filterWidget.getValue()
         }

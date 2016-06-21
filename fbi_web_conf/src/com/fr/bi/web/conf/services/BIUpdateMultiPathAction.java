@@ -1,10 +1,10 @@
 package com.fr.bi.web.conf.services;
 
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.relation.BISimpleRelation;
-import com.fr.bi.stable.relation.BITableRelation;
-import com.fr.bi.stable.relation.BITableRelationPath;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
@@ -43,15 +43,15 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
         for (int i = 0; i < disabledJa.length(); i++) {
             JSONArray pathJa = disabledJa.getJSONArray(i);
             BITableRelationPath disablePath = createPath(pathJa);
-            Table foreignTable = getFirstForeignTable(pathJa);
-            Table primaryTable = getLastPrimaryTable(pathJa);
-            Set<BITableRelationPath> allPaths = BIConfigureManagerCenter.getTableRelationManager().getAllPath(userId, foreignTable, primaryTable);
+            BusinessTable foreignTable = getFirstForeignTable(pathJa);
+            BusinessTable primaryTable = getLastPrimaryTable(pathJa);
+            Set<BITableRelationPath> allPaths = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, foreignTable, primaryTable);
             Iterator it = allPaths.iterator();
             while (it.hasNext()) {
                 BITableRelationPath path = (BITableRelationPath) it.next();
                 if (ComparatorUtils.equals(path, disablePath)) {
-                    if (!BIConfigureManagerCenter.getTableRelationManager().isPathDisable(userId, path)) {
-                        BIConfigureManagerCenter.getTableRelationManager().addDisableRelations(userId, path);
+                    if (!BICubeConfigureCenter.getTableRelationManager().isPathDisable(userId, path)) {
+                        BICubeConfigureCenter.getTableRelationManager().addDisableRelations(userId, path);
                     }
                 }
             }
@@ -60,15 +60,15 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
         for (int i = 0; i < availableJa.length(); i++) {
             JSONArray pathJa = availableJa.getJSONArray(i);
             BITableRelationPath availablePath = createPath(pathJa);
-            Table foreignTable = getFirstForeignTable(pathJa);
-            Table primaryTable = getLastPrimaryTable(pathJa);
-            Set<BITableRelationPath> allPaths = BIConfigureManagerCenter.getTableRelationManager().getAllPath(userId, foreignTable, primaryTable);
+            BusinessTable foreignTable = getFirstForeignTable(pathJa);
+            BusinessTable primaryTable = getLastPrimaryTable(pathJa);
+            Set<BITableRelationPath> allPaths = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, foreignTable, primaryTable);
             Iterator it = allPaths.iterator();
             while (it.hasNext()) {
                 BITableRelationPath path = (BITableRelationPath) it.next();
                 if (ComparatorUtils.equals(path, availablePath)) {
-                    if (BIConfigureManagerCenter.getTableRelationManager().isPathDisable(userId, path)) {
-                        BIConfigureManagerCenter.getTableRelationManager().removeDisableRelations(userId, path);
+                    if (BICubeConfigureCenter.getTableRelationManager().isPathDisable(userId, path)) {
+                        BICubeConfigureCenter.getTableRelationManager().removeDisableRelations(userId, path);
                     }
                 }
             }
@@ -77,26 +77,29 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
 
     }
 
-    private Table getFirstForeignTable(JSONArray pathJa) throws Exception {
+    private BusinessTable getFirstForeignTable(JSONArray pathJa) throws Exception {
         JSONObject firstRelationJo = pathJa.getJSONObject(pathJa.length() - 1);
-        BITableRelation re = new BITableRelation();
-        re.parseJSON(firstRelationJo);
+//        BITableRelation re = new BITableRelation();
+//        re.parseJSON(firstRelationJo);
+        BITableRelation re = BITableRelationHelper.getRelation(firstRelationJo);
         return re.getForeignTable();
     }
 
-    private Table getLastPrimaryTable(JSONArray pathJa) throws Exception {
+    private BusinessTable getLastPrimaryTable(JSONArray pathJa) throws Exception {
         JSONObject firstRelationJo = pathJa.getJSONObject(0);
-        BITableRelation re = new BITableRelation();
-        re.parseJSON(firstRelationJo);
+//        BITableRelation re = new BITableRelation();
+//        re.parseJSON(firstRelationJo);
+        BITableRelation re = BITableRelationHelper.getRelation(firstRelationJo);
         return re.getPrimaryTable();
     }
 
     private BITableRelationPath createPath(JSONArray pathJa) throws Exception {
         BITableRelationPath newPath = new BITableRelationPath();
         for (int i = 0; i < pathJa.length(); i++) {
-            BISimpleRelation re = new BISimpleRelation();
-            re.parseJSON(pathJa.getJSONObject(i));
-            newPath.addRelationAtTail(re.getTableRelation());
+//            BITableRelation re = new BITableRelation();
+//            re.parseJSON(pathJa.getJSONObject(i));
+            BITableRelation re = BITableRelationHelper.getRelation(pathJa.getJSONObject(i));
+            newPath.addRelationAtTail(re);
         }
         return newPath;
     }

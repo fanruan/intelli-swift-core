@@ -9,6 +9,10 @@ import com.finebi.cube.location.ICubeResourceLocation;
 
 /**
  * This class created on 2016/3/10.
+ * <p/>
+ * 获得Cube数据的接口
+ * 对象通过resourceRetrieve获得Location后。
+ * 通过该接口即可获得相应的目标读写接口。
  *
  * @author Connery
  * @since 4.0
@@ -18,4 +22,5 @@ public interface ICubeResourceDiscovery {
 
     ICubeWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException;
 
+    boolean isResourceExist(ICubeResourceLocation resourceLocation);
 }

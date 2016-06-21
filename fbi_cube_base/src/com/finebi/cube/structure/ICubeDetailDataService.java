@@ -1,5 +1,6 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.CubeVersion;
 import com.fr.bi.common.inter.Release;
 
 /**
@@ -13,11 +14,18 @@ import com.fr.bi.common.inter.Release;
 public interface ICubeDetailDataService<T> extends Release {
     /**
      * 记录数据源中的数据信息。
-     * @param rowNumber           数据源中的行号
+     *
+     * @param rowNumber     数据源中的行号
      * @param originalValue 数据值
      */
     void addDetailDataValue(int rowNumber, T originalValue);
 
 
     T getOriginalValueByRow(int rowNumber);
+
+    int getClassType();
+
+    CubeVersion getVersion();
+
+    void recordVersion(CubeVersion version);
 }

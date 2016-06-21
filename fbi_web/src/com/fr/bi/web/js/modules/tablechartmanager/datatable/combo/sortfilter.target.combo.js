@@ -12,13 +12,13 @@ BI.SortFilterTargetCombo = BI.inherit(BI.Widget, {
         icon_no_sort_no_filter: "table-no-sort-no-filter-font"
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.SortFilterTargetCombo.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-sort-filter-target-combo"
+            baseCls: "bi-sort-filter-combo"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.SortFilterTargetCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var dId = o.dId;
@@ -36,32 +36,36 @@ BI.SortFilterTargetCombo = BI.inherit(BI.Widget, {
             items: [
                 [{
                     text: BI.i18nText("BI-Ascend"),
-                    value: BICst.SORT.ASC
+                    value: BICst.SORT.ASC,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Descend"),
-                    value: BICst.SORT.DESC
+                    value: BICst.SORT.DESC,
+                    cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Unsorted"),
-                    value: BICst.SORT.NONE
+                    value: BICst.SORT.NONE,
+                    cls: "dot-e-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Filter"),
-                    value: BI.SortFilterTargetCombo.FILTER_ITEM
+                    value: BI.SortFilterTargetCombo.FILTER_ITEM,
+                    cls: "dot-e-font"
                 }]
             ]
         });
-        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function(){
+        this.combo.on(BI.DownListCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.SortFilterTargetCombo.EVENT_CHANGE, arguments);
         });
         var targetFilters = BI.Utils.getWidgetFilterValueByID(BI.Utils.getWidgetIDByDimensionID(dId));
         var widgetType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(dId));
-        var sort = BI.Utils.getWidgetSortByID(BI.Utils.getWidgetIDByDimensionID(dId)), filter = BI.isNotNull(targetFilters) ? targetFilters[dId] : null;
-        if(widgetType === BICst.Widget.DETAIL) {
+        var sort = BI.Utils.getWidgetSortByID(BI.Utils.getWidgetIDByDimensionID(dId)), filter = targetFilters[dId] || null;
+        if (widgetType === BICst.WIDGET.DETAIL) {
             sort = BI.Utils.getDimensionSortByID(dId);
         }
         var value = [], triggerIcon = this.constant.icon_asc;
-        var sortType = BI.isNotNull(sort) && sort.sort_target === dId ? sort.type : BICst.SORT.NONE;
-        switch (sortType){
+        var sortType = sort.sort_target === dId ? sort.type : BICst.SORT.NONE;
+        switch (sortType) {
             case BICst.SORT.ASC:
                 triggerIcon = BI.isNotNull(filter) ? this.constant.icon_asc_filter : this.constant.icon_asc;
                 break;
@@ -73,18 +77,18 @@ BI.SortFilterTargetCombo = BI.inherit(BI.Widget, {
                 break;
         }
         value.push({value: sortType});
-        if(BI.isNotNull(filter)){
+        if (BI.isNotNull(filter)) {
             value.push({value: BI.SortFilterTargetCombo.FILTER_ITEM});
         }
         trigger.setIcon(triggerIcon);
         this.combo.setValue(value);
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.combo.setValue(v);
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.combo.getValue();
     }
 });

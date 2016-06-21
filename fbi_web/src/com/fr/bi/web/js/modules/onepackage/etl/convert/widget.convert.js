@@ -30,14 +30,14 @@ BI.Convert = BI.inherit(BI.Widget, {
 
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.Convert.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-etl-convert",
             info: {}
         });
     },
 
-    _init: function(){
+    _init: function () {
         BI.Convert.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.ConvertModel({
@@ -65,18 +65,18 @@ BI.Convert = BI.inherit(BI.Widget, {
         this.populate(o.info);
     },
 
-    _checkMasker: function(){
-        if(BI.isNotNull(this.previewLoadingMasker)){
+    _checkMasker: function () {
+        if (BI.isNotNull(this.previewLoadingMasker)) {
             this.previewLoadingMasker.destroy();
             this.previewLoadingMasker = null;
         }
-        if(BI.isNotNull(this.loadingMasker)){
+        if (BI.isNotNull(this.loadingMasker)) {
             this.loadingMasker.destroy();
             this.loadingMasker = null;
         }
     },
 
-    _buildNorth: function(){
+    _buildNorth: function () {
         return BI.createWidget({
             type: "bi.left",
             cls: "convert-north",
@@ -91,21 +91,21 @@ BI.Convert = BI.inherit(BI.Widget, {
         })
     },
 
-    _checkOperatorPaneValid: function(){
+    _checkOperatorPaneValid: function () {
         var orderValue = this.baseFieldCombo.getValue();
         var lanciValue = this.selectFieldsDataPane.getValue();
         var initialFields = this.initialPane.getValue();
-        if(BI.isEmpty(lanciValue.lc_values)){
+        if (BI.isEmpty(lanciValue.lc_values)) {
             this.save.setEnable(false);
             this.save.setTitle(BI.i18nText("BI-Please_Select_Junior_Name"));
             return;
         }
-        if(BI.isEmpty(initialFields)){
+        if (BI.isEmpty(initialFields)) {
             this.save.setEnable(false);
             this.save.setTitle(BI.i18nText("BI-Need_Initial_Fields"));
             return;
         }
-        if(BI.isEmpty(orderValue)){
+        if (BI.isEmpty(orderValue)) {
             this.save.setEnable(false);
             this.save.setTitle(BI.i18nText("BI-Please_Select_Order_Name"));
             return;
@@ -114,18 +114,15 @@ BI.Convert = BI.inherit(BI.Widget, {
         this.save.setTitle("");
     },
 
-    _createOpeartorPane: function(){
+    _createOpeartorPane: function () {
         var self = this;
 
         this.baseFieldCombo = BI.createWidget({
-            type: "bi.single_select_combo",
-            el: {
-                type:"bi.text_trigger",
-                cls: "base-field-text-trigger"
-            }
+            type: "bi.text_value_combo",
+            height: 30
         });
 
-        this.baseFieldCombo.on(BI.SingleSelectCombo.EVENT_CHANGE, function(){
+        this.baseFieldCombo.on(BI.StaticCombo.EVENT_CHANGE, function () {
             self.model.setGroupName(this.getValue()[0]);
             self._checkOperatorPaneValid();
             self.displayResultArea.setSelect(self.constants.SHOW_PREVIEW_TIP);
@@ -136,8 +133,8 @@ BI.Convert = BI.inherit(BI.Widget, {
             tId: this.model.getId()
         });
 
-        this.selectFieldsDataPane.on(BI.ConvertSelectFieldsDataPane.EVENT_LOADING, function(){
-            if(!self.loadingMasker){
+        this.selectFieldsDataPane.on(BI.ConvertSelectFieldsDataPane.EVENT_LOADING, function () {
+            if (!self.loadingMasker) {
                 self.loadingMasker = BI.createWidget({
                     type: "bi.loading_mask",
                     masker: self.west,
@@ -152,7 +149,7 @@ BI.Convert = BI.inherit(BI.Widget, {
             }
         });
 
-        this.selectFieldsDataPane.on(BI.ConvertSelectFieldsDataPane.EVENT_LOADED, function(){
+        this.selectFieldsDataPane.on(BI.ConvertSelectFieldsDataPane.EVENT_LOADED, function () {
             self.loadingMasker.destroy();
             self.loadingMasker = null;
         });
@@ -162,10 +159,10 @@ BI.Convert = BI.inherit(BI.Widget, {
         });
 
         this.genFieldsPane = BI.createWidget({
-            type : "bi.convert_gen_fields_pane"
+            type: "bi.convert_gen_fields_pane"
         });
 
-        this.selectFieldsDataPane.on(BI.ConvertSelectFieldsDataPane.EVENT_CHANGE, function(){
+        this.selectFieldsDataPane.on(BI.ConvertSelectFieldsDataPane.EVENT_CHANGE, function () {
             self.genFieldsPane.populate([self.initialPane.getValue(), self.selectFieldsDataPane.getValue()["lc_values"]]);
             var value = this.getValue();
             self.model.setLCName(value.lc_name);
@@ -174,7 +171,7 @@ BI.Convert = BI.inherit(BI.Widget, {
             self.displayResultArea.setSelect(self.constants.SHOW_PREVIEW_TIP);
         });
 
-        this.initialPane.on(BI.ConvertSelectFieldsDataPane.EVENT_CHANGE, function(){
+        this.initialPane.on(BI.ConvertSelectFieldsDataPane.EVENT_CHANGE, function () {
             self.genFieldsPane.populate([self.initialPane.getValue(), self.selectFieldsDataPane.getValue()["lc_values"]]);
             self.model.setColumns(this.getValue());
             self._checkOperatorPaneValid();
@@ -186,41 +183,41 @@ BI.Convert = BI.inherit(BI.Widget, {
             cls: "convert-operator-pane",
             columns: 2,
             rows: 3,
-            items:[{
-                column : 0,
-                row : 0,
+            items: [{
+                column: 0,
+                row: 0,
                 width: 1,
                 height: 0.1,
-                el : {
+                el: {
                     type: "bi.htape",
-                    items:[{
+                    items: [{
                         type: "bi.label",
                         cls: "table-name-text-twenty",
                         text: BI.i18nText("BI-Sequence_Based_On"),
                         width: this.constants.CONVERT_CAUSE_LABEL_WIDTH
-                    },{
+                    }, {
                         type: "bi.center_adapt",
                         items: [{
                             el: this.baseFieldCombo
                         }]
-                    },{
+                    }, {
                         type: "bi.label",
                         cls: "table-name-text-twenty",
                         text: BI.i18nText("BI-Recognize_Columns_Of_Generated"),
                         width: this.constants.CONVERT_GENERATED_LABEL_WIDTH
                     }]
                 }
-            },{
-                column : 1,
-                row : 0,
+            }, {
+                column: 1,
+                row: 0,
                 width: 0,
                 height: 0.1,
                 el: {
                     type: "bi.layout"
                 }
-            },{
-                column : 0,
-                row : 1,
+            }, {
+                column: 0,
+                row: 1,
                 width: 0.5,
                 height: 0.45,
                 el: {
@@ -233,14 +230,14 @@ BI.Convert = BI.inherit(BI.Widget, {
                         bottom: 10
                     }]
                 }
-            },{
-                column : 1,
-                row : 1,
+            }, {
+                column: 1,
+                row: 1,
                 width: 0.5,
                 height: 0.45,
                 el: {
                     type: "bi.absolute",
-                    items:[{
+                    items: [{
                         el: this.initialPane,
                         left: 5,
                         right: 10,
@@ -248,14 +245,14 @@ BI.Convert = BI.inherit(BI.Widget, {
                         bottom: 10
                     }]
                 }
-            },{
-                column : 0,
-                row : 2,
+            }, {
+                column: 0,
+                row: 2,
                 width: 1,
                 height: 0.45,
                 el: {
                     type: "bi.absolute",
-                    items:[{
+                    items: [{
                         el: this.genFieldsPane,
                         left: 10,
                         right: 10,
@@ -263,41 +260,41 @@ BI.Convert = BI.inherit(BI.Widget, {
                         bottom: 10
                     }]
                 }
-            },{
-                column : 1,
-                row : 2,
+            }, {
+                column: 1,
+                row: 2,
                 width: 0,
                 height: 0.45,
-                el:{
+                el: {
                     type: "bi.layout"
                 }
             }]
         });
     },
 
-    _buildSouth: function(){
+    _buildSouth: function () {
         var self = this;
 
         var cancel = BI.createWidget({
-            type:"bi.button",
-            level:"ignore",
-            text:BI.i18nText("BI-Cancel"),
+            type: "bi.button",
+            level: "ignore",
+            text: BI.i18nText("BI-Cancel"),
             height: this.constants.CONVERT_BUTTON_HEIGHT
         });
 
         this.save = BI.createWidget({
-            type:"bi.button",
-            text:BI.i18nText("BI-Save"),
+            type: "bi.button",
+            text: BI.i18nText("BI-Save"),
             tipType: "warning",
             height: this.constants.CONVERT_BUTTON_HEIGHT
         });
 
-        cancel.on(BI.Button.EVENT_CHANGE,function(){
+        cancel.on(BI.Button.EVENT_CHANGE, function () {
             self._checkMasker();
             self.fireEvent(BI.Convert.EVENT_CANCEL);
         });
 
-        this.save.on(BI.Button.EVENT_CHANGE,function(){
+        this.save.on(BI.Button.EVENT_CHANGE, function () {
             self._checkMasker();
             self.fireEvent(BI.Convert.EVENT_SAVE, self.model.getValue());
         });
@@ -315,7 +312,7 @@ BI.Convert = BI.inherit(BI.Widget, {
         });
     },
 
-    _buildWest: function(){
+    _buildWest: function () {
         this.west = BI.createWidget({
 
             type: "bi.vtape",
@@ -325,14 +322,14 @@ BI.Convert = BI.inherit(BI.Widget, {
                     cls: "convert-table-name",
                     items: [{
                         type: "bi.absolute",
-                        items:[{
-                            el:{
+                        items: [{
+                            el: {
                                 type: "bi.label",
                                 cls: "table-name-text",
                                 textAlign: "left",
                                 textHeight: this.constants.CONVERT_EDITOR_HEIGHT,
                                 width: this.constants.CONVERT_TABLE_NAME_WIDTH,
-                                text:BI.i18nText("BI-Table_Name") + ":"
+                                text: BI.i18nText("BI-Table_Name") + ":"
                             },
                             width: this.constants.CONVERT_TABLE_NAME_WIDTH,
                             top: this.constants.CONVERT_GAP_TEN,
@@ -344,7 +341,7 @@ BI.Convert = BI.inherit(BI.Widget, {
                         type: "bi.absolute",
                         items: [{
                             el: {
-                                type:"bi.label",
+                                type: "bi.label",
                                 height: this.constants.CONVERT_EDITOR_HEIGHT,
                                 width: this.constants.CONVERT_EDITOR_WIDTH,
                                 cls: "convert-table-name-editor",
@@ -372,7 +369,7 @@ BI.Convert = BI.inherit(BI.Widget, {
         return this.west;
     },
 
-    _buildCenter: function(){
+    _buildCenter: function () {
         var self = this;
         this.displayResultArea = BI.createWidget({
             type: "bi.tab",
@@ -380,8 +377,8 @@ BI.Convert = BI.inherit(BI.Widget, {
             cardCreator: BI.bind(_createTabs, this)
         });
 
-        function _createTabs(v){
-            switch(v) {
+        function _createTabs(v) {
+            switch (v) {
                 case this.constants.SHOW_PREVIEW_TIP:
                     return BI.createWidget({
                         type: "bi.float_center_adapt",
@@ -398,8 +395,8 @@ BI.Convert = BI.inherit(BI.Widget, {
                         height: this.constants.PREVIEW_BUTTON_HEIGHT,
                         width: this.constants.PREVIEW_BUTTON_WIDTH
                     });
-                    previewButton.on(BI.Button.EVENT_CHANGE, function(){
-                        if(!self.previewLoadingMasker){
+                    previewButton.on(BI.Button.EVENT_CHANGE, function () {
+                        if (!self.previewLoadingMasker) {
                             self.previewLoadingMasker = BI.createWidget({
                                 type: "bi.loading_mask",
                                 masker: self.center,
@@ -412,23 +409,32 @@ BI.Convert = BI.inherit(BI.Widget, {
                                 }
                             })
                         }
-                        BI.Utils.getPreviewDataByTableAndFields(self.model.getPreTableStructure(), [], function(data){
+                        BI.Utils.getPreviewDataByTableAndFields(self.model.getPreTableStructure(), [], function (data) {
                             var fields = data.fields, values = data.value;
                             var header = [], items = [];
-                            BI.each(fields, function(i, field){
+                            BI.each(fields, function (i, field) {
                                 header.push({
                                     text: field
                                 });
                             });
-                            BI.each(values, function(i, value){
-                                BI.each(value, function(j, v){
-                                    if(BI.isNotNull(items[j])){
+
+                            var fieldTypes = [];
+                            BI.each(self.model.getAllFields(), function (i, fs) {
+                                BI.each(fs, function (j, field) {
+                                    fieldTypes.push(field.field_type);
+                                });
+                            });
+
+                            BI.each(values, function (i, value) {
+                                var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
+                                BI.each(value, function (j, v) {
+                                    if (BI.isNotNull(items[j])) {
                                         items[j].push({
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         });
                                     } else {
                                         items.push([{
-                                            text: v
+                                            text: isDate === true ? self._formatDate(v) : v
                                         }]);
                                     }
                                 });
@@ -481,10 +487,18 @@ BI.Convert = BI.inherit(BI.Widget, {
         return this.center;
     },
 
-    populate: function(info){
+    _formatDate: function (d) {
+        if (BI.isNull(d) || !BI.isNumeric(d)) {
+            return d || "";
+        }
+        var date = new Date(BI.parseInt(d));
+        return date.print("%Y/%X/%d %H:%M:%S")
+    },
+
+    populate: function (info) {
         var self = this;
         this.model.populate(info);
-        if(!this.loadingMasker){
+        if (!this.loadingMasker) {
             this.loadingMasker = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: this.west,
@@ -498,20 +512,20 @@ BI.Convert = BI.inherit(BI.Widget, {
             })
         }
         var fields = [], tables = this.model.getTableStructure();
-        this.model.getTablesDetailInfoByTables(function(data){
+        this.model.getTablesDetailInfoByTables(function (data) {
             fields = BI.flatten(data[0].fields);
-            fields = BI.filter(fields, function(idx, field){
+            fields = BI.filter(fields, function (idx, field) {
                 return field.field_type !== BICst.COLUMN.DATE;
             });
-            var fieldsName = BI.map(fields, function(idx, field){
+            var fieldsName = BI.map(fields, function (idx, field) {
                 return {
-                    value : field.field_name
+                    value: field.field_name
                 }
             });
             self.baseFieldCombo.populate(fieldsName);
             self.baseFieldCombo.setValue(self.model.getGroupName());
 
-            var field = BI.find(fields, function(idx, field){
+            var field = BI.find(fields, function (idx, field) {
                 return field.field_name == self.model.getLCName();
             });
 
@@ -528,7 +542,7 @@ BI.Convert = BI.inherit(BI.Widget, {
                     lc_values: self.model.getLCValue()
                 });
                 self.initialPane.populate(fields);
-                self.initialPane.setValue(self.model.getColumns()||[]);
+                self.initialPane.setValue(self.model.getColumns() || []);
 
                 self.genFieldsPane.populate([self.initialPane.getValue(), self.selectFieldsDataPane.getValue()["lc_values"]]);
                 self.loadingMasker.destroy();
@@ -539,7 +553,7 @@ BI.Convert = BI.inherit(BI.Widget, {
         });
 
         var isGenerated = this.model.isCubeGenerated();
-        if(BI.isNotNull(isGenerated) && isGenerated === true){
+        if (BI.isNotNull(isGenerated) && isGenerated === true) {
             this.displayResultArea.setSelect(this.constants.SHOW_PREVIEW_BUTTON);
         } else {
             this.displayResultArea.setSelect(this.constants.SHOW_PREVIEW_TIP);

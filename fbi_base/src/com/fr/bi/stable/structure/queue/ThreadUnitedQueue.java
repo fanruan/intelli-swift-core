@@ -57,6 +57,10 @@ public class ThreadUnitedQueue<T extends Delete> implements Release {
 		}
 	}
 
+    public boolean isEmpty(){
+        return queue.isEmpty();
+    }
+
 	/**
 	 * 
 	 */

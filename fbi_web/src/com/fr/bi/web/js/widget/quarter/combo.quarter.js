@@ -74,7 +74,7 @@ BI.QuarterCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.popup.getValue() | 0;
+        return this.popup.getValue() || "";
     }
 });
 

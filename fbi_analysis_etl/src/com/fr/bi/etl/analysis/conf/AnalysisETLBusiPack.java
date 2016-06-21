@@ -1,9 +1,10 @@
 package com.fr.bi.etl.analysis.conf;
 
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.pack.data.BIPackageName;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackage;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
-import com.fr.bi.conf.base.pack.data.BIPackageName;
+
 
 /**
  * Created by 小灰灰 on 2015/12/23.

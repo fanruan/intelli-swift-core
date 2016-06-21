@@ -1,14 +1,16 @@
 package com.fr.bi.field;
 
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.BIID;
-import com.fr.bi.base.BIUser;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.conf.report.widget.BIDataColumn;
-import com.fr.bi.conf.report.widget.BIDataColumnFactory;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.BITable;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
@@ -27,28 +29,29 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
      *
      */
     private static final long serialVersionUID = -6531968195020108676L;
-    protected BIDataColumn column;
+    @BICoreField
+    protected BusinessField column;
     private String hyperLinkExpression = StringUtils.EMPTY;
     private boolean useHyperLink = false;
     private boolean used = true;
 
     @Override
-    public BIDataColumn getStatisticElement() {
+    public BusinessField getStatisticElement() {
         return column;
     }
 
     @Override
-    public BITable createTableKey() {
-        return new BITable(column.getTableBelongTo());
+    public BusinessTable createTableKey() {
+        return column == null ? null : column.getTableBelongTo();
     }
 
     @Override
-    public BIField createColumnKey() {
-        return new BIField(column);
+    public BusinessField createColumnKey() {
+        return column;
     }
 
     @Override
-    public BIKey createKey(BIField column) {
+    public BIKey createKey(BusinessField column) {
         return new IndexKey(column.getFieldName());
     }
 
@@ -83,9 +86,10 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo);
-        this.hyperLinkExpression = jo.optString("hyperlink", StringUtils.EMPTY);
-        if (jo.has("useHyperLink")) {
-            this.useHyperLink = jo.getBoolean("useHyperLink");
+        if (jo.has("hyperlink")) {
+            JSONObject hyperlink = jo.getJSONObject("hyperlink");
+            this.hyperLinkExpression = hyperlink.optString("expression", StringUtils.EMPTY);
+            this.useHyperLink = hyperlink.getBoolean("used");
         }
         if (jo.has("used")) {
             this.used = jo.getBoolean("used");
@@ -93,7 +97,8 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
             if (fieldJo.has("field_id")) {
-                column = BIDataColumnFactory.createBIDataColumnByFieldID(fieldJo.getString("field_id"), new BIUser(userId));
+                //这里用BIBusinessFieldWrapper,能够通过fieldID获得table
+                column = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldJo.getString("field_id")));
             }
         }
     }
@@ -131,6 +136,11 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
 
         result = prime * result + (column != null ? column.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 
     @Override

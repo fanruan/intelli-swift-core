@@ -1,10 +1,11 @@
 package com.fr.bi.conf.report;
 
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.common.BICoreService;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.base.provider.ParseJSONWithUID;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
 import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
 import com.fr.stable.FCloneable;
@@ -17,7 +18,7 @@ import java.util.List;
  *
  * @author Daniel-pc
  */
-public interface BIWidget extends ParseJSONWithUID, FCloneable {
+public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService {
 
     /**
      * 返回Widget的ID
@@ -40,12 +41,12 @@ public interface BIWidget extends ParseJSONWithUID, FCloneable {
     /**
      * @return 所有用到的表
      */
-    List<Table> getUsedTableDefine();
+    List<BusinessTable> getUsedTableDefine();
 
     /**
      * @return 所有用到的字段
      */
-    List<BIField> getUsedFieldDefine();
+    List<BusinessField> getUsedFieldDefine();
 
     int isOrder();
 
@@ -60,6 +61,8 @@ public interface BIWidget extends ParseJSONWithUID, FCloneable {
      * @return 注释
      */
     WorkBook createWorkBook(BISessionProvider session);
+
+    int getType();
 
 
 }

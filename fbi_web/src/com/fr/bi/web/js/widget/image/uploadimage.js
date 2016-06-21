@@ -27,7 +27,9 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.img = BI.createWidget({
             type: "bi.image_button",
-            invalid: true
+            invalid: true,
+            width: "100%",
+            height: "100%"
         });
 
         this.label.on(BI.TextButton.EVENT_CHANGE, function () {
@@ -47,7 +49,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.upload = BI.createWidget({
             type: "bi.icon_button",
-            cls: "upload-image-icon-button bi-list-item-hover img-upload-font",
+            cls: "upload-image-icon-button img-upload-font",
             title: BI.i18nText("BI-Upload_Image"),
             height: 32,
             width: 32
@@ -57,21 +59,21 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             self.file.select();
         });
 
-        this.delete = BI.createWidget({
+        this.del = BI.createWidget({
             type: "bi.icon_button",
-            cls: "upload-image-icon-button bi-list-item-hover img-shutdown-font",
+            cls: "upload-image-icon-button img-shutdown-font",
             title: BI.i18nText("fbi_Delete"),
             height: 32,
             width: 32
         });
 
-        this.delete.on(BI.IconButton.EVENT_CHANGE, function () {
+        this.del.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.UploadImage.EVENT_DESTROY);
         });
 
         this.size = BI.createWidget({
             type: "bi.image_button_size_combo",
-            cls: "upload-image-icon-button bi-list-item-hover"
+            cls: "upload-image-icon-button"
         });
 
         this.size.on(BI.ImageButtonSizeCombo.EVENT_CHANGE, function () {
@@ -81,7 +83,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.href = BI.createWidget({
             type: "bi.image_button_href",
-            cls: "upload-image-icon-button bi-list-item-hover"
+            cls: "upload-image-icon-button"
         });
 
         this.href.on(BI.ImageButtonHref.EVENT_CHANGE, function () {
@@ -101,15 +103,25 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             type: "bi.absolute",
             element: this.element,
             items: [{
+                el: {
+                    type: "bi.absolute",
+                    scrollable: false,
+                    items: [{
+                        el: this.img
+                    }]
+                },
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }, {
                 el: this.label,
                 left: 10,
                 right: 10,
                 top: 10,
                 bottom: 10
             }, {
-                el: this.img
-            }, {
-                el: this.delete,
+                el: this.del,
                 right: 4,
                 top: 4
             }, {
@@ -137,8 +149,8 @@ BI.UploadImage = BI.inherit(BI.Widget, {
     },
 
     _setSize: function (w, h) {
-        this.img.setWidth(w);
-        this.img.setHeight(h)
+        this.img.setImageWidth(w);
+        this.img.setImageHeight(h)
     },
 
     _sizeChange: function (size) {
@@ -148,7 +160,14 @@ BI.UploadImage = BI.inherit(BI.Widget, {
                 self._setSize("auto", "auto");
                 break;
             case BI.ImageButtonSize.EQUAL:
-                self._setSize("auto", o.height);
+                self._setSize("auto", "auto");
+                var width = this.img.getImageWidth(), height = this.img.getImageHeight();
+                var W = this.element.width(), H = this.element.height();
+                if (W / H > width / height) {
+                    self._setSize("auto", "100%");
+                } else {
+                    self._setSize("100%", "auto");
+                }
                 break;
             case BI.ImageButtonSize.WIDGET_SIZE:
                 self._setSize("100%", "100%");
@@ -171,6 +190,10 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         this.img.setSrc(v.src);
         this._check();
         this._sizeChange(v.size)
+    },
+
+    resize: function () {
+        this._sizeChange(this.size.getValue());
     }
 });
 

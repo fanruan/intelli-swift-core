@@ -5,6 +5,19 @@
   background: #f3f3f3;
   border: 1px solid #eaeaea;
 }
-.bi-chart-type .chart-type-icon {
+.bi-chart-type .chart-type-icon,
+.bi-chart-type .icon-combo-trigger-icon {
   font-size: 22px;
+}
+.bi-chart-type .chart-type-icon:hover,
+.bi-chart-type .icon-combo-trigger-icon:hover,
+.bi-chart-type .chart-type-icon.hover,
+.bi-chart-type .icon-combo-trigger-icon.hover {
+  background-color: #d4dadd;
+}
+.bi-chart-type .chart-type-icon:active,
+.bi-chart-type .icon-combo-trigger-icon:active,
+.bi-chart-type .chart-type-icon.active,
+.bi-chart-type .icon-combo-trigger-icon.active {
+  background-color: #d4dadd;
 }

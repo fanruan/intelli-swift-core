@@ -43,7 +43,7 @@ BI.RealDataCheckbox = BI.inherit(BI.Widget, {
                 }]
             }, {
                 type: "bi.label",
-                cls: "bi-real-data-warning",
+                cls: "real-data-warning",
                 height: this.constants.HEIGHT,
                 text: BI.i18nText("BI-Use_Real_Data_Info")
             }]

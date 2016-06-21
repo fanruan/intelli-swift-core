@@ -29,11 +29,21 @@ public class BICubePrimitiveReaderWrapper<T> implements ICubeReader<T> {
 
     @Override
     public void clear() {
-        reader.clear();
+        reader.releaseHandler();
     }
 
     @Override
     public boolean canRead() {
         return reader.canReader();
+    }
+
+    @Override
+    public void forceRelease() {
+        reader.forceRelease();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return reader.isForceReleased();
     }
 }

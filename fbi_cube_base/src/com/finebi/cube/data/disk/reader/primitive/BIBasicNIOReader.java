@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
+import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
@@ -15,6 +16,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -26,11 +28,19 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
     protected Map<Long, FileChannel> fcMap = new ConcurrentHashMap<Long, FileChannel>();
     boolean[] initIndex = new boolean[INIT_INDEX_LENGTH];
     private boolean isValid = true;
+    private ICubeSourceReleaseManager releaseManager;
     private File baseFile;
+    private String readerHandler;
 
     public BIBasicNIOReader(File cacheFile) {
         this.baseFile = cacheFile;
         this.isValid = true;
+        readerHandler = UUID.randomUUID().toString();
+    }
+
+    @Override
+    public String getReaderHandler() {
+        return readerHandler;
     }
 
     public BIBasicNIOReader(String cacheFilePath) {
@@ -79,7 +89,6 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
                  */
                 readWriteLock.writeLock().unlock();
             }
-
         }
         /**
          * 读取数据
@@ -97,7 +106,25 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
     protected abstract T getValue(Long page, int index);
 
     @Override
-    public void clear() {
+    public void releaseHandler() {
+        if (useReleaseManager()) {
+            releaseManager.release(this);
+        } else {
+            releaseSource();
+        }
+    }
+
+    @Override
+    public void forceRelease() {
+        releaseSource();
+    }
+
+    @Override
+    public boolean isForceReleased() {
+        return !isValid;
+    }
+
+    public void releaseSource() {
         readWriteLock.writeLock().lock();
         if (!isValid) {
             return;
@@ -114,6 +141,9 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         }
     }
 
+    private boolean useReleaseManager() {
+        return releaseManager != null;
+    }
 
     private void releaseBuffer() {
         for (Entry<Long, MappedByteBuffer> entry : buffers.entrySet()) {
@@ -141,6 +171,10 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         fcMap.put(index, channel);
     }
 
+    @Override
+    public void setReleaseHelper(ICubeSourceReleaseManager releaseHelper) {
+        this.releaseManager = releaseHelper;
+    }
 
     protected abstract void initChild(Long index, MappedByteBuffer buffer);
 
@@ -162,6 +196,6 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
 
     @Override
     public boolean canReader() {
-        return baseFile.exists() && baseFile.length() > 0;
+        return isValid && baseFile.exists() && baseFile.length() > 0;
     }
 }

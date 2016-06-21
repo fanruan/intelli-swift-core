@@ -25,7 +25,7 @@ BI.ListenerList = BI.inherit(FR.OB, {
         var self     = this,
             event    = this.options.event,
             callback = this.options.callback;
-        BI.defer(function(){
+        BI.nextTick(function(){
             BI.each(items, function(i, item){
                 var fn  = callback(item);
                 BI.isFunction(fn) && (fn = BI.debounce(fn, BI.EVENT_RESPONSE_TIME, true));

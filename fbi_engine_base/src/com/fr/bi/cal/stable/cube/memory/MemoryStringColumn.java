@@ -7,9 +7,11 @@ import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
 import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.fr.stable.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,10 +27,15 @@ public class MemoryStringColumn extends AbstractSingleMemoryColumn<String> {
         if (getter == null){
             synchronized (getterLock){
                 if (getter == null){
-                    getter = createGroupByType(ValueConverter.DEFAULT ,ComparatorFacotry.CHINESE_ASC);
+                    getter = createGroupByType(key, ValueConverter.DEFAULT ,ComparatorFacotry.CHINESE_ASC);
                 }
             }
         }
         return getter;
+    }
+
+    @Override
+    protected void initDetail() {
+        detail = new AnyIndexArray<String>();
     }
 }

@@ -3,10 +3,10 @@ package com.fr.bi.conf.data.source.operator.add;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.AbstractETLOperator;
-import com.fr.bi.stable.data.db.BIColumn;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.DBTable;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -73,14 +73,15 @@ public abstract class AbstractAddColumnOperator extends AbstractETLOperator {
         writer.attr("column_type", columnType);
     }
 
+
     @Override
-    public DBTable getBITable(DBTable[] tables) {
-        DBTable biTable = getBITable();
-        biTable.addColumn(new BIColumn(fieldName, getClassType()));
+    public IPersistentTable getBITable(IPersistentTable[] tables) {
+        IPersistentTable biTable = getBITable();
+        biTable.addColumn(new PersistentField(fieldName, getSqlType()));
         return biTable;
     }
     
-    protected int getClassType(){
+    protected int getSqlType(){
     	return BIDBUtils.biTypeToSql(columnType);
     }
 
@@ -89,14 +90,19 @@ public abstract class AbstractAddColumnOperator extends AbstractETLOperator {
         return true;
     }
 
-    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<ITableSource> parents, ICubeDataLoader loader){
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader){
         return write(travel, loader.getTableIndex(getSingleParentMD5(parents)), 0);
+    }
+
+    @Override
+    public int writeIndexWithParents(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol) {
+        return writePartIndex(travel, parents, loader, startCol, 0, Integer.MAX_VALUE);
     }
 
     protected abstract int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol);
 
     @Override
-    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends ITableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         return write(travel, loader.getTableIndex(getSingleParentMD5(parents), start, end), startCol);
     }
 }

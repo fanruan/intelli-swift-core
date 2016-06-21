@@ -8,12 +8,23 @@ BI.TopPointerSavePaneController = BI.inherit(BI.MVCController, {
     refreshButtonsStatus : function (widget) {
         widget.cancel.setEnable(this._editing);
         widget.save.setText(this._editing ? BI.i18nText("BI-Save") : BI.i18nText("BI-Edit"));
+        if(this._editing === false) {
+            widget.save.setEnable(true)
+        }
         this.refreshEditMask(widget);
     },
 
     refreshSaveButtonStatus : function (status, title, widget) {
-        widget.save.setEnable(status);
-        widget.save.setTitle(status === true ? "" : title);
+        if(this._editing === true) {
+            widget.save.setEnable(status);
+        }
+        widget.save.setWarningTitle(status === true ? "" : title);
+    },
+
+    doValidCheck : function (v, widget) {
+        if(this._editing === false) {
+            widget.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, v);
+        }
     },
 
     setEnable : function (v, widget) {
@@ -60,5 +71,8 @@ BI.TopPointerSavePaneController = BI.inherit(BI.MVCController, {
 
     fireSaveOrEditEvent : function (widget) {
         widget.fireEvent(this._editing ? BI.TopPointerSavePane.EVENT_EDIT : BI.TopPointerSavePane.EVENT_SAVE, arguments)
+        if(BI.isNotNull(widget.contentItemWidget) && BI.isNotNull(widget.contentItemWidget.controller) && BI.isFunction(widget.contentItemWidget.controller.doCheck)) {
+            widget.contentItemWidget.controller.doCheck();
+        }
     }
 })

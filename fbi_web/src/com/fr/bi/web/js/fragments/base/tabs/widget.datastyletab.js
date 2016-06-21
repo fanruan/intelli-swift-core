@@ -20,7 +20,7 @@ BI.DataStyleTab = BI.inherit(BI.Widget, {
     _init: function(){
         BI.DataStyleTab.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var tab = BI.createWidget({
+        this.tab = BI.createWidget({
             type: "bi.tab",
             element: this.element,
             tab: {
@@ -40,7 +40,16 @@ BI.DataStyleTab = BI.inherit(BI.Widget, {
             },
             cardCreator: o.cardCreator
         });
-        tab.setSelect(BICst.DETAIL_TAB_TYPE_DATA);
+        this.tab.setSelect(BICst.DETAIL_TAB_TYPE_DATA);
+
+        this.tab.on(BI.Tab.EVENT_CHANGE, function(){
+           self.fireEvent(BI.DataStyleTab.EVENT_CHANGE);
+        });
+    },
+
+    getSelect: function(){
+        return this.tab.getSelect();
     }
 });
+BI.DataStyleTab.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.data_style_tab", BI.DataStyleTab);

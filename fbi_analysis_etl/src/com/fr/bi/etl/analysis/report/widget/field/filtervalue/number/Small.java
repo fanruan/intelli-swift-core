@@ -23,4 +23,8 @@ public class Small implements Operator {
 		return a < b;
 	}
 
+    @Override
+    public String toString() {
+        return "Small{}";
+    }
 }

@@ -13,6 +13,8 @@ import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
+import com.fr.bi.stable.utils.program.BICollectionUtils;
+import com.fr.general.ComparatorUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,14 +44,16 @@ public class BISubScribeContainer extends BIMapContainer<ISubscribeID, ISubscrib
     @Override
     public Collection<ISubscribe> getAllSubscribes() {
         synchronized (container) {
-            return container.values();
+            return BICollectionUtils.unmodifiedCollection(container.values());
         }
     }
 
     @Override
     public void addSubscribe(ISubscribe subscribe) throws BISubscribeDuplicateException {
         try {
-            putKeyValue(subscribe.getSubscribeID(), subscribe);
+            synchronized (container) {
+                putKeyValue(subscribe.getSubscribeID(), subscribe);
+            }
         } catch (BIKeyDuplicateException ignore) {
             throw new BISubscribeDuplicateException();
         }
@@ -71,12 +75,24 @@ public class BISubScribeContainer extends BIMapContainer<ISubscribeID, ISubscrib
 
     @Override
     public void deliverMessage(IMessage message) throws BIMessageFailureException {
-        Iterator<ISubscribe> it = getAllSubscribes().iterator();
-        while (it.hasNext()) {
-            ISubscribe subscribe = it.next();
-            handleMessage(subscribe, message);
+        synchronized (container) {
+            Iterator<ISubscribe> it = container.values().iterator();
+            while (it.hasNext()) {
+                ISubscribe subscribe = it.next();
+                if (ComparatorUtils.equals(subscribe.getSubscribeID().getIdentityValue(), "0a9c656c")) {
+                    if (message.getFragment() != null && message.getFragment().getFragmentTag().getFragmentID().getIdentityValue().equals("idA__fineBI_sub_empty"))
+                        System.out.println("find");
+                    if (message.getFragment() != null && message.getFragment().getFragmentTag().getFragmentID().getIdentityValue().equals("A_name__fineBI_sub_empty"))
+                        System.out.println("find");
+                }
+                handleMessage(subscribe, message);
+                if (!subscribe.keepSubscribe()) {
+                    it.remove();
+                }
+            }
         }
     }
+
 
     /**
      * todo 防止subscribe处理消息卡死。

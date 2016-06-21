@@ -22,7 +22,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             comment = BI.i18nText("BI-New_Add_Connection") + "(" + database + ")";
         } else {
             database = this.model.getDatabaseByDriver();
-            comment = BI.i18nText("BI-Modify_Data_Connection") + "(" + database + ")";
+            comment = BI.i18nText(this.model.isCopy() === true ? "BI-Copy_Data_Link" : "BI-Modify_Data_Connection") + "(" + database + ")";
         }
         BI.createWidget({
             type: "bi.label",
@@ -51,6 +51,9 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
                 var isValid = self.model.checkDataLinkName(v);
                 self._refreshButtonsStatus(isValid);
                 return isValid;
+            },
+            quitChecker: function(){
+                return false;
             }
         });
         this.linkName.on(BI.SignEditor.EVENT_CHANGE, function(){
@@ -137,24 +140,24 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
 
         //原始编码
         var oldCodeCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: 460,
             height: 28
         });
-        oldCodeCombo.on(BI.TextIconCheckCombo.EVENT_CHANGE, function(){
+        oldCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setOriginalCharsetName(this.getValue());
         });
         var oldCode = this._createItemWrap(BI.i18nText("BI-Original_Code"), oldCodeCombo);
 
         //新编码
         var newCodeCombo = BI.createWidget({
-            type: "bi.text_icon_check_combo",
+            type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: 460,
             height: 28
         });
-        newCodeCombo.on(BI.TextIconCheckCombo.EVENT_CHANGE, function(){
+        newCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setNewCharsetName(this.getValue());
         });
         var newCode = this._createItemWrap(BI.i18nText("BI-New_Code"), newCodeCombo);

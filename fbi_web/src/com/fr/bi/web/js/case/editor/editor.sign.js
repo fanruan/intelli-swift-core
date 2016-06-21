@@ -58,7 +58,7 @@ BI.SignEditor = BI.inherit(BI.Single, {
             }
         });
         this.text.on(BI.TextButton.EVENT_CHANGE, function () {
-            BI.defer(function () {
+            BI.nextTick(function () {
                 self.fireEvent(BI.SignEditor.EVENT_CLICK_LABEL)
             });
         });
@@ -200,6 +200,10 @@ BI.SignEditor = BI.inherit(BI.Single, {
 
     getErrorText: function () {
         return this.editor.getErrorText();
+    },
+
+    isEditing: function () {
+        return this.editor.isEditing();
     },
 
     getLastValidValue: function () {

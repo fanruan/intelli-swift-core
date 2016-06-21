@@ -11,7 +11,9 @@ BIShow.PaneView = BI.inherit(BI.View, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BIShow.PaneView.superclass._defaultConfig.apply(this, arguments), {})
+        return BI.extend(BIShow.PaneView.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-pane-view-show"
+        })
     },
 
     _init: function () {
@@ -21,7 +23,6 @@ BIShow.PaneView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var north = this._createNorth();
         this.dashboard = this._createDashBoard();
-        var south = this._createSouth();
         BI.createWidget({
             type: "bi.vtape",
             element: vessel,
@@ -30,9 +31,6 @@ BIShow.PaneView = BI.inherit(BI.View, {
                 height: this._const.toolbarHeight
             }, {
                 el: this.dashboard
-            }, {
-                el: south,
-                height: this._const.tabHeight
             }]
         })
     },
@@ -60,8 +58,26 @@ BIShow.PaneView = BI.inherit(BI.View, {
     },
 
     _createNorth: function () {
+        var viewChange = BI.createWidget({
+            type: "bi.icon_text_item",
+            cls: "toolbar-edit-font",
+            text: BI.i18nText("BI-Edit_Report"),
+            height: 30,
+            width: 80
+        });
+        viewChange.on(BI.IconTextItem.EVENT_CHANGE, function () {
+            var reportId = Data.SharingPool.get("reportId");
+            var createBy = Data.SharingPool.get("createBy");
+            window.location.href = FR.servletURL + "?op=fr_bi&cmd=bi_init&id=" + reportId + "&createBy=" + createBy + "&edit=_bi_edit_";
+        });
         return BI.createWidget({
-            type: "bi.layout"
+            type: "bi.absolute",
+            cls: "dashboard-toolbar",
+            items: [{
+                el: viewChange,
+                top: 0,
+                left: 110
+            }]
         })
     },
 
@@ -86,20 +102,11 @@ BIShow.PaneView = BI.inherit(BI.View, {
         });
         var dashboard = BI.createWidget({
             type: "bi.adaptive_arrangement",
-            layoutType: this.model.get("layoutStyle"),
+            layoutType: this.model.get("layoutType"),
             resizable: false
         });
         dashboard.populate(items);
         return dashboard;
-    },
-
-
-    _createSouth: function () {
-        var widget = BI.createWidget({
-            type: "bi.layout",
-            cls: "dashboard-south"
-        });
-        return widget;
     },
 
     refresh: function () {

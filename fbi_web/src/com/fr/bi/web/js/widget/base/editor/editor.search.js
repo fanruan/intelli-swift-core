@@ -28,14 +28,13 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         });
         this.clear = BI.createWidget({
             type: "bi.icon_button",
-            stopPropagation: true,
+            stopEvent: true,
             cls: "search-close-h-font"
         });
         this.clear.on(BI.IconButton.EVENT_CHANGE, function () {
             self.setValue("");
             self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.STOPEDIT);
             self.fireEvent(BI.SearchEditor.EVENT_CLEAR);
-            self.fireEvent(BI.SearchEditor.EVENT_EMPTY);
         });
         BI.createWidget({
             element: this.element,
@@ -114,10 +113,10 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         });
         this.editor.on(BI.Editor.EVENT_PAUSE, function () {
             self.fireEvent(BI.SearchEditor.EVENT_PAUSE);
-        })
+        });
         this.editor.on(BI.Editor.EVENT_STOP, function () {
             self.fireEvent(BI.SearchEditor.EVENT_STOP);
-        })
+        });
 
         this.clear.invisible();
     },
@@ -128,6 +127,14 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         } else {
             this.clear.visible();
         }
+    },
+
+    focus: function () {
+        this.editor.focus();
+    },
+
+    blur: function () {
+        this.editor.blur();
     },
 
     getValue: function () {
@@ -144,11 +151,25 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
             this.clear.visible();
         }
     },
+
+    setValid: function (b) {
+        this.editor.setValid(b);
+    },
+
+    isEditing: function () {
+        return this.editor.isEditing();
+    },
+
     isValid: function () {
         return this.editor.isValid();
-    }
+    },
 
-})
+    setEnable: function (b) {
+        BI.Editor.superclass.setEnable.apply(this, arguments);
+        this.editor && this.editor.setEnable(b);
+        this.clear.setEnabled(b);
+    }
+});
 BI.SearchEditor.EVENT_CHANGE = "EVENT_CHANGE";
 BI.SearchEditor.EVENT_FOCUS = "EVENT_FOCUS";
 BI.SearchEditor.EVENT_BLUR = "EVENT_BLUR";

@@ -26,6 +26,12 @@ BI.ETLGroupSortableList = BI.inherit(BI.Widget, {
         })
     },
 
+    populate : function(items){
+        this.list.populate(BI.createItems(items, {
+            type : 'bi.multi_select_item'
+        })) ;
+    },
+
     getValue : function () {
         var value = [];
         var sorted = this.list.getSortedValues();

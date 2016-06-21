@@ -8,134 +8,193 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
         "/pane": "BIDezi.PaneView",
         "/pane/:id/:type": "getWidget",
         "/pane/:id/:type/detail": "getDetail",
-        "/pane/:id/:type/detail/:region/:dId": "getDimensionOrTarget"
+        "/pane/:id/:type/detail/:region/:dId": "getDimensionOrTarget",
+
+
+        "/detailtablepopup": "BI.DetailTablePopupView",
+        "/detailtablepopup/:dId": "BI.DetailTablePopupDetailDimensionView"
     },
 
     getDetail: function (id, type) {
         switch (BI.parseInt(type)) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.CROSS_TABLE:
-            case BICst.Widget.COMPLEX_TABLE:
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.AXIS:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE:
-            case BICst.Widget.SCATTER:
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.FUNNEL:
                 return "BIDezi.DetailView";
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return "BIDezi.DetailTableDetailView";
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return "BIDezi.StringDetailView";
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 return "BIDezi.DateRangeDetailView";
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 return "BIDezi.NumberDetailView";
-            case BICst.Widget.QUERY:
+            case BICst.WIDGET.QUERY:
                 break;
-            case BICst.Widget.YEAR:
+            case BICst.WIDGET.YEAR:
                 return "BIDezi.YearDetailView";
-            case BICst.Widget.QUARTER:
+            case BICst.WIDGET.QUARTER:
                 return "BIDezi.YearQuarterDetailView";
-            case BICst.Widget.MONTH:
+            case BICst.WIDGET.MONTH:
                 return "BIDezi.YearMonthDetailView";
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YMD:
                 return "BIDezi.DateDetailView";
-            case BICst.Widget.TREE:
+            case BICst.WIDGET.TREE:
                 return "BIDezi.TreeDetailView";
-            case BICst.Widget.RESET:
+            case BICst.WIDGET.RESET:
         }
     },
 
     getWidget: function (id, type) {
         switch (BI.parseInt(type)) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.CROSS_TABLE:
-            case BICst.Widget.COMPLEX_TABLE:
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.AXIS:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE:
-            case BICst.Widget.SCATTER:
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.FUNNEL:
                 return "BIDezi.WidgetView";
-            case BICst.Widget.Content:
+            case BICst.WIDGET.CONTENT:
                 return "BIDezi.ContentWidgetView";
-            case BICst.Widget.IMAGE:
+            case BICst.WIDGET.IMAGE:
                 return "BIDezi.ImageWidgetView";
-            case BICst.Widget.WEB:
+            case BICst.WIDGET.WEB:
                 return "BIDezi.WebWidgetView";
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return "BIDezi.DetailTableView";
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return "BIDezi.StringWidgetView";
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 return "BIDezi.NumberWidgetView";
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 return "BIDezi.DateRangeView";
-            case BICst.Widget.YEAR:
+            case BICst.WIDGET.YEAR:
                 return "BIDezi.YearWidgetView";
-            case BICst.Widget.QUARTER:
+            case BICst.WIDGET.QUARTER:
                 return "BIDezi.YearQuarterWidgetView";
-            case BICst.Widget.MONTH:
+            case BICst.WIDGET.MONTH:
                 return "BIDezi.YearMonthWidgetView";
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YMD:
                 return "BIDezi.DateWidgetView";
-            case BICst.Widget.TREE:
+            case BICst.WIDGET.TREE:
                 return "BIDezi.TreeWidgetView";
-            case BICst.Widget.QUERY:
+            case BICst.WIDGET.GENERAL_QUERY:
+                return "BIDezi.GeneralQueryView";
+            case BICst.WIDGET.QUERY:
+                return "BIDezi.QueryView";
                 break;
-            case BICst.Widget.RESET:
+            case BICst.WIDGET.RESET:
+                return "BIDezi.ResetView";
                 break;
         }
     },
 
     getDimensionOrTarget: function (id, type, region, dId) {
         switch (BI.parseInt(type)) {
-            case BICst.Widget.TABLE:
-            case BICst.Widget.CROSS_TABLE:
-            case BICst.Widget.COMPLEX_TABLE:
-            case BICst.Widget.BAR:
-            case BICst.Widget.ACCUMULATE_BAR:
-            case BICst.Widget.PIE:
-            case BICst.Widget.DASHBOARD:
-            case BICst.Widget.AXIS:
-            case BICst.Widget.MAP:
-            case BICst.Widget.DOUGHNUT:
-            case BICst.Widget.BUBBLE:
-            case BICst.Widget.SCATTER:
-            case BICst.Widget.RADAR:
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.FUNNEL:
                 if (BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
                     BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region)) {
                     return "BIDezi.DimensionView";
                 }
                 return "BIDezi.TargetView";
-            case BICst.Widget.DETAIL:
+            case BICst.WIDGET.DETAIL:
                 return "BIDezi.DetailDimensionView";
-            case BICst.Widget.STRING:
+            case BICst.WIDGET.STRING:
                 return "BIDezi.StringDimensionView";
-            case BICst.Widget.NUMBER:
+            case BICst.WIDGET.NUMBER:
                 return "BIDezi.NumberDimensionView";
-            case BICst.Widget.DATE:
+            case BICst.WIDGET.DATE:
                 return "BIDezi.DateDimensionView";
-            case BICst.Widget.YEAR:
-            case BICst.Widget.QUARTER:
-            case BICst.Widget.MONTH:
-            case BICst.Widget.YMD:
+            case BICst.WIDGET.YEAR:
+            case BICst.WIDGET.QUARTER:
+            case BICst.WIDGET.MONTH:
+            case BICst.WIDGET.YMD:
                 return "BIDezi.DateDimensionView";
-            case BICst.Widget.TREE:
+            case BICst.WIDGET.TREE:
                 return "BIDezi.TreeDimensionView";
-            case BICst.Widget.QUERY:
+            case BICst.WIDGET.QUERY:
                 break;
-            case BICst.Widget.RESET:
+            case BICst.WIDGET.RESET:
                 break;
         }
     }

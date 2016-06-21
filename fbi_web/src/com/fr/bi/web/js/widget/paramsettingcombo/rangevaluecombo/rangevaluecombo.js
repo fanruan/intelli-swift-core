@@ -15,12 +15,12 @@ BI.RangeValueCombo = BI.inherit(BI.Widget, {
         BI.RangeValueCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.dateRangeCombo = BI.createWidget({
-            type: "bi.text_icon_combo",
+            type: "bi.text_value_combo",
             height: o.height,
             width: o.width,
             items: BICst.Date_Range_FILTER_COMBO
         });
-        this.dateRangeCombo.on(BI.TextIconCombo.EVENT_CHANGE, function(){
+        this.dateRangeCombo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self.fireEvent(BI.RangeValueCombo.EVENT_CHANGE);
         });
 

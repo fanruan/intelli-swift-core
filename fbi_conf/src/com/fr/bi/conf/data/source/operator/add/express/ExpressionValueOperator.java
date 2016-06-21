@@ -3,6 +3,7 @@ package com.fr.bi.conf.data.source.operator.add.express;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
+import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -34,8 +35,9 @@ public class ExpressionValueOperator extends AbstractAddColumnOperator {
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
         if(expression != null){
-        	jo.put("expression", expression.createJSON());
+        	jo.put("item", expression.createJSON());
         }
+        jo.put("add_column_type", BIJSONConstant.ETL_ADD_COLUMN_TYPE.GROUP);
         return jo;
     }
 
@@ -48,8 +50,10 @@ public class ExpressionValueOperator extends AbstractAddColumnOperator {
     @Override
     public void parseJSON(JSONObject jsonObject) throws Exception {
         super.parseJSON(jsonObject);
-        if(jsonObject.has("expression")){
-//        	expression = jsonObject.getString("expression");
+        if (jsonObject.has("item")){
+            JSONObject item = jsonObject.getJSONObject("item");
+            expression = new GeneralExpression();
+            expression.parseJSON(item);
         }
     }
 

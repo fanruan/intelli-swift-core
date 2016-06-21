@@ -24,6 +24,9 @@ BI.SortList = BI.inherit(BI.Widget, {
             count: false,
             next: {},
             hasNext: BI.emptyFn
+
+            //containment: this.element,
+            //connectWith: ".bi-sort-list",
         })
     },
 
@@ -51,7 +54,7 @@ BI.SortList = BI.inherit(BI.Widget, {
             if (type === BI.Events.CLICK) {
                 self.fireEvent(BI.SortList.EVENT_CHANGE, value, obj);
             }
-        })
+        });
 
         this.loader.element.sortable({
             containment: o.containment || this.element,
@@ -107,7 +110,7 @@ BI.SortList = BI.inherit(BI.Widget, {
     },
 
     addItems: function (items) {
-        this.loader.addItems(itmes);
+        this.loader.addItems(items);
     },
 
     populate: function (items) {

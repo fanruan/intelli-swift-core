@@ -36,23 +36,35 @@ BI.ColorChooser = BI.inherit(BI.Widget, {
             }
         });
 
-        this.colorPicker.on(BI.ColorChooserPopup.EVENT_CHANGE, function () {
-            var color = this.getValue();
+        var fn = function () {
+            var color = self.colorPicker.getValue();
             self.trigger.setValue(color);
             var colors = BI.string2Array(BI.Cache.getItem("colors") || "");
-            colors.remove(color);
-            colors.unshift(color);
-            colors = colors.slice(0, 8);
-            BI.Cache.setItem("colors", BI.array2String(colors));
+            var que = new BI.Queue(8);
+            que.fromArray(colors);
+            que.remove(color);
+            que.unshift(color);
+            BI.Cache.setItem("colors", BI.array2String(que.toArray()));
+        };
+
+        this.colorPicker.on(BI.ColorChooserPopup.EVENT_VALUE_CHANGE, function () {
+            fn();
+        });
+
+        this.colorPicker.on(BI.ColorChooserPopup.EVENT_CHANGE, function () {
+            fn();
             self.combo.hideView();
-            self.fireEvent(BI.ColorChooser.EVENT_CHANGE, arguments);
         });
         this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
             self.colorPicker.setStoreColors(BI.string2Array(BI.Cache.getItem("colors") || ""));
         });
+
+        this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
+            self.fireEvent(BI.ColorChooser.EVENT_CHANGE, arguments);
+        })
     },
 
-    isViewVisible: function(){
+    isViewVisible: function () {
         return this.combo.isViewVisible();
     },
 

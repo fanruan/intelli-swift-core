@@ -1,10 +1,10 @@
 package com.fr.bi.conf.report;
 
-import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.base.provider.ParseJSONWithUID;
-import com.fr.bi.stable.data.BIField;
-import com.fr.bi.stable.data.Table;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.provider.ParseJSONWithUID;
+import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
 
@@ -65,9 +65,9 @@ public interface BIReport extends ParseJSONWithUID {
      */
     public void setWidget(int index, BIWidget widget);
 
-    public List<Table> getUsedTableDefine();
+    public List<BusinessTable> getUsedTableDefine();
 
-    public List<BIField> getUsedFieldDefine();
+    public List<BusinessField> getUsedFieldDefine();
 
     /**
      * 将JSON对象转换成java对象
@@ -78,7 +78,7 @@ public interface BIReport extends ParseJSONWithUID {
      */
     public void parseJSON(JSONObject jo, long userId, ICubeDataLoader loader) throws Exception;
 
-    public List<BIField> getControlColumns();
+    public List<BusinessField> getControlColumns();
 
     /**
      * 删除控件

@@ -1,8 +1,8 @@
 package com.fr.bi.web.conf.services.packs;
 
-import com.fr.bi.cal.generate.CheckTask;
-import com.fr.bi.conf.base.pack.data.BIBusinessPackageGetterService;
-import com.fr.bi.conf.base.pack.data.BIPackageID;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
+import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -11,6 +11,8 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
 
@@ -22,32 +24,33 @@ public class BISavePackageAuthorityAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
-        String packageName = WebUtils.getHTTPRequestParameter(req, "packageNames");
-        String authorityJsonString = WebUtils.getHTTPRequestParameter(req, "authorityJsonString");
+        String packageIds = WebUtils.getHTTPRequestParameter(req, "package_ids");
+        String roles = WebUtils.getHTTPRequestParameter(req, "roles");
         long userId = ServiceUtils.getCurrentUserID(req);
-        savePackageAuthority(packageName, new JSONArray(authorityJsonString), userId);
+        savePackageAuthority(packageIds, roles, userId);
     }
 
     /**
      * 保存业务包权限
      *
-     * @param packageName 业务包名字
-     * @param authString  权限的字符串
+     * @param packageIds 业务包名字
+     * @param roles      权限的字符串
      * @throws Exception
      */
-    public void savePackageAuthority(String packageName, JSONArray authString, long userId) throws Exception {
-        JSONArray packNamejo = new JSONArray(packageName);
-        /**
-         * TODO CONNERY 这个地方应该是传递了Packagename了
-         */
-        for (int i = 0; i < packNamejo.length(); i++) {
-            BIBusinessPackageGetterService pack = BIConfigureManagerCenter.getPackageManager().getPackage(userId, new BIPackageID(packNamejo.getString(i)));
-            if (pack != null) {
-                //       pack.parseJSONWithAuthority(authString);
-//                FRContext.getCurrentEnv().writeResource(BIConfigureDataManager.getBusiPackManager().getInstance(userId));
-            }
+    private void savePackageAuthority(String packageIds, String roles, long userId) throws Exception {
+        JSONArray rolesJA = new JSONArray(roles);
+        JSONArray pIdsJA = new JSONArray(packageIds);
+        List<BIPackageAuthority> authorities = new ArrayList<BIPackageAuthority>();
+        for (int i = 0; i < rolesJA.length(); i++) {
+            BIPackageAuthority authority = new BIPackageAuthority();
+            authority.parseJSON(rolesJA.getJSONObject(i));
+            authorities.add(authority);
         }
 
-        BIConfigureManagerCenter.getCubeManager().addTask(new CheckTask(userId), userId);
+        BIAuthorityManageProvider packageAndAuthorityManager = BIConfigureManagerCenter.getAuthorityManager();
+        for (int i = 0; i < pIdsJA.length(); i++) {
+            packageAndAuthorityManager.savePackageAuth(new BIPackageID(pIdsJA.getString(i)), authorities, userId);
+        }
+        packageAndAuthorityManager.persistData(userId);
     }
 }

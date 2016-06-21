@@ -1,8 +1,9 @@
 package com.fr.bi.conf.data.source;
 
+import com.fr.bi.conf.data.source.operator.OperatorFactory;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.AbstractTableSource;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -18,14 +19,12 @@ public class TableSourceFactory {
     public static AbstractTableSource createTableSource(JSONObject jo, long userId) throws Exception {
         String connectionName = jo.optString("connection_name", StringUtils.EMPTY);
         if (ComparatorUtils.equals(connectionName, DBConstant.CONNECTION.ETL_CONNECTION)) {
-            ETLTableSource etlTableSource = new ETLTableSource();
-            etlTableSource.parseJSON(jo, userId);
             JSONArray tables = jo.optJSONArray("tables");
-            List<ITableSource> parents = new ArrayList<ITableSource>();
+            List<CubeTableSource> parents = new ArrayList<CubeTableSource>();
             for (int i = 0; i < tables.length(); i++) {
                 parents.add(createTableSource(tables.getJSONObject(i), userId));
             }
-            etlTableSource.setParents(parents);
+            ETLTableSource etlTableSource = new ETLTableSource(OperatorFactory.createOperatorsByJSON(jo, userId), parents);
             return etlTableSource;
         } else if (ComparatorUtils.equals(connectionName, DBConstant.CONNECTION.SQL_CONNECTION)) {
             SQLTableSource sqlTableSource = new SQLTableSource();

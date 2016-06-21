@@ -28,14 +28,17 @@ import java.util.Map;
  * @author Daniel-pc
  */
 public class BIWeblet implements Weblet {
-	
-	private BIReportNode node;
+
+    private BIReportNode node;
 
     /**
      * 构造函数
      */
     public BIWeblet(BIReportNode node) {
-    	this.node = node;
+        this.node = node;
+    }
+
+    public BIWeblet() {
     }
 
     /**
@@ -102,7 +105,7 @@ public class BIWeblet implements Weblet {
             String format = WebUtils.getHTTPRequestParameter(req, "format");
 
             if (ComparatorUtils.equals(format, "pdfprint")) {
-                PDFPrintPrintAction.dealWidthPrint(req, res);
+                new PDFPrintPrintAction().doAction(req, res);
             } else {
                 String embedParameter = WebUtils.getHTTPRequestParameter(req, ParameterConsts.EXPORT_PDF_EMBED);
                 boolean embed = "true".equals(embedParameter); // 当且仅当参数值是true时,才嵌入
@@ -116,7 +119,8 @@ public class BIWeblet implements Weblet {
     private void dealWithPageHtml(HttpServletRequest req,
                                   HttpServletResponse res, String sessionID) {
         BIAbstractSession sessionIDInfor = (BIAbstractSession) SessionDealWith.getSessionIDInfor(sessionID);
-        if (sessionIDInfor == null) {// Session timeout.
+        if (sessionIDInfor == null) {
+            // Session timeout.
             return;
         }
 

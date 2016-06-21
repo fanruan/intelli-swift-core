@@ -122,7 +122,7 @@ BI.SelectNumberLevel0Item = BI.inherit(BI.Single, {
         });
         //标蓝
         BI.Utils.isSrcUsedBySrcID(o.id) === true && this.doHighLight();
-        BI.Broadcasts.on(o.id, function (v) {
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
             if (v === true) {
                 self.doHighLight();
             } else {
@@ -147,8 +147,9 @@ BI.SelectNumberLevel0Item = BI.inherit(BI.Single, {
             }
         };
         BI.Utils.isSrcUsedBySrcID(o.id) === true && enable();
-        BI.Broadcasts.on(o.id, function () {
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function () {
             enable();
+            self.setSelected(false);
         });
     },
 
@@ -156,7 +157,11 @@ BI.SelectNumberLevel0Item = BI.inherit(BI.Single, {
         BI.SelectNumberLevel0Item.superclass.setEnable.apply(this, arguments)
         this.button.setEnable(v);
         this.previewBtn.setEnable(v);
-        this.button.element.draggable(v ? "enable" : "disable");
+        try {
+            this.button.element.draggable(v ? "enable" : "disable");
+        } catch (e) {
+
+        }
         if (!v) {
             this.setSelected(false);
         }

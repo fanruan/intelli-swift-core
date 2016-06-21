@@ -8,21 +8,29 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
         return [
             [{
                 text: BI.i18nText("BI-Date"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.DATE
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.DATE,
+                cls: "dot-ha-font"
             }, {
                 text: BI.i18nText("BI-Year_Fen"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.YEAR
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.YEAR,
+                cls: "dot-ha-font"
             }, {
                 text: BI.i18nText("BI-Quarter"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.QUARTER
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.QUARTER,
+                cls: "dot-ha-font"
             }, {
                 text: BI.i18nText("BI-Month_Fen"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.MONTH
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.MONTH,
+                cls: "dot-ha-font"
             }, {
                 text: BI.i18nText("BI-Week_XingQi"),
-                value: BICst.STATISTICS_GROUP_DATE_COMBO.WEEK
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.WEEK,
+                cls: "dot-ha-font"
             }],
             [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.STATISTICS_GROUP_DATE_COMBO.RENAME
+            }, {
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.STATISTICS_GROUP_DATE_COMBO.DELETE
             }]
@@ -42,6 +50,7 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
         this.combo = BI.createWidget({
             type: "bi.down_list_combo",
             element: this.element,
+            stopPropagation: true,
             height: 25,
             iconCls: "detail-dimension-set-font",
             items:this._defaultItems()

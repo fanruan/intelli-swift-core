@@ -4,16 +4,18 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             name: "",
             bounds: {},
             linkages: [],
-            type: BICst.Widget.TABLE,
+            type: BICst.WIDGET.TABLE,
             dimensions: {},
             view: {},
-            settings: BI.deepClone(BICst.DEFAULT_CHART_SETTING)
+            settings: {}
         })
     },
 
     change: function (changed, pre) {
         if (BI.has(changed, "detail")) {
-            this.set(this.get("detail"));
+            this.set(this.get("detail"), {
+                notrefresh: true
+            });
         }
         //维度或指标改变时需要调节联动设置
         if (BI.has(changed, "dimensions")) {
@@ -23,21 +25,27 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             BI.remove(linkages, function (i, linkage) {
                 return !dids.contains(linkage.from);
             });
+            this.refresh();
             this.set("linkages", linkages);
         }
         if (BI.has(changed, "linkages")) {
             //找到所有被删除掉的linkages，通知到相关的组件
-            BI.each(pre.linkages, function(i, preLink) {
-                var found = BI.some(changed.linkages, function(j, link){
-                    if(link.from === preLink.from && link.to === preLink.to) {
+            BI.each(pre.linkages, function (i, preLink) {
+                var found = BI.some(changed.linkages, function (j, link) {
+                    if (link.from === preLink.from && link.to === preLink.to) {
                         return true;
                     }
                 });
-                if(found === false) {
-                    BI.Broadcasts.send(preLink.to, preLink.from);
+                if (found === false) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + preLink.to, preLink.from);
                 }
             });
-
+        }
+        if (BI.has(changed, "filter_value")) {
+            this.refresh();
+        }
+        if (BI.has(changed, "settings")) {
+            this.refresh();
         }
     },
 
@@ -57,6 +65,10 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
         return false;
     },
 

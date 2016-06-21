@@ -10,21 +10,46 @@ DirectionPathChooserView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
+        var a = [
+            [
+                {
+                    "region": "合同信息",
+                    "text": "客户ID",
+                    "value": "defa1f7ba8b2684a客户ID"
+                }, {
+                    "region": "客户信息",
+                    "text": "主键",
+                    "value": "1f4711c201ef1842",
+                    "direction": -1
+                }, {
+                    "region": "合同的回款信息",
+                    "text": "合同ID",
+                    "value": "e351e9f1d8147947合同ID",
+                    "direction": -1
+        }]];
         var pathchooser = BI.createWidget({
             type: "bi.direction_path_chooser",
             width: 800,
             height: 400,
-            items: [
-                [{"region":"T4","text":"Name","value":"6aece09515d96690Name"},
-                    {"region":"T1","text":"ID","value":"3e9bd22b517429f7ID","direction":-1},
-                    {"region":"T3","text":"ID","value":"da331a613ae22505ID","direction":-1}],
-                [{"region":"T4","text":"Name","value":"6aece09515d96690Name"},
-                    {"region":"T1","text":"ID","value":"3e9bd22b517429f7ID","direction":-1},
-                    {"region":"T2","text":"ID","value":"a6da3db624125d37ID","direction":-1},
-                    {"region":"T3","text":"ID","value":"da331a613ae22505ID","direction":-1}]
-            ]
+            items:  [
+                [
+                    {
+                        "region": "合同信息",
+                        "text": "客户ID",
+                        "value": "defa1f7ba8b2684a客户ID"
+                    }, {
+                    "region": "客户信息",
+                    "text": "主键",
+                    "value": "1f4711c201ef1842",
+                    "direction": -1
+                }, {
+                    "region": "合同的回款信息",
+                    "text": "合同ID",
+                    "value": "e351e9f1d8147947合同ID",
+                    "direction": -1
+                }]]
         });
-        pathchooser.setValue();
+        //pathchooser.setValue();
         BI.createWidget({
             type: "bi.absolute",
             element: vessel,

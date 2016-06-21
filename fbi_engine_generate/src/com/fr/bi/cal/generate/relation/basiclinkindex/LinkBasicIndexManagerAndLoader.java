@@ -2,19 +2,17 @@ package com.fr.bi.cal.generate.relation.basiclinkindex;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
-import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.cal.stable.index.utils.BIVersionUtils;
 import com.fr.bi.cal.stable.relation.LinkIndexLoader;
 import com.fr.bi.conf.log.BIRecord;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
-import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.data.source.ITableSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
@@ -22,9 +20,8 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.io.newio.NIOWriter;
-import com.fr.bi.stable.relation.BITableSourceRelation;
-import com.fr.bi.stable.relation.utils.BIRelationUtils;
 import com.fr.bi.stable.structure.array.ArrayKey;
+import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
@@ -40,18 +37,20 @@ import java.util.*;
  */
 public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.util.concurrent.Callable<Object> {
 
-    private Table start;
+    private CubeTableSource start;
     private TableCubeFile oldCube;
     private TableCubeFile currentCube;
     protected BIUser biUser;
     private BIRecord log;
 
-    public LinkBasicIndexManagerAndLoader(Table start, long userId) {
+    public LinkBasicIndexManagerAndLoader(CubeTableSource start, long userId) {
         biUser = new BIUser(userId);
         this.start = start;
-        BICore core = BIConfigureManagerCenter.getDataSourceManager().getCoreByTableID(start.getID(), new BIUser(userId));
-        oldCube = new TableCubeFile(BIPathUtils.createTablePath(core.getIDValue(), userId));
-        currentCube = new TableCubeFile(BIPathUtils.createTableTempPath(core.getIDValue(), userId));
+        CubeTableSource cubeTableSource = null;
+        cubeTableSource = start;
+
+        oldCube = new TableCubeFile(BIPathUtils.createTablePath(cubeTableSource.getSourceID(), userId));
+        currentCube = new TableCubeFile(BIPathUtils.createTableTempPath(cubeTableSource.getSourceID(), userId));
 
     }
 
@@ -84,7 +83,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         return CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId());
     }
 
-    protected void generateIndex(Table primaryKey, final ArrayList<BITableSourceRelation> parRelation) {
+    protected void generateIndex(CubeTableSource primaryKey, final ArrayList<BITableSourceRelation> parRelation) {
 
         Set<BITableSourceRelation> set = getPrimaryKeyMap().get(primaryKey);
         if (set == null) {
@@ -93,7 +92,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         for (BITableSourceRelation relation : set) {
             ArrayList<BITableSourceRelation> nextRelation = new ArrayList<BITableSourceRelation>(parRelation);
 
-            ITableSource key = relation.getForeignTable();
+            CubeTableSource key = relation.getForeignTable();
             nextRelation.add(relation);
             if (BIRelationUtils.isRelationRepeated(nextRelation, key)) {
                 if (log != null) {
@@ -134,7 +133,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
     private Set<ArrayKey<BITableSourceRelation>> generateLinkList(ArrayList<BITableSourceRelation> relations, BITableSourceRelation rel) {
         Set<ArrayKey<BITableSourceRelation>> set = new HashSet<ArrayKey<BITableSourceRelation>>();
         ArrayList<BITableSourceRelation> listRelation = new ArrayList<BITableSourceRelation>();
-        Table key = rel.getForeignKey().getTableBelongTo();
+        CubeTableSource key = rel.getForeignKey().getTableBelongTo();
         Iterator it = relations.iterator();
         boolean found = false;
         while (it.hasNext()) {
@@ -200,16 +199,12 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         }
     }
 
-    protected String getCore(String id) {
-        return BIConfigureManagerCenter.getDataSourceManager().getCoreByTableID(new BITableID(id), biUser).getID().getIdentityValue();
+
+    protected Map<CubeTableSource, Set<BITableSourceRelation>> getPrimaryKeyMap() {
+        return CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap();
     }
 
-
-    protected Map<Table, Set<BITableSourceRelation>> getPrimaryKeyMap() {
-        return BIConfigureManagerCenter.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap();
-    }
-
-    private ICubeTableService getTableIndex(Table table) {
+    private ICubeTableService getTableIndex(CubeTableSource table) {
         return getLoader().getTableIndex(table);
     }
 
@@ -220,7 +215,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         IndexFile indexFile = currentCube.getLinkIndexFile(relations);
         final NIOWriter<byte[]> indexWriter = indexFile.createIndexWriter();
         final NIOWriter<byte[]> nullWriter = indexFile.createNullWriter();
-        Table end = relations.get(relations.size() - 1).getForeignKey().getTableBelongTo();
+        CubeTableSource end = relations.get(relations.size() - 1).getForeignKey().getTableBelongTo();
         BILogger.getLogger().info("generate basic relation from table :" + start.toString() + "to table :" + end.toString());
         List<BITableSourceRelation> pRelation = new ArrayList<BITableSourceRelation>();
         for (int i = 0; i < relations.size() - 1; i++) {
@@ -230,7 +225,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         ICubeTableService eti = getTableIndex(end);
         indexFile.writeGroupCount(eti.getRowCount());
         final ICubeTableIndexReader pReader = sti.ensureBasicIndex(pRelation);
-        Table startTable = relations.get(relations.size() - 1).getPrimaryKey().getTableBelongTo();
+        CubeTableSource startTable = relations.get(relations.size() - 1).getPrimaryKey().getTableBelongTo();
         List<BITableSourceRelation> linkR = new ArrayList<BITableSourceRelation>();
         linkR.add(relations.get(relations.size() - 1));
         final ICubeTableIndexReader sReader = getTableIndex(startTable).ensureBasicIndex(linkR);
@@ -264,7 +259,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
      * @param indexLog
      * @param ck
      */
-    private void methodWrapper(List<BITableSourceRelation> relations, IndexFile indexFile, final NIOWriter<byte[]> indexWriter, NIOWriter<byte[]> nullWriter, Table end, ICubeTableService sti, final ICubeTableIndexReader pReader, final ICubeTableIndexReader sReader, final int rowCount, int endRowCount, final GroupValueIndex nullIndex, final long t, final String indexLog, final RelationColumnKey ck) {
+    private void methodWrapper(List<BITableSourceRelation> relations, IndexFile indexFile, final NIOWriter<byte[]> indexWriter, NIOWriter<byte[]> nullWriter, CubeTableSource end, ICubeTableService sti, final ICubeTableIndexReader pReader, final ICubeTableIndexReader sReader, final int rowCount, int endRowCount, final GroupValueIndex nullIndex, final long t, final String indexLog, final RelationColumnKey ck) {
         sti.getAllShowIndex().Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndices) {
