@@ -83,6 +83,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return result;
     },
 
+    _formatDataForGISMap: function(){
+
+    },
+
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
@@ -577,9 +581,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 return this._formatDataForForceBubble(data);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
                 var da = this._formatDataForMap(data);
                 return BI.isEmptyArray(da) ? da : [da];
+            case BICst.WIDGET.GIS_MAP:
+                return this._formatDataForGISMap(data)
         }
     },
 
