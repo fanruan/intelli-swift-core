@@ -17,7 +17,6 @@ public class BITableReportSetting extends BIAbstractTableSetting {
     protected String[] column;
     @BICoreField
     protected String[] row;
-    private boolean freeze;
     private int number;
     private int tableStyle;
     private ArrayList<ArrayList<String>> complex_x_dimension;
@@ -51,9 +50,6 @@ public class BITableReportSetting extends BIAbstractTableSetting {
             JSONObject jo1 = jo.optJSONObject("style");
             if (jo1.has("tableStyle")) {
                 tableStyle = jo1.optInt("tableStyle");
-            }
-            if (jo1.has("freeze")) {
-                freeze = jo1.optBoolean("freeze", false);
             }
             if (jo1.has("number")) {
                 number = jo1.optInt("number", 0);

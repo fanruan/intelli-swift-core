@@ -89,7 +89,7 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text: o.title || BI.i18nText("BI-Grouping_Setting"),
+            text: o.title || BI.i18nText("BI-ETL_Filter_Group_Setting"),
             textAlign: "left",
             height: self._constants.NORTH_HEIGHT
         });

@@ -309,7 +309,7 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
     },
     getValue: function () {
         var dateStr = this.editor.getValue();
-        if (BI.isNotEmptyString(dateStr)) {
+        if (BI.isNotEmptyString(dateStr) && BI.isNotNull(this.store_value)) {
             var date = dateStr.split("-");
             return {
                 year: date[0] | 0,

@@ -1282,6 +1282,7 @@ public class ResourceHelper {
                 //选组件
                 "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/pane.reuse.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/dragiconbutton.js",
+                "com/fr/bi/web/js/modules/fit/widgetchooser/dragiconcombo.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/dragwidgetitem.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/widget.dragicongroup.js",
                 "com/fr/bi/web/js/modules/fit/fit.widget.js",
@@ -2022,7 +2023,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/third/jquery.ui.droppable.js",
                 "com/fr/bi/web/js/third/jquery.ui.sortable.js",
                 "com/fr/bi/web/js/third/jquery.ui.effect.js",
-                "com/fr/bi/web/js/third/d3-min.js",
+                "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/third/leaflet.js",
 

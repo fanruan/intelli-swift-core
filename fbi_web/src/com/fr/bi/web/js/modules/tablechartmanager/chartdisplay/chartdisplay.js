@@ -61,7 +61,8 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             self.chart.setTypes(types);
             self.chart.setOptions(BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {
                 tooltipFormatter: self.model.getToolTip(type),
-                cordon: self.model.getCordon()
+                cordon: self.model.getCordon(),
+                mapType: {type: BI.Utils.getWidgetTypeByID(o.wId), subType: BI.Utils.getWidgetSubTypeByID(o.wId)}
             }));
             self.chart.populate(data, options);
         });

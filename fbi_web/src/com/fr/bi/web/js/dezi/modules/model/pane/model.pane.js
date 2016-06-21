@@ -9,13 +9,13 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
     _static: function () {
         var self = this;
         return {
-            getOperatorIndex: function(){
+            getOperatorIndex: function () {
                 return self.operatorIndex;
             },
-            isUndoRedoSet: function(){
+            isUndoRedoSet: function () {
                 return self.isUndoRedoSet;
             },
-            setUndoRedoSet: function(v) {
+            setUndoRedoSet: function (v) {
                 self.isUndoRedoSet = v;
             }
         }
@@ -25,7 +25,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         BIDezi.PaneModel.superclass._init.apply(this, arguments);
         var self = this;
         this.operatorIndex = 0;
-        this.saveDebounce = BI.debounce(function(widgets, dims, layoutType){
+        this.saveDebounce = BI.debounce(function (widgets, dims, layoutType) {
             var records = Data.SharingPool.get("records") || [];
             records.splice(self.operatorIndex + 1);
             records.push({
@@ -75,12 +75,12 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
             this.set({"widgets": widgets});
             return true;
         }
-        if(this.has("undo")) {
+        if (this.has("undo")) {
             this.get("undo");
             this._undoRedoOperator(true);
             return true;
         }
-        if(this.has("redo")) {
+        if (this.has("redo")) {
             this.get("redo");
             this._undoRedoOperator(false);
             return true;
@@ -88,7 +88,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         return false;
     },
 
-    _undoRedoOperator: function(isUndo){
+    _undoRedoOperator: function (isUndo) {
         isUndo === true ? this.operatorIndex-- : this.operatorIndex++;
         var ob = Data.SharingPool.get("records")[this.operatorIndex];
         this.isUndoRedoSet = true;
@@ -125,13 +125,24 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
 
     duplicate: function (copy, key1, key2) {
         this.refresh();
+        if (key1 === "widgets") {
+            BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX + key2);
+            //全局组件增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX);
+        }
     },
 
-    change: function (changed) {
-        if(this.isUndoRedoSet === true) {
+    change: function (changed, pre) {
+        if (this.isUndoRedoSet === true) {
             return;
         }
         this.refresh();
+        if (BI.has(changed, "widgets")) {
+            if (BI.size(changed.widgets) !== BI.size(pre.widgets)) {
+                //全局组件增删事件
+                BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX);
+            }
+        }
     },
 
     refresh: function () {

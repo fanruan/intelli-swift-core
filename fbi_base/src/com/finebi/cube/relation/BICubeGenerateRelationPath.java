@@ -7,18 +7,18 @@ import java.util.Set;
  */
 public class BICubeGenerateRelationPath {
    protected BITableSourceRelationPath biTableSourceRelationPath;
-    protected Set<BITableSourceRelationPath> biTableSourceRelationPathSet;
+    protected Set<BITableSourceRelationPath> dependRelationPathSet;
 
     public BITableSourceRelationPath getBiTableSourceRelationPath() {
         return biTableSourceRelationPath;
     }
 
-    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
-        return biTableSourceRelationPathSet;
+    public Set<BITableSourceRelationPath> getDependRelationPathSet() {
+        return dependRelationPathSet;
     }
 
     public BICubeGenerateRelationPath(BITableSourceRelationPath biTableSourceRelationPath, Set<BITableSourceRelationPath> dependRelationPath) {
         this.biTableSourceRelationPath = biTableSourceRelationPath;
-        this.biTableSourceRelationPathSet = dependRelationPath;
+        this.dependRelationPathSet = dependRelationPath;
     }
 }

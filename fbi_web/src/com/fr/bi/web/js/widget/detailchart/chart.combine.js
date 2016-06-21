@@ -97,12 +97,20 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.ACCUMULATE_AREA:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FUNNEL:
                 createAxisForCommon();
+                break;
+            case BICst.WIDGET.COMPARE_AXIS:
+                createAxisForCommon();
+                var newxAxis  = self._axisConfig();
+                newxAxis.position = "top";
+                newxAxis.gridLineWidth = 0;
+                newxAxis.type = "category";
+                newxAxis.showLabel = false;
+                config.xAxis.push(newxAxis);
                 break;
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
