@@ -21,6 +21,8 @@ public interface BIRecord extends JSONCreator {
      */
      void recordStart();
 
+    void clearRecord();
+
     /**
      * 关联日志开始
      */

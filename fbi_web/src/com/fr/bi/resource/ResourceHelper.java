@@ -1474,6 +1474,12 @@ public class ResourceHelper {
 
                 //简单字段选择服务
                 "com/fr/bi/web/js/services/simpleselectdataservice/simpleselectdataservice.js",
+
+
+
+
+                //切面
+                "com/fr/bi/web/js/aspects/aspects.js",
         };
     }
 
@@ -1858,6 +1864,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/proto/array.js",
                 "com/fr/bi/web/js/base/proto/number.js",
                 "com/fr/bi/web/js/base/proto/date.js",
+                "com/fr/bi/web/js/base/proto/function.js",
                 "com/fr/bi/web/js/base/utils/base64.js",
                 "com/fr/bi/web/js/base/utils/md5.js",
                 "com/fr/bi/web/js/base/utils/xml.js",
@@ -1867,6 +1874,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/tree.js",
                 "com/fr/bi/web/js/base/utils/vector.js",
                 "com/fr/bi/web/js/base/utils/lru.js",
+                "com/fr/bi/web/js/base/utils/aspect.js",
 
                 "com/fr/bi/web/js/base/action/action.js",
                 "com/fr/bi/web/js/base/action/action.show.js",

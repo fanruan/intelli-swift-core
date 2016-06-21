@@ -1,5 +1,6 @@
 package com.fr.bi.web.conf.services.cubetask;
 
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.services.cubetask.utils.CubeTaskGenerate;
@@ -21,10 +22,9 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
-
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
-
+        BIConfigureManagerCenter.getLogManager().clearLog(userId);
         if (StringUtils.isEmpty(tableId)){
             CubeTaskGenerate.CubeBuild(userId);
         }else{
