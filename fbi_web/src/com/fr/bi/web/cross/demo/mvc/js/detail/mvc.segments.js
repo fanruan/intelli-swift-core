@@ -19,7 +19,11 @@ SegmentsView = BI.inherit(BI.View, {
                 text: "默认风格"
             }, {
                 type: "bi.segment",
-                items: [{text: "tab1", value: 1, selected: true}, {text: "tab2", disabled: true, value: 2}]
+                items: [{text: "tab1", value: 1, selected: true}, {text: "tab2", value: 2}, {
+                    text: "tab3",
+                    disabled: true,
+                    value: 3
+                }]
             }, {
                 type: "bi.label",
                 height: 30,
