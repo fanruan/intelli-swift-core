@@ -21,6 +21,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
         var self = this, o = this.options;
         this.text = BI.createWidget({
             type: "bi.label",
+            cls:"bi-inline-vertical",
             textAlign: "left",
             whiteSpace: "nowrap",
             textHeight: o.height,
@@ -69,6 +70,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             scrollable : false,
             items: [this.text, {
                 type:"bi.center_adapt",
+                cls:"bi-inline-vertical",
                 height: o.height,
                 width : o.height,
                 items:[this.combo]
