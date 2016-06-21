@@ -38,16 +38,22 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordStart() {
+        clearRecord();
+        cube_start = new Date();
+    }
+
+    @Override
+    public void clearRecord() {
         tableLogMap.clear();
         tableReadingLogMap.clear();
         connectionLogMap.clear();
-        cube_start = new Date();
+        cube_start = null;
         relation_start = null;
         cube_end = null;
         index_start = null;
         loop_error.clear();
-        cubeTableSourceSet=new HashSet<CubeTableSource>();
-        biTableSourceRelationPathSet =new HashSet<BITableSourceRelationPath>();
+        cubeTableSourceSet = new HashSet<CubeTableSource>();
+        biTableSourceRelationPathSet = new HashSet<BITableSourceRelationPath>();
     }
 
     /**
@@ -55,7 +61,7 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordRelationStart() {
-        if(relation_start==null) {
+        if (relation_start == null) {
             relation_start = new Date();
         }
     }
@@ -82,7 +88,7 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordIndexStart() {
-        if(index_start==null) {
+        if (index_start == null) {
             index_start = new Date();
         }
     }
@@ -262,7 +268,7 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void reLationSet(Set<BITableSourceRelationPath> biTableSourceRelationSet) {
-        this.biTableSourceRelationPathSet =biTableSourceRelationSet;
+        this.biTableSourceRelationPathSet = biTableSourceRelationSet;
     }
 
     /**
@@ -272,7 +278,7 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void cubeTableSourceSet(Set<CubeTableSource> cubeTableSources) {
-        cubeTableSourceSet=cubeTableSources;
+        cubeTableSourceSet = cubeTableSources;
     }
 
     private void BITableLogSort(List<BITableLog> log) {
@@ -386,15 +392,15 @@ public class SingleUserBIRecord implements BIRecord {
         res.put("connections", connection_log);
         res.put("readingdb", reading_log);
         JSONObject tableInfo = new JSONObject();
-        if (null!=cubeTableSourceSet) {
+        if (null != cubeTableSourceSet) {
             for (CubeTableSource cubeTableSource : cubeTableSourceSet) {
                 Set<CubeTableSource> tableSourceSet = new HashSet<CubeTableSource>();
                 tableSourceSet.add(cubeTableSource);
                 tableInfo.put(cubeTableSource.getTableName(), cubeTableSource.getSelfFields(tableSourceSet).size());
             }
         }
-        res.put("allRelationInfo",this.biTableSourceRelationPathSet);
-        res.put("allTableInfo",tableInfo);
+        res.put("allRelationInfo", this.biTableSourceRelationPathSet);
+        res.put("allTableInfo", tableInfo);
         dealWithLoopValue(loop);
         List<BITableLog> output = new ArrayList<BITableLog>();
         addTableLog(error, output);
