@@ -23,6 +23,7 @@ public class StringGroupInfo extends BIName implements JSONParser, Cloneable, Se
 
     private static final long serialVersionUID = 403105911284163156L;
 
+
     @BICoreField
     private String[] groupValue = new String[0];
 
