@@ -2,7 +2,7 @@ package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.gen.oper.BITablePathIndexBuilder;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.tools.BICubePathTestTool;
 import com.finebi.cube.tools.BICubeRelationTestTool;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
@@ -60,7 +60,7 @@ public class BITablePathBuilderTest extends BICubeTestBase {
     public void testPathIndex() {
         try {
             buildTablePath();
-            ICubeRelationEntityGetterService getterService = cube.getCubeRelation(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BICubePathTestTool.getABC());
+            CubeRelationEntityGetterService getterService = cube.getCubeRelation(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BICubePathTestTool.getABC());
             assertEquals(getterService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));
             assertEquals(getterService.getBitmapIndex(1), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{4, 6}));
             assertEquals(getterService.getBitmapIndex(2), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));

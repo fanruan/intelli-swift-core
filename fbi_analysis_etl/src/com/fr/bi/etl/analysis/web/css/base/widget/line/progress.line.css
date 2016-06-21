@@ -32,14 +32,17 @@
   animation: leftToRight 2s ease infinite;
 }
 @keyframes leftToRight {
-  from  {right:100%} to {right:0px}  /**to{1: 1;}**/;
+  from  {right:100%} to {right:0px}  /**: ;
 }
-@-webkit-keyframes leftToRight {
-  from  {right:100%} to {right:0px}  /**to{1: 1;}**/;
+**/ } @-webkit-keyframes leftToRight {
+  from  {right:100%} to {right:0px}  /**: ;
 }
-@-moz-keyframes leftToRight {
-  from  {right:100%} to {right:0px}  /**to{1: 1;}**/;
+**/ } @-moz-keyframes leftToRight {
+  from  {right:100%} to {right:0px}  /**: ;
 }
-@-o-keyframes leftToRight {
-  from  {right:100%} to {right:0px}  /**to{1: 1;}**/;
+**/ } @-o-keyframes leftToRight {
+  from  {right:100%} to {right:0px}  /**: ;
+}
+**/ } .useless-css-name-abcdefg-123456-just-comment {
+  transition: all 0.5s;
 }

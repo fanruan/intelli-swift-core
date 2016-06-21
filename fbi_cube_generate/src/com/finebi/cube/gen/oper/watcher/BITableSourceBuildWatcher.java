@@ -2,7 +2,7 @@ package com.finebi.cube.gen.oper.watcher;
 
 import com.finebi.cube.exception.BIDeliverFailureException;
 import com.finebi.cube.message.IMessage;
-import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
@@ -12,9 +12,9 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  * @since 4.0
  */
 public class BITableSourceBuildWatcher extends BICubeBuildWatcher {
-    private ICubeTableEntityService tableEntityService;
+    private CubeTableEntityService tableEntityService;
 
-    public BITableSourceBuildWatcher(ICubeTableEntityService tableEntityService) {
+    public BITableSourceBuildWatcher(CubeTableEntityService tableEntityService) {
         this.tableEntityService = tableEntityService;
     }
 

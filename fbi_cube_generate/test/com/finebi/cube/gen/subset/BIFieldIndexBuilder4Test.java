@@ -2,7 +2,7 @@ package com.finebi.cube.gen.subset;
 
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.message.IMessage;
-import com.finebi.cube.structure.ICube;
+import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -29,7 +29,7 @@ public class BIFieldIndexBuilder4Test extends BIFieldIndexGenerator {
     public void release() {
 
     }
-    public BIFieldIndexBuilder4Test(ICube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
+    public BIFieldIndexBuilder4Test(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         super(cube, tableSource, hostBICubeFieldSource, targetColumnKey);
     }
 }
