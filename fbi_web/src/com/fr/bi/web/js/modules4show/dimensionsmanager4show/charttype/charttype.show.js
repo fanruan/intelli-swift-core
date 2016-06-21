@@ -31,49 +31,62 @@ BI.ChartTypeShow = BI.inherit(BI.Widget, {
         })
     },
 
+    //只能显示表格和其自身  交互说的神逻辑 0.0
     _formatItems: function (items) {
-        var self = this;
+        var self = this, o = this.options;
         var result = [];
+        var wId = o.wId;
+        var wType = BI.Utils.getWidgetTypeByID(wId);
         BI.each(items, function (i, item) {
             if (BI.isNotEmptyArray(item.children)) {
+                var foundType = false;
                 BI.each(item.children, function (i, child) {
                     child.iconClass = child.cls;
                     child.iconWidth = 20;
                     child.iconHeight = 20;
+                    if (child.value === wType) {
+                        foundType = true;
+                    }
                 });
-                result.push(BI.extend({
-                    type: "bi.icon_combo",
-                    width: 40,
-                    iconClass: item.cls,
-                    items: item.children,
-                    iconWidth: 24,
-                    iconHeight: 24
-                }, item, {
-                    cls: "chart-type-combo"
-                }));
+                if (foundType || item.value === BICst.WIDGET.TABLE) {
+                    result.push(BI.extend({
+                        type: "bi.icon_combo",
+                        width: 40,
+                        iconClass: item.cls,
+                        items: item.children,
+                        iconWidth: 24,
+                        iconHeight: 24
+                    }, item, {
+                        cls: "chart-type-combo"
+                    }));
+                }
             } else {
                 if (item.value === BICst.WIDGET.MAP) {
                     BI.each(BICst.SVG_MAP_TYPE, function (i, it) {
                         it.iconClass = it.cls;
                     });
-                    result.push(BI.extend({
-                        type: "bi.map_type_combo_show",
-                        width: 40,
-                        items: BICst.SVG_MAP_TYPE,
-                        iconWidth: 24,
-                        iconHeight: 24
-                    }, {
-                        cls: "chart-type-combo"
-                    }));
+                    if (item.value === wType) {
+                        result.push(BI.extend({
+                            type: "bi.map_type_combo_show",
+                            width: 40,
+                            items: BICst.SVG_MAP_TYPE,
+                            iconWidth: 24,
+                            iconHeight: 24
+                        }, {
+                            cls: "chart-type-combo"
+                        }));
+                    }
                 } else {
-                    result.push(BI.extend({
-                        type: "bi.icon_button",
-                        width: 40,
-                        iconWidth: 24,
-                        iconHeight: 24
-                    }, item, {
-                        cls: item.cls + " chart-type-icon"
-                    }));
+                    if (item.value === wType) {
+                        result.push(BI.extend({
+                            type: "bi.icon_button",
+                            width: 40,
+                            iconWidth: 24,
+                            iconHeight: 24
+                        }, item, {
+                            cls: item.cls + " chart-type-icon"
+                        }));
+                    }
                 }
             }
         });

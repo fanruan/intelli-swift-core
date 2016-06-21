@@ -330,6 +330,7 @@ public class BIReportNode extends DAOBean implements Entry {
         jo.put("status", status);
         jo.put("value", id);
         jo.put("createBy", this.userid);
+        jo.put("description", this.description);
         return jo;
     }
 

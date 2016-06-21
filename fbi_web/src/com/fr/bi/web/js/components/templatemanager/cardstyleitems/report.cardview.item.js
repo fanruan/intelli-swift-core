@@ -15,6 +15,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
     _init: function () {
         BI.ReportCardViewItem.superclass._init.apply(this, arguments);
         var o = this.options, self = this;
+        this.status = o.status;
         var renameButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "rename-report-font tool-rename-icon",
@@ -49,6 +50,39 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
             arguments[2] = self;
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+
+        if (FS.config.isAdmin === false) {
+            var markCls = "report-apply-hangout-ing-font";
+            this.hangout = BI.createWidget({
+                type: "bi.icon_change_button",
+                cls: "tool-rename-icon",
+                title: BI.i18nText("BI-Report_Hangout_Applying"),
+                stopPropagation: true,
+                invisible: true,
+                width: 20,
+                height: 20
+            });
+            if (o.status === BICst.REPORT_STATUS.HANGOUT) {
+                markCls = "report-hangout-font";
+                this.hangout.setEnable(false);
+                this.hangout.setTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Mark"));
+            }
+            this.markButton = BI.createWidget({
+                type: "bi.icon_change_button",
+                cls: "template-item-mark-icon",
+                title: o.status === BICst.REPORT_STATUS.HANGOUT ?
+                    BI.i18nText("BI-Hangouted") : BI.i18nText("BI-Report_Hangout_Applying"),
+                stopPropagation: true,
+                width: 20,
+                height: 20
+            });
+            this.markButton.setIcon(markCls);
+            this.hangout.on(BI.IconChangeButton.EVENT_CHANGE, function () {
+                o.onClickHangout();
+                self._onClickHangout();
+            });
+            this._refreshHangout();
+        }
 
         var packageButton = BI.createWidget({
             type: "bi.icon_button",
@@ -107,6 +141,14 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
                 el: renameButton,
                 right: 0,
                 top: 25
+            }, {
+                el: this.markButton,
+                right: 40,
+                bottom: 35
+            }, {
+                el: this.hangout,
+                top: 50,
+                right: 0
             }]
         });
         if(!self.checkbox.isSelected()){
@@ -118,12 +160,14 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
             self.checkbox.setVisible(true);
             deleteButton.setVisible(true);
             renameButton.setVisible(true);
+            self.hangout && self.hangout.setVisible(true);
         }, function(){
             if(!self.checkbox.isSelected()){
                 self.checkbox.setVisible(false);
             }
             deleteButton.setVisible(false);
             renameButton.setVisible(false);
+            self.hangout && self.hangout.setVisible(false);
         });
     },
 
@@ -135,6 +179,25 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
             this.element.removeClass("active");
             this.checkbox.setVisible(false);
         }
+    },
+
+    _onClickHangout: function () {
+        if (this.status === BICst.REPORT_STATUS.NORMAL) {
+            this.status = BICst.REPORT_STATUS.APPLYING;
+        } else {
+            this.status = BICst.REPORT_STATUS.NORMAL;
+        }
+        this._refreshHangout();
+    },
+
+    _refreshHangout: function () {
+        if (this.status === BICst.REPORT_STATUS.NORMAL) {
+            this.hangout.setIcon("report-apply-hangout-normal-font");
+            this.markButton && this.markButton.setVisible(false);
+            return;
+        }
+        this.hangout.setIcon("report-apply-hangout-ing-font");
+        this.markButton && this.markButton.setVisible(true);
     },
 
     isSelected: function () {
