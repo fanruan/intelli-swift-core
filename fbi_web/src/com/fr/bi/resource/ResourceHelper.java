@@ -1479,6 +1479,8 @@ public class ResourceHelper {
 
 
                 //切面
+                "com/fr/bi/web/js/aspects/tablechartmanager/aspect.tablechartmanager.js",
+
                 "com/fr/bi/web/js/aspects/config.js",
         };
     }

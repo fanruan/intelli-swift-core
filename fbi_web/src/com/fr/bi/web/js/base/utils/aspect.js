@@ -11,6 +11,9 @@
                     var args = arguments;
                     for (var l = beforeArr.length; l--;) {
                         args = beforeArr[l].advice.apply(this, args) || args;
+                        if (args === false) {
+                            return false;
+                        }
                     }
                     // target method
                     var rs = dispatcher.method.apply(this, args);
@@ -18,6 +21,9 @@
                     var afterArr = dispatcher.after;
                     for (var i = 0, ii = afterArr.length; i < ii; i++) {
                         rs = afterArr[i].advice.call(this, rs, args) || rs;
+                        if (rs === false) {
+                            return false;
+                        }
                     }
                     // return object
                     return rs;
