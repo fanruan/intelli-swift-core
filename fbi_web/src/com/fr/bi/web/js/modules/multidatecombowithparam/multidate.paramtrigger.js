@@ -24,15 +24,15 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: o.height,
-            validationChecker: function (v) {
-                var date = v.match(/\d+/g);
-                self._autoAppend(v, date);
-                return self._dateCheck(v) && Date.checkLegal(v) && self._checkVoid({
-                        year: date[0],
-                        month: date[1],
-                        day: date[2]
-                    });
-            },
+            //validationChecker: function (v) {
+            //    var date = v.match(/\d+/g);
+            //    self._autoAppend(v, date);
+            //    return self._dateCheck(v) && Date.checkLegal(v) && self._checkVoid({
+            //            year: date[0],
+            //            month: date[1],
+            //            day: date[2]
+            //        });
+            //},
             quitChecker: function () {
                 return false;
             },
@@ -324,7 +324,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
     },
     getValue: function () {
         var dateStr = this.editor.getValue();
-        if (BI.isNotEmptyString(dateStr)) {
+        if (BI.isNotEmptyString(dateStr) && BI.isNull(this.stored_value)) {
             var date = dateStr.split("-");
             return {
                 year: date[0] | 0,
@@ -332,7 +332,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
                 day: date[2] | 0
             }
         }
-        return this.store_value;
+        return this.stored_value;
     },
 
     _setChangeIconVisible: function (v) {

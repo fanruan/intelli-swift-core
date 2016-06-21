@@ -5,6 +5,12 @@
  */
 BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
+    constants: {
+        SORT: 0,
+        GROUP: 1,
+        POSITION: 2
+    },
+
     defaultItems: function () {
 
     },
@@ -21,6 +27,10 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     },
 
+    _assertAddress: function () {
+
+    },
+
     _defaultConfig: function(){
         return BI.extend(BI.AbstractDimensionCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-abstract-dimension-combo"
@@ -31,9 +41,59 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         BI.AbstractDimensionCombo.superclass._init.apply(this, arguments);
     },
 
-    _rebuildItems:function(){
+    rebuildItemsForGISMAP: function () {
         var items = this.defaultItems();
-        var o = this.options, result = this._positionAscAndDesc(items);
+        items[0] = [{
+            text: BI.i18nText("BI-Address"),
+            value: this.typeConfig().POSITION_BY_ADDRESS,
+            cls: "dot-e-font"
+        }, {
+            el: {
+                text: BI.i18nText("BI-Lng_Lat"),
+                value: this.typeConfig().POSITION_BY_LNG_LAT,
+                iconCls1: ""
+            },
+            children: [{
+                text: BI.i18nText("BI-Lng_First"),
+                value: BICst.GIS_POSITION_TYPE.LNG_FIRST,
+                cls: "dot-e-font"
+            },{
+                text: BI.i18nText("BI-Lat_First"),
+                value: BICst.GIS_POSITION_TYPE.LAT_FIRST,
+                cls: "dot-e-font"
+            }]
+        }];
+        var o = this.options;
+        var lngLat = items[0][1];
+
+        var selectedValues = this._createValue();
+
+        switch (selectedValues[this.constants.POSITION].value) {
+            case this.typeConfig().POSITION_BY_LNG_LAT :
+                var text = BI.Utils.getDimensionPositionByID(o.dId).type === BICst.GIS_POSITION_TYPE.LNG_FIRST ? BI.i18nText("BI-Lng_First") : BI.i18nText("BI-Lat_First");
+                this._changeElText(lngLat.el,BI.i18nText("BI-Lng_Lat") + "(" + text +")");
+                break;
+            default :
+                this._changeElText(lngLat.el,BI.i18nText("BI-Lng_Lat"));
+                break;
+        }
+
+        if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
+            var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
+            var fieldName = BI.Utils.getFieldNameByID(fieldId);
+            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+            items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
+        }
+        return items;
+    },
+
+    _rebuildItems:function(){
+        var o = this.options;
+        if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
+            return this.rebuildItemsForGISMAP();
+        }
+        var items = this.defaultItems();
+        var result = this._positionAscAndDesc(items);
         var ascend = result.ascend,descend = result.descend;
 
         var selectedValues = this._createValue();
@@ -109,14 +169,16 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _createValue: function () {
         var o = this.options;
+        var address = BI.Utils.getDimensionPositionByID(o.dId);
         var sort = BI.Utils.getDimensionSortByID(o.dId);
         var group = BI.Utils.getDimensionGroupByID(o.dId);
         sort = this._assertSort(sort);
         group = this._assertGroup(group);
+        address = this._assertAddress(address);
 
         var result = {};
 
-        var sortValue = {},groupValue = {};
+        var sortValue = {},groupValue = {}, addressValue = {};
 
         switch (sort.type){
             case BICst.SORT.ASC:
@@ -164,9 +226,24 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 groupValue.value = this.typeConfig().QUARTER;
                 break;
         }
+
+        switch(address.type){
+            case BICst.GIS_POSITION_TYPE.ADDRESS:
+                addressValue.value = this.typeConfig().POSITION_BY_ADDRESS;
+                break;
+            case BICst.GIS_POSITION_TYPE.LNG_FIRST:
+                addressValue.value = this.typeConfig().POSITION_BY_LNG_LAT;
+                addressValue.childValue =  BICst.GIS_POSITION_TYPE.LNG_FIRST;
+                break;
+            case BICst.GIS_POSITION_TYPE.LAT_FIRST:
+                addressValue.value = this.typeConfig().POSITION_BY_LNG_LAT;
+                addressValue.childValue = BICst.GIS_POSITION_TYPE.LAT_FIRST;
+                break;
+        }
         result.sort = sortValue;
         result.group = groupValue;
-        return [result.sort, result.group];
+        result.position = addressValue;
+        return [result.sort, result.group, result.position];
     }
 
 });

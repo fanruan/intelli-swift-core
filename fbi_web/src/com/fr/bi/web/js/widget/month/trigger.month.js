@@ -90,7 +90,11 @@ BI.MonthTrigger = BI.inherit(BI.Trigger, {
             this.editor.setState(v + 1);
             this.editor.setValue(v + 1);
             this.editor.setTitle(v + 1);
+            return;
         }
+        this.editor.setState();
+        this.editor.setValue();
+        this.editor.setTitle();
     },
     getKey: function () {
         return this.editor.getValue() | 0;

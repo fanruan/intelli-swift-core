@@ -173,6 +173,12 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
+                case BICst.DIMENSION_STRING_COMBO.ADDRESS:
+                    self.model.set("position", {type: BICst.GIS_POSITION_TYPE.ADDRESS});
+                    break;
+                case BICst.DIMENSION_STRING_COMBO.LNG_LAT:
+                    self.model.set("position", {type: s});
+                    break;
                 case BICst.DIMENSION_STRING_COMBO.ASCEND:
                     BIDezi.FloatBoxes.remove("customSort", self);
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
@@ -224,6 +230,12 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
+                case BICst.DIMENSION_NUMBER_COMBO.ADDRESS:
+                    self.model.set("position", {type: BICst.GIS_POSITION_TYPE.ADDRESS});
+                    break;
+                case BICst.DIMENSION_NUMBER_COMBO.LNG_LAT:
+                    self.model.set("position", {type: s});
+                    break;
                 case BICst.DIMENSION_NUMBER_COMBO.ASCEND:
                     self.model.set("sort", {type: BICst.SORT.ASC, sort_target: s});
                     break;
@@ -268,6 +280,12 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
+                case BICst.DIMENSION_DATE_COMBO.ADDRESS:
+                    self.model.set("position", {type: BICst.GIS_POSITION_TYPE.ADDRESS});
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.LNG_LAT:
+                    self.model.set("position", {type: s});
+                    break;
                 case BICst.DIMENSION_DATE_COMBO.DATE:
                     self.model.set("group", {type: BICst.GROUP.YMD});
                     break;

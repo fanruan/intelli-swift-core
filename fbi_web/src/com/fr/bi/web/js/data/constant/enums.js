@@ -157,7 +157,11 @@ BICst.DIMENSION_STRING_COMBO = {
     DT_RELATION: 106,
     COPY: 107,
     DELETE: 108,
-    INFO: 109
+    INFO: 109,
+    ADDRESS: 110,
+    LNG_LAT: 111,
+    LNG: 112,
+    LAT: 113
 };
 
 BICst.DIMENSION_NUMBER_COMBO = {
@@ -172,7 +176,11 @@ BICst.DIMENSION_NUMBER_COMBO = {
     COPY: 208,
     DELETE: 209,
     INFO: 210,
-    CORDON: 211
+    CORDON: 211,
+    ADDRESS: 212,
+    LNG_LAT: 213,
+    LNG: 214,
+    LAT: 215
 };
 
 BICst.DIMENSION_DATE_COMBO = {
@@ -187,7 +195,11 @@ BICst.DIMENSION_DATE_COMBO = {
     DT_RELATION: 308,
     COPY: 309,
     DELETE: 310,
-    INFO: 31
+    INFO: 31,
+    ADDRESS: 32,
+    LNG_LAT: 33,
+    LNG: 34,
+    LAT: 35
 };
 
 //指标下拉选项
@@ -403,6 +415,13 @@ BICst.CHART_STYLE = {
     STYLE_3D: 25            //3d
 };
 
+BICst.GIS_POSITION_TYPE = {
+    ADDRESS: 1,
+    LNG_LAT: 2,
+    LNG_FIRST: 3,
+    LAT_FIRST: 4
+};
+
 BICst.PIE_ANGLES = {
     THREE_FOURTHS: 270,
     HALF: 180,
@@ -424,10 +443,10 @@ BICst.MAP_TYPE.JIANGSU = 11010;
 BICst.MAP_TYPE.SHANDONG = 11020;
 
 BICst.MAP_PATH = {};
-BICst.MAP_PATH[BICst.MAP_TYPE.WORLD] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
-BICst.MAP_PATH[BICst.MAP_TYPE.CHINA] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
-BICst.MAP_PATH[BICst.MAP_TYPE.JIANGSU] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/jiangsu.json";
-BICst.MAP_PATH[BICst.MAP_TYPE.SHANDONG] = FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/shandong.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.WORLD] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.CHINA] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.JIANGSU] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/jiangsu.json";
+BICst.MAP_PATH[BICst.MAP_TYPE.SHANDONG] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/shandong.json";
 
 BICst.MAP_NAME = {};
 BICst.MAP_NAME["世界"] = BICst.MAP_TYPE.WORLD;

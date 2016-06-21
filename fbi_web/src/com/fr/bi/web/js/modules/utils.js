@@ -6,6 +6,61 @@
             return Data.SharingPool.get("description") === "true";
         },
 
+        /**
+         * lic相关
+         */
+        hasLicence: function () {
+            return Data.SharingPool.get("reg", "hasLic");
+        },
+
+        supportBasic: function () {
+            return Data.SharingPool.get("reg", "supportBasic");
+        },
+
+        supportBigData: function () {
+            return Data.SharingPool.get("reg", "supportBigData");
+        },
+
+        supportCalculateTarget: function () {
+            return Data.SharingPool.get("reg", "supportCalculateTarget");
+        },
+
+        supportDatabaseUnion: function () {
+            return Data.SharingPool.get("reg", "supportDatabaseUnion");
+        },
+
+        supportExcelView: function () {
+            return Data.SharingPool.get("reg", "supportExcelView");
+        },
+
+        supportGeneralControl: function () {
+            return Data.SharingPool.get("reg", "supportGeneralControl");
+        },
+
+        supportIncrementUpdate: function () {
+            return Data.SharingPool.get("reg", "supportIncrementUpdate");
+        },
+
+        supportMobileClient: function () {
+            return Data.SharingPool.get("reg", "supportMobileClient");
+        },
+
+        supportMultiStatisticsWidget: function () {
+            return Data.SharingPool.get("reg", "supportMultiStatisticsWidget");
+        },
+
+        supportOLAPTable: function () {
+            return Data.SharingPool.get("reg", "supportOLAPTable");
+        },
+
+        supportReportShare: function () {
+            return Data.SharingPool.get("reg", "supportReportShare");
+        },
+
+        supportSimpleControl: function () {
+            return Data.SharingPool.get("reg", "supportSimpleControl");
+        },
+
         getAllGroupedPackagesTreeJSON: function () {
             var groups = Pool.groups, packages = Pool.packages;
             var packStructure = [], groupedPacks = [];
@@ -1087,6 +1142,13 @@
 
         },
 
+        getDimensionPositionByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "position");
+            }
+
+        },
+
         //获取维度或指标所对应的字段id
         getFieldIDByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
@@ -1955,6 +2017,9 @@
             var wWid = value.wId, se = value.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
+                if(BI.isNull(wWValue)){
+                    return;
+                }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
                     return parseComplexDateCommon(wWValue.start);
                 } else {

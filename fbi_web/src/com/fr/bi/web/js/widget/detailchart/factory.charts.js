@@ -53,7 +53,7 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
-                item = BI.extend({"type": "map"}, items);
+                item = BI.extend({"type": "areaMap"}, items);
                 break;
             default:
                 item = BI.extend({"type": "column"}, items);
@@ -226,10 +226,6 @@ BI.ChartCombineFormatItemFactory = {
                 "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                 style:{"fontFamily":"宋体","color":"rgba(0,0,0,1.0)","fontSize":"9pt","fontWeight":""}
             },
-            geo:{
-                data: FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json",
-                geoName:'中国'
-            },
             "borderColor": "rgb(238,238,238)",
             "shadow": false,
             "legend": {
@@ -300,7 +296,7 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
-                return BI.extend({"chartType": "map"}, config);
+                return BI.extend({"chartType": "areaMap"}, config);
             default:
                 return BI.extend({"chartType": "column"}, config);
         }

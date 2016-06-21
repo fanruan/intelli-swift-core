@@ -23,6 +23,10 @@
   background: #f3f3f3;
   border: 1px solid #d4dadd;
 }
+.bi-drag-icon-group .widget-generator.disabled {
+  background: #f3f3f3;
+  border: 1px solid #d4dadd;
+}
 .bi-drag-icon-group .widget-generator:active {
   background: #f3f3f3;
   border: 1px solid #d4dadd;
