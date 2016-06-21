@@ -38,6 +38,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             self._refreshTableAndFilter();
         });
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function(){
+            self.model.set("clicked", {});
+        });
     },
 
     _render: function (vessel) {
