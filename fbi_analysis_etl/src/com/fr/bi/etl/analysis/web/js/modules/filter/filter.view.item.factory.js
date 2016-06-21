@@ -21,7 +21,7 @@ BI.ETLFilterViewItemFactory = {
             }
             if (BI.isArray(item)){
                 var vertical = BI.createWidget({
-                    type : 'bi.vertical_adapt'
+                    type : 'bi.left'
                 });
                 BI.each(item, function(i, itm){
                     if (BI.isWidget(itm)){
@@ -125,9 +125,9 @@ BI.ETLFilterViewItemFactory = {
         return filterValue.type !== BICst.ETL_FILTER_NUMBER_N_TYPE.INNER_GROUP ?  BI.i18nText("BI-ETL_Number_N_All") + ' :' : BI.i18nText("BI-ETL_Number_N_Inner") + ' :';
     },
 
-    _createDateRange : function (value, fieldName){
+    _createDateRange : function (value){
         value = value || {};
-        return [this._getDateText(value.start) ,this._createItemByCls('less-equal-font') , fieldName , this._createItemByCls('less-equal-font'), this._getDateText(value.end)];
+        return [this._getDateText(value.start) ,this._createItemByCls('less-equal-font') , BI.i18nText('BI-Value') , this._createItemByCls('less-equal-font'), this._getDateText(value.end)];
     },
 
     _getDateText : function(d){
@@ -196,7 +196,7 @@ BI.ETLFilterViewItemFactory = {
                 filterValue = filterValue || {};
                 return this._createItems([BI.i18nText("BI-ETL_Bottom_N", filterValue.value || ' ')], this._createNumberNTitleText(filterValue));
             case BICst.FILTER_DATE.BELONG_DATE_RANGE :
-                return this._createItems([this._createDateRange(filterValue, fieldName)], BI.i18nText("BI-ETL_Date_In_Range"));
+                return this._createItems([this._createDateRange(filterValue)], BI.i18nText("BI-ETL_Date_In_Range"));
             case BICst.FILTER_DATE.MORE_THAN :
                 return this._createItems([[fieldName ,  this._createItemByCls('more-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-Later_Than") + BI.i18nText('BI-Someone') + BI.i18nText('BI-Time') + ' :');
             case BICst.FILTER_DATE.LESS_THAN :
