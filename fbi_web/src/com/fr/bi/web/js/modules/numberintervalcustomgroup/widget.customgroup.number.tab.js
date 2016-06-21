@@ -245,7 +245,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         //(max - min) / 5
         var genMin = min.mul(magnify);
         var genMax = max.mul(magnify);
-        return (genMax.sub(genMin)).div(5);
+        return BI.parseFloat(genMax.sub(genMin)).div(5);
 
         function cutSmall(val){
             return BI.parseFloat(val.substring(0, i));

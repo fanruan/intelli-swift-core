@@ -483,10 +483,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 }
             case BICst.WIDGET.MAP:
                 var view = BI.Utils.getWidgetViewByID(o.wId);
-                var tIds = [];
+                var tIds = [], hasBubbleTargetId = false;
                 BI.each(view[BICst.REGION.TARGET2], function (idx, dId) {
                     if (BI.Utils.isDimensionUsable(dId)) {
                         tIds.push(dId);
+                        hasBubbleTargetId = true;
                     }
                 });
                 BI.each(view[BICst.REGION.TARGET1], function (idx, dId) {
@@ -494,11 +495,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         tIds.push(dId);
                     }
                 });
-                var tip = "function(){ return this.name";
+                var tip = "function(){return this.name";
                 BI.each(tIds, function(idx, tId){
+                    var index = hasBubbleTargetId === true ? (idx - 1) : idx;
                     tip += " + '<div>";
                     tip += BI.Utils.getDimensionNameByID(tId) + ":'";
-                    tip += BI.Utils.getRegionTypeByDimensionID(tId) === BICst.REGION.TARGET1 ? "+ this.value + " : "+ this.size + ";
+                    tip += BI.Utils.getRegionTypeByDimensionID(tId) === BICst.REGION.TARGET1 ? "+ (BI.has(this.points, "+ index +") ? this.points["+ index +"].y : '') + " : "+ this.size + ";
                     tip += "'</div>'";
                 });
                 tip += "}";

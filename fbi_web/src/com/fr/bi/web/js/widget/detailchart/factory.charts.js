@@ -295,6 +295,8 @@ BI.ChartCombineFormatItemFactory = {
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
+                config.plotOptions.tooltip.shared = true;
+                return BI.extend({"chartType": "areaMap"}, config);
             case BICst.WIDGET.GIS_MAP:
                 return BI.extend({"chartType": "areaMap"}, config);
             default:
