@@ -3,7 +3,7 @@ package com.finebi.cube.gen;
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
 import com.finebi.cube.structure.BICubeRelation;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.tools.BICubeRelationTestTool;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.utils.BITableKeyUtils;
@@ -74,7 +74,7 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
     public void testRelationTest() {
         try {
             generateRelationIndex(relation, tableA, tableB, 1, 2);
-            ICubeRelationEntityGetterService relationService = cube.getCubeRelation(BITableKeyUtils.convert(tableA), relation);
+            CubeRelationEntityGetterService relationService = cube.getCubeRelation(BITableKeyUtils.convert(tableA), relation);
             assertEquals(relationService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0}));
             assertEquals(relationService.getBitmapIndex(1), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{2, 4, 6}));
             assertEquals(relationService.getBitmapIndex(2), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
@@ -101,7 +101,7 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
             BICubeRelation relation = BICubeRelationTestTool.getNullTableRelation();
             generateRelationIndex(relation, BIMemoryDataSourceFactory.generateTableNullParent(),
                     BIMemoryDataSourceFactory.generateTableNullChild(), 0, 1);
-            ICubeRelationEntityGetterService relationService = cube.getCubeRelation(relation.getPrimaryTable(), relation);
+            CubeRelationEntityGetterService relationService = cube.getCubeRelation(relation.getPrimaryTable(), relation);
             assertEquals(relationService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{3}));
 
         } catch (Exception e) {

@@ -3,8 +3,8 @@ package com.finebi.cube.gen.oper;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.ICube;
-import com.finebi.cube.structure.ICubeTableEntityGetterService;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.conf.log.BILogManager;
@@ -38,10 +38,10 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
      */
     protected BIColumnKey targetColumnKey;
     protected ICubeColumnEntityService<T> columnEntityService;
-    protected ICube cube;
+    protected Cube cube;
     protected long rowCount;
 
-    public BIFieldIndexGenerator(ICube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
+    public BIFieldIndexGenerator(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         this.tableSource = tableSource;
         this.hostBICubeFieldSource = hostBICubeFieldSource;
         this.cube = cube;
@@ -50,7 +50,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     private void initial() {
         try {
-            ICubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
+            CubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
             rowCount = tableEntityService.getRowCount();
             tableEntityService.clear();

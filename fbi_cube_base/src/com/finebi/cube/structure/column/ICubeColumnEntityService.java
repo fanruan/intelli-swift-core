@@ -33,7 +33,7 @@ import java.util.Comparator;
  * @see ICubeIndexDataService 位图索引
  * @since 4.0
  */
-public interface ICubeColumnEntityService<T> extends ICubeColumnReaderService<T> {
+public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> {
 
     void setRelationManagerService(ICubeRelationManagerService relationManagerService);
 
