@@ -65,7 +65,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
             }
         };
 
-        this.element.mousedown(function () {
+        this.element.mouseup(function () {
             if (!self._hover && !o.isShadowShowingOnSelected) {
                 assertMask();
                 self.$mask.invisible();
@@ -220,7 +220,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
         this._hover = true;
         this.handle().element.addClass("hover");
         if (this.options.shadow) {
-            this.$mask.setVisible(true);
+            this.$mask && this.$mask.setVisible(true);
         }
     },
 
