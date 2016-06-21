@@ -240,7 +240,10 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
     },
 
-    change: function (changed) {
+    change: function (changed, prev, context, options) {
+        if (options.notrefresh === true) {
+            return;
+        }
         if (BI.has(changed, "bounds")) {
             this.table.resize();
         }

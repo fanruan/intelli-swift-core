@@ -14,7 +14,7 @@
                         if (next === false) {
                             return false;
                         }
-                        args = next;
+                        args = next || args;
                     }
                     // target method
                     var rs = dispatcher.method.apply(this, args);
@@ -25,7 +25,7 @@
                         if (rs === false) {
                             return false;
                         }
-                        args = next;
+                        args = next || args;
                     }
                     return rs;
                 };

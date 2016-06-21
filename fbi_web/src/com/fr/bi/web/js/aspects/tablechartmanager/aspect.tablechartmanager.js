@@ -9,7 +9,8 @@ BI.TableChartManagerAspect = function () {
                 type: "bi.absolute",
                 element: self.element,
                 items: [{
-                    el: self.tipPane, top: 0,
+                    el: self.tipPane,
+                    top: 0,
                     bottom: 0,
                     left: 0,
                     right: 0
@@ -167,7 +168,7 @@ BI.TableChartManagerAspect = function () {
         if (!BI.Utils.isAllFieldsExistByWidgetID(self.options.wId)) {
             assertTip();
             self.tipPane.setVisible(true);
-            self.tipPane.element.removeClass().addClass("data-miss-background");
+            self.tipPane.element.addClass("data-miss-background");
             return false;
         }
         self.tipPane && self.tipPane.setVisible(false);

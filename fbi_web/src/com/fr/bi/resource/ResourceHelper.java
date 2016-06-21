@@ -37,6 +37,7 @@ public class ResourceHelper {
 
     public static class FormulaTransmitter implements Transmitter {
         private String formula = null;
+
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
             return transmit(files);
@@ -50,7 +51,7 @@ public class ResourceHelper {
                 String res = formula;
                 if (res == null) {
                     res = getFormulaJS(files);
-                    if(!StableUtils.isDebug()) {
+                    if (!StableUtils.isDebug()) {
                         formula = res;
                     }
                 }
@@ -1476,10 +1477,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/services/simpleselectdataservice/simpleselectdataservice.js",
 
 
+                /**
+                 * 切片
+                 */
 
-
-                //切面
+                //tablechartmanager
                 "com/fr/bi/web/js/aspects/tablechartmanager/aspect.tablechartmanager.js",
+
+                //detailtable
+                "com/fr/bi/web/js/aspects/detailtable/aspect.detailtable.js",
 
                 "com/fr/bi/web/js/aspects/config.js",
         };
@@ -1794,7 +1800,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                */
+                 */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
@@ -2133,7 +2139,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                */
+                 */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2187,7 +2193,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                */
+                 */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2490,7 +2496,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                */
+                 */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 
