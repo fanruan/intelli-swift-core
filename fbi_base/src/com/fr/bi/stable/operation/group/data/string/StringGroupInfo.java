@@ -143,4 +143,11 @@ public class StringGroupInfo extends BIName implements JSONParser, Cloneable, Se
         }
         return gi;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "StringGroupInfo{" +
+                "groupValue=" + Arrays.toString(groupValue) +
+                '}';
+    }
 }
