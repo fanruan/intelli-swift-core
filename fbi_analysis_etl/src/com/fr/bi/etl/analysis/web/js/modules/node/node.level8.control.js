@@ -57,7 +57,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
     },
 
 
-    _showRenamePop : function (id, text, title) {
+    _showRenamePop : function (id, text) {
         var self = this;
         var namePopover = BI.createWidget({
             type: "bi.etl_table_name_popover",
@@ -74,7 +74,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         BI.Popovers.remove("etlTableName");
         BI.Popovers.create("etlTableName", namePopover, {width : 450, height : 370, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
         BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
-        namePopover.populate(text, title);
+        namePopover.populate(text, BI.isNotEmptyArray(BI.Utils.getFieldIDsOfTableID(id)) ? BI.Utils.getDescribe(id) : '');
         namePopover.setTemplateNameFocus();
     },
 
@@ -91,7 +91,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
                 })
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.RENAME :
-                self._showRenamePop(option.id, option.text, option.title);
+                self._showRenamePop(option.id, option.text);
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.DELETE :
                 self._showWarningPop(option.id);

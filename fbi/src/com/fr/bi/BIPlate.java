@@ -140,7 +140,7 @@ public class BIPlate extends AbstractFSPlate {
             }
             Dialect dialect = DialectFactory.generateDialect(cn,PlatformDB.getDB().getDriver());
             FSDAOManager.addTableColumn(cn, dialect,
-                    new Column("createBy", Types.VARCHAR, new ColumnSize(10)), tableName);
+                    new Column("createBy", Types.BIGINT, new ColumnSize(10)), tableName);
             cn.commit();
         } catch (Exception e) {
             if(cn != null) {

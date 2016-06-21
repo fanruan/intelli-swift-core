@@ -14,6 +14,9 @@
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
+.bi-analysis-etl-p-t-h-cell .bi-label {
+  font-size: 14px;
+}
 .bi-analysis-etl-p-t-h-cell {
   transition: width 0.5s ease;
   -webkit-transition: width 0.5s ease;

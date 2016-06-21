@@ -24,6 +24,10 @@ BI.DateETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
             case BICst.FILTER_DATE.DAY_NOT_EQUAL_TO:
                 this._createDate();
                 break;
+            case BICst.FILTER_DATE.IS_NULL:
+            case BICst.FILTER_DATE.NOT_NULL:
+                this._createEmptyWidget(this.filter_type);
+                break;
             case BICst.FILTER_TYPE.FORMULA:
                 this._createFormular();
                 break;

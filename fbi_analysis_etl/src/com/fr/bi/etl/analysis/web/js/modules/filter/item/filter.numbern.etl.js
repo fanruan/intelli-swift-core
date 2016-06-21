@@ -88,7 +88,7 @@ BI.ETLNumberNFilterPane = BI.inherit(BI.Widget, {
                 filterType : o.filterType,
                 value : BI.deepClone(self.storedValue.group),
                 nValueGetter : function (){
-                    return self.storedValue.value
+                    return BI.isNull(self.storedValue.value) ? BI.i18nText("BI-Unrestricted") : self.storedValue.value
                 }
             }
             op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
