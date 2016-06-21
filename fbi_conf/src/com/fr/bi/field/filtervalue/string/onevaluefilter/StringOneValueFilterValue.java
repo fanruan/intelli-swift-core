@@ -42,15 +42,16 @@ public abstract class StringOneValueFilterValue extends AbstractFilterValue<Stri
             return ti.getAllShowIndex();
         }
 
-        ICubeColumnIndexReader sgm = dimension.createNoneSortGroupValueMapGetter(target, loader);
+        ICubeColumnIndexReader sgm = dimension.createNoneSortNoneGroupValueMapGetter(target, loader);
         Iterator iter = sgm.iterator();
 
-        //利用SmallGroupValueIndex加快效率
-        long rowCount = ti.getRowCount();
         GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
 
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
+            if (entry.getKey() == null){
+                continue;
+            }
             String key = entry.getKey().toString();
 
             if (isMatchValue(key)) {

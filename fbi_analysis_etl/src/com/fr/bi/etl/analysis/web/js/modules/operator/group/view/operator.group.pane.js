@@ -62,19 +62,22 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
                     width:190
                 }, {
                     type:"bi.vtape",
-                    tgap:10,
-                    bgap:10,
+                    scrollx:true,
                     items:[{
-                        type:"bi.htape",
-                        rgap:10,
+                        type:"bi.vtape",
+                        tgap:10,
+                        bgap:10,
                         items:[{
-                            el:this.regions[BICst.REGION.DIMENSION1],
-                            width:210
-                        }, {
-                            el:this.regions[BICst.REGION.TARGET1],
-                            width:210
-                        }]
-                    }]
+                            type:"bi.htape",
+                            rgap:10,
+                            items:[{
+                                el:this.regions[BICst.REGION.DIMENSION1],
+                                width:210
+                            }, {
+                                el:this.regions[BICst.REGION.TARGET1],
+                                width:210
+                            }]
+                        }]}]
                 }]
             }]
         })
