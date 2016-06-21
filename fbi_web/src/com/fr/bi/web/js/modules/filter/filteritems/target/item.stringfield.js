@@ -8,7 +8,7 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 40,
-        BUTTON_HEIGHT: 30,
+        BUTTON_HEIGHT: 28,
         COMBO_WIDTH: 130,
         FIELD_NAME_BUTTON_WIDTH: 90,
         TEXT_BUTTON_H_GAP: 10,

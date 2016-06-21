@@ -8,18 +8,25 @@
                 dispatcher = target[methodName] = function () {
                     // before methods
                     var beforeArr = dispatcher.before;
-                    var args = arguments;
+                    var args = arguments, next;
                     for (var l = beforeArr.length; l--;) {
-                        args = beforeArr[l].advice.apply(this, args) || args;
+                        next = beforeArr[l].advice.apply(this, args);
+                        if (next === false) {
+                            return false;
+                        }
+                        args = next || args;
                     }
                     // target method
                     var rs = dispatcher.method.apply(this, args);
                     // after methods
                     var afterArr = dispatcher.after;
                     for (var i = 0, ii = afterArr.length; i < ii; i++) {
-                        rs = afterArr[i].advice.call(this, rs, args) || rs;
+                        next = afterArr[i].advice.call(this, rs, args);
+                        if (rs === false) {
+                            return false;
+                        }
+                        args = next || args;
                     }
-                    // return object
                     return rs;
                 };
 

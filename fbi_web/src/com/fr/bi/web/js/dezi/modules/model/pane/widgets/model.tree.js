@@ -19,9 +19,10 @@ BIDezi.TreeWidgetModel = BI.inherit(BI.Model, {
 
     change: function (changed) {
         if (BI.has(changed, "detail")) {
-            this.set(this.get("detail"));
+            this.set(this.get("detail"), {
+                notrefresh: true
+            });
         }
-
         if (BI.has(changed, "value")) {
             this.tmp({
                 detail: {
