@@ -35,7 +35,7 @@ BIShow.WidgetModel = BI.inherit(BI.Model, {
                         return true;
                     }
                 });
-                if (found === false) {
+                if (found === false && BI.Utils.isWidgetExistByID(preLink.to)) {
                     BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + preLink.to, preLink.from);
                 }
             });
