@@ -8,7 +8,7 @@ import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.ICube;
+import com.finebi.cube.structure.Cube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -25,9 +25,9 @@ import com.fr.fs.control.UserControl;
  */
 public class BIUserCubeManager implements ICubeDataLoader {
     private BIUser user;
-    private ICube cube;
+    private Cube cube;
 
-    public BIUserCubeManager(long userID, ICube cube) {
+    public BIUserCubeManager(long userID, Cube cube) {
         this.user = new BIUser(userID);
         this.cube = cube;
     }

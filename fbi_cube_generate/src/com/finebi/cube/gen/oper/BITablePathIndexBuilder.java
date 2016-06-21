@@ -36,10 +36,10 @@ import java.util.*;
  * @since 4.0
  */
 public class BITablePathIndexBuilder extends BIProcessor {
-    protected ICube cube;
+    protected Cube cube;
     protected BICubeTablePath relationPath;
 
-    public BITablePathIndexBuilder(ICube cube, BICubeTablePath relationPath) {
+    public BITablePathIndexBuilder(Cube cube, BICubeTablePath relationPath) {
         this.cube = cube;
         this.relationPath = relationPath;
     }
@@ -60,8 +60,8 @@ public class BITablePathIndexBuilder extends BIProcessor {
             BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
             biLogManager.logRelationStart(UserControl.getInstance().getSuperManagerID());
             long t = System.currentTimeMillis();
-            ICubeRelationEntityGetterService lastRelationEntity = null;
-            ICubeRelationEntityGetterService frontRelationPathReader = null;
+            CubeRelationEntityGetterService lastRelationEntity = null;
+            CubeRelationEntityGetterService frontRelationPathReader = null;
             ICubeRelationEntityService targetPathEntity = null;
             try {
 
@@ -118,7 +118,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     protected int getPrimaryTableRowCount() throws BITablePathEmptyException {
         ITableKey primaryTableKey = relationPath.getFirstRelation().getPrimaryTable();
-        ICubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
+        CubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
         int rowCount = primaryTable.getRowCount();
         primaryTable.clear();
         return rowCount;
@@ -126,13 +126,13 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     protected int getJuniorTableRowCount() throws BITablePathEmptyException {
         ITableKey primaryTableKey = relationPath.getLastRelation().getForeignTable();
-        ICubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
+        CubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
         int rowCount = primaryTable.getRowCount();
         primaryTable.clear();
         return rowCount;
     }
 
-    private ICubeRelationEntityGetterService buildLastRelationReader() throws
+    private CubeRelationEntityGetterService buildLastRelationReader() throws
             BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException, BITablePathEmptyException {
         BICubeRelation lastRelation = relationPath.getLastRelation();
         ITableKey lastPrimaryKey = lastRelation.getPrimaryTable();
@@ -147,7 +147,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         return (ICubeRelationEntityService) cube.getCubeRelation(firstPrimaryKey, frontRelation);
     }
 
-    private ICubeRelationEntityGetterService buildFrontRelationPathReader() throws
+    private CubeRelationEntityGetterService buildFrontRelationPathReader() throws
             BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException, BITablePathEmptyException {
         ITableKey firstPrimaryKey = relationPath.getFirstRelation().getPrimaryTable();
         BICubeTablePath frontRelation = buildFrontRelation();

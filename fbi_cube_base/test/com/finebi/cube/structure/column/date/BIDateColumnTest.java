@@ -4,7 +4,7 @@ import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.BICubeTableColumnManager;
@@ -134,7 +134,7 @@ public class BIDateColumnTest extends BICubeTestBase {
             managerService = new BICubeTableColumnManager(tableKey, retrievalService, fields, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
             BIColumnKey ymd = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY);
             BICubeYearMonthDayColumn yearMonthDayColumn = (BICubeYearMonthDayColumn) managerService.getColumn(ymd);
-            ICubeRelationEntityGetterService service = yearMonthDayColumn.getRelationIndexGetter(BICubePathUtils.convert(BITableSourceRelationPathTestTool.getABCDPath()));
+            CubeRelationEntityGetterService service = yearMonthDayColumn.getRelationIndexGetter(BICubePathUtils.convert(BITableSourceRelationPathTestTool.getABCDPath()));
             String relationLocation = service.getResourceLocation().getAbsolutePath();
             String[] values = new String[]{tableKey.getSourceID(), ymd.getKey(), BICubePathUtils.convert(BITableSourceRelationPathTestTool.getABCDPath()).getSourceID()};
             String name = BIMD5Utils.getMD5String(values);

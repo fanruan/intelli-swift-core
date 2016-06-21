@@ -3,7 +3,7 @@ package com.finebi.cube.gen.subset;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BICubeRelation;
-import com.finebi.cube.structure.ICube;
+import com.finebi.cube.structure.Cube;
 
 /**
  * This class created on 2016/4/13.
@@ -29,7 +29,7 @@ public class BIRelationIndexBuilder4Test extends BIRelationIndexGenerator {
     public void release() {
 
     }
-    public BIRelationIndexBuilder4Test(ICube cube, BICubeRelation relation) {
+    public BIRelationIndexBuilder4Test(Cube cube, BICubeRelation relation) {
         super(cube, relation);
     }
 }

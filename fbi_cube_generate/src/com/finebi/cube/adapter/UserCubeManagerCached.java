@@ -8,7 +8,7 @@ import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.ICube;
+import com.finebi.cube.structure.Cube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -35,7 +35,7 @@ public class UserCubeManagerCached implements ICubeDataLoader {
     public UserCubeManagerCached(BIUser user) {
         ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
         ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(UserControl.getInstance().getSuperManagerID())));
-        ICube cube = new BICube(resourceRetrievalService, discovery);
+        Cube cube = new BICube(resourceRetrievalService, discovery);
         hostCubeManager = new BIUserCubeManager(user.getUserId(), cube);
         cubeTableCache = new CubeTableCache(hostCubeManager);
 

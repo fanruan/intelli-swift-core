@@ -1,7 +1,7 @@
 package com.finebi.cube.structure;
 
 import com.finebi.cube.BICubeTestBase;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -42,7 +42,7 @@ public class BICubeTest extends BICubeTestBase {
             fields.add(DBFieldTestTool.generateTIME());
 
             tableEntity.recordTableStructure(fields);
-            ICubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
+            CubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
 
             assertTrue(tableEntity.tableDataAvailable());
         } catch (Exception e) {

@@ -31,10 +31,10 @@ import java.util.*;
  * @since 4.0
  */
 public class BIRelationIndexGenerator extends BIProcessor {
-    protected ICube cube;
+    protected Cube cube;
     protected BICubeRelation relation;
 
-    public BIRelationIndexGenerator(ICube cube, BICubeRelation relation) {
+    public BIRelationIndexGenerator(Cube cube, BICubeRelation relation) {
         this.cube = cube;
         this.relation = relation;
     }
@@ -121,8 +121,8 @@ public class BIRelationIndexGenerator extends BIProcessor {
     }
 
     private void buildRelationIndex() {
-        ICubeTableEntityGetterService primaryTable = null;
-        ICubeTableEntityGetterService foreignTable = null;
+        CubeTableEntityGetterService primaryTable = null;
+        CubeTableEntityGetterService foreignTable = null;
         ICubeColumnEntityService primaryColumn = null;
         ICubeColumnEntityService foreignColumn = null;
         BICubeRelationEntity tableRelation = null;

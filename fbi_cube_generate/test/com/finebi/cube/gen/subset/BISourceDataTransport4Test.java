@@ -2,7 +2,7 @@ package com.finebi.cube.gen.subset;
 
 import com.finebi.cube.gen.oper.BISourceDataTransport;
 import com.finebi.cube.message.IMessage;
-import com.finebi.cube.structure.ICube;
+import com.finebi.cube.structure.Cube;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Set;
@@ -32,7 +32,7 @@ public class BISourceDataTransport4Test extends BISourceDataTransport {
 
     }
 
-    public BISourceDataTransport4Test(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource) {
+    public BISourceDataTransport4Test(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource) {
         super(cube, tableSource, allSources, parentTableSource,1);
     }
 }
