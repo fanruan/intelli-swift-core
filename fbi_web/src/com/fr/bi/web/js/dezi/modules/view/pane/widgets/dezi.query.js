@@ -53,7 +53,7 @@ BIDezi.QueryView = BI.inherit(BI.View, {
             }, {
                 el: deleteButton,
                 right: 5,
-                top: 13
+                top: 10
             }]
         });
         veseel.hover(function () {
