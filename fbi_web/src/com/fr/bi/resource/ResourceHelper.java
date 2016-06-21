@@ -739,7 +739,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
-                "com/fr/bi/web/css/third/leaflet.css",
+
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css"
         };
@@ -1521,6 +1521,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/tip/tip.tooltip.css",
                 "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
                 "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
+                "com/fr/bi/web/css/base/third/leaflet.css",
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
