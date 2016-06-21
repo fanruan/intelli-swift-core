@@ -11,7 +11,11 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
         NOT_SORT : BICst.DIMENSION_STRING_COMBO.NOT_SORT,
         SORT_BY_CUSTOM : BICst.DIMENSION_STRING_COMBO.SORT_BY_CUSTOM,
         GROUP_BY_VALUE : BICst.DIMENSION_STRING_COMBO.GROUP_BY_VALUE,
-        GROUP_BY_CUSTOM : BICst.DIMENSION_STRING_COMBO.GROUP_BY_CUSTOM
+        GROUP_BY_CUSTOM : BICst.DIMENSION_STRING_COMBO.GROUP_BY_CUSTOM,
+        POSITION_BY_ADDRESS: BICst.DIMENSION_STRING_COMBO.ADDRESS,
+        POSITION_BY_LNG_LAT: BICst.DIMENSION_STRING_COMBO.LNG_LAT,
+        POSITION_BY_LNG: BICst.DIMENSION_STRING_COMBO.LNG,
+        POSITION_BY_LAT: BICst.DIMENSION_STRING_COMBO.LAT
     },
 
     defaultItems: function () {
@@ -102,6 +106,14 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             val.type = BICst.SORT.ASC;
         }
         val.sort_target || (val.sort_target = this.options.dId);
+        return val;
+    },
+
+    _assertAddress: function(val){
+        val || (val = {});
+        if(BI.isNull(val.type)){
+            val.type = BICst.GIS_POSITION_TYPE.ADDRESS
+        }
         return val;
     }
 });

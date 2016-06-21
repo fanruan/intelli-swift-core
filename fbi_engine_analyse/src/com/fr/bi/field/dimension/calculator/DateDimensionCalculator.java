@@ -7,8 +7,10 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +30,17 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
         ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
-        CubeTreeMap treeMap = new CubeTreeMap(getComparator());
+        Comparator comparator;
+        if(getGroupDate() == BIReportConstant.GROUP.M){
+            comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.NUMBER_ASC);
+        }else{
+            comparator = getComparator();
+        }
+        CubeTreeMap treeMap = new CubeTreeMap(comparator);
         Iterator it = getter.iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
-            treeMap.put(getGroupDate() == BIReportConstant.GROUP.M ? String.valueOf((Integer) entry.getKey() + 1) : entry.getKey().toString(), entry.getValue());
+            treeMap.put(getGroupDate() == BIReportConstant.GROUP.M ? (Integer) entry.getKey() + 1 : entry.getKey().toString(), entry.getValue());
         }
         return getSortType() != BIReportConstant.SORT.DESC ? treeMap.iterator() : treeMap.previousIterator();
     }

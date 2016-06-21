@@ -1142,6 +1142,13 @@
 
         },
 
+        getDimensionPositionByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "position");
+            }
+
+        },
+
         //获取维度或指标所对应的字段id
         getFieldIDByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
@@ -2010,6 +2017,9 @@
             var wWid = value.wId, se = value.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
+                if(BI.isNull(wWValue)){
+                    return;
+                }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
                     return parseComplexDateCommon(wWValue.start);
                 } else {

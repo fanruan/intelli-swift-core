@@ -2023,7 +2023,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/third/jquery.ui.droppable.js",
                 "com/fr/bi/web/js/third/jquery.ui.sortable.js",
                 "com/fr/bi/web/js/third/jquery.ui.effect.js",
-                "com/fr/bi/web/js/third/d3-min.js",
+                "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/third/leaflet.js",
 
