@@ -98,6 +98,77 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
             },
             helper: o.helper
         });
+
+        BI.nextTick(function(){
+            self._refreshButtonStatus();
+        }, 500);
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGETS_PREFIX, function () {
+            self._refreshButtonStatus();
+        });
+    },
+
+    _refreshButtonStatus: function(){
+        var self = this, o = this.options;
+        var allWIds = BI.Utils.getAllWidgetIDs();
+        if(this._isWidget(o.value)) {
+            if (!BI.Utils.supportMultiStatisticsWidget()) {
+                var hasWidget = BI.some(allWIds, function (j, wId) {
+                    return self._isWidget(BI.Utils.getWidgetTypeByID(wId));
+                });
+                self.setEnable(!hasWidget);
+                if(hasWidget) {
+                    self.button.setWarningTitle(BI.i18nText("BI-Only_Supports_One_Component"));
+                }
+            }
+        }
+        if(this._isControl(o.value)) {
+            if (!BI.Utils.supportSimpleControl()) {
+                self.setEnable(false);
+                self.button.setWarningTitle(BI.i18nText("BI-License_Not_Support_Control"));
+                return;
+            }
+            if(o.value === BICst.WIDGET.GENERAL_QUERY && !BI.Utils.supportGeneralControl()) {
+                self.setEnable(false);
+                self.button.setWarningTitle(BI.i18nText("BI-License_Not_Support_Control"));
+                return;
+            }
+            //通用查询、查询、重置 只能有一个
+            if (this._isTheQuerys(o.value)) {
+                var found = BI.some(allWIds, function (j, wId) {
+                    return o.value === BI.Utils.getWidgetTypeByID(wId);
+                });
+                self.setEnable(!found);
+                if(found) {
+                    self.button.setWarningTitle(BI.i18nText("BI-The_Control_Has_Exist"));
+                }
+            }
+        }
+    },
+
+    _isWidget: function(type) {
+        return type < BICst.WIDGET.STRING || type === BICst.WIDGET.CONTENT ||
+            type === BICst.WIDGET.WEB || type === BICst.WIDGET.IMAGE;
+    },
+
+    _isControl: function(type) {
+        return (type >= BICst.WIDGET.STRING && type <= BICst.WIDGET.RESET) ||
+            type === BICst.WIDGET.GENERAL_QUERY;
+    },
+
+    _isTheQuerys: function(type) {
+        return type === BICst.WIDGET.GENERAL_QUERY ||
+            type === BICst.WIDGET.QUERY ||
+            type === BICst.WIDGET.RESET;
+    },
+
+    setEnable: function(v) {
+        BI.DragIconButton.superclass.setEnable.apply(this, arguments);
+        this.button.setEnable(v);
+        try {
+            this.button.element.draggable(v ? "enable" : "disable");
+        } catch (e) {
+
+        }
     }
 });
 $.shortcut("bi.drag_icon_button", BI.DragIconButton);

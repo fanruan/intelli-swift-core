@@ -153,6 +153,8 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 this.buttonTop = 70;
             } else if (w >= 400) {
                 hgap = Math.ceil((w - 400) / 2);
+            } else if(w <= 200) {
+                this.buttonTop = 70;
             }
         }
         this.wrapper.setVisible(true);

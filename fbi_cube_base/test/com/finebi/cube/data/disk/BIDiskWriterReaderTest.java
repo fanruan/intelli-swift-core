@@ -113,7 +113,7 @@ public class BIDiskWriterReaderTest extends TestCase {
 
             for (int i = 0; i < 100000; i++) {
                 location.setWriterSourceLocation();
-                BIByteNIOWriter writer = new BIByteNIOWriter("D:\\temp\\arrayBasic.xml");
+//                BIByteNIOWriter writer = new BIByteNIOWriter("D:\\temp\\arrayBasic.xml");
             }
             System.out.println(System.currentTimeMillis() - time);
         } catch (Exception e) {
