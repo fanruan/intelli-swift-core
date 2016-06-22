@@ -9,6 +9,6 @@ package com.fr.bi.conf.data.source.operator.add.date;
  */
 public interface DateGetter {
 	
-	public long get(Long v);
+	public int get(Long v);
 
 }

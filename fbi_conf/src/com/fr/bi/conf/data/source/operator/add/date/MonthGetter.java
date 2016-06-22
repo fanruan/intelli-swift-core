@@ -14,7 +14,7 @@ public class MonthGetter implements DateGetter {
 	public static final MonthGetter INSTANCE = new MonthGetter();
 
 	@Override
-	public long get(Long v) {
+	public int get(Long v) {
 		if(v == null){
 			return 0;
 		}

@@ -7,7 +7,6 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -80,7 +79,7 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
         BIKey key = new IndexKey(field);
         BIDateUtils.checkDateFieldType(ti.getColumns(), key);
         for (int row = 0; row < rowCount; row++) {
-            Object value = dg.get((Long)ti.getRow(key, row));
+            long value = dg.get((Long)ti.getRow(key, row));
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
