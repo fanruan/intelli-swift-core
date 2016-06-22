@@ -1,6 +1,7 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
 import com.finebi.cube.data.input.primitive.ICubeLongReader;
+import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.general.ComparatorUtils;
 
@@ -24,13 +25,15 @@ public class BILongNIOReader extends BIBasicNIOReader<Long> implements ICubeLong
     }
 
     @Override
-    protected Long getValue(Long page, int index) {
-        readWriteLock.readLock().lock();
-        try {
-            Long value = longBuffers.get(page).get(index);
-            return ComparatorUtils.equals(value, Long.MIN_VALUE) ? null : value;
-        } finally {
-            readWriteLock.readLock().unlock();
+    protected Long getValue(Long page, int index) throws BIResourceInvalidException {
+        if(isValid) {
+            try {
+                long value = longBuffers.get(page).get(index);
+                return value == Long.MIN_VALUE ? null : value;
+            } finally {
+            }
+        } else {
+            throw new BIResourceInvalidException();
         }
     }
 
