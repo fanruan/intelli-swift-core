@@ -24,6 +24,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             type: "bi.progress_bar",
             width: "100%"
         });
+        this.processBar.setValue(100);
 
         BI.createWidget({
             type: "bi.vertical",
@@ -72,7 +73,6 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             vgap: 10
         });
         this.refreshLog();
-
     },
 
     refreshLog: function (isStart) {
@@ -84,13 +84,14 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             this.interval = setInterval(function () {
                 self.refreshLog();
             }, 300);
+            return;
         }
         BI.Utils.getCubeLog(function (data) {
-            if (!isStart && (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start)))) {
+            if (BI.isNotNull(data.cube_end)) {
                 self.interval && clearInterval(self.interval);
                 delete self.interval;
             }
-            !isStart && self._refreshProcess(data);
+            self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
         });
     },

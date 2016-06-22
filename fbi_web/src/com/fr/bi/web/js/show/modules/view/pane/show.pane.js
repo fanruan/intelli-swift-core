@@ -74,7 +74,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
             type: "bi.absolute",
             cls: "dashboard-toolbar",
             items: [{
-                el: viewChange,
+                el: Data.SharingPool.get("show") ? BI.createWidget() : viewChange,
                 top: 0,
                 left: 110
             }]
