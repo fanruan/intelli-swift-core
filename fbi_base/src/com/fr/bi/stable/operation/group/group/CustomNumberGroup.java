@@ -36,6 +36,9 @@ public class CustomNumberGroup extends AbstractGroup {
         }
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
+            if (entry.getKey() == null){
+                continue;
+            }
             double key = ((Number) entry.getKey()).doubleValue();
             GroupValueIndex gvi = (GroupValueIndex) entry.getValue();
 
