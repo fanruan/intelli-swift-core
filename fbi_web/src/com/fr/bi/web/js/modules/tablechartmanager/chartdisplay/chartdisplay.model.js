@@ -39,10 +39,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             var view = BI.Utils.getWidgetViewByID(o.wId);
             var columnSizeArray = BI.makeArray(BI.isNull(obj) ? 0 : BI.size(obj.s), 0);
             result = BI.map(columnSizeArray, function (idx, value) {
-                var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[idx]) || {};
-                var type = chart.type || BICst.WIDGET.BUBBLE;
+                var type = null;
+                if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
+                    type = BICst.WIDGET.BUBBLE;
+                }
                 var adjustData = BI.map(data.c, function (id, item) {
-                    var res = {}
+                    var res = {};
                     if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                         switch(type){
                             case BICst.WIDGET.BUBBLE:
@@ -51,7 +53,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             default:
                                 res = {
                                     name: item.n,
-                                    size: item.s[idx]
+                                    size: item.s[idx],
+                                    targetIds: [targetIds[idx]]
                                 };
                         }
                     }else{
@@ -72,11 +75,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
                 var obj = {};
                 obj.data = adjustData;
+                BI.isNotNull(type) && (obj.type = "bubble");
                 obj.name = BI.Utils.getDimensionNameByID(targetIds[idx]);
                 return obj;
             });
         }
         return result;
+    },
+
+    _formatDataForGISMap: function(){
+
     },
 
     _formatDataForAxis: function (da) {
@@ -456,6 +464,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     getToolTip: function (type) {
+        var o = this.options;
         switch (type) {
             case BICst.WIDGET.SCATTER:
                 if(this.targetIds < 2){
@@ -472,6 +481,30 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div><div>(大小)" + BI.Utils.getDimensionNameByID(this.targetIds[2])
                         + ":'+ this.size +'</div>'}";
                 }
+            case BICst.WIDGET.MAP:
+                var view = BI.Utils.getWidgetViewByID(o.wId);
+                var tIds = [], hasBubbleTargetId = false;
+                BI.each(view[BICst.REGION.TARGET2], function (idx, dId) {
+                    if (BI.Utils.isDimensionUsable(dId)) {
+                        tIds.push(dId);
+                        hasBubbleTargetId = true;
+                    }
+                });
+                BI.each(view[BICst.REGION.TARGET1], function (idx, dId) {
+                    if (BI.Utils.isDimensionUsable(dId)) {
+                        tIds.push(dId);
+                    }
+                });
+                var tip = "function(){return this.name";
+                BI.each(tIds, function(idx, tId){
+                    var index = hasBubbleTargetId === true ? (idx - 1) : idx;
+                    tip += " + '<div>";
+                    tip += BI.Utils.getDimensionNameByID(tId) + ":'";
+                    tip += BI.Utils.getRegionTypeByDimensionID(tId) === BICst.REGION.TARGET1 ? "+ (BI.has(this.points, "+ index +") ? this.points["+ index +"].y : '') + " : "+ this.size + ";
+                    tip += "'</div>'";
+                });
+                tip += "}";
+                return tip;
             default:
                 return "";
         }
@@ -550,9 +583,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 return this._formatDataForForceBubble(data);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
                 var da = this._formatDataForMap(data);
                 return BI.isEmptyArray(da) ? da : [da];
+            case BICst.WIDGET.GIS_MAP:
+                return this._formatDataForGISMap(data)
         }
     },
 
@@ -590,6 +624,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             });
             if(type === BICst.WIDGET.MAP || type === BICst.WIDGET.GIS_MAP){
                 options.geo = {data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]}
+            }
+            if(type === BICst.WIDGET.GIS_MAP){
+                options.geo = {
+                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+                };
             }
             callback(types, data, options);
         }, {

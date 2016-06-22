@@ -108,6 +108,12 @@ BI.RegionsManagerShow = BI.inherit(BI.Widget, {
             case BICst.WIDGET.MAP:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Region_Name"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
+                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Region_Suspension_Target"), BICst.REGION.TARGET2)
+                break;
+            case BICst.WIDGET.GIS_MAP:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Address"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Name_Title"), BICst.REGION.DIMENSION2);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Region_Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.GIS_MAP:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Address"), BICst.REGION.DIMENSION1);
