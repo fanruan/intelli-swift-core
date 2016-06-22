@@ -149,7 +149,10 @@ BI.LinkageModel = BI.inherit(FR.OB, {
         if (wId === o.wId) {
             return false;
         }
-        if (BI.Utils.isControlWidgetByWidgetId(wId)) {
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if (BI.Utils.isControlWidgetByWidgetId(wId) ||
+            wType === BICst.WIDGET.RESET ||
+            wType === BICst.WIDGET.QUERY) {
             return false;
         }
         var currentRelations = this._getWidgetRelations(o.wId);
@@ -159,11 +162,11 @@ BI.LinkageModel = BI.inherit(FR.OB, {
         return !this._isRelationsIntersect(currentRelations, this._getWidgetRelations(wId));
     },
 
-    getLinkedWidgetsByTargetId: function(tId) {
+    getLinkedWidgetsByTargetId: function (tId) {
         var widgets = [];
-        BI.each(this.widgets, function(wId, link){
-            BI.each(link.linkages, function(i, linkage){
-                if(linkage.from === tId) {
+        BI.each(this.widgets, function (wId, link) {
+            BI.each(link.linkages, function (i, linkage) {
+                if (linkage.from === tId) {
                     widgets.push(linkage.to);
                 }
             })
@@ -171,20 +174,29 @@ BI.LinkageModel = BI.inherit(FR.OB, {
         return widgets;
     },
 
-    getWidgetIconClsByWidgetId: function(wId) {
+    getWidgetIconClsByWidgetId: function (wId) {
         var widgetType = BI.Utils.getWidgetTypeByID(wId);
         switch (widgetType) {
+            case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
                 return "chart-table-font";
             case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
                 return "chart-axis-font";
             case BICst.WIDGET.BAR:
+            case BICst.WIDGET.COMPARE_BAR:
                 return "chart-bar-font";
             case BICst.WIDGET.ACCUMULATE_BAR:
                 return "chart-accumulate-bar-font";
             case BICst.WIDGET.PIE:
                 return "chart-pie-font";
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
                 return "chart-map-font";
             case BICst.WIDGET.DASHBOARD:
                 return "chart-dashboard-font";
@@ -193,11 +205,22 @@ BI.LinkageModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.DETAIL:
                 return "chart-detail-font";
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.FORCE_BUBBLE:
                 return "chart-bubble-font";
             case BICst.WIDGET.SCATTER:
                 return "chart-scatter-font";
             case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
                 return "chart-radar-font";
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                return "";
         }
     }
 });

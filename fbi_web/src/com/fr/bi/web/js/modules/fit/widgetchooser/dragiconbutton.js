@@ -92,14 +92,14 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
             },
             stop: function (e, ui) {
                 o.stop.apply(self, [{
-                    height:BICst.WIDGET.Heights[o.value],
+                    height: BICst.WIDGET.Heights[o.value],
                     width: BICst.WIDGET.Widths[o.value]
                 }, ui.position, value]);
             },
             helper: o.helper
         });
 
-        BI.nextTick(function(){
+        BI.nextTick(function () {
             self._refreshButtonStatus();
         }, 500);
         BI.Broadcasts.on(BICst.BROADCAST.WIDGETS_PREFIX, function () {
@@ -107,27 +107,27 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
         });
     },
 
-    _refreshButtonStatus: function(){
+    _refreshButtonStatus: function () {
         var self = this, o = this.options;
         var allWIds = BI.Utils.getAllWidgetIDs();
-        if(this._isWidget(o.value)) {
+        if (this._isWidget(o.value)) {
             if (!BI.Utils.supportMultiStatisticsWidget()) {
                 var hasWidget = BI.some(allWIds, function (j, wId) {
                     return self._isWidget(BI.Utils.getWidgetTypeByID(wId));
                 });
                 self.setEnable(!hasWidget);
-                if(hasWidget) {
+                if (hasWidget) {
                     self.button.setWarningTitle(BI.i18nText("BI-Only_Supports_One_Component"));
                 }
             }
         }
-        if(this._isControl(o.value)) {
+        if (this._isControl(o.value)) {
             if (!BI.Utils.supportSimpleControl()) {
                 self.setEnable(false);
                 self.button.setWarningTitle(BI.i18nText("BI-License_Not_Support_Control"));
                 return;
             }
-            if(o.value === BICst.WIDGET.GENERAL_QUERY && !BI.Utils.supportGeneralControl()) {
+            if (o.value === BICst.WIDGET.GENERAL_QUERY && !BI.Utils.supportGeneralControl()) {
                 self.setEnable(false);
                 self.button.setWarningTitle(BI.i18nText("BI-License_Not_Support_Control"));
                 return;
@@ -138,30 +138,30 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
                     return o.value === BI.Utils.getWidgetTypeByID(wId);
                 });
                 self.setEnable(!found);
-                if(found) {
+                if (found) {
                     self.button.setWarningTitle(BI.i18nText("BI-The_Control_Has_Exist"));
                 }
             }
         }
     },
 
-    _isWidget: function(type) {
+    _isWidget: function (type) {
         return type < BICst.WIDGET.STRING || type === BICst.WIDGET.CONTENT ||
             type === BICst.WIDGET.WEB || type === BICst.WIDGET.IMAGE;
     },
 
-    _isControl: function(type) {
+    _isControl: function (type) {
         return (type >= BICst.WIDGET.STRING && type <= BICst.WIDGET.RESET) ||
             type === BICst.WIDGET.GENERAL_QUERY;
     },
 
-    _isTheQuerys: function(type) {
+    _isTheQuerys: function (type) {
         return type === BICst.WIDGET.GENERAL_QUERY ||
             type === BICst.WIDGET.QUERY ||
             type === BICst.WIDGET.RESET;
     },
 
-    setEnable: function(v) {
+    setEnable: function (v) {
         BI.DragIconButton.superclass.setEnable.apply(this, arguments);
         this.button.setEnable(v);
         try {

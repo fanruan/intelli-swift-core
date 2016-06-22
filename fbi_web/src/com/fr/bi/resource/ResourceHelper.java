@@ -1803,7 +1803,10 @@ public class ResourceHelper {
                  * components
                  */
                 //模板管理
-                "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/report.cardview.item.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/folder.cardview.item.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/reportsearchresult.pane.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/foldermoveto.pane.css",
