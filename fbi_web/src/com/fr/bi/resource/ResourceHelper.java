@@ -37,6 +37,7 @@ public class ResourceHelper {
 
     public static class FormulaTransmitter implements Transmitter {
         private String formula = null;
+
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
             return transmit(files);
@@ -50,7 +51,7 @@ public class ResourceHelper {
                 String res = formula;
                 if (res == null) {
                     res = getFormulaJS(files);
-                    if(!StableUtils.isDebug()) {
+                    if (!StableUtils.isDebug()) {
                         formula = res;
                     }
                 }
@@ -738,7 +739,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
-                "com/fr/bi/web/css/third/leaflet.css",
+
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css"
         };
@@ -1474,6 +1475,19 @@ public class ResourceHelper {
 
                 //简单字段选择服务
                 "com/fr/bi/web/js/services/simpleselectdataservice/simpleselectdataservice.js",
+
+
+                /**
+                 * 切片
+                 */
+
+                //tablechartmanager
+                "com/fr/bi/web/js/aspects/tablechartmanager/aspect.tablechartmanager.js",
+
+                //detailtable
+                "com/fr/bi/web/js/aspects/detailtable/aspect.detailtable.js",
+
+                "com/fr/bi/web/js/aspects/config.js",
         };
     }
 
@@ -1507,6 +1521,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/tip/tip.tooltip.css",
                 "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
                 "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
+                "com/fr/bi/web/css/base/third/leaflet.css",
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
@@ -1786,9 +1801,12 @@ public class ResourceHelper {
 
                 /**
                  * components
-                */
+                 */
                 //模板管理
-                "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/report.cardview.item.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/folder.cardview.item.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/reportsearchresult.pane.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/foldermoveto.pane.css",
@@ -1855,6 +1873,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/proto/array.js",
                 "com/fr/bi/web/js/base/proto/number.js",
                 "com/fr/bi/web/js/base/proto/date.js",
+                "com/fr/bi/web/js/base/proto/function.js",
                 "com/fr/bi/web/js/base/utils/base64.js",
                 "com/fr/bi/web/js/base/utils/md5.js",
                 "com/fr/bi/web/js/base/utils/xml.js",
@@ -1864,6 +1883,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/tree.js",
                 "com/fr/bi/web/js/base/utils/vector.js",
                 "com/fr/bi/web/js/base/utils/lru.js",
+                "com/fr/bi/web/js/base/utils/aspect.js",
 
                 "com/fr/bi/web/js/base/action/action.js",
                 "com/fr/bi/web/js/base/action/action.show.js",
@@ -2123,7 +2143,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                */
+                 */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2177,7 +2197,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                */
+                 */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2480,7 +2500,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                */
+                 */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 

@@ -30,14 +30,17 @@
   animation: color-flash-orage-normal 0.3s ease;
 }
 @keyframes color-flash-orage-normal {
-  from  {height:0px} to {height:25px}  /**to{1: 1;}**/;
+  from  {height:0px} to {height:25px}  /**: ;
 }
-@-webkit-keyframes color-flash-orage-normal {
-  from  {height:0px} to {height:25px}  /**to{1: 1;}**/;
+**/ } @-webkit-keyframes color-flash-orage-normal {
+  from  {height:0px} to {height:25px}  /**: ;
 }
-@-moz-keyframes color-flash-orage-normal {
-  from  {height:0px} to {height:25px}  /**to{1: 1;}**/;
+**/ } @-moz-keyframes color-flash-orage-normal {
+  from  {height:0px} to {height:25px}  /**: ;
 }
-@-o-keyframes color-flash-orage-normal {
-  from  {height:0px} to {height:25px}  /**to{1: 1;}**/;
+**/ } @-o-keyframes color-flash-orage-normal {
+  from  {height:0px} to {height:25px}  /**: ;
+}
+**/ } .useless-css-name-abcdefg-123456-just-comment {
+  transition: all 0.5s;
 }

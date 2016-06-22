@@ -117,7 +117,7 @@ public class BIReportEntry extends BaseEntry {
         jo.put("nodeicon", "bi");
         jo.put("reportId", this.getReportId());
         jo.put("bilink", "?op=fr_bi&cmd=bi_init&id=" + this.getReportId()
-                + "&openFromShare=true&systemManager=true&createBy=" + this.getCreateBy());
+                + "&show=_bi_show_&createBy=" + this.getCreateBy());
         return jo;
     }
 

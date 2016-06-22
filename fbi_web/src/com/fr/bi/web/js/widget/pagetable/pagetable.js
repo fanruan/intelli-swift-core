@@ -211,45 +211,6 @@ BI.PageTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
-        this.pager = BI.createWidget(o.pager, {
-            type: "bi.number_pager",
-            width: 95,
-            height: this._const.scrollWidth,
-            cls: "page-table-pager"
-        });
-        this.pager.on(BI.NumberPager.EVENT_CHANGE, function () {
-            self._loading();
-            var vpage = this.getCurrentPage();
-            o.itemsCreator({
-                vpage: vpage
-            }, function (items, header, crossItems, crossHeader) {
-                self.setVPage(vpage);
-                self.populate.apply(self, arguments);
-                self._loaded();
-            });
-        });
-
-        this.tipPager = BI.createWidget({
-            type: "bi.label",
-            invisible: false,
-            cls: "page-table-min-pager",
-            width: this._const.scrollWidth,
-            height: this._const.scrollWidth
-        });
-
-        BI.createWidget({
-            type: "bi.absolute",
-            element: this.element,
-            items: [{
-                el: this.tipPager,
-                right: 0,
-                bottom: 0
-            }, {
-                el: this.pager,
-                right: 0,
-                bottom: 0
-            }]
-        })
     },
 
     _loading: function () {
@@ -320,6 +281,51 @@ BI.PageTable = BI.inherit(BI.Widget, {
         //}
     },
 
+    _assertPager: function () {
+        var self = this, o = this.options;
+        if (!this.pager) {
+            this.pager = BI.createWidget(o.pager, {
+                type: "bi.number_pager",
+                width: 95,
+                height: this._const.scrollWidth,
+                cls: "page-table-pager"
+            });
+            this.pager.on(BI.NumberPager.EVENT_CHANGE, function () {
+                self._loading();
+                var vpage = this.getCurrentPage();
+                o.itemsCreator({
+                    vpage: vpage
+                }, function (items, header, crossItems, crossHeader) {
+                    self.setVPage(vpage);
+                    self.populate.apply(self, arguments);
+                    self._loaded();
+                });
+            });
+
+            this.tipPager = BI.createWidget({
+                type: "bi.label",
+                invisible: false,
+                cls: "page-table-min-pager",
+                width: this._const.scrollWidth,
+                height: this._const.scrollWidth
+            });
+
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: this.tipPager,
+                    right: 0,
+                    bottom: 0
+                }, {
+                    el: this.pager,
+                    right: 0,
+                    bottom: 0
+                }]
+            });
+        }
+    },
+
     _hideCurrentColumn: function () {
         this._currentColumn && this._currentColumn.destroy();
     },
@@ -330,6 +336,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
         var sWidth = o.isNeedFreeze === true ? regionSize[1] : regionSize[0];
 
+        this._assertPager();
         if (sWidth <= 200) {
             this.tipPager.setValue(this.getVPage());
             this.pager.setVisible(false);
@@ -346,6 +353,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     setVPage: function (v) {
+        this._assertPager();
         this.pager.setValue(v);
         this.table.setVPage && this.table.setVPage(v);
     },
@@ -355,6 +363,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     getVPage: function () {
+        this._assertPager();
         return this.pager.getCurrentPage();
     },
 
@@ -398,6 +407,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
+        this._assertPager();
         this.pager.populate();
         this._hideCurrentColumn();
         this._dealWithPager();
@@ -405,6 +415,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     destroy: function () {
         this.table.destroy();
+        this.pager && this.pager.destroy();
         BI.PageTable.superclass.destroy.apply(this, arguments);
     }
 });

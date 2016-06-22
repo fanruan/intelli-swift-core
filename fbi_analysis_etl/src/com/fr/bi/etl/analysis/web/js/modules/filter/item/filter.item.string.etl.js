@@ -25,6 +25,10 @@ BI.StringETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
             case BICst.TARGET_FILTER_STRING.NOT_END_WITH:
                 item = this._createInput();
                 break;
+            case BICst.TARGET_FILTER_STRING.IS_NULL:
+            case BICst.TARGET_FILTER_STRING.NOT_NULL:
+                item = this._createEmptyWidget(this.filter_type);
+                break;
             case BICst.FILTER_TYPE.FORMULA:
                 item = this._createFormular();
                 break;

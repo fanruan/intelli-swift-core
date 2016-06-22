@@ -4,11 +4,11 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
-import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -25,7 +25,7 @@ import java.util.TreeSet;
  * @author Connery
  * @since 4.0
  */
-public class BICubeOccupiedTable implements ICubeTableEntityService {
+public class BICubeOccupiedTable implements CubeTableEntityService {
     @Override
     public void recordTableStructure(List<ICubeFieldSource> fields) {
 
@@ -69,7 +69,7 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
     }
 
     @Override
-    public void copyDetailValue(ICubeTableEntityService cube, long rowCount) {
+    public void copyDetailValue(CubeTableEntityService cube, long rowCount) {
 
     }
 
@@ -110,17 +110,17 @@ public class BICubeOccupiedTable implements ICubeTableEntityService {
     }
 
     @Override
-    public ICubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
+    public CubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
         return null;
     }
 
     @Override
-    public ICubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
+    public CubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
         return null;
     }
 
     @Override
-    public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
+    public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
         return null;
     }
 

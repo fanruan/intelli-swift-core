@@ -7,7 +7,7 @@ import com.finebi.cube.gen.oper.BISourceDataTransport;
 import com.finebi.cube.gen.sub.BIBuildCubeSubscriber;
 import com.finebi.cube.impl.pubsub.BISubscribeID;
 import com.finebi.cube.router.IRouter;
-import com.finebi.cube.structure.ICube;
+import com.finebi.cube.structure.Cube;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.Iterator;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @since 4.0
  */
 public class BICubeBuilderArrange {
-    private ICube cube;
+    private Cube cube;
     private IRouter router;
 
     public void arrangeTable(Set<CubeTableSource> tableSourceSet) {

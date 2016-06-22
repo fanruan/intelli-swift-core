@@ -11,7 +11,7 @@ import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.base.BIUser;
@@ -78,7 +78,7 @@ public class UserETLUpdateTask implements CubeTask {
 
     @Override
     public void run() {
-        final ICubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(this.source));
+        final CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(this.source));
         ICubeFieldSource[] columns = this.source.getFieldsArray(new HashSet<CubeTableSource>());
         List<ICubeFieldSource> columnList = new ArrayList<ICubeFieldSource>();
         for (ICubeFieldSource col : columns) {

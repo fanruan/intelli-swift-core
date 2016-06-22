@@ -8,11 +8,11 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
-import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -26,13 +26,13 @@ import java.util.*;
  * @author Connery
  * @since 4.0
  */
-public class CompoundCubeTableReader implements ICubeTableEntityService {
+public class CompoundCubeTableReader implements CubeTableEntityService {
     private BICubeTableEntity hostTable;
     /**
      * 上次Table对象
      */
-    private ICubeTableEntityService parentTable;
-    protected Map<ICubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, ICubeTableEntityService>();
+    private CubeTableEntityService parentTable;
+    protected Map<ICubeFieldSource, CubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, CubeTableEntityService>();
     private List<ICubeFieldSource> compoundFields = new ArrayList<ICubeFieldSource>();
 
     public CompoundCubeTableReader(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
@@ -44,7 +44,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         initialFields();
     }
 
-    public ICubeTableEntityService getParentTable() {
+    public CubeTableEntityService getParentTable() {
         return parentTable;
     }
 
@@ -123,7 +123,7 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
     }
 
     @Override
-    public void copyDetailValue(ICubeTableEntityService cube, long rowCount) {
+    public void copyDetailValue(CubeTableEntityService cube, long rowCount) {
         throw new UnsupportedOperationException();
 
     }
@@ -176,23 +176,23 @@ public class CompoundCubeTableReader implements ICubeTableEntityService {
         return hostTable.getCubeLastTime();
     }
 
-    private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
+    private CubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
         ICubeFieldSource field = getSpecificColumn(fieldName);
         return fieldSource.get(field);
     }
 
     @Override
-    public ICubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
+    public CubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
         return pickTableService(columnKey.getColumnName()).getColumnDataGetter(columnKey);
     }
 
     @Override
-    public ICubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
+    public CubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
         return pickTableService(columnName).getColumnDataGetter(columnName);
     }
 
     @Override
-    public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
+    public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
 
         return hostTable.getRelationIndexGetter(path);
 

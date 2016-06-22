@@ -4,7 +4,8 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
         MARGIN_LEFT : 9,
         CONDITIONS_TOP : 5,
         CONDITIONS_WIDTH : 220,
-        CONDITIONS_HEIGHT : 195,
+        CONDITIONS_CONTAINER_WIDTH : 229,
+        CONDITIONS_CONTAINER_HEIGHT : 195,
         CONDITIONS_GAP : 5,
         CONDITIONS_VGAP : 10,
         BUTTONS_TOP : 222,
@@ -26,15 +27,20 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
         var self = this, opts = this.options;
         self.condition =  BI.createWidget({
             type: "bi.vertical",
-            height: self._constants.CONDITIONS_HEIGHT,
             width: self._constants.CONDITIONS_WIDTH,
             vgap : self._constants.CONDITIONS_GAP
-        }),
+        })
+        self.conditionContainer = BI.createWidget({
+            type: "bi.vertical",
+            height: self._constants.CONDITIONS_CONTAINER_HEIGHT,
+            width: self._constants.CONDITIONS_CONTAINER_WIDTH,
+            items :[self.condition]
+        })
         BI.createWidget({
             type: "bi.absolute",
             element : this.element,
             items : [{
-                        el :self.condition,
+                        el :self.conditionContainer,
                         left : self._constants.MARGIN_LEFT,
                         top : self._constants.CONDITIONS_TOP
                      },

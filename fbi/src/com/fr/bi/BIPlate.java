@@ -140,7 +140,7 @@ public class BIPlate extends AbstractFSPlate {
             }
             Dialect dialect = DialectFactory.generateDialect(cn,PlatformDB.getDB().getDriver());
             FSDAOManager.addTableColumn(cn, dialect,
-                    new Column("createBy", Types.VARCHAR, new ColumnSize(10)), tableName);
+                    new Column("createBy", Types.BIGINT, new ColumnSize(10)), tableName);
             cn.commit();
         } catch (Exception e) {
             if(cn != null) {
@@ -212,6 +212,7 @@ public class BIPlate extends AbstractFSPlate {
     private void initPlugin() {
         try {
             ExtraClassManager.getInstance().addDialectCreator(new DialectCreatorImpl(), PluginSimplify.create("bi", "bi.db.ads"));
+            ExtraClassManager.getInstance().addHackActionCMD("fs_load", "fs_signin", "com.fr.bi.web.base.services.BISignInAction");
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
         }

@@ -3,9 +3,9 @@ package com.finebi.cube.gen;
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
 import com.finebi.cube.structure.BICubeRelation;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.tools.*;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.constant.DBConstant;
@@ -37,9 +37,9 @@ public class BIFieldPathIndexTest extends BICubeTestBase {
             fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableA(), 2);
 
             indexBuilder.mainTask(null);
-            ICubeColumnReaderService getterService = cube.getCubeColumn(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BIColumnKey.covertColumnKey(new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceA(), "gender", DBConstant.CLASS.STRING, 6)));
+            CubeColumnReaderService getterService = cube.getCubeColumn(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BIColumnKey.covertColumnKey(new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceA(), "gender", DBConstant.CLASS.STRING, 6)));
 
-            ICubeRelationEntityGetterService relationEntityGetterService = getterService.getRelationIndexGetter(BICubePathTestTool.getABC());
+            CubeRelationEntityGetterService relationEntityGetterService = getterService.getRelationIndexGetter(BICubePathTestTool.getABC());
             assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroup("girl")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));
             assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroup(".dr")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{4, 6}));
             assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroup("boy")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
@@ -73,9 +73,9 @@ public class BIFieldPathIndexTest extends BICubeTestBase {
 
 
             BIColumnKey columnKey = BIColumnKey.covertColumnKey(fieldSource);
-            ICubeColumnReaderService getterService = cube.getCubeColumn(BITableKeyUtils.convert(parent), columnKey);
+            CubeColumnReaderService getterService = cube.getCubeColumn(BITableKeyUtils.convert(parent), columnKey);
             assertEquals(getterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{2}));
-            ICubeRelationEntityGetterService relationEntityGetterService = getterService.getRelationIndexGetter(BICubePathTestTool.getContainNullPath());
+            CubeRelationEntityGetterService relationEntityGetterService = getterService.getRelationIndexGetter(BICubePathTestTool.getContainNullPath());
             assertEquals(relationEntityGetterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{2,3}));
 
         } catch (Exception e) {

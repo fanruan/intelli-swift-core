@@ -29,3 +29,6 @@
 .bi-tab-sheet-button .bi-label {
   margin-left: 10px;
 }
+.bi-tab-sheet-button .bi-inline-vertical {
+  vertical-align: top;
+}

@@ -5,8 +5,8 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.ICube;
-import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.inter.Traversal;
@@ -35,12 +35,12 @@ import java.util.Set;
 public class BISourceDataTransport extends BIProcessor {
     protected CubeTableSource tableSource;
     protected Set<CubeTableSource> allSources;
-    protected ICubeTableEntityService tableEntityService;
-    protected ICube cube;
+    protected CubeTableEntityService tableEntityService;
+    protected Cube cube;
     protected List<ITableKey> parents = new ArrayList<ITableKey>();
     protected long version = 0;
 
-    public BISourceDataTransport(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
+    public BISourceDataTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
         this.tableSource = tableSource;
         this.allSources = allSources;
         this.cube = cube;

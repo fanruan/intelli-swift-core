@@ -50,6 +50,7 @@ BI.GroupSelectFieldsItemGroup = BI.inherit(BI.Widget, {
                 fieldType: field["field_type"],
                 text: fname,
                 value: fname,
+                title : fname,
                 drag: self._createDrag(fname)
             };
         });

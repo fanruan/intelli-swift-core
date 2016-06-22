@@ -211,6 +211,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
     _refreshSelectedUserList: function () {
         var self = this;
         var selectedUser = this.allUsersTree.getValue();
+        selectedUser = BI.uniq(selectedUser);
         if (selectedUser.length > 0) {
             this.tab.setSelect(BI.ShareReportPane.USER_EXIST);
             //找到所有已选的用户 和 对应的角色
@@ -227,13 +228,14 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                                 }
                             })
                         }
-                        if (BI.isNotNull(item.user_department)) {
-                            if (BI.isNull(selectedRolesMap[item.user_department])) {
-                                selectedRolesMap[item.user_department] = [];
+                        var department = item.user_department;
+                        if (BI.isNotNull(department) && department !== "") {
+                            if (BI.isNull(selectedRolesMap[department])) {
+                                selectedRolesMap[department] = [];
                             }
-                            selectedRolesMap[item.user_department].push(item);
+                            selectedRolesMap[department].push(item);
                         }
-                        if (BI.isNull(item.roles) && BI.isNull(item.user_department)) {
+                        if (BI.isNull(item.roles) && (BI.isNull(department) || department === "")) {
                             noRoleUsers.push(item);
                         }
                     }

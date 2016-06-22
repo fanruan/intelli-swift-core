@@ -35,6 +35,10 @@ BI.NumberETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
             case BICst.TARGET_FILTER_NUMBER.BOTTOM_N:
                 item = this._createNumberNInput(this.filter_type);
                 break;
+            case BICst.TARGET_FILTER_NUMBER.IS_NULL:
+            case BICst.TARGET_FILTER_NUMBER.NOT_NULL:
+                item = this._createEmptyWidget(this.filter_type);
+                break;
             case BICst.FILTER_TYPE.FORMULA:
                 item = this._createFormular();
                 break;
