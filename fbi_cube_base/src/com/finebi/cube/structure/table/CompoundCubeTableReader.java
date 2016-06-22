@@ -252,4 +252,9 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             parentTable.setTableOwner(owner);
         }
     }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return hostTable.isVersionAvailable();
+    }
 }

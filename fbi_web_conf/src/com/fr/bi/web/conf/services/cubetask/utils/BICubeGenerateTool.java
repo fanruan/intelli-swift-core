@@ -75,6 +75,6 @@ public class BICubeGenerateTool {
         ICubeResourceRetrievalService retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         BICube iCube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         ITableKey iTableKey = new BITableKey(source);
-        return iCube.canRead(iTableKey);
+        return iCube.exist(iTableKey);
     }
 }
