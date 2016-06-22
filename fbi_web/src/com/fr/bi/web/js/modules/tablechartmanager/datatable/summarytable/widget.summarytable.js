@@ -16,10 +16,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         });
         this._createTable();
         this.errorPane = BI.createWidget({
-            type: "bi.layout",
-            cls: "data-miss-background",
+            type: "bi.table_chart_error_pane",
             invisible: true
         });
+        this.errorPane.element.css("z-index", 1);
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -225,7 +225,13 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.loading();
         BI.Utils.getWidgetDataByID(wId, function (jsonData) {
             self.loaded();
+            if (BI.isNotNull(jsonData.error)) {
+                self.errorPane.setErrorInfo(jsonData.error);
+                self.errorPane.setVisible(true);
+                return;
+            }
             if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                self.errorPane.setErrorInfo("invalid json data!");
                 self.errorPane.setVisible(true);
                 return;
             }
@@ -250,7 +256,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 }
                 self._populateTable();
             } catch (e) {
-                console.log("error happens during prepare data for table: " + e);
+                self.errorPane.setErrorInfo("error happens during populate table: " + e);
                 self.errorPane.setVisible(true);
             }
         }, this.model.getExtraInfo());
@@ -258,8 +264,16 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _onPageChange: function (callback) {
         var self = this, wId = this.options.wId;
+        this.loading();
         BI.Utils.getWidgetDataByID(wId, function (jsonData) {
+            self.loaded();
+            if (BI.isNotNull(jsonData.error)) {
+                self.errorPane.setErrorInfo(jsonData.error);
+                self.errorPane.setVisible(true);
+                return;
+            }
             if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                self.errorPane.setErrorInfo("invalid json data!");
                 self.errorPane.setVisible(true);
                 return;
             }
@@ -278,10 +292,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         }
                         break;
                 }
-            } catch (e) {
-                console.log("error happens during prepare data for table: " + e);
-                self.errorPane.setVisible(true);
                 callback(self.model.getItems(), self.model.getHeader(), self.model.getCrossItems(), self.model.getCrossHeader());
+            } catch (e) {
+                self.errorPane.setErrorInfo("error happens during populate for table: " + e);
+                self.errorPane.setVisible(true);
             }
         }, this.model.getExtraInfo());
     },
@@ -417,7 +431,13 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.loading();
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
             self.loaded();
+            if (BI.isNotNull(jsonData.error)) {
+                self.errorPane.setErrorInfo(jsonData.error);
+                self.errorPane.setVisible(true);
+                return;
+            }
             if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                self.errorPane.setErrorInfo("invalid json data!");
                 self.errorPane.setVisible(true);
                 return;
             }
@@ -446,7 +466,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 self.table.setVPage(1);
                 self._populateTable();
             } catch (e) {
-                console.log("error happens during prepare data for table: " + e);
+                self.errorPane.setErrorInfo("error happens during populate table: " + e);
                 self.errorPane.setVisible(true);
             }
         }, this.model.getExtraInfo());

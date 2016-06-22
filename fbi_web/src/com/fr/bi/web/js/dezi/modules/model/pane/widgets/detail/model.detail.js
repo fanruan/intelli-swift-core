@@ -96,7 +96,8 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             //this.set("view", views);
         }
         if (key1 === "dimensions") {
-            BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + copy._src.id);
+            var dimensions = this.cat("dimensions");
+            BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + dimensions[copy]._src.id);
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
             //全局维度增删事件
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
