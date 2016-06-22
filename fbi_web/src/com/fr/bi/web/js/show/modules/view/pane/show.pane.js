@@ -88,12 +88,22 @@ BIShow.PaneView = BI.inherit(BI.View, {
 
         BI.each(this.model.cat("widgets"), function (wid, widget) {
             var vessel = BI.createWidget({
-                type: "bi.layout",
-                id: wid
+                type: "bi.layout"
             });
             self.addSubVessel(wid, vessel);
+            var container = BI.createWidget({
+                type: "bi.absolute",
+                id: wid,
+                items: [{
+                    el: vessel,
+                    left: 5,
+                    right: 5,
+                    top: 5,
+                    bottom: 5
+                }]
+            });
             items.push({
-                el: vessel,
+                el: container,
                 left: widget.bounds.left,
                 top: widget.bounds.top,
                 width: widget.bounds.width,
