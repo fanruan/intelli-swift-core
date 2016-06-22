@@ -413,6 +413,21 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/report.png');
   _background: none;
 }
+.card-view-real-time-icon .x-icon,
+.card-view-real-time-icon:hover .x-icon,
+.card-view-real-time-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/real_time.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/real_time.png');
+  _background: none;
+}
+.card-view-real-time-icon.native .x-icon,
+.card-view-real-time-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/real_time.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/real_time.png');
+  _background: none;
+}
 .table-style1-icon .x-icon,
 .table-style1-icon:hover .x-icon,
 .table-style1-icon:active .x-icon {

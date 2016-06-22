@@ -86,7 +86,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
 
         var packageButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "card-view-report-icon",
+            cls: o.description === "true" ? "card-view-real-time-icon" : "card-view-report-icon",
             iconWidth: 90,
             iconHeight: 75
         });
@@ -142,11 +142,11 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
                 right: 0,
                 top: 25
             }, {
-                el: this.markButton,
+                el: this.markButton || BI.createWidget(),
                 right: 40,
                 bottom: 35
             }, {
-                el: this.hangout,
+                el: this.hangout || BI.createWidget(),
                 top: 50,
                 right: 0
             }]

@@ -151,7 +151,7 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
                     items: [{
                         el: {
                             type: "bi.icon_button",
-                            cls: "file-font template-item-icon",
+                            cls: (o.description === "true" ? "real-time-font" : "file-font") + " template-item-icon",
                             iconWidth: 16,
                             iconHeight: 16
                         },
