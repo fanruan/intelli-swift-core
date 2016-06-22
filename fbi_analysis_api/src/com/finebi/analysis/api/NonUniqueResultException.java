@@ -14,7 +14,11 @@ package com.finebi.analysis.api;
  *
  * @since Java Persistence 1.0
  */
+<<<<<<< HEAD
 public class NonUniqueResultException extends RuntimeException {
+=======
+public class NonUniqueResultException extends PersistenceException {
+>>>>>>> JPA接口
 
         /** 
          * Constructs a new <code>NonUniqueResultException</code> exception 

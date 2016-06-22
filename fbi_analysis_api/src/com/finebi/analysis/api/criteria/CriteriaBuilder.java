@@ -2,7 +2,10 @@
 package com.finebi.analysis.api.criteria;
 
 import com.finebi.analysis.api.Tuple;
+<<<<<<< HEAD
 
+=======
+>>>>>>> JPA接口
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -10,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+<<<<<<< HEAD
  * 用来构建criteria queries, compound selections,expressions, predicates, orderings。
  * <p/>
  * <p> Note that <code>Predicate</code> is used instead of <code>Expression&#060;Boolean&#062;</code>
@@ -47,18 +51,116 @@ public interface CriteriaBuilder {
      * Create an ordering by the ascending value of the expression.
      *
      * @param x expression used to define the ordering
+=======
+ * Used to construct criteria queries, compound selections, 
+ * expressions, predicates, orderings.
+ *
+ * <p> Note that <code>Predicate</code> is used instead of <code>Expression&#060;Boolean&#062;</code> 
+ * in this API in order to work around the fact that Java 
+ * generics are not compatible with varags.
+ *
+ * @since Java Persistence 2.0
+ */
+public interface CriteriaBuilder {
+
+    /**
+     *  Create a <code>CriteriaQuery</code> object.
+     *  @return criteria query object
+     */
+    CriteriaQuery<Object> createQuery();
+
+    /**
+     *  Create a <code>CriteriaQuery</code> object with the specified result 
+     *  type.
+     *  @param resultClass  type of the query result
+     *  @return criteria query object
+     */
+    <T> CriteriaQuery<T> createQuery(Class<T> resultClass);
+
+    /**
+     *  Create a <code>CriteriaQuery</code> object that returns a tuple of 
+     *  objects as its result.
+     *  @return criteria query object
+     */
+    CriteriaQuery<Tuple> createTupleQuery();
+
+    // methods to construct queries for bulk updates and deletes:
+
+    /**
+     *  Create a <code>CriteriaUpdate</code> query object to perform a bulk update operation.
+     *  @param targetEntity  target type for update operation
+     *  @return the query object
+     *  @since Java Persistence 2.1
+     */
+    <T> CriteriaUpdate<T> createCriteriaUpdate(Class<T> targetEntity);
+
+    /**
+     *  Create a <code>CriteriaDelete</code> query object to perform a bulk delete operation.
+     *  @param targetEntity  target type for delete operation
+     *  @return the query object
+     *  @since Java Persistence 2.1
+     */
+    <T> CriteriaDelete<T> createCriteriaDelete(Class<T> targetEntity);
+
+
+    // selection construction methods:
+	
+    /**
+     * Create a selection item corresponding to a constructor.
+     * This method is used to specify a constructor that will be
+     * applied to the results of the query execution. If the
+     * constructor is for an entity class, the resulting entities
+     * will be in the new state after the query is executed.
+     * @param resultClass  class whose instance is to be constructed
+     * @param selections  arguments to the constructor
+     * @return compound selection item
+     * @throws IllegalArgumentException if an argument is a 
+     *         tuple- or array-valued selection item
+     */
+    <Y> CompoundSelection<Y> construct(Class<Y> resultClass, Selection<?>... selections);
+
+    /**
+     * Create a tuple-valued selection item.
+     * @param selections  selection items
+     * @return tuple-valued compound selection
+     * @throws IllegalArgumentException if an argument is a 
+     *         tuple- or array-valued selection item
+     */
+    CompoundSelection<Tuple> tuple(Selection<?>... selections);
+
+    /**
+     * Create an array-valued selection item.
+     * @param selections  selection items
+     * @return array-valued compound selection
+     * @throws IllegalArgumentException if an argument is a 
+     *         tuple- or array-valued selection item
+     */
+    CompoundSelection<Object[]> array(Selection<?>... selections);
+
+
+    //ordering:
+	
+    /**
+     * Create an ordering by the ascending value of the expression.
+     * @param x  expression used to define the ordering
+>>>>>>> JPA接口
      * @return ascending ordering corresponding to the expression
      */
     Order asc(Expression<?> x);
 
     /**
      * Create an ordering by the descending value of the expression.
+<<<<<<< HEAD
      *
      * @param x expression used to define the ordering
+=======
+     * @param x  expression used to define the ordering
+>>>>>>> JPA接口
      * @return descending ordering corresponding to the expression
      */
     Order desc(Expression<?> x);
 
+<<<<<<< HEAD
 
     //aggregate functions:
 
@@ -66,14 +168,26 @@ public interface CriteriaBuilder {
      * Create an aggregate expression applying the avg operation.
      *
      * @param x expression representing input value to avg operation
+=======
+	
+    //aggregate functions:
+	
+    /**
+     * Create an aggregate expression applying the avg operation.
+     * @param x  expression representing input value to avg operation
+>>>>>>> JPA接口
      * @return avg expression
      */
     <N extends Number> Expression<Double> avg(Expression<N> x);
 
     /**
      * Create an aggregate expression applying the sum operation.
+<<<<<<< HEAD
      *
      * @param x expression representing input value to sum operation
+=======
+     * @param x  expression representing input value to sum operation
+>>>>>>> JPA接口
      * @return sum expression
      */
     <N extends Number> Expression<N> sum(Expression<N> x);
@@ -81,8 +195,12 @@ public interface CriteriaBuilder {
     /**
      * Create an aggregate expression applying the sum operation to an
      * Integer-valued expression, returning a Long result.
+<<<<<<< HEAD
      *
      * @param x expression representing input value to sum operation
+=======
+     * @param x  expression representing input value to sum operation
+>>>>>>> JPA接口
      * @return sum expression
      */
     Expression<Long> sumAsLong(Expression<Integer> x);
@@ -90,6 +208,7 @@ public interface CriteriaBuilder {
     /**
      * Create an aggregate expression applying the sum operation to a
      * Float-valued expression, returning a Double result.
+<<<<<<< HEAD
      *
      * @param x expression representing input value to sum operation
      * @return sum expression
@@ -110,6 +229,25 @@ public interface CriteriaBuilder {
      * operation.
      *
      * @param x expression representing input value to min operation
+=======
+     * @param x  expression representing input value to sum operation
+     * @return sum expression
+     */
+    Expression<Double> sumAsDouble(Expression<Float> x);
+    
+    /**
+     * Create an aggregate expression applying the numerical max 
+     * operation.
+     * @param x  expression representing input value to max operation
+     * @return max expression
+     */
+    <N extends Number> Expression<N> max(Expression<N> x);
+    
+    /**
+     * Create an aggregate expression applying the numerical min 
+     * operation.
+     * @param x  expression representing input value to min operation
+>>>>>>> JPA接口
      * @return min expression
      */
     <N extends Number> Expression<N> min(Expression<N> x);
@@ -117,6 +255,7 @@ public interface CriteriaBuilder {
     /**
      * Create an aggregate expression for finding the greatest of
      * the values (strings, dates, etc).
+<<<<<<< HEAD
      *
      * @param x expression representing input value to greatest
      *          operation
@@ -130,20 +269,39 @@ public interface CriteriaBuilder {
      *
      * @param x expression representing input value to least
      *          operation
+=======
+     * @param x  expression representing input value to greatest
+     *           operation
+     * @return greatest expression
+     */
+    <X extends Comparable<? super X>> Expression<X> greatest(Expression<X> x);
+    
+    /**
+     * Create an aggregate expression for finding the least of
+     * the values (strings, dates, etc).
+     * @param x  expression representing input value to least
+     *           operation
+>>>>>>> JPA接口
      * @return least expression
      */
     <X extends Comparable<? super X>> Expression<X> least(Expression<X> x);
 
     /**
      * Create an aggregate expression applying the count operation.
+<<<<<<< HEAD
      *
      * @param x expression representing input value to count
      *          operation
+=======
+     * @param x  expression representing input value to count 
+     *           operation
+>>>>>>> JPA接口
      * @return count expression
      */
     Expression<Long> count(Expression<?> x);
 
     /**
+<<<<<<< HEAD
      * Create an aggregate expression applying the count distinct
      * operation.
      *
@@ -186,12 +344,53 @@ public interface CriteriaBuilder {
      * This expression is equivalent to a <code>some</code> expression.
      *
      * @param subquery subquery
+=======
+     * Create an aggregate expression applying the count distinct 
+     * operation.
+     * @param x  expression representing input value to 
+     *        count distinct operation
+     * @return count distinct expression
+     */
+    Expression<Long> countDistinct(Expression<?> x);
+	
+
+
+    //subqueries:
+	
+    /**
+     * Create a predicate testing the existence of a subquery result.
+     * @param subquery  subquery whose result is to be tested
+     * @return exists predicate
+     */
+    Predicate exists(Subquery<?> subquery);
+	
+    /**
+     * Create an all expression over the subquery results.
+     * @param subquery  subquery
+     * @return all expression
+     */
+    <Y> Expression<Y> all(Subquery<Y> subquery);
+	
+    /**
+     * Create a some expression over the subquery results.
+     * This expression is equivalent to an <code>any</code> expression.
+     * @param subquery  subquery
+     * @return some expression
+     */
+    <Y> Expression<Y> some(Subquery<Y> subquery);
+	
+    /**
+     * Create an any expression over the subquery results. 
+     * This expression is equivalent to a <code>some</code> expression.
+     * @param subquery  subquery
+>>>>>>> JPA接口
      * @return any expression
      */
     <Y> Expression<Y> any(Subquery<Y> subquery);
 
 
     //boolean functions:
+<<<<<<< HEAD
 
     /**
      * Create a conjunction of the given boolean expressions.
@@ -207,15 +406,35 @@ public interface CriteriaBuilder {
      * A conjunction of zero predicates is true.
      *
      * @param restrictions zero or more restriction predicates
+=======
+	
+    /**
+     * Create a conjunction of the given boolean expressions.
+     * @param x  boolean expression
+     * @param y  boolean expression
+     * @return and predicate
+     */
+    Predicate and(Expression<Boolean> x, Expression<Boolean> y);
+    
+    /**
+     * Create a conjunction of the given restriction predicates.
+     * A conjunction of zero predicates is true.
+     * @param restrictions  zero or more restriction predicates
+>>>>>>> JPA接口
      * @return and predicate
      */
     Predicate and(Predicate... restrictions);
 
     /**
      * Create a disjunction of the given boolean expressions.
+<<<<<<< HEAD
      *
      * @param x boolean expression
      * @param y boolean expression
+=======
+     * @param x  boolean expression
+     * @param y  boolean expression
+>>>>>>> JPA接口
      * @return or predicate
      */
     Predicate or(Expression<Boolean> x, Expression<Boolean> y);
@@ -223,13 +442,18 @@ public interface CriteriaBuilder {
     /**
      * Create a disjunction of the given restriction predicates.
      * A disjunction of zero predicates is false.
+<<<<<<< HEAD
      *
      * @param restrictions zero or more restriction predicates
+=======
+     * @param restrictions  zero or more restriction predicates
+>>>>>>> JPA接口
      * @return or predicate
      */
     Predicate or(Predicate... restrictions);
 
     /**
+<<<<<<< HEAD
      * Create a negation of the given restriction.
      *
      * @param restriction restriction expression
@@ -241,6 +465,17 @@ public interface CriteriaBuilder {
      * Create a conjunction (with zero conjuncts).
      * A conjunction with zero conjuncts is true.
      *
+=======
+     * Create a negation of the given restriction. 
+     * @param restriction  restriction expression
+     * @return not predicate
+     */
+    Predicate not(Expression<Boolean> restriction);
+	
+    /**
+     * Create a conjunction (with zero conjuncts).
+     * A conjunction with zero conjuncts is true.
+>>>>>>> JPA接口
      * @return and predicate
      */
     Predicate conjunction();
@@ -248,37 +483,59 @@ public interface CriteriaBuilder {
     /**
      * Create a disjunction (with zero disjuncts).
      * A disjunction with zero disjuncts is false.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @return or predicate
      */
     Predicate disjunction();
 
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> JPA接口
     //turn Expression<Boolean> into a Predicate
     //useful for use with varargs methods
 
     /**
      * Create a predicate testing for a true value.
+<<<<<<< HEAD
      *
      * @param x expression to be tested
+=======
+     * @param x  expression to be tested
+>>>>>>> JPA接口
      * @return predicate
      */
     Predicate isTrue(Expression<Boolean> x);
 
     /**
      * Create a predicate testing for a false value.
+<<<<<<< HEAD
      *
      * @param x expression to be tested
+=======
+     * @param x  expression to be tested
+>>>>>>> JPA接口
      * @return predicate
      */
     Predicate isFalse(Expression<Boolean> x);
 
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> JPA接口
     //null tests:
 
     /**
      * Create a predicate to test whether the expression is null.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @return is-null predicate
      */
@@ -286,13 +543,17 @@ public interface CriteriaBuilder {
 
     /**
      * Create a predicate to test whether the expression is not null.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @return is-not-null predicate
      */
     Predicate isNotNull(Expression<?> x);
 
     //equality:
+<<<<<<< HEAD
 
     /**
      * Create a predicate for testing the arguments for equality.
@@ -308,12 +569,28 @@ public interface CriteriaBuilder {
      *
      * @param x expression
      * @param y object
+=======
+	
+    /**
+     * Create a predicate for testing the arguments for equality.
+     * @param x  expression
+     * @param y  expression
+     * @return equality predicate
+     */
+    Predicate equal(Expression<?> x, Expression<?> y);
+	
+    /**
+     * Create a predicate for testing the arguments for equality.
+     * @param x  expression
+     * @param y  object
+>>>>>>> JPA接口
      * @return equality predicate
      */
     Predicate equal(Expression<?> x, Object y);
 
     /**
      * Create a predicate for testing the arguments for inequality.
+<<<<<<< HEAD
      *
      * @param x expression
      * @param y expression
@@ -326,10 +603,23 @@ public interface CriteriaBuilder {
      *
      * @param x expression
      * @param y object
+=======
+     * @param x  expression
+     * @param y  expression
+     * @return inequality predicate
+     */
+    Predicate notEqual(Expression<?> x, Expression<?> y);
+	
+    /**
+     * Create a predicate for testing the arguments for inequality.
+     * @param x  expression
+     * @param y  object
+>>>>>>> JPA接口
      * @return inequality predicate
      */
     Predicate notEqual(Expression<?> x, Object y);
 
+<<<<<<< HEAD
 
     //comparisons for generic (non-numeric) operands:
 
@@ -359,31 +649,74 @@ public interface CriteriaBuilder {
      *
      * @param x expression
      * @param y expression
+=======
+	
+    //comparisons for generic (non-numeric) operands:
+
+    /**
+     * Create a predicate for testing whether the first argument is 
+     * greater than the second.
+     * @param x  expression
+     * @param y  expression
+     * @return greater-than predicate
+     */
+    <Y extends Comparable<? super Y>> Predicate greaterThan(Expression<? extends Y> x, Expression<? extends Y> y);
+	
+    /**
+     * Create a predicate for testing whether the first argument is 
+     * greater than the second.
+     * @param x  expression
+     * @param y  value
+     * @return greater-than predicate
+     */
+    <Y extends Comparable<? super Y>> Predicate greaterThan(Expression<? extends Y> x, Y y);
+    
+    /**
+     * Create a predicate for testing whether the first argument is 
+     * greater than or equal to the second.
+     * @param x  expression
+     * @param y  expression
+>>>>>>> JPA接口
      * @return greater-than-or-equal predicate
      */
     <Y extends Comparable<? super Y>> Predicate greaterThanOrEqualTo(Expression<? extends Y> x, Expression<? extends Y> y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * greater than or equal to the second.
      *
      * @param x expression
      * @param y value
+=======
+     * Create a predicate for testing whether the first argument is 
+     * greater than or equal to the second.
+     * @param x  expression
+     * @param y  value
+>>>>>>> JPA接口
      * @return greater-than-or-equal predicate
      */
     <Y extends Comparable<? super Y>> Predicate greaterThanOrEqualTo(Expression<? extends Y> x, Y y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * less than the second.
      *
      * @param x expression
      * @param y expression
+=======
+     * Create a predicate for testing whether the first argument is 
+     * less than the second.
+     * @param x  expression
+     * @param y  expression
+>>>>>>> JPA接口
      * @return less-than predicate
      */
     <Y extends Comparable<? super Y>> Predicate lessThan(Expression<? extends Y> x, Expression<? extends Y> y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * less than the second.
      *
@@ -399,32 +732,63 @@ public interface CriteriaBuilder {
      *
      * @param x expression
      * @param y expression
+=======
+     * Create a predicate for testing whether the first argument is 
+     * less than the second.
+     * @param x  expression
+     * @param y  value
+     * @return less-than predicate
+     */
+    <Y extends Comparable<? super Y>> Predicate lessThan(Expression<? extends Y> x, Y y);
+	
+    /**
+     * Create a predicate for testing whether the first argument is 
+     * less than or equal to the second.
+     * @param x  expression
+     * @param y  expression
+>>>>>>> JPA接口
      * @return less-than-or-equal predicate
      */
     <Y extends Comparable<? super Y>> Predicate lessThanOrEqualTo(Expression<? extends Y> x, Expression<? extends Y> y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * less than or equal to the second.
      *
      * @param x expression
      * @param y value
+=======
+     * Create a predicate for testing whether the first argument is 
+     * less than or equal to the second.
+     * @param x  expression
+     * @param y  value
+>>>>>>> JPA接口
      * @return less-than-or-equal predicate
      */
     <Y extends Comparable<? super Y>> Predicate lessThanOrEqualTo(Expression<? extends Y> x, Y y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * between the second and third arguments in value.
      *
      * @param v expression
      * @param x expression
      * @param y expression
+=======
+     * Create a predicate for testing whether the first argument is 
+     * between the second and third arguments in value.
+     * @param v  expression 
+     * @param x  expression
+     * @param y  expression
+>>>>>>> JPA接口
      * @return between predicate
      */
     <Y extends Comparable<? super Y>> Predicate between(Expression<? extends Y> v, Expression<? extends Y> x, Expression<? extends Y> y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * between the second and third arguments in value.
      *
@@ -444,31 +808,65 @@ public interface CriteriaBuilder {
      *
      * @param x expression
      * @param y expression
+=======
+     * Create a predicate for testing whether the first argument is 
+     * between the second and third arguments in value.
+     * @param v  expression 
+     * @param x  value
+     * @param y  value
+     * @return between predicate
+     */
+    <Y extends Comparable<? super Y>> Predicate between(Expression<? extends Y> v, Y x, Y y);
+	
+
+    //comparisons for numeric operands:
+	
+    /**
+     * Create a predicate for testing whether the first argument is 
+     * greater than the second.
+     * @param x  expression
+     * @param y  expression
+>>>>>>> JPA接口
      * @return greater-than predicate
      */
     Predicate gt(Expression<? extends Number> x, Expression<? extends Number> y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * greater than the second.
      *
      * @param x expression
      * @param y value
+=======
+     * Create a predicate for testing whether the first argument is 
+     * greater than the second.
+     * @param x  expression
+     * @param y  value
+>>>>>>> JPA接口
      * @return greater-than predicate
      */
     Predicate gt(Expression<? extends Number> x, Number y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * greater than or equal to the second.
      *
      * @param x expression
      * @param y expression
+=======
+     * Create a predicate for testing whether the first argument is 
+     * greater than or equal to the second.
+     * @param x  expression
+     * @param y  expression
+>>>>>>> JPA接口
      * @return greater-than-or-equal predicate
      */
     Predicate ge(Expression<? extends Number> x, Expression<? extends Number> y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * greater than or equal to the second.
      *
@@ -484,31 +882,61 @@ public interface CriteriaBuilder {
      *
      * @param x expression
      * @param y expression
+=======
+     * Create a predicate for testing whether the first argument is 
+     * greater than or equal to the second.
+     * @param x  expression
+     * @param y  value
+     * @return greater-than-or-equal predicate
+     */	
+    Predicate ge(Expression<? extends Number> x, Number y);
+
+    /**
+     * Create a predicate for testing whether the first argument is 
+     * less than the second.
+     * @param x  expression
+     * @param y  expression
+>>>>>>> JPA接口
      * @return less-than predicate
      */
     Predicate lt(Expression<? extends Number> x, Expression<? extends Number> y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * less than the second.
      *
      * @param x expression
      * @param y value
+=======
+     * Create a predicate for testing whether the first argument is 
+     * less than the second.
+     * @param x  expression
+     * @param y  value
+>>>>>>> JPA接口
      * @return less-than predicate
      */
     Predicate lt(Expression<? extends Number> x, Number y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * less than or equal to the second.
      *
      * @param x expression
      * @param y expression
+=======
+     * Create a predicate for testing whether the first argument is 
+     * less than or equal to the second.
+     * @param x  expression
+     * @param y  expression
+>>>>>>> JPA接口
      * @return less-than-or-equal predicate
      */
     Predicate le(Expression<? extends Number> x, Expression<? extends Number> y);
 
     /**
+<<<<<<< HEAD
      * Create a predicate for testing whether the first argument is
      * less than or equal to the second.
      *
@@ -525,6 +953,22 @@ public interface CriteriaBuilder {
      * Create an expression that returns the arithmetic negation
      * of its argument.
      *
+=======
+     * Create a predicate for testing whether the first argument is 
+     * less than or equal to the second.
+     * @param x  expression
+     * @param y  value
+     * @return less-than-or-equal predicate
+     */
+    Predicate le(Expression<? extends Number> x, Number y);
+	
+
+    //numerical operations:
+	
+    /**
+     * Create an expression that returns the arithmetic negation
+     * of its argument.
+>>>>>>> JPA接口
      * @param x expression
      * @return arithmetic negation
      */
@@ -533,26 +977,43 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the absolute value
      * of its argument.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @return absolute value
      */
     <N extends Number> Expression<N> abs(Expression<N> x);
+<<<<<<< HEAD
 
     /**
      * Create an expression that returns the sum
      * of its arguments.
      *
+=======
+	
+    /**
+     * Create an expression that returns the sum
+     * of its arguments.
+>>>>>>> JPA接口
      * @param x expression
      * @param y expression
      * @return sum
      */
     <N extends Number> Expression<N> sum(Expression<? extends N> x, Expression<? extends N> y);
+<<<<<<< HEAD
 
     /**
      * Create an expression that returns the sum
      * of its arguments.
      *
+=======
+	
+    /**
+     * Create an expression that returns the sum
+     * of its arguments.
+>>>>>>> JPA接口
      * @param x expression
      * @param y value
      * @return sum
@@ -562,7 +1023,10 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the sum
      * of its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x value
      * @param y expression
      * @return sum
@@ -572,7 +1036,10 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the product
      * of its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @param y expression
      * @return product
@@ -582,7 +1049,10 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the product
      * of its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @param y value
      * @return product
@@ -592,7 +1062,10 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the product
      * of its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x value
      * @param y expression
      * @return product
@@ -602,7 +1075,10 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the difference
      * between its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @param y expression
      * @return difference
@@ -612,7 +1088,10 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the difference
      * between its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @param y value
      * @return difference
@@ -622,17 +1101,27 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the difference
      * between its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x value
      * @param y expression
      * @return difference
      */
     <N extends Number> Expression<N> diff(N x, Expression<? extends N> y);
+<<<<<<< HEAD
 
     /**
      * Create an expression that returns the quotient
      * of its arguments.
      *
+=======
+	
+    /**
+     * Create an expression that returns the quotient
+     * of its arguments.
+>>>>>>> JPA接口
      * @param x expression
      * @param y expression
      * @return quotient
@@ -642,7 +1131,10 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the quotient
      * of its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @param y value
      * @return quotient
@@ -652,27 +1144,44 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the quotient
      * of its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x value
      * @param y expression
      * @return quotient
      */
     Expression<Number> quot(Number x, Expression<? extends Number> y);
+<<<<<<< HEAD
 
     /**
      * Create an expression that returns the modulus
      * of its arguments.
      *
+=======
+	
+    /**
+     * Create an expression that returns the modulus
+     * of its arguments.
+>>>>>>> JPA接口
      * @param x expression
      * @param y expression
      * @return modulus
      */
     Expression<Integer> mod(Expression<Integer> x, Expression<Integer> y);
+<<<<<<< HEAD
 
     /**
      * Create an expression that returns the modulus
      * of its arguments.
      *
+=======
+	
+    /**
+     * Create an expression that returns the modulus
+     * of its arguments.
+>>>>>>> JPA接口
      * @param x expression
      * @param y value
      * @return modulus
@@ -682,7 +1191,10 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the modulus
      * of its arguments.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x value
      * @param y expression
      * @return modulus
@@ -692,6 +1204,7 @@ public interface CriteriaBuilder {
     /**
      * Create an expression that returns the square root
      * of its argument.
+<<<<<<< HEAD
      *
      * @param x expression
      * @return square root
@@ -705,44 +1218,74 @@ public interface CriteriaBuilder {
      * Typecast.  Returns same expression object.
      *
      * @param number numeric expression
+=======
+     * @param x expression
+     * @return square root
+     */	
+    Expression<Double> sqrt(Expression<? extends Number> x);
+
+	
+    //typecasts:
+    
+    /**
+     * Typecast.  Returns same expression object.
+     * @param number  numeric expression
+>>>>>>> JPA接口
      * @return Expression&#060;Long&#062;
      */
     Expression<Long> toLong(Expression<? extends Number> number);
 
     /**
      * Typecast.  Returns same expression object.
+<<<<<<< HEAD
      *
      * @param number numeric expression
+=======
+     * @param number  numeric expression
+>>>>>>> JPA接口
      * @return Expression&#060;Integer&#062;
      */
     Expression<Integer> toInteger(Expression<? extends Number> number);
 
     /**
      * Typecast. Returns same expression object.
+<<<<<<< HEAD
      *
      * @param number numeric expression
+=======
+     * @param number  numeric expression
+>>>>>>> JPA接口
      * @return Expression&#060;Float&#062;
      */
     Expression<Float> toFloat(Expression<? extends Number> number);
 
     /**
      * Typecast.  Returns same expression object.
+<<<<<<< HEAD
      *
      * @param number numeric expression
+=======
+     * @param number  numeric expression
+>>>>>>> JPA接口
      * @return Expression&#060;Double&#062;
      */
     Expression<Double> toDouble(Expression<? extends Number> number);
 
     /**
      * Typecast.  Returns same expression object.
+<<<<<<< HEAD
      *
      * @param number numeric expression
+=======
+     * @param number  numeric expression
+>>>>>>> JPA接口
      * @return Expression&#060;BigDecimal&#062;
      */
     Expression<BigDecimal> toBigDecimal(Expression<? extends Number> number);
 
     /**
      * Typecast.  Returns same expression object.
+<<<<<<< HEAD
      *
      * @param number numeric expression
      * @return Expression&#060;BigInteger&#062;
@@ -752,18 +1295,35 @@ public interface CriteriaBuilder {
     /**
      * Typecast.  Returns same expression object.
      *
+=======
+     * @param number  numeric expression
+     * @return Expression&#060;BigInteger&#062;
+     */
+    Expression<BigInteger> toBigInteger(Expression<? extends Number> number);
+	
+    /**
+     * Typecast.  Returns same expression object.
+>>>>>>> JPA接口
      * @param character expression
      * @return Expression&#060;String&#062;
      */
     Expression<String> toString(Expression<Character> character);
 
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> JPA接口
     //literals:
 
     /**
      * Create an expression for a literal.
+<<<<<<< HEAD
      *
      * @param value value represented by the expression
+=======
+     * @param value  value represented by the expression
+>>>>>>> JPA接口
      * @return expression literal
      * @throws IllegalArgumentException if value is null
      */
@@ -771,8 +1331,12 @@ public interface CriteriaBuilder {
 
     /**
      * Create an expression for a null literal with the given type.
+<<<<<<< HEAD
      *
      * @param resultClass type of the null literal
+=======
+     * @param resultClass  type of the null literal
+>>>>>>> JPA接口
      * @return null expression literal
      */
     <T> Expression<T> nullLiteral(Class<T> resultClass);
@@ -781,7 +1345,10 @@ public interface CriteriaBuilder {
 
     /**
      * Create a parameter expression.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param paramClass parameter class
      * @return parameter expression
      */
@@ -789,36 +1356,58 @@ public interface CriteriaBuilder {
 
     /**
      * Create a parameter expression with the given name.
+<<<<<<< HEAD
      *
      * @param paramClass parameter class
      * @param name       name that can be used to refer to
      *                   the parameter
+=======
+     * @param paramClass parameter class
+     * @param name  name that can be used to refer to 
+     *              the parameter
+>>>>>>> JPA接口
      * @return parameter expression
      */
     <T> ParameterExpression<T> parameter(Class<T> paramClass, String name);
 
 
     //collection operations:
+<<<<<<< HEAD
 
     /**
      * Create a predicate that tests whether a collection is empty.
      *
      * @param collection expression
      * @return is-empty predicate
+=======
+	
+    /**
+     *  Create a predicate that tests whether a collection is empty.
+     *  @param collection expression
+     *  @return is-empty predicate
+>>>>>>> JPA接口
      */
     <C extends Collection<?>> Predicate isEmpty(Expression<C> collection);
 
     /**
+<<<<<<< HEAD
      * Create a predicate that tests whether a collection is
      * not empty.
      *
      * @param collection expression
      * @return is-not-empty predicate
+=======
+     *  Create a predicate that tests whether a collection is
+     *  not empty.
+     *  @param collection expression
+     *  @return is-not-empty predicate
+>>>>>>> JPA接口
      */
     <C extends Collection<?>> Predicate isNotEmpty(Expression<C> collection);
 
     /**
      * Create an expression that tests the size of a collection.
+<<<<<<< HEAD
      *
      * @param collection expression
      * @return size expression
@@ -841,10 +1430,32 @@ public interface CriteriaBuilder {
      * @param elem       element expression
      * @param collection expression
      * @return is-member predicate
+=======
+     * @param collection expression
+     * @return size expression
+     */ 
+    <C extends Collection<?>> Expression<Integer> size(Expression<C> collection);
+	
+    /**
+     * Create an expression that tests the size of a collection.
+     * @param collection collection
+     * @return size expression
+     */ 
+    <C extends Collection<?>> Expression<Integer> size(C collection);
+	
+    /**
+     *  Create a predicate that tests whether an element is
+     *  a member of a collection.
+     *  If the collection is empty, the predicate will be false.
+     *  @param elem element expression
+     *  @param collection expression
+     *  @return is-member predicate
+>>>>>>> JPA接口
      */
     <E, C extends Collection<E>> Predicate isMember(Expression<E> elem, Expression<C> collection);
 
     /**
+<<<<<<< HEAD
      * Create a predicate that tests whether an element is
      * a member of a collection.
      * If the collection is empty, the predicate will be false.
@@ -852,10 +1463,19 @@ public interface CriteriaBuilder {
      * @param elem       element
      * @param collection expression
      * @return is-member predicate
+=======
+     *  Create a predicate that tests whether an element is
+     *  a member of a collection.
+     *  If the collection is empty, the predicate will be false.
+     *  @param elem element
+     *  @param collection expression
+     *  @return is-member predicate
+>>>>>>> JPA接口
      */
     <E, C extends Collection<E>> Predicate isMember(E elem, Expression<C> collection);
 
     /**
+<<<<<<< HEAD
      * Create a predicate that tests whether an element is
      * not a member of a collection.
      * If the collection is empty, the predicate will be true.
@@ -874,6 +1494,24 @@ public interface CriteriaBuilder {
      * @param elem       element
      * @param collection expression
      * @return is-not-member predicate
+=======
+     *  Create a predicate that tests whether an element is
+     *  not a member of a collection.
+     *  If the collection is empty, the predicate will be true.
+     *  @param elem element expression
+     *  @param collection expression
+     *  @return is-not-member predicate
+     */
+    <E, C extends Collection<E>> Predicate isNotMember(Expression<E> elem, Expression<C> collection);
+	
+    /**
+     *  Create a predicate that tests whether an element is
+     *  not a member of a collection.
+     *  If the collection is empty, the predicate will be true.
+     *  @param elem element
+     *  @param collection expression
+     *  @return is-not-member predicate
+>>>>>>> JPA接口
      */
     <E, C extends Collection<E>> Predicate isNotMember(E elem, Expression<C> collection);
 
@@ -883,20 +1521,29 @@ public interface CriteriaBuilder {
 
     /**
      * Create an expression that returns the values of a map.
+<<<<<<< HEAD
      *
      * @param map map
+=======
+     * @param map  map
+>>>>>>> JPA接口
      * @return collection expression
      */
     <V, M extends Map<?, V>> Expression<Collection<V>> values(M map);
 
     /**
      * Create an expression that returns the keys of a map.
+<<<<<<< HEAD
      *
      * @param map map
+=======
+     * @param map  map
+>>>>>>> JPA接口
      * @return set expression
      */
     <K, M extends Map<K, ?>> Expression<Set<K>> keys(M map);
 
+<<<<<<< HEAD
 
     //string functions:
 
@@ -949,6 +1596,55 @@ public interface CriteriaBuilder {
      * @param x          string expression
      * @param pattern    string
      * @param escapeChar escape character expression
+=======
+	
+    //string functions:
+	
+    /**
+     * Create a predicate for testing whether the expression
+     * satisfies the given pattern.
+     * @param x  string expression
+     * @param pattern  string expression
+     * @return like predicate
+     */
+    Predicate like(Expression<String> x, Expression<String> pattern);
+	
+    /**
+     * Create a predicate for testing whether the expression
+     * satisfies the given pattern.
+     * @param x  string expression
+     * @param pattern  string 
+     * @return like predicate
+     */
+    Predicate like(Expression<String> x, String pattern);
+	
+    /**
+     * Create a predicate for testing whether the expression
+     * satisfies the given pattern.
+     * @param x  string expression
+     * @param pattern  string expression
+     * @param escapeChar  escape character expression
+     * @return like predicate
+     */
+    Predicate like(Expression<String> x, Expression<String> pattern, Expression<Character> escapeChar);
+	
+    /**
+     * Create a predicate for testing whether the expression
+     * satisfies the given pattern.
+     * @param x  string expression
+     * @param pattern  string expression
+     * @param escapeChar  escape character
+     * @return like predicate
+     */
+    Predicate like(Expression<String> x, Expression<String> pattern, char escapeChar);
+	
+    /**
+     * Create a predicate for testing whether the expression
+     * satisfies the given pattern.
+     * @param x  string expression
+     * @param pattern  string 
+     * @param escapeChar  escape character expression
+>>>>>>> JPA接口
      * @return like predicate
      */
     Predicate like(Expression<String> x, String pattern, Expression<Character> escapeChar);
@@ -956,6 +1652,7 @@ public interface CriteriaBuilder {
     /**
      * Create a predicate for testing whether the expression
      * satisfies the given pattern.
+<<<<<<< HEAD
      *
      * @param x          string expression
      * @param pattern    string
@@ -980,6 +1677,29 @@ public interface CriteriaBuilder {
      *
      * @param x       string expression
      * @param pattern string
+=======
+     * @param x  string expression
+     * @param pattern  string 
+     * @param escapeChar  escape character
+     * @return like predicate
+     */
+    Predicate like(Expression<String> x, String pattern, char escapeChar);
+	
+    /**
+     * Create a predicate for testing whether the expression
+     * does not satisfy the given pattern.
+     * @param x  string expression
+     * @param pattern  string expression
+     * @return not-like predicate
+     */
+    Predicate notLike(Expression<String> x, Expression<String> pattern);
+	
+    /**
+     * Create a predicate for testing whether the expression
+     * does not satisfy the given pattern.
+     * @param x  string expression
+     * @param pattern  string 
+>>>>>>> JPA接口
      * @return not-like predicate
      */
     Predicate notLike(Expression<String> x, String pattern);
@@ -987,10 +1707,16 @@ public interface CriteriaBuilder {
     /**
      * Create a predicate for testing whether the expression
      * does not satisfy the given pattern.
+<<<<<<< HEAD
      *
      * @param x          string expression
      * @param pattern    string expression
      * @param escapeChar escape character expression
+=======
+     * @param x  string expression
+     * @param pattern  string expression
+     * @param escapeChar  escape character expression
+>>>>>>> JPA接口
      * @return not-like predicate
      */
     Predicate notLike(Expression<String> x, Expression<String> pattern, Expression<Character> escapeChar);
@@ -998,10 +1724,16 @@ public interface CriteriaBuilder {
     /**
      * Create a predicate for testing whether the expression
      * does not satisfy the given pattern.
+<<<<<<< HEAD
      *
      * @param x          string expression
      * @param pattern    string expression
      * @param escapeChar escape character
+=======
+     * @param x  string expression
+     * @param pattern  string expression
+     * @param escapeChar  escape character
+>>>>>>> JPA接口
      * @return not-like predicate
      */
     Predicate notLike(Expression<String> x, Expression<String> pattern, char escapeChar);
@@ -1009,6 +1741,7 @@ public interface CriteriaBuilder {
     /**
      * Create a predicate for testing whether the expression
      * does not satisfy the given pattern.
+<<<<<<< HEAD
      *
      * @param x          string expression
      * @param pattern    string
@@ -1024,11 +1757,27 @@ public interface CriteriaBuilder {
      * @param x          string expression
      * @param pattern    string
      * @param escapeChar escape character
+=======
+     * @param x  string expression
+     * @param pattern  string 
+     * @param escapeChar  escape character expression
+     * @return not-like predicate
+     */
+    Predicate notLike(Expression<String> x, String pattern, Expression<Character> escapeChar);
+	
+   /**
+     * Create a predicate for testing whether the expression
+     * does not satisfy the given pattern.
+     * @param x  string expression
+     * @param pattern  string 
+     * @param escapeChar  escape character
+>>>>>>> JPA接口
      * @return not-like predicate
      */
     Predicate notLike(Expression<String> x, String pattern, char escapeChar);
 
     /**
+<<<<<<< HEAD
      * Create an expression for string concatenation.
      *
      * @param x string expression
@@ -1043,10 +1792,25 @@ public interface CriteriaBuilder {
      * @param x string expression
      * @param y string
      * @return expression corresponding to concatenation
+=======
+     *  Create an expression for string concatenation.
+     *  @param x  string expression
+     *  @param y  string expression
+     *  @return expression corresponding to concatenation
+     */
+    Expression<String> concat(Expression<String> x, Expression<String> y);
+	
+    /**
+     *  Create an expression for string concatenation.
+     *  @param x  string expression
+     *  @param y  string 
+     *  @return expression corresponding to concatenation
+>>>>>>> JPA接口
      */
     Expression<String> concat(Expression<String> x, String y);
 
     /**
+<<<<<<< HEAD
      * Create an expression for string concatenation.
      *
      * @param x string
@@ -1076,10 +1840,39 @@ public interface CriteriaBuilder {
      * @param x    string expression
      * @param from start position
      * @return expression corresponding to substring extraction
+=======
+     *  Create an expression for string concatenation.
+     *  @param x  string 
+     *  @param y  string expression
+     *  @return expression corresponding to concatenation
+     */
+    Expression<String> concat(String x, Expression<String> y);
+	
+    /**
+     *  Create an expression for substring extraction.
+     *  Extracts a substring starting at the specified position
+     *  through to end of the string.
+     *  First position is 1.
+     *  @param x  string expression
+     *  @param from  start position expression 
+     *  @return expression corresponding to substring extraction
+     */
+    Expression<String> substring(Expression<String> x, Expression<Integer> from);
+	
+    /**
+     *  Create an expression for substring extraction.
+     *  Extracts a substring starting at the specified position
+     *  through to end of the string.
+     *  First position is 1.
+     *  @param x  string expression
+     *  @param from  start position 
+     *  @return expression corresponding to substring extraction
+>>>>>>> JPA接口
      */
     Expression<String> substring(Expression<String> x, int from);
 
     /**
+<<<<<<< HEAD
      * Create an expression for substring extraction.
      * Extracts a substring of given length starting at the
      * specified position.
@@ -1109,20 +1902,58 @@ public interface CriteriaBuilder {
      * Used to specify how strings are trimmed.
      */
     public static enum Trimspec {
+=======
+     *  Create an expression for substring extraction.
+     *  Extracts a substring of given length starting at the
+     *  specified position.
+     *  First position is 1.
+     *  @param x  string expression
+     *  @param from  start position expression 
+     *  @param len  length expression
+     *  @return expression corresponding to substring extraction
+     */
+    Expression<String> substring(Expression<String> x, Expression<Integer> from, Expression<Integer> len);
+	
+    /**
+     *  Create an expression for substring extraction.
+     *  Extracts a substring of given length starting at the
+     *  specified position.
+     *  First position is 1.
+     *  @param x  string expression
+     *  @param from  start position 
+     *  @param len  length
+     *  @return expression corresponding to substring extraction
+     */
+    Expression<String> substring(Expression<String> x, int from, int len);
+	
+    /**
+     *  Used to specify how strings are trimmed.
+     */
+    public static enum Trimspec { 
+>>>>>>> JPA接口
 
         /**
          * Trim from leading end.
          */
         LEADING,
+<<<<<<< HEAD
 
         /**
          * Trim from trailing end.
          */
         TRAILING,
+=======
+ 
+        /**
+         * Trim from trailing end.
+         */
+        TRAILING, 
+>>>>>>> JPA接口
 
         /**
          * Trim from both ends.
          */
+<<<<<<< HEAD
         BOTH
     }
 
@@ -1139,6 +1970,22 @@ public interface CriteriaBuilder {
      * Create expression to trim blanks from a string.
      *
      * @param ts trim specification
+=======
+        BOTH 
+    }
+	
+    /**
+     * Create expression to trim blanks from both ends of
+     * a string.
+     * @param x  expression for string to trim
+     * @return trim expression
+     */
+    Expression<String> trim(Expression<String> x);
+	
+    /**
+     * Create expression to trim blanks from a string.
+     * @param ts  trim specification
+>>>>>>> JPA接口
      * @param x  expression for string to trim
      * @return trim expression
      */
@@ -1147,22 +1994,32 @@ public interface CriteriaBuilder {
     /**
      * Create expression to trim character from both ends of
      * a string.
+<<<<<<< HEAD
      *
      * @param t expression for character to be trimmed
      * @param x expression for string to trim
+=======
+     * @param t  expression for character to be trimmed
+     * @param x  expression for string to trim
+>>>>>>> JPA接口
      * @return trim expression
      */
     Expression<String> trim(Expression<Character> t, Expression<String> x);
 
     /**
      * Create expression to trim character from a string.
+<<<<<<< HEAD
      *
      * @param ts trim specification
+=======
+     * @param ts  trim specification
+>>>>>>> JPA接口
      * @param t  expression for character to be trimmed
      * @param x  expression for string to trim
      * @return trim expression
      */
     Expression<String> trim(Trimspec ts, Expression<Character> t, Expression<String> x);
+<<<<<<< HEAD
 
     /**
      * Create expression to trim character from both ends of
@@ -1178,11 +2035,27 @@ public interface CriteriaBuilder {
      * Create expression to trim character from a string.
      *
      * @param ts trim specification
+=======
+	
+    /**
+     * Create expression to trim character from both ends of
+     * a string.
+     * @param t  character to be trimmed
+     * @param x  expression for string to trim
+     * @return trim expression
+     */
+    Expression<String> trim(char t, Expression<String> x);
+	
+    /**
+     * Create expression to trim character from a string.
+     * @param ts  trim specification
+>>>>>>> JPA接口
      * @param t  character to be trimmed
      * @param x  expression for string to trim
      * @return trim expression
      */
     Expression<String> trim(Trimspec ts, char t, Expression<String> x);
+<<<<<<< HEAD
 
     /**
      * Create expression for converting a string to lowercase.
@@ -1209,12 +2082,38 @@ public interface CriteriaBuilder {
     Expression<Integer> length(Expression<String> x);
 
 
+=======
+	
+    /**
+     * Create expression for converting a string to lowercase.
+     * @param x  string expression
+     * @return expression to convert to lowercase
+     */
+    Expression<String> lower(Expression<String> x);
+	
+    /**
+     * Create expression for converting a string to uppercase.
+     * @param x  string expression
+     * @return expression to convert to uppercase
+     */
+    Expression<String> upper(Expression<String> x);
+	
+    /**
+     * Create expression to return length of a string.
+     * @param x  string expression
+     * @return length expression
+     */
+    Expression<Integer> length(Expression<String> x);
+	
+	
+>>>>>>> JPA接口
     /**
      * Create expression to locate the position of one string
      * within another, returning position of first character
      * if found.
      * The first position in a string is denoted by 1.  If the
      * string to be located is not found, 0 is returned.
+<<<<<<< HEAD
      *
      * @param x       expression for string to be searched
      * @param pattern expression for string to be located
@@ -1222,15 +2121,28 @@ public interface CriteriaBuilder {
      */
     Expression<Integer> locate(Expression<String> x, Expression<String> pattern);
 
+=======
+     * @param x  expression for string to be searched
+     * @param pattern  expression for string to be located
+     * @return expression corresponding to position
+     */
+    Expression<Integer> locate(Expression<String> x, Expression<String> pattern);
+	
+>>>>>>> JPA接口
     /**
      * Create expression to locate the position of one string
      * within another, returning position of first character
      * if found.
      * The first position in a string is denoted by 1.  If the
      * string to be located is not found, 0 is returned.
+<<<<<<< HEAD
      *
      * @param x       expression for string to be searched
      * @param pattern string to be located
+=======
+     * @param x  expression for string to be searched
+     * @param pattern  string to be located
+>>>>>>> JPA接口
      * @return expression corresponding to position
      */
     Expression<Integer> locate(Expression<String> x, String pattern);
@@ -1241,10 +2153,16 @@ public interface CriteriaBuilder {
      * if found.
      * The first position in a string is denoted by 1.  If the
      * string to be located is not found, 0 is returned.
+<<<<<<< HEAD
      *
      * @param x       expression for string to be searched
      * @param pattern expression for string to be located
      * @param from    expression for position at which to start search
+=======
+     * @param x  expression for string to be searched
+     * @param pattern  expression for string to be located
+     * @param from  expression for position at which to start search
+>>>>>>> JPA接口
      * @return expression corresponding to position
      */
     Expression<Integer> locate(Expression<String> x, Expression<String> pattern, Expression<Integer> from);
@@ -1255,6 +2173,7 @@ public interface CriteriaBuilder {
      * if found.
      * The first position in a string is denoted by 1.  If the
      * string to be located is not found, 0 is returned.
+<<<<<<< HEAD
      *
      * @param x       expression for string to be searched
      * @param pattern string to be located
@@ -1263,17 +2182,32 @@ public interface CriteriaBuilder {
      */
     Expression<Integer> locate(Expression<String> x, String pattern, int from);
 
+=======
+     * @param x  expression for string to be searched
+     * @param pattern  string to be located
+     * @param from  position at which to start search
+     * @return expression corresponding to position
+     */	
+    Expression<Integer> locate(Expression<String> x, String pattern, int from);
+	
+>>>>>>> JPA接口
 
     // Date/time/timestamp functions:
 
     /**
+<<<<<<< HEAD
      * Create expression to return current date.
      *
      * @return expression for current date
+=======
+     *  Create expression to return current date.
+     *  @return expression for current date
+>>>>>>> JPA接口
      */
     Expression<java.sql.Date> currentDate();
 
     /**
+<<<<<<< HEAD
      * Create expression to return current timestamp.
      *
      * @return expression for current timestamp
@@ -1329,6 +2263,57 @@ public interface CriteriaBuilder {
      */
     <T> In<T> in(Expression<? extends T> expression);
 
+=======
+     *  Create expression to return current timestamp.
+     *  @return expression for current timestamp
+     */	
+    Expression<java.sql.Timestamp> currentTimestamp();
+
+    /**
+     *  Create expression to return current time.
+     *  @return expression for current time
+     */	
+    Expression<java.sql.Time> currentTime();
+	
+
+    //in builders:
+	
+    /**
+     *  Interface used to build in predicates.
+     */
+    public static interface In<T> extends Predicate {
+
+         /**
+          * Return the expression to be tested against the
+          * list of values.
+          * @return expression
+          */
+         Expression<T> getExpression();
+	
+         /**
+          *  Add to list of values to be tested against.
+          *  @param value value
+          *  @return in predicate
+          */
+         In<T> value(T value);
+
+         /**
+          *  Add to list of values to be tested against.
+          *  @param value expression
+          *  @return in predicate
+          */
+         In<T> value(Expression<? extends T> value);
+     }
+	
+    /**
+     *  Create predicate to test whether given expression
+     *  is contained in a list of values.
+     *  @param  expression to be tested against list of values
+     *  @return  in predicate
+     */
+    <T> In<T> in(Expression<? extends T> expression);
+	
+>>>>>>> JPA接口
 
     // coalesce, nullif:
 
@@ -1336,7 +2321,10 @@ public interface CriteriaBuilder {
      * Create an expression that returns null if all its arguments
      * evaluate to null, and the value of the first non-null argument
      * otherwise.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @param y expression
      * @return coalesce expression
@@ -1347,18 +2335,28 @@ public interface CriteriaBuilder {
      * Create an expression that returns null if all its arguments
      * evaluate to null, and the value of the first non-null argument
      * otherwise.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @param y value
      * @return coalesce expression
      */
     <Y> Expression<Y> coalesce(Expression<? extends Y> x, Y y);
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> JPA接口
     /**
      * Create an expression that tests whether its argument are
      * equal, returning null if they are and the value of the
      * first expression if they are not.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> JPA接口
      * @param x expression
      * @param y expression
      * @return nullif expression
@@ -1369,10 +2367,16 @@ public interface CriteriaBuilder {
      * Create an expression that tests whether its argument are
      * equal, returning null if they are and the value of the
      * first expression if they are not.
+<<<<<<< HEAD
      *
      * @param x expression
      * @param y value
      * @return nullif expression
+=======
+     * @param x expression
+     * @param y value
+     * @return nullif expression 
+>>>>>>> JPA接口
      */
     <Y> Expression<Y> nullif(Expression<Y> x, Y y);
 
@@ -1380,14 +2384,20 @@ public interface CriteriaBuilder {
     // coalesce builder:
 
     /**
+<<<<<<< HEAD
      * Interface used to build coalesce expressions.
      * <p/>
+=======
+     *  Interface used to build coalesce expressions.  
+     *   
+>>>>>>> JPA接口
      * A coalesce expression is equivalent to a case expression
      * that returns null if all its arguments evaluate to null,
      * and the value of its first non-null argument otherwise.
      */
     public static interface Coalesce<T> extends Expression<T> {
 
+<<<<<<< HEAD
         /**
          * Add an argument to the coalesce expression.
          *
@@ -1408,6 +2418,25 @@ public interface CriteriaBuilder {
     /**
      * Create a coalesce expression.
      *
+=======
+         /**
+          * Add an argument to the coalesce expression.
+          * @param value  value
+          * @return coalesce expression
+          */
+         Coalesce<T> value(T value);
+
+         /**
+          * Add an argument to the coalesce expression.
+          * @param value expression
+          * @return coalesce expression
+          */
+         Coalesce<T> value(Expression<? extends T> value);
+	}
+	
+    /**
+     * Create a coalesce expression.
+>>>>>>> JPA接口
      * @return coalesce expression
      */
     <T> Coalesce<T> coalesce();
@@ -1416,6 +2445,7 @@ public interface CriteriaBuilder {
     //case builders:
 
     /**
+<<<<<<< HEAD
      * Interface used to build simple case expressions.
      * Case conditions are evaluated in the order in which
      * they are specified.
@@ -1535,6 +2565,181 @@ public interface CriteriaBuilder {
     <T> Expression<T> function(String name, Class<T> type,
                                Expression<?>... args);
 
+=======
+     *  Interface used to build simple case expressions.
+     *  Case conditions are evaluated in the order in which
+     *  they are specified.
+     */
+    public static interface SimpleCase<C,R> extends Expression<R> {
+
+		/**
+		 * Return the expression to be tested against the
+		 * conditions.
+		 * @return expression
+		 */
+		Expression<C> getExpression();
+
+		/**
+		 * Add a when/then clause to the case expression.
+		 * @param condition  "when" condition
+		 * @param result  "then" result value
+		 * @return simple case expression
+		 */
+		SimpleCase<C, R> when(C condition, R result);
+
+		/**
+		 * Add a when/then clause to the case expression.
+		 * @param condition  "when" condition
+		 * @param result  "then" result expression
+		 * @return simple case expression
+		 */
+		SimpleCase<C, R> when(C condition, Expression<? extends R> result);
+
+		/**
+		 * Add an "else" clause to the case expression.
+		 * @param result  "else" result
+		 * @return expression
+		 */
+		Expression<R> otherwise(R result);
+
+		/**
+		 * Add an "else" clause to the case expression.
+		 * @param result  "else" result expression
+		 * @return expression
+		 */
+		Expression<R> otherwise(Expression<? extends R> result);
+	}
+	
+    /**
+     *  Create a simple case expression.
+     *  @param expression  to be tested against the case conditions
+     *  @return simple case expression
+     */
+    <C, R> SimpleCase<C,R> selectCase(Expression<? extends C> expression);
+
+
+    /**
+     *  Interface used to build general case expressions.
+     *  Case conditions are evaluated in the order in which
+     *  they are specified.
+     */
+    public static interface Case<R> extends Expression<R> {
+
+		/**
+		 * Add a when/then clause to the case expression.
+		 * @param condition  "when" condition
+		 * @param result  "then" result value
+		 * @return general case expression
+		 */
+		Case<R> when(Expression<Boolean> condition, R result);
+
+		/**
+		 * Add a when/then clause to the case expression.
+		 * @param condition  "when" condition
+		 * @param result  "then" result expression
+		 * @return general case expression
+		 */
+		Case<R> when(Expression<Boolean> condition, Expression<? extends R> result);
+
+		/**
+		 * Add an "else" clause to the case expression.
+		 * @param result  "else" result
+		 * @return expression
+		 */
+		Expression<R> otherwise(R result);
+
+		/**
+		 * Add an "else" clause to the case expression.
+		 * @param result  "else" result expression
+		 * @return expression
+		 */
+		Expression<R> otherwise(Expression<? extends R> result);
+	}
+	
+    /**
+     *  Create a general case expression.
+     *  @return general case expression
+     */
+    <R> Case<R> selectCase();
+
+    /**
+     * Create an expression for the execution of a database
+     * function.
+     * @param name  function name
+     * @param type  expected result type
+     * @param args  function arguments
+     * @return expression
+     */
+   <T> Expression<T> function(String name, Class<T> type,
+                              Expression<?>... args);
+
+
+    // methods for downcasting:
+
+    /**
+     *  Downcast Join object to the specified type.
+     *  @param join  Join object
+     *  @param type type to be downcast to
+     *  @return  Join object of the specified type
+     *  @since Java Persistence 2.1
+     */
+    <X, T, V extends T> Join<X, V> treat(Join<X, T> join, Class<V> type);
+
+    /**
+     *  Downcast CollectionJoin object to the specified type.
+     *  @param join  CollectionJoin object
+     *  @param type type to be downcast to
+     *  @return  CollectionJoin object of the specified type
+     *  @since Java Persistence 2.1
+     */
+    <X, T, E extends T> CollectionJoin<X, E> treat(CollectionJoin<X, T> join, Class<E> type);
+
+    /**
+     *  Downcast SetJoin object to the specified type.
+     *  @param join  SetJoin object
+     *  @param type type to be downcast to
+     *  @return  SetJoin object of the specified type
+     *  @since Java Persistence 2.1
+     */
+    <X, T, E extends T> SetJoin<X, E> treat(SetJoin<X, T> join, Class<E> type);
+
+    /**
+     *  Downcast ListJoin object to the specified type.
+     *  @param join  ListJoin object
+     *  @param type type to be downcast to
+     *  @return  ListJoin object of the specified type
+     *  @since Java Persistence 2.1
+     */
+    <X, T, E extends T> ListJoin<X, E> treat(ListJoin<X, T> join, Class<E> type);
+
+    /**
+     *  Downcast MapJoin object to the specified type.
+     *  @param join  MapJoin object
+     *  @param type type to be downcast to
+     *  @return  MapJoin object of the specified type
+     *  @since Java Persistence 2.1
+     */
+    <X, K, T, V extends T> MapJoin<X, K, V> treat(MapJoin<X, K, T> join, Class<V> type);
+
+
+    /**
+     *  Downcast Path object to the specified type.
+     *  @param path  path
+     *  @param type type to be downcast to
+     *  @return  Path object of the specified type
+     *  @since Java Persistence 2.1
+     */
+    <X, T extends X> Path<T> treat(Path<X> path, Class<T> type);
+
+    /**
+     *  Downcast Root object to the specified type.
+     *  @param root  root
+     *  @param type type to be downcast to
+     *  @return  Root object of the specified type
+     *  @since Java Persistence 2.1
+     */
+    <X, T extends X> Root<T> treat(Root<X> root, Class<T> type);
+>>>>>>> JPA接口
 
 }
 

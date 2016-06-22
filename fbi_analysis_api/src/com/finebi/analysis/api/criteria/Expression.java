@@ -8,7 +8,11 @@ import java.util.Collection;
  *
  * @param <T> the type of the expression
  *
+<<<<<<< HEAD
  * @since Advanced FineBI Analysis 1.0
+=======
+ * @since Java Persistence 2.0
+>>>>>>> JPA接口
  */
 public interface Expression<T> extends Selection<T> {
 

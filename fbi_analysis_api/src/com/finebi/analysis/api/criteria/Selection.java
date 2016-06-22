@@ -12,7 +12,11 @@ import java.util.List;
  *
  * @param <X> the type of the selection item
  *
+<<<<<<< HEAD
  * @since Advanced FineBI Analysis 1.0
+=======
+ * @since Java Persistence 2.0
+>>>>>>> JPA接口
  */
 public interface Selection<X> extends TupleElement<X> {
 

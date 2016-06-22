@@ -90,7 +90,11 @@ public interface Query {
      * retrieve. Returns <code>Integer.MAX_VALUE</code> if <code>setMaxResults</code> was not
      * applied to the query object.
      * @return maximum number of results
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     int getMaxResults();
 
@@ -108,7 +112,11 @@ public interface Query {
      * retrieve. Returns 0 if <code>setFirstResult</code> was not applied to the
      * query object.
      * @return position of the first result
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     int getFirstResult();
 
@@ -133,7 +141,11 @@ public interface Query {
      * Get the properties and hints and associated values that are 
      * in effect for the query instance.
      * @return query properties and hints
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     Map<String, Object> getHints();
 
@@ -145,7 +157,11 @@ public interface Query {
      * @throws IllegalArgumentException if the parameter
      *         does not correspond to a parameter of the
      *         query
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     <T> Query setParameter(Parameter<T> param, T value);
 
@@ -157,7 +173,11 @@ public interface Query {
      * @return the same query instance
      * @throws IllegalArgumentException if the parameter does not
      *         correspond to a parameter of the query
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     Query setParameter(Parameter<Calendar> param, Calendar value,
                        TemporalType temporalType);
@@ -170,7 +190,11 @@ public interface Query {
      * @return the same query instance
      * @throws IllegalArgumentException if the parameter does not
      *         correspond to a parameter of the query
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     Query setParameter(Parameter<Date> param, Date value,
                        TemporalType temporalType);
@@ -260,7 +284,11 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query when the implementation does not support 
      *         this use
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     Set<Parameter<?>> getParameters();
 
@@ -276,7 +304,11 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query when the implementation does not support 
      *         this use
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     Parameter<?> getParameter(String name);
 
@@ -294,7 +326,11 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query or Java Persistence query language query when
      *         the implementation does not support this use
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     <T> Parameter<T> getParameter(String name, Class<T> type);
 
@@ -310,7 +346,11 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query when the implementation does not support 
      *         this use
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     Parameter<?> getParameter(int position);
 
@@ -327,7 +367,11 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query or Java Persistence query language query when
      *         the implementation does not support this use
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     <T> Parameter<T> getParameter(int position, Class<T> type);
 
@@ -336,7 +380,11 @@ public interface Query {
      * to the parameter.
      * @param param parameter object
      * @return boolean indicating whether parameter has been bound
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     boolean isBound(Parameter<?> param);
 
@@ -349,7 +397,11 @@ public interface Query {
      *         a parameter of the query
      * @throws IllegalStateException if the parameter has not been
      *         been bound
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     <T> T getParameterValue(Parameter<T> param);
 
@@ -362,7 +414,11 @@ public interface Query {
      *         been bound
      * @throws IllegalArgumentException if the parameter of the
      *         specified name does not exist
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     Object getParameterValue(String name);
 
@@ -375,12 +431,58 @@ public interface Query {
      *         been bound
      * @throws IllegalArgumentException if the parameter with the
      *         specified position does not exist
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
      */
     Object getParameterValue(int position);
 
 
 
+=======
+     * @since Java Persistence 2.0
+     */
+    Object getParameterValue(int position);
+
+    /**
+     * Set the flush mode type to be used for the query execution.
+     * The flush mode type applies to the query regardless of the
+     * flush mode type in use for the entity manager.
+     * @param flushMode  flush mode
+     * @return the same query instance
+     */
+    Query setFlushMode(FlushModeType flushMode);
+
+    /**
+     * Get the flush mode in effect for the query execution. 
+     * If a flush mode has not been set for the query object, 
+     * returns the flush mode in effect for the entity manager.
+     * @return flush mode
+     * @since Java Persistence 2.0
+     */
+    FlushModeType getFlushMode();
+
+    /**
+     * Set the lock mode type to be used for the query execution.
+     * @param lockMode  lock mode
+     * @return the same query instance
+     * @throws IllegalStateException if the query is found not to be 
+     *         a Java Persistence query language SELECT query
+     *         or a CriteriaQuery query
+     * @since Java Persistence 2.0
+     */
+    Query setLockMode(LockModeType lockMode);
+
+    /**
+     * Get the current lock mode for the query.  Returns null if a lock
+     * mode has not been set on the query object.
+     * @return lock mode
+     * @throws IllegalStateException if the query is found not to be
+     *         a Java Persistence query language SELECT query or
+     *         a Criteria API query
+     * @since Java Persistence 2.0
+     */
+    LockModeType getLockMode();
+>>>>>>> JPA接口
 
     /**
      * Return an object of the specified type to allow access to 
@@ -394,7 +496,11 @@ public interface Query {
      * @return an instance of the specified class
      * @throws PersistenceException if the provider does not support
      *         the call
+<<<<<<< HEAD
      * @since Advanced FineBI Analysis 1.0
+=======
+     * @since Java Persistence 2.0
+>>>>>>> JPA接口
      */
     <T> T unwrap(Class<T> cls);
 }

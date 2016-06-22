@@ -14,7 +14,11 @@ package com.finebi.analysis.api;
  * 
  * @since Java Persistence 1.0
  */
+<<<<<<< HEAD
 public class NoResultException extends RuntimeException {
+=======
+public class NoResultException extends PersistenceException {
+>>>>>>> JPA接口
 
 	/**
 	 * Constructs a new <code>NoResultException</code> exception with

@@ -7,7 +7,11 @@ import java.util.Set;
  * Provides access to the metamodel of persistent
  * entities in the persistence unit. 
  *
+<<<<<<< HEAD
  * @since Advanced FineBI Analysis 1.0
+=======
+ * @since Java Persistence 2.0
+>>>>>>> JPA接口
  */
 public interface Metamodel {
 

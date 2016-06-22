@@ -8,7 +8,11 @@ package com.finebi.analysis.api.metamodel;
  * @param <X> The type containing the represented attribute
  * @param <T> The type of the represented attribute
  *
+<<<<<<< HEAD
  * @since Advanced FineBI Analysis 1.0
+=======
+ * @since Java Persistence 2.0
+>>>>>>> JPA接口
  */
 public interface SingularAttribute<X, T> 
 		extends Attribute<X, T>, Bindable<T> {

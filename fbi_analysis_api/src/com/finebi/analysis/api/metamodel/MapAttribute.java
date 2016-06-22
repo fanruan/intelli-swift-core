@@ -9,7 +9,11 @@ package com.finebi.analysis.api.metamodel;
  * @param <K> The type of the key of the represented Map
  * @param <V> The type of the value of the represented Map
  *
+<<<<<<< HEAD
  * @since Advanced FineBI Analysis 1.0
+=======
+ * @since Java Persistence 2.0
+>>>>>>> JPA接口
  *
  */
 public interface MapAttribute<X, K, V> 

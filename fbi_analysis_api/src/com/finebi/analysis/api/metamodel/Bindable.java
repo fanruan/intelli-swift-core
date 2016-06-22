@@ -7,7 +7,11 @@ package com.finebi.analysis.api.metamodel;
  *
  * @param <T>  The type of the represented object or attribute
  *
+<<<<<<< HEAD
  * @since Advanced FineBI Analysis 1.0
+=======
+ * @since Java Persistence 2.0
+>>>>>>> JPA接口
  *
  */
 public interface Bindable<T> {
