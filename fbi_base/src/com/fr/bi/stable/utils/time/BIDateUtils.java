@@ -7,7 +7,6 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.key.date.BIDay;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
 
@@ -30,8 +29,12 @@ public class BIDateUtils {
      *
      * @param hour 几点钟
      * @return Date日期
+     *
      */
     public static Date createStartDate(int hour, int frequency) {
+        if(frequency==DBConstant.UPDATE_FREQUENCY.EVER_MONTH){
+            return createMonthStartDate(hour);
+        }
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, 0);
