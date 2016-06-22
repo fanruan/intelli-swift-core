@@ -10,7 +10,9 @@ body{
     margin: 0;
     padding: 0;
     overflow: hidden;
+
 }
+
 #fs-login-background {
     position: absolute;
     left: 0;
@@ -25,55 +27,54 @@ body{
     left : 47%;
     top : 38%;
     color : #ffffff;
-    opacity: 1;
     font-size : 20px;
-    -webkit-animation: left_right_show 1s ease;
-    -moz-animation: left_right_show  1s ease;
-    -o-animation: left_right_show  1s ease;
-    animation: left_right_show  1s ease;
+    -webkit-animation: left_right_show 2s ease;
+    -moz-animation: left_right_show 2s ease;
+    -o-animation: left_right_show 2s ease;
+    animation: left_right_show  2s ease;
 }
 
 @keyframes left_right_show {
     from  {
         left:80%;
-        opacity: 0;
+        color : #D6D6D6;
     }
     to {
         left : 47%;
-        opacity: 1;
+        color : #ffffff;
     }
 }
 
 @-webkit-keyframes left_right_show {
      from  {
          left:80%;
-         opacity: 0;
+         color : #D6D6D6;
      }
      to {
          left : 47%;
-         opacity: 1;
+         color : #ffffff;
      }
  }
 
 @-moz-keyframes left_right_show {
     from  {
         left:80%;
-        opacity: 0;
+        color : #D6D6D6;
     }
     to {
         left : 47%;
-        opacity: 1;
+        color : #ffffff;
     }
 }
 
 @-o-keyframes left_right_show {
     from  {
         left:80%;
-        opacity: 0;
+        color : #D6D6D6;
     }
     to {
         left : 47%;
-        opacity: 1;
+        color : #ffffff;
     }
 }
 #fs-login-logo {

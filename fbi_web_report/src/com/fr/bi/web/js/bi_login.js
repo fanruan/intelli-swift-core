@@ -5,7 +5,9 @@ $(function() {
     var imgOffsetX, imgOffsetY, loginImgWidth, loginImgHeight, scale;
     //报错蒙板
     var $mask = $('<div class="fs-login-errmask"/>');
-    $('#fs-chicken-soup').text(FR.i18nText("BI-Login_Soup"));
+    var windowWidth = document.body.clientWidth;
+    var windowHeight = document.body.clientHeight;
+    $('#fs-chicken-soup').text(FR.i18nText("BI-Login_Soup"))
     //用户名
     var $username = $('input.fs-login-username').attr("placeholder", FR.i18nText("FS-Generic-Simple_Username")).attr('title',FR.i18nText("FS-Generic-Simple_Username"));
     //密码
@@ -77,6 +79,15 @@ $(function() {
             imgOffsetX = (loginImgWidth * scale - windowWidth) / 2;
             imgOffsetY = 0;
         }
+        $('#fs-chicken-soup').css({
+            zoom:Math.min(windowWidth/1920, windowHeight/1080)
+        });
+        $('#fs-login-logo').css({
+            zoom: Math.min(windowWidth/1920, windowHeight/1080)
+        });
+        $('#fs-login-content').css({
+            zoom: Math.min(windowWidth/1920, windowHeight/1080)
+        })
     };
 
     var showErrorMsg = function($pos, msg){
