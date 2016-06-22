@@ -8,7 +8,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
 
     constants: {
         defaultShowWidget: 0,
-        comboHeight: 30,
+        comboHeight: 28,
         comboWidth: 100
     },
 
