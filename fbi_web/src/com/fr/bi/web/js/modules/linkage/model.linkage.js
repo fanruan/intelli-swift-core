@@ -177,50 +177,68 @@ BI.LinkageModel = BI.inherit(FR.OB, {
     getWidgetIconClsByWidgetId: function (wId) {
         var widgetType = BI.Utils.getWidgetTypeByID(wId);
         switch (widgetType) {
-            case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.TABLE:
+                return "drag-group-icon";
             case BICst.WIDGET.CROSS_TABLE:
+                return "drag-cross-icon";
             case BICst.WIDGET.COMPLEX_TABLE:
-                return "chart-table-font";
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.FALL_AXIS:
-                return "chart-axis-font";
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.COMPARE_BAR:
-                return "chart-bar-font";
-            case BICst.WIDGET.ACCUMULATE_BAR:
-                return "chart-accumulate-bar-font";
-            case BICst.WIDGET.PIE:
-                return "chart-pie-font";
-            case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
-                return "chart-map-font";
-            case BICst.WIDGET.DASHBOARD:
-                return "chart-dashboard-font";
-            case BICst.WIDGET.DONUT:
-                return "chart-doughnut-font";
+                return "drag-complex-icon";
             case BICst.WIDGET.DETAIL:
-                return "chart-detail-font";
+                return "drag-detail-icon";
+            case BICst.WIDGET.AXIS:
+                return "drag-axis-icon";
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+                return "drag-axis-accu-icon";
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                return "drag-axis-percent-accu-icon";
+            case BICst.WIDGET.COMPARE_AXIS:
+                return "drag-axis-compare-icon";
+            case BICst.WIDGET.FALL_AXIS:
+                return "drag-axis-fall-icon";
+            case BICst.WIDGET.BAR:
+                return "drag-bar-icon";
+            case BICst.WIDGET.ACCUMULATE_BAR:
+                return "drag-bar-accu-icon";
+            case BICst.WIDGET.COMPARE_BAR:
+                return "drag-bar-compare-icon";
+            case BICst.WIDGET.PIE:
+                return "drag-pie-icon";
+            case BICst.WIDGET.MAP:
+                return "drag-map-china-icon";
+            case BICst.WIDGET.GIS_MAP:
+                return "drag-map-gis-icon";
+            case BICst.WIDGET.DASHBOARD:
+                return "drag-dashboard-icon";
+            case BICst.WIDGET.DONUT:
+                return "drag-donut-icon";
             case BICst.WIDGET.BUBBLE:
+                return "drag-bubble-icon";
             case BICst.WIDGET.FORCE_BUBBLE:
-                return "chart-bubble-font";
+                return "drag-bubble-force-icon";
             case BICst.WIDGET.SCATTER:
-                return "chart-scatter-font";
+                return "drag-scatter-icon";
             case BICst.WIDGET.RADAR:
+                return "drag-radar-icon";
             case BICst.WIDGET.ACCUMULATE_RADAR:
-                return "chart-radar-font";
+                return "drag-radar-accu-icon";
             case BICst.WIDGET.LINE:
+                return "drag-line-icon";
             case BICst.WIDGET.AREA:
+                return "drag-area-icon";
             case BICst.WIDGET.ACCUMULATE_AREA:
+                return "drag-area-accu-icon";
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                return "drag-area-percent-accu-icon";
             case BICst.WIDGET.COMPARE_AREA:
+                return "drag-area-compare-icon";
             case BICst.WIDGET.RANGE_AREA:
+                return "drag-area-range-icon";
             case BICst.WIDGET.COMBINE_CHART:
+                return "drag-combine-icon";
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                return "";
+                return "drag-combine-mult-icon";
+            case BICst.WIDGET.FUNNEL:
+                return "drag-funnel-icon";
         }
     }
 });

@@ -3090,6 +3090,15 @@
   content: "\e63d";
   color: #009de3;
 }
+.widget-combo-expand-font .b-font:before {
+  content: "\e631";
+  color: #808080;
+}
+.widget-combo-expand-font.native .b-font:before,
+.widget-combo-expand-font.disabled .b-font:before {
+  content: "\e631";
+  color: #808080;
+}
 .widget-combo-linkage-font .b-font:before {
   content: "\e63c";
   color: #808080;

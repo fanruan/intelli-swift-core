@@ -133,7 +133,9 @@ BI.Linkage = BI.inherit(BI.Widget, {
                                 type: "bi.center_adapt",
                                 cls: self.model.getWidgetIconClsByWidgetId(wId) + " widget-type-icon",
                                 items: [{
-                                    type: "bi.icon"
+                                    type: "bi.icon",
+                                    width: 20,
+                                    height: 20
                                 }],
                                 width: 26,
                                 height: 26

@@ -107,6 +107,11 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         var namePos = BI.Utils.getWSNamePosByID(wId);
         return [
             [{
+                text: BI.i18nText("BI-Detailed_Setting"),
+                value: BICst.DASHBOARD_WIDGET_EXPAND,
+                cls: "widget-combo-expand-font"
+            }],
+            [{
                 text: BI.i18nText("BI-Link_To_Dots"),
                 value: BICst.DASHBOARD_WIDGET_LINKAGE,
                 cls: "widget-combo-linkage-font"
@@ -168,6 +173,11 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         var isShowName = BI.Utils.getWSShowNameByID(wId);
         var namePos = BI.Utils.getWSNamePosByID(wId);
         return [
+            [{
+                text: BI.i18nText("BI-Detailed_Setting"),
+                value: BICst.DASHBOARD_WIDGET_EXPAND,
+                cls: "widget-combo-expand-font"
+            }],
             [{
                 text: BI.i18nText("BI-Show_Title"),
                 value: BICst.DASHBOARD_WIDGET_SHOW_NAME,
