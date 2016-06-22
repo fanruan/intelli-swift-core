@@ -407,6 +407,8 @@ BICst.CHART_STYLE = {
     PERCENT_SCALE_SLOT: 11,//带刻度槽的仪表盘
     VERTICAL_TUBE: 12,      //竖起来的试管型仪表盘
     HORIZONTAL_TUBE: 13,//横过来的试管型仪表盘
+    BAIDU: 14,           //百度地图
+    GOOGLE: 15,          //谷歌地图
 
     //风格
     STYLE_NORMAL: 21,       //普通风格

@@ -41,7 +41,7 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
                     ids: []
                 }
             },
-            name: "",
+            name: BI.Func.createDistinctName(BI.Utils.getWidgetDimensionsByID(this.wId), BI.i18nText("BI-Calculation_Index")),
             dimension_map: {},
             type: BICst.TARGET_TYPE.FORMULA,
             used: true

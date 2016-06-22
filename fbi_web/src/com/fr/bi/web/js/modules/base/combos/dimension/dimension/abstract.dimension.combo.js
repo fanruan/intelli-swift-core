@@ -81,8 +81,12 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
             var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
             var fieldName = BI.Utils.getFieldNameByID(fieldId);
-            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
-            items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
+            if(BI.isNull(fieldName)){
+                items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From");
+            }else{
+                var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+                items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
+            }
         }
         return items;
     },
@@ -134,8 +138,12 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
             var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
             var fieldName = BI.Utils.getFieldNameByID(fieldId);
-            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
-            items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
+            if(BI.isNull(fieldName)){
+                items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From");
+            }else{
+                var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+                items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
+            }
         }
         return items;
     },

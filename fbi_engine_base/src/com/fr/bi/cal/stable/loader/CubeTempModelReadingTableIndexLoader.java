@@ -1,6 +1,10 @@
 package com.fr.bi.cal.stable.loader;
 
+import com.finebi.cube.adapter.BICubeTableAdapter;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
@@ -13,8 +17,6 @@ import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.structure.collection.map.TimeDeleteHashMap;
@@ -44,7 +46,8 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
     private static Map<TempCubeTask, CubeTempModelReadingTableIndexLoader> userMap = new HashMap<TempCubeTask, CubeTempModelReadingTableIndexLoader>();
     private final Object LOCK = new Object();
     private TempCubeTask task;
-    private String cubePath;//保存文件路径
+    private String cubePath;//保存文件路径st
+    private BICube cube;
     private ICubeTableService latestIndex = null;//最新的tableindex标识
     //多人同时访问的path队列
     private Queue<String> pathQueue = new ConcurrentLinkedQueue<String>();
@@ -86,7 +89,7 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
 
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
-        return null;
+        return new BICubeTableAdapter(this.cube, tableSource);
     }
 
     @Override
@@ -127,6 +130,11 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
             pathQueue.offer(cubePath);
         }
     }
+
+    public void setCube(BICube cube) {
+        this.cube = cube;
+    }
+
 
     public void registerTableIndex(long threadId, ICubeTableService tableindex) {
         synchronized (LOCK) {
@@ -260,6 +268,7 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
             this.latestIndex = tableIndex;
         }
     }
+
 
     private void release() {
         synchronized (LOCK) {

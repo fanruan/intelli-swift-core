@@ -162,8 +162,13 @@ BI.CalculateTargetPopupSummary = BI.inherit(BI.BarPopoverSection, {
             validationChecker: function (v) {
                 return !self.model.isDuplicated(v)
             },
-            allowBlank: true,
-            errorText: BI.i18nText("BI-Cannot_Have_Repeated_Field_Name")
+            errorText: function (v) {
+                if (v === "") {
+                    return BI.i18nText("BI-Field_Name_Cannot_Be_Null");
+                } else {
+                    return BI.i18nText("BI-Cannot_Have_Repeated_Field_Name");
+                }
+            }
         });
 
 
