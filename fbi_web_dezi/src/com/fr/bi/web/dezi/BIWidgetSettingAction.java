@@ -43,7 +43,7 @@ public class BIWidgetSettingAction extends AbstractBIDeziAction {
         MultiThreadManagerImpl.getInstance().refreshExecutorService();
         if (sessionIDInfor.getLoader() instanceof CubeTempModelReadingTableIndexLoader) {
             CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) sessionIDInfor.getLoader();
-            loader.registerTableIndex(Thread.currentThread().getId(), loader.getTableIndex(new BITableID("")));
+            loader.registerTableIndex(Thread.currentThread().getId(), loader.getTableIndex(new BITableID(sessionIDInfor.getTempTableId())));
         }
         JSONObject json = parseJSON(req);
         String widgetName = json.optString("name");

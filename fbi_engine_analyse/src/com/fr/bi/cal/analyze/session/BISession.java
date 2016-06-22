@@ -49,6 +49,7 @@ public class BISession extends BIAbstractSession {
     private ICubeDataLoader loader;
     private CubeGenerateStatusProvider provider;
     private String tempTableMd5;
+    private String tempTableId;
     //pony 明细表缓存的分页信息
     private Map<DetailSortKey, ConcurrentHashMap<Integer, Integer>> detailIndexMap = new ConcurrentHashMap<DetailSortKey, ConcurrentHashMap<Integer, Integer>>();
     private Map<DetailSortKey, ConcurrentHashMap<Integer, Object[]>> detailValueMap = new ConcurrentHashMap<DetailSortKey, ConcurrentHashMap<Integer, Object[]>>();
@@ -134,8 +135,16 @@ public class BISession extends BIAbstractSession {
         return tempTableMd5;
     }
 
+    public String getTempTableId() {
+        return tempTableId;
+    }
+
     public void setTempTableMd5(String tempTableMd5) {
         this.tempTableMd5 = tempTableMd5;
+    }
+
+    public void setTempTableId(String tempTableId) {
+        this.tempTableId = tempTableId;
     }
 
     public boolean isRealTime() {
@@ -154,11 +163,11 @@ public class BISession extends BIAbstractSession {
                 case BIReportConstant.WIDGET.TABLE:
                 case BIReportConstant.WIDGET.CROSS_TABLE:
                 case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                    ((TableWidget)widget).setComplexExpander(new ComplexAllExpalder());
+                    ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
                     ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
                     break;
                 case BIReportConstant.WIDGET.DETAIL:
-                    ((BIDetailWidget)widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
+                    ((BIDetailWidget) widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
                     break;
             }
 
