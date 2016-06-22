@@ -25,7 +25,56 @@ body{
     left : 47%;
     top : 38%;
     color : #ffffff;
+    opacity: 1;
     font-size : 20px;
+    -webkit-animation: left_right_show 1s ease;
+    -moz-animation: left_right_show  1s ease;
+    -o-animation: left_right_show  1s ease;
+    animation: left_right_show  1s ease;
+}
+
+@keyframes left_right_show {
+    from  {
+        left:80%;
+        opacity: 0;
+    }
+    to {
+        left : 47%;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes left_right_show {
+     from  {
+         left:80%;
+         opacity: 0;
+     }
+     to {
+         left : 47%;
+         opacity: 1;
+     }
+ }
+
+@-moz-keyframes left_right_show {
+    from  {
+        left:80%;
+        opacity: 0;
+    }
+    to {
+        left : 47%;
+        opacity: 1;
+    }
+}
+
+@-o-keyframes left_right_show {
+    from  {
+        left:80%;
+        opacity: 0;
+    }
+    to {
+        left : 47%;
+        opacity: 1;
+    }
 }
 #fs-login-logo {
     position: absolute;
