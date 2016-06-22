@@ -379,8 +379,45 @@ public interface Query {
      */
     Object getParameterValue(int position);
 
+    /**
+     * Set the flush mode type to be used for the query execution.
+     * The flush mode type applies to the query regardless of the
+     * flush mode type in use for the entity manager.
+     * @param flushMode  flush mode
+     * @return the same query instance
+     */
+    Query setFlushMode(FlushModeType flushMode);
 
+    /**
+     * Get the flush mode in effect for the query execution. 
+     * If a flush mode has not been set for the query object, 
+     * returns the flush mode in effect for the entity manager.
+     * @return flush mode
+     * @since Java Persistence 2.0
+     */
+    FlushModeType getFlushMode();
 
+    /**
+     * Set the lock mode type to be used for the query execution.
+     * @param lockMode  lock mode
+     * @return the same query instance
+     * @throws IllegalStateException if the query is found not to be 
+     *         a Java Persistence query language SELECT query
+     *         or a CriteriaQuery query
+     * @since Java Persistence 2.0
+     */
+    Query setLockMode(LockModeType lockMode);
+
+    /**
+     * Get the current lock mode for the query.  Returns null if a lock
+     * mode has not been set on the query object.
+     * @return lock mode
+     * @throws IllegalStateException if the query is found not to be
+     *         a Java Persistence query language SELECT query or
+     *         a Criteria API query
+     * @since Java Persistence 2.0
+     */
+    LockModeType getLockMode();
 
     /**
      * Return an object of the specified type to allow access to 
