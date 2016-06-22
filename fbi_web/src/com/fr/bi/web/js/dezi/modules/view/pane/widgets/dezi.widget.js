@@ -38,7 +38,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             self._refreshTableAndFilter();
         });
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function(){
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
         });
     },
@@ -143,6 +143,16 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     _createTools: function () {
         var self = this;
+        var filter = BI.createWidget({
+            type: "bi.icon_button",
+            width: 16,
+            height: 16,
+            cls: "widget-tools-filter-font dashboard-title-detail"
+        });
+        filter.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._onClickFilter();
+        });
+
         var expand = BI.createWidget({
             type: "bi.icon_button",
             width: 16,
@@ -159,6 +169,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
+                case BICst.DASHBOARD_WIDGET_EXPAND:
+                    self._expandWidget();
+                    break;
                 case BICst.DASHBOARD_WIDGET_LINKAGE:
                     var layer = BI.Layers.make(self.getName(), "body");
                     var linkage = BI.createWidget({
@@ -199,28 +212,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self._refreshTitlePosition();
                     break;
                 case BICst.DASHBOARD_WIDGET_FILTER:
-                    if (BI.isNull(self.filterPane)) {
-                        self.filterPane = BI.createWidget({
-                            type: "bi.widget_filter",
-                            wId: self.model.get("id")
-                        });
-                        self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
-                            self.model.set(widget);
-                        });
-                        BI.createWidget({
-                            type: "bi.absolute",
-                            element: self.tableChart,
-                            items: [{
-                                el: self.filterPane,
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0
-                            }]
-                        });
-                        return;
-                    }
-                    self.filterPane.setVisible(!self.filterPane.isVisible());
+                    self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
                     window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
@@ -245,10 +237,36 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [expand, combo],
+            items: [filter, expand, combo],
             hgap: 3
         });
         this.tools.setVisible(false);
+    },
+
+    _onClickFilter: function () {
+        var self = this;
+        if (BI.isNull(this.filterPane)) {
+            this.filterPane = BI.createWidget({
+                type: "bi.widget_filter",
+                wId: this.model.get("id")
+            });
+            this.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
+                self.model.set(widget);
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.tableChart,
+                items: [{
+                    el: this.filterPane,
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0
+                }]
+            });
+            return;
+        }
+        this.filterPane.setVisible(!this.filterPane.isVisible());
     },
 
     _refreshTableAndFilter: function () {
