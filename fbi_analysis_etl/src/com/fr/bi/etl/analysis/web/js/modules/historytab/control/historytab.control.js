@@ -121,7 +121,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         BI.Popovers.remove("etlTableName");
         BI.Popovers.create("etlTableName", namePopover, {width : 450, height : 370, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
         BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
-        namePopover.populate(model.getValue("table_name") + "-" + ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[item.operatorValue].text);
+        namePopover.populate(BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(),model.getValue("table_name")));
         namePopover.setTemplateNameFocus();
     },
 

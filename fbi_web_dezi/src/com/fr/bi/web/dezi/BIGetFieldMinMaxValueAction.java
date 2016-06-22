@@ -4,7 +4,7 @@ import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
@@ -32,7 +32,7 @@ public class BIGetFieldMinMaxValueAction extends AbstractBIDeziAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         ICubeDataLoader loader = BICubeManager.getInstance().fetchCubeLoader(userId);
         String fieldIdString = WebUtils.getHTTPRequestParameter(req, "id");
-        BusinessField field = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(fieldIdString));
+        BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldIdString));
         JSONObject jo = new JSONObject();
         if (field.getFieldType() == DBConstant.COLUMN.NUMBER) {
             ICubeTableService ti = loader.getTableIndex(field.getTableBelongTo().getTableSource());
