@@ -9,6 +9,7 @@ import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.time.BIDateUtils;
@@ -129,7 +130,7 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
 	}
 	
 	@Override
-	protected int getSqlType(){
+	protected int getSqlType(IPersistentTable[] tables){
 		return java.sql.Types.INTEGER;
 	}
 }
