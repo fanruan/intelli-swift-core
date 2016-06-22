@@ -127,10 +127,13 @@ body{
 
 @-moz-keyframes scale_light {
     0%  {
+        -moz-transform: scale(1);
     }
     50% {
+        -moz-transform: scale(1.1);
     }
     100%  {
+        -moz-transform: scale(1);
     }
 }
 
@@ -159,20 +162,17 @@ body{
 }
 
 #fs-login-input-area{
-    position: absolute;
-    bottom : 44%;
-    right : 23%;
-    left : 23%;
-    height: 138px;
+    margin-top:6%;
+    margin-left: 23%;
+    margin-right: 23%;
+    margin-bottom:5%;
     z-index: 1;
     background: #ffffff;
 }
 
 .confirm-area{
-    position: absolute;
-    bottom : 17%;
-    right : 23%;
-    left : 23%;
+    margin-left: 23%;
+    margin-right: 23%;
     height: 133px;
 }
 
@@ -255,4 +255,10 @@ span.fs-login-remember{
 }
 span.fs-login-remember-selected{
     background:url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/checkbox_selected.png') no-repeat;
+}
+
+#fs-setting-area,#fs-sure-area {
+    position: absolute;
+    top:38%;
+    width: 100%;
 }

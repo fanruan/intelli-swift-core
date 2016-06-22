@@ -31,6 +31,7 @@ $(function () {
    
     var pwPane = {};
     var $mask = $('<div class="fs-login-errmask"/>');
+    var imgOffsetX, imgOffsetY, loginImgWidth = 1920, loginImgHeight = 1080, scale;
     var $settingPane = createSettingPane();
     var $showPane = createShowPane();
     $settingPane.show();
@@ -47,6 +48,7 @@ $(function () {
 
     function createSettingPane() {
         $('#fs-setting-title').text(FR.i18nText('FS-Admin-First_Set_FS'));
+        $('#fs-chicken-soup').text(FR.i18nText("BI-Login_Soup"))
         //用户名
         pwPane.userNameText = $('input.fs-login-username').attr("placeholder", FR.i18nText("FS-Generic-Simple_Username")).attr('title',FR.i18nText("FS-Generic-Simple_Username"));
         //密码
@@ -72,7 +74,6 @@ $(function () {
                 return;
             }
             /**
-             * gril是用来迷惑对方的，嘿嘿
              */
             FS.Trans.setSystemManagerPW(FR.encrypt(userName, 'boys'), FR.encrypt(passText, 'girls'), pwPane.verifyNumber, function (data) {
                 if (data.state === 'success') {
@@ -89,6 +90,42 @@ $(function () {
         });
         return $('#fs-setting-area');
     }
+
+    function calcBackgroundScale () {
+        var windowWidth = document.body.clientWidth;
+        var windowHeight = document.body.clientHeight;
+
+        if (windowWidth / windowHeight >= loginImgWidth / loginImgHeight) {
+            scale = windowWidth / loginImgWidth;
+            imgOffsetX = 0;
+            imgOffsetY = (loginImgHeight * scale - windowHeight) / 2;
+        } else {
+            scale = windowHeight / loginImgHeight;
+            imgOffsetX = (loginImgWidth * scale - windowWidth) / 2;
+            imgOffsetY = 0;
+        }
+        $('img.fs-login-img').css({
+            "margin-left": "-" + imgOffsetX +"px",
+            "margin-top": "-" + imgOffsetY +"px",
+            width: loginImgWidth * scale + "px",
+            height: loginImgHeight * scale + "px"
+        });
+        $('#fs-chicken-soup').css({
+            zoom:Math.min(windowWidth/1920, windowHeight/1080),
+            "-moz-transform":"scale(" + Math.min(windowWidth/1920, windowHeight/1080) +")"
+        });
+        // $('#fs-login-logo').css({
+        //     zoom: Math.min(windowWidth/1920, windowHeight/1080),
+        //     "-moz-transform":"scale(" + Math.min(windowWidth/1920, windowHeight/1080) + ")"
+        // });
+        // $('#fs-setting-title').css({
+        //     zoom: Math.min(windowWidth/1920, windowHeight/1080),
+        //     "-moz-transform":"scale(" + Math.min(windowWidth/1920, windowHeight/1080) + ")"
+        // });
+        // $('#fs-login-content').css({
+        //     zoom: Math.min(windowWidth/1920, windowHeight/1080)
+        // })
+    };
 
     function setShowPaneText() {
         $('#fs-sure-title').text(FR.i18nText('FS-Admin-Account_Is') + '：');
@@ -140,6 +177,10 @@ $(function () {
         $('#fs-login-reset').text(FR.i18nText("FS-User_BackAndReset")).click(function (e) {
             $settingPane.show();
             $showPane.hide();
+        })
+        calcBackgroundScale()
+        $(window).resize(function() {
+            calcBackgroundScale();
         })
         return $('#fs-sure-area');
     }

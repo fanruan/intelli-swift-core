@@ -3,8 +3,6 @@ div.fs-login-input-password-confirm{
 }
 
 #fs-setting-title{
-    position: absolute;
-    top : 38%;
     width : 100%;
     text-align: center;
     color: #b0b0b0;
@@ -14,30 +12,26 @@ div.fs-login-input-password-confirm{
 #fs-sure-title{
     font-size: 20px;
     color : #666666;
-    position: absolute;
-    top: 43%;
-    left: 30%;
+    margin-left: 30%;
+    margin-bottom: 3%;
 }
 #fs-login-info-username{
     font-size: 16px;
     color : #a5a5a5;
-    position: absolute;
-    top: 50%;
-    left: 30%;
+    margin-left: 30%;
+    margin-bottom: 3%;
 }
 #fs-login-info-password{
     font-size: 16px;
     color : #a5a5a5;
-    position: absolute;
-    top: 55%;
-    left: 30%;
+    margin-left: 30%;
+    margin-bottom: 3%;
 }
 #fs-sure-warning{
     font-size: 16px;
     color : #15bead;
-    position: absolute;
-    top: 60%;
-    left: 30%;
+    margin-left: 30%;
+    margin-bottom: 5%;
 }
 
 #fs-login-reset{
@@ -46,3 +40,4 @@ div.fs-login-input-password-confirm{
     margin: 29px;
     cursor: pointer;
 }
+

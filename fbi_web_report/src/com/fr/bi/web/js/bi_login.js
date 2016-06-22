@@ -83,10 +83,10 @@ $(function() {
             zoom:Math.min(windowWidth/1920, windowHeight/1080),
             "-moz-transform":"scale(" + Math.min(windowWidth/1920, windowHeight/1080) +")"
         });
-        $('#fs-login-logo').css({
-            zoom: Math.min(windowWidth/1920, windowHeight/1080),
-            "-moz-transform":"scale(" + Math.min(windowWidth/1920, windowHeight/1080) + ")"
-        });
+        // $('#fs-login-logo').css({
+        //     zoom: Math.min(windowWidth/1920, windowHeight/1080),
+        //     "-moz-transform":"scale(" + Math.min(windowWidth/1920, windowHeight/1080) + ")"
+        // });
         // $('#fs-login-content').css({
         //     zoom: Math.min(windowWidth/1920, windowHeight/1080)
         // })
