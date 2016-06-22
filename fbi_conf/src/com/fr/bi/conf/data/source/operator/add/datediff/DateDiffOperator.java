@@ -143,7 +143,7 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
         ValueGetter g1 = createValueGetter(field1, ti, systemTime);
         ValueGetter g2 = createValueGetter(field2, ti, systemTime);
         for (int row = 0; row < rowCount; row++) {
-            int value = dc.get(g1.getTime(row), g2.getTime(row));
+            long value = dc.get(g1.getTime(row), g2.getTime(row));
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {

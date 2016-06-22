@@ -31,7 +31,6 @@ public class BIPrimitiveNIOWriterManager extends BIBasicNIOWriterManager<ICubePr
         tag2Builder.put(ICubeLongWriterBuilder.FRAGMENT_TAG, new BILongNIOWriterBuilder());
         tag2Builder.put(ICubeIntegerWriterBuilder.FRAGMENT_TAG, new BIIntegerNIOWriterBuilder());
         tag2Builder.put(ICubeDoubleWriterBuilder.FRAGMENT_TAG, new BIDoubleNIOWriterBuilder());
-
     }
 
 

@@ -14,7 +14,7 @@ public class YearGetter implements DateGetter {
 	public static final YearGetter INSTANCE = new YearGetter();
 
 	@Override
-	public int get(Long v) {
+	public long get(Long v) {
 		if(v == null){
 			return 0;
 		}
