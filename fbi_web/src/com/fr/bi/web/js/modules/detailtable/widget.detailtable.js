@@ -24,6 +24,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
         this.table = BI.createWidget({
             type: "bi.style_table",
+            element: this.element,
             el: {
                 type: "bi.page_table",
                 el: {
@@ -52,33 +53,11 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: self.table.getColumnSize()})});
         });
-
-        this.tab = BI.createWidget({
-            type: "bi.tab",
-            element: this.element,
-            defaultShowIndex: BI.DetailTable.SHOW_TABLE,
-            cardCreator: function (v) {
-                switch (v) {
-                    case BI.DetailTable.SHOW_TABLE:
-                        return self.table;
-                    case BI.DetailTable.SHOW_TIP:
-                        return BI.createWidget({
-                            type: "bi.layout",
-                            cls: o.status === BICst.WIDGET_STATUS.EDIT ? "table-detail-text-tip-background" : "table-detail-tip-background"
-                        })
-                }
-            }
-        });
     },
 
     _onPageChange: function (vPage, callback) {
         var self = this;
         var widgetId = this.options.wId;
-        if (BI.Utils.getAllUsableDimensionIDs(widgetId).length === 0) {
-            this.tab.setSelect(BI.DetailTable.SHOW_TIP);
-            return;
-        }
-        this.tab.setSelect(BI.DetailTable.SHOW_TABLE);
         this.loading();
         this.data = [];
         var hyperLinkExpressions = [];
@@ -247,10 +226,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.table.resize();
     }
 
-});
-BI.extend(BI.DetailTable, {
-    SHOW_TABLE: 1,
-    SHOW_TIP: 2
 });
 BI.DetailTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.detail_table", BI.DetailTable);

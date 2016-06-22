@@ -1,0 +1,142 @@
+body{
+    height: 100%;
+    width: 100%;
+    color:#333;
+    font-size: 12px;
+    font-family: 'microsoft yahei', Microsoft YaHei, STXihei, SimHei, SimSun, sans-serif;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+#fs-login-background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+#fs-chicken-soup {
+    position: absolute;
+    background: transparent;
+    left : 47%;
+    top : 38%;
+    color : #ffffff;
+    font-size : 20px;
+}
+#fs-login-logo {
+    position: absolute;
+    top : 16%;
+    right : 13%;
+    width : 112px;
+    height : 180px;
+    z-index: 1;
+    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/logo.png') no-repeat;
+}
+
+#fs-login-content{
+    position: absolute;
+    top : 0;
+    bottom : 0;
+    right : 0;
+    left : 68%;
+    background: #ffffff;
+    filter: Alpha(opacity=95);
+    opacity: 0.95;
+}
+
+#fs-login-input-area{
+    position: absolute;
+    bottom : 48%;
+    right : 23%;
+    left : 23%;
+    height: 90px;
+}
+
+#fs-login-confirm-area{
+    position: absolute;
+    bottom : 17%;
+    right : 23%;
+    left : 23%;
+    height: 133px;
+}
+div.fs-login-input{
+    position: relative;
+    margin: 12px 0;
+    padding: 0;
+    color : #d8d8d8;
+    border-bottom: solid 1px #d8d8d8;
+}
+
+input, div.fs-login-errmask{
+    margin: 0;
+    border: 0;
+    border-radius : 1px;
+    vertical-align:middle;
+    -webkit-border-radius: 1px;
+    -moz-border-radius: 1px;
+    font-size: 16px;
+    height: 42px;
+}
+input{
+    position: relative;
+    margin: 0 0 0 35px;
+    padding: 0;
+    outline: none;
+    width: 253px;
+    line-height: 42px\9;
+}
+div.fs-login-errmask{
+    filter: Alpha(opacity=80);
+    opacity: 0.8;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 44px;
+    color: #ffffff;
+    width: 308px;
+    line-height: 42px;
+    text-align: center;
+    background: #333;
+    z-index: 1;
+}
+
+div.fs-login-input-username{
+    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/username.png') no-repeat 0px 7px;
+}
+div.fs-login-input-password{
+    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/password.png') no-repeat 0px 7px;
+}
+
+a{
+    display: block;
+    height: 50px;
+    background: #15abed;
+    color: #ffffff;
+    text-align: center;
+    line-height: 49px;
+    font-size: 20px;
+    border-radius : 25px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    cursor: pointer !important;
+    text-decoration: none;
+    outline: none;
+}
+div.fs-login-check{
+    height: 40px;
+    line-height: 40px;
+    font-size: 18px;
+    color : #aaaaa9;
+    background:url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/checkbox.png') no-repeat 0px 8px;
+}
+span.fs-login-remember{
+    padding-left: 35px;
+    cursor: pointer !important;
+}
+span.fs-login-remember-selected{
+    background:url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/checkbox_selected.png') no-repeat;
+}

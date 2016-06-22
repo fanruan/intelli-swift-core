@@ -111,6 +111,9 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
                 },
                 validationChecker: function(name){
                     return o.reportChecker(name, item.id);
+                },
+                onClickHangout: function(){
+                    self.fireEvent(BI.ReportSearchResultPane.EVENT_HANGOUT, item.id);
                 }
             });
         });
@@ -147,4 +150,5 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
 });
 BI.ReportSearchResultPane.EVENT_REPORT_RENAME = "ReportSearchResultPane.EVENT_REPORT_RENAME";
 BI.ReportSearchResultPane.EVENT_DELETE = "ReportSearchResultPane.EVENT_DELETE";
+BI.ReportSearchResultPane.EVENT_HANGOUT = "BI.ReportSearchResultPane.EVENT_HANGOUT";
 $.shortcut("bi.report_search_result_pane", BI.ReportSearchResultPane);

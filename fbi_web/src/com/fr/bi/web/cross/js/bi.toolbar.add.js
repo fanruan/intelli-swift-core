@@ -44,7 +44,7 @@ $.extend(FS.Plugin.ReportManagerAddon, {
 });
 
 $.extend(FS.Design.op, {
-    19: function (designContainer) {
+    2009: function (designContainer) {
         FS.BIDezi.init(designContainer);
     }
 });
@@ -54,4 +54,4 @@ FS.BIDezi = {
         $('<iframe/>').css({height: '100%', width: '100%'})
             .attr({frameborder: 0, src: src}).appendTo(renderer);
     }
-}
+};

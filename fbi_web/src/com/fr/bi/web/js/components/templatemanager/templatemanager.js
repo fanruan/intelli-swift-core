@@ -417,6 +417,10 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.searcherResultPane.on(BI.ReportSearchResultPane.EVENT_DELETE, function (id) {
             self._onRemove(id, BI.TemplateManagerButtonGroup.DELETE_REPORT);
         });
+        this.searcherResultPane.on(BI.ReportSearchResultPane.EVENT_HANGOUT, function(id){
+            self._onHangout(id);
+            self._refreshNavAndList();
+        });
     },
 
 
