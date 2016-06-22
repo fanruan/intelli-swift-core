@@ -87,11 +87,24 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.left"
         });
         this.id = o.id;
+        var items = [];
+        switch (BI.Utils.getDimensionGroupByID(o.dId).type) {
+            case BICst.GROUP.Y:
+            case BICst.GROUP.M:
+            case BICst.GROUP.W:
+            case BICst.GROUP.S:
+                o.filter_type === BICst.DIMENSION_FILTER_DATE.BELONG_VALUE && (o.filter_type = BICst.DIMENSION_FILTER_STRING.BELONG_VALUE);
+                items = BICst.DIMENSION_FILTER_STRING_COMBO;
+                break;
+            case BICst.GROUP.YMD:
+                items = BICst.DIMENSION_FILTER_DATE_COMBO;
+                break;
+        }
         this.filterType = BI.createWidget({
             type: "bi.text_value_down_list_combo",
             width: this._constant.COMBO_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
-            items: BICst.DIMENSION_FILTER_DATE_COMBO
+            items: items
         });
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
@@ -108,22 +121,32 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _refreshFilterWidget: function (filterType, initData) {
         var w = BI.createWidget();
         switch (filterType) {
+            case BICst.DIMENSION_FILTER_STRING.BELONG_VALUE:
+            case BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE:
             case BICst.DIMENSION_FILTER_DATE.BELONG_VALUE:
             case BICst.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE:
                 w = this._createStringBelongCombo(initData);
                 break;
+            case BICst.DIMENSION_FILTER_STRING.CONTAIN:
+            case BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN:
             case BICst.DIMENSION_FILTER_DATE.CONTAIN:
             case BICst.DIMENSION_FILTER_DATE.NOT_CONTAIN:
                 w = this._createStringInput(initData);
                 break;
+            case BICst.DIMENSION_FILTER_STRING.IS_NULL:
+            case BICst.DIMENSION_FILTER_STRING.NOT_NULL:
             case BICst.DIMENSION_FILTER_DATE.IS_NULL:
             case BICst.DIMENSION_FILTER_DATE.NOT_NULL:
                 w = this.filterWidget = BI.createWidget();
                 break;
+            case BICst.DIMENSION_FILTER_STRING.BEGIN_WITH:
+            case BICst.DIMENSION_FILTER_STRING.END_WITH:
             case BICst.DIMENSION_FILTER_DATE.BEGIN_WITH:
             case BICst.DIMENSION_FILTER_DATE.END_WITH:
                 w = this._createStringInput(initData);
                 break;
+            case BICst.DIMENSION_FILTER_STRING.TOP_N:
+            case BICst.DIMENSION_FILTER_STRING.BOTTOM_N:
             case BICst.DIMENSION_FILTER_DATE.TOP_N:
             case BICst.DIMENSION_FILTER_DATE.BOTTOM_N:
                 w = this._createNInput(initData);
@@ -144,7 +167,7 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT
         });
 
-        this.filterWidget.on(BI.SelectFieldDataCombo.EVENT_CONFIRM, function () {
+        this.filterWidget.on(BI.SelectDimensionDataCombo.EVENT_CONFIRM, function () {
             self._setNodeData({
                 filter_value : this.getValue()
             });

@@ -478,33 +478,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     return "";
                 }else{
                     return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
-                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div><div>(大小)" + BI.Utils.getDimensionNameByID(this.targetIds[2])
+                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div><div>(BI.i18nText('BI-Size'))" + BI.Utils.getDimensionNameByID(this.targetIds[2])
                         + ":'+ this.size +'</div>'}";
                 }
             case BICst.WIDGET.MAP:
-                var view = BI.Utils.getWidgetViewByID(o.wId);
-                var tIds = [], hasBubbleTargetId = false;
-                BI.each(view[BICst.REGION.TARGET2], function (idx, dId) {
-                    if (BI.Utils.isDimensionUsable(dId)) {
-                        tIds.push(dId);
-                        hasBubbleTargetId = true;
-                    }
-                });
-                BI.each(view[BICst.REGION.TARGET1], function (idx, dId) {
-                    if (BI.Utils.isDimensionUsable(dId)) {
-                        tIds.push(dId);
-                    }
-                });
-                var tip = "function(){return this.name";
-                BI.each(tIds, function(idx, tId){
-                    var index = hasBubbleTargetId === true ? (idx - 1) : idx;
-                    tip += " + '<div>";
-                    tip += BI.Utils.getDimensionNameByID(tId) + ":'";
-                    tip += BI.Utils.getRegionTypeByDimensionID(tId) === BICst.REGION.TARGET1 ? "+ (BI.has(this.points, "+ index +") ? this.points["+ index +"].y : '') + " : "+ this.size + ";
-                    tip += "'</div>'";
-                });
-                tip += "}";
-                return tip;
+                return "function(){var tip = this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";
             default:
                 return "";
         }
@@ -669,6 +647,21 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     clicked.push({
                         dId: this.seriesDid,
                         value: [obj.x]
+                    })
+                }
+                break;
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+                dId = obj.targetIds;
+                clicked = [{
+                    dId: this.cataDid,
+                    value: [obj.y]
+                }];
+                if (BI.isNotNull(this.seriesDid)) {
+                    clicked.push({
+                        dId: this.seriesDid,
+                        value: [obj.seriesName]
                     })
                 }
                 break;
