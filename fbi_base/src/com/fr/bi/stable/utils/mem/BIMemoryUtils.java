@@ -16,7 +16,7 @@ public class BIMemoryUtils {
      */
     public static void un_map(final MappedByteBuffer buffer) {
         if (buffer != null) {
-            buffer.force();
+            //buffer.force();
             BIReleaseUtils.doClean(buffer);
         }
     }

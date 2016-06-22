@@ -595,6 +595,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var view = BI.Utils.getWidgetViewByID(o.wId);
         var options = {};
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
+            if(BI.isNotNull(jsonData.error)) {
+                callback(jsonData);
+                return;
+            }
             var data = self.parseChartData(jsonData.data);
             var types = [];
             var targetIds = self._getShowTarget();

@@ -5,9 +5,9 @@ package com.fr.bi.field.target.filter.formula;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -146,7 +146,7 @@ public class FormulaFilter extends AbstractTargetFilter {
         while (matcher.find()) {
             String matchStr = matcher.group(0);
             if(matchStr.contains(BIReportConstant.FIELD_ID.HEAD)){
-                result = expression.replaceAll(matchStr.substring(2, matchStr.length() - 1), BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(matchStr.substring(BIReportConstant.FIELD_ID.HEAD.length() + 2, matchStr.length() - 1))).getFieldName());
+                result = expression.replaceAll(matchStr.substring(2, matchStr.length() - 1), BIModuleUtils.getBusinessFieldById(new BIFieldID(matchStr.substring(BIReportConstant.FIELD_ID.HEAD.length() + 2, matchStr.length() - 1))).getFieldName());
             }
         }
         return result;
