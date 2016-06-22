@@ -1,10 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<script type="text/javascript">
+    var isSupportFS = ${isSupportFS} +"";
+</script>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>${company}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta name="keywords" content="FineReport,Web Reporting Tool">
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.fs.js&inter=${__locale__}"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=resource&resource=/com/fr/bi/web/js/bi_system_pw_manager.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/bi_login.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/bi_system_pw_manager.css"/>
 </head>
 <body>
-
+<div id="fs-login-background">
+    <img class="fs-login-img" src="${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/login.png" alt="" galleryimg="no" border="0">
+</div>
+<div id="fs-chicken-soup">
+</div>
+<div id="fs-login-content">
+    <div id="fs-login-logo"></div>
+    <div id="fs-setting-area">
+        <div id="fs-setting-title"></div>
+        <div id="fs-login-input-area">
+            <div class="fs-login-input fs-login-input-username">
+                <input tabindex="1" class="fs-login-username" type="text"/>
+            </div>
+            <div class="fs-login-input fs-login-input-password">
+                <input tabindex="2" class="fs-login-password" type="text"/>
+            </div>
+            <div class="fs-login-input fs-login-input-password-confirm">
+                <input tabindex="3" class="fs-login-password-confirm" type="text"/>
+            </div>
+        </div>
+        <div id="fs-login-confirm-area" class="confirm-area">
+            <a href="#" id="fs-login-confirm-btn"></a>
+        </div>
+    </div>
+    <div id="fs-sure-area">
+        <div id="fs-sure-title"></div>
+        <div id="fs-login-info-username"></div>
+        <div id="fs-login-info-password"></div>
+        <div id="fs-sure-warning"></div>
+        <div id="fs-login-info-confirm-area" class="confirm-area">
+            <a href="#" id="fs-login-info-confirm-btn"></a>
+            <div id="fs-login-reset"></div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

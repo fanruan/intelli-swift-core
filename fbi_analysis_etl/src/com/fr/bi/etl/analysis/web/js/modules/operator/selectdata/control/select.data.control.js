@@ -96,7 +96,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
         widget.cancelButton.setEnable(model.needCancel());
         widget.saveButton.setText( this._editing === true ? BI.i18nText("BI-finish_add") : BI.i18nText("BI-continue_add"));
         if(this._editing === true) {
-            widget.saveButton.setEnable(model.get(ETLCst.FIELDS).length > 0 || model.needCancel())
+            widget.saveButton.setEnable(model.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY).length > 0)
         }
     },
 
