@@ -190,8 +190,8 @@ BI.SignEditor = BI.inherit(BI.Single, {
         return this.editor.isValid();
     },
 
-    setValid: function(){
-        this.editor.setValid();
+    setValid: function(v){
+        this.editor.setValid(v);
     },
 
     setErrorText: function (text) {

@@ -1,0 +1,23 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-table-chart-error-pane {
+  background: #ffffff;
+}
+.bi-table-chart-error-pane .error-comment-page-not-found {
+  font-size: 16px;
+  color: #808080;
+}
+.bi-table-chart-error-pane .error-comment-problem-is {
+  font-size: 13px;
+  color: #808080;
+}
+.bi-table-chart-error-pane .error-comment-concat-us {
+  font-size: 13px;
+  color: #e85050;
+}
+.bi-table-chart-error-pane .error-info {
+  max-width: 600px;
+  background: #eaeaea;
+  color: #808080;
+}
