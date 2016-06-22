@@ -80,14 +80,16 @@ $(function() {
             imgOffsetY = 0;
         }
         $('#fs-chicken-soup').css({
-            zoom:Math.min(windowWidth/1920, windowHeight/1080)
+            zoom:Math.min(windowWidth/1920, windowHeight/1080),
+            "-moz-transform":"scale(" + Math.min(windowWidth/1920, windowHeight/1080) +")"
         });
         $('#fs-login-logo').css({
-            zoom: Math.min(windowWidth/1920, windowHeight/1080)
+            zoom: Math.min(windowWidth/1920, windowHeight/1080),
+            "-moz-transform":"scale(" + Math.min(windowWidth/1920, windowHeight/1080) + ")"
         });
-        $('#fs-login-content').css({
-            zoom: Math.min(windowWidth/1920, windowHeight/1080)
-        })
+        // $('#fs-login-content').css({
+        //     zoom: Math.min(windowWidth/1920, windowHeight/1080)
+        // })
     };
 
     var showErrorMsg = function($pos, msg){
