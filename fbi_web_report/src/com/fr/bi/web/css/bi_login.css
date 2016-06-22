@@ -10,6 +10,13 @@ body{
     margin: 0;
     padding: 0;
     overflow: hidden;
+    moz-user-select: -moz-none;
+    -moz-user-select: none;
+    -o-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
 }
 #fs-login-background {
     position: absolute;
@@ -26,14 +33,14 @@ body{
     top : 38%;
     color : #ffffff;
     font-size : 20px;
+    cursor: default;
 }
 #fs-login-logo {
     position: absolute;
     top : 16%;
-    right : 13%;
+    right : 40%;
     width : 112px;
     height : 180px;
-    z-index: 1;
     background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/logo.png') no-repeat;
 }
 
@@ -50,22 +57,25 @@ body{
 
 #fs-login-input-area{
     position: absolute;
-    bottom : 48%;
+    bottom : 44%;
     right : 23%;
     left : 23%;
-    height: 90px;
+    height: 138px;
+    z-index: 1;
+    background: #ffffff;
 }
 
-#fs-login-confirm-area{
+.confirm-area{
     position: absolute;
     bottom : 17%;
     right : 23%;
     left : 23%;
     height: 133px;
 }
+
 div.fs-login-input{
     position: relative;
-    margin: 12px 0;
+    margin: 0 0 24px 0;
     padding: 0;
     color : #d8d8d8;
     border-bottom: solid 1px #d8d8d8;
@@ -79,7 +89,8 @@ input, div.fs-login-errmask{
     -webkit-border-radius: 1px;
     -moz-border-radius: 1px;
     font-size: 16px;
-    height: 42px;
+    height: 56px;
+    line-height: 56px;
 }
 input{
     position: relative;
@@ -87,28 +98,25 @@ input{
     padding: 0;
     outline: none;
     width: 253px;
-    line-height: 42px\9;
 }
 div.fs-login-errmask{
-    filter: Alpha(opacity=80);
-    opacity: 0.8;
+    filter: Alpha(opacity=40);
+    opacity: 0.4;
     position: absolute;
     top: 0;
     left: 0;
-    height: 44px;
+    right : 0;
     color: #ffffff;
-    width: 308px;
-    line-height: 42px;
     text-align: center;
-    background: #333;
+    background: #686868;
     z-index: 1;
 }
 
 div.fs-login-input-username{
-    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/username.png') no-repeat 0px 7px;
+    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/username.png') no-repeat 0px 14px;
 }
 div.fs-login-input-password{
-    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/password.png') no-repeat 0px 7px;
+    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/password.png') no-repeat 0px 14px;
 }
 
 a{
@@ -127,11 +135,11 @@ a{
     outline: none;
 }
 div.fs-login-check{
-    height: 40px;
-    line-height: 40px;
+    height: 50px;
+    line-height: 50px;
     font-size: 18px;
     color : #aaaaa9;
-    background:url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/checkbox.png') no-repeat 0px 8px;
+    background:url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/checkbox.png') no-repeat 0px 14px;
 }
 span.fs-login-remember{
     padding-left: 35px;

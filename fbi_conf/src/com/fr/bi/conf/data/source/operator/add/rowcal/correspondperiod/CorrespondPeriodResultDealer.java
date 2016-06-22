@@ -43,6 +43,7 @@ public class CorrespondPeriodResultDealer implements ResultDealer {
 				double key = v.doubleValue();
 				if(!map.containsKey(key)){
 					Object value = ti.getRow(CorrespondPeriodResultDealer.this.key, row);
+                    value = value == null ? value : ((Number)value).doubleValue();
 					map.put(key, value);
 				}
 			}
