@@ -1,6 +1,6 @@
 /**
- * @class BI.AbstractDimensionCombo
- * @extend BI.AbstractDimensionTargetCombo
+ * @class BI.AbstractDimensionComboShow
+ * @extend BI.AbstractDimensionTargetComboShow
  * 字段类型date
  */
 BI.AbstractDimensionComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
