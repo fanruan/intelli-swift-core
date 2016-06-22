@@ -82,7 +82,7 @@ BI.Pane = BI.inherit(BI.Widget, {
     },
 
     empty: function () {
-
+        BI.Pane.superclass.empty.apply(this, arguments);
     }
 });
 BI.Pane.EVENT_LOADED = "EVENT_LOADED";
