@@ -627,6 +627,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/combo/sortfilter.combo.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
+                "com/fr/bi/web/css/modules/tablechartmanager/errorpane/tablechart.errorpane.css",
 
                 //自适应布局
                 "com/fr/bi/web/css/modules/fit/widgetchooser/widget.dragicongroup.css",
@@ -816,6 +817,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
 
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/model.dimensionsmanagershow.js",
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/regionsmanagershow.js",
@@ -1804,7 +1806,10 @@ public class ResourceHelper {
                  * components
                  */
                 //模板管理
-                "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/report.cardview.item.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/folder.cardview.item.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/reportsearchresult.pane.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/foldermoveto.pane.css",

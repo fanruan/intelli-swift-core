@@ -38,7 +38,7 @@ public class BISignInAction extends ActionNoSessionCMD {
         map.put("backgroundImageID",FSConfig.getProviderInstance().getSystemAttr().getBgImageID4FS());
         map.putAll(parameterMap);
         if (!PrivilegeManager.getProviderInstance().hasSetFSSystemPW()) {
-            WebUtils.writeOutTemplate("/com/fr/fs/web/system_manager_set.html", res, map);
+            WebUtils.writeOutTemplate("/com/fr/bi/web/html/bi_system_manager_set.html", res, map);
         } else {
             String loginUrl = FSConfig.getProviderInstance().getSystemAttr().getLoginUrl4FS();
             if(StringUtils.isNotBlank(loginUrl)) {

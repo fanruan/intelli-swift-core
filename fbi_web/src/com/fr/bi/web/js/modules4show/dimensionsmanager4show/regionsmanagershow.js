@@ -115,6 +115,11 @@ BI.RegionsManagerShow = BI.inherit(BI.Widget, {
                 this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Name_Title"), BICst.REGION.DIMENSION2);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Region_Target"), BICst.REGION.TARGET1);
                 break;
+            case BICst.WIDGET.GIS_MAP:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Address"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Name_Title"), BICst.REGION.DIMENSION2);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Region_Target"), BICst.REGION.TARGET1);
+                break;
             case BICst.WIDGET.BUBBLE:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Y_Value"), BICst.REGION.TARGET1);

@@ -10,6 +10,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.json.JSONObject;
 
@@ -65,7 +66,7 @@ public class RankRowCalculatorOperator extends RowCalculatorOperator {
 	}
 
 	@Override
-	protected int getSqlType(){
+	protected int getSqlType(IPersistentTable[] tables){
 		return java.sql.Types.INTEGER;
 	}
 

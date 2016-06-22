@@ -65,6 +65,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         });
         this.connectionCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setDataLinkName(this.getValue()[0]);
+            self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
         });
         this.sqlEditor = BI.createWidget({
             type: "bi.code_editor",
@@ -74,9 +75,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         this.sqlEditor.on(BI.CodeEditor.EVENT_CHANGE, function(){
             var sql = this.getValue();
             self.model.setSQL(sql);
-            if(self.previewTab.getSelect() === self.constants.PREVIEW_PANE){
-                self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
-            }
+            self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
             self.saveButton.setEnable(BI.isNotEmptyString(sql));
             self.previewButton.setEnable(BI.isNotEmptyString(sql));
         });
@@ -334,6 +333,11 @@ BI.EditSQL = BI.inherit(BI.Widget, {
 
     _getPreviewResult: function(){
         var self = this;
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: BICst.BODY_ELEMENT,
+            text: BI.i18nText("BI-Loading")
+        });
         BI.Utils.getServerSetPreviewBySql({
             data_link: self.model.getDataLinkName(),
             sql: BI.encrypt(self.model.getSQL(), "sh")
@@ -344,6 +348,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             } else {
                 self.previewTab.setSelect(self.constants.PREVIEW_ERROR);
             }
+            mask.destroy();
         });
     },
 

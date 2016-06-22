@@ -101,7 +101,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
 
         //URL
         var urlInput = BI.createWidget({
-            type: "bi.sign_editor",
+            type: "bi.text_editor",
             value: this.model.getURL(),
             height: this.constants.INPUT_HEIGHT,
             width: this.constants.INPUT_WIDTH,
@@ -112,7 +112,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         var url = BI.isEmptyString(this.model.getURL()) ? BICst.DATA_LINK_MANAGE.URLS[driver] : this.model.getURL();
         urlInput.setValue(url);
         this.model.setURL(url);
-        urlInput.on(BI.SignEditor.EVENT_CHANGE, function () {
+        urlInput.on(BI.TextEditor.EVENT_CHANGE, function () {
             self.model.setURL(this.getValue());
             self._toggleSchemaStatus(false);
         });
@@ -120,7 +120,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
 
         //用户名
         var userName = BI.createWidget({
-            type: "bi.sign_editor",
+            type: "bi.text_editor",
             value: this.model.getUser(),
             height: this.constants.INPUT_HEIGHT,
             width: this.constants.INPUT_WIDTH,
@@ -128,7 +128,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             cls: "item-input",
             allowBlank: true
         });
-        userName.on(BI.SignEditor.EVENT_CHANGE, function () {
+        userName.on(BI.TextEditor.EVENT_CHANGE, function () {
             self.model.setUser(this.getValue());
             self._toggleSchemaStatus(false);
         });
@@ -176,6 +176,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             self.model.setOriginalCharsetName(this.getValue());
             self._toggleSchemaStatus(false);
         });
+        oldCodeCombo.setValue(this.model.getOriginalCharsetName() || "");
         var oldCode = this._createItemsWrapper("", BI.i18nText("BI-Original_Code"), oldCodeCombo);
 
         //新编码
@@ -189,6 +190,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             self.model.setNewCharsetName(this.getValue());
             self._toggleSchemaStatus(false);
         });
+        newCodeCombo.setValue(this.model.getNewCharsetName() || "");
         var newCode = this._createItemsWrapper("", BI.i18nText("BI-New_Code"), newCodeCombo);
 
         this.testButton = BI.createWidget({
@@ -274,13 +276,13 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
     _toggleSchemaStatus: function(enable){
         if(enable === true) {
             this.schemaCombo.setEnable(true);
-            this.schemaCombo.setTitle("");
             return;
         }
         this.schemaCombo.setValue();
         this.model.setSchema("");
         this.schemaCombo.populate([]);
-        this.schemaCombo.setTitle(BI.i18nText("BI-Test_Link_First"));
+        this.schemaCombo.setEnable(false);
+        this.schemaCombo.setWarningTitle(BI.i18nText("BI-Test_Link_First"));
     },
 
     _createItemsWrapper: function (name1, name2, widget) {

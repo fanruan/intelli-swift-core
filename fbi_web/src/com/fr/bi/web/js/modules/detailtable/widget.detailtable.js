@@ -53,12 +53,29 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: self.table.getColumnSize()})});
         });
+        this.errorPane = BI.createWidget({
+            type: "bi.table_chart_error_pane",
+            invisible: true
+        });
+        this.errorPane.element.css("z-index", 1);
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.errorPane,
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            }]
+        })
     },
 
     _onPageChange: function (vPage, callback) {
         var self = this;
         var widgetId = this.options.wId;
         this.loading();
+        this.errorPane.setVisible(false);
         this.data = [];
         var hyperLinkExpressions = [];
         var isUseHyperLinkDimension = [];
@@ -77,41 +94,50 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         ob.page = this.pageOperator;
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
             self.loaded();
-            var json = jsonData.data, row = jsonData.row, size = jsonData.size;
-            if (BI.isNull(json) || BI.isNull(row)) {
-                callback([], [], [], []);
+            if (BI.isNotNull(jsonData.error)) {
+                self.errorPane.setErrorInfo(jsonData.error);
+                self.errorPane.setVisible(true);
                 return;
             }
-            var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
-            BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
-                var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId) || {};
-                isUseHyperLinkDimension.push(hyperlink.used || false);
-                hyperLinkExpressions.push(hyperlink.expression || "");
-                BI.isNotNull(dId) &&
-                BI.Utils.isDimensionUsable(dId) === true &&
-                header.push({
-                    type: "bi.detail_table_header",
-                    dId: dId,
-                    text: BI.Utils.getDimensionNameByID(dId),
-                    sortFilterChange: function (v) {
-                        self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-                        self._headerOperatorChange(v, dId);
-                    }
+            try {
+                var json = jsonData.data, row = jsonData.row, size = jsonData.size;
+                if (BI.isNull(json) || BI.isNull(row)) {
+                    callback([], [], [], []);
+                    return;
+                }
+                var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
+                BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
+                    var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId) || {};
+                    isUseHyperLinkDimension.push(hyperlink.used || false);
+                    hyperLinkExpressions.push(hyperlink.expression || "");
+                    BI.isNotNull(dId) &&
+                    BI.Utils.isDimensionUsable(dId) === true &&
+                    header.push({
+                        type: "bi.detail_table_header",
+                        dId: dId,
+                        text: BI.Utils.getDimensionNameByID(dId),
+                        sortFilterChange: function (v) {
+                            self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
+                            self._headerOperatorChange(v, dId);
+                        }
+                    });
                 });
-            });
-            var items = self._createTableItems(json.value);
+                var items = self._createTableItems(json.value);
 
-            self.pager.setAllPages(Math.ceil(row / size));
-            self.pager.setValue(vPage);
-            callback(items, [header]);
-
+                self.pager.setAllPages(Math.ceil(row / size));
+                self.pager.setValue(vPage);
+                callback(items, [header]);
+            } catch (e) {
+                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+                self.errorPane.setVisible(true);
+                return;
+            }
             //显示序号
             if (BI.Utils.getWSShowNumberByID(widgetId)) {
                 self.table.showSequence();
             } else {
                 self.table.hideSequence();
             }
-
 
             //设置样式和颜色
             self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(widgetId), BI.Utils.getWSThemeColorByID(widgetId));

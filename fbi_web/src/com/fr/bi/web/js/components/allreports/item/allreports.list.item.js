@@ -143,7 +143,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
                         items: [{
                             el: {
                                 type: "bi.icon_button",
-                                cls: "file-font normal-mark",
+                                cls: (report.description === "true" ? "real-time-font" : "file-font") + " normal-mark",
                                 iconWidth: 16,
                                 iconHeight: 16
                             },

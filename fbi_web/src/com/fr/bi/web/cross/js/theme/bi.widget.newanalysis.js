@@ -57,7 +57,7 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
         this.reportLocation.on(BI.MultiLayerSelectTreeCombo.EVENT_CHANGE, function () {
             var name = self.templateName.getValue();
             if (self._getCurrentNodeReportNames().contains(name)) {
-                self.templateName.setValid();
+                self.templateName.setValid(false);
                 self.templateName.focus();
             }
         });

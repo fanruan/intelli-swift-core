@@ -44,8 +44,7 @@ BI.CalculateTargetPopupDetailModel = BI.inherit(FR.OB, {
             dimension_map: {},
             type: BICst.TARGET_TYPE.FORMULA,
             used: true
-        }
-            ;
+        };
 
     },
 

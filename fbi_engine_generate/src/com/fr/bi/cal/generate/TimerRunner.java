@@ -56,8 +56,8 @@ public class TimerRunner {
 
     private void GlobalTaskAdd(TimeFrequency frequency) {
         Date startDate = BIDateUtils.createStartDate(frequency.getUpdateTime(), frequency.getUpdateFrequency());
-        long scheduleTime = 1;
         Timer timer = new Timer();
+        long period=BIDateUtils.createScheduleTime(frequency.getUpdateTime(),frequency.getUpdateFrequency());
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -65,13 +65,13 @@ public class TimerRunner {
                 CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser, cubeBuildStuff), biUser.getUserId());
             }
 
-        }, startDate, scheduleTime);
+        }, startDate, period);
         timerList.add(timer);
     }
 
     private void SingleTableTaskAdd(TimeFrequency frequency, final BIBusinessTable table) {
+        long period=BIDateUtils.createScheduleTime(frequency.getUpdateTime(),frequency.getUpdateFrequency());
         Date startDate = BIDateUtils.createStartDate(frequency.getUpdateTime(), frequency.getUpdateFrequency());
-        long scheduleTime = 1;
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -80,7 +80,7 @@ public class TimerRunner {
                 CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser, cubeBuildStuff), biUser.getUserId());
             }
 
-        }, startDate, scheduleTime);
+        }, startDate, period);
         timerList.add(timer);
     }
 

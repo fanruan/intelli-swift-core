@@ -27,13 +27,29 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             type: "bi.combine_chart",
             element: this.element
         });
-        this.chart.on(BI.CombineChart.EVENT_CHANGE, function(obj){
+        this.chart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self._doChartItemClick(obj);
             self.fireEvent(BI.ChartDisplay.EVENT_CHANGE, arguments);
         });
+        this.errorPane = BI.createWidget({
+            type: "bi.table_chart_error_pane",
+            invisible: true
+        });
+        this.errorPane.element.css("z-index", 1);
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.errorPane,
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            }]
+        })
     },
 
-    _doChartItemClick: function(obj){
+    _doChartItemClick: function (obj) {
         var self = this, o = this.options;
         var linkageInfo = this.model.getLinkageInfo(obj);
         var dId = linkageInfo.dId, clicked = linkageInfo.clicked;
@@ -57,14 +73,25 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
     populate: function () {
         var self = this, o = this.options;
         var type = BI.Utils.getWidgetTypeByID(o.wId);
-        this.model.getWidgetData(type, function(types, data, options){
-            self.chart.setTypes(types);
-            self.chart.setOptions(BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {
-                tooltipFormatter: self.model.getToolTip(type),
-                cordon: self.model.getCordon(),
-                mapType: {type: BI.Utils.getWidgetTypeByID(o.wId), subType: BI.Utils.getWidgetSubTypeByID(o.wId)}
-            }));
-            self.chart.populate(data, options);
+        this.errorPane.setVisible(false);
+        this.model.getWidgetData(type, function (types, data, options) {
+            if (BI.isNotNull(types.error)) {
+                self.errorPane.setErrorInfo(types.error);
+                self.errorPane.setVisible(true);
+                return;
+            }
+            try {
+                self.chart.setTypes(types);
+                self.chart.setOptions(BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {
+                    tooltipFormatter: self.model.getToolTip(type),
+                    cordon: self.model.getCordon(),
+                    mapType: {type: BI.Utils.getWidgetTypeByID(o.wId), subType: BI.Utils.getWidgetSubTypeByID(o.wId)}
+                }));
+                self.chart.populate(data, options);
+            } catch (e) {
+                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+                self.errorPane.setVisible(true);
+            }
         });
     },
 
