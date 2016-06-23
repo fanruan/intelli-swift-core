@@ -80,5 +80,10 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     public ICubeResourceLocation getResourceLocation() {
         return indexDataService.getResourceLocation();
     }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return version.isVersionAvailable();
+    }
 }
 

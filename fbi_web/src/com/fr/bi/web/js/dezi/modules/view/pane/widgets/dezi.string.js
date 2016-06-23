@@ -190,6 +190,9 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         if(BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
+        if(BI.has(changed, "detail")) {
+            BI.Utils.broadcastAllWidgets2Refresh();
+        }
     },
 
     local: function () {

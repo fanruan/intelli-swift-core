@@ -39,4 +39,9 @@ public class BICubeVersion extends BICubeLongProperty implements ICubeVersion {
     public void addVersion(long version) {
         getWriter().recordSpecificValue(0, version);
     }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return getReader().canRead();
+    }
 }

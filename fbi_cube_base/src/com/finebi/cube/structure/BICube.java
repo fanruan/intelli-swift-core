@@ -1,10 +1,7 @@
 package com.finebi.cube.structure;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.exception.BICubeColumnAbsentException;
-import com.finebi.cube.exception.BICubeRelationAbsentException;
-import com.finebi.cube.exception.BICubeResourceAbsentException;
-import com.finebi.cube.exception.IllegalRelationPathException;
+import com.finebi.cube.exception.*;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.column.BIColumnKey;
@@ -74,7 +71,7 @@ public class BICube implements Cube {
     }
 
     @Override
-    public boolean canRead(ITableKey tableKey) {
+    public boolean exist(ITableKey tableKey) {
         try {
             ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey);
             if (isResourceExist(location)) {
@@ -85,6 +82,8 @@ public class BICube implements Cube {
 
         } catch (BICubeResourceAbsentException e) {
             e.printStackTrace();
+            return false;
+        }catch (BICubeTableAbsentException e){
             return false;
         }
     }
@@ -105,5 +104,10 @@ public class BICube implements Cube {
     @Override
     public void clear() {
         cubeVersion.clear();
+    }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return cubeVersion.isVersionAvailable();
     }
 }
