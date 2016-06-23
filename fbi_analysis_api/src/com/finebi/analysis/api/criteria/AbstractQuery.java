@@ -11,7 +11,6 @@ import java.util.Set;
  * The <code>AbstractQuery</code> interface defines functionality that is common
  * to both top-level queries and subqueries.
  * It is not intended to be used directly in query construction.
-<<<<<<< HEAD
  * <p/>
  * <p> All queries must have:
  * a set of root entities (which may in turn own joins).
@@ -19,35 +18,19 @@ import java.util.Set;
  * a conjunction of restrictions.
  *
  * @param <T> the type of the result
- * @since Advanced FineBI Analysis 1.0
-=======
- *
- * <p> All queries must have:
- *         a set of root entities (which may in turn own joins).
- * <p> All queries may have:
- *         a conjunction of restrictions.
- *
- * @param <T>  the type of the result
- *
  * @since Java Persistence 2.0
->>>>>>> JPA接口
  */
 public interface AbstractQuery<T> extends CommonAbstractCriteria {
 
     /**
      * Create and add a query root corresponding to the given entity,
      * forming a cartesian product with any existing roots.
-<<<<<<< HEAD
      *
      * @param entityClass the entity class
-=======
-     * @param entityClass  the entity class
->>>>>>> JPA接口
      * @return query root corresponding to the given entity
      */
     <X> Root<X> from(Class<X> entityClass);
 
-<<<<<<< HEAD
     <X> Root<X> from(PlainTable plainTable);
 
     /**
@@ -56,13 +39,6 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      *
      * @param entity metamodel entity representing the entity
      *               of type X
-=======
-    /**
-     * Create and add a query root corresponding to the given entity,
-     * forming a cartesian product with any existing roots.
-     * @param entity  metamodel entity representing the entity
-     *                of type X
->>>>>>> JPA接口
      * @return query root corresponding to the given entity
      */
     <X> Root<X> from(EntityType<X> entity);
@@ -71,7 +47,6 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      * Modify the query to restrict the query results according
      * to the specified boolean expression.
      * Replaces the previously added restriction(s), if any.
-<<<<<<< HEAD
      *
      * @param restriction a simple or compound boolean expression
      * @return the modified query
@@ -80,25 +55,12 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
 
     /**
      * Modify the query to restrict the query results according
-=======
-     * @param restriction  a simple or compound boolean expression
-     * @return the modified query
-     */    
-    AbstractQuery<T> where(Expression<Boolean> restriction);
-
-    /**
-     * Modify the query to restrict the query results according 
->>>>>>> JPA接口
      * to the conjunction of the specified restriction predicates.
      * Replaces the previously added restriction(s), if any.
      * If no restrictions are specified, any previously added
      * restrictions are simply removed.
-<<<<<<< HEAD
      *
      * @param restrictions zero or more restriction predicates
-=======
-     * @param restrictions  zero or more restriction predicates
->>>>>>> JPA接口
      * @return the modified query
      */
     AbstractQuery<T> where(Predicate... restrictions);
@@ -107,16 +69,10 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      * Specify the expressions that are used to form groups over
      * the query results.
      * Replaces the previous specified grouping expressions, if any.
-<<<<<<< HEAD
      * If no grouping expressions are specified, any previously
      * added grouping expressions are simply removed.
      *
      * @param grouping zero or more grouping expressions
-=======
-     * If no grouping expressions are specified, any previously 
-     * added grouping expressions are simply removed.
-     * @param grouping  zero or more grouping expressions
->>>>>>> JPA接口
      * @return the modified query
      */
     AbstractQuery<T> groupBy(Expression<?>... grouping);
@@ -125,16 +81,10 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      * Specify the expressions that are used to form groups over
      * the query results.
      * Replaces the previous specified grouping expressions, if any.
-<<<<<<< HEAD
      * If no grouping expressions are specified, any previously
      * added grouping expressions are simply removed.
      *
      * @param grouping list of zero or more grouping expressions
-=======
-     * If no grouping expressions are specified, any previously 
-     * added grouping expressions are simply removed.
-     * @param grouping  list of zero or more grouping expressions
->>>>>>> JPA接口
      * @return the modified query
      */
     AbstractQuery<T> groupBy(List<Expression<?>> grouping);
@@ -142,33 +92,21 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
     /**
      * Specify a restriction over the groups of the query.
      * Replaces the previous having restriction(s), if any.
-<<<<<<< HEAD
      *
      * @param restriction a simple or compound boolean expression
-=======
-     * @param restriction  a simple or compound boolean expression
->>>>>>> JPA接口
      * @return the modified query
      */
     AbstractQuery<T> having(Expression<Boolean> restriction);
 
     /**
      * Specify restrictions over the groups of the query
-<<<<<<< HEAD
      * according the conjunction of the specified restriction
-=======
-     * according the conjunction of the specified restriction 
->>>>>>> JPA接口
      * predicates.
      * Replaces the previously having added restriction(s), if any.
      * If no restrictions are specified, any previously added
      * restrictions are simply removed.
-<<<<<<< HEAD
      *
      * @param restrictions zero or more restriction predicates
-=======
-     * @param restrictions  zero or more restriction predicates
->>>>>>> JPA接口
      * @return the modified query
      */
     AbstractQuery<T> having(Predicate... restrictions);
@@ -179,16 +117,10 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      * A false value will cause duplicates to be retained.
      * If distinct has not been specified, duplicate results must
      * be retained.
-<<<<<<< HEAD
      *
      * @param distinct boolean value specifying whether duplicate
      *                 results must be eliminated from the query result or
      *                 whether they must be retained
-=======
-     * @param distinct  boolean value specifying whether duplicate
-     *        results must be eliminated from the query result or
-     *        whether they must be retained
->>>>>>> JPA接口
      * @return the modified query
      */
     AbstractQuery<T> distinct(boolean distinct);
@@ -199,7 +131,6 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      * including any subquery roots defined as a result of
      * correlation. Returns empty set if no roots have been defined.
      * Modifications to the set do not affect the query.
-<<<<<<< HEAD
      *
      * @return the set of query roots
      */
@@ -210,16 +141,6 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      * has been set.
      *
      * @return selection item
-=======
-     * @return the set of query roots
-     */   
-    Set<Root<?>> getRoots();
-
-    /**
-     *  Return the selection of the query, or null if no selection
-     *  has been set.
-     *  @return selection item 
->>>>>>> JPA接口
      */
     Selection<T> getSelection();
 
@@ -227,24 +148,16 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      * Return a list of the grouping expressions.  Returns empty
      * list if no grouping expressions have been specified.
      * Modifications to the list do not affect the query.
-<<<<<<< HEAD
      *
-=======
->>>>>>> JPA接口
      * @return the list of grouping expressions
      */
     List<Expression<?>> getGroupList();
 
     /**
      * Return the predicate that corresponds to the restriction(s)
-<<<<<<< HEAD
      * over the grouping items, or null if no restrictions have
      * been specified.
      *
-=======
-     * over the grouping items, or null if no restrictions have 
-     * been specified.
->>>>>>> JPA接口
      * @return having clause predicate
      */
     Predicate getGroupRestriction();
@@ -252,14 +165,9 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
     /**
      * Return whether duplicate query results must be eliminated or
      * retained.
-<<<<<<< HEAD
      *
      * @return boolean indicating whether duplicate query results
      * must be eliminated
-=======
-     * @return boolean indicating whether duplicate query results 
-     *         must be eliminated
->>>>>>> JPA接口
      */
     boolean isDistinct();
 
@@ -271,14 +179,8 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      * <code>createTupleQuery</code> method, the result type is
      * <code>Tuple</code>.  Otherwise, the result type is
      * <code>Object</code>.
-<<<<<<< HEAD
      *
      * @return result type
      */
     Class<T> getResultType();
-=======
-     * @return result type
-     */
-    Class<T> getResultType();  	
->>>>>>> JPA接口
 }
