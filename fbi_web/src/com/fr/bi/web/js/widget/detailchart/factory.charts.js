@@ -99,7 +99,7 @@ BI.ChartCombineFormatItemFactory = {
                     "style": "{color: #d4dadd, fontSize: 9pt}",
                     "formatter": {
                         "identifier": "${VALUE}",
-                        "valueFormat": "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}",
+                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                         "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
