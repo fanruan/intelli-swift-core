@@ -115,6 +115,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                 bottom : 15
             }]
         })
+        self.settingIcon.setVisible(BI.Utils.isTableEditable(this.options.id));
         self.loadingBar.setVisible(false);
         self.controller.startChecker(this.options.id);
     },
