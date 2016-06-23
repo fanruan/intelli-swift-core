@@ -9,7 +9,6 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
-import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -137,7 +136,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             }
         } else {
             Map<String, List<BITableRelation>> directToDimRelMap = directToDimensionRelationsMap.get(did);
-            if (directToDimRelMap.get(tarId) == null) {
+            if (directToDimRelMap != null && directToDimRelMap.get(tarId) == null) {
                 BIDimension dim = BITravalUtils.getTargetByName(did, dimensions);
                 BusinessField dimField = getDimDataColumn(dim, tarId);
                 if (!ComparatorUtils.equals(target.getStatisticElement().getTableBelongTo().getTableSource(), dimField.getTableBelongTo().getTableSource())) {

@@ -20,6 +20,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         this.tableChartTab = BI.createWidget({
             type: "bi.tab",
             element: this.element,
+            defaultShowIndex: null,
             cardCreator: BI.bind(this._createChartTabs, this)
         });
     },

@@ -36,6 +36,14 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
                 }
             });
         });
+
+        this.image.element.hover(function () {
+            self.image.setToolbarVisible(true);
+        }, function () {
+            if (!self.image.element.parent().parent().parent().hasClass("selected")) {
+                self.image.setToolbarVisible(false);
+            }
+        });
     },
 
     local: function () {

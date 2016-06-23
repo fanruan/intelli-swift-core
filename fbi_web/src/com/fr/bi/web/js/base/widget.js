@@ -23,7 +23,7 @@ BI.Widget = BI.inherit(FR.Widget, {
         })
     },
 
-    _initOpts : function () {
+    _initOpts: function () {
     },
 
     _init: function () {
@@ -133,9 +133,11 @@ BI.Widget = BI.inherit(FR.Widget, {
         BI.assert(enable, [true, false]);
         if (enable === true) {
             this.options.disabled = false;
+            this.element.removeAttr("disabled");
             this.element.removeClass("base-disabled disabled");
         } else if (enable === false) {
             this.options.disabled = true;
+            this.element.attr("disabled", "disabled");
             this.element.addClass("base-disabled disabled");
         }
     },
@@ -150,8 +152,10 @@ BI.Widget = BI.inherit(FR.Widget, {
         BI.assert(valid, [true, false]);
         this.options.invalid = !valid;
         if (valid === true) {
+            this.element.removeAttr("disabled");
             this.element.removeClass("base-invalid invalid");
         } else if (valid === false) {
+            this.element.attr("disabled", "disabled");
             this.element.addClass("base-invalid invalid");
         }
     },

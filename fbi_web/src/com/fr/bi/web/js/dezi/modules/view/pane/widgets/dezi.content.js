@@ -47,7 +47,9 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
         vessel.hover(function () {
             self.del.setVisible(true);
         }, function () {
-            self.del.setVisible(false);
+            if (!vessel.parent().parent().parent().hasClass("selected")) {
+                self.del.setVisible(false);
+            }
         });
 
         BI.createWidget({

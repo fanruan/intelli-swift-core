@@ -104,7 +104,13 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
 
     @Override
     public Map<CubeTableSource, Long> getVersions() {
-        return null;
+        Set<CubeTableSource> allTable = getAllSingleSources();
+        Map<CubeTableSource, Long> result = new HashMap<CubeTableSource, Long>();
+        Long version = System.currentTimeMillis();
+        for (CubeTableSource table : allTable) {
+            result.put(table, version);
+        }
+        return result;
     }
 
     @Override

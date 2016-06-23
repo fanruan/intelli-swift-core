@@ -33,7 +33,9 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         });
 
         this.label.on(BI.TextButton.EVENT_CHANGE, function () {
-            self.file.select();
+            if (self.isValid()) {
+                self.file.select();
+            }
         });
 
         this.file.on(BI.MultifileEditor.EVENT_CHANGE, function (data) {
@@ -56,7 +58,9 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         });
 
         this.upload.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.file.select();
+            if (self.isValid()) {
+                self.file.select();
+            }
         });
 
         this.del = BI.createWidget({
@@ -139,6 +143,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             }]
         });
 
+        this.setToolbarVisible(false);
         this.img.invisible();
     },
 
@@ -173,6 +178,13 @@ BI.UploadImage = BI.inherit(BI.Widget, {
                 self._setSize("100%", "100%");
                 break;
         }
+    },
+
+    setToolbarVisible: function (v) {
+        this.upload.setVisible(v);
+        this.size.setVisible(v);
+        this.href.setVisible(v);
+        this.del.setVisible(v);
     },
 
     getValue: function () {
