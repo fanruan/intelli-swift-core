@@ -107,14 +107,14 @@ BarChartsView = BI.inherit(BI.View, {
         c1.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
         c1.populate(items1);
         //堆积条形
-        //c2.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
-        //c2.populate(stackedItems);
-        //c3.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
-        //c3.populate(items);
+        c2.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
+        c2.populate(stackedItems);
+        c3.setTypes([[BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR, BICst.WIDGET.BAR]]);
+        c3.populate(items);
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [c1]
+            items: [c1, c2, c3]
         });
     }
 });

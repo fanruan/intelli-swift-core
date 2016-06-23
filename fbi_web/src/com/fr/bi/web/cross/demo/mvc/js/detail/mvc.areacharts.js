@@ -120,7 +120,7 @@ AreaChartsView = BI.inherit(BI.View, {
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [c10]
+            items: [c7, c8, c9, c10]
         });
     }
 });
