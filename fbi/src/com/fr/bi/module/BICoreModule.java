@@ -3,6 +3,7 @@ package com.fr.bi.module;
 import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.datasource.BIDataSourceManager;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
@@ -53,6 +54,7 @@ import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
 import java.sql.*;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -362,6 +364,11 @@ public class BICoreModule extends AbstractModule {
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_SHOW_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_MODULE_CSS);
+    }
+
+    @Override
+    public Collection<BIPackageID> getAvailablePackID(long userId) {
+        return BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
     }
 
     private void registerSystemManager() {

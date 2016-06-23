@@ -6,6 +6,7 @@ import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
@@ -18,10 +19,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2015/12/16.
@@ -142,5 +140,13 @@ public class BIModuleUtils {
             jo.join(provider.getAliasJSON(userId));
         }
         return jo;
+    }
+
+    public static List<BIPackageID> getAvailablePackID(long userId) {
+        List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
+        for (BIModule module : BIModuleManager.getModules()) {
+            authPacks.addAll(module.getAvailablePackID(userId));
+        }
+        return authPacks;
     }
 }
