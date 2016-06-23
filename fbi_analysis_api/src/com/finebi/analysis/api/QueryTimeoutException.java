@@ -7,7 +7,7 @@ package com.finebi.analysis.api;
  * The current transaction, if one is active, will be not
  * be marked for rollback.
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public class QueryTimeoutException extends RuntimeException {
 

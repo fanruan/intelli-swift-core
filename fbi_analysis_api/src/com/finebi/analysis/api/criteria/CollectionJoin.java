@@ -13,7 +13,7 @@ import java.util.Collection;
  * @param <Z> the source type of the join
  * @param <E> the element type of the target <code>Collection</code> 
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface CollectionJoin<Z, E> 
 		extends PluralJoin<Z, Collection<E>, E> {
@@ -24,7 +24,7 @@ public interface CollectionJoin<Z, E>
      *  Replaces the previous ON condition, if any.
      *  @param restriction  a simple or compound boolean expression
      *  @return the modified join object
-     *  @since Java Persistence 2.1
+     *  @since Advanced FineBI Analysis 1.0
      */
     CollectionJoin<Z, E> on(Expression<Boolean> restriction);
 
@@ -34,7 +34,7 @@ public interface CollectionJoin<Z, E>
      *  Replaces the previous ON condition, if any.
      *  @param restrictions  zero or more restriction predicates
      *  @return the modified join object
-     *  @since Java Persistence 2.1
+     *  @since Advanced Fine BI 5.1
      */
     CollectionJoin<Z, E> on(Predicate... restrictions);
 

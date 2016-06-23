@@ -13,7 +13,7 @@ import com.finebi.analysis.api.metamodel.PluralAttribute;
  * @param <C> the collection type
  * @param <E> the element type of the collection 
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface PluralJoin<Z, C, E> extends Join<Z, E> {
 

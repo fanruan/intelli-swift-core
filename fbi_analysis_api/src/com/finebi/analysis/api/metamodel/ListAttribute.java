@@ -8,7 +8,7 @@ package com.finebi.analysis.api.metamodel;
  * @param <X> The type the represented List belongs to
  * @param <E> The element type of the represented List
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  *
  */
 public interface ListAttribute<X, E> 

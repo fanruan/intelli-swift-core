@@ -9,7 +9,7 @@ import java.util.Set;
  *
  *  @param <X> The represented entity or mapped superclass type.
  *
- *  @since Java Persistence 2.0
+ *  @since Advanced FineBI Analysis 1.0
  *
  */
 public interface IdentifiableType<X> extends ManagedType<X> {

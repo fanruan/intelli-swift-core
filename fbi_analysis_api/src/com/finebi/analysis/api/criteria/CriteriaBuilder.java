@@ -16,7 +16,7 @@ import java.util.Set;
  * in this API in order to work around the fact that Java
  * generics are not compatible with varags.
  *
- * @since FineBI Analysis 1.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface CriteriaBuilder {
 
