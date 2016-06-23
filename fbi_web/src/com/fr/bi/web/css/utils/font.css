@@ -2442,6 +2442,15 @@
   content: "\e605";
   color: #808080;
 }
+.real-time-font .b-font:before {
+  content: "\e6af";
+  color: #fcc550;
+}
+.real-time-font.native .b-font:before,
+.real-time-font.disabled .b-font:before {
+  content: "\e6af";
+  color: #fcc550;
+}
 .data-source-table-font .b-font:before {
   content: "\e67b";
   color: #009de3;

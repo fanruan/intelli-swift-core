@@ -403,6 +403,11 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         return getRowCountReader().canRead();
     }
 
+    @Override
+    public Boolean isVersionAvailable() {
+        return version.isVersionAvailable();
+    }
+
     protected void resetFieldReader() {
         if (isFieldReaderAvailable()) {
             fieldInfoReader.clear();

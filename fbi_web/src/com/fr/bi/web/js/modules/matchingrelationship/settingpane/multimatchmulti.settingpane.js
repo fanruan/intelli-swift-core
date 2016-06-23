@@ -159,7 +159,12 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         BI.each(lregion, function(idx, lg){
             BI.each(rregion, function(id, rg){
                 rg.splice(0, 1);
-                newRegion.push(BI.concat(lg, rg));
+                var lgValues = BI.pluck(lg, "value");
+                var rgValues = BI.pluck(rg, "value");
+                var result = BI.find(rgValues, function(idx, value){
+                    return BI.contains(lgValues, value);
+                });
+                BI.isNull(result) && newRegion.push(BI.concat(lg, rg));
             })
         });
         return newRegion;
@@ -212,12 +217,19 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         return v;
     },
 
+    _joinRegion: function(items){
+        BI.each(items, function(){
+
+        });
+    },
+
     populate: function (items) {
         this.path = [];
         this.pathRelationMap = {};
         this.pathValueMap = {};
         this.options.combineTableId = items.combineTableId;
         items = this._createRegionPathsByItems(items);
+        this._joinRegion(items);
         this.pathChooser.populate(items);
         if(items.length > 1){
             this.pathChooser.setValue();

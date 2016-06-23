@@ -96,6 +96,18 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
         if (BI.has(widget, "value")) {
             result.value = widget.value;
         }
+        if (BI.has(widget, "content")) {
+            result.content = widget.content;
+        }
+        if (BI.has(widget, "href")) {
+            result.href = widget.href;
+        }
+        if (BI.has(widget, "src")) {
+            result.src = widget.src;
+        }
+        if (BI.has(widget, "url")) {
+            result.url = widget.url;
+        }
 
         this.button.element.draggable({
             cursor: BICst.cursorUrl,

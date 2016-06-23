@@ -144,7 +144,7 @@ BI.DimensionStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT
         });
 
-        this.filterWidget.on(BI.SelectFieldDataCombo.EVENT_CONFIRM, function () {
+        this.filterWidget.on(BI.SelectDimensionDataCombo.EVENT_CONFIRM, function () {
             self._setNodeData({
                 filter_value : this.getValue()
             });
