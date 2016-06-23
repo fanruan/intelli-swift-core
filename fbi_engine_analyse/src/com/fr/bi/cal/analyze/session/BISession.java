@@ -48,7 +48,6 @@ public class BISession extends BIAbstractSession {
     //pony 缓存loader
     private ICubeDataLoader loader;
     private CubeGenerateStatusProvider provider;
-    private Boolean tempTableCubeStatus = false;
     private String tempTableMd5;
     private String tempTableId;
     //pony 明细表缓存的分页信息
@@ -124,13 +123,7 @@ public class BISession extends BIAbstractSession {
         }
     }
 
-    public void setTempTableCubeStatus(Boolean hasGenerated) {
-        this.tempTableCubeStatus = hasGenerated;
-    }
 
-    public boolean getTempTableCubeStatus() {
-        return this.tempTableCubeStatus;
-    }
 
 
     public CubeGenerateStatusProvider getProvider() {
