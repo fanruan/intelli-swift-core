@@ -72,78 +72,6 @@ public interface From<Z, X> extends Path<X> {
      */
     <Y> Join<X, Y> join(SingularAttribute<? super X, Y> attribute, JoinType jt);
 
-    /**
-     * Create an inner join to the specified Collection-valued
-     * attribute.
-     *
-     * @param collection target of the join
-     * @return the resulting join
-     */
-    <Y> CollectionJoin<X, Y> join(CollectionAttribute<? super X, Y> collection);
-
-    /**
-     * Create an inner join to the specified Set-valued attribute.
-     *
-     * @param set target of the join
-     * @return the resulting join
-     */
-    <Y> SetJoin<X, Y> join(SetAttribute<? super X, Y> set);
-
-    /**
-     * Create an inner join to the specified List-valued attribute.
-     *
-     * @param list target of the join
-     * @return the resulting join
-     */
-    <Y> ListJoin<X, Y> join(ListAttribute<? super X, Y> list);
-
-    /**
-     * Create an inner join to the specified Map-valued attribute.
-     *
-     * @param map target of the join
-     * @return the resulting join
-     */
-    <K, V> MapJoin<X, K, V> join(MapAttribute<? super X, K, V> map);
-
-    /**
-     * Create a join to the specified Collection-valued attribute
-     * using the given join type.
-     *
-     * @param collection target of the join
-     * @param jt         join type
-     * @return the resulting join
-     */
-    <Y> CollectionJoin<X, Y> join(CollectionAttribute<? super X, Y> collection, JoinType jt);
-
-    /**
-     * Create a join to the specified Set-valued attribute using
-     * the given join type.
-     *
-     * @param set target of the join
-     * @param jt  join type
-     * @return the resulting join
-     */
-    <Y> SetJoin<X, Y> join(SetAttribute<? super X, Y> set, JoinType jt);
-
-    /**
-     * Create a join to the specified List-valued attribute using
-     * the given join type.
-     *
-     * @param list target of the join
-     * @param jt   join type
-     * @return the resulting join
-     */
-    <Y> ListJoin<X, Y> join(ListAttribute<? super X, Y> list, JoinType jt);
-
-    /**
-     * Create a join to the specified Map-valued attribute using
-     * the given join type.
-     *
-     * @param map target of the join
-     * @param jt  join type
-     * @return the resulting join
-     */
-    <K, V> MapJoin<X, K, V> join(MapAttribute<? super X, K, V> map, JoinType jt);
 
 
     //String-based:
@@ -159,50 +87,8 @@ public interface From<Z, X> extends Path<X> {
      */
     <X, Y> Join<X, Y> join(String attributeName);
 
-    /**
-     * Create an inner join to the specified Collection-valued
-     * attribute.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, Y> CollectionJoin<X, Y> joinCollection(String attributeName);
 
-    /**
-     * Create an inner join to the specified Set-valued attribute.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, Y> SetJoin<X, Y> joinSet(String attributeName);
 
-    /**
-     * Create an inner join to the specified List-valued attribute.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, Y> ListJoin<X, Y> joinList(String attributeName);
-
-    /**
-     * Create an inner join to the specified Map-valued attribute.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, K, V> MapJoin<X, K, V> joinMap(String attributeName);
 
     /**
      * Create a join to the specified attribute using the given
@@ -217,55 +103,6 @@ public interface From<Z, X> extends Path<X> {
      */
     <X, Y> Join<X, Y> join(String attributeName, JoinType jt);
 
-    /**
-     * Create a join to the specified Collection-valued attribute
-     * using the given join type.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @param jt            join type
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, Y> CollectionJoin<X, Y> joinCollection(String attributeName, JoinType jt);
 
-    /**
-     * Create a join to the specified Set-valued attribute using
-     * the given join type.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @param jt            join type
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, Y> SetJoin<X, Y> joinSet(String attributeName, JoinType jt);
 
-    /**
-     * Create a join to the specified List-valued attribute using
-     * the given join type.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @param jt            join type
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, Y> ListJoin<X, Y> joinList(String attributeName, JoinType jt);
-
-    /**
-     * Create a join to the specified Map-valued attribute using
-     * the given join type.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @param jt            join type
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, K, V> MapJoin<X, K, V> joinMap(String attributeName, JoinType jt);
 }

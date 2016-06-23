@@ -1,8 +1,6 @@
 
 package com.finebi.analysis.api.criteria;
 
-import com.finebi.analysis.api.metamodel.Attribute;
-
 /**
  * A join to an entity, embeddable, or basic type.
  *
@@ -42,11 +40,6 @@ public interface Join<Z, X> extends From<Z, X> {
      */
     Predicate getOn();
 
-    /**
-     * Return the metamodel attribute corresponding to the join.
-     * @return metamodel attribute corresponding to the join
-     */
-    Attribute<? super Z, ?> getAttribute();
 
     /**
      * Return the parent of the join.

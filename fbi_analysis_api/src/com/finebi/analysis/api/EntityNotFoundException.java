@@ -22,7 +22,7 @@ package com.finebi.analysis.api;
  * 
  * @since Java Persistence 1.0
  */
-public class EntityNotFoundException extends PersistenceException {
+public class EntityNotFoundException extends RuntimeException {
 
 	/**
 	 * Constructs a new <code>EntityNotFoundException</code> exception with

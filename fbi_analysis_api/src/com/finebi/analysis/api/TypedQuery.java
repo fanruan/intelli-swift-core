@@ -208,23 +208,5 @@ public interface TypedQuery<X> extends Query {
     TypedQuery<X> setParameter(int position, Date value,
                                TemporalType temporalType);
 
-     /**
-      * Set the flush mode type to be used for the query execution.
-      * The flush mode type applies to the query regardless of the
-      * flush mode type in use for the entity manager.
-      * @param flushMode  flush mode
-      * @return the same query instance
-      */
-     TypedQuery<X> setFlushMode(FlushModeType flushMode);
-
-     /**
-      * Set the lock mode type to be used for the query execution.
-      * @param lockMode  lock mode
-      * @return the same query instance
-      * @throws IllegalStateException if the query is found not to 
-      *         be a Java Persistence query language SELECT query
-      *         or a CriteriaQuery query
-      */
-     TypedQuery<X> setLockMode(LockModeType lockMode);
 
 }
