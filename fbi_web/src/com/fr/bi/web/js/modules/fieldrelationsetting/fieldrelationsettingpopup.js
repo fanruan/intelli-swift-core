@@ -37,7 +37,6 @@ BI.FieldRelationSettingPopup = BI.inherit(BI.BarPopoverSection, {
         this.sure.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.FieldRelationSettingPopup.EVENT_CHANGE)
         });
-        this.cancel.setVisible(false);
     },
 
     rebuildCenter: function (center) {

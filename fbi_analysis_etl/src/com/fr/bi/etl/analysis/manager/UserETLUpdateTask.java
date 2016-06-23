@@ -100,7 +100,7 @@ public class UserETLUpdateTask implements CubeTask {
                 }
             }
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
-
+        tableEntityService.addVersion(getTableVersion());
         ICubeFieldSource[] fields = source.getFieldsArray(new HashSet<CubeTableSource>());
         for (int i = 0; i < fields.length; i++) {
             ICubeFieldSource field = fields[i];
@@ -110,8 +110,6 @@ public class UserETLUpdateTask implements CubeTask {
                 new BIFieldIndexGenerator(cube, source, field, targetColumnKey).mainTask(null);
             }
         }
-        tableEntityService.addVersion(getTableVersion());
-
     }
 
 

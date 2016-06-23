@@ -3,13 +3,13 @@ package com.fr.bi.module;
 import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.datasource.BIDataSourceManager;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManager;
 import com.fr.base.FRContext;
-import com.fr.bi.DemoService;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.manager.ClusterManager;
@@ -54,6 +54,7 @@ import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
 import java.sql.*;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -365,6 +366,11 @@ public class BICoreModule extends AbstractModule {
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_MODULE_CSS);
     }
 
+    @Override
+    public Collection<BIPackageID> getAvailablePackID(long userId) {
+        return BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+    }
+
     private void registerSystemManager() {
     }
 
@@ -375,9 +381,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIReport(),
                 new Service4BIDezi(),
                 new Service4BIMobile(),
-                new Service4BIBase(),
-
-                new DemoService()
+                new Service4BIBase()
         };
     }
 

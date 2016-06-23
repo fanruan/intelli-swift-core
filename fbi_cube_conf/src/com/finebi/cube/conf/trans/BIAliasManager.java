@@ -5,6 +5,7 @@ import com.finebi.cube.conf.BISystemDataManager;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
 /**
@@ -50,7 +51,11 @@ public class BIAliasManager extends BISystemDataManager<UserAliasManager> implem
 
     public JSONObject getAliasJSON(long userID) {
         try {
-            return getTransManager(userID).createJSON();
+            JSONObject jo = getTransManager(userID).createJSON();
+            if (userID != UserControl.getInstance().getSuperManagerID()){
+                jo.join(getTransManager(UserControl.getInstance().getSuperManagerID()).createJSON());
+            }
+            return jo;
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e);

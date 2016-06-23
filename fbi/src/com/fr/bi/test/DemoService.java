@@ -1,4 +1,4 @@
-package com.fr.bi;
+package com.fr.bi.test;
 
 import com.fr.base.TemplateUtils;
 import com.fr.bi.cal.analyze.session.BISession;
