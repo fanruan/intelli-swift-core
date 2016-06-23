@@ -68,7 +68,8 @@ BI.WebPage = BI.inherit(BI.Widget, {
             }]
         });
 
-        self._showLabel();
+        this.setToolbarVisible(false);
+        this._showLabel();
     },
 
     _hideLabel: function () {
@@ -77,6 +78,11 @@ BI.WebPage = BI.inherit(BI.Widget, {
 
     _showLabel: function () {
         this.label.visible()
+    },
+
+    setToolbarVisible: function (v) {
+        this.href.setVisible(v);
+        this.del.setVisible(v);
     },
 
     getValue: function () {

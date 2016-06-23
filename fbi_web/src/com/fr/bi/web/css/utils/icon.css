@@ -383,6 +383,21 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package_add.png');
   _background: none;
 }
+.business-package-add-disable-icon .x-icon,
+.business-package-add-disable-icon:hover .x-icon,
+.business-package-add-disable-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package_add_disable.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package_add_disable.png');
+  _background: none;
+}
+.business-package-add-disable-icon.native .x-icon,
+.business-package-add-disable-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package_add_disable.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/business_package_add_disable.png');
+  _background: none;
+}
 .business-package-selected-icon .x-icon,
 .business-package-selected-icon:hover .x-icon,
 .business-package-selected-icon:active .x-icon {
