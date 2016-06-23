@@ -90,6 +90,10 @@ body{
     right : 40%;
     width : 112px;
     height : 180px;
+    transition: all 1s ease;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
     background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/logo.png') no-repeat;
 }
 
@@ -160,6 +164,7 @@ body{
     filter: Alpha(opacity=95);
     opacity: 0.95;
 }
+
 
 #fs-login-input-area{
     margin-top:6%;
@@ -261,4 +266,60 @@ span.fs-login-remember-selected{
     position: absolute;
     top:38%;
     width: 100%;
+}
+
+#fs-login-logo:active {
+    -webkit-animation: scale_rotate 8s ease infinite;
+    -moz-animation: scale_rotate 8s ease infinite;
+    -o-animation: scale_rotate 8s ease infinite;
+    animation: scale_rotate  8s ease infinite;
+}
+
+@keyframes scale_rotate {
+    0%  {
+        transform: rotateY(0deg);
+    }
+    50% {
+        transform: rotateY(360deg);
+    }
+    100%  {
+        transform: rotateY(0deg);
+    }
+}
+
+
+@-webkit-keyframes scale_rotate {
+    0%  {
+        -webkit-transform:rotateY(0deg);
+    }
+    50% {
+        -webkit-transform: rotateY(360deg);
+    }
+    100%  {
+        -webkit-transform: rotateY(0deg);
+    }
+}
+
+@-moz-keyframes scale_rotate {
+    0%  {
+        -moz-transform: rotateY(0deg);
+    }
+    50% {
+        -moz-transform: rotateY(360deg);
+    }
+    100%  {
+        -moz-transform: rotateY(0deg);
+    }
+}
+
+@-o-keyframes scale_rotate {
+    0%  {
+        -o-transform: rotateY(0deg);
+    }
+    50% {
+        -o-transform: rotateY(360deg);
+    }
+    100%  {
+        -o-transform: rotateY(0deg);
+    }
 }
