@@ -478,7 +478,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     return "";
                 }else{
                     return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
-                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div><div>(BI.i18nText('BI-Size'))" + BI.Utils.getDimensionNameByID(this.targetIds[2])
+                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div><div>(" + BI.i18nText("BI-Size") + ")" + BI.Utils.getDimensionNameByID(this.targetIds[2])
                         + ":'+ this.size +'</div>'}";
                 }
             case BICst.WIDGET.MAP:
@@ -493,6 +493,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var cordon = {};
         var result = [];
         BI.each(BI.Utils.getAllDimensionIDs(o.wId), function(idx, dId){
+            if(!BI.Utils.isDimensionUsable(dId)){
+                return;
+            }
             var items = BI.map(BI.Utils.getDimensionCordonByID(dId), function(id, cor){
                 return {
                     text: cor.cordon_name,
@@ -510,6 +513,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if(type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.BUBBLE){
             result.push(BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2]);
             result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
+            return result;
+        }
+        if(type === BICst.WIDGET.BAR || type ===BICst.WIDGET.ACCUMULATE_BAR){
+            result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
+            result.push(BI.isNull(cordon[BICst.REGION.DIMENSION1]) ? [] : cordon[BICst.REGION.DIMENSION1]);
+            return result;
+        }
+        if(type === BICst.WIDGET.COMPARE_BAR){
+            var negativeAxis = BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1];
+            var positiveAxis = BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2]
+            result.push(BI.concat(negativeAxis, positiveAxis));
+            result.push(BI.isNull(cordon[BICst.REGION.DIMENSION1]) ? [] : cordon[BICst.REGION.DIMENSION1]);
+            return result;
         }
         result.push(BI.isNull(cordon[BICst.REGION.DIMENSION1]) ? [] : cordon[BICst.REGION.DIMENSION1]);
         result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
