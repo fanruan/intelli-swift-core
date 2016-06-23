@@ -68,38 +68,61 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
             direction: "right",
             popup: {
                 el: {
-                    type: "bi.vertical",
+                    type: "bi.horizontal_auto",
                     cls: "info-card",
                     items: [{
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Users") + ": " + userName,
-                        title: userName,
-                        textAlign: "left",
-                        height: 30,
-                        hgap: 5
+                        type: "bi.horizontal",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Users") + ":",
+                            height: 30,
+                            width: 40
+                        }, {
+                            type: "bi.label",
+                            text: userName,
+                            textAlign: "left",
+                            textHeight: 30,
+                            whiteSpace: "normal",
+                            hgap: 5
+                        }]
                     }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Role") + ": " + roleName,
-                        title: roleName,
-                        textAlign: "left",
-                        height: 30,
-                        hgap: 5
+                        type: "bi.horizontal",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Role") + ":",
+                            height: 30,
+                            width: 40
+                        }, {
+                            type: "bi.label",
+                            text: roleName.toString(),
+                            textAlign: "left",
+                            textHeight: 30,
+                            whiteSpace: "normal",
+                            hgap: 5
+                        }]
                     }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Department") + ": " + departName,
-                        title: departName,
-                        textAlign: "left",
-                        height: 30,
-                        hgap: 5
+                        type: "bi.horizontal",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Department") + ":",
+                            height: 30,
+                            width: 40
+                        }, {
+                            type: "bi.label",
+                            text: departName.toString(),
+                            textAlign: "left",
+                            textHeight: 30,
+                            whiteSpace: "normal",
+                            hgap: 5
+                        }]
                     }, {
                         type: "bi.label",
                         text: BI.i18nText("BI-Last_Modify_Date") + ": " + FR.date2Str(new Date(report.lastModify), "yyyy.MM.dd HH:mm:ss"),
-                        title: FR.date2Str(new Date(report.lastModify), "yyyy.MM.dd HH:mm:ss"),
                         textAlign: "left",
                         height: 30,
                         hgap: 5
                     }],
-                    width: 200
+                    width: 220
                 }
             }
         });
