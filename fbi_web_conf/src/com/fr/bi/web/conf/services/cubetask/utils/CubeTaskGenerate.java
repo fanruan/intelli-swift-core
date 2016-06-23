@@ -32,7 +32,7 @@ public class CubeTaskGenerate {
         BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
         Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
 /*若有新增表，增量更新，否则进行全量*/
-        if (newTables.size() == 0) {
+        if (newTables.size() != 0) {
             CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
             if (!cubeBuildStuff.preConditionsCheck()) {
