@@ -145,7 +145,10 @@ public class BIModuleUtils {
     public static List<BIPackageID> getAvailablePackID(long userId) {
         List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
         for (BIModule module : BIModuleManager.getModules()) {
-            authPacks.addAll(module.getAvailablePackID(userId));
+            Collection<BIPackageID> packs = module.getAvailablePackID(userId);
+            if(packs != null) {
+                authPacks.addAll(packs);
+            }
         }
         return authPacks;
     }

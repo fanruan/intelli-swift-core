@@ -4,12 +4,15 @@ import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.module.AbstractModule;
 import com.fr.bi.test.DemoService;
 import com.fr.stable.DebugAssistant;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Locale;
 
 /**
@@ -56,5 +59,10 @@ public class BIDebugModule extends AbstractModule {
     @Override
     public void loadResources(Locale[] locale) {
 
+    }
+
+    @Override
+    public Collection<BIPackageID> getAvailablePackID(long userId) {
+        return new HashSet<BIPackageID>();
     }
 }
