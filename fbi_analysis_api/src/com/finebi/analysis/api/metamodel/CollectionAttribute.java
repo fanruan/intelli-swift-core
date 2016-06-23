@@ -8,7 +8,7 @@ package com.finebi.analysis.api.metamodel;
  * @param <X> The type the represented Collection belongs to
  * @param <E> The element type of the represented Collection
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  *
  */
 public interface CollectionAttribute<X, E> 

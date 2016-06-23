@@ -8,7 +8,7 @@ package com.finebi.analysis.api.metamodel;
  * @param <X> The type the represented Set belongs to
  * @param <E> The element type of the represented Set
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface SetAttribute<X, E> 
 	extends PluralAttribute<X, java.util.Set<E>, E> {} 

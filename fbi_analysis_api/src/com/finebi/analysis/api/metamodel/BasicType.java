@@ -7,6 +7,6 @@ package com.finebi.analysis.api.metamodel;
  *
  * @param <X> The type of the represented basic type
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface BasicType<X> extends Type<X> {}

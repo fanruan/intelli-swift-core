@@ -9,7 +9,7 @@ import java.util.Set;
  *
  *  @param <X> The represented type.
  *
- *  @since Java Persistence 2.0
+ *  @since Advanced FineBI Analysis 1.0
  *
  */
 public interface ManagedType<X> extends Type<X> {

@@ -15,7 +15,7 @@ import java.util.Set;
  *
  * @param <Z> the source type
  * @param <X> the target type
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 @SuppressWarnings("hiding")
 public interface From<Z, X> extends Path<X> {

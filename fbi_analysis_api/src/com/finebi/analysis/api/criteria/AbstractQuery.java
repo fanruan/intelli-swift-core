@@ -18,7 +18,7 @@ import java.util.Set;
  * a conjunction of restrictions.
  *
  * @param <T> the type of the result
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface AbstractQuery<T> extends CommonAbstractCriteria {
 

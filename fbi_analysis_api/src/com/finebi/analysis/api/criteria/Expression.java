@@ -8,7 +8,7 @@ import java.util.Collection;
  *
  * @param <T> the type of the expression
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface Expression<T> extends Selection<T> {
 

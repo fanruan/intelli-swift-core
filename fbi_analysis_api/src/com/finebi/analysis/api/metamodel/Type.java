@@ -7,7 +7,7 @@ package com.finebi.analysis.api.metamodel;
  *
  * @param <X>  The type of the represented object or attribute
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface Type<X> {
 
