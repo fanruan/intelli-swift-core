@@ -56,7 +56,7 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                             handler: function () {
                                 FS.tabPane.addItem({
                                     title: report.text,
-                                    src: FR.servletURL + report.buildUrl
+                                    src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
                                 });
                             }
                         }
@@ -94,7 +94,7 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                         handler: function () {
                             FS.tabPane.addItem({
                                 title: report.text,
-                                src: FR.servletURL + report.buildUrl
+                                src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
                             });
                         }
                     },
