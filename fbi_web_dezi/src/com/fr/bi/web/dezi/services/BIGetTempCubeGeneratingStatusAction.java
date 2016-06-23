@@ -25,6 +25,7 @@ public class BIGetTempCubeGeneratingStatusAction extends AbstractBIDeziAction {
         //hasTask这里有问题,等kary提供taskId的check
         if (!CubeGenerationManager.getCubeManager().hasTask(session.getUserId())) {
             jo.put("percent", 100);
+            session.setTempTableCubeStatus(true);
         } else {
             jo.put("percent", 50);
         }

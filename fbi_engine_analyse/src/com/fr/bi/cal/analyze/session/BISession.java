@@ -48,6 +48,7 @@ public class BISession extends BIAbstractSession {
     //pony 缓存loader
     private ICubeDataLoader loader;
     private CubeGenerateStatusProvider provider;
+    private Boolean tempTableCubeStatus = false;
     private String tempTableMd5;
     private String tempTableId;
     //pony 明细表缓存的分页信息
@@ -122,6 +123,15 @@ public class BISession extends BIAbstractSession {
             lockDAO.release(lock);
         }
     }
+
+    public void setTempTableCubeStatus(Boolean hasGenerated) {
+        this.tempTableCubeStatus = hasGenerated;
+    }
+
+    public boolean getTempTableCubeStatus() {
+        return this.tempTableCubeStatus;
+    }
+
 
     public CubeGenerateStatusProvider getProvider() {
         return provider;
@@ -252,7 +262,7 @@ public class BISession extends BIAbstractSession {
                 return CubeReadingTableIndexLoader.getInstance(accessUserId);
             } else {
                 if (loader == null) {
-                    loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getUserId()));
+                    loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getTempTableId(), getUserId()));
                 }
                 return loader;
             }
@@ -263,7 +273,7 @@ public class BISession extends BIAbstractSession {
     public void updateTime() {
         this.lastTime = System.currentTimeMillis();
         if (isRealTime()) {
-            CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getUserId()));
+            CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getTempTableId(), getUserId()));
             loader.updateTime();
         }
     }
