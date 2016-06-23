@@ -107,7 +107,6 @@ public class BIReportEntry extends BaseEntry {
     public JSONObject createJSONConfig() throws JSONException {
         JSONObject jo = createShowJSONConfig();
         jo.put("reportName", reportName);
-        jo.put("createBy", createBy);
         return jo;
     }
 
@@ -116,6 +115,7 @@ public class BIReportEntry extends BaseEntry {
         jo.put("mobileCoverId", mobileCoverId);
         jo.put("nodeicon", "bi");
         jo.put("reportId", this.getReportId());
+        jo.put("createBy", this.getCreateBy());
         jo.put("bilink", "?op=fr_bi&cmd=bi_init&id=" + this.getReportId()
                 + "&show=_bi_show_&createBy=" + this.getCreateBy());
         return jo;
