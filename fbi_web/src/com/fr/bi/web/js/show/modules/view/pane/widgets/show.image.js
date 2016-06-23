@@ -20,19 +20,8 @@ BIShow.ImageWidgetView = BI.inherit(BI.View, {
         var self = this;
         this.image = BI.createWidget({
             type: "bi.upload_image",
+            invalid: true,
             element: vessel
-        });
-
-        this.image.on(BI.UploadImage.EVENT_CHANGE, function () {
-            self.model.set(self.image.getValue());
-        });
-
-        this.image.on(BI.UploadImage.EVENT_DESTROY, function () {
-            BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete"), function (v) {
-                if (v === true) {
-                    self.model.destroy();
-                }
-            });
         });
     },
 
