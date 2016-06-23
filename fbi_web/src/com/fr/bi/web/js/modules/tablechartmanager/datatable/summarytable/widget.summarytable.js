@@ -474,6 +474,13 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     resize: function () {
         this.table.resize();
+    },
+    
+    empty: function(){
+        BI.SummaryTable.superclass.empty.apply(this, arguments);
+        if(BI.isNotNull(this.table)) {
+            this.table.empty();
+        }
     }
 });
 BI.SummaryTable.EVENT_CHANGE = "EVENT_CHANGE";

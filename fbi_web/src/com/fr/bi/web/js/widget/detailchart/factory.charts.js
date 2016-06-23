@@ -99,7 +99,7 @@ BI.ChartCombineFormatItemFactory = {
                     "style": "{color: #d4dadd, fontSize: 9pt}",
                     "formatter": {
                         "identifier": "${VALUE}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "valueFormat": "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}",
                         "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
@@ -167,8 +167,8 @@ BI.ChartCombineFormatItemFactory = {
                 "sizeBy": "area",
                 "tooltip": {
                     "formatter": {
-                        "identifier": "${SERIES}${X}${Y}${SIZE}{CATEGORY}${SERIES}${VALUE}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "identifier": "${X}${Y}${SIZE}{CATEGORY}${SERIES}${VALUE}",
+                        "valueFormat": "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}",
                         "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
@@ -258,17 +258,28 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
+                delete config.dataSheet;
+                delete config.zoom;
                 return BI.extend({"chartType": "bar"}, config);
             case BICst.WIDGET.BUBBLE:
+                delete config.dataSheet;
+                delete config.zoom;
                 return BI.extend({"chartType": "bubble"}, config);
             case BICst.WIDGET.FORCE_BUBBLE:
+                delete config.dataSheet;
+                delete config.zoom;
                 config.plotOptions.force = true;
                 return BI.extend({"chartType": "bubble"}, config);
             case BICst.WIDGET.SCATTER:
+                delete config.dataSheet;
+                delete config.zoom;
                 return BI.extend({"chartType": "scatter"}, config);
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
+                return BI.extend({"chartType": "column"}, config);
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
+                return BI.extend({"chartType": "column"}, config);
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.FALL_AXIS:
                 return BI.extend({"chartType": "column"}, config);
@@ -277,27 +288,45 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AREA:
             case BICst.WIDGET.COMPARE_AREA:
+                return BI.extend({"chartType": "area"}, config);
             case BICst.WIDGET.RANGE_AREA:
+                delete config.dataSheet;
+                delete config.zoom;
+                return BI.extend({"chartType": "area"}, config);
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
                 return BI.extend({"chartType": "area"}, config);
             case BICst.WIDGET.DONUT:
+                delete config.dataSheet;
+                delete config.zoom;
                 config.plotOptions.innerRadius = "50.0%";
                 return BI.extend({"chartType": "pie"}, config);
             case BICst.WIDGET.RADAR:
+                delete config.dataSheet;
+                delete config.zoom;
                 return BI.extend({"chartType": "radar"}, config);
             case BICst.WIDGET.ACCUMULATE_RADAR:
+                delete config.dataSheet;
+                delete config.zoom;
                 config.plotOptions.columnType = true;
                 return BI.extend({"chartType": "radar"}, config);
             case BICst.WIDGET.PIE:
+                delete config.dataSheet;
+                delete config.zoom;
                 return BI.extend({"chartType": "pie"}, config);
             case BICst.WIDGET.DASHBOARD:
                 delete config.dataSheet;
+                delete config.zoom;
                 return BI.extend({"chartType": "gauge"}, config);
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
+                delete config.dataSheet;
+                delete config.zoom;
                 config.plotOptions.tooltip.shared = true;
                 return BI.extend({"chartType": "areaMap"}, config);
             case BICst.WIDGET.GIS_MAP:
+                delete config.dataSheet;
+                delete config.zoom;
                 return BI.extend({"chartType": "areaMap"}, config);
             default:
                 return BI.extend({"chartType": "column"}, config);

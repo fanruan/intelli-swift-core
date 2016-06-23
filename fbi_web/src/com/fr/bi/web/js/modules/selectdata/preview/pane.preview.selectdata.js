@@ -36,11 +36,9 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
     populate: function (data) {
         var self = this, o = this.options;
         var value = data.value, fieldNames = data.fields;
-        var fieldIds = BI.Utils.getFieldIDsOfTableID(BI.Utils.getTableIdByFieldID(o.value.field_id || o.value));
         var currentId = BI.isNotNull(o.value.group) ? (o.value.field_id + o.value.group.type) : o.value;
         var tableId = BI.Utils.getTableIdByFieldID(BI.isNotNull(o.value.field_id) ? o.value.field_id : o.value);
         var sortedFieldIds = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
-        sortedFieldIds.splice(0, 1);
         this.sortedFieldIdsArray = [];
         this.checkBoxes = [];
         this.mapValues = {};
@@ -48,8 +46,10 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
         //所有被选中的，对于日期的，可以使用fId+group拼接成id
         var dateGroup = [BICst.GROUP.Y, BICst.GROUP.S, BICst.GROUP.M, BICst.GROUP.W, BICst.GROUP.YMD, BICst.GROUP.YMDHMS];
         BI.each(sortedFieldIds, function (i, fId) {
+            if(BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.COUNTER) {
+                return;
+            }
             var fieldName = BI.Utils.getOriginalFieldNameByID(fId);
-            // var index = fieldIds.indexOf(fId);
             var index = fieldNames.indexOf(fieldName);
             //日期类型特殊处理
             if (BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.DATE) {
@@ -80,107 +80,125 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                         }],
                         type: "bi.left"
                     }, {
-                        type: "bi.left",
+                        type: "bi.htape",
                         items: [{
-                            type: "bi.center_adapt",
-                            items: [check[BICst.GROUP.Y]],
-                            width: self.constant.CHECK_WIDTH,
-                            height: self.constant.CHECK_HEIGHT
+                            el: {
+                                type: "bi.vertical_adapt",
+                                items: [check[BICst.GROUP.Y]]
+                            },
+                            width: 20
                         }, {
-                            type: "bi.label",
-                            text: BI.i18nText("BI-Year_Fen"),
-                            title: BI.i18nText("BI-Year_Fen"),
-                            width: self.constant.FIELD_WIDTH,
-                            height: self.constant.FIELD_HEIGHT,
-                            hgap: 10,
-                            whiteSpace: "nowrap",
-                            textAlign: "left"
-                        }]
+                            el: {
+                                type: "bi.label",
+                                text: BI.i18nText("BI-Year_Fen"),
+                                title: BI.i18nText("BI-Year_Fen"),
+                                height: 30,
+                                lgap: 5,
+                                whiteSpace: "nowrap",
+                                textAlign: "left"
+                            }
+                        }],
+                        height: 30
                     }, {
-                        type: "bi.left",
+                        type: "bi.htape",
                         items: [{
-                            type: "bi.center_adapt",
-                            items: [check[BICst.GROUP.S]],
-                            width: self.constant.CHECK_WIDTH,
-                            height: self.constant.CHECK_HEIGHT
+                            el: {
+                                type: "bi.vertical_adapt",
+                                items: [check[BICst.GROUP.S]]
+                            },
+                            width: 20
                         }, {
-                            type: "bi.label",
-                            text: BI.i18nText("BI-Quarter"),
-                            title: BI.i18nText("BI-Quarter"),
-                            width: self.constant.FIELD_WIDTH,
-                            height: self.constant.FIELD_HEIGHT,
-                            hgap: 10,
-                            whiteSpace: "nowrap",
-                            textAlign: "left"
-                        }]
+                            el: {
+                                type: "bi.label",
+                                text: BI.i18nText("BI-Quarter"),
+                                title: BI.i18nText("BI-Quarter"),
+                                height: 30,
+                                lgap: 5,
+                                whiteSpace: "nowrap",
+                                textAlign: "left"
+                            }
+                        }],
+                        height: 30
                     }, {
-                        type: "bi.left",
+                        type: "bi.htape",
                         items: [{
-                            type: "bi.center_adapt",
-                            items: [check[BICst.GROUP.M]],
-                            width: self.constant.CHECK_WIDTH,
-                            height: self.constant.CHECK_HEIGHT
+                            el: {
+                                type: "bi.vertical_adapt",
+                                items: [check[BICst.GROUP.M]]
+                            },
+                            width: 20
                         }, {
-                            type: "bi.label",
-                            text: BI.i18nText("BI-Multi_Date_Month"),
-                            title: BI.i18nText("BI-Multi_Date_Month"),
-                            width: self.constant.FIELD_WIDTH,
-                            height: self.constant.FIELD_HEIGHT,
-                            hgap: 10,
-                            whiteSpace: "nowrap",
-                            textAlign: "left"
-                        }]
+                            el: {
+                                type: "bi.label",
+                                text: BI.i18nText("BI-Multi_Date_Month"),
+                                title: BI.i18nText("BI-Multi_Date_Month"),
+                                height: 30,
+                                lgap: 5,
+                                whiteSpace: "nowrap",
+                                textAlign: "left"
+                            }
+                        }],
+                        height: 30
                     }, {
-                        type: "bi.left",
+                        type: "bi.htape",
                         items: [{
-                            type: "bi.center_adapt",
-                            items: [check[BICst.GROUP.W]],
-                            width: self.constant.CHECK_WIDTH,
-                            height: self.constant.CHECK_HEIGHT
+                            el: {
+                                type: "bi.vertical_adapt",
+                                items: [check[BICst.GROUP.W]]
+                            },
+                            width: 20
                         }, {
-                            type: "bi.label",
-                            text: BI.i18nText("BI-Week_XingQi"),
-                            title: BI.i18nText("BI-Week_XingQi"),
-                            width: self.constant.FIELD_WIDTH,
-                            height: self.constant.FIELD_HEIGHT,
-                            hgap: 10,
-                            whiteSpace: "nowrap",
-                            textAlign: "left"
-                        }]
+                            el: {
+                                type: "bi.label",
+                                text: BI.i18nText("BI-Week_XingQi"),
+                                title: BI.i18nText("BI-Week_XingQi"),
+                                height: 30,
+                                lgap: 5,
+                                whiteSpace: "nowrap",
+                                textAlign: "left"
+                            }
+                        }],
+                        height: 30
                     }, {
-                        type: "bi.left",
+                        type: "bi.htape",
                         items: [{
-                            type: "bi.center_adapt",
-                            items: [check[BICst.GROUP.YMD]],
-                            width: self.constant.CHECK_WIDTH,
-                            height: self.constant.CHECK_HEIGHT
+                            el: {
+                                type: "bi.vertical_adapt",
+                                items: [check[BICst.GROUP.YMD]]
+                            },
+                            width: 20
                         }, {
-                            type: "bi.label",
-                            text: BI.i18nText("BI-Date"),
-                            title: BI.i18nText("BI-Date"),
-                            width: self.constant.FIELD_WIDTH,
-                            height: self.constant.FIELD_HEIGHT,
-                            hgap: 10,
-                            whiteSpace: "nowrap",
-                            textAlign: "left"
-                        }]
+                            el: {
+                                type: "bi.label",
+                                text: BI.i18nText("BI-Date"),
+                                title: BI.i18nText("BI-Date"),
+                                height: 30,
+                                lgap: 5,
+                                whiteSpace: "nowrap",
+                                textAlign: "left"
+                            }
+                        }],
+                        height: 30
                     }, {
-                        type: "bi.left",
+                        type: "bi.htape",
                         items: [{
-                            type: "bi.center_adapt",
-                            items: [check[BICst.GROUP.YMDHMS]],
-                            width: self.constant.CHECK_WIDTH,
-                            height: self.constant.CHECK_HEIGHT
+                            el: {
+                                type: "bi.vertical_adapt",
+                                items: [check[BICst.GROUP.YMDHMS]]
+                            },
+                            width: 20
                         }, {
-                            type: "bi.label",
-                            text: BI.i18nText("BI-Time_ShiKe"),
-                            title: BI.i18nText("BI-Time_ShiKe"),
-                            width: self.constant.FIELD_WIDTH,
-                            height: self.constant.FIELD_HEIGHT,
-                            hgap: 10,
-                            whiteSpace: "nowrap",
-                            textAlign: "left"
-                        }]
+                            el: {
+                                type: "bi.label",
+                                text: BI.i18nText("BI-Time_ShiKe"),
+                                title: BI.i18nText("BI-Time_ShiKe"),
+                                height: 30,
+                                lgap: 5,
+                                whiteSpace: "nowrap",
+                                textAlign: "left"
+                            }
+                        }],
+                        height: 30
                     }]
                 });
                 var fieldValues = value[index];
@@ -230,22 +248,25 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                 });
                 self.checkBoxes.push(check);
                 fieldItems.push({
-                    type: "bi.left",
+                    type: "bi.htape",
                     items: [{
-                        type: "bi.center_adapt",
-                        items: [check],
-                        width: self.constant.CHECK_WIDTH,
-                        height: self.constant.CHECK_HEIGHT
+                        el: {
+                            type: "bi.vertical_adapt",
+                            items: [check]
+                        },
+                        width: 20
                     }, {
-                        type: "bi.label",
-                        text: fieldName,
-                        title: fieldName,
-                        width: self.constant.FIELD_WIDTH,
-                        height: self.constant.FIELD_HEIGHT,
-                        hgap: 10,
-                        whiteSpace: "nowrap",
-                        textAlign: "left"
-                    }]
+                        el: {
+                            type: "bi.label",
+                            text: fieldName,
+                            title: fieldName,
+                            height: 30,
+                            lgap: 5,
+                            whiteSpace: "nowrap",
+                            textAlign: "left"
+                        }
+                    }],
+                    height: 30
                 });
                 self.mapValues[fId] = value[index];
                 self.sortedFieldIdsArray.push(fId);

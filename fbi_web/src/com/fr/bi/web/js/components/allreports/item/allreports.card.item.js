@@ -2,6 +2,10 @@
  * Created by Young's on 2016/5/31.
  */
 BI.AllReportsCardItem = BI.inherit(BI.Widget, {
+    _constant: {
+        PATH_CHOOSER: "__hangout_report_popover__"
+    },
+
     _defaultConfig: function(){
         return BI.extend(BI.AllReportsCardItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-all-reports-card-item",
@@ -69,21 +73,21 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
                     items: [{
                         type: "bi.label",
                         text: BI.i18nText("BI-Users") + ": " + userName,
-                        title: BI.i18nText("BI-Users") + ": " + userName,
+                        title: userName,
                         textAlign: "left",
                         height: 30,
                         hgap: 5
                     }, {
                         type: "bi.label",
                         text: BI.i18nText("BI-Role") + ": " + roleName,
-                        title: BI.i18nText("BI-Role") + ": " + roleName,
+                        title: roleName,
                         textAlign: "left",
                         height: 30,
                         hgap: 5
                     }, {
                         type: "bi.label",
                         text: BI.i18nText("BI-Department") + ": " + departName,
-                        title: BI.i18nText("BI-Department") + ": " + departName,
+                        title: departName,
                         textAlign: "left",
                         height: 30,
                         hgap: 5

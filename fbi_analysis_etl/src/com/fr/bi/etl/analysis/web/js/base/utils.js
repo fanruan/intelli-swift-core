@@ -37,6 +37,17 @@ BI.extend(BI.Utils, {
             return BI.i18nText('BI-ETL_Temp_Table_Go_On_Editing')
         }
     },
+
+    isTableEditable : function (id) {
+        var table =  BI.find(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+            return item.id === id
+        })
+        if (BI.isNull(table)){
+            return false;
+        }
+        return table.inedible !== true;
+    },
+
     getAllETLTableNames : function (id) {
         var names = [];
         if (BI.isNull(Pool["packages"][ETLCst.PACK_ID])){
