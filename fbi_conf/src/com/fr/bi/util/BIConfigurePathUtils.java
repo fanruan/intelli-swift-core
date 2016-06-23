@@ -34,7 +34,7 @@ public class BIConfigurePathUtils {
         if (StringUtils.isEmpty(cubePath)) {
             return "";
         }
-        String oldPath = BIConfigureManagerCenter.getCubeConfManager().getCubePath();
+        String oldPath = BIConfigurePathUtils.createBasePath();
         if (ComparatorUtils.equals(cubePath, oldPath)) {
             return oldPath;
         }
