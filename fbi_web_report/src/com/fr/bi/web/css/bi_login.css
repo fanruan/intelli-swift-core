@@ -90,6 +90,10 @@ body{
     right : 40%;
     width : 112px;
     height : 180px;
+    transition: all 1s ease;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
     background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/logo.png') no-repeat;
 }
 
