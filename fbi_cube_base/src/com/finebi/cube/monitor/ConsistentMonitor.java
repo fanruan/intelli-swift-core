@@ -1,6 +1,6 @@
 package com.finebi.cube.monitor;
 
-import com.finebi.cube.structure.ICube;
+import com.finebi.cube.structure.Cube;
 
 /**
  * This class created on 2016/6/3.
@@ -9,9 +9,9 @@ import com.finebi.cube.structure.ICube;
  * @since 4.0
  */
 public class ConsistentMonitor {
-    private ICube cube;
+    private Cube cube;
 
-    public ConsistentMonitor(ICube cube) {
+    public ConsistentMonitor(Cube cube) {
         this.cube = cube;
     }
 

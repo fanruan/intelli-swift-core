@@ -12,8 +12,12 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     defaultItems: function(){
         var fieldId = BI.Utils.getFieldIDByDimensionID(this.options.dId);
+        var text = BI.i18nText("BI-This_Target_From");
         var fieldName = BI.Utils.getFieldNameByID(fieldId);
-        var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+        if(BI.isNotNull(fieldName)){
+            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+            text = BI.i18nText("BI-This_Target_From") + ": " + tableName + "." + fieldName
+        }
         return [
             [{
                 el: {
@@ -92,7 +96,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 cls: "delete-h-font"
             }],
             [{
-                text: BI.i18nText("BI-This_Target_From") + ": " + tableName + "." + fieldName,
+                text: text,
                 tipType: "warning",
                 value: BICst.TARGET_COMBO.INFO,
                 cls: "dimension-from-font",
@@ -156,6 +160,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -190,6 +195,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
                 break;
             default:
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = true;

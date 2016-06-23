@@ -1,18 +1,16 @@
 package com.fr.bi.stable.engine.index.utils;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.gvi.GVIFactory;
-import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by GUY on 2015/4/8.
@@ -59,37 +57,5 @@ public class TableIndexUtils {
         return values.toArray();
     }
 
-    /**
-     * 获取关联后的nullGVI
-     *
-     * @param start
-     * @param end
-     * @param relations
-     * @return
-     */
-    public static GroupValueIndex createLinkNullGVI(ICubeTableService start, ICubeTableService end, List<BITableSourceRelation> relations) {
-        if (relations == null || relations.isEmpty()) {
-            return null;
-        }
-        BIKey columnIndex = start.getColumnIndex(relations.get(0).getPrimaryKey().getFieldName());
-        GroupValueIndex currentIndex = start.getNullGroupValueIndex(columnIndex);
-        final ICubeTableIndexReader reader = start.ensureBasicIndex(relations);
-        if (reader == null) {
-            return GVIFactory.createAllEmptyIndexGVI();
-        }
-        long endRowcount = end.getRowCount();
-        GroupValueIndex gvi = GVIUtils.getTableLinkedOrGVI(currentIndex, reader);
-        if (gvi == null) {
-            gvi = GVIFactory.createAllEmptyIndexGVI();
-        }
-        return gvi;
-    }
 
-    public static GroupValueIndex createLinkNullGVI(ICubeTableService start, List<BITableSourceRelation> relations, ICubeDataLoader loader) {
-        if (relations == null || relations.isEmpty()) {
-            return null;
-        }
-        ICubeTableService eti = loader.getTableIndex(relations.get(relations.size() - 1).getForeignField().getTableBelongTo());
-        return createLinkNullGVI(start, eti, relations);
-    }
 }

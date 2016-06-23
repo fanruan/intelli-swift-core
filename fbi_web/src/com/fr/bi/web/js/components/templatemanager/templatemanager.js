@@ -21,7 +21,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.model = new BI.TemplateManagerModel({items: o.items});
         this._createTools();
         //管理员没有分享
-        //FS.config.isAdmin === true && (this.shareButton.setVisible(false));
+        FS.config.isAdmin === true && (this.shareButton.setVisible(false));
 
         //导航
         this.nav = BI.createWidget({
@@ -416,6 +416,10 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         });
         this.searcherResultPane.on(BI.ReportSearchResultPane.EVENT_DELETE, function (id) {
             self._onRemove(id, BI.TemplateManagerButtonGroup.DELETE_REPORT);
+        });
+        this.searcherResultPane.on(BI.ReportSearchResultPane.EVENT_HANGOUT, function(id){
+            self._onHangout(id);
+            self._refreshNavAndList();
         });
     },
 

@@ -20,6 +20,11 @@ BI.RegionsManagerShow = BI.inherit(BI.Widget, {
         BI.RegionsManagerShow.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.regions = {};
+        if(o.regionType >= BICst.MAP_TYPE.WORLD){
+            this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Region_Name"), BICst.REGION.DIMENSION1);
+            this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
+            this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Region_Suspension_Target"), BICst.REGION.TARGET2)
+        }
         switch (o.regionType) {
             case BICst.WIDGET.TABLE:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Row_Header"), BICst.REGION.DIMENSION1);
@@ -46,27 +51,74 @@ BI.RegionsManagerShow = BI.inherit(BI.Widget, {
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Data"), BICst.REGION.DIMENSION1);
                 break;
             case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Series"), BICst.REGION.DIMENSION2);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Left_Value_Axis"), BICst.REGION.TARGET1);
                 this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Right_Value_Axis"), BICst.REGION.TARGET2);
                 break;
             case BICst.WIDGET.BAR:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_BAR:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Series"), BICst.REGION.DIMENSION2);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Value_Axis"), BICst.REGION.TARGET1);
+                break;
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AREA:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Positive_Value_Axis"), BICst.REGION.TARGET1);
+                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Negative_Value_Axis"), BICst.REGION.TARGET2);
+                break;
+            case BICst.WIDGET.FALL_AXIS:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Value_Axis"), BICst.REGION.TARGET1);
+                break;
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.RANGE_AREA:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Value_Axis_One"), BICst.REGION.TARGET1);
+                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Value_Axis_Two"), BICst.REGION.TARGET2);
+                break;
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Left_Value_Axis"), BICst.REGION.TARGET1);
+                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Right_Value_Axis_One"), BICst.REGION.TARGET2);
+                this.regions[BICst.REGION.TARGET3] = this._createTargetRegion(BI.i18nText("BI-Right_Value_Axis_Two"), BICst.REGION.TARGET3);
+                break;
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Series"), BICst.REGION.DIMENSION2);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.FUNNEL:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.MAP:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Region_Name"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
+                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Region_Suspension_Target"), BICst.REGION.TARGET2)
+                break;
+            case BICst.WIDGET.GIS_MAP:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Address"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Name_Title"), BICst.REGION.DIMENSION2);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Region_Target"), BICst.REGION.TARGET1);
+                break;
+            case BICst.WIDGET.GIS_MAP:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Address"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Name_Title"), BICst.REGION.DIMENSION2);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Region_Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.BUBBLE:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);

@@ -393,10 +393,10 @@ public class CubeIndexLoader {
     }
 
     private boolean checkSupport(BISummaryTarget[] allTargets) {
-        if (VT4FBI.supportCalcuateTarget() && VT4FBI.supportDatabaseUnion()) {
+        if (VT4FBI.supportCalculateTarget() && VT4FBI.supportDatabaseUnion()) {
             return true;
         }
-        if (!VT4FBI.supportCalcuateTarget() && allTargets != null) {
+        if (!VT4FBI.supportCalculateTarget() && allTargets != null) {
             for (int i = 0; i < allTargets.length; i++) {
                 BISummaryTarget target = allTargets[i];
                 if (target instanceof BICalculateTarget) {

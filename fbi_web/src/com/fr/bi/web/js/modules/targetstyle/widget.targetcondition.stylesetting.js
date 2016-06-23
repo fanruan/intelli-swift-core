@@ -74,7 +74,7 @@ BI.TargetConditionStyleSetting = BI.inherit(BI.Widget, {
                 closemin: false,
                 closemax: false
             },
-            color: "#ffffff",
+            color: "#09ABE9",
             cid: BI.UUID(),
             onRemoveCondition: function(id){
                 self._removeConditionById(id);

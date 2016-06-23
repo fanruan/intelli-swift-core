@@ -1,51 +1,14 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
+.bi-template-manager {
+  min-width: 600px;
+}
 .bi-template-manager .template-manager-pane {
   border: 1px solid #d4dadd;
 }
 .bi-template-manager .template-manager-pane .report-folder-list {
   border-top: 1px solid #eaeaea;
-}
-.bi-template-manager .template-manager-pane .report-folder-list .bi-report-card-view-item:hover,
-.bi-template-manager .template-manager-pane .report-folder-list .bi-report-card-view-item.active {
-  background: #f4f4f4;
-}
-.bi-template-manager .template-manager-pane .report-folder-list .bi-report-card-view-item .tool-rename-icon {
-  color: #009de3;
-  font-size: 16px;
-  border: 1px solid #d4dadd;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-}
-.bi-template-manager .template-manager-pane .report-folder-list .bi-report-card-view-item .tool-delete-icon {
-  color: #e85050;
-  font-size: 16px;
-  border: 1px solid #d4dadd;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-}
-.bi-template-manager .template-manager-pane .report-folder-list .bi-folder-card-view-item:hover,
-.bi-template-manager .template-manager-pane .report-folder-list .bi-folder-card-view-item.active {
-  background: #f4f4f4;
-}
-.bi-template-manager .template-manager-pane .report-folder-list .bi-folder-card-view-item .tool-rename-icon {
-  color: #009de3;
-  font-size: 16px;
-  border: 1px solid #d4dadd;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-}
-.bi-template-manager .template-manager-pane .report-folder-list .bi-folder-card-view-item .tool-delete-icon {
-  color: #e85050;
-  font-size: 16px;
-  border: 1px solid #d4dadd;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
 }
 .bi-template-manager .bi-template-manager-file-item-search {
   border: 1px solid #d4dadd;

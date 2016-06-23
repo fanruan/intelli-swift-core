@@ -24,8 +24,15 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         BI.some(conditions, function (i, co) {
             var range = co.range;
             var min = BI.parseFloat(range.min), max = BI.parseFloat(range.max);
-            if ((range.closemin === true ? text >= min : text > min) &&
-                (range.closemax === true ? text <= max : text < max)) {
+            var minBoolean = true;
+            var maxBoolean = true;
+            if (BI.isNumeric(min)) {
+                minBoolean = (range.closemin === true ? text >= min : text > min);
+            }
+            if (BI.isNumeric(max)) {
+                maxBoolean = (range.closemax === true ? text <= max : text < max);
+            }
+            if (minBoolean && maxBoolean) {
                 color = co.color;
             }
         });

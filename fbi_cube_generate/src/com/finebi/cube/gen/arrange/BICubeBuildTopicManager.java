@@ -11,7 +11,6 @@ import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -131,7 +130,6 @@ public class BICubeBuildTopicManager {
     private void registerTableField(Set<CubeTableSource> tableSourceSet) {
         Iterator<CubeTableSource> it = tableSourceSet.iterator();
         while (it.hasNext()) {
-
             CubeTableSource tableSource = it.next();
             ICubeFieldSource[] fields = tableSource.getFieldsArray(tableSourceSet);
             for (int i = 0; i < fields.length; i++) {

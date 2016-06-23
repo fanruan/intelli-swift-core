@@ -198,8 +198,10 @@ public class BIWebUtils {
         map.put(ParameterConsts.SESSION_ID, sessionID);
         String isDebug = WebUtils.getHTTPRequestParameter(req, ParameterConsts.__ISDEBUG__);
         String edit = WebUtils.getHTTPRequestParameter(req, "edit");
+        String show = WebUtils.getHTTPRequestParameter(req, "show");
         map.put("userId", userId);
         map.put("edit", edit == null ? "null" : edit);
+        map.put("show", show == null ? "null" : show);
         map.put("createBy", node.getUserId());
         map.put("reportName", node.getReportName() != null ? node.getReportName() : "null");
         map.put("reg", VT4FBI.toJSONObject());

@@ -17,7 +17,8 @@ BIDezi.QueryView = BI.inherit(BI.View, {
         var queryButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Query"),
-            height: 30
+            forceCenter: true
+            //height: ""
         });
         queryButton.on(BI.Button.EVENT_CHANGE, function () {
             //需要缓存一份所有控件的过滤条件到SharingPool中
@@ -32,8 +33,12 @@ BIDezi.QueryView = BI.inherit(BI.View, {
             title: BI.i18nText("BI-Remove")
         });
         deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.model.destroy();
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
+                if (v === true) {
+                    self.model.destroy();
+                    BI.Utils.broadcastAllWidgets2Refresh();
+                }
+            });
         });
         deleteButton.setVisible(false);
         BI.createWidget({
@@ -43,11 +48,12 @@ BIDezi.QueryView = BI.inherit(BI.View, {
                 el: queryButton,
                 left: 0,
                 right: 0,
-                top: 8
+                top: 0,
+                bottom: 0
             }, {
                 el: deleteButton,
                 right: 5,
-                top: 13
+                top: 10
             }]
         });
         veseel.hover(function () {

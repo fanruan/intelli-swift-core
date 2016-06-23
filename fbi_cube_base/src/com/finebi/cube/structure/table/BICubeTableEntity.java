@@ -24,7 +24,7 @@ import java.util.*;
  * @author Connery
  * @since 4.0
  */
-public class BICubeTableEntity implements ICubeTableEntityService {
+public class BICubeTableEntity implements CubeTableEntityService {
 
     protected ITableKey tableKey;
     protected ICubeResourceRetrievalService resourceRetrievalService;
@@ -138,7 +138,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public void copyDetailValue(ICubeTableEntityService cube, long rowCount) {
+    public void copyDetailValue(CubeTableEntityService cube, long rowCount) {
     }
 
     @Override
@@ -173,12 +173,12 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public ICubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
+    public CubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
         return columnManager.getColumn(columnKey);
     }
 
     @Override
-    public ICubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
+    public CubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
         ICubeFieldSource field = getSpecificColumn(columnName);
         return getColumnDataGetter(convert(field));
     }
@@ -197,7 +197,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     }
 
     @Override
-    public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
+    public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
         return relationManager.getRelationService(path);
     }
 
@@ -213,7 +213,7 @@ public class BICubeTableEntity implements ICubeTableEntityService {
 
     @Override
     public boolean tableDataAvailable() {
-        return tableProperty.isPropertyExist();
+        return tableProperty.isVersionAvailable();
     }
 
     @Override
@@ -234,5 +234,10 @@ public class BICubeTableEntity implements ICubeTableEntityService {
     public void setTableOwner(ITableKey owner) {
         relationManager.setOwner(owner);
         columnManager.setOwner(owner);
+    }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return tableProperty.isVersionAvailable();
     }
 }

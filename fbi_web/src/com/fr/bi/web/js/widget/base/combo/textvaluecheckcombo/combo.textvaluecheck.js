@@ -61,6 +61,10 @@ BI.TextValueCheckCombo = BI.inherit(BI.Widget, {
         this.textIconCheckCombo.setEnable(v);
     },
 
+    setWarningTitle: function(title) {
+        this.trigger.setWarningTitle(title);
+    },
+
     getValue: function () {
         return this.textIconCheckCombo.getValue();
     },

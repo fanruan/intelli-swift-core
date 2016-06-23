@@ -28,17 +28,18 @@ import java.util.Set;
  */
 public class BICubeGenerateTool {
 
-    /* 新增业务包后更新，获取所有新增的table*/
+    /* 获取所有新增的table*/
     public static Set<BIBusinessTable> getTables4CubeGenerate(long userId) {
-        Set<BIBusinessTable> sources = new HashSet<BIBusinessTable>();
+        Set<BIBusinessTable> newTables = new HashSet<BIBusinessTable>();
         for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
-            if(!tableExisted(businessTable.getTableSource(),userId)) {
-                sources.add((BIBusinessTable) businessTable);
+            if(!tableExisted(businessTable.getTableSource(),userId)||isETL(businessTable.getTableSource())) {
+                newTables.add((BIBusinessTable) businessTable);
             }
         }
-        return sources;
+        return newTables;
     }
 
+    /* 获取所有新增业务包里面的table*/
     public static Set<BIBusinessTable> getPackages4Generate(long userId) {
         Set<BIBusinessPackage> packages4CubeGenerate = BICubeConfigureCenter.getPackageManager().getPackages4CubeGenerate(userId);
         Set<IBusinessPackageGetterService> iBusinessPackageGetterServiceSet = new HashSet<IBusinessPackageGetterService>();
@@ -65,12 +66,15 @@ public class BICubeGenerateTool {
         }
         return sources;
     }
+    private static boolean isETL(CubeTableSource source) {
+        return (source.createGenerateTablesList().size()>1);
+    }
 
     public static boolean tableExisted(CubeTableSource source, long userId) {
         ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
         ICubeResourceRetrievalService retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         BICube iCube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         ITableKey iTableKey = new BITableKey(source);
-        return iCube.canRead(iTableKey);
+        return iCube.exist(iTableKey);
     }
 }

@@ -12,11 +12,30 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
         YEAR: BICst.DIMENSION_DATE_COMBO.YEAR,
         QUARTER: BICst.DIMENSION_DATE_COMBO.QUARTER,
         MONTH: BICst.DIMENSION_DATE_COMBO.MONTH,
-        WEEK: BICst.DIMENSION_DATE_COMBO.WEEK
+        WEEK: BICst.DIMENSION_DATE_COMBO.WEEK,
+        POSITION_BY_ADDRESS: BICst.DIMENSION_DATE_COMBO.ADDRESS,
+        POSITION_BY_LNG_LAT: BICst.DIMENSION_DATE_COMBO.LNG_LAT,
+        POSITION_BY_LNG: BICst.DIMENSION_DATE_COMBO.LNG,
+        POSITION_BY_LAT: BICst.DIMENSION_DATE_COMBO.LAT
     },
 
     defaultItems: function () {
         return [
+            [{
+                el:{
+                    text: BI.i18nText("BI-Ascend"),
+                    value: BICst.DIMENSION_DATE_COMBO.ASCEND,
+                    iconCls1: ""
+                },
+                children:[]
+            }, {
+                el:{
+                    text: BI.i18nText("BI-Descend"),
+                    value: BICst.DIMENSION_DATE_COMBO.DESCEND,
+                    iconCls1: ""
+                },
+                children:[]
+            }],
             [{
                 text: BI.i18nText("BI-Date"),
                 value: BICst.DIMENSION_DATE_COMBO.DATE,
@@ -37,21 +56,6 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 text: BI.i18nText("BI-Week_XingQi"),
                 value: BICst.DIMENSION_DATE_COMBO.WEEK,
                 cls: "dot-e-font"
-            }],
-            [{
-                el:{
-                    text: BI.i18nText("BI-Ascend"),
-                    value: BICst.DIMENSION_DATE_COMBO.ASCEND,
-                    iconCls1: ""
-                },
-                children:[]
-            }, {
-                el:{
-                    text: BI.i18nText("BI-Descend"),
-                    value: BICst.DIMENSION_DATE_COMBO.DESCEND,
-                    iconCls1: ""
-                },
-                children:[]
             }],
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),
@@ -96,6 +100,14 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
     _assertGroup:function(val){
         val || (val = {});
         val.type || (val.type = BICst.GROUP.NO_GROUP);
+        return val;
+    },
+
+    _assertAddress: function(val){
+        val || (val = {});
+        if(BI.isNull(val.type)){
+            val.type = BICst.GIS_POSITION_TYPE.ADDRESS
+        }
         return val;
     },
 

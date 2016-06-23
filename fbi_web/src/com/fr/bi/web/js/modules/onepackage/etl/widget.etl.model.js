@@ -234,6 +234,13 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.saveTableById(tId, table);
     },
 
+    modifySQLData: function(tId, sql, linkName) {
+        var table = this.getTableById(tId);
+        table.sql = sql;
+        table.linkName = linkName;
+        this.saveTableById(tId, table);
+    },
+
     isValidTableTranName: function (name) {
         var self = this;
         var currentPackTables = BI.Utils.getCurrentPackageTables4Conf();

@@ -27,10 +27,10 @@ public class BIShareTemplateSaveAction extends ActionNoSessionCMD {
         JSONArray jaUserIds = new JSONArray(userIdsString);
         long[] templateIds = new long[jaTemplateIds.length()];
         long[] userIds = new long[jaUserIds.length()];
+        for (int i = 0, len = userIds.length; i < len; i++) {
+            userIds[i] = jaUserIds.getLong(i);
+        }
         for(int j = 0; j < templateIds.length; j++) {
-            for (int i = 0, len = userIds.length; i < len; i++) {
-                userIds[i] = jaUserIds.getLong(i);
-            }
             UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).resetSharedByReportIdAndUsers(jaTemplateIds.getLong(j), userId, userIds);
         }
     }

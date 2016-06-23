@@ -7,7 +7,9 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DateUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.GeneralUtils;
@@ -16,6 +18,7 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+import java.sql.Types;
 import java.util.Date;
 
 /**
@@ -103,6 +106,17 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
             default:
                 return convertString(value.toString());
         }
+    }
+
+    @Override
+    protected int getSqlType(IPersistentTable[] tables) {
+        if (columnType == DBConstant.COLUMN.NUMBER){
+            int fieldSqlType = tables[0].getField(field).getSqlType();
+            if (fieldSqlType == java.sql.Types.DATE || fieldSqlType == java.sql.Types.BIGINT){
+                return java.sql.Types.BIGINT;
+            }
+        }
+        return BIDBUtils.biTypeToSql(columnType);
     }
 
     private Object convertString(String value) {

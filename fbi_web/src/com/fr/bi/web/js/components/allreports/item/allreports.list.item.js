@@ -72,21 +72,21 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
                     items: [{
                         type: "bi.label",
                         text: BI.i18nText("BI-Users") + ": " + userName,
-                        title: BI.i18nText("BI-Users") + ": " + userName,
+                        title: userName,
                         textAlign: "left",
                         height: 30,
                         hgap: 5
                     }, {
                         type: "bi.label",
                         text: BI.i18nText("BI-Role") + ": " + roleName,
-                        title: BI.i18nText("BI-Role") + ": " + roleName,
+                        title: roleName,
                         textAlign: "left",
                         height: 30,
                         hgap: 5
                     }, {
                         type: "bi.label",
                         text: BI.i18nText("BI-Department") + ": " + departName,
-                        title: BI.i18nText("BI-Department") + ": " + departName,
+                        title: departName,
                         textAlign: "left",
                         height: 30,
                         hgap: 5
@@ -143,7 +143,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
                         items: [{
                             el: {
                                 type: "bi.icon_button",
-                                cls: "file-font normal-mark",
+                                cls: (report.description === "true" ? "real-time-font" : "file-font") + " normal-mark",
                                 iconWidth: 16,
                                 iconHeight: 16
                             },

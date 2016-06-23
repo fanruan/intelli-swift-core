@@ -414,16 +414,16 @@ BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
         text: BI.i18nText("BI-Clear_Selected_Value"),
         cls: "widget-combo-clear-font"
     }],
-    [{
-        value: BICst.DASHBOARD_WIDGET_RENAME,
-        text: BI.i18nText("BI-Rename"),
-        cls: "widget-combo-rename-edit-font"
-    }],
-    [{
-        value: BICst.DASHBOARD_WIDGET_COPY,
-        text: BI.i18nText("BI-Copy"),
-        cls: "widget-combo-copy"
-    }],
+    // [{
+    //     value: BICst.DASHBOARD_WIDGET_RENAME,
+    //     text: BI.i18nText("BI-Rename"),
+    //     cls: "widget-combo-rename-edit-font"
+    // }],
+    // [{
+    //     value: BICst.DASHBOARD_WIDGET_COPY,
+    //     text: BI.i18nText("BI-Copy"),
+    //     cls: "widget-combo-copy"
+    // }],
     [{
         value: BICst.DASHBOARD_WIDGET_DELETE,
         text: BI.i18nText("BI-Delete_Control"),
@@ -1100,6 +1100,7 @@ BICst.DEFAULT_CHART_SETTING = {
     max_row: BICst.TABLE_MAX_ROW,
     max_col: BICst.TABLE_MAX_COL,
     freeze_dim: true,
+    freeze_first_column: false,
     transfer_filter: true,
     show_name: true,
     name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,

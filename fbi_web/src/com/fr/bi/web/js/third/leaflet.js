@@ -6494,6 +6494,19 @@
             }
         },
 
+        beforeAdd:function(map){
+            this._renderer = map.getRenderer(this);
+        },
+
+        onAdd: function (map) {
+            this._renderer._initGroup(this);
+            this._renderer._addGroup(this);
+
+            for (var i in this._layers) {
+                map.addLayer(this._layers[i]);
+            }
+        },
+
         // @method addLayer(layer: Layer): this
         // Adds the given layer to the group.
         addLayer: function (layer) {
@@ -6502,6 +6515,7 @@
             this._layers[id] = layer;
 
             if (this._map) {
+                layer._layerGroup = this;
                 this._map.addLayer(layer);
             }
 
@@ -6557,12 +6571,6 @@
             }
 
             return this;
-        },
-
-        onAdd: function (map) {
-            for (var i in this._layers) {
-                map.addLayer(this._layers[i]);
-            }
         },
 
         onRemove: function (map) {
@@ -6621,8 +6629,6 @@
     L.layerGroup = function (layers) {
         return new L.LayerGroup(layers);
     };
-
-
 
     /*
      * @class FeatureGroup
@@ -7225,8 +7231,82 @@
         }
     };
 
-    L.scatterMarker = function (latlng, options, data) {
-        return new L.ScatterMarker(latlng, options, data);
+    L.text = function(latlng, options, data){
+        return new L.Text(latlng, options, data);
+    };
+
+    L.Text = L.Layer.extend({
+
+        initialize: function (latlng, options, data) {
+            this._latlng = L.latLng(latlng);
+            this._data = data;
+        },
+
+        beforeAdd: function (map) {
+            this._renderer = map.getRenderer(this);
+        },
+
+        onAdd: function () {
+            this._renderer._initText(this);
+            this._reset();
+
+            var labelContent = this._data.labelContent;
+
+            var centerX = 0, startY = -this._data.labelDim.height/2;
+
+            for(var i = 0, count = labelContent.length; i < count; i++){
+                var label = labelContent[i];
+
+                var labelDim = label.dim;
+                var labelText = label.text;
+                var labelStyle = label.style;
+                d3.select(this._text).append('tspan')
+                    .attr('x', centerX).attr('y', startY + labelDim.height/2)
+                    .attr('dy', '.32em').attr("text-anchor", "middle")
+                    .text(labelText);
+
+                for(var style in labelStyle){
+                    this._text[style] = labelStyle[style];
+                }
+
+                startY += (labelDim.height + 2);
+            }
+
+            this._renderer._addText(this);
+        },
+
+        onRemove: function () {
+            this._renderer._removeText(this);
+        },
+
+        getEvents: function () {
+            return {
+                zoomend: this._project,
+                moveend: this._update,
+                viewreset: this._reset
+            };
+        },
+
+        _reset: function () {
+            // defined in children classes
+            this._project();
+            this._update();
+        },
+
+        _project: function () {
+            this._point = this._map.latLngToLayerPoint(this._latlng);
+        },
+
+        _update: function () {
+            if (this._map) {
+                this._text.setAttribute("transform", 'translate(' + this._point.x + ',' + this._point.y + ')');
+            }
+        }
+    });
+
+
+    L.scatterMarker = function (latlng, options, data, renderer) {
+        return new L.ScatterMarker(latlng, options, data, renderer);
     };
 
     //固定pixel大小的标记点
@@ -7237,10 +7317,11 @@
             radius:'4.5'
         },
 
-        initialize: function (latlng, options, data) {
+        initialize: function (latlng, options, data, renderer) {
             L.setOptions(this, options);
             this._latlng = L.latLng(latlng);
             this._data = data;
+            this.renderer = renderer;
         },
 
         // @method getLatLng(): LatLng
@@ -7250,38 +7331,9 @@
         },
 
         _getMarkerPath:function(){
-
             var markerType = this.options.markerType;
             var r = this.options.radius;
-            var p = this._point;
-
-            var points = [];
-
-            switch(markerType){
-                case 'circle':
-                case 'circle_hollow':
-                    var arc = 'a' + r + ',' + r + ' 0 1,0 ';
-                    return  'M' + (p.x - r) + ',' + p.y + arc + (r * 2) + ',0 ' + arc + (-r * 2) + ',0 ';
-                case 'square':
-                case 'square_hollow':
-                    points = [{x:-r, y:-r}, {x:r, y:-r}, {x:r, y:r}, {x:-r, y:r}];
-                    break;
-                case 'diamond':
-                case 'diamond_hollow':
-                    r = r * 2 / Math.sqrt(2);
-                    points = [{x:-r, y:0}, {x:0, y:-r}, {x:r, y:0}, {x:0, y:r}]
-                    break;
-                case 'triangle':
-                case 'triangle_hollow':
-                    points = [{x:-r, y:r/Math.sqrt(3)}, {x:0, y:-(2 * Math.sqrt(3) / 3) * r}, {x:r, y:r/Math.sqrt(3)}];
-            }
-
-            points.forEach(function(point){
-                point.x += p.x;
-                point.y += p.y;
-            });
-
-            return L.SVG.pointsToPath(points, true)
+            return this.renderer._getMarkerPath(markerType, r);
         },
 
         _project: function () {
@@ -7295,7 +7347,15 @@
         },
 
         _updatePath: function () {
-            this._path.setAttribute('d', this._getMarkerPath());
+            var p = this._point;
+            if(L.Browser.svg){
+                this._path.setAttribute('d', this._getMarkerPath());
+                this._path.setAttribute('transform', 'translate(' + p.x + ',' + p.y + ')');
+            }else{
+                this._container.style.left = p.x + 'px';
+                this._container.style.top = p.y + 'px';
+                this._path.v = this.renderer.path2vml(this._getMarkerPath());
+            }
         },
 
         _empty: function () {
@@ -8166,8 +8226,30 @@
             this._updateStyle(layer);
         },
 
+        _initGroup:function(layerGroup){
+            layerGroup._g = L.SVG.create('g');
+        },
+
+        _addGroup:function(layerGroup){
+            this._container.appendChild(layerGroup._g);
+        },
+
+        _initText:function(layer){
+            layer._text = L.SVG.create('text');
+        },
+
+        _addText:function(layer){
+            var parent = (layer._layerGroup && layer._layerGroup._g) || this._rootGroup;
+            parent.appendChild(layer._text);
+        },
+
+        _removeText:function(layer){
+            L.DomUtil.remove(layer._text);
+        },
+
         _addPath: function (layer) {
-            this._rootGroup.appendChild(layer._path);
+            var parent = (layer._layerGroup && layer._layerGroup._g) || this._rootGroup;
+            parent.appendChild(layer._path);
             layer.addInteractiveTarget(layer._path);
         },
 
@@ -8343,6 +8425,29 @@
             L.Renderer.prototype._update.call(this);
         },
 
+        _initGroup:function(layerGroup){
+            layerGroup._g = L.SVG.create('group');
+            L.DomUtil.addClass(layerGroup._g, 'leaflet-vml-shape ');
+            layerGroup._g.coordsize = '1 1';
+
+        },
+
+        _addGroup:function(layerGroup){
+            this._container.appendChild(layerGroup._g);
+        },
+
+        _initText:function(layer){
+
+        },
+
+        _addText:function(layer){
+
+        },
+
+        _removeText:function(layer){
+
+        },
+
         _initPath: function (layer) {
             var container = layer._container = L.SVG.create('shape');
 
@@ -8357,8 +8462,9 @@
         },
 
         _addPath: function (layer) {
+            var parent = (layer._layerGroup && layer._layerGroup._g) || this._container;
             var container = layer._container;
-            this._container.appendChild(container);
+            parent.appendChild(container);
 
             if (layer.options.interactive) {
                 layer.addInteractiveTarget(container);

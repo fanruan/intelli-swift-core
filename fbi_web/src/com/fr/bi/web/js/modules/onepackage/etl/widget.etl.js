@@ -8,6 +8,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         ETL_OPERATOR_LAYER: "__etl_operator_layer__",
         EXCEL_VIEW_LAYER: "__excel_view_layer__",
         EXCEL_LAYER: "__excel_layer__",
+        SQL_LAYER: "__sql_layer__",
         ETL_PANE_NORTH_HEIGHT: 40,
         ETL_PANE_SOUTH_HEIGHT: 60,
         ETL_PANE_WEST_WIDTH: 580,
@@ -553,6 +554,9 @@ BI.ETL = BI.inherit(BI.Widget, {
             case BICst.ETL_MANAGE_EXCEL_CHANGE:
                 this._modifyExcel(tId);
                 break;
+            case BICst.ETL_MANAGE_SQL_CHANGE:
+                this._modifySQL(tId);
+                break;
         }
     },
 
@@ -598,6 +602,28 @@ BI.ETL = BI.inherit(BI.Widget, {
             });
         });
         uploadButton.element.find("input").click();
+    },
+    
+    _modifySQL: function(tId) {
+        var self = this;
+        var table = this.model.getTableById(tId);
+        BI.Layers.remove(self.constants.SQL_LAYER);
+        var sqlEditor = BI.createWidget({
+            type: "bi.edit_sql",
+            element: BI.Layers.create(self.constants.SQL_LAYER),
+            sql: table.sql,
+            dataLinkName: table.dataLinkName
+        });
+        BI.Layers.show(self.constants.SQL_LAYER);
+        sqlEditor.on(BI.EditSQL.EVENT_CANCEL, function(){
+            BI.Layers.remove(self.constants.SQL_LAYER);
+        });
+        sqlEditor.on(BI.EditSQL.EVENT_SAVE, function(data){
+            BI.Layers.remove(self.constants.SQL_LAYER);
+            self.model.setFields(data.fields);
+            self.model.saveTableById(table.id, data);
+        });
+        
     },
 
     /**

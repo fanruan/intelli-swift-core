@@ -35,9 +35,12 @@ BI.CalculateTargetPopupDetailModel = BI.inherit(FR.OB, {
     _createNewTargetData: function () {
         return {
             _src: {
-                expression: ""
+                expression: {
+                    formula_value: "",
+                    ids: []
+                }
             },
-            name: "",
+            name: BI.Func.createDistinctName(BI.Utils.getWidgetDimensionsByID(this.wId), BI.i18nText("BI-Calculation_Index")),
             dimension_map: {},
             type: BICst.TARGET_TYPE.FORMULA,
             used: true

@@ -7,7 +7,7 @@ BI.GeneralQueryNoTypeFilterItem = BI.inherit(BI.AbstractFilterItem, {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 40,
         CONDITION_TYPE_COMBO_ADJUST: 2,
-        BUTTON_HEIGHT: 30,
+        BUTTON_HEIGHT: 28,
         TEXT_BUTTON_H_GAP: 10,
         ADD_FIELD_POPUP_WIDTH: 230,
         HEIGHT_MAX: 10000,

@@ -1,8 +1,8 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.web.utils.WebUtils;
 
@@ -17,8 +17,9 @@ public class BIDeleteAnalysisETLTableAction extends AbstractAnalysisETLAction{
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         final long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
+        BusinessTable table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
         BIAnalysisETLManagerCenter.getBusiPackManager().removeTable(tableId, userId);
-        BIAnalysisETLManagerCenter.getDataSourceManager().removeBusinessTable(new BITableID(tableId));
+        BIAnalysisETLManagerCenter.getDataSourceManager().removeTableSource(table);
         BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).removeTransName(tableId);
         BIConfigureManagerCenter.getLogManager().logVersion(userId);
         new Thread(){

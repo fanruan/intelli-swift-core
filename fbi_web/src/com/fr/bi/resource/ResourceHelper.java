@@ -37,6 +37,7 @@ public class ResourceHelper {
 
     public static class FormulaTransmitter implements Transmitter {
         private String formula = null;
+
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
             return transmit(files);
@@ -50,7 +51,7 @@ public class ResourceHelper {
                 String res = formula;
                 if (res == null) {
                     res = getFormulaJS(files);
-                    if(!StableUtils.isDebug()) {
+                    if (!StableUtils.isDebug()) {
                         formula = res;
                     }
                 }
@@ -82,7 +83,7 @@ public class ResourceHelper {
         JSONObject fields = new JSONObject();
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
-        List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+        List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
@@ -626,6 +627,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/combo/sortfilter.combo.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
+                "com/fr/bi/web/css/modules/tablechartmanager/errorpane/tablechart.errorpane.css",
 
                 //自适应布局
                 "com/fr/bi/web/css/modules/fit/widgetchooser/widget.dragicongroup.css",
@@ -738,7 +740,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
-                "com/fr/bi/web/css/third/leaflet.css",
+
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css"
         };
@@ -815,6 +817,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
 
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/model.dimensionsmanagershow.js",
                 "com/fr/bi/web/js/modules/dimensionsmanagers4show/regionsmanagershow.js",
@@ -1252,6 +1255,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/forcebubble.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/mapchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/gismapchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/crosstable/widget.crosstable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
 
@@ -1282,6 +1286,7 @@ public class ResourceHelper {
                 //选组件
                 "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/pane.reuse.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/dragiconbutton.js",
+                "com/fr/bi/web/js/modules/fit/widgetchooser/dragiconcombo.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/reuse/dragwidgetitem.js",
                 "com/fr/bi/web/js/modules/fit/widgetchooser/widget.dragicongroup.js",
                 "com/fr/bi/web/js/modules/fit/fit.widget.js",
@@ -1473,6 +1478,19 @@ public class ResourceHelper {
 
                 //简单字段选择服务
                 "com/fr/bi/web/js/services/simpleselectdataservice/simpleselectdataservice.js",
+
+
+                /**
+                 * 切片
+                 */
+
+                //tablechartmanager
+                "com/fr/bi/web/js/aspects/tablechartmanager/aspect.tablechartmanager.js",
+
+                //detailtable
+                "com/fr/bi/web/js/aspects/detailtable/aspect.detailtable.js",
+
+                "com/fr/bi/web/js/aspects/config.js",
         };
     }
 
@@ -1506,6 +1524,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/tip/tip.tooltip.css",
                 "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
                 "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
+                "com/fr/bi/web/css/base/third/leaflet.css",
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
@@ -1785,9 +1804,12 @@ public class ResourceHelper {
 
                 /**
                  * components
-                */
+                 */
                 //模板管理
-                "com/fr/bi/web/css/components/templatemanager/items/item.file.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/report.cardview.item.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/folder.cardview.item.css",
                 "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/reportsearchresult.pane.css",
                 "com/fr/bi/web/css/components/templatemanager/tools/foldermoveto.pane.css",
@@ -1854,6 +1876,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/proto/array.js",
                 "com/fr/bi/web/js/base/proto/number.js",
                 "com/fr/bi/web/js/base/proto/date.js",
+                "com/fr/bi/web/js/base/proto/function.js",
                 "com/fr/bi/web/js/base/utils/base64.js",
                 "com/fr/bi/web/js/base/utils/md5.js",
                 "com/fr/bi/web/js/base/utils/xml.js",
@@ -1863,6 +1886,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/tree.js",
                 "com/fr/bi/web/js/base/utils/vector.js",
                 "com/fr/bi/web/js/base/utils/lru.js",
+                "com/fr/bi/web/js/base/utils/aspect.js",
 
                 "com/fr/bi/web/js/base/action/action.js",
                 "com/fr/bi/web/js/base/action/action.show.js",
@@ -2022,7 +2046,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/third/jquery.ui.droppable.js",
                 "com/fr/bi/web/js/third/jquery.ui.sortable.js",
                 "com/fr/bi/web/js/third/jquery.ui.effect.js",
-                "com/fr/bi/web/js/third/d3-min.js",
+                "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/third/leaflet.js",
 
@@ -2122,7 +2146,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                */
+                 */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2176,7 +2200,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                */
+                 */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2479,7 +2503,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                */
+                 */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 

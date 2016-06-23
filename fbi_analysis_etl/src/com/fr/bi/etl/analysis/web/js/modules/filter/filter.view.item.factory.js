@@ -21,7 +21,7 @@ BI.ETLFilterViewItemFactory = {
             }
             if (BI.isArray(item)){
                 var vertical = BI.createWidget({
-                    type : 'bi.vertical_adapt'
+                    type : 'bi.left'
                 });
                 BI.each(item, function(i, itm){
                     if (BI.isWidget(itm)){
@@ -81,7 +81,7 @@ BI.ETLFilterViewItemFactory = {
                 if(item === "") {
                     v.push(item)
                 } else {
-                    var d = FR.str2Date(item);
+                    var d = FR.str2Date(item, 'yyyy-mm-dd');
                     v.push(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
                 }
             });
@@ -106,8 +106,12 @@ BI.ETLFilterViewItemFactory = {
 
 
     _createNumberRange : function (value, fieldName){
-        value = value || {max : '', min:''};
-        return [value.min ,( value.closemin ? this._createItemByCls('less-equal-font') : this._createItemByCls('less-font')) , fieldName , (value.closemax ? this._createItemByCls('less-equal-font') : this._createItemByCls('less-font')) , value.max];
+        value = value || {};
+        return [BI.isNull(value.min) ? BI.i18nText('BI-Unrestricted') : value.min ,
+            ( value.closemin ? this._createItemByCls('less-equal-font') : this._createItemByCls('less-font')) ,
+            fieldName ,
+            (value.closemax ? this._createItemByCls('less-equal-font') : this._createItemByCls('less-font')) ,
+            BI.isNull(value.max) ? BI.i18nText('BI-Unrestricted') : value.max];
     },
 
     _createNumberGroupText : function (filterValue){
@@ -121,9 +125,9 @@ BI.ETLFilterViewItemFactory = {
         return filterValue.type !== BICst.ETL_FILTER_NUMBER_N_TYPE.INNER_GROUP ?  BI.i18nText("BI-ETL_Number_N_All") + ' :' : BI.i18nText("BI-ETL_Number_N_Inner") + ' :';
     },
 
-    _createDateRange : function (value, fieldName){
+    _createDateRange : function (value){
         value = value || {};
-        return [this._getDateText(value.start) ,this._createItemByCls('less-equal-font') , fieldName , this._createItemByCls('less-equal-font'), this._getDateText(value.end)];
+        return [this._getDateText(value.start) ,this._createItemByCls('less-equal-font') , BI.i18nText('BI-Value') , this._createItemByCls('less-equal-font'), this._getDateText(value.end)];
     },
 
     _getDateText : function(d){
@@ -131,7 +135,7 @@ BI.ETLFilterViewItemFactory = {
             var date = new Date(d)
             return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
         }
-        return '-';
+        return BI.i18nText('BI-Unrestricted');
     },
 
     _createItemByCls : function (cls){
@@ -192,15 +196,23 @@ BI.ETLFilterViewItemFactory = {
                 filterValue = filterValue || {};
                 return this._createItems([BI.i18nText("BI-ETL_Bottom_N", filterValue.value || ' ')], this._createNumberNTitleText(filterValue));
             case BICst.FILTER_DATE.BELONG_DATE_RANGE :
-                return this._createItems([this._createDateRange(filterValue, fieldName)], BI.i18nText("BI-ETL_Date_In_Range"));
+                return this._createItems([this._createDateRange(filterValue)], BI.i18nText("BI-ETL_Date_In_Range"));
             case BICst.FILTER_DATE.MORE_THAN :
-                return this._createItems([[fieldName ,  this._createItemByCls('more-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-More_Than") + ' :');
+                return this._createItems([[fieldName ,  this._createItemByCls('more-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-Later_Than") + BI.i18nText('BI-Someone') + BI.i18nText('BI-Time') + ' :');
             case BICst.FILTER_DATE.LESS_THAN :
-                return this._createItems([[fieldName ,  this._createItemByCls('less-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-Less_Than") + ' :');
+                return this._createItems([[fieldName ,  this._createItemByCls('less-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-Sooner_Than") + BI.i18nText('BI-Someone') + BI.i18nText('BI-Time') + ' :');
             case BICst.FILTER_DATE.DAY_EQUAL_TO :
                 return this._createItems([fieldName + ' = ' +this._getDateText(filterValue)]);
             case BICst.FILTER_DATE.DAY_NOT_EQUAL_TO :
                 return this._createItems([[fieldName , this._createItemByCls('not-equal-font') , this._getDateText(filterValue)]]);
+            case BICst.TARGET_FILTER_STRING.IS_NULL :
+            case BICst.TARGET_FILTER_NUMBER.IS_NULL :
+            case BICst.FILTER_DATE.IS_NULL :
+                return this._createItems([BI.i18nText("BI-Is_Null")]);
+            case BICst.TARGET_FILTER_STRING.NOT_NULL :
+            case BICst.TARGET_FILTER_NUMBER.NOT_NULL :
+            case BICst.FILTER_DATE.NOT_NULL :
+                return this._createItems([BI.i18nText("BI-Not_Null")]);
             default :
                 return[];
         }

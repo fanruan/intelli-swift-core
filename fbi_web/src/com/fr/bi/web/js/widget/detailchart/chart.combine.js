@@ -54,7 +54,9 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             "type": "value",
             "lineWidth": 0,
             "showLabel": true,
-            title: {},
+            title: {
+                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+            },
             //"formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
             "enableTick": true,
             "gridLineWidth": 0,
@@ -97,12 +99,20 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.ACCUMULATE_AREA:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FUNNEL:
                 createAxisForCommon();
+                break;
+            case BICst.WIDGET.COMPARE_AXIS:
+                createAxisForCommon();
+                var newxAxis  = self._axisConfig();
+                newxAxis.position = "top";
+                newxAxis.gridLineWidth = 0;
+                newxAxis.type = "category";
+                newxAxis.showLabel = false;
+                config.xAxis.push(newxAxis);
                 break;
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:

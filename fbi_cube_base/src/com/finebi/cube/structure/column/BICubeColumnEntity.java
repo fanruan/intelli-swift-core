@@ -163,7 +163,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     @Override
-    public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException {
+    public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException {
         if (path.isEmptyPath()) {
             /**
              * 如果路径是空的，说明没有关联
@@ -209,5 +209,10 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     @Override
     public void setOwner(ITableKey owner) {
         relationManagerService.setOwner(owner);
+    }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return cubeVersion.isVersionAvailable();
     }
 }
