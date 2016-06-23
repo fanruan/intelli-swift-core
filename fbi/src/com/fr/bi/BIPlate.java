@@ -53,10 +53,7 @@ import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * BI模块启动时做的一些初始化工作，通过反射调用
@@ -66,7 +63,6 @@ public class BIPlate extends AbstractFSPlate {
     @Override
     public void initData() {
 //        SystemFactoryRegister.systemRegister();
-        registerDebug();
         initModules();
         super.initData();
         startModules();
@@ -79,14 +75,6 @@ public class BIPlate extends AbstractFSPlate {
             markedObject.generateCubes();
         }
         addBITableColumn4NewConnection();
-    }
-
-    private void registerDebug() {
-        try {
-            Class c = Class.forName("com.fr.bi.test.DebugUtils");
-            c.newInstance();
-        } catch (Throwable t) {
-        }
     }
 
     public void loadMemoryData() {
@@ -180,7 +168,9 @@ public class BIPlate extends AbstractFSPlate {
 
     private void initModules() {
         BIModuleManager.registModule(new BICoreModule());
-        for (Class c : BIClassUtils.getClasses("com.fr.bi.module")) {
+        Set<Class<?>> set =  BIClassUtils.getClasses("com.fr.bi.module");
+        set.addAll(BIClassUtils.getClasses("com.fr.bi.test.module"));
+        for (Class c : set) {
             if (BIModule.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {
                 try {
                     BIModule module = (BIModule) c.newInstance();
