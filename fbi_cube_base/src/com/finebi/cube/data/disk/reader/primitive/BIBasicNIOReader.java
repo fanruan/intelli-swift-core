@@ -131,7 +131,7 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         try {
             //但愿10ms能 执行完get方法否则可能导致jvm崩溃
             //锁太浪费资源了，10ms目前并没有遇到问题
-            this.wait(10);
+            Thread.currentThread().sleep(10);
         } catch (InterruptedException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
