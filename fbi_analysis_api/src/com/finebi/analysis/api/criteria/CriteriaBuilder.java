@@ -17,7 +17,6 @@ import java.util.Set;
  * generics are not compatible with varags.
  *
  * @since FineBI Analysis 1.0
- *
  */
 public interface CriteriaBuilder {
 
@@ -46,42 +45,6 @@ public interface CriteriaBuilder {
     CriteriaQuery<Tuple> createTupleQuery();
 
 
-    // selection construction methods:
-
-    /**
-     * Create a selection item corresponding to a constructor.
-     * This method is used to specify a constructor that will be
-     * applied to the results of the query execution. If the
-     * constructor is for an entity class, the resulting entities
-     * will be in the new state after the query is executed.
-     *
-     * @param resultClass class whose instance is to be constructed
-     * @param selections  arguments to the constructor
-     * @return compound selection item
-     * @throws IllegalArgumentException if an argument is a
-     *                                  tuple- or array-valued selection item
-     */
-    <Y> CompoundSelection<Y> construct(Class<Y> resultClass, Selection<?>... selections);
-
-    /**
-     * Create a tuple-valued selection item.
-     *
-     * @param selections selection items
-     * @return tuple-valued compound selection
-     * @throws IllegalArgumentException if an argument is a
-     *                                  tuple- or array-valued selection item
-     */
-    CompoundSelection<Tuple> tuple(Selection<?>... selections);
-
-    /**
-     * Create an array-valued selection item.
-     *
-     * @param selections selection items
-     * @return array-valued compound selection
-     * @throws IllegalArgumentException if an argument is a
-     *                                  tuple- or array-valued selection item
-     */
-    CompoundSelection<Object[]> array(Selection<?>... selections);
 
 
     //ordering:
@@ -1579,78 +1542,6 @@ public interface CriteriaBuilder {
                                Expression<?>... args);
 
 
-    // methods for downcasting:
-
-    /**
-     * Downcast Join object to the specified type.
-     *
-     * @param join Join object
-     * @param type type to be downcast to
-     * @return Join object of the specified type
-     * @since Java Persistence 2.1
-     */
-    <X, T, V extends T> Join<X, V> treat(Join<X, T> join, Class<V> type);
-
-    /**
-     * Downcast CollectionJoin object to the specified type.
-     *
-     * @param join CollectionJoin object
-     * @param type type to be downcast to
-     * @return CollectionJoin object of the specified type
-     * @since Java Persistence 2.1
-     */
-    <X, T, E extends T> CollectionJoin<X, E> treat(CollectionJoin<X, T> join, Class<E> type);
-
-    /**
-     * Downcast SetJoin object to the specified type.
-     *
-     * @param join SetJoin object
-     * @param type type to be downcast to
-     * @return SetJoin object of the specified type
-     * @since Java Persistence 2.1
-     */
-    <X, T, E extends T> SetJoin<X, E> treat(SetJoin<X, T> join, Class<E> type);
-
-    /**
-     * Downcast ListJoin object to the specified type.
-     *
-     * @param join ListJoin object
-     * @param type type to be downcast to
-     * @return ListJoin object of the specified type
-     * @since Java Persistence 2.1
-     */
-    <X, T, E extends T> ListJoin<X, E> treat(ListJoin<X, T> join, Class<E> type);
-
-    /**
-     * Downcast MapJoin object to the specified type.
-     *
-     * @param join MapJoin object
-     * @param type type to be downcast to
-     * @return MapJoin object of the specified type
-     * @since Java Persistence 2.1
-     */
-    <X, K, T, V extends T> MapJoin<X, K, V> treat(MapJoin<X, K, T> join, Class<V> type);
-
-
-    /**
-     * Downcast Path object to the specified type.
-     *
-     * @param path path
-     * @param type type to be downcast to
-     * @return Path object of the specified type
-     * @since Java Persistence 2.1
-     */
-    <X, T extends X> Path<T> treat(Path<X> path, Class<T> type);
-
-    /**
-     * Downcast Root object to the specified type.
-     *
-     * @param root root
-     * @param type type to be downcast to
-     * @return Root object of the specified type
-     * @since Java Persistence 2.1
-     */
-    <X, T extends X> Root<T> treat(Root<X> root, Class<T> type);
 
 }
 

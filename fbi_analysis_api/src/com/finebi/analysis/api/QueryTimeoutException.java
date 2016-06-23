@@ -9,7 +9,7 @@ package com.finebi.analysis.api;
  *
  * @since Java Persistence 2.0
  */
-public class QueryTimeoutException extends PersistenceException {
+public class QueryTimeoutException extends RuntimeException {
 
     /** The query object that caused the exception */
     Query query;
