@@ -22,7 +22,7 @@ public class SelectionTest extends TestCase {
      */
     public void testSelect() {
         try {
-            PlainTable target= EasyMock.createMock(PlainTable.class);
+            PlainTable target = EasyMock.createMock(PlainTable.class);
             CriteriaBuilder cb = generateCB();
             CriteriaQuery<PlainTable> query = cb.createQuery(PlainTable.class);
             Root<PlainTable> root = query.from(target);
@@ -48,13 +48,13 @@ public class SelectionTest extends TestCase {
             Root<PlainTable> root = query.from(src);
             Join join = root.join(src);
             join.on(cb.equal(tar.getColumn("id"), src.getColumn("id")));
-            query.select(tar);
-            executeQuery(query);
+            Object result = executeQuery(query);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
     }
+
     /**
      * Detail:
      * Author:Connery
@@ -72,15 +72,15 @@ public class SelectionTest extends TestCase {
             Join join = root.join(two);
             join.on(cb.equal(one.getColumn("id"), two.getColumn("id"))).join(three);
             query.select(one);
-            executeQuery(query);
+            Object result = executeQuery(query);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
     }
 
-    private void executeQuery(CriteriaQuery query) {
-
+    private Object executeQuery(CriteriaQuery query) {
+        return null;
     }
 
     private CriteriaBuilder generateCB() {
