@@ -7,11 +7,7 @@ package com.finebi.analysis.api;
  * 
  * @since Java Persistence 1.0
  */
-<<<<<<< HEAD
 public class TransactionRequiredException extends RuntimeException {
-=======
-public class TransactionRequiredException extends PersistenceException {
->>>>>>> JPA接口
 
 	/**
 	 * Constructs a new <code>TransactionRequiredException</code> exception with

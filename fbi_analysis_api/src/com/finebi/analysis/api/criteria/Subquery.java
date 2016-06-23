@@ -12,11 +12,7 @@ import java.util.Set;
  *
  * @param <T> the type of the selection item.
  *
-<<<<<<< HEAD
- * @since Advanced FineBI Analysis 1.0
-=======
  * @since Java Persistence 2.0
->>>>>>> JPA接口
  */
 public interface Subquery<T> extends AbstractQuery<T>, Expression<T> {
 	
@@ -135,40 +131,6 @@ public interface Subquery<T> extends AbstractQuery<T>, Expression<T> {
      */
     <X, Y> Join<X, Y> correlate(Join<X, Y> parentJoin);
 
-<<<<<<< HEAD
-=======
-    /**
-     * Create a subquery collection join object correlated to a 
-     * collection join object of the enclosing query.
-     * @param parentCollection  join object of the containing query
-     * @return subquery join
-     */
-    <X, Y> CollectionJoin<X, Y> correlate(CollectionJoin<X, Y> parentCollection);
-
-    /**
-     * Create a subquery set join object correlated to a set join
-     * object of the enclosing query.
-     * @param parentSet  join object of the containing query
-     * @return subquery join
-     */
-    <X, Y> SetJoin<X, Y> correlate(SetJoin<X, Y> parentSet);
-
-    /**
-     * Create a subquery list join object correlated to a list join
-     * object of the enclosing query.
-     * @param parentList join object of the containing query
-     * @return subquery join
-     */
-    <X, Y> ListJoin<X, Y> correlate(ListJoin<X, Y> parentList);
-
-    /**
-     * Create a subquery map join object correlated to a map join
-     * object of the enclosing query.
-     * @param parentMap join object of the containing query
-     * @return subquery join
-     */
-    <X, K, V> MapJoin<X, K, V> correlate(MapJoin<X, K, V> parentMap);
->>>>>>> JPA接口
 
     /**
      * Return the query of which this is a subquery.
@@ -182,11 +144,7 @@ public interface Subquery<T> extends AbstractQuery<T>, Expression<T> {
      * This may be a CriteriaQuery, CriteriaUpdate, CriteriaDelete,
      * or a Subquery.
      * @return the enclosing query or subquery
-<<<<<<< HEAD
-     * @since Advanced Fine BI 5.1
-=======
      * @since Java Persistence 2.1
->>>>>>> JPA接口
      */
     CommonAbstractCriteria getContainingQuery();
 	
