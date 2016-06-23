@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * @param <T> the type of the selection item.
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface Subquery<T> extends AbstractQuery<T>, Expression<T> {
 	
@@ -144,7 +144,7 @@ public interface Subquery<T> extends AbstractQuery<T>, Expression<T> {
      * This may be a CriteriaQuery, CriteriaUpdate, CriteriaDelete,
      * or a Subquery.
      * @return the enclosing query or subquery
-     * @since Java Persistence 2.1
+     * @since Advanced Fine BI 5.1
      */
     CommonAbstractCriteria getContainingQuery();
 	

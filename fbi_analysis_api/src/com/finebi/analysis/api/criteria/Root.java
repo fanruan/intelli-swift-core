@@ -9,11 +9,7 @@ import com.finebi.analysis.api.metamodel.EntityType;
  *
  * @param <X> the entity type referenced by the root
  *
-<<<<<<< HEAD
  * @since Advanced FineBI Analysis 1.0
-=======
- * @since Java Persistence 2.0
->>>>>>> JPA接口
  */
 public interface Root<X> extends From<X, X> {
 

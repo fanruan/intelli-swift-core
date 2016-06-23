@@ -8,11 +8,7 @@ package com.finebi.analysis.api;
  * @see Query
  * @see TypedQuery
  *
-<<<<<<< HEAD
  * @since Advanced FineBI Analysis 1.0
-=======
- * @since Java Persistence 2.0
->>>>>>> JPA接口
  */
 public interface Parameter<T> {
 

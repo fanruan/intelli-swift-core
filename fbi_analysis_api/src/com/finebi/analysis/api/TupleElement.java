@@ -8,11 +8,7 @@ package com.finebi.analysis.api;
  *
  * @see Tuple
  *
-<<<<<<< HEAD
  * @since Advanced FineBI Analysis 1.0
-=======
- * @since Java Persistence 2.0
->>>>>>> JPA接口
  */
 public interface TupleElement<X> {
     
