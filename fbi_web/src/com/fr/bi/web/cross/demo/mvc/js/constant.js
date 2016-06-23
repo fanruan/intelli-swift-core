@@ -170,6 +170,8 @@ var _JS = [
 
     "widget/mvc.scrollview.js",
 
+    "widget/mvc.chart.js",
+
     "widget/mvc.charts.js",
 
     "widget/mvc.farbtastic.js",
@@ -481,6 +483,7 @@ var _Routes = {
     "/calendar": "CalendarView",
     "/year_calendar": "YearCalendarView",
     "/scrollview": "ScrollView",
+    "/chart": "ChartView",
     "/charts": "ChartsView",
     "/farbtastic": "FarbtasticView",
     "/canvas": "CanvasView",
@@ -852,6 +855,10 @@ _Models.widget = [{
 }, {
     pId: 8,
     text: "bi.chart",
+    value: "chart"
+}, {
+    pId: 8,
+    text: "charts",
     value: "charts"
 }, {
     pId: 5,

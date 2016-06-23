@@ -33,7 +33,15 @@ BIDezi.WebWidgetView = BI.inherit(BI.View, {
 
         this.web.on(BI.WebPage.EVENT_VALUE_CHANGE, function () {
             self.model.set("url", self.web.getValue())
-        })
+        });
+
+        this.web.element.hover(function () {
+            self.web.setToolbarVisible(true);
+        }, function () {
+            if (!self.web.element.parent().parent().parent().hasClass("selected")) {
+                self.web.setToolbarVisible(false);
+            }
+        });
     },
 
     local: function () {
