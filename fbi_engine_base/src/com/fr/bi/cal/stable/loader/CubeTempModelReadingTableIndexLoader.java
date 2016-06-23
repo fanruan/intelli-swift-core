@@ -6,6 +6,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
@@ -25,10 +26,12 @@ import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -236,7 +239,13 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
      */
     private ICubeTableService getTableIndexByPath(String pathSuffix) {
         String md5 = task.getMd5();
-        final String path = BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(md5) + File.separator + pathSuffix;
+        BICubeLocation cubeLocation;
+        try {
+            cubeLocation = new BICubeLocation(BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(md5), File.separator + pathSuffix);
+        } catch (URISyntaxException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+        final String path = cubeLocation.getAbsolutePath();
         ICubeConfiguration cubeConfiguration = new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
