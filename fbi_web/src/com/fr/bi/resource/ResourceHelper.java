@@ -83,7 +83,7 @@ public class ResourceHelper {
         JSONObject fields = new JSONObject();
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
-        List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+        List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());

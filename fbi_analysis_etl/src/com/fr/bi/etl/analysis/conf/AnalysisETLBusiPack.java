@@ -4,6 +4,7 @@ import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.BIPackageName;
 import com.fr.bi.base.BIUser;
+import com.fr.general.ComparatorUtils;
 
 
 /**
@@ -18,6 +19,29 @@ public class AnalysisETLBusiPack extends BIBusinessPackage<AnalysisBusiTable> {
     @Override
     protected AnalysisBusiTable createTable() {
         return new AnalysisBusiTable("", owner.getUserId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AnalysisETLBusiPack)) {
+            return false;
+        }
+
+        AnalysisETLBusiPack that = (AnalysisETLBusiPack) o;
+
+        return ComparatorUtils.equals(ID, that.ID) && ComparatorUtils.equals(owner, that.owner);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (ID != null ? ID.hashCode() : 0);
+        result = prime * result + (owner != null ? owner.hashCode() : 0);
+        return result;
     }
 
 }

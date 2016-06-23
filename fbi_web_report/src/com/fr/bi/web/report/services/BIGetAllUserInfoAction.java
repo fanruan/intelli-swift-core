@@ -2,6 +2,7 @@ package com.fr.bi.web.report.services;
 
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
+import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
@@ -27,15 +28,17 @@ public class BIGetAllUserInfoAction extends ActionNoSessionCMD {
 
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        long userId = ServiceUtils.getCurrentUserID(req);
         List<User> userList = UserControl.getInstance().findAllUser();
         JSONArray ja = new JSONArray();
         for(int i = 0; i < userList.size(); i++){
             User user = userList.get(i);
-            JSONObject jo = user.createJSON4Share();
-            jo.put("roles", UserControl.getInstance().getAllSRoleNames(user.getId()));
-            ja.put(jo);
+            if(user.getId() != userId) {
+                JSONObject jo = user.createJSON4Share();
+                jo.put("roles", UserControl.getInstance().getAllSRoleNames(user.getId()));
+                ja.put(jo);
+            }
         }
-
         WebUtils.printAsJSON(res, ja);
     }
 }

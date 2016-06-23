@@ -313,6 +313,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             if(magnify > 1){
                 BI.each(result, function(idx, item){
                     BI.each(item.data, function(id, da){
+                        da.x = da.x || 0;
                         da.x = da.x.div(magnify);
                     })
                 })
@@ -484,15 +485,17 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     config.legend.enabled = false;
                     break;
             }
-            config.plotOptions.dataLabels.enabled = self.show_data_label;
+            config.plotOptions.dataLabels.enabled = self.show_data_label || false;
             if(BI.has(config, "dataSheet")){
-                config.dataSheet.enabled = self.show_data_table;
+                config.dataSheet.enabled = self.show_data_table || false;
                 if(config.dataSheet.enabled === true){
                     config.xAxis[0].showLabel = false;
                 }
             }
-            config.zoom.zoomTool.visible = self.show_zoom;
-            self.show_zoom === true && delete config.dataSheet;
+            if(BI.has(config, "zoom")){
+                config.zoom.zoomTool.visible = self.show_zoom;
+                self.show_zoom === true && delete config.dataSheet;
+            }
         }
 
         function formatCordon(){

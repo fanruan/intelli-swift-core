@@ -10,10 +10,13 @@ import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
+import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.fs.control.UserControl;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -58,6 +61,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         Set<IBusinessPackageGetterService> result = new HashSet<IBusinessPackageGetterService>();
         for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(userId).getAllPacks()) {
             result.add(biBusinessPackage);
+        }
+        if (userId != UserControl.getInstance().getSuperManagerID()){
+            for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getAllPacks()) {
+                result.add(biBusinessPackage);
+            }
         }
         return result;
     }
@@ -185,7 +193,22 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject createPackageJSON(long userId, Locale locale) throws Exception {
-        return getUserAnalysisBusiPackManager(userId).createJSON(locale);
+        getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).createJSON(locale);
+        JSONObject jo = getUserAnalysisBusiPackManager(userId).createJSON(locale);
+        if (userId != UserControl.getInstance().getSuperManagerID()){
+            JSONObject adminJO = getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).createJSON(locale);
+            setEdit(adminJO);
+            jo.join(adminJO);
+        }
+        return jo;
+    }
+
+    private void setEdit(JSONObject jo) throws Exception {
+        JSONObject pack = jo.getJSONObject(Constants.PACK_ID);
+        JSONArray tables = pack.getJSONArray("tables");
+        for (int i = 0; i < tables.length(); i++){
+            tables.getJSONObject(i).put("inedible", true);
+        }
     }
 
     @Override
