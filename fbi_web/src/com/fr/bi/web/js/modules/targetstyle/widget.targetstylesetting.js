@@ -106,7 +106,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
                         return self.mark = BI.createWidget({
                             type: "bi.icon_mark_style_setting",
                             mark: styleSettings.mark,
-                            num_level: styleSettings.num_level
+                            num_level: self.numLevel.getValue()[0]
                         });
                 }
             },
