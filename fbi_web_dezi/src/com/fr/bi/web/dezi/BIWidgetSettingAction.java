@@ -58,7 +58,7 @@ public class BIWidgetSettingAction extends AbstractBIDeziAction {
             MultiThreadManagerImpl.getInstance().refreshExecutorService();
             jo = widget.createDataJSON(sessionIDInfor);
         } catch (Exception exception) {
-            jo.put("error", exception.getMessage());
+            jo.put("error", exception.getStackTrace());
         }
         if (sessionIDInfor.getLoader() instanceof CubeTempModelReadingTableIndexLoader) {
             CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) sessionIDInfor.getLoader();
