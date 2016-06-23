@@ -46,7 +46,7 @@ BI.Chart = BI.inherit(BI.Pane, {
     populate: function (items, options) {
         var self = this, o = this.options;
         o.items = items;
-        this.config = options;
+        this.config = options || {};
         this.config.series = o.items;
 
         var setOptions = function () {

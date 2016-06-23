@@ -10,7 +10,6 @@ import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManager;
 import com.fr.base.FRContext;
-import com.fr.bi.DemoService;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.manager.ClusterManager;
@@ -382,9 +381,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIReport(),
                 new Service4BIDezi(),
                 new Service4BIMobile(),
-                new Service4BIBase(),
-
-                new DemoService()
+                new Service4BIBase()
         };
     }
 

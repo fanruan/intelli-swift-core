@@ -42,9 +42,9 @@ BI.AnalysisETLMergePreviewTableHeaderCell = BI.inherit(BI.Widget, {
                 watermark: "",
                 errorText: function (v) {
                     if (v === "") {
-                        return BI.i18nText("BI-Report_Name_Not_Null");
+                        return BI.i18nText("BI-Field_Name_Not_Null");
                     } else {
-                        return BI.i18nText("BI-Template_Name_Already_Exist");
+                        return BI.i18nText("BI-Field_Name_Already_Exist");
                     }
                 },
             });
