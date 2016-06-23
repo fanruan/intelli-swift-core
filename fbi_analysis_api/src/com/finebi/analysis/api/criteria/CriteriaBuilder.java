@@ -20,12 +20,6 @@ import java.util.Set;
  */
 public interface CriteriaBuilder {
 
-    /**
-     * Create a <code>CriteriaQuery</code> object.
-     *
-     * @return criteria query object
-     */
-    CriteriaQuery<Object> createQuery();
 
     /**
      * Create a <code>CriteriaQuery</code> object with the specified result
@@ -36,6 +30,8 @@ public interface CriteriaBuilder {
      */
     <T> CriteriaQuery<T> createQuery(Class<T> resultClass);
 
+    <T> CriteriaQuery<PlainTable> createQuery();
+
     /**
      * Create a <code>CriteriaQuery</code> object that returns a tuple of
      * objects as its result.
@@ -43,8 +39,6 @@ public interface CriteriaBuilder {
      * @return criteria query object
      */
     CriteriaQuery<Tuple> createTupleQuery();
-
-
 
 
     //ordering:
@@ -1540,7 +1534,6 @@ public interface CriteriaBuilder {
      */
     <T> Expression<T> function(String name, Class<T> type,
                                Expression<?>... args);
-
 
 
 }
