@@ -1,21 +1,14 @@
 package com.fr.bi.web.dezi.services;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerTableSource;
-import com.finebi.cube.location.BICubeResourceRetrieval;
-import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.TempCubeManager;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.cal.stable.engine.TempPathGenerator;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -50,9 +43,8 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
         final String fileName = TempPathGenerator.createTempPath();
         CubeTableSource source = BIModuleUtils.getSourceByID(new BITableID(tableId), new BIUser(userId));
         final String cubePath = BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()) + File.separator + fileName;
-        final TempCubeTask task = new TempCubeTask(source.getSourceID(), userId);
+        final TempCubeTask task = new TempCubeTask(source.getSourceID(), tableId, userId);
         final CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(task);
-        BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
         loader.setReleaseObject(new Release() {
             @Override
@@ -68,8 +60,6 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
                 return URI.create(cubePath);
             }
         }, userId);
-        BuildCubeTask buildCubeTask = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
-        cubeManager.addTask(buildCubeTask, userId);
         TempCubeManager manager = TempCubeManager.getInstance(task);
         if (manager.addLoader(cubeBuildStuff, new Release() {
             @Override
@@ -78,15 +68,13 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
             }
         })) {
             loader.addCubePath(fileName);//确认是生成的cube后才把路径放进去
-            ICubeConfiguration cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
-            BICubeResourceRetrieval resourceRetrieval = new BICubeResourceRetrieval(cubeConfiguration);
-            loader.setCube(new BICube(resourceRetrieval, BIFactoryHelper.getObject(ICubeResourceDiscovery.class)));
         }
 
         session.setIsRealTime(true);
         session.setTempTableMd5(source.getSourceID());
         session.setTempTableId(tableId);
         JSONObject jo = new JSONObject();
+        jo.put("percent", loader.hasStoredIndexes() ? 100 : 0);
         WebUtils.printAsJSON(res, jo);
     }
 
