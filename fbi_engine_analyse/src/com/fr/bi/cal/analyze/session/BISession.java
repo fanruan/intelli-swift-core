@@ -123,6 +123,9 @@ public class BISession extends BIAbstractSession {
         }
     }
 
+
+
+
     public CubeGenerateStatusProvider getProvider() {
         return provider;
     }
@@ -252,7 +255,7 @@ public class BISession extends BIAbstractSession {
                 return CubeReadingTableIndexLoader.getInstance(accessUserId);
             } else {
                 if (loader == null) {
-                    loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getUserId()));
+                    loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getTempTableId(), getUserId()));
                 }
                 return loader;
             }
@@ -263,7 +266,7 @@ public class BISession extends BIAbstractSession {
     public void updateTime() {
         this.lastTime = System.currentTimeMillis();
         if (isRealTime()) {
-            CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getUserId()));
+            CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getTempTableId(), getUserId()));
             loader.updateTime();
         }
     }
