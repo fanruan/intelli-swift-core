@@ -4,7 +4,6 @@ import com.fr.data.dao.DAOBean;
 import com.fr.json.JSONObject;
 
 public class BISharedReportNode extends DAOBean {
-    private long id;
     private long reportId;
     private long createBy;
     private long shareTo;

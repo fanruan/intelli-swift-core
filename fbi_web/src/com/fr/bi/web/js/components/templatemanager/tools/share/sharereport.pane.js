@@ -154,21 +154,23 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
         var departPosts = [];
         BI.each(users, function (i, user) {
             var department = user.user_department;
-            if (BI.isNotNull(department) && department !== "" && !departPosts.contains(department)) {
+            if (BI.isNotNull(department) && department !== "") {
                 treeItems.push({
                     id: user.user_id.toString(),
                     text: user.user_name,
                     value: user.user_id.toString(),
                     pId: department
                 });
+                if(!departPosts.contains(department)) {
+                    treeItems.push({
+                        id: department,
+                        text: department,
+                        value: department,
+                        isParent: true,
+                        open: isSearch === true
+                    });
+                }
                 departPosts.push(department);
-                treeItems.push({
-                    id: department,
-                    text: department,
-                    value: department,
-                    isParent: true,
-                    open: isSearch === true
-                });
                 if (BI.isNull(self.roleUserMap[department])) {
                     self.roleUserMap[department] = [user];
                 } else {

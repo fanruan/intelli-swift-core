@@ -23,8 +23,8 @@ BI.AllReportsItemModel = BI.inherit(FR.OB, {
     getDepartNameByUserId: function(id) {
         var roleNames = [];
         BI.each(this.roles, function(i, role){
-            var roleName = role.text || role.departmentname;
-            if(!roleNames.contains(roleName) && role.users.contains(id)){
+            var roleName = role.departmentname;
+            if(BI.isNotNull(roleName) && !roleNames.contains(roleName) && role.users.contains(id)){
                 roleNames.push(roleName);
             }
         });
