@@ -66,5 +66,4 @@ public interface BICubeManagerProvider {
 
     boolean isReplacing(long userId);
 
-    boolean hasTask(String taskId, long userId);
 }

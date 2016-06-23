@@ -64,6 +64,9 @@ public class BuildCubeTask implements CubeTask {
         uuid="BUILD_CUBE"+ UUID.randomUUID();
     }
 
+    public BuildCubeTask(String uuid) {
+        this.uuid = uuid;
+    }
 
     @Override
     public String getUUID() {

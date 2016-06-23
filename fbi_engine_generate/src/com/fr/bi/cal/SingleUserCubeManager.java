@@ -151,7 +151,4 @@ public class SingleUserCubeManager {
         timerRunner.envChanged();
     }
 
-    public Boolean hasTask(String taskId) {
-        return runner.hasTask(taskId);
-    }
 }

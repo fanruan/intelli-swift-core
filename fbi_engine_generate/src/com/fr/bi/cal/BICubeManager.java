@@ -168,9 +168,4 @@ public class BICubeManager implements BICubeManagerProvider {
         return getCubeManager(userId).isReplacing();
     }
 
-    @Override
-    public boolean hasTask(String taskId, long userId) {
-        return getCubeManager(userId).hasTask(taskId);
-    }
-
 }

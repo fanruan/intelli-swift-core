@@ -95,8 +95,16 @@ public class CubeRunner {
         }
     }
 
-    public boolean hasTask(CubeTask task) {
-        return cubeThread.contains(task);
+    public boolean hasTask(CubeTask t) {
+        Iterator<CubeTask> iterator = cubeThread.iterator();
+        while (iterator.hasNext()) {
+            CubeTask task = iterator.next();
+            if (task.getUUID().equals(t.getUUID())) {
+                return true;
+            }
+        }
+        return false;
+//        return cubeThread.contains(task);
     }
 
     public boolean hasTask() {
@@ -195,17 +203,6 @@ public class CubeRunner {
      */
     private boolean checkCubePath() {
         return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));
-    }
-
-    public boolean hasTask(String taskId) {
-        Iterator<CubeTask> iterator = cubeThread.iterator();
-        while (iterator.hasNext()) {
-            CubeTask task = iterator.next();
-            if (task.getUUID().equals(taskId)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }
