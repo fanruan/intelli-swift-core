@@ -106,6 +106,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             case BIReportConstant.GROUP.M:
             case BIReportConstant.GROUP.S:
             case BIReportConstant.GROUP.MD:
+            case BIReportConstant.GROUP.W:
                 return Types.INTEGER;
             case BIReportConstant.GROUP.YMD:
             case BIReportConstant.GROUP.YMDHMS:

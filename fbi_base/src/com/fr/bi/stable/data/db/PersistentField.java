@@ -42,9 +42,9 @@ public class PersistentField implements IPersistentField {
         this.isPrimaryKey = isPrimaryKey;
         //FIXME 临时处理大于8K长度的字段，比如sqlserver TEXT; 截取前255
         this.column_size = column_size > 8000 ? 255 : column_size;
-        if (scale == 0) {
-            System.out.println("find");
-        }
+//        if (scale == 0) {
+//            System.out.println("find");
+//        }
         this.scale = scale;
     }
 

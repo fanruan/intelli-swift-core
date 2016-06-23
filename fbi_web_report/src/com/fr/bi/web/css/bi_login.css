@@ -18,6 +18,7 @@ body{
     -ms-user-select:none;
     user-select:none;
 }
+
 #fs-login-background {
     position: absolute;
     left: 0;
@@ -33,16 +34,121 @@ body{
     top : 38%;
     color : #ffffff;
     font-size : 20px;
+    -webkit-animation: left_right_show 2s ease;
+    -moz-animation: left_right_show 2s ease;
+    -o-animation: left_right_show 2s ease;
+    animation: left_right_show  2s ease;
     cursor: default;
+}
+
+@keyframes left_right_show {
+    from  {
+        left:80%;
+        color : #D6D6D6;
+    }
+    to {
+        left : 47%;
+        color : #ffffff;
+    }
+}
+
+@-webkit-keyframes left_right_show {
+     from  {
+         left:80%;
+         color : #D6D6D6;
+     }
+     to {
+         left : 47%;
+         color : #ffffff;
+     }
+ }
+
+@-moz-keyframes left_right_show {
+    from  {
+        left:80%;
+        color : #D6D6D6;
+    }
+    to {
+        left : 47%;
+        color : #ffffff;
+    }
+}
+
+@-o-keyframes left_right_show {
+    from  {
+        left:80%;
+        color : #D6D6D6;
+    }
+    to {
+        left : 47%;
+        color : #ffffff;
+    }
 }
 #fs-login-logo {
     position: absolute;
-    top : 16%;
+    top : 10%;
     right : 40%;
     width : 112px;
     height : 180px;
     background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/logo.png') no-repeat;
 }
+
+#fs-login-logo:hover {
+    -webkit-animation: scale_light 3s ease infinite;
+    -moz-animation: scale_light 3s ease infinite;
+    -o-animation: scale_light 3s ease infinite;
+    animation: scale_light  3s ease infinite;
+}
+
+@keyframes scale_light {
+    0%  {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100%  {
+        transform: scale(1);
+    }
+}
+
+
+@-webkit-keyframes scale_light {
+    0%  {
+        -webkit-transform: scale(1);
+    }
+    50% {
+        -webkit-transform: scale(1.1);
+    }
+    100%  {
+        -webkit-transform: scale(1);
+    }
+}
+
+@-moz-keyframes scale_light {
+    0%  {
+        -moz-transform: scale(1);
+    }
+    50% {
+        -moz-transform: scale(1.1);
+    }
+    100%  {
+        -moz-transform: scale(1);
+    }
+}
+
+@-o-keyframes scale_light {
+    0%  {
+        -o-transform: scale(1);
+    }
+    50% {
+        -o-transform: scale(1.1);
+    }
+    100%  {
+        -o-transform: scale(1);
+    }
+}
+
 
 #fs-login-content{
     position: absolute;
@@ -56,20 +162,17 @@ body{
 }
 
 #fs-login-input-area{
-    position: absolute;
-    bottom : 44%;
-    right : 23%;
-    left : 23%;
-    height: 138px;
+    margin-top:6%;
+    margin-left: 23%;
+    margin-right: 23%;
+    margin-bottom:5%;
     z-index: 1;
     background: #ffffff;
 }
 
 .confirm-area{
-    position: absolute;
-    bottom : 17%;
-    right : 23%;
-    left : 23%;
+    margin-left: 23%;
+    margin-right: 23%;
     height: 133px;
 }
 
@@ -93,11 +196,16 @@ input, div.fs-login-errmask{
     line-height: 56px;
 }
 input{
+
     position: relative;
     margin: 0 0 0 35px;
     padding: 0;
     outline: none;
     width: 253px;
+}
+
+input {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
 }
 div.fs-login-errmask{
     filter: Alpha(opacity=40);
@@ -147,4 +255,10 @@ span.fs-login-remember{
 }
 span.fs-login-remember-selected{
     background:url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/checkbox_selected.png') no-repeat;
+}
+
+#fs-setting-area,#fs-sure-area {
+    position: absolute;
+    top:38%;
+    width: 100%;
 }

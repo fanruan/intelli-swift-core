@@ -7,6 +7,7 @@ BI.AllHistoryButton = FR.extend(BI.BasicButton, {
             value: 1,
             height: 30,
             gap:10,
+            forceSelected:true,
             buttonWidth:120
         })
     },
