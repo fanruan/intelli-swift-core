@@ -6,6 +6,6 @@ package com.finebi.analysis.api.metamodel;
  *  superclass types.
  *
  *  @param <X> The represented entity type
- *  @since Java Persistence 2.0
+ *  @since Advanced FineBI Analysis 1.0
  */
 public interface MappedSuperclassType<X> extends IdentifiableType<X> {}

@@ -9,7 +9,7 @@ import java.util.List;
  * A simple predicate is considered to be a conjunction with a
  * single conjunct.
  *
- * @since Java Persistence 2.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface Predicate extends Expression<Boolean> {
 

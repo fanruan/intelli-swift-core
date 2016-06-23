@@ -90,7 +90,7 @@ public interface Query {
      * retrieve. Returns <code>Integer.MAX_VALUE</code> if <code>setMaxResults</code> was not
      * applied to the query object.
      * @return maximum number of results
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     int getMaxResults();
 
@@ -108,7 +108,7 @@ public interface Query {
      * retrieve. Returns 0 if <code>setFirstResult</code> was not applied to the
      * query object.
      * @return position of the first result
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     int getFirstResult();
 
@@ -133,7 +133,7 @@ public interface Query {
      * Get the properties and hints and associated values that are 
      * in effect for the query instance.
      * @return query properties and hints
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     Map<String, Object> getHints();
 
@@ -145,7 +145,7 @@ public interface Query {
      * @throws IllegalArgumentException if the parameter
      *         does not correspond to a parameter of the
      *         query
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     <T> Query setParameter(Parameter<T> param, T value);
 
@@ -157,7 +157,7 @@ public interface Query {
      * @return the same query instance
      * @throws IllegalArgumentException if the parameter does not
      *         correspond to a parameter of the query
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     Query setParameter(Parameter<Calendar> param, Calendar value,
                        TemporalType temporalType);
@@ -170,7 +170,7 @@ public interface Query {
      * @return the same query instance
      * @throws IllegalArgumentException if the parameter does not
      *         correspond to a parameter of the query
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     Query setParameter(Parameter<Date> param, Date value,
                        TemporalType temporalType);
@@ -260,7 +260,7 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query when the implementation does not support 
      *         this use
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     Set<Parameter<?>> getParameters();
 
@@ -276,7 +276,7 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query when the implementation does not support 
      *         this use
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     Parameter<?> getParameter(String name);
 
@@ -294,7 +294,7 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query or Java Persistence query language query when
      *         the implementation does not support this use
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     <T> Parameter<T> getParameter(String name, Class<T> type);
 
@@ -310,7 +310,7 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query when the implementation does not support 
      *         this use
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     Parameter<?> getParameter(int position);
 
@@ -327,7 +327,7 @@ public interface Query {
      * @throws IllegalStateException if invoked on a native
      *         query or Java Persistence query language query when
      *         the implementation does not support this use
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     <T> Parameter<T> getParameter(int position, Class<T> type);
 
@@ -336,7 +336,7 @@ public interface Query {
      * to the parameter.
      * @param param parameter object
      * @return boolean indicating whether parameter has been bound
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     boolean isBound(Parameter<?> param);
 
@@ -349,7 +349,7 @@ public interface Query {
      *         a parameter of the query
      * @throws IllegalStateException if the parameter has not been
      *         been bound
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     <T> T getParameterValue(Parameter<T> param);
 
@@ -362,7 +362,7 @@ public interface Query {
      *         been bound
      * @throws IllegalArgumentException if the parameter of the
      *         specified name does not exist
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     Object getParameterValue(String name);
 
@@ -375,7 +375,7 @@ public interface Query {
      *         been bound
      * @throws IllegalArgumentException if the parameter with the
      *         specified position does not exist
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     Object getParameterValue(int position);
 
@@ -394,7 +394,7 @@ public interface Query {
      * @return an instance of the specified class
      * @throws PersistenceException if the provider does not support
      *         the call
-     * @since Java Persistence 2.0
+     * @since Advanced FineBI Analysis 1.0
      */
     <T> T unwrap(Class<T> cls);
 }

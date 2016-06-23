@@ -13,7 +13,7 @@ package com.finebi.analysis.api.criteria;
  * Update and delete operations are typed according to the target of the
  * update or delete.
  *
- * @since Java Persistence 2.1
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface CommonAbstractCriteria {
 
