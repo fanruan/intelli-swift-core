@@ -14,6 +14,7 @@ BI.HistoryButton =  FR.extend(BI.BasicButton, {
             index : 1,
             value : 1,
             width:  180,
+            forceSelected:true,
             canDelete : true
         })
     },

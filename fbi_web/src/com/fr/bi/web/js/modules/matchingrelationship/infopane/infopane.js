@@ -112,6 +112,10 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
         var tIds = BI.Utils.getAllTargetDimensionIDs(wId);
         BI.each(tIds, function(idx, tId){
             var fFId = BI.Utils.getFieldIDByDimensionID(tId);
+            //计算指标不参与
+            if(BI.isNull(fFId)){
+                return;
+            }
             BI.isEmpty(self.stored_paths[tId]) && (self.stored_paths[tId] = BI.Utils.getPathsFromFieldAToFieldB(pFId, fFId));
             self._join(res, tId);
             if((BI.size(self.stored_paths[tId]) > 1 || BI.size(self.stored_paths[tId]) === 0)){

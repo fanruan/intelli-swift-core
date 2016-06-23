@@ -103,7 +103,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
         return releaseManager != null;
     }
 
-    public void clearBuffer() {
+    private void clearBuffer() {
         readWriteLock.writeLock().lock();
         try {
 
@@ -131,13 +131,10 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     @Override
     public void recordSpecificPositionValue(long position, T value) {
         if (position >= 0) {
-            readWriteLock.writeLock().lock();
-
             try {
                 initBuffer(position);
                 addValue((int) getRow(position), value);
             } finally {
-                readWriteLock.writeLock().unlock();
             }
         } else {
             throw BINonValueUtils.illegalArgument("The value of position is" + position + ",which must be positive value.");
@@ -150,7 +147,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 
     @Override
     public void flush() {
-        buffer.force();
+        //buffer.force();
     }
 
     protected void initBuffer(long row) {

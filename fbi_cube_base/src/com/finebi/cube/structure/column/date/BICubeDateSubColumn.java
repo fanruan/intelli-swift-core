@@ -164,4 +164,9 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     public ICubeResourceLocation getResourceLocation() {
         return selfColumnEntity.getResourceLocation();
     }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return selfColumnEntity.isVersionAvailable();
+    }
 }

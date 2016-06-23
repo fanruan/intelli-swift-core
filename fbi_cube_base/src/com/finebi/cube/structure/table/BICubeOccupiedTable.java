@@ -162,4 +162,9 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     public void setTableOwner(ITableKey owner) {
 
     }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return false;
+    }
 }
