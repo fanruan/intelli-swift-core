@@ -57,7 +57,6 @@ public class BuildCubeTask implements CubeTask {
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
         this.cubeBuildStuff = cubeBuildStuff;
         this.biUser = biUser;
-
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
@@ -105,7 +104,6 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void run() {
-
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
         operationManager.initialWatcher();

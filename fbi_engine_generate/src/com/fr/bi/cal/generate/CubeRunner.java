@@ -204,5 +204,4 @@ public class CubeRunner {
     private boolean checkCubePath() {
         return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));
     }
-
 }
