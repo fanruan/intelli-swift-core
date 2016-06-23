@@ -2,11 +2,11 @@
  * Created by Young's on 2016/5/31.
  */
 BI.AllReportsListItem = BI.inherit(BI.Widget, {
-    
+
     _constant: {
         PATH_CHOOSER: "__hangout_report_popover__"
-    },  
-    
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.AllReportsListItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-all-reports-list-item"
@@ -22,7 +22,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
             roles: o.roles,
             users: o.users
         });
-        if(this.status === BICst.REPORT_STATUS.APPLYING) {
+        if (this.status === BICst.REPORT_STATUS.APPLYING) {
             this.hangoutIcon = BI.createWidget({
                 type: "bi.icon_button",
                 cls: "report-apply-hangout-ing-font normal-mark",
@@ -39,7 +39,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
             });
         }
 
-        if(this.status !== BICst.REPORT_STATUS.NORMAL) {
+        if (this.status !== BICst.REPORT_STATUS.NORMAL) {
             this.markIcon = BI.createWidget({
                 type: "bi.icon_change_button",
                 cls: "mark-icon",
@@ -65,40 +65,64 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
             },
             trigger: "hover",
             direction: "left",
+            adjustXOffset: 100,
             popup: {
                 el: {
-                    type: "bi.vertical",
+                    type: "bi.horizontal_auto",
                     cls: "info-card",
                     items: [{
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Users") + ": " + userName,
-                        title: userName,
-                        textAlign: "left",
-                        height: 30,
-                        hgap: 5
+                        type: "bi.horizontal",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Users") + ":",
+                            height: 30,
+                            width: 40
+                        }, {
+                            type: "bi.label",
+                            text: userName,
+                            textAlign: "left",
+                            textHeight: 30,
+                            whiteSpace: "normal",
+                            hgap: 5
+                        }]
                     }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Role") + ": " + roleName,
-                        title: roleName,
-                        textAlign: "left",
-                        height: 30,
-                        hgap: 5
+                        type: "bi.horizontal",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Role") + ":",
+                            height: 30,
+                            width: 40
+                        }, {
+                            type: "bi.label",
+                            text: roleName.toString(),
+                            textAlign: "left",
+                            textHeight: 30,
+                            whiteSpace: "normal",
+                            hgap: 5
+                        }]
                     }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Department") + ": " + departName,
-                        title: departName,
-                        textAlign: "left",
-                        height: 30,
-                        hgap: 5
+                        type: "bi.horizontal",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Department") + ":",
+                            height: 30,
+                            width: 40
+                        }, {
+                            type: "bi.label",
+                            text: departName.toString(),
+                            textAlign: "left",
+                            textHeight: 30,
+                            whiteSpace: "normal",
+                            hgap: 5
+                        }]
                     }, {
                         type: "bi.label",
                         text: BI.i18nText("BI-Last_Modify_Date") + ": " + FR.date2Str(new Date(report.lastModify), "yyyy.MM.dd HH:mm:ss"),
-                        title: FR.date2Str(new Date(report.lastModify), "yyyy.MM.dd HH:mm:ss"),
                         textAlign: "left",
                         height: 30,
                         hgap: 5
                     }],
-                    width: 200
+                    width: 220
                 }
             }
         });
@@ -183,8 +207,8 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
         });
     },
 
-    _refreshMarkIcon: function(){
-        if(this.status === BICst.REPORT_STATUS.APPLYING) {
+    _refreshMarkIcon: function () {
+        if (this.status === BICst.REPORT_STATUS.APPLYING) {
             this.markIcon.setIcon("report-apply-hangout-ing-font");
             this.markIcon.setTitle(BI.i18nText("BI-Report_Hangout_Applying"));
             return;
@@ -193,20 +217,23 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
         this.markIcon.setTitle(BI.i18nText("BI-Hangouted"));
     },
 
-    _onClickHangout: function(){
+    _onClickHangout: function () {
         var self = this, o = this.options;
         BI.Popovers.remove(this._constant.PATH_CHOOSER);
         var pathChooser = BI.createWidget({
             type: "bi.report_hangout_path_chooser",
             reportName: this.options.report.text
         });
-        pathChooser.on(BI.ReportHangoutPathChooser.EVENT_SAVE, function(){
+        pathChooser.on(BI.ReportHangoutPathChooser.EVENT_SAVE, function () {
             o.onHangout(this.getValue());
             self.hangoutIcon.destroy();
             self.status = BICst.REPORT_STATUS.HANGOUT;
             self._refreshMarkIcon();
         });
-        BI.Popovers.create(this._constant.PATH_CHOOSER, pathChooser, {width: 400, height: 340}).open(this._constant.PATH_CHOOSER);
+        BI.Popovers.create(this._constant.PATH_CHOOSER, pathChooser, {
+            width: 400,
+            height: 340
+        }).open(this._constant.PATH_CHOOSER);
     }
 });
 $.shortcut("bi.all_reports_list_item", BI.AllReportsListItem);
