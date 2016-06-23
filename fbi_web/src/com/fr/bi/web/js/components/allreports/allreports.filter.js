@@ -19,13 +19,13 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         BI.AllReportsFilter.superclass._init.apply(this, arguments);
         var self = this;
         this.depart = BI.createWidget({
-            type: "bi.value_chooser_combo",
+            type: "bi.tree_value_chooser_combo",
             itemsCreator: BI.bind(this._departCreator, this),
             cache: false,
             height: 30,
             width: 180
         });
-        this.depart.on(BI.ValueChooserCombo.EVENT_CONFIRM, function () {
+        this.depart.on(BI.TreeValueChooserCombo.EVENT_CONFIRM, function () {
             self.fireEvent(BI.AllReportsFilter.EVENT_CHANGE);
         });
         this.role = BI.createWidget({
@@ -194,14 +194,24 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         //     });
         // }
 
-        BI.each(this.departs, function (i, depart) {
-            items.push({
-                text: depart.text,
-                value: depart.id,
-                title: depart.text
+        function formatItems(items) {
+            var result = [];
+            BI.each(items, function (i, item) {
+                if (BI.isNotNull(item.ChildNodes)) {
+                    result = result.concat(formatItems(item.ChildNodes));
+                }
+                result.push({
+                    text: item.text,
+                    value: item.id,
+                    title: item.text,
+                    id: item.id,
+                    pId: item.parentID
+                })
             });
-        });
-        callback(items);
+            return result;
+        }
+
+        callback(formatItems(this.departs));
     },
 
     _rolesCreator: function (options, callback) {
@@ -340,23 +350,24 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
 
     getValue: function () {
         var sDepart = this.depart.getValue(), sRole = this.role.getValue(), sUser = this.name.getValue(), sStatus = this.status.getValue();
-        var sDepartType = sDepart.type || BI.Selection.Multi,
-            sRoleType = sRole.type || BI.Selection.Multi,
+        var sRoleType = sRole.type || BI.Selection.Multi,
             sUserType = sUser.type || BI.Selection.Multi,
             sStatusType = sStatus.type || BI.Selection.Multi;
-        var sDepartValue = sDepart.value || [],
-            sUserValue = sUser.value || [],
+        var sUserValue = sUser.value || [],
             sRoleValue = sRole.value || [],
             sStatusValue = sStatus.value || [];
-        var selectedDepart = sDepartValue, selectedUser = sUserValue, selectedRole = sRoleValue, selectedStatus = sStatusValue;
-        if (sDepartValue.length !== 0 && sDepartType === BI.Selection.All) {
-            selectedDepart = [];
-            BI.each(this.departs, function (i, depart) {
-                if (!sDepartValue.contains(depart.id)) {
-                    selectedDepart.push(depart.id);
-                }
+        var selectedUser = sUserValue, selectedRole = sRoleValue, selectedStatus = sStatusValue;
+
+        function getTreeIds(ob) {
+            var ids = [];
+            BI.each(ob, function (id, v) {
+                ids.push(id);
+                ids = ids.concat(getTreeIds(v));
             });
+            return ids;
         }
+
+        var selectedDepart = getTreeIds(sDepart);
         if (sRoleValue.length !== 0 && sRoleType === BI.Selection.All) {
             selectedRole = [];
             BI.each(this.roles, function (i, role) {
@@ -388,7 +399,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
 
         //获取复杂日期的值
         function parseComplexDate(v) {
-            if(BI.isNull(v)) {
+            if (BI.isNull(v)) {
                 return;
             }
             if (v.type === BICst.MULTI_DATE_PARAM) {
@@ -463,7 +474,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                 }
             }
         }
-        
+
         var start = this.lastModify.getValue().start, end = this.lastModify.getValue().end;
         return {
             departs: selectedDepart,
