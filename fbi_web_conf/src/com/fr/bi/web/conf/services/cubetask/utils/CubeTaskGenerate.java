@@ -10,6 +10,7 @@ import com.finebi.cube.impl.conf.CubeBuildStuffManagerIncremental;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -37,6 +38,7 @@ public class CubeTaskGenerate {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
             if (!cubeBuildStuff.preConditionsCheck()) {
                 BILogger.getLogger().error("cube生成的前置条件无法满足，请确认硬盘空间足够且数据连接正常！");
+                BIConfigureManagerCenter.getLogManager().logEnd(userId);
                 return;
             }
             cubeManager.addTask(task, userId);
@@ -44,6 +46,7 @@ public class CubeTaskGenerate {
             CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
             if (!cubeBuildStuff.preConditionsCheck()) {
                 BILogger.getLogger().error("cube生成的前置条件无法满足，请确认硬盘空间足够且数据连接正常！");
+                BIConfigureManagerCenter.getLogManager().logEnd(userId);
                 return;
             }
             cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
