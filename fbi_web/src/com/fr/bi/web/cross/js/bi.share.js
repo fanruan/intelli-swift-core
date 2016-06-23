@@ -17,11 +17,15 @@ FS.THEME.config4MenuTree.insertNodes = [
             FS.createByMe.apply(this, [$tab, $content, entry]);
         }
     },
-    {
-        text: BI.i18nText('FS-Generic-Shared_To_Me'),
-        contentEl: $('<div>'),
-        afterLoad: function ($tab, $content, entry) {
-            FS.shareToMe.apply(this, [$tab, $content, entry]);
+    function () {
+        if (!FS.config.isAdmin) {
+            return {
+                text: BI.i18nText('FS-Generic-Shared_To_Me'),
+                contentEl: $('<div>'),
+                afterLoad: function ($tab, $content, entry) {
+                    FS.shareToMe.apply(this, [$tab, $content, entry]);
+                }
+            }
         }
     }
 ];
