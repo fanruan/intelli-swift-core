@@ -74,5 +74,13 @@ public interface Cube extends ICubeVersion {
      */
     CubeRelationEntityGetterService getCubeRelation(ITableKey tableKey, BICubeRelation relation) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException;
 
-    boolean canRead(ITableKey tableKey);
+    /**
+     * cubeTableSource存在
+     * @param tableKey
+     * @return
+     */
+    boolean exist(ITableKey tableKey);
+
+
+
 }

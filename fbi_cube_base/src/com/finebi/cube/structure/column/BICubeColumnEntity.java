@@ -210,4 +210,9 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     public void setOwner(ITableKey owner) {
         relationManagerService.setOwner(owner);
     }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return cubeVersion.isVersionAvailable();
+    }
 }

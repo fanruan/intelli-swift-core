@@ -213,7 +213,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public boolean tableDataAvailable() {
-        return tableProperty.isPropertyExist();
+        return tableProperty.isVersionAvailable();
     }
 
     @Override
@@ -234,5 +234,10 @@ public class BICubeTableEntity implements CubeTableEntityService {
     public void setTableOwner(ITableKey owner) {
         relationManager.setOwner(owner);
         columnManager.setOwner(owner);
+    }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return tableProperty.isVersionAvailable();
     }
 }

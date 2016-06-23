@@ -1,6 +1,7 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
 import com.finebi.cube.data.input.primitive.ICubeDoubleReader;
+import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
 
 import java.io.File;
@@ -24,14 +25,17 @@ public class BIDoubleNIOReader extends BIBasicNIOReader<Double> implements ICube
     }
 
     @Override
-    protected Double getValue(Long page, int index) {
-        readWriteLock.readLock().lock();
-        try {
-            Double result = doubleBuffers.get(page).get(index);
-            return !result.equals(Double.valueOf(Double.NaN)) ? result : null;
-        } finally {
-            readWriteLock.readLock().unlock();
+    protected Double getValue(Long page, int index) throws  BIResourceInvalidException {
+        if(isValid) {
+            return read(page, index);
+        } else {
+            throw new BIResourceInvalidException();
         }
+    }
+
+    private Double read (Long page, int index) {
+        Double result = doubleBuffers.get(page).get(index);
+        return Double.isNaN(result) ? null : result;
     }
 
 
