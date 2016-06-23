@@ -131,37 +131,6 @@ public interface Subquery<T> extends AbstractQuery<T>, Expression<T> {
      */
     <X, Y> Join<X, Y> correlate(Join<X, Y> parentJoin);
 
-    /**
-     * Create a subquery collection join object correlated to a 
-     * collection join object of the enclosing query.
-     * @param parentCollection  join object of the containing query
-     * @return subquery join
-     */
-    <X, Y> CollectionJoin<X, Y> correlate(CollectionJoin<X, Y> parentCollection);
-
-    /**
-     * Create a subquery set join object correlated to a set join
-     * object of the enclosing query.
-     * @param parentSet  join object of the containing query
-     * @return subquery join
-     */
-    <X, Y> SetJoin<X, Y> correlate(SetJoin<X, Y> parentSet);
-
-    /**
-     * Create a subquery list join object correlated to a list join
-     * object of the enclosing query.
-     * @param parentList join object of the containing query
-     * @return subquery join
-     */
-    <X, Y> ListJoin<X, Y> correlate(ListJoin<X, Y> parentList);
-
-    /**
-     * Create a subquery map join object correlated to a map join
-     * object of the enclosing query.
-     * @param parentMap join object of the containing query
-     * @return subquery join
-     */
-    <X, K, V> MapJoin<X, K, V> correlate(MapJoin<X, K, V> parentMap);
 
     /**
      * Return the query of which this is a subquery.
