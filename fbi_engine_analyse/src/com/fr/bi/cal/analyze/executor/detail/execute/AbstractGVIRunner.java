@@ -11,7 +11,6 @@ import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
-import com.fr.stable.StringUtils;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -55,9 +54,7 @@ public abstract class AbstractGVIRunner implements GVIRunner {
                     continue;
                 }
                 int sortIndex = getIndexById(sortTargets[i]);
-                String o1Value = o1.getValues()[sortIndex] != null ? o1.getValues()[sortIndex].toString() : StringUtils.EMPTY;
-                String o2Value = o2.getValues()[sortIndex] != null ? o2.getValues()[sortIndex].toString() : StringUtils.EMPTY;
-                int c = target.getSort().getComparator().compare(o1Value, o2Value);
+                int c = target.getSort().getComparator().compare(o1.getValues()[sortIndex], o2.getValues()[sortIndex]);
                 if (c != 0) {
                     return c;
                 }
