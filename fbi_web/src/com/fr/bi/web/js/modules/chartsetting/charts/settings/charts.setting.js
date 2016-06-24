@@ -242,6 +242,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             width: this.constant.EDITOR_WIDTH,
             height: this.constant.EDITOR_HEIGHT,
             cls: "unit-input",
+            allowBlank: false,
             value: "0",
             errorText: BI.i18nText("BI-Please_Enter_Number_From_To_To", -90, 90),
             validationChecker: function(v){

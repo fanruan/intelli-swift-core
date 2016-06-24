@@ -52,8 +52,36 @@ BI.SimpleTreeView = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
+        v || (v = []);
+        var self = this, map = {};
+        var selected = [];
+        BI.each(v, function (i, val) {
+            var node = self.structure.search(val, "value");
+            if (node) {
+                var p = node;
+                var p = p.getParent();
+                if (p) {
+                    if (!map[p.value]) {
+                        map[p.value] = 0;
+                    }
+                    map[p.value]++;
+                }
+
+                while (p && p.getChildrenLength() <= map[p.value]) {
+                    selected.push(p.value);
+                    p = p.getParent();
+                    if (p) {
+                        if (!map[p.value]) {
+                            map[p.value] = 0;
+                        }
+                        map[p.value]++;
+                    }
+                }
+            }
+        });
+
         this.tree.checkAll(false);
-        this.tree.updateValue(BI.makeObject(v));
+        this.tree.updateValue(BI.makeObject(v.concat(selected)));
         this.tree.refresh();
     },
 
@@ -71,9 +99,9 @@ BI.SimpleTreeView = BI.inherit(BI.Widget, {
         track(val);
         return result;
     },
-    
-    empty: function(){
-        this.tree.empty();  
+
+    empty: function () {
+        this.tree.empty();
     },
 
     getValue: function () {
@@ -83,7 +111,7 @@ BI.SimpleTreeView = BI.inherit(BI.Widget, {
             if (target) {
                 self.structure._traverse(target, function (node) {
                     if (node.isLeaf()) {
-                        result.push(node.value || node.text);
+                        result.push(node.value);
                     }
                 })
             }
