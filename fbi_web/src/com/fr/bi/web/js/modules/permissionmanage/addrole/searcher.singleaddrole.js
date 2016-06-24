@@ -23,7 +23,7 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
             }]
         });
         this.roles.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
+            self.saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
         });
 
         this.searcher = BI.createWidget({
@@ -57,7 +57,7 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
         });
         this.searcher.setAdapter(this.roles);
         this.searcher.on(BI.Searcher.EVENT_CHANGE, function () {
-            saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
+            self.saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
         });
 
         var cancelButton = BI.createWidget({
@@ -70,12 +70,12 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
             self.fireEvent(BI.SingleAddRoleSearcher.EVENT_CANCEL);
         });
 
-        var saveButton = BI.createWidget({
+        this.saveButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Sen_Confirm_Use_Selected_1", 0),
             height: 30
         });
-        saveButton.on(BI.Button.EVENT_CHANGE, function () {
+        this.saveButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.SingleAddRoleSearcher.EVENT_SAVE, self.roles.getValue());
         });
 
@@ -97,7 +97,7 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
                     type: "bi.left_right_vertical_adapt",
                     items: {
                         left: [cancelButton],
-                        right: [saveButton]
+                        right: [this.saveButton]
                     },
                     vgap: 10
 
@@ -138,6 +138,7 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
         });
         this.roles.populate(items);
         this.searcher.stopSearch();
+        this.saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.roles.getValue().length));
     }
 });
 BI.SingleAddRoleSearcher.EVENT_CANCEL = "EVENT_CANCEL";
