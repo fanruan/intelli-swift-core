@@ -162,13 +162,13 @@ BI.TableChartManagerAspect = function () {
         if (cls !== true) {
             assertTip();
             self.tipPane.setVisible(true);
-            self.tipPane.element.addClass(cls);
+            self.tipPane.element.removeClass().addClass(cls);
             return false;
         }
         if (!BI.Utils.isAllFieldsExistByWidgetID(self.options.wId)) {
             assertTip();
             self.tipPane.setVisible(true);
-            self.tipPane.element.addClass("data-miss-background");
+            self.tipPane.element.removeClass().addClass("data-miss-background");
             return false;
         }
         self.tipPane && self.tipPane.setVisible(false);
