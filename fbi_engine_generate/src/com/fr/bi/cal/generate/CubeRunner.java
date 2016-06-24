@@ -2,8 +2,8 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
@@ -38,7 +38,6 @@ public class CubeRunner {
     private CubeBuildStuffManager object;
 
     public CubeRunner(long userId) {
-
         biUser = new BIUser(userId);
         init();
     }
@@ -58,17 +57,17 @@ public class CubeRunner {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
                 backup();
-                        try {
-                            cubeTask.start();
-                            cubeTask.run();
-                        } catch (Exception e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
-                        } finally {
-                            cubeTask.end();
-                            finish();
-                            setStatue(Status.LOADED);
-                            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
-                        }
+                try {
+                    cubeTask.start();
+                    cubeTask.run();
+                } catch (Exception e) {
+                    BILogger.getLogger().error(e.getMessage(), e);
+                } finally {
+                    cubeTask.end();
+                    finish();
+                    setStatue(Status.LOADED);
+                    BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
+                }
             }
         });
         //设置检查任务
@@ -96,8 +95,16 @@ public class CubeRunner {
         }
     }
 
-    public boolean hasTask(CubeTask task) {
-        return cubeThread.contains(task);
+    public boolean hasTask(CubeTask t) {
+        Iterator<CubeTask> iterator = cubeThread.iterator();
+        while (iterator.hasNext()) {
+            CubeTask task = iterator.next();
+            if (task.getUUID().equals(t.getUUID())) {
+                return true;
+            }
+        }
+        return false;
+//        return cubeThread.contains(task);
     }
 
     public boolean hasTask() {
@@ -135,8 +142,10 @@ public class CubeRunner {
 
     private void generateCube() {
         setStatue(Status.LOADED);
-        CubeBuildStuff cubeBuildStuff= new CubeBuildStuffManager(new BIUser((biUser.getUserId())));
-        CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser,cubeBuildStuff),biUser.getUserId());
+        CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManager(new BIUser((biUser.getUserId())));
+        CubeTask task = new BuildCubeTask(biUser, cubeBuildStuff);
+        CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
+
     }
 
     private void backup() {
@@ -164,7 +173,7 @@ public class CubeRunner {
     }
 
     public CubeBuildStuffManager getCubeGeneratingObjects() {
-                if (object == null) {
+        if (object == null) {
             object = new CubeBuildStuffManager(biUser);
             object.initialCubeStuff();
         }
@@ -195,6 +204,4 @@ public class CubeRunner {
     private boolean checkCubePath() {
         return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));
     }
-
-
 }
