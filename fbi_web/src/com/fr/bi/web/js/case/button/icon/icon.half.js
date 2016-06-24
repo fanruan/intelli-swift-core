@@ -8,10 +8,10 @@ BI.HalfIconButton = BI.inherit(BI.IconButton, {
         var conf = BI.HalfIconButton.superclass._defaultConfig.apply(this,arguments);
         return BI.extend(conf, {
             extraCls: "bi-half-icon-button check-half-select-icon",
-            height: 13,
-            width: 13,
-            iconWidth: 13,
-            iconHeight: 13,
+            height: 16,
+            width: 16,
+            iconWidth: 16,
+            iconHeight: 16,
             selected: false
         })
     },
