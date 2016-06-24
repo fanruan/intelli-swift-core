@@ -37,9 +37,6 @@ BI.ReportSaveAsFloatBox = BI.inherit(BI.BarPopoverSection, {
                 }
             },
             validationChecker: function (v) {
-                if (v.indexOf("\'") > -1) {
-                    return false;
-                }
                 return !self._getCurrentNodeReportNames().contains(v);
             }
         });

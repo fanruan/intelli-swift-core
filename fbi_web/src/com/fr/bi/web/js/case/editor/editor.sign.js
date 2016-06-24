@@ -191,6 +191,7 @@ BI.SignEditor = BI.inherit(BI.Single, {
     },
 
     setValid: function(v){
+        BI.SignEditor.superclass.setValid.apply(this, arguments);
         this.editor.setValid(v);
     },
 

@@ -58,7 +58,7 @@ BI.CustomGroupGroup2Other = BI.inherit(BI.Widget, {
 
     populate: function (ungroup2Other, ungroup2OtherName) {
         c = this._constant;
-        if (ungroup2Other === c.selected) {
+        if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
             this.checkbox.setSelected(true);
             this.editor.setValue(ungroup2OtherName);
             this.editor.setEnable(true);

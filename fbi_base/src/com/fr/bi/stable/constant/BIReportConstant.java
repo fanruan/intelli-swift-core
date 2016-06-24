@@ -521,4 +521,13 @@ public class BIReportConstant {
         public static final int NORMAL = 3;
     }
 
+    public static final class CUSTOM_GROUP {
+        public static final class UNGROUP2OTHER {
+            public static final int NOTSELECTED = 0;
+            public static final int SELECTED = 1;
+        }
+
+    }
+
+
 }

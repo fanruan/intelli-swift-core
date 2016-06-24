@@ -487,7 +487,7 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
                 }
 
             });
-            if (groupObj.group.ungroup2Other === 1) {
+            if (groupObj.group.ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
                 groupValue = groupValue + groupObj.group.ungroup2OtherName + ":...";
             } else {
                 groupValue = groupValue + BI.i18nText("BI-Ungrouped_China") + ":...";
