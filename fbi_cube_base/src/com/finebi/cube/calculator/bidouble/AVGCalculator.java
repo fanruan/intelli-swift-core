@@ -17,10 +17,14 @@ public class AVGCalculator implements CubeDoubleDataCalculator {
 
     @Override
     public double calculate(ICubeTableService tableGetterService, BIKey key, GroupValueIndex range) {
-        return getSumValue(tableGetterService, key, range) / SpecificGroupCountCalculator.INSTANCE.calculate(tableGetterService, key, range);
+        return getSumValue(tableGetterService, key, range) / getGroupCountValue(tableGetterService, key, range);
     }
 
     protected double getSumValue(ICubeTableService tableGetterService, BIKey key, GroupValueIndex range) {
         return SumCalculator.INSTANCE.calculate(tableGetterService, key, range);
+    }
+
+    protected double getGroupCountValue(ICubeTableService tableGetterService, BIKey key, GroupValueIndex range) {
+        return SpecificGroupCountCalculator.INSTANCE.calculate(tableGetterService, key, range);
     }
 }
