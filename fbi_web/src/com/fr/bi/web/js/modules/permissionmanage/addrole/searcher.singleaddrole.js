@@ -2,13 +2,13 @@
  * Created by Young's on 2016/5/17.
  */
 BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.SingleAddRoleSearcher.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-single-add-role-searcher"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.SingleAddRoleSearcher.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.roles = BI.createWidget({
@@ -22,8 +22,8 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
                 vgap: 5
             }]
         });
-        this.roles.on(BI.ButtonGroup.EVENT_CHANGE, function(){
-             saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
+        this.roles.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
         });
 
         this.searcher = BI.createWidget({
@@ -56,26 +56,29 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
             }
         });
         this.searcher.setAdapter(this.roles);
-        
+        this.searcher.on(BI.Searcher.EVENT_CHANGE, function () {
+            saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
+        });
+
         var cancelButton = BI.createWidget({
             type: "bi.button",
             level: "ignore",
             text: BI.i18nText("BI-Cancel"),
             height: 30
         });
-        cancelButton.on(BI.Button.EVENT_CHANGE, function(){
+        cancelButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.SingleAddRoleSearcher.EVENT_CANCEL);
         });
-        
+
         var saveButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Sen_Confirm_Use_Selected_1", 0),
             height: 30
         });
-        saveButton.on(BI.Button.EVENT_CHANGE, function(){
+        saveButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.SingleAddRoleSearcher.EVENT_SAVE, self.roles.getValue());
         });
-        
+
         BI.createWidget({
             type: "bi.vtape",
             element: this.element,
@@ -103,24 +106,24 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
             }]
         });
     },
-    
-    populate: function(packageId){
+
+    populate: function (packageId) {
         var allRoles = BI.Utils.getAuthorityRoles();
-        var sortedRoles = BI.sortBy(allRoles, function(index, item) {
+        var sortedRoles = BI.sortBy(allRoles, function (index, item) {
             return item.departmentid;
         });
         var settedRoles = BI.Utils.getPackageAuthorityByID(packageId);
         var items = [];
-        BI.each(sortedRoles, function(i, role) {
-            var found = BI.some(settedRoles, function(j, r){
-                 if(r.role_id === role.id && r.role_type === role.role_type) {
-                     return true;
-                 }
+        BI.each(sortedRoles, function (i, role) {
+            var found = BI.some(settedRoles, function (j, r) {
+                if (r.role_id === role.id && r.role_type === role.role_type) {
+                    return true;
+                }
             });
-            if(found === true) {
+            if (found === true) {
                 return;
             }
-            var roleName = role.text || (role.department_name  + ", " + role.post_name);
+            var roleName = role.text || (role.department_name + ", " + role.post_name);
             items.push({
                 type: "bi.text_button",
                 cls: "role-item",
