@@ -994,8 +994,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/model.calculatetargetpopup.summary.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4detail/calculatetargetpopup.detail.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4detail/model.calculatetargetpopup.detail.js",
-                "com/fr/bi/web/js/modules/calculatetarget/label.highlight.calculate.target.js",
-                "com/fr/bi/web/js/modules/calculatetarget/label.2highlight.calculate.target.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/pane/pane.calculate.target.abstract.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/pane/pane.calculate.target.group.abstract.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/pane/pane.calculate.target.period.rate.abstract.js",
