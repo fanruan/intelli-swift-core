@@ -57,7 +57,7 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
                     onClickReport: function(){
                         FS.tabPane.addItem({
                             title: item.text,
-                            src: FR.servletURL + item.buildUrl
+                            src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
                         });
                     },
                     onRenameReport: function(name){
