@@ -277,6 +277,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Category_Axis"),
                 textAlign: "left",
+                textHeight: 60,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 cls: "line-title"
             }, {

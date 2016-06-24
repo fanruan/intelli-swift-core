@@ -11,7 +11,8 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             items: [],
             xAxis: [{type: "category"}],
             yAxis: [{type: "value"}],
-            types: [[], []]
+            types: [[], []],
+            formatConfig: function(config){return config;}
         })
     },
 
@@ -60,7 +61,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.options.types = types || [[]];
     },
 
-    populate: function (items, options, types) {
+    populate: function (items, types) {
         var o = this.options;
         if (BI.isNotNull(types)) {
             this.setTypes(types);
@@ -69,8 +70,9 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         BI.extend(opts[1], {
             xAxis: o.xAxis,
             yAxis: o.yAxis
-        }, options);
-        this.CombineChart.populate(opts[0], opts[1]);
+        });
+        var result = o.formatConfig(opts[1], opts[0]);
+        this.CombineChart.populate(result[0], result[1]);
     },
 
     resize: function () {
