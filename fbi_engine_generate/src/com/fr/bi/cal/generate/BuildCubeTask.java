@@ -32,6 +32,7 @@ import com.fr.json.JSONObject;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Future;
 
 /**
@@ -50,21 +51,25 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
+    private String uuid;
 
 
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
         this.cubeBuildStuff = cubeBuildStuff;
         this.biUser = biUser;
-
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        uuid="BUILD_CUBE"+ UUID.randomUUID();
     }
 
+    public BuildCubeTask(String uuid) {
+        this.uuid = uuid;
+    }
 
     @Override
     public String getUUID() {
-        return "BUILD_CUBE";
+        return uuid;
     }
 
     @Override
@@ -75,7 +80,7 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
-        BIConfigureManagerCenter.getLogManager().logStart(getUserId());
+//        BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }
 
     @Override
@@ -136,7 +141,6 @@ public class BuildCubeTask implements CubeTask {
 
     public static IMessage generateMessageDataSourceStart() {
         return buildTopic(new BIMessageTopic(BICubeBuildTopicTag.START_BUILD_CUBE));
-
     }
 
     private static IMessage buildTopic(IMessageTopic topic) {
@@ -151,5 +155,10 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public JSONObject createJSON() throws Exception {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.getUUID().equals(((BuildCubeTask) obj).getUUID());
     }
 }

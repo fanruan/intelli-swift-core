@@ -24,7 +24,8 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
-        BIConfigureManagerCenter.getLogManager().clearLog(userId);
+        BIConfigureManagerCenter.getLogManager().logStart(userId);
+
         if (StringUtils.isEmpty(tableId)){
             CubeTaskGenerate.CubeBuild(userId);
         }else{
