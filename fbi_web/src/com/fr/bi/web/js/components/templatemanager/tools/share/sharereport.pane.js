@@ -58,7 +58,18 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
             self.allUsers = res;
             self.allUsersTree.populate(self._formatUserRole(res));
         });
+        var oldValue = [];
         this.allUsersTree.on(BI.SimpleTreeView.EVENT_CHANGE, function () {
+            var vs = this.getValue();
+            if(vs.length < oldValue.length) {
+                BI.each(vs, function(i, v) {
+                    oldValue.splice(oldValue.indexOf(v), 1);
+                });
+                vs = BI.uniq(vs);
+                vs.splice(vs.indexOf(oldValue[0]), 1);
+            }
+            this.setValue(vs);
+            oldValue = this.getValue();
             self._refreshSelectedUserList();
         });
         searcher.setAdapter(this.allUsersTree);
@@ -131,6 +142,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                 this.selectedUserList.on(BI.Controller.EVENT_CHANGE, function () {
                     var userId = arguments[1];
                     var selectedUser = self.allUsersTree.getValue();
+                    selectedUser = BI.uniq(selectedUser);
                     BI.some(selectedUser, function (i, id) {
                         if (id === userId) {
                             selectedUser.splice(i, 1);
